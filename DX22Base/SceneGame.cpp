@@ -87,8 +87,6 @@ void SceneGame::Draw()
 	DirectX::XMStoreFloat4x4(&mat[2], proj);
 
 
-	mat[1] = m_pCamera->GetViewMatrix();
-	mat[2] = m_pCamera->GetProjectionMatrix();
 	// 行列をシェーダーへ 
 	m_pVS->WriteBuffer(0, mat);
 
