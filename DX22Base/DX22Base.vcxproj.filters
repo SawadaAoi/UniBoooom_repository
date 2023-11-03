@@ -37,6 +37,12 @@
     <Filter Include="ヘッダー ファイル\System">
       <UniqueIdentifier>{23598e8f-8b92-47d1-ac2c-8d127274e433}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\Info">
+      <UniqueIdentifier>{d897d083-6e2e-412e-a1e5-d3759d7e792f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Info">
+      <UniqueIdentifier>{d9325da6-b9aa-49d9-8b21-2d080de4e14c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -84,6 +90,12 @@
     <ClCompile Include="CameraDebug.cpp">
       <Filter>ソース ファイル\System</Filter>
     </ClCompile>
+    <ClCompile Include="TriType.cpp">
+      <Filter>ソース ファイル\Info</Filter>
+    </ClCompile>
+    <ClCompile Include="Pos.cpp">
+      <Filter>ソース ファイル\Info</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Defines.h">
@@ -124,6 +136,12 @@
     </ClInclude>
     <ClInclude Include="CameraDebug.h">
       <Filter>ヘッダー ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Pos.h">
+      <Filter>ヘッダー ファイル\Info</Filter>
+    </ClInclude>
+    <ClInclude Include="TriType.h">
+      <Filter>ヘッダー ファイル\Info</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
