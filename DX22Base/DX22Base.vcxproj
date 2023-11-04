@@ -172,11 +172,13 @@
     <ClCompile Include="CameraBase.cpp" />
     <ClCompile Include="CameraDebug.cpp" />
     <ClCompile Include="DirectX.cpp" />
+    <ClCompile Include="Hammer.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="MeshBuffer.cpp" />
     <ClCompile Include="Geometory.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Model.cpp" />
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="Startup.cpp" />
@@ -190,11 +192,13 @@
     <ClInclude Include="CameraDebug.h" />
     <ClInclude Include="Defines.h" />
     <ClInclude Include="DirectX.h" />
+    <ClInclude Include="Hammer.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="MeshBuffer.h" />
     <ClInclude Include="Geometory.h" />
     <ClInclude Include="Main.h" />
     <ClInclude Include="Model.h" />
+    <ClInclude Include="Player.h" />
     <ClInclude Include="Pos.h" />
     <ClInclude Include="SceneGame.h" />
     <ClInclude Include="Shader.h" />
