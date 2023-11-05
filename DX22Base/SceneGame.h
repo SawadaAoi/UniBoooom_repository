@@ -4,6 +4,7 @@
 #include "Model.h"
 #include "Shader.h"
 #include "CameraBase.h"
+#include "Geometry.h"
 
 
 class SceneGame
@@ -18,6 +19,8 @@ private:
 	Model* m_pModel;
 	VertexShader* m_pVS;
 	CameraBase* m_pCamera;
+	CGeometry* m_pBox;
+	CGeometry* m_pPlayer;
 };
 
 #endif // __SCENE_GAME_H__
