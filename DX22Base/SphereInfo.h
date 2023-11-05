@@ -3,28 +3,28 @@
 	---------------------------------------
 	スフィア用ヘッダ
 	---------------------------------------
-	Sphere.h
+	SphereInfo.h
 	
 	作成者	山下凌佑
 	
 	変更履歴
-	・2023/11/04 変更内容：CSphereクラス作成 変更者名：山下凌佑
+	・2023/11/04 変更内容：CSphereInfoクラス作成 変更者名：山下凌佑
 	・2023/11/04 変更内容：Sphere構造体を作成 変更者名：山下凌佑
 	・2023/11/04 変更内容：距離を返す関数を作成 変更者名：山下凌佑
 	・2023/11/04 変更内容：角度を返す関数を作成を作成 変更者名：山下凌佑
 
 =========================================== */
-#ifndef __SPHERE_H__
-#define __SPHERE_H__
+#ifndef __SPHEREINFO_H__
+#define __SPHEREINFO_H__
 
 #include "TriType.h"
 
 // =============== クラス定義 =====================
-class CSphere
+class CSphereInfo
 {
 public:
-	CSphere() {}	//コンストラクタ
-	~CSphere() {}	//デストラクタ
+	CSphereInfo() {}	//コンストラクタ
+	~CSphereInfo() {}	//デストラクタ
 
 	// =============== 構造体定義 =====================
 	typedef struct Sphere {
@@ -40,7 +40,7 @@ public:
 		----------------------------------------
 		戻値：距離
 		======================================== */
-		float Distance(CSphere::Sphere Obj) {
+		float Distance(CSphereInfo::Sphere Obj) {
 			return sqrt(pow(Obj.pos.x - this->pos.x, 2.0f) +
 						pow(Obj.pos.y - this->pos.y, 2.0f) +
 						pow(Obj.pos.z - this->pos.z, 2.0f));
@@ -55,7 +55,7 @@ public:
 		----------------------------------------
 		戻値：角度
 		======================================== */
-		float Angle(CSphere::Sphere Obj) {
+		float Angle(CSphereInfo::Sphere Obj) {
 			return atan((Obj.pos.z - this->pos.z) / (Obj.pos.x - this->pos.x));
 		}
 	};
@@ -63,4 +63,4 @@ private:
 	
 };
 
-#endif // !__SPHERE_H__
+#endif // !__SPHEREINFO_H__

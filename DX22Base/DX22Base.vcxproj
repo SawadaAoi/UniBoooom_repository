@@ -198,7 +198,7 @@
     <ClInclude Include="Pos.h" />
     <ClInclude Include="SceneGame.h" />
     <ClInclude Include="Shader.h" />
-    <ClInclude Include="Sphere.h" />
+    <ClInclude Include="SphereInfo.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TriType.h" />

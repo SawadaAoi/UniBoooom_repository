@@ -134,7 +134,7 @@
     <ClInclude Include="TriType.h">
       <Filter>ヘッダー ファイル\Info</Filter>
     </ClInclude>
-    <ClInclude Include="Sphere.h">
+    <ClInclude Include="SphereInfo.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
