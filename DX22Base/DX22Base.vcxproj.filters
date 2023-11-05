@@ -37,6 +37,27 @@
     <Filter Include="ヘッダー ファイル\System">
       <UniqueIdentifier>{23598e8f-8b92-47d1-ac2c-8d127274e433}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\Info">
+      <UniqueIdentifier>{d897d083-6e2e-412e-a1e5-d3759d7e792f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\3dObject">
+      <UniqueIdentifier>{256adb97-1618-49c4-a934-d69469919f94}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\3dObject">
+      <UniqueIdentifier>{4ed2bbd8-4161-4a9a-aafd-084cf3508d02}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Geometry">
+      <UniqueIdentifier>{1d13bd25-3fe0-4e11-a191-8a5a00a4b47a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Geometry">
+      <UniqueIdentifier>{4110178c-d2c6-4d5d-854d-552848beea87}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Scene">
+      <UniqueIdentifier>{3892fbb0-488d-4de1-b651-4b00cf8ea3e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Scene">
+      <UniqueIdentifier>{ad1d9d81-304b-41ce-affd-6a0141f600c9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -54,9 +75,6 @@
     <ClCompile Include="DirectX.cpp">
       <Filter>ソース ファイル\DirectX</Filter>
     </ClCompile>
-    <ClCompile Include="Geometory.cpp">
-      <Filter>ソース ファイル\System</Filter>
-    </ClCompile>
     <ClCompile Include="Input.cpp">
       <Filter>ソース ファイル\System</Filter>
     </ClCompile>
@@ -65,9 +83,6 @@
     </ClCompile>
     <ClCompile Include="SceneGame.cpp">
       <Filter>ソース ファイル\App</Filter>
-    </ClCompile>
-    <ClCompile Include="_geometory.cpp">
-      <Filter>ソース ファイル\System</Filter>
     </ClCompile>
     <ClCompile Include="Startup.cpp">
       <Filter>ソース ファイル\System</Filter>
@@ -83,6 +98,39 @@
     </ClCompile>
     <ClCompile Include="CameraDebug.cpp">
       <Filter>ソース ファイル\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>ソース ファイル\3dObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Hammer.cpp">
+      <Filter>ソース ファイル\3dObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Box.cpp">
+      <Filter>ソース ファイル\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Line.cpp">
+      <Filter>ソース ファイル\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Cylinder.cpp">
+      <Filter>ソース ファイル\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Sphere.cpp">
+      <Filter>ソース ファイル\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Geometry.cpp">
+      <Filter>ソース ファイル\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>ソース ファイル\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneManager.cpp">
+      <Filter>ソース ファイル\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Title.cpp">
+      <Filter>ソース ファイル\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Prot.cpp">
+      <Filter>ソース ファイル\Scene</Filter>
     </ClCompile>
     <ClCompile Include="..\..\DX22Base\DX22Base\Explosion.cpp">
       <Filter>ソース ファイル\App</Filter>
@@ -107,9 +155,6 @@
     <ClInclude Include="DirectX.h">
       <Filter>ヘッダー ファイル\DirectX</Filter>
     </ClInclude>
-    <ClInclude Include="Geometory.h">
-      <Filter>ヘッダー ファイル\System</Filter>
-    </ClInclude>
     <ClInclude Include="Input.h">
       <Filter>ヘッダー ファイル\System</Filter>
     </ClInclude>
@@ -127,6 +172,48 @@
     </ClInclude>
     <ClInclude Include="CameraDebug.h">
       <Filter>ヘッダー ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Pos.h">
+      <Filter>ヘッダー ファイル\Info</Filter>
+    </ClInclude>
+    <ClInclude Include="TriType.h">
+      <Filter>ヘッダー ファイル\Info</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>ヘッダー ファイル\3dObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Hammer.h">
+      <Filter>ヘッダー ファイル\3dObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Line.h">
+      <Filter>ヘッダー ファイル\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Box.h">
+      <Filter>ヘッダー ファイル\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Cylinder.h">
+      <Filter>ヘッダー ファイル\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Sphere.h">
+      <Filter>ヘッダー ファイル\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Geometry.h">
+      <Filter>ヘッダー ファイル\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>ヘッダー ファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneManager.h">
+      <Filter>ヘッダー ファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Title.h">
+      <Filter>ヘッダー ファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Prot.h">
+      <Filter>ヘッダー ファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="SphereInfo.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="..\..\DX22Base\DX22Base\Explosion.h">
       <Filter>ヘッダー ファイル\App</Filter>

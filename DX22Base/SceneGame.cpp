@@ -1,7 +1,8 @@
 #include "SceneGame.h"
-#include "Geometory.h"
+#include "Geometry.h"
 #include "Model.h"
 #include "CameraDebug.h"
+#include "Box.h"
 
 SceneGame::SceneGame()
 {
@@ -19,7 +20,8 @@ SceneGame::SceneGame()
 	{
 		MessageBox(NULL, "eyeBat", "Error", MB_OK);	//エラーメッセージの表示
 	}
-
+	m_pBox = new CBox;
+	m_pPlayer = new CBox;
 	
 	m_pModel->SetVertexShader(m_pVS);	// 頂点シェーダをモデルにセット
 
@@ -44,6 +46,18 @@ SceneGame::~SceneGame()
 	{
 		delete m_pModel;
 		m_pModel = nullptr;
+	}
+
+	if (m_pBox)
+	{
+		delete m_pPlayer;
+		m_pPlayer = nullptr;
+	}
+
+	if (m_pPlayer)
+	{
+		delete m_pPlayer;
+		m_pPlayer = nullptr;
 	}
 
 	if (m_pVS) {
@@ -87,11 +101,19 @@ void SceneGame::Draw()
 	DirectX::XMStoreFloat4x4(&mat[2], proj);
 
 
-	mat[1] = m_pCamera->GetViewMatrix();
-	mat[2] = m_pCamera->GetProjectionMatrix();
 	// 行列をシェーダーへ 
 	m_pVS->WriteBuffer(0, mat);
 
+	// Genetory 用の 変換行列を設定
+	if (m_pBox)
+	{
+
+		m_pBox->SetWorld(mat[0]);
+		m_pBox->SetView(mat[1]);
+		m_pBox->SetProjection(mat[2]);
+
+		m_pBox->Draw();
+	}
 	// モデルの描画
 	if (m_pModel)
 	{
@@ -108,11 +130,15 @@ void SceneGame::Draw()
 
 	
 	// Genetory 用の 変換行列を設定
-	Geometory::SetWorld(mat[0]);
-	Geometory::SetView (mat[1]);
-	Geometory::SetProjection(mat[2]);
+	if (m_pBox)
+	{
 
-	Geometory::DrawBox();
+		m_pBox->SetWorld(mat[0]);
+		m_pBox->SetView(mat[1]);
+		m_pBox->SetProjection(mat[2]);
+
+		m_pBox->Draw();
+	}
 	
 
 }
