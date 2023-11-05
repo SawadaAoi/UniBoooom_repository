@@ -132,6 +132,9 @@
     <ClCompile Include="Prot.cpp">
       <Filter>ソース ファイル\Scene</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\DX22Base\DX22Base\Explosion.cpp">
+      <Filter>ソース ファイル\App</Filter>
+    </ClCompile>
     <ClCompile Include="Collision.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -214,6 +217,9 @@
     </ClInclude>
     <ClInclude Include="SphereInfo.h">
       <Filter>ヘッダー ファイル\Info</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\DX22Base\DX22Base\Explosion.h">
+      <Filter>ヘッダー ファイル\App</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
