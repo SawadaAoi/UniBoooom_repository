@@ -1,5 +1,5 @@
 #include"Player.h"
-#include "Geometory.h"
+#include "Geometry.h"
 //#include <DirectXMath.h>
 #include "Input.h"
 

@@ -1,5 +1,5 @@
 #include "Hammer.h"
-#include "Geometory.h"
+#include "Geometry.h"
 CHammer::CHammer()
 {
 	hammerPosition = { 0.0f,0.0f,0.0f };

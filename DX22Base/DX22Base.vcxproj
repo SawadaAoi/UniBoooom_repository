@@ -171,18 +171,22 @@
   <ItemGroup>
     <ClCompile Include="CameraBase.cpp" />
     <ClCompile Include="CameraDebug.cpp" />
+    <ClCompile Include="Cylinder.cpp" />
     <ClCompile Include="DirectX.cpp" />
     <ClCompile Include="Prot.cpp" />
     <ClCompile Include="Hammer.cpp" />
     <ClCompile Include="Input.cpp" />
+    <ClCompile Include="Box.cpp" />
+    <ClCompile Include="Line.cpp" />
     <ClCompile Include="MeshBuffer.cpp" />
-    <ClCompile Include="Geometory.cpp" />
+    <ClCompile Include="Geometry.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="Sphere.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="Startup.cpp" />
     <ClCompile Include="Texture.cpp" />
@@ -192,15 +196,18 @@
     <ClCompile Include="_model.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Box.h" />
     <ClInclude Include="CameraBase.h" />
     <ClInclude Include="CameraDebug.h" />
+    <ClInclude Include="Cylinder.h" />
     <ClInclude Include="Defines.h" />
     <ClInclude Include="DirectX.h" />
     <ClInclude Include="Prot.h" />
     <ClInclude Include="Hammer.h" />
     <ClInclude Include="Input.h" />
+    <ClInclude Include="Line.h" />
     <ClInclude Include="MeshBuffer.h" />
-    <ClInclude Include="Geometory.h" />
+    <ClInclude Include="Geometry.h" />
     <ClInclude Include="Main.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="Player.h" />
@@ -209,6 +216,7 @@
     <ClInclude Include="SceneGame.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="Shader.h" />
+    <ClInclude Include="Sphere.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Title.h" />
