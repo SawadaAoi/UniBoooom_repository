@@ -40,6 +40,21 @@
     <Filter Include="ヘッダー ファイル\Info">
       <UniqueIdentifier>{d897d083-6e2e-412e-a1e5-d3759d7e792f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Object">
+      <UniqueIdentifier>{708cb7e7-8105-4ab0-85b7-8f9d6529aa97}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Object\3DObject">
+      <UniqueIdentifier>{c1ff6913-6364-45cc-b955-d496727a53ed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\3DObject">
+      <UniqueIdentifier>{dd4cea9d-ae9d-4976-8b5b-79b3a5c68b64}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Manager">
+      <UniqueIdentifier>{7c292404-d24f-4c4c-8142-062378ae77f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Manager">
+      <UniqueIdentifier>{33fcea84-8324-4c5d-bd96-061fe2ddbe17}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -87,6 +102,15 @@
     <ClCompile Include="CameraDebug.cpp">
       <Filter>ソース ファイル\System</Filter>
     </ClCompile>
+    <ClCompile Include="SlimeBase.cpp">
+      <Filter>ソース ファイル\Object\3DObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Slime_1.cpp">
+      <Filter>ソース ファイル\Object\3DObject</Filter>
+    </ClCompile>
+    <ClCompile Include="SlimeManager.cpp">
+      <Filter>ソース ファイル\Manager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Defines.h">
@@ -133,6 +157,15 @@
     </ClInclude>
     <ClInclude Include="TriType.h">
       <Filter>ヘッダー ファイル\Info</Filter>
+    </ClInclude>
+    <ClInclude Include="SlimeBase.h">
+      <Filter>ヘッダー ファイル\3DObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Slime_1.h">
+      <Filter>ヘッダー ファイル\3DObject</Filter>
+    </ClInclude>
+    <ClInclude Include="SlimeManager.h">
+      <Filter>ヘッダー ファイル\Manager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

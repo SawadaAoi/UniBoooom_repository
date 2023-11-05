@@ -2,6 +2,9 @@
 #include "Geometory.h"
 #include "Model.h"
 #include "CameraDebug.h"
+#include "SlimeManager.h"
+
+CSlimeManager* g_pSlimeMng;
 
 SceneGame::SceneGame()
 {
@@ -30,10 +33,19 @@ SceneGame::SceneGame()
 	
 
 	m_pCamera = new CameraDebug() ;
+
+	// スライムマネージャー生成
+	g_pSlimeMng = new CSlimeManager();
 }
 
 SceneGame::~SceneGame()
 {
+	// スライムマネージャー削除
+	if (g_pSlimeMng)
+	{
+		delete g_pSlimeMng;
+		g_pSlimeMng = nullptr;
+	}
 	if (m_pCamera)
 	{
 		delete m_pCamera;
@@ -50,12 +62,16 @@ SceneGame::~SceneGame()
 		delete m_pVS;
 		m_pVS = nullptr;
 	}
+	
 }
 
+ 
 void SceneGame::Update(float tick)
 {
 	m_pCamera->Update();
 
+	// スライムマネージャー更新
+	g_pSlimeMng->Update();
 }
 
 void SceneGame::Draw()
@@ -112,5 +128,7 @@ void SceneGame::Draw()
 
 	Geometory::DrawBox();
 	
+	// スライムマネージャー描画
+	g_pSlimeMng->Draw();
 
 }
