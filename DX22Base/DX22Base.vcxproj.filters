@@ -58,20 +58,8 @@
     <Filter Include="ヘッダー ファイル\Scene">
       <UniqueIdentifier>{ad1d9d81-304b-41ce-affd-6a0141f600c9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\Object">
-      <UniqueIdentifier>{708cb7e7-8105-4ab0-85b7-8f9d6529aa97}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\Object\3DObject">
-      <UniqueIdentifier>{c1ff6913-6364-45cc-b955-d496727a53ed}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ヘッダー ファイル\3DObject">
       <UniqueIdentifier>{dd4cea9d-ae9d-4976-8b5b-79b3a5c68b64}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\Manager">
-      <UniqueIdentifier>{7c292404-d24f-4c4c-8142-062378ae77f5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\Manager">
-      <UniqueIdentifier>{33fcea84-8324-4c5d-bd96-061fe2ddbe17}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -153,14 +141,14 @@
     <ClCompile Include="..\..\DX22Base\DX22Base\Explosion.cpp">
       <Filter>ソース ファイル\3dObject</Filter>
     </ClCompile>
-    <ClCompile Include="SlimeBase.cpp">
-      <Filter>ソース ファイル\Object\3DObject</Filter>
-    </ClCompile>
     <ClCompile Include="Slime_1.cpp">
-      <Filter>ソース ファイル\Object\3DObject</Filter>
+      <Filter>ソース ファイル\3dObject</Filter>
+    </ClCompile>
+    <ClCompile Include="SlimeBase.cpp">
+      <Filter>ソース ファイル\3dObject</Filter>
     </ClCompile>
     <ClCompile Include="SlimeManager.cpp">
-      <Filter>ソース ファイル\Manager</Filter>
+      <Filter>ソース ファイル\3dObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -248,10 +236,10 @@
     <ClInclude Include="Slime_1.h">
       <Filter>ヘッダー ファイル\3DObject</Filter>
     </ClInclude>
-    <ClInclude Include="SlimeManager.h">
-      <Filter>ヘッダー ファイル\Manager</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\DX22Base\DX22Base\Explosion.h">
+      <Filter>ヘッダー ファイル\3dObject</Filter>
+    </ClInclude>
+    <ClInclude Include="SlimeManager.h">
       <Filter>ヘッダー ファイル\3dObject</Filter>
     </ClInclude>
   </ItemGroup>
