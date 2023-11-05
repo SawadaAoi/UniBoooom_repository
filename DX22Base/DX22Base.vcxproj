@@ -192,7 +192,6 @@
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="SceneGame.cpp" />
     <ClCompile Include="Title.cpp" />
-    <ClCompile Include="_geometory.cpp" />
     <ClCompile Include="_model.cpp" />
   </ItemGroup>
   <ItemGroup>
