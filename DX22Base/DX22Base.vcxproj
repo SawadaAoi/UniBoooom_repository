@@ -171,6 +171,7 @@
   <ItemGroup>
     <ClCompile Include="CameraBase.cpp" />
     <ClCompile Include="CameraDebug.cpp" />
+    <ClCompile Include="Collision.cpp" />
     <ClCompile Include="Cylinder.cpp" />
     <ClCompile Include="DirectX.cpp" />
     <ClCompile Include="Prot.cpp" />
@@ -198,6 +199,7 @@
     <ClInclude Include="Box.h" />
     <ClInclude Include="CameraBase.h" />
     <ClInclude Include="CameraDebug.h" />
+    <ClInclude Include="Collision.h" />
     <ClInclude Include="Cylinder.h" />
     <ClInclude Include="Defines.h" />
     <ClInclude Include="DirectX.h" />
