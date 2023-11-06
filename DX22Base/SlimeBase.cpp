@@ -9,6 +9,7 @@
 
    変更履歴
    ・2023/11/04 スライムベースクラス作成 /鈴村 朋也
+   ・2023/11/06 ハンマーもしくは敵により吹っ飛ばされる関数を追加	/山下凌佑
 
    ======================================== */
 
@@ -30,9 +31,11 @@ CSlimeBase::CSlimeBase()
 	,m_pos(0.0f,0.0f,0.0f)
 	,m_move(0.0f, 0.0f, 0.0f)
 	,m_scale(1.0f,1.0f,1.0f)
+	,m_fSpeed(0.0f)
+	,m_fVecAngle(0.0f)
 	,m_playerPos(0.0f, 0.0f, 0.0f)
 	,m_bUse(false)
-
+	,m_bHitMove(false)
 {
 	RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得
 	DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
@@ -78,35 +81,42 @@ void CSlimeBase::Update()
 	// 使用してないならreturn
 	if (m_bUse == false) return;
 
-	//==== プレイヤー追従 処理 ====
-	// -- X軸
-	if (m_playerPos.x > m_pos.x)
+	if (m_bHitMove == false)	//吹き飛び移動状態ではない場合
 	{
-		m_move.x = ENEMY_MOVE_SPEED;
-	}
-	else if (m_playerPos.x < m_pos.x)
-	{
-		m_move.x = -ENEMY_MOVE_SPEED;
-	}
+		//==== プレイヤー追従 処理 ====
+		// -- X軸
+		if (m_playerPos.x > m_pos.x)
+		{
+			m_move.x = ENEMY_MOVE_SPEED;
+		}
+		else if (m_playerPos.x < m_pos.x)
+		{
+			m_move.x = -ENEMY_MOVE_SPEED;
+		}
 
-	// -- Y軸
-	if (m_playerPos.y > m_pos.y)
-	{
-		m_move.y = ENEMY_MOVE_SPEED;
-	}
-	else if (m_playerPos.y < m_pos.y)
-	{
-		m_move.y = -ENEMY_MOVE_SPEED;
-	}
+		// -- Y軸
+		if (m_playerPos.y > m_pos.y)
+		{
+			m_move.y = ENEMY_MOVE_SPEED;
+		}
+		else if (m_playerPos.y < m_pos.y)
+		{
+			m_move.y = -ENEMY_MOVE_SPEED;
+		}
 
-	// -- Z軸
-	if (m_playerPos.z > m_pos.z)
-	{
-		m_move.z = ENEMY_MOVE_SPEED;
+		// -- Z軸
+		if (m_playerPos.z > m_pos.z)
+		{
+			m_move.z = ENEMY_MOVE_SPEED;
+		}
+		else if (m_playerPos.z < m_pos.z)
+		{
+			m_move.z = -ENEMY_MOVE_SPEED;
+		}
 	}
-	else if (m_playerPos.z < m_pos.z)
+	else	//吹き飛び移動状態の時
 	{
-		m_move.z = -ENEMY_MOVE_SPEED;
+		HitMove();
 	}
 
 	// -- 座標更新
@@ -168,6 +178,38 @@ TTriType<float> CSlimeBase::GetPos()
 bool CSlimeBase::GetUse()
 {
 	return m_bUse;
+}
+
+/* ========================================
+	ハンマーか敵に吹っ飛ばされて実際に移動量を確定する関数
+	----------------------------------------
+	内容：X方向とZ方向の移動量を確定する処理
+	----------------------------------------
+	引数1：なし
+	----------------------------------------
+	戻値：なし
+======================================== */
+void CSlimeBase::HitMove()
+{
+	m_move.x = cos(m_fVecAngle) * (m_fSpeed * SPEED_DOWN_RATIO);
+	m_move.z = sin(m_fVecAngle) * (m_fSpeed * SPEED_DOWN_RATIO);
+}
+
+/* ========================================
+	ハンマーか敵に吹っ飛ばされる関数
+	----------------------------------------
+	内容：引数に応じて飛ぶ方向と移動速度を決める処理
+	----------------------------------------
+	引数1：速度
+	引数2：角度
+	----------------------------------------
+	戻値：なし
+======================================== */
+void CSlimeBase::HitMoveStart(float speed, float angle)
+{
+	m_fSpeed = speed;		//移動量を入れる
+	m_fVecAngle = angle;		//移動方向を入れる
+	m_bHitMove = true;		//吹き飛び状態をONにする
 }
 
 void CSlimeBase::SetPos(TTriType<float> pos)
