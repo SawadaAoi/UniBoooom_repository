@@ -169,12 +169,12 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\DX22Base\DX22Base\Explosion.cpp" />
     <ClCompile Include="CameraBase.cpp" />
     <ClCompile Include="CameraDebug.cpp" />
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="Cylinder.cpp" />
     <ClCompile Include="DirectX.cpp" />
+    <ClCompile Include="Explosion.cpp" />
     <ClCompile Include="Prot.cpp" />
     <ClCompile Include="Hammer.cpp" />
     <ClCompile Include="Input.cpp" />
@@ -197,7 +197,6 @@
     <ClCompile Include="_model.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\DX22Base\DX22Base\Explosion.h" />
     <ClInclude Include="Box.h" />
     <ClInclude Include="CameraBase.h" />
     <ClInclude Include="CameraDebug.h" />
@@ -205,6 +204,7 @@
     <ClInclude Include="Cylinder.h" />
     <ClInclude Include="Defines.h" />
     <ClInclude Include="DirectX.h" />
+    <ClInclude Include="Explosion.h" />
     <ClInclude Include="Prot.h" />
     <ClInclude Include="Hammer.h" />
     <ClInclude Include="Input.h" />
