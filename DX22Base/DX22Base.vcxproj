@@ -175,6 +175,7 @@
     <ClCompile Include="Cylinder.cpp" />
     <ClCompile Include="DirectX.cpp" />
     <ClCompile Include="Explosion.cpp" />
+    <ClCompile Include="ExplosionManager.cpp" />
     <ClCompile Include="Prot.cpp" />
     <ClCompile Include="Hammer.cpp" />
     <ClCompile Include="Input.cpp" />
@@ -208,6 +209,7 @@
     <ClInclude Include="Defines.h" />
     <ClInclude Include="DirectX.h" />
     <ClInclude Include="Explosion.h" />
+    <ClInclude Include="ExplosionManager.h" />
     <ClInclude Include="Prot.h" />
     <ClInclude Include="Hammer.h" />
     <ClInclude Include="Input.h" />
