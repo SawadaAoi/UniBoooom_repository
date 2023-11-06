@@ -20,7 +20,7 @@ TeiUon
 //=============== インクルード ===================
 #include "Explosion.h"
 #include "Geometry.h"
-#include "SlimeManager.h"
+
 
 
 //=============== 定数定義 =======================
