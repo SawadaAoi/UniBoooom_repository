@@ -245,6 +245,9 @@
     <ClInclude Include="SlimeManager.h">
       <Filter>ヘッダー ファイル\3dObject</Filter>
     </ClInclude>
+    <ClInclude Include="Sphere.h">
+      <Filter>ヘッダー ファイル\Geometry</Filter>
+    </ClInclude>
     <ClInclude Include="ExplosionManager.h">
       <Filter>ヘッダー ファイル\3dObject</Filter>
     </ClInclude>
