@@ -34,7 +34,7 @@ SceneGame::SceneGame()
 	SetRenderTargets(1, &pRTV, pDSV);		//DSVがnullだと2D表示になる
 	
 
-	m_pCamera = new CameraDebug() ;
+	m_pCamera = new CCameraDebug() ;
 
 	// スライムマネージャー生成
 	g_pSlimeMng = new CSlimeManager();
