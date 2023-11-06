@@ -3,9 +3,6 @@
 #include "Model.h"
 #include "CameraDebug.h"
 #include "Box.h"
-#include "SlimeManager.h"
-
-CSlimeManager* g_pSlimeMng;
 
 SceneGame::SceneGame()
 {
@@ -37,16 +34,16 @@ SceneGame::SceneGame()
 	m_pCamera = new CameraDebug() ;
 
 	// スライムマネージャー生成
-	g_pSlimeMng = new CSlimeManager();
+	m_pSlimeMng = new CSlimeManager();
 }
 
 SceneGame::~SceneGame()
 {
 	// スライムマネージャー削除
-	if (g_pSlimeMng)
+	if (m_pSlimeMng)
 	{
-		delete g_pSlimeMng;
-		g_pSlimeMng = nullptr;
+		delete m_pSlimeMng;
+		m_pSlimeMng = nullptr;
 	}
 	if (m_pCamera)
 	{
@@ -85,7 +82,7 @@ void SceneGame::Update(float tick)
 	m_pCamera->Update();
 
 	// スライムマネージャー更新
-	g_pSlimeMng->Update();
+	m_pSlimeMng->Update();
 }
 
 void SceneGame::Draw()
@@ -157,6 +154,6 @@ void SceneGame::Draw()
 	}
 	
 	// スライムマネージャー描画
-	g_pSlimeMng->Draw();
+	m_pSlimeMng->Draw();
 
 }

@@ -17,7 +17,7 @@ TeiUon
 
 //=============== インクルード ===================
 #include "Explosion.h"
-#include "Geometory.h"
+#include "Geometry.h"
 #include <DirectXMath.h>
 
 //=============== 定数定義 =======================
@@ -89,7 +89,7 @@ void CExplosion::Draw()
 		}
 	}
 
-	Geometory::DrawBox();
+	//CGeometory::DrawBox();
 }
 
 void CExplosion::DeleteExplosion()

@@ -222,6 +222,7 @@
     <ClInclude Include="SceneGame.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="Shader.h" />
+    <ClInclude Include="Sphere.h" />
     <ClInclude Include="SphereInfo.h" />
     <ClInclude Include="SlimeBase.h" />
     <ClInclude Include="SlimeManager.h" />
