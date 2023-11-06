@@ -1,98 +1,192 @@
-//CPP�p----------------------------------------------------
+//CPP用----------------------------------------------------
 /*========================================
 HEW/UniBoooom!!
 ---------------------------------------
-�����pcpp
+爆発用cpp
 ---------------------------------------
 Explosion.cpp
 
 TeiUon
 
-�ύX����
-�E2023/11/03 cpp�쐬 �A�F��
-�E2023/11/05 ����cpp�̏����ݒ�@�A�F��
+変更履歴
+・2023/11/03 cpp作成 / 鄭 宇恩
+・2023/11/05 爆発cppの初期設定　/ 鄭 宇恩
+・2023/11/06 爆発のモデル設定、描画、位置
+	とboolの設定と取得関数制作 / 鄭 宇恩
 
 ======================================== */
 
 
-//=============== �C���N���[�h ===================
+//=============== インクルード ===================
 #include "Explosion.h"
-#include "Geometory.h"
-#include <DirectXMath.h>
+#include "Geometry.h"
+#include "SlimeManager.h"
 
-//=============== �萔��` =======================
-#define MAX_EXPLOSION_NUM (30)	//��ʓ��ő唚����(��
+//=============== 定数定義 =======================
 
-//=============== �v���g�^�C�v�錾 ===============
+//=============== プロトタイプ宣言 ===============
 
-//=============== �O���[�o���ϐ���` =============
-Model* m_pExplosion;
+//=============== グローバル変数定義 =============
+
 
 CExplosion::CExplosion()
+	:m_pModel(nullptr)
+	,m_pVS(nullptr)
+	,m_pos(0.0f, 0.0f, 0.0f)
+	,m_fSize(1.0f)
+	,m_bExploded(false)
 {
-	RenderTarget* pRTV = GetDefaultRTV();	//�f�t�H���g�Ŏg�p���Ă���RenderTargetView�̎擾
-	DepthStencil* pDSV = GetDefaultDSV();	//�f�t�H���g�Ŏg�p���Ă���DepthStencilView�̎擾
-	SetRenderTargets(1, &pRTV, pDSV);		//DSV��null����2D�\���ɂȂ�
+	RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得
+	DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
+	SetRenderTargets(1, &pRTV, pDSV);		//DSVがnullだと2D表示になる
 	
-	m_pExplosion = new Model[MAX_EXPLOSION_NUM];				//�������̊i�[
-	Position = DirectX::XMMatrixTranslation(1.0f, 1.0f, 1.0f);	//�����ʒu������
-	m_fSize = 1.0f;												//�����̑傫���i�X�P�[���j
+	
+	
+	if (!m_pModel->Load("Assets/Model/Golem/Golem.FBX", 1.0f, Model::XFlip)) {		//倍率と反転は省略可
+		MessageBox(NULL, "Golem", "Error", MB_OK);	//ここでエラーメッセージ表示
+	}
+
+	//頂点シェーダ読み込み
+	m_pVS = new VertexShader();
+	if (FAILED(m_pVS->Load("Assets/Shader/VS_Model.cso"))) {
+		MessageBox(nullptr, "VS_Model.cso", "Error", MB_OK);
+	}
+	m_pModel->SetVertexShader(m_pVS);
+	
 }
 
 CExplosion::~CExplosion()
 {
-	for (int i = 0; i < MAX_EXPLOSION_NUM; i++)
-	{
-		if (m_pExplosion) {
-			delete[] m_pExplosion;
-			m_pExplosion = nullptr;
-		}
-
-	}
 	
+	if (m_pModel)
+	{
+		delete m_pModel;
+		m_pModel = nullptr;
+	}
+	if (m_pVS)
+	{
+		delete m_pVS;
+		m_pVS = nullptr;
+	}
 	
 }
 
 /*========================================
-�֐��FUpdate�֐�
+関数：Update関数
 ----------------------------------------
-���e�F�������̍X�V����
+内容：爆発内の更新処理
 ----------------------------------------
-�����F��U�Ȃ�
+引数：一旦なし
 ----------------------------------------
-�ߒl�F��U�Ȃ�
+戻値：一旦なし
 ======================================== */
-
 void CExplosion::Update()
 {
 	
 }
 
+
 /*========================================
-�֐��FDraw�֐�
+関数：Draw関数
 ----------------------------------------
-���e�F�����̕`�揈��
+内容：爆発の描画処理
 ----------------------------------------
-�����F��U�Ȃ�
+引数：なし
 ----------------------------------------
-�ߒl�F��U�Ȃ�
+戻値：なし
 ======================================== */
 
 void CExplosion::Draw()
 {
 	
 	
-	for (int i = 0; i < MAX_EXPLOSION_NUM; i++)
-	{
-		if (m_pExplosion) {
-			m_pExplosion->Draw();
-		}
-	}
+	// 使用してないならreturn
+	if (m_bExploded == false) return;
+	
+	DirectX::XMFLOAT4X4 mat[3];
 
-	Geometory::DrawBox();
+	//-- ワールド行列の計算
+	DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(3.0f, 3.0f, 3.0f);			//移動行列
+	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(1.0f, 1.0f, 1.0f);		// 大きさを変更
+	DirectX::XMMATRIX world = T * S;										//ワールド行列の設定
+	world = DirectX::XMMatrixTranspose(world);								//転置行列に変換
+	DirectX::XMStoreFloat4x4(&mat[0], world);								//XMMATRIX型(world)からXMFLOAT4X4型(mat[0])へ変換して格納
+
+	//-- ビュー行列の計算
+	DirectX::XMMATRIX view = DirectX::XMMatrixLookAtLH(
+		DirectX::XMVectorSet(1.5f, 2.5f, -3.0f, 0.0f),
+		DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f),
+		DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)); //ビュー行列の設定
+	view = DirectX::XMMatrixTranspose(view);		//転置行列に変換
+	DirectX::XMStoreFloat4x4(&mat[1], view);		//XMMATRIX型(view)からXMFLOAT4X4型(mat[1])へ変換して格納
+
+	//-- プロジェクション行列の計算
+	DirectX::XMMATRIX proj = DirectX::XMMatrixPerspectiveFovLH(
+		DirectX::XMConvertToRadians(60.0f), (float)16 / 9, 0.1f, 100.0f); //プロジェクショ行列の設定
+	proj = DirectX::XMMatrixTranspose(proj);	//転置行列に変換
+	DirectX::XMStoreFloat4x4(&mat[2], proj);	//XMMATRIX型(proj)からXMFLOAT4X4型(mat[2])へ変換して格納
+
+	//-- 行列をシェーダーへ設定
+	m_pVS->WriteBuffer(0, mat);
+		
+	//--モデル表示
+	if (m_pModel)
+	{
+		m_pModel->Draw();
+	}
 }
 
-void CExplosion::DeleteExplosion()
+/*========================================
+関数：GetExplode関数
+----------------------------------------
+内容：爆発するフラグを取得
+----------------------------------------
+引数：なし
+----------------------------------------
+戻値：なし
+======================================== */
+bool CExplosion::GetExplode()
 {
+	return false;	//どうしようわからないから一旦falseに
+}
 
+/*========================================
+関数：GetPos関数
+----------------------------------------
+内容：爆発の位置を取得
+----------------------------------------
+引数：なし
+----------------------------------------
+戻値：なし
+======================================== */
+TTriType<float> CExplosion::GetPos()
+{
+	return m_pos;
+}
+
+/*========================================
+関数：SetExplode関数
+----------------------------------------
+内容：スライムを爆発に設定
+----------------------------------------
+引数：bool(爆発かどうか)
+----------------------------------------
+戻値：なし
+======================================== */
+void CExplosion::SetExplode(bool YN)
+{
+	m_bExploded = YN;
+}
+/*========================================
+関数：SetPos関数
+----------------------------------------
+内容：爆発の位置を設定
+----------------------------------------
+引数：スライム結合の位置
+----------------------------------------
+戻値：なし
+======================================== */
+void CExplosion::SetPos(TTriType<float> pos)
+{
+	m_pos = pos;
 }

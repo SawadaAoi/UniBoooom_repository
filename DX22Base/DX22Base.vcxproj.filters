@@ -162,6 +162,9 @@
     <ClCompile Include="CameraChase.cpp">
       <Filter>ソース ファイル\System\Camera</Filter>
     </ClCompile>
+    <ClCompile Include="ExplosionManager.cpp">
+      <Filter>ソース ファイル\3dObject</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Defines.h">
@@ -259,6 +262,12 @@
     </ClInclude>
     <ClInclude Include="CameraChase.h">
       <Filter>ヘッダー ファイル\System\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Sphere.h">
+      <Filter>ヘッダー ファイル\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="ExplosionManager.h">
+      <Filter>ヘッダー ファイル\3dObject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

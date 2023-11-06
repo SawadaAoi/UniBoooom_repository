@@ -5,6 +5,8 @@
 #include "Shader.h"
 #include "Camera.h"
 #include "Geometry.h"
+#include "SlimeManager.h"
+
 
 
 class SceneGame
@@ -21,6 +23,7 @@ private:
 	CCamera* m_pCamera;
 	CGeometry* m_pBox;
 	CGeometry* m_pPlayer;
+	CSlimeManager* m_pSlimeMng;
 };
 
 #endif // __SCENE_GAME_H__
