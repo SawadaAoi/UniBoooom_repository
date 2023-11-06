@@ -27,14 +27,4 @@ private:
 
 };
 
-CCOLLISION::CCOLLISION()
-{
-}
-
-CCOLLISION::~CCOLLISION()
-{
-}
-
-
-
 #endif // !__COLLISION_H__

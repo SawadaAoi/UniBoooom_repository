@@ -58,6 +58,9 @@
     <Filter Include="ヘッダー ファイル\Scene">
       <UniqueIdentifier>{ad1d9d81-304b-41ce-affd-6a0141f600c9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\3DObject">
+      <UniqueIdentifier>{dd4cea9d-ae9d-4976-8b5b-79b3a5c68b64}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -136,6 +139,15 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Explosion.cpp">
+      <Filter>ソース ファイル\3dObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Slime_1.cpp">
+      <Filter>ソース ファイル\3dObject</Filter>
+    </ClCompile>
+    <ClCompile Include="SlimeBase.cpp">
+      <Filter>ソース ファイル\3dObject</Filter>
+    </ClCompile>
+    <ClCompile Include="SlimeManager.cpp">
       <Filter>ソース ファイル\3dObject</Filter>
     </ClCompile>
   </ItemGroup>
@@ -218,7 +230,16 @@
     <ClInclude Include="SphereInfo.h">
       <Filter>ヘッダー ファイル\Info</Filter>
     </ClInclude>
+    <ClInclude Include="SlimeBase.h">
+      <Filter>ヘッダー ファイル\3DObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Slime_1.h">
+      <Filter>ヘッダー ファイル\3DObject</Filter>
+    </ClInclude>
     <ClInclude Include="Explosion.h">
+      <Filter>ヘッダー ファイル\3dObject</Filter>
+    </ClInclude>
+    <ClInclude Include="SlimeManager.h">
       <Filter>ヘッダー ファイル\3dObject</Filter>
     </ClInclude>
   </ItemGroup>
