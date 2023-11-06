@@ -138,7 +138,7 @@
     <ClCompile Include="Collision.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\DX22Base\DX22Base\Explosion.cpp">
+    <ClCompile Include="Explosion.cpp">
       <Filter>ソース ファイル\3dObject</Filter>
     </ClCompile>
     <ClCompile Include="Slime_1.cpp">
@@ -236,7 +236,7 @@
     <ClInclude Include="Slime_1.h">
       <Filter>ヘッダー ファイル\3DObject</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\DX22Base\DX22Base\Explosion.h">
+    <ClInclude Include="Explosion.h">
       <Filter>ヘッダー ファイル\3dObject</Filter>
     </ClInclude>
     <ClInclude Include="SlimeManager.h">
