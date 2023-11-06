@@ -27,7 +27,6 @@ public:
 	CCameraChase(const TPos<float>* pPos);			//コンストラクタ
 	~CCameraChase();								//デストラクタ
 	void Update();									//更新
-	//void Draw();									//描画		//UIをカメラの方に実装するなら実装
 	DirectX::XMFLOAT4X4 GetViewMatrix() override;	//ビュー行列変換
 private:
 	// ===メンバ変数宣言===

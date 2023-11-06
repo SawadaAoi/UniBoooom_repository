@@ -3,7 +3,7 @@
 
 #include "Model.h"
 #include "Shader.h"
-#include "CameraBase.h"
+#include "Camera.h"
 #include "Geometry.h"
 #include "SlimeManager.h"
 
@@ -20,7 +20,7 @@ public:
 private:
 	Model* m_pModel;
 	VertexShader* m_pVS;
-	CameraBase* m_pCamera;
+	CCamera* m_pCamera;
 	CGeometry* m_pBox;
 	CGeometry* m_pPlayer;
 	CSlimeManager* m_pSlimeMng;
