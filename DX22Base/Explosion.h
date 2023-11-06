@@ -18,6 +18,8 @@ TeiUon
 #define __EXPLOSION_H__
 #include "Model.h"
 #include "Shader.h"
+#include "TriType.h"
+
 
 //=============== 構造体定義 =====================
 
@@ -32,13 +34,21 @@ public:
 	~CExplosion();
 	void Update();
 	void Draw();
-	void DeleteExplosion();
+
+	void SetExplode(bool YN);
+	void SetPos(TTriType<float> pos);
+	bool GetExplode();
+	TTriType<float> GetPos();
+	
+
+protected:
+	Model* m_pModel;
+	VertexShader* m_pVS;
+	TTriType<float> m_pos;
+	float m_fSize;
+	bool m_bExploded;	//爆発したのフラグ
 
 private:
-	
-	DirectX::XMMATRIX Position;
-	float m_fSize;
-
 };
 
 #endif // __EXPLOSION_H__

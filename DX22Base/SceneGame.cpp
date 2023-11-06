@@ -4,9 +4,12 @@
 #include "CameraDebug.h"
 #include "Box.h"
 #include "SlimeManager.h"
+#include "SlimeBase.h"
+#include "Explosion.h"
+#include "ExplosionManager.h"
 
 CSlimeManager* g_pSlimeMng;
-
+CExplosionManager* g_pExplodeMng;
 SceneGame::SceneGame()
 {
 	
@@ -158,5 +161,8 @@ void SceneGame::Draw()
 	
 	// スライムマネージャー描画
 	g_pSlimeMng->Draw();
-
+	
+	//爆発マネージャー描画
+	g_pExplodeMng->Draw();
+	
 }
