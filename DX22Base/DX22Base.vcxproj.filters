@@ -153,9 +153,6 @@
     <ClCompile Include="Camera.cpp">
       <Filter>ソース ファイル\System\Camera</Filter>
     </ClCompile>
-    <ClCompile Include="CameraBase.cpp">
-      <Filter>ソース ファイル\System\Camera</Filter>
-    </ClCompile>
     <ClCompile Include="CameraDebug.cpp">
       <Filter>ソース ファイル\System\Camera</Filter>
     </ClCompile>
@@ -250,9 +247,6 @@
     </ClInclude>
     <ClInclude Include="SlimeManager.h">
       <Filter>ヘッダー ファイル\3dObject</Filter>
-    </ClInclude>
-    <ClInclude Include="CameraBase.h">
-      <Filter>ヘッダー ファイル\System\Camera</Filter>
     </ClInclude>
     <ClInclude Include="CameraDebug.h">
       <Filter>ヘッダー ファイル\System\Camera</Filter>
