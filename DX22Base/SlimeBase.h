@@ -22,8 +22,9 @@
 //#include "TriType.h"
 #include "SphereInfo.h"
 
-#define ENEMY_MOVE_SPEED (0.01f)
+const float ENEMY_MOVE_SPEED = 0.01f;
 const float SPEED_DOWN_RATIO = 0.6f;
+const float MOVE_RESIST = 0.05f;
 
 /*
 enum E_SLIME_LEVEL
