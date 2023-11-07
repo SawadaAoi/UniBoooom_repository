@@ -74,7 +74,6 @@ protected:
 
 	float m_distancePlayer;	//プレイヤーまでの距離
 	float m_anglePlayer;	//プレイヤーからエネミーのアークタンジェント
-	CSphereInfo::Sphere m_sphere;
 	bool m_bHitMove;	//吹っ飛び中かどうか
 
 	// 仮
