@@ -28,6 +28,7 @@ SceneGame::SceneGame()
 	}
 	m_pBox = new CBox;
 	m_pPlayer = new CBox;
+	m_pCollision = new CCOLLISION();
 	
 	m_pModel->SetVertexShader(m_pVS);	// 頂点シェーダをモデルにセット
 
@@ -61,6 +62,12 @@ SceneGame::~SceneGame()
 	{
 		delete m_pModel;
 		m_pModel = nullptr;
+	}
+
+	if (m_pCollision)
+	{
+		delete m_pCollision;
+		m_pCollision = nullptr;
 	}
 
 	if (m_pBox)
