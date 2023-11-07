@@ -135,9 +135,6 @@
     <ClCompile Include="Prot.cpp">
       <Filter>ソース ファイル\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="Collision.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Explosion.cpp">
       <Filter>ソース ファイル\3dObject</Filter>
     </ClCompile>
@@ -161,6 +158,15 @@
     </ClCompile>
     <ClCompile Include="ExplosionManager.cpp">
       <Filter>ソース ファイル\3dObject</Filter>
+    </ClCompile>
+    <ClCompile Include="SphereInfo.cpp">
+      <Filter>ソース ファイル\3dObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Collision.cpp">
+      <Filter>ソース ファイル\System</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneGameCollision.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -230,9 +236,6 @@
     <ClInclude Include="Prot.h">
       <Filter>ヘッダー ファイル\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Collision.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="SphereInfo.h">
       <Filter>ヘッダー ファイル\Info</Filter>
     </ClInclude>
@@ -262,6 +265,9 @@
     </ClInclude>
     <ClInclude Include="ExplosionManager.h">
       <Filter>ヘッダー ファイル\3dObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Collision.h">
+      <Filter>ヘッダー ファイル\System</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
