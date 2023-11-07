@@ -3,7 +3,7 @@
 	------------------------------------
 	追跡カメラ実装
 	------------------------------------
-	CameraDebug.cpp
+	CameraChase.cpp
 	------------------------------------
 	作成者	takagi
 
@@ -16,7 +16,7 @@
 
 
 // =============== インクルード ===================
-#include "CameraDebug.h"	//自身のヘッダ
+#include "CameraChase.h"	//自身のヘッダ
 #include "Input.h"			//入力受付
 
 // =============== 定数定義 ===================
@@ -33,7 +33,8 @@ const float SPEED = 0.1f;	//カメラの速度
 	-------------------------------------
 	戻値：なし
 =========================================== */
-CCameraDebug::CCameraDebug()
+CCameraChase::CCameraChase(const TPos<float>* pPos)
+	:m_pTarget(pPos)	//追跡対象(追跡のみを行い値を変更できないようconst修飾子にしている)
 {
 }
 
@@ -46,7 +47,7 @@ CCameraDebug::CCameraDebug()
 	-------------------------------------
 	戻値：なし
 =========================================== */
-CCameraDebug::~CCameraDebug()
+CCameraChase::~CCameraChase()
 {
 }
 
@@ -59,56 +60,26 @@ CCameraDebug::~CCameraDebug()
 	-------------------------------------
 	戻値：なし
 =========================================== */
-void CCameraDebug::Update()
+void CCameraChase::Update()
 {
-	// ↑↓→←Shift、Ctrlでカメラの注視点を動かす
-	if ((IsKeyPress(VK_CONTROL) | IsKeyPress(VK_SHIFT)) & IsKeyPress(VK_UP))
-	{
-		m_fLook.z += SPEED;
-	}
-	if ((IsKeyPress(VK_CONTROL) | IsKeyPress(VK_SHIFT)) & IsKeyPress(VK_DOWN))
-	{
-		m_fLook.z -= SPEED;
-	}
-	if ((IsKeyPress(VK_CONTROL) | IsKeyPress(VK_SHIFT)) & IsKeyPress(VK_RIGHT))
-	{
-		m_fLook.x -= SPEED;
-	}
-	if ((IsKeyPress(VK_CONTROL) | IsKeyPress(VK_SHIFT)) & IsKeyPress(VK_LEFT))
-	{
-		m_fLook.x += SPEED;
-	}
+}
 
-	// W,A,S,D,Q,Eでカメラの位置を動かす
-	if (IsKeyPress('W'))
-	{
-		m_fRadY += SPEED;
-	}
-	if (IsKeyPress('S'))
-	{
-		m_fRadY -= SPEED;
-	}
-	if (IsKeyPress('A'))
-	{
-		m_fRadXZ -= SPEED;
-	}
-	if (IsKeyPress('D'))
-	{
-		m_fRadXZ += SPEED;
-	}
-	if (IsKeyPress('Q'))
-	{
-		m_fRadius += SPEED;
-	}
-	if (IsKeyPress('E'))
-	{
-		m_fRadius -= SPEED;
-	}
-
-	//角度・距離・注視点からカメラの位置を計算
-	m_fPos = {
-		cosf(m_fRadY) * sinf(m_fRadXZ) * m_fRadius + m_fLook.x,
-		sinf(m_fRadY) * m_fRadius,
-		cosf(m_fRadY) * cosf(m_fRadXZ) * m_fRadius + m_fLook.z
-	};
+/* ========================================
+	ビュー行列取得関数
+	-------------------------------------
+	内容：カメラのビュー行列を提供
+	-------------------------------------
+	引数1：なし
+	-------------------------------------
+	戻値：なし
+=========================================== */
+DirectX::XMFLOAT4X4 CCameraChase::GetViewMatrix()
+{
+	DirectX::XMFLOAT4X4 mat;
+	//	ビュー行列の計算
+	DirectX::XMMATRIX view = DirectX::XMMatrixLookAtLH(DirectX::XMVectorSet(m_pTarget->x, m_pTarget->y, m_pTarget->z - m_fRadius * cosf(m_fAngle), 0.0f),
+		DirectX::XMVectorSet(m_pTarget->x, m_pTarget->y, m_pTarget->z, 0.0f), DirectX::XMVectorSet(m_fUp.x, m_fUp.y, m_fUp.z, 0.0f));	//ビュー行列の設定
+	view = DirectX::XMMatrixTranspose(view);	//転置行列に変換
+	DirectX::XMStoreFloat4x4(&mat, view);//mat = XMMATRIX型→XMFLOAT4X4型
+	return mat;
 }

@@ -169,12 +169,15 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CameraBase.cpp" />
+    <ClCompile Include="CameraChase.cpp" />
     <ClCompile Include="CameraDebug.cpp" />
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="Cylinder.cpp" />
     <ClCompile Include="DirectX.cpp" />
     <ClCompile Include="Explosion.cpp" />
+    <ClCompile Include="ExplosionManager.cpp" />
     <ClCompile Include="Prot.cpp" />
     <ClCompile Include="Hammer.cpp" />
     <ClCompile Include="Input.cpp" />
@@ -201,13 +204,16 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Box.h" />
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="CameraBase.h" />
+    <ClInclude Include="CameraChase.h" />
     <ClInclude Include="CameraDebug.h" />
     <ClInclude Include="Collision.h" />
     <ClInclude Include="Cylinder.h" />
     <ClInclude Include="Defines.h" />
     <ClInclude Include="DirectX.h" />
     <ClInclude Include="Explosion.h" />
+    <ClInclude Include="ExplosionManager.h" />
     <ClInclude Include="Prot.h" />
     <ClInclude Include="Hammer.h" />
     <ClInclude Include="Input.h" />
@@ -222,6 +228,7 @@
     <ClInclude Include="SceneGame.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="Shader.h" />
+    <ClInclude Include="Sphere.h" />
     <ClInclude Include="SphereInfo.h" />
     <ClInclude Include="SlimeBase.h" />
     <ClInclude Include="SlimeManager.h" />

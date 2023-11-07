@@ -11,11 +11,12 @@
    ・2023/11/04 スライムベースクラス作成 /鈴村 朋也
    ・2023/11/06 ハンマーもしくは敵により吹っ飛ばされる関数を追加	/山下凌佑
 
+   ・2023/11/06 インクルード誤字の修正 / 鄭 宇恩
    ======================================== */
 
   // =============== インクルード ===================
 #include "SlimeBase.h"
-#include "Geometory.h"
+#include "Geometry.h"
 #include "Model.h"
 
 // =============== 定数定義 =======================
@@ -28,14 +29,19 @@
 CSlimeBase::CSlimeBase()
 	:m_pModel(nullptr)
 	,m_pVS(nullptr)
-	,m_pos(0.0f,0.0f,0.0f)
+	//,m_pos(0.0f,0.0f,0.0f)
+	//,m_sphere{(0.0f,0.0f,0.0f),0.0f}
 	,m_move(0.0f, 0.0f, 0.0f)
 	,m_scale(1.0f,1.0f,1.0f)
 	,m_fSpeed(0.0f)
 	,m_fVecAngle(0.0f)
-	,m_playerPos(0.0f, 0.0f, 0.0f)
+	//,m_playerPos(0.0f, 0.0f, 0.0f)
 	,m_bUse(false)
 	,m_bHitMove(false)
+	,m_anglePlayer(0.0f)
+	,m_distancePlayer(0.0f)
+	, m_fSpeed(0.01f)
+
 {
 	RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得
 	DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
@@ -51,6 +57,18 @@ CSlimeBase::CSlimeBase()
 		MessageBox(nullptr, "VS_Model.cso", "Error", MB_OK);
 	}
 	m_pModel->SetVertexShader(m_pVS);
+
+	//球初期化
+	m_sphere.pos = { 0.0f, 0.0f, 0.0f };
+	m_sphere.radius = 0.0f;
+
+	//球(player)初期化
+	m_playerSphere.pos = { 0.0f, 0.0f, 0.0f };
+	m_playerSphere.radius = 0.0f;
+
+
+	
+
 }
 
 // =============== デストラクタ =================
@@ -81,48 +99,21 @@ void CSlimeBase::Update()
 	// 使用してないならreturn
 	if (m_bUse == false) return;
 
-	if (m_bHitMove == false)	//吹き飛び移動状態ではない場合
-	{
-		//==== プレイヤー追従 処理 ====
-		// -- X軸
-		if (m_playerPos.x > m_pos.x)
-		{
-			m_move.x = ENEMY_MOVE_SPEED;
-		}
-		else if (m_playerPos.x < m_pos.x)
-		{
-			m_move.x = -ENEMY_MOVE_SPEED;
-		}
+	//== 追従処理 ==
+	// 敵からエネミーの距離、角度を計算
+	m_distancePlayer = m_sphere.Distance(m_playerSphere);
+	m_anglePlayer = m_sphere.Angle(m_playerSphere);
 
-		// -- Y軸
-		if (m_playerPos.y > m_pos.y)
-		{
-			m_move.y = ENEMY_MOVE_SPEED;
-		}
-		else if (m_playerPos.y < m_pos.y)
-		{
-			m_move.y = -ENEMY_MOVE_SPEED;
-		}
-
-		// -- Z軸
-		if (m_playerPos.z > m_pos.z)
-		{
-			m_move.z = ENEMY_MOVE_SPEED;
-		}
-		else if (m_playerPos.z < m_pos.z)
-		{
-			m_move.z = -ENEMY_MOVE_SPEED;
-		}
-	}
-	else	//吹き飛び移動状態の時
+	TTriType<float> movePos = m_playerSphere.pos - m_sphere.pos;
+	if (m_distancePlayer != 0)	//0除算回避
 	{
-		HitMove();
+		m_move.x = movePos.x / m_distancePlayer * m_fSpeed;
+		m_move.z = movePos.z / m_distancePlayer * m_fSpeed;
 	}
 
 	// -- 座標更新
-	m_pos.x += m_move.x;
-	m_pos.y += m_move.y;
-	m_pos.z += m_move.z;
+	m_sphere.pos.x += m_move.x;
+	m_sphere.pos.z += m_move.z;
 
 }
 
@@ -140,7 +131,9 @@ void CSlimeBase::Draw()
 	DirectX::XMFLOAT4X4 mat[3];
 
 	//-- ワールド行列の計算
-	DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(m_pos.x, m_pos.y, m_pos.z);			//移動行列
+	//DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(m_pos.x, m_pos.y, m_pos.z);			//移動行列
+	DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(m_sphere.pos.x, m_sphere.pos.y, m_sphere.pos.z);			//移動行列
+
 	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(m_scale.x, m_scale.y, m_scale.z);		//拡大縮小行列
 	DirectX::XMMATRIX R = DirectX::XMMatrixRotationY(0.0f);		//回転行列
 	DirectX::XMMATRIX world = S * T * R;										//ワールド行列の設定
@@ -170,11 +163,17 @@ void CSlimeBase::Draw()
 	}
 }
 
+CSphereInfo::Sphere CSlimeBase::GetPos()
+{
+	return m_sphere;
+}
+
+/*
 TTriType<float> CSlimeBase::GetPos()
 {
 	return m_pos;
 }
-
+*/
 bool CSlimeBase::GetUse()
 {
 	return m_bUse;
@@ -216,10 +215,20 @@ void CSlimeBase::SetPos(TTriType<float> pos)
 {
 	m_pos = pos;
 }
+*/
+void CSlimeBase::SetPos(CSphereInfo::Sphere sphere)
+{
+	m_sphere.pos = sphere.pos;
+}
 
 void CSlimeBase::SetUse(bool onoff)
 {
 	m_bUse = onoff;
+}
+
+void CSlimeBase::SetPlayer(CSphereInfo::Sphere player)
+{
+	m_playerSphere = player;
 }
 
 

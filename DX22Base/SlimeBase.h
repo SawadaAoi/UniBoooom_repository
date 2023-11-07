@@ -19,7 +19,7 @@
 
 #include "Model.h"
 #include "Shader.h"
-#include "TriType.h"
+//#include "TriType.h"
 #include "SphereInfo.h"
 
 #define ENEMY_MOVE_SPEED (0.01f)
@@ -50,28 +50,36 @@ public:
 	virtual void HitBranch() = 0;
 
 	//setter
-	void SetPos(TTriType<float> pos);
+	//void SetPos(TTriType<float> pos);
+	void SetPos(CSphereInfo::Sphere sphere);
 	void SetUse(bool onoff);
+	void SetPlayer(CSphereInfo::Sphere player);
+
 	//getter
-	TTriType<float> GetPos();
+	//TTriType<float> GetPos();
+	CSphereInfo::Sphere GetPos();
 	bool GetUse();
 
 protected:
 	Model* m_pModel;
 	VertexShader* m_pVS;
 
-	TTriType<float> m_pos;
+	//TTriType<float> m_pos;
+	CSphereInfo::Sphere m_sphere;
 	TTriType<float> m_move;
 	TTriType<float> m_scale;
-	float m_fSpeed;
 	float m_fVecAngle;
 	bool m_bUse;	//使用中かフラグ
+	float m_fSpeed;
+
+	float m_distancePlayer;	//プレイヤーまでの距離
+	float m_anglePlayer;	//プレイヤーからエネミーのアークタンジェント
 	CSphereInfo::Sphere m_sphere;
 	bool m_bHitMove;	//吹っ飛び中かどうか
 
 	// 仮
-	TTriType<float> m_playerPos;
-
+	//TTriType<float> m_playerPos;
+	CSphereInfo::Sphere m_playerSphere;
 
 private:
 

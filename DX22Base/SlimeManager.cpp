@@ -13,9 +13,9 @@
    ======================================== */
 #include "SlimeManager.h"
 #include "Slime_1.h"
+
 #include <stdlib.h>
 
-CSlime_1* g_pSlime[MAX_SLIME_1];
 
 // =============== コンストラクタ =============
 CSlimeManager::CSlimeManager()
@@ -24,9 +24,25 @@ CSlimeManager::CSlimeManager()
 	//"スライム1"生成
 	for (int i = 0; i < MAX_SLIME_1; i++)
 	{
-		g_pSlime[i] = new CSlime_1;
-		//g_pSlime[i]->SetPosX(i * -0.5f);
+		m_pSlime[i] = new CSlime_1;
 	}
+	/*
+	//"スライム2"生成
+	for (int i = 0; i < MAX_SLIME_2; i++)
+	{
+		m_pSlime[i] = new CSlime_2;
+	}
+	//"スライム3"生成
+	for (int i = 0; i < MAX_SLIME_2; i++)
+	{
+		m_pSlime[i] = new CSlime_3;
+	}
+	//"スライム4"生成
+	for (int i = 0; i < MAX_SLIME_2; i++)
+	{
+		m_pSlime[i] = new CSlime_4;
+	}
+	*/
 }
 
 // =============== デストラクタ =============
@@ -35,10 +51,10 @@ CSlimeManager::~CSlimeManager()
 	//"スライム1"削除
 	for (int i = 0; i < MAX_SLIME_1; i++)
 	{
-		if (g_pSlime[i] != nullptr)
+		if (m_pSlime[i] != nullptr)
 		{
-			delete g_pSlime[i];
-			g_pSlime[i] = nullptr;
+			delete m_pSlime[i];
+			m_pSlime[i] = nullptr;
 		}
 	}
 }
@@ -74,7 +90,7 @@ void CSlimeManager::Update()
 
 		// 敵 生成
 		Generate(TTriType<float>(m_posX, 0.0f, m_posZ));
-		g_pSlime[i]->Update();
+		m_pSlime[i]->Update();
 	}
 }
 /*
@@ -88,19 +104,23 @@ void CSlimeManager::Draw()
 	//"スライム1"描画
 	for (int i = 0; i < MAX_SLIME_1; i++)
 	{
-		g_pSlime[i]->Draw();
+		m_pSlime[i]->Draw();
 	}
 }
 
 void CSlimeManager::Generate(TTriType<float> pos)
 {
+	CSphereInfo::Sphere sphere;
+	sphere.radius = 0.0f;
+	sphere.pos = pos;
+
 	for (int i = 0; i < MAX_SLIME_1; i++)
 	{
 		// スライムのuseを検索
-		if (g_pSlime[i]->GetUse() == false)
+		if (m_pSlime[i]->GetUse() == false)
 		{
-			g_pSlime[i]->SetUse(true);	//useをtrueに
-			g_pSlime[i]->SetPos(pos);	//posを設定
+			m_pSlime[i]->SetUse(true);	//useをtrueに
+			m_pSlime[i]->SetPos(sphere);	//posを設定
 			break;						//見つけたらbreak
 		}
 	}

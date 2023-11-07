@@ -3,7 +3,7 @@
 	------------------------------------
 	追跡カメラ定義
 	------------------------------------
-	CameraDebug.h
+	CameraChase.h
 	------------------------------------
 	作成者	takagi
 
@@ -13,20 +13,24 @@
 
 ========================================== */
 
-#ifndef ___CAMERA_DEBUG_H___
-#define ___CAMERA_DEBUG_H___
+#ifndef ___CAMERA_CHASE_H___
+#define ___CAMERA_CHASE_H___
 
 // =============== インクルード ===================
 #include "Camera.h"	//親のヘッダ
 
 // =============== クラス定義 =====================
-class CCameraDebug :public CCamera	//カメラ
+class CCameraChase :public CCamera	//カメラ
 {
 public:
 	// ===メンバ関数宣言===
-	CCameraDebug();			//コンストラクタ
-	~CCameraDebug();								//デストラクタ
+	CCameraChase(const TPos<float>* pPos);			//コンストラクタ
+	~CCameraChase();								//デストラクタ
 	void Update();									//更新
-};	//デバッグ用カメラ
+	DirectX::XMFLOAT4X4 GetViewMatrix() override;	//ビュー行列変換
+private:
+	// ===メンバ変数宣言===
+	const TPos<float>* m_pTarget;	//追跡目標
+};	//追跡カメラ
 
-#endif // !___CAMERA_DEBUG_H___
+#endif // !___CAMERA_CHASE_H___
