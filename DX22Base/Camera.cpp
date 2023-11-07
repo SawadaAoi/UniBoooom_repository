@@ -8,10 +8,11 @@
 	作成者	takagi
 
 	変更履歴
-	・2023/10/24	仮制作
-	・2023/11/02	メンバー変数追加
-	・2023/11/04	更新関数の実装部分削除
-	・2023/11/06	フラグ整理・コメント修正
+	・2023/10/24 仮制作 takagi
+	・2023/11/02 メンバー変数追加 takagi
+	・2023/11/04 更新関数の実装部分削除 takagi
+	・2023/11/06 フラグ整理・コメント修正 takagi
+	・2023/11/07 GetViewMatrix()関数にconst修飾子付与・コメント修正 takagi
 
 ========================================== */
 
@@ -122,15 +123,21 @@ void CCamera::SetFlag(const unsigned char & ucBitFlag)
 	-------------------------------------
 	戻値：なし
 =========================================== */
-DirectX::XMFLOAT4X4 CCamera::GetViewMatrix()
+DirectX::XMFLOAT4X4 CCamera::GetViewMatrix() const
 {
+	// =============== 変数宣言 ===================
 	DirectX::XMFLOAT4X4 mat;
-	//	ビュー行列の計算
-	DirectX::XMMATRIX view = DirectX::XMMatrixLookAtLH(DirectX::XMVectorSet(m_fPos.x, m_fPos.y, m_fPos.z, 0.0f),
-		DirectX::XMVectorSet(m_fLook.x, m_fLook.y, m_fLook.z, 0.0f), DirectX::XMVectorSet(m_fUp.x, m_fUp.y, m_fUp.z, 0.0f));	//ビュー行列の設定
-	view = DirectX::XMMatrixTranspose(view);	//転置行列に変換
-	DirectX::XMStoreFloat4x4(&mat, view);//mat = XMMATRIX型→XMFLOAT4X4型
-	return mat;
+
+	// =============== ビュー行列の計算 ===================
+	DirectX::XMStoreFloat4x4(&mat, DirectX::XMMatrixTranspose(
+		DirectX::XMMatrixLookAtLH(
+			DirectX::XMVectorSet(m_fPos.x, m_fPos.y, m_fPos.z, 0.0f),		//カメラ位置
+			DirectX::XMVectorSet(m_fLook.x, m_fLook.y, m_fLook.z, 0.0f),	//注視点
+			DirectX::XMVectorSet(m_fUp.x, m_fUp.y, m_fUp.z, 0.0f)))			//アップベクトル
+	);	//ビュー変換
+
+	// =============== 提供 ===================
+	return mat;	//行列提供
 }
 
 /* ========================================
@@ -142,12 +149,47 @@ DirectX::XMFLOAT4X4 CCamera::GetViewMatrix()
 	-------------------------------------
 	戻値：なし
 =========================================== */
-DirectX::XMFLOAT4X4 CCamera::GetProjectionMatrix()
+DirectX::XMFLOAT4X4 CCamera::GetProjectionMatrix() const
 {
-	DirectX::XMFLOAT4X4 mat;
-	//プロジェクション行列の計算
-	DirectX::XMMATRIX proj = DirectX::XMMatrixPerspectiveFovLH(m_fAngle, ASPECT, m_fNear, m_fFar);	//プロジェクション行列
-	proj = DirectX::XMMatrixTranspose(proj);	//転置行列に変換
-	DirectX::XMStoreFloat4x4(&mat, proj);//mat = XMMATRIX型→XMFLOAT4X4型
-	return mat;
+	// =============== 変数宣言 ===================
+	DirectX::XMFLOAT4X4 mat;	//行列格納用
+
+	// =============== プロジェクション行列の計算 ===================
+	DirectX::XMStoreFloat4x4(&mat, DirectX::XMMatrixTranspose(
+		DirectX::XMMatrixPerspectiveFovLH(m_fAngle, ASPECT, m_fNear, m_fFar)));	//プロジェクション変換
+	
+	// =============== 提供 ===================
+	return mat;	//行列提供
+}
+
+/* ========================================
+	フラグ別処理関数
+	-------------------------------------
+	内容：フラグによって判断される各処理を実行する
+	-------------------------------------
+	引数1：なし
+	-------------------------------------
+	戻値：なし
+=========================================== */
+void CCamera::HandleFlag()
+{
+	// =============== 振動フラグ ===================
+	if (m_ucFlag & E_BIT_FLAG_VIBRATION)
+	{
+		// =============== 振動 ===================
+		Vibration();	//画面揺れ
+	}
+}
+
+/* ========================================
+	振動関数
+	-------------------------------------
+	内容：画面を振動させる
+	-------------------------------------
+	引数1：なし
+	-------------------------------------
+	戻値：なし
+=========================================== */
+void CCamera::Vibration()
+{
 }

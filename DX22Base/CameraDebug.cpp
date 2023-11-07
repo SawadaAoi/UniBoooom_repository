@@ -1,7 +1,7 @@
 /* ========================================
 	HEW/UniBoooom!!
 	------------------------------------
-	追跡カメラ実装
+	デバッグ用カメラ実装
 	------------------------------------
 	CameraDebug.cpp
 	------------------------------------
@@ -9,7 +9,8 @@
 
 	変更履歴
 	・2023/11/04 制作 takagi
-	・2023/11/06 コーディング規約適用・追跡対象登録機構作成
+	・2023/11/06 コーディング規約適用・追跡対象登録機構作成 takagi
+	・2023/11/07 コメント修正 takagi
 
 ========================================== */
 
@@ -61,7 +62,7 @@ CCameraDebug::~CCameraDebug()
 =========================================== */
 void CCameraDebug::Update()
 {
-	// ↑↓→←Shift、Ctrlでカメラの注視点を動かす
+	// =============== 注視点操作 =====================
 	if ((IsKeyPress(VK_CONTROL) | IsKeyPress(VK_SHIFT)) & IsKeyPress(VK_UP))
 	{
 		m_fLook.z += SPEED;
@@ -79,7 +80,7 @@ void CCameraDebug::Update()
 		m_fLook.x += SPEED;
 	}
 
-	// W,A,S,D,Q,Eでカメラの位置を動かす
+	// =============== カメラ回転 =====================
 	if (IsKeyPress('W'))
 	{
 		m_fRadY += SPEED;
@@ -96,6 +97,8 @@ void CCameraDebug::Update()
 	{
 		m_fRadXZ += SPEED;
 	}
+
+	// =============== 注視点からの距離操作 =====================
 	if (IsKeyPress('Q'))
 	{
 		m_fRadius += SPEED;
@@ -105,10 +108,10 @@ void CCameraDebug::Update()
 		m_fRadius -= SPEED;
 	}
 
-	//角度・距離・注視点からカメラの位置を計算
+	// =============== カメラ位置割り出し =====================
 	m_fPos = {
-		cosf(m_fRadY) * sinf(m_fRadXZ) * m_fRadius + m_fLook.x,
-		sinf(m_fRadY) * m_fRadius,
-		cosf(m_fRadY) * cosf(m_fRadXZ) * m_fRadius + m_fLook.z
+		cosf(m_fRadY) * sinf(m_fRadXZ) * m_fRadius + m_fLook.x,	//x座標
+		sinf(m_fRadY) * m_fRadius,								//y座標
+		cosf(m_fRadY) * cosf(m_fRadXZ) * m_fRadius + m_fLook.z	//z座標
 	};
 }
