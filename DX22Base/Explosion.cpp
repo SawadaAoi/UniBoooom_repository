@@ -20,9 +20,10 @@
 //=============== インクルード ===================
 #include "Explosion.h"
 #include "Geometry.h"
+#include "Sphere.h"
 
 // =============== 定数定義 =======================
-const float MAX_DISPLAY_TIME = 5.0f;
+const float MAX_DISPLAY_TIME = 60 * 5.0f;
 
 
 /* ========================================
@@ -43,6 +44,8 @@ CExplosion::CExplosion(TTriType<float> pos)
 	//爆発オブジェクト初期化
 	m_Sphere.pos = pos;
 	m_Sphere.radius = 1.0f;
+
+	m_3dModel = new CSphere();
 }
 
 /* ========================================
@@ -57,7 +60,7 @@ CExplosion::CExplosion(TTriType<float> pos)
 CExplosion::~CExplosion()
 {
 
-	
+	SAFE_DELETE(m_3dModel);	// メモリ解放
 }
 
 
@@ -72,6 +75,12 @@ CExplosion::~CExplosion()
 =========================================== */
 void CExplosion::Update()
 {
+	DirectX::XMMATRIX mat = DirectX::XMMatrixTranslation(m_Sphere.pos.x, m_Sphere.pos.y, m_Sphere.pos.z);
+	mat = DirectX::XMMatrixTranspose(mat);
+	DirectX::XMFLOAT4X4 fMat;	//行列の格納先
+	DirectX::XMStoreFloat4x4(&fMat, mat);
+	m_3dModel->SetWorld(fMat);
+
 	DisplayTimeAdd();
 }
 
@@ -89,7 +98,7 @@ void CExplosion::Update()
 void CExplosion::Draw()
 {
 
-
+	m_3dModel->Draw();	// 爆発仮3Dモデルの描画
 	
 }
 
@@ -105,10 +114,12 @@ void CExplosion::Draw()
 =========================================== */
 void CExplosion::DisplayTimeAdd()
 {
-	m_fDelFrame++;
-	if (MAX_DISPLAY_TIME >= m_fDelFrame)
+	m_fDelFrame ++;	// フレーム加算
+
+	// 一定秒数時間が経ったら
+	if (MAX_DISPLAY_TIME <= m_fDelFrame)
 	{
-		m_bDelFlg = true;
+		m_bDelFlg = true;	// 削除フラグを立てる
 	}
 }
 

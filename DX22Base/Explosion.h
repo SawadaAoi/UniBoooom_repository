@@ -21,7 +21,7 @@
 #include "Model.h"
 #include "Shader.h"
 #include "Sphereinfo.h"
-
+#include "Sphere.h"
 
 
 //=============== クラス定義 =====================
@@ -41,14 +41,14 @@ public:
 	void SetSphere(CSphereInfo::Sphere sphere);
 	bool GetDelFlg();
 
-protected:
+private:
 // ===メンバ変数宣言===
 	CSphereInfo::Sphere m_Sphere;	// 座標と当たり判定の大きさを持つ
 	float	m_fSize;
-	float	m_fDelFrame;	// 爆発表示カウント
+	int	m_fDelFrame;	// 爆発表示カウント
 	bool	m_bDelFlg;		// 爆発終了フラグ
+	CGeometry* m_3dModel;		// 爆発仮3Dモデル
 
-private:
 };
 
 #endif // __EXPLOSION_H__
