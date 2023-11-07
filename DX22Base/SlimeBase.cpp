@@ -9,6 +9,8 @@
 
    変更履歴
    ・2023/11/04 スライムベースクラス作成 /鈴村 朋也
+   ・2023/11/06 ハンマーもしくは敵により吹っ飛ばされる関数を追加	/山下凌佑
+
    ・2023/11/06 インクルード誤字の修正 / 鄭 宇恩
    ======================================== */
 
@@ -31,11 +33,13 @@ CSlimeBase::CSlimeBase()
 	//,m_sphere{(0.0f,0.0f,0.0f),0.0f}
 	,m_move(0.0f, 0.0f, 0.0f)
 	,m_scale(1.0f,1.0f,1.0f)
+	,m_fVecAngle(0.0f)
 	//,m_playerPos(0.0f, 0.0f, 0.0f)
 	,m_bUse(false)
+	,m_bHitMove(false)
 	,m_anglePlayer(0.0f)
 	,m_distancePlayer(0.0f)
-	, m_fSpeed(0.01f)
+	, m_fSpeed(ENEMY_MOVE_SPEED)
 
 {
 	RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得
@@ -94,22 +98,29 @@ void CSlimeBase::Update()
 	// 使用してないならreturn
 	if (m_bUse == false) return;
 
-	//== 追従処理 ==
-	// 敵からエネミーの距離、角度を計算
-	m_distancePlayer = m_sphere.Distance(m_playerSphere);
-	m_anglePlayer = m_sphere.Angle(m_playerSphere);
-
-	TTriType<float> movePos = m_playerSphere.pos - m_sphere.pos;
-	if (m_distancePlayer != 0)	//0除算回避
+	if (!m_bHitMove)	//敵が通常の移動状態の時
 	{
-		m_move.x = movePos.x / m_distancePlayer * m_fSpeed;
-		m_move.z = movePos.z / m_distancePlayer * m_fSpeed;
+		//== 追従処理 ==
+		// 敵からエネミーの距離、角度を計算
+		m_distancePlayer = m_sphere.Distance(m_playerSphere);
+		m_anglePlayer = m_sphere.Angle(m_playerSphere);
+
+		TTriType<float> movePos = m_playerSphere.pos - m_sphere.pos;
+		if (m_distancePlayer != 0)	//0除算回避
+		{
+			m_move.x = movePos.x / m_distancePlayer * m_fSpeed;
+			m_move.z = movePos.z / m_distancePlayer * m_fSpeed;
+		}
+	}
+	else
+	{
+		//敵の吹き飛び移動
+		HitMove();
 	}
 
 	// -- 座標更新
 	m_sphere.pos.x += m_move.x;
 	m_sphere.pos.z += m_move.z;
-
 }
 
 /*
@@ -174,12 +185,52 @@ bool CSlimeBase::GetUse()
 	return m_bUse;
 }
 
-/*
-void CSlimeBase::SetPos(TTriType<float> pos)
+/* ========================================
+	ハンマーか敵に吹っ飛ばされて実際に移動量を確定する関数
+	----------------------------------------
+	内容：X方向とZ方向の移動量を確定する処理
+	----------------------------------------
+	引数1：なし
+	----------------------------------------
+	戻値：なし
+======================================== */
+void CSlimeBase::HitMove()
 {
-	m_pos = pos;
+	//敵キャラの移動速度と移動角度に応じてX方向とZ方向の移動量を決める
+	m_move.x = cos(m_fVecAngle) * (m_fSpeed * SPEED_DOWN_RATIO);
+	m_move.z = sin(m_fVecAngle) * (m_fSpeed * SPEED_DOWN_RATIO);
+
+	//舞フレームの速度の減算処理
+	m_fSpeed -= MOVE_RESIST;
+	if (m_fSpeed <= 0)	//速度が0以下になったら
+	{
+		m_fSpeed = ENEMY_MOVE_SPEED;	//敵は通常の移動速度になり通常移動する
+		m_bHitMove = false;
+	}
 }
-*/
+
+/* ========================================
+	ハンマーか敵に吹っ飛ばされる関数
+	----------------------------------------
+	内容：引数に応じて飛ぶ方向と移動速度を決める処理
+	----------------------------------------
+	引数1：速度
+	引数2：角度
+	----------------------------------------
+	戻値：なし
+======================================== */
+void CSlimeBase::HitMoveStart(float speed, float angle)
+{
+	m_fSpeed = speed;		//移動量を入れる
+	m_fVecAngle = angle;		//移動方向を入れる
+	m_bHitMove = true;		//吹き飛び状態をONにする
+}
+
+//void CSlimeBase::SetPos(TTriType<float> pos)
+//{
+//	m_pos = pos;
+//}
+
 void CSlimeBase::SetPos(CSphereInfo::Sphere sphere)
 {
 	m_sphere.pos = sphere.pos;

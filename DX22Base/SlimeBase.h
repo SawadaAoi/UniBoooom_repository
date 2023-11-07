@@ -22,6 +22,9 @@
 //#include "TriType.h"
 #include "SphereInfo.h"
 
+const float ENEMY_MOVE_SPEED = 0.01f;
+const float SPEED_DOWN_RATIO = 0.6f;
+const float MOVE_RESIST = 0.05f;
 
 /*
 enum E_SLIME_LEVEL
@@ -43,6 +46,9 @@ public:
 
 	virtual void Union() = 0;
 	virtual void Explosion() = 0;
+	void HitMove();
+	void HitMoveStart(float speed, float angle);
+	virtual void HitBranch() = 0;
 
 	//setter
 	//void SetPos(TTriType<float> pos);
@@ -63,11 +69,13 @@ protected:
 	CSphereInfo::Sphere m_sphere;
 	TTriType<float> m_move;
 	TTriType<float> m_scale;
+	float m_fVecAngle;
 	bool m_bUse;	//使用中かフラグ
 	float m_fSpeed;
 
 	float m_distancePlayer;	//プレイヤーまでの距離
 	float m_anglePlayer;	//プレイヤーからエネミーのアークタンジェント
+	bool m_bHitMove;	//吹っ飛び中かどうか
 
 	// 仮
 	//TTriType<float> m_playerPos;
