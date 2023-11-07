@@ -68,7 +68,14 @@ CExplosionManager::~CExplosionManager()
 =========================================== */
 void CExplosionManager::Update()
 {
-	DeleteCheck();
+	// 爆発を検索
+	for (int i = 0; i < MAX_EXPLOSION_NUM; i++)
+	{
+		// 未使用の爆発はスルー
+		if (m_pExplosion[i] == nullptr) return;
+
+		m_pExplosion[i]->Update();
+	}
 }
 
 
@@ -84,13 +91,14 @@ void CExplosionManager::Update()
 =========================================== */
 void CExplosionManager::Create(TTriType<float> pos)
 {
-	// 未使用の爆発を検索
+	// 爆発を検索
 	for (int i = 0; i < MAX_EXPLOSION_NUM; i++)
 	{
+		// 使用済みの爆発はスルー
 		if (m_pExplosion[i] != nullptr) return;
 
-		m_pExplosion[i]->SetExplode(true);	//Explosionをtrueに
-		&CSphere::Draw;
+		m_pExplosion[i] = new CExplosion(pos);	// 座標を指定して生成
+
 	}
 }
 
@@ -105,15 +113,16 @@ void CExplosionManager::Create(TTriType<float> pos)
 ======================================== */
 void CExplosionManager::DeleteCheck()
 {
-	int CntDeleteTime = 0;
-	CntDeleteTime++;
+	// 爆発を検索
 	for (int i = 0; i < MAX_EXPLOSION_NUM; i++)
 	{
-		if (CntDeleteTime % 120 == 0)
-		{
-			if(g_pExplosion[i]->GetExplode() == true)
-			g_pExplosion[i]->SetExplode(false);
-		}
+		// 使用済みの爆発はスルー
+		if (m_pExplosion[i] != nullptr) return;
+		// 削除フラグがたってない爆発はスルー
+		if (m_pExplosion[i]->GetDelFlg() == false) return;
+		
+		delete m_pExplosion[i]; m_pExplosion[i] = nullptr;
+
 	}
 }
 
@@ -128,12 +137,12 @@ void CExplosionManager::DeleteCheck()
 ======================================== */
 void CExplosionManager::Draw()
 {
-	
-	//爆発の描画
+	// 爆発の検索
 	for (int i = 0; i < MAX_EXPLOSION_NUM; i++)
 	{
-		bool bExploded = g_pExplosion[i]->GetExplode();
-		if (g_pExplosion[i]->GetExplode() == false) continue;
-		g_pExplosion[i]->Draw();
+		// 未使用の爆発はスルー
+		if (m_pExplosion[i] == nullptr) return;
+		
+		m_pExplosion[i]->Draw(); // 爆発の描画
 	}
 }

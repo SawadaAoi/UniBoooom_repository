@@ -29,16 +29,17 @@ class CExplosion
 {
 public:
 // ===ƒƒ“ƒoŠÖ”éŒ¾===
-	CExplosion();
+	CExplosion(TTriType<float> pos);
 	~CExplosion();
 	void Update();
 	void Draw();
 	void DisplayTimeAdd();
 
 	void SetPos(TTriType<float> pos);
-
+	TTriType<float> GetPos();
 	CSphereInfo::Sphere GetSphere();
 	void SetSphere(CSphereInfo::Sphere sphere);
+	bool GetDelFlg();
 
 protected:
 // ===ƒƒ“ƒo•Ï”éŒ¾===
