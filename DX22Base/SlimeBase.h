@@ -9,7 +9,11 @@
 
    変更履歴
    ・2023/11/04 スライムベースクラス作成 /鈴村 朋也
-
+   ・2023/11/06 吹き飛び移動と吹き飛び移動関数を作成 変更者名：山下凌佑
+   ・2023/11/06 m_fSpped(敵の移動速度)とm_fVecAngle(敵の吹き飛ぶ方向)のメンバ変数を追加 変更者名：山下凌佑
+   ・2023/11/06 定数SPEED_DOWN_RATIO(ぶつかった先のスライムに速度を渡す際に減少する割合)を追加 変更者名：山下凌佑
+   ・2023/11/06 定数MOVE_RESIST(吹き飛び移動中のスライムの移動速度に毎フレームかかる減算数値)を追加 変更者名：山下凌佑
+   ・2023/11/07 HitBranch関数(スライムとの接触分岐処理)をSlimeManagerに移動するために削除 変更者名：山下凌佑
 
    ======================================== */
 
@@ -23,8 +27,8 @@
 #include "SphereInfo.h"
 
 const float ENEMY_MOVE_SPEED = 0.01f;
-const float SPEED_DOWN_RATIO = 0.6f;
-const float MOVE_RESIST = 0.05f;
+const float SPEED_DOWN_RATIO = 0.6f;	//スライムからスライムの吹き飛び移動を
+const float MOVE_RESIST = 0.1f;		//吹き飛び移動中のスライムの移動速度に毎フレームかかる減算数値
 
 /*
 enum E_SLIME_LEVEL
@@ -48,7 +52,6 @@ public:
 	virtual void Explosion() = 0;
 	void HitMove();
 	void HitMoveStart(float speed, float angle);
-	virtual void HitBranch() = 0;
 
 	//setter
 	//void SetPos(TTriType<float> pos);
@@ -69,9 +72,9 @@ protected:
 	CSphereInfo::Sphere m_sphere;
 	TTriType<float> m_move;
 	TTriType<float> m_scale;
-	float m_fVecAngle;
+	float m_fVecAngle;	//敵の吹き飛ぶ方向
 	bool m_bUse;	//使用中かフラグ
-	float m_fSpeed;
+	float m_fSpeed;	//敵の移動速度
 
 	float m_distancePlayer;	//プレイヤーまでの距離
 	float m_anglePlayer;	//プレイヤーからエネミーのアークタンジェント

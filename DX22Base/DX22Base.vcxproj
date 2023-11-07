@@ -194,6 +194,7 @@
     <ClCompile Include="SlimeManager.cpp" />
     <ClCompile Include="Slime_1.cpp" />
     <ClCompile Include="Sphere.cpp" />
+    <ClCompile Include="SphereInfo.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="Startup.cpp" />
     <ClCompile Include="Texture.cpp" />
