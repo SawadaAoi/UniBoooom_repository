@@ -18,18 +18,12 @@
 #include "TriType.h"
 #include "SlimeBase.h"
 
-enum E_SLIME_LEVEL
-{
-	LEVEL_1,
-	LEVEL_2,
-	LEVEL_3,
-	LEVEL_4
-};
-
 #define MAX_SLIME_1 20
 #define MAX_SLIME_2 12
 #define MAX_SLIME_3 8
 #define MAX_SLIME_4 4
+
+const int MAX_SLIME = 20;	//スライムの最大生成数
 
 class CSlimeManager
 {
@@ -40,7 +34,9 @@ public:
 	void Update();
 	void Draw();
 	void Generate(TTriType<float> pos);
-
+	void HitBranch(int HitSlimeArrayNum,int standSlimeArrayNum);	//スライムの接触が起きた際の分岐処理
+	void UnionSlime(E_SLIME_LEVEL level);							//スライムの結合処理
+	
 private:
 	CSlimeBase* m_pSlime[MAX_SLIME_1];
 

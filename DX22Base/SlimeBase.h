@@ -9,7 +9,10 @@
 
    変更履歴
    ・2023/11/04 スライムベースクラス作成 /鈴村 朋也
-
+   ・2023/11/08 スライムのサイズを表す列挙を定義　変更者：山下凌佑
+   ・2023/11/08 スライムのサイズを返す関数を作成　変更者：山下凌佑
+   ・2023/11/08 GetPos→GetSphereに名前を変更 / 山下凌佑
+   ・2023/11/08 スライムの移動速度を取得する関数を作成 / 山下凌佑
 
    ======================================== */
 
@@ -26,15 +29,19 @@ const float ENEMY_MOVE_SPEED = 0.01f;
 const float SPEED_DOWN_RATIO = 0.6f;
 const float MOVE_RESIST = 0.05f;
 
-/*
+// =============== 列挙定義 =======================
 enum E_SLIME_LEVEL
 {
+	LEVEL_NONE,
+
 	LEVEL_1,
 	LEVEL_2,
 	LEVEL_3,
-	LEVEL_4
+	LEVEL_4,
+
+	MAX_LEVEL = LEVEL_4
 };
-*/
+
 
 class CSlimeBase
 {
@@ -58,8 +65,10 @@ public:
 
 	//getter
 	//TTriType<float> GetPos();
-	CSphereInfo::Sphere GetPos();
+	CSphereInfo::Sphere GetSphere();
 	bool GetUse();
+	E_SLIME_LEVEL GetSlimeLevel();	//スライムのサイズを取得
+	float GetSlimeSpeed();			//スライムの移動速度を取得
 
 protected:
 	Model* m_pModel;
@@ -72,6 +81,7 @@ protected:
 	float m_fVecAngle;
 	bool m_bUse;	//使用中かフラグ
 	float m_fSpeed;
+	E_SLIME_LEVEL m_eSlimeSize;
 
 	float m_distancePlayer;	//プレイヤーまでの距離
 	float m_anglePlayer;	//プレイヤーからエネミーのアークタンジェント

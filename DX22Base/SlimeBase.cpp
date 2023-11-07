@@ -12,6 +12,7 @@
    ・2023/11/06 ハンマーもしくは敵により吹っ飛ばされる関数を追加	/山下凌佑
 
    ・2023/11/06 インクルード誤字の修正 / 鄭 宇恩
+   ・2023/11/08 GetPos→GetSphereに名前を変更 / 山下凌佑
    ======================================== */
 
   // =============== インクルード ===================
@@ -40,6 +41,7 @@ CSlimeBase::CSlimeBase()
 	,m_anglePlayer(0.0f)
 	,m_distancePlayer(0.0f)
 	, m_fSpeed(ENEMY_MOVE_SPEED)
+	,m_eSlimeSize(LEVEL_1)	//後でSLIME_NONEにする <=TODO
 
 {
 	RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得
@@ -65,7 +67,7 @@ CSlimeBase::CSlimeBase()
 	m_playerSphere.pos = { 0.0f, 0.0f, 0.0f };
 	m_playerSphere.radius = 0.0f;
 
-
+	
 	
 
 }
@@ -169,7 +171,7 @@ void CSlimeBase::Draw()
 	}
 }
 
-CSphereInfo::Sphere CSlimeBase::GetPos()
+CSphereInfo::Sphere CSlimeBase::GetSphere()
 {
 	return m_sphere;
 }
@@ -183,6 +185,34 @@ TTriType<float> CSlimeBase::GetPos()
 bool CSlimeBase::GetUse()
 {
 	return m_bUse;
+}
+
+/* ========================================
+	スライムの大きさの種類を返す関数
+	----------------------------------------
+	内容：スライムの大きさの種類を返す
+	----------------------------------------
+	引数1：なし
+	----------------------------------------
+	戻値：スライムのサイズを表す列挙
+======================================== */
+E_SLIME_LEVEL CSlimeBase::GetSlimeLevel()
+{
+	return m_eSlimeSize;
+}
+
+/* ========================================
+	スライムの移動速度を取得
+	----------------------------------------
+	内容：スライムの移動速度を取得
+	----------------------------------------
+	引数1：なし
+	----------------------------------------
+	戻値：スライムの移動速度
+======================================== */
+float CSlimeBase::GetSlimeSpeed()
+{
+	return m_fSpeed;
 }
 
 /* ========================================
