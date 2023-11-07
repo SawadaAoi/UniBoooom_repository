@@ -26,9 +26,8 @@ SceneGame::SceneGame()
 	{
 		MessageBox(NULL, "eyeBat", "Error", MB_OK);	//エラーメッセージの表示
 	}
-	m_pBox = new CBox;
-	m_pPlayer = new CBox;
-	
+	m_pBox = new CBox();
+	m_pPlayer = new CPlayer();
 	m_pModel->SetVertexShader(m_pVS);	// 頂点シェーダをモデルにセット
 
 	// レンダーターゲット、深度バッファの設定
@@ -65,8 +64,8 @@ SceneGame::~SceneGame()
 
 	if (m_pBox)
 	{
-		delete m_pPlayer;
-		m_pPlayer = nullptr;
+		delete m_pBox;
+		m_pBox = nullptr;
 	}
 
 	if (m_pPlayer)
@@ -74,8 +73,10 @@ SceneGame::~SceneGame()
 		delete m_pPlayer;
 		m_pPlayer = nullptr;
 	}
+	
 
-	if (m_pVS) {
+	if (m_pVS) 
+	{
 		delete m_pVS;
 		m_pVS = nullptr;
 	}
@@ -86,7 +87,7 @@ SceneGame::~SceneGame()
 void SceneGame::Update(float tick)
 {
 	m_pCamera->Update();
-
+	m_pPlayer->Update();
 	// スライムマネージャー更新
 	m_pSlimeMng->Update();
 }
@@ -158,7 +159,7 @@ void SceneGame::Draw()
 
 		m_pBox->Draw();
 	}
-	
+	m_pPlayer->Draw();
 	// スライムマネージャー描画
 	m_pSlimeMng->Draw();
 	
