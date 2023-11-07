@@ -1,31 +1,32 @@
 /* ========================================
    HEW/UniBoooom!!
    ---------------------------------------
-   �X���C���x�[�X �N���X����
+   スライムベース クラス実装
    ---------------------------------------
    SlimeBase.cpp
 
-   �쐬�ҁF�鑺 ����
+   作成者：鈴村 朋也
 
-   �ύX����
-   �E2023/11/04 �X���C���x�[�X�N���X�쐬 /�鑺 ����
-   �E2023/11/06 �n���}�[�������͓G�ɂ�萁����΂����֐���ǉ�	/�R�����C
+   変更履歴
+   ・2023/11/04 スライムベースクラス作成 /鈴村 朋也
+   ・2023/11/06 ハンマーもしくは敵により吹っ飛ばされる関数を追加	/山下凌佑
 
-   �E2023/11/06 �C���N���[�h�뎚�̏C�� / �A �F��
+   ・2023/11/06 インクルード誤字の修正 / 鄭 宇恩
+   ・2023/11/08 GetPos→GetSphereに名前を変更 / 山下凌佑
    ======================================== */
 
-  // =============== �C���N���[�h ===================
+  // =============== インクルード ===================
 #include "SlimeBase.h"
 #include "Geometry.h"
 #include "Model.h"
 
-// =============== �萔��` =======================
+// =============== 定数定義 =======================
 
-// =============== �v���g�^�C�v�錾 ===============
+// =============== プロトタイプ宣言 ===============
 
-// =============== �O���[�o���ϐ���` =============
+// =============== グローバル変数定義 =============
 
-// =============== �R���X�g���N�^ =============
+// =============== コンストラクタ =============
 CSlimeBase::CSlimeBase()
 	:m_pModel(nullptr)
 	,m_pVS(nullptr)
@@ -40,38 +41,39 @@ CSlimeBase::CSlimeBase()
 	,m_anglePlayer(0.0f)
 	,m_distancePlayer(0.0f)
 	, m_fSpeed(ENEMY_MOVE_SPEED)
+	,m_eSlimeSize(LEVEL_1)	//後でSLIME_NONEにする <=TODO
 
 {
-	RenderTarget* pRTV = GetDefaultRTV();	//�f�t�H���g�Ŏg�p���Ă���RenderTargetView�̎擾
-	DepthStencil* pDSV = GetDefaultDSV();	//�f�t�H���g�Ŏg�p���Ă���DepthStencilView�̎擾
-	SetRenderTargets(1, &pRTV, pDSV);		//DSV��null����2D�\���ɂȂ�
+	RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得
+	DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
+	SetRenderTargets(1, &pRTV, pDSV);		//DSVがnullだと2D表示になる
 	m_pModel = new Model;
-	if (!m_pModel->Load("Assets/Model/eyeBat/eyeBat.FBX", 0.075f, Model::XFlip)) {		//�{���Ɣ��]�͏ȗ���
-		MessageBox(NULL, "eyeBat", "Error", MB_OK);	//�����ŃG���[���b�Z�[�W�\��
+	if (!m_pModel->Load("Assets/Model/eyeBat/eyeBat.FBX", 0.075f, Model::XFlip)) {		//倍率と反転は省略可
+		MessageBox(NULL, "eyeBat", "Error", MB_OK);	//ここでエラーメッセージ表示
 	}
 
-	//���_�V�F�[�_�ǂݍ���
+	//頂点シェーダ読み込み
 	m_pVS = new VertexShader();
 	if (FAILED(m_pVS->Load("Assets/Shader/VS_Model.cso"))) {
 		MessageBox(nullptr, "VS_Model.cso", "Error", MB_OK);
 	}
 	m_pModel->SetVertexShader(m_pVS);
 
-	//��������
+	//球初期化
 	m_sphere.pos = { 0.0f, 0.0f, 0.0f };
 	m_sphere.radius = 0.0f;
 
-	//��(player)������
+	//球(player)初期化
 	m_playerSphere.pos = { 0.0f, 0.0f, 0.0f };
 	m_playerSphere.radius = 0.0f;
 
 }
 
-// =============== �f�X�g���N�^ =================
+// =============== デストラクタ =================
 CSlimeBase::~CSlimeBase()
 {
 
-	// Model�폜
+	// Model削除
 	if (m_pModel) {
 		delete m_pModel;
 		m_pModel = nullptr;
@@ -86,24 +88,24 @@ CSlimeBase::~CSlimeBase()
 
 /*
  ========================================
-   �֐� Update()
+   関数 Update()
  ----------------------------------------
-   ���e�F�X�V����
+   内容：更新処理
  ======================================== */
 void CSlimeBase::Update()
 {
-	// �g�p���ĂȂ��Ȃ�return
+	// 使用してないならreturn
 	if (m_bUse == false) return;
 
-	if (!m_bHitMove)	//�G���ʏ�̈ړ���Ԃ̎�
+	if (!m_bHitMove)	//敵が通常の移動状態の時
 	{
-		//== �Ǐ]���� ==
-		// �G����G�l�~�[�̋����A�p�x���v�Z
+		//== 追従処理 ==
+		// 敵からエネミーの距離、角度を計算
 		m_distancePlayer = m_sphere.Distance(m_playerSphere);
 		m_anglePlayer = m_sphere.Angle(m_playerSphere);
 
 		TTriType<float> movePos = m_playerSphere.pos - m_sphere.pos;
-		if (m_distancePlayer != 0)	//0���Z���
+		if (m_distancePlayer != 0)	//0除算回避
 		{
 			m_move.x = movePos.x / m_distancePlayer * m_fSpeed;
 			m_move.z = movePos.z / m_distancePlayer * m_fSpeed;
@@ -111,62 +113,62 @@ void CSlimeBase::Update()
 	}
 	else
 	{
-		//�G�̐�����шړ�
+		//敵の吹き飛び移動
 		HitMove();
 	}
 
-	// -- ���W�X�V
+	// -- 座標更新
 	m_sphere.pos.x += m_move.x;
 	m_sphere.pos.z += m_move.z;
 }
 
 /*
  ========================================
-   �֐� Draw()
+   関数 Draw()
  ----------------------------------------
-   ���e�F�`�揈��
+   内容：描画処理
  ======================================== */
 void CSlimeBase::Draw()
 {
-	// �g�p���ĂȂ��Ȃ�return
+	// 使用してないならreturn
 	if (m_bUse == false) return;
 
 	DirectX::XMFLOAT4X4 mat[3];
 
-	//-- ���[���h�s��̌v�Z
-	//DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(m_pos.x, m_pos.y, m_pos.z);			//�ړ��s��
-	DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(m_sphere.pos.x, m_sphere.pos.y, m_sphere.pos.z);			//�ړ��s��
+	//-- ワールド行列の計算
+	//DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(m_pos.x, m_pos.y, m_pos.z);			//移動行列
+	DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(m_sphere.pos.x, m_sphere.pos.y, m_sphere.pos.z);			//移動行列
 
-	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(m_scale.x, m_scale.y, m_scale.z);		//�g��k���s��
-	DirectX::XMMATRIX R = DirectX::XMMatrixRotationY(0.0f);		//��]�s��
-	DirectX::XMMATRIX world = S * T * R;										//���[���h�s��̐ݒ�
-	world = DirectX::XMMatrixTranspose(world);								//�]�u�s��ɕϊ�
-	DirectX::XMStoreFloat4x4(&mat[0], world);								//XMMATRIX�^(world)����XMFLOAT4X4�^(mat[0])�֕ϊ����Ċi�[
+	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(m_scale.x, m_scale.y, m_scale.z);		//拡大縮小行列
+	DirectX::XMMATRIX R = DirectX::XMMatrixRotationY(0.0f);		//回転行列
+	DirectX::XMMATRIX world = S * T * R;										//ワールド行列の設定
+	world = DirectX::XMMatrixTranspose(world);								//転置行列に変換
+	DirectX::XMStoreFloat4x4(&mat[0], world);								//XMMATRIX型(world)からXMFLOAT4X4型(mat[0])へ変換して格納
 
-	//-- �r���[�s��̌v�Z
+	//-- ビュー行列の計算
 	DirectX::XMMATRIX view = DirectX::XMMatrixLookAtLH(
 		DirectX::XMVectorSet(1.5f, 2.5f, -3.0f, 0.0f),
 		DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f),
-		DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)); //�r���[�s��̐ݒ�
-	view = DirectX::XMMatrixTranspose(view);		//�]�u�s��ɕϊ�
-	DirectX::XMStoreFloat4x4(&mat[1], view);		//XMMATRIX�^(view)����XMFLOAT4X4�^(mat[1])�֕ϊ����Ċi�[
+		DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)); //ビュー行列の設定
+	view = DirectX::XMMatrixTranspose(view);		//転置行列に変換
+	DirectX::XMStoreFloat4x4(&mat[1], view);		//XMMATRIX型(view)からXMFLOAT4X4型(mat[1])へ変換して格納
 
-	//-- �v���W�F�N�V�����s��̌v�Z
+	//-- プロジェクション行列の計算
 	DirectX::XMMATRIX proj = DirectX::XMMatrixPerspectiveFovLH(
-		DirectX::XMConvertToRadians(60.0f), (float)16 / 9, 0.1f, 100.0f); //�v���W�F�N�V���s��̐ݒ�
-	proj = DirectX::XMMatrixTranspose(proj);	//�]�u�s��ɕϊ�
-	DirectX::XMStoreFloat4x4(&mat[2], proj);	//XMMATRIX�^(proj)����XMFLOAT4X4�^(mat[2])�֕ϊ����Ċi�[
+		DirectX::XMConvertToRadians(60.0f), (float)16 / 9, 0.1f, 100.0f); //プロジェクショ行列の設定
+	proj = DirectX::XMMatrixTranspose(proj);	//転置行列に変換
+	DirectX::XMStoreFloat4x4(&mat[2], proj);	//XMMATRIX型(proj)からXMFLOAT4X4型(mat[2])へ変換して格納
 
-	//-- �s����V�F�[�_�[�֐ݒ�
+	//-- 行列をシェーダーへ設定
 	m_pVS->WriteBuffer(0, mat);
 
-	//-- ���f���\��
+	//-- モデル表示
 	if (m_pModel) {
 		m_pModel->Draw();
 	}
 }
 
-CSphereInfo::Sphere CSlimeBase::GetPos()
+CSphereInfo::Sphere CSlimeBase::GetSphere()
 {
 	return m_sphere;
 }
@@ -183,44 +185,72 @@ bool CSlimeBase::GetUse()
 }
 
 /* ========================================
-	�n���}�[���G�ɐ�����΂���Ď��ۂɈړ��ʂ��m�肷��֐�
+	スライムの大きさの種類を返す関数
 	----------------------------------------
-	���e�FX������Z�����̈ړ��ʂ��m�肷�鏈��
+	内容：スライムの大きさの種類を返す
 	----------------------------------------
-	����1�F�Ȃ�
+	引数1：なし
 	----------------------------------------
-	�ߒl�F�Ȃ�
+	戻値：スライムのサイズを表す列挙
+======================================== */
+E_SLIME_LEVEL CSlimeBase::GetSlimeLevel()
+{
+	return m_eSlimeSize;
+}
+
+/* ========================================
+	スライムの移動速度を取得
+	----------------------------------------
+	内容：スライムの移動速度を取得
+	----------------------------------------
+	引数1：なし
+	----------------------------------------
+	戻値：スライムの移動速度
+======================================== */
+float CSlimeBase::GetSlimeSpeed()
+{
+	return m_fSpeed;
+}
+
+/* ========================================
+	ハンマーか敵に吹っ飛ばされて実際に移動量を確定する関数
+	----------------------------------------
+	内容：X方向とZ方向の移動量を確定する処理
+	----------------------------------------
+	引数1：なし
+	----------------------------------------
+	戻値：なし
 ======================================== */
 void CSlimeBase::HitMove()
 {
-	//�G�L�����̈ړ����x�ƈړ��p�x�ɉ�����X������Z�����̈ړ��ʂ����߂�
+	//敵キャラの移動速度と移動角度に応じてX方向とZ方向の移動量を決める
 	m_move.x = cos(m_fVecAngle) * (m_fSpeed * SPEED_DOWN_RATIO);
 	m_move.z = sin(m_fVecAngle) * (m_fSpeed * SPEED_DOWN_RATIO);
 
-	//���t���[���̑��x�̌��Z����
+	//舞フレームの速度の減算処理
 	m_fSpeed -= MOVE_RESIST;
-	if (m_fSpeed <= 0)	//���x��0�ȉ��ɂȂ�����
+	if (m_fSpeed <= 0)	//速度が0以下になったら
 	{
-		m_fSpeed = ENEMY_MOVE_SPEED;	//�G�͒ʏ�̈ړ����x�ɂȂ�ʏ�ړ�����
+		m_fSpeed = ENEMY_MOVE_SPEED;	//敵は通常の移動速度になり通常移動する
 		m_bHitMove = false;
 	}
 }
 
 /* ========================================
-	�n���}�[���G�ɐ�����΂����֐�
+	ハンマーか敵に吹っ飛ばされる関数
 	----------------------------------------
-	���e�F�����ɉ����Ĕ�ԕ����ƈړ����x�����߂鏈��
+	内容：引数に応じて飛ぶ方向と移動速度を決める処理
 	----------------------------------------
-	����1�F���x
-	����2�F�p�x
+	引数1：速度
+	引数2：角度
 	----------------------------------------
-	�ߒl�F�Ȃ�
+	戻値：なし
 ======================================== */
 void CSlimeBase::HitMoveStart(float speed, float angle)
 {
-	m_fSpeed = speed;		//�ړ��ʂ�����
-	m_fVecAngle = angle;		//�ړ�����������
-	m_bHitMove = true;		//������я�Ԃ�ON�ɂ���
+	m_fSpeed = speed;		//移動量を入れる
+	m_fVecAngle = angle;		//移動方向を入れる
+	m_bHitMove = true;		//吹き飛び状態をONにする
 }
 
 //void CSlimeBase::SetPos(TTriType<float> pos)
