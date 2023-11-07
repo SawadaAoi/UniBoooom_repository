@@ -272,9 +272,6 @@
     <ClInclude Include="ExplosionManager.h">
       <Filter>ヘッダー ファイル\3dObject</Filter>
     </ClInclude>
-    <ClInclude Include="SceneGameCollision.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="VS_Model.hlsl">

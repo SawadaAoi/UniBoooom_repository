@@ -13,7 +13,7 @@
 ========================================== */
 
 // =============== インクルード ===================
-#include "SceneGameCollision.h"
+#include "SceneGame.h"
 
 // =============== 定数定義 =======================
 
@@ -23,35 +23,17 @@
 
 
 /* ========================================
-   関数：コンストラクタ
+   関数：SceneGameCollision関数
    ----------------------------------------
-   内容：生成時に行う処理
+   内容：SceneGame当たり判定をまとめる関数
    ----------------------------------------
    引数：なし
    ----------------------------------------
    戻値：なし
    ======================================== */
-CSceneGameCollision::CSceneGameCollision()
+void SceneGame::SceneGameCollision()
 {
-	m_pCollision = new CCOLLISION();
-}
 
-/* ========================================
-   関数：デストラクタ
-   ----------------------------------------
-   内容：破棄時に行う処理
-   ----------------------------------------
-   引数：なし
-   ----------------------------------------
-   戻値：なし
-   ======================================== */
-CSceneGameCollision::~CSceneGameCollision()
-{
-	if (m_pCollision)
-	{
-		delete m_pCollision;
-		m_pCollision = nullptr;
-	}
 }
 
 /* ========================================
@@ -63,7 +45,7 @@ CSceneGameCollision::~CSceneGameCollision()
    ----------------------------------------
    戻値：なし
    ======================================== */
-void CSceneGameCollision::PlayerSlimeCollision()
+void SceneGame::PlayerSlimeCollision()
 {
 
 }
@@ -77,7 +59,7 @@ void CSceneGameCollision::PlayerSlimeCollision()
    ----------------------------------------
    戻値：なし
    ======================================== */
-void CSceneGameCollision::HammerSlimeCollision()
+void SceneGame::HammerSlimeCollision()
 {
 
 }
@@ -91,7 +73,7 @@ void CSceneGameCollision::HammerSlimeCollision()
    ----------------------------------------
    戻値：なし
    ======================================== */
-void CSceneGameCollision::SlimeSlimeCollision()
+void SceneGame::SlimeSlimeCollision()
 {
 
 }
@@ -105,7 +87,7 @@ void CSceneGameCollision::SlimeSlimeCollision()
    ----------------------------------------
    戻値：なし
    ======================================== */
-void CSceneGameCollision::ExplosionSlimeCollision()
+void SceneGame::ExplosionSlimeCollision()
 {
 
 }

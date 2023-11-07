@@ -227,7 +227,6 @@
     <ClInclude Include="Pos.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneGame.h" />
-    <ClInclude Include="SceneGameCollision.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Sphere.h" />
