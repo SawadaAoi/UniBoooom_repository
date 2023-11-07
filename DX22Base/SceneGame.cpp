@@ -89,6 +89,8 @@ void SceneGame::Update(float tick)
 
 	// スライムマネージャー更新
 	g_pSlimeMng->Update();
+
+	g_pExplodeMng->Create();
 }
 
 void SceneGame::Draw()

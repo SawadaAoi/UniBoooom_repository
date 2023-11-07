@@ -138,6 +138,11 @@ void CExplosion::Draw()
 	}
 }
 
+void CExplosion::SetSphere(CSphereInfo::Sphere sphere)
+{
+	 
+}
+
 /*========================================
 関数：GetExplode関数
 ----------------------------------------
@@ -161,7 +166,7 @@ bool CExplosion::GetExplode()
 ----------------------------------------
 戻値：なし
 ======================================== */
-CSphereInfo::Sphere CExplosion::GetPos()
+CSphereInfo::Sphere CExplosion::GetSphere()
 {
 	return m_Sphere;
 }
@@ -178,17 +183,4 @@ CSphereInfo::Sphere CExplosion::GetPos()
 void CExplosion::SetExplode(bool YN)
 {
 	m_bExploded = YN;
-}
-/*========================================
-関数：SetPos関数
-----------------------------------------
-内容：爆発の位置を設定
-----------------------------------------
-引数：スライム結合の位置
-----------------------------------------
-戻値：なし
-======================================== */
-void CExplosion::SetPos(CSphereInfo::Sphere pos)
-{
-	m_Sphere = pos;
 }

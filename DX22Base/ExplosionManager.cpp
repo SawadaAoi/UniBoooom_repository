@@ -14,6 +14,7 @@
    ======================================== */
 #include "ExplosionManager.h"
 #include "Explosion.h"
+#include "Sphere.h"
 
 CExplosion* g_pExplosion[MAX_EXPLOSION_NUM];
 
@@ -63,7 +64,7 @@ void CExplosionManager::Update()
 ----------------------------------------
 戻値：一旦なし
 ======================================== */
-void CExplosionManager::CreateExplosion(CSphereInfo::Sphere pos)
+void CExplosionManager::Create()
 {
 	//スライム結合、位置の変数
 	//?
@@ -72,10 +73,8 @@ void CExplosionManager::CreateExplosion(CSphereInfo::Sphere pos)
 	for (int i = 0; i < MAX_EXPLOSION_NUM; i++)
 	{
 		//スライム結合したかどうか
-
 		g_pExplosion[i]->SetExplode(true);	//Explosionをtrueに
-		g_pExplosion[i]->SetPos(pos);		//posを設定
-		
+		&CSphere::Draw;
 	}
 }
 
@@ -88,9 +87,9 @@ void CExplosionManager::CreateExplosion(CSphereInfo::Sphere pos)
 ----------------------------------------
 戻値：なし
 ======================================== */
-void CExplosionManager::DeleteExplosion()
+void CExplosionManager::Delete()
 {
-	int CntDeleteTime;
+	int CntDeleteTime = 0;
 	CntDeleteTime++;
 	for (int i = 0; i < MAX_EXPLOSION_NUM; i++)
 	{

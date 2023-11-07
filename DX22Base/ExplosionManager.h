@@ -28,8 +28,8 @@ public:
 
 	void Update();
 	void Draw();
-	void CreateExplosion(CSphereInfo::Sphere pos);
-	void DeleteExplosion();
+	void Create();
+	void Delete();
 protected:
 
 	CExplosionManager* m_pExplosionMng[MAX_EXPLOSION_NUM];

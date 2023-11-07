@@ -34,11 +34,10 @@ public:
 	~CExplosion();
 	void Update();
 	void Draw();
-
+	void SetSphere(CSphereInfo::Sphere sphere);
 	void SetExplode(bool YN);
-	void SetPos(CSphereInfo::Sphere pos);
 	bool GetExplode();
-	CSphereInfo::Sphere GetPos();
+	CSphereInfo::Sphere GetSphere();
 
 
 protected:
