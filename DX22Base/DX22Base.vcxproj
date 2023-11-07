@@ -169,7 +169,8 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="CameraBase.cpp" />
+    <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="CameraChase.cpp" />
     <ClCompile Include="CameraDebug.cpp" />
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="Cylinder.cpp" />
@@ -187,12 +188,14 @@
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="SceneGameCollision.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="SlimeBase.cpp" />
     <ClCompile Include="SlimeManager.cpp" />
     <ClCompile Include="Slime_1.cpp" />
     <ClCompile Include="Sphere.cpp" />
+    <ClCompile Include="SphereInfo.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="Startup.cpp" />
     <ClCompile Include="Texture.cpp" />
@@ -202,7 +205,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Box.h" />
-    <ClInclude Include="CameraBase.h" />
+    <ClInclude Include="Camera.h" />
+    <ClInclude Include="CameraChase.h" />
     <ClInclude Include="CameraDebug.h" />
     <ClInclude Include="Collision.h" />
     <ClInclude Include="Cylinder.h" />
@@ -224,6 +228,7 @@
     <ClInclude Include="SceneGame.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="Shader.h" />
+    <ClInclude Include="Sphere.h" />
     <ClInclude Include="SphereInfo.h" />
     <ClInclude Include="SlimeBase.h" />
     <ClInclude Include="SlimeManager.h" />

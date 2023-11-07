@@ -16,8 +16,20 @@
 #define __SLIME_MANAGER_H__
 
 #include "TriType.h"
+#include "SlimeBase.h"
 
-#define MAX_SLIME_1 10
+enum E_SLIME_LEVEL
+{
+	LEVEL_1,
+	LEVEL_2,
+	LEVEL_3,
+	LEVEL_4
+};
+
+#define MAX_SLIME_1 20
+#define MAX_SLIME_2 12
+#define MAX_SLIME_3 8
+#define MAX_SLIME_4 4
 
 class CSlimeManager
 {
@@ -30,6 +42,8 @@ public:
 	void Generate(TTriType<float> pos);
 
 private:
+	CSlimeBase* m_pSlime[MAX_SLIME_1];
+
 	int m_nRandNum;	//óêêîóp
 };
 

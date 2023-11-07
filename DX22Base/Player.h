@@ -1,29 +1,55 @@
+/* ========================================
+	HEW/UniBoooom!!
+	------------------------------------
+	player用ヘッダ
+	------------------------------------
+	player.h
+	------------------------------------
+	作成者
+		山本凱翔
+	変更履歴
+	・2023/11/03 h,作成 山本凱翔
+	・2023/11/06 ダメージ処理追加,コメント追加 山本凱翔
+
+
+========================================== */
+
 #ifndef __PLAYER_H__
-#define __PLAYER_H__
+#define __PLAYER_H_
+
+// =============== インクルード ===================
 #include "Shader.h"
-
-#include"Hammer.h"
-
+#include"hammer.h"
+#include "Geometry.h"
+// =============== クラス定義 =====================
 class CPlayer
 {
 public:
+	// =============== プロトタイプ宣言 ===============
 	CPlayer();
 	~CPlayer();
 
-	void Update();
-	void Draw();
+	void Update();	//更新
+	void Draw();	//描画
+	void Damege();	//自身のHPを減らす
+	void Move();
 
 private:
-	DirectX::XMMATRIX T;
-	DirectX::XMMATRIX S;
-	DirectX::XMMATRIX Ry;
-	TTriType<float> playerPosition;	//プレイヤーの位置
-	TTriType<float> playerForward; // プレイヤーの初期進行方向
-	float playerRotation; // プレイヤーの回転角度
+	// ===============メンバ関数宣言===============
+	DirectX::XMMATRIX m_T;				//位置
+	DirectX::XMMATRIX m_S;				//拡縮
+	DirectX::XMMATRIX m_Ry;				//回転
+	TTriType<float> m_playerPosition;	//プレイヤーの位置
+	TTriType<float> m_playerForward;	// プレイヤーの初期進行方向
+	float m_playerRotation;				// プレイヤーの回転角度
+	int m_nHp;							//プレイヤーの体力
 	CHammer* m_pHammer;
-	bool m_hammer;
+	CGeometry* m_pPlayer;
+	bool m_bHammer;						//攻撃中かどうかのフラグ
 };
 
 
 #endif // !__PLAYER_H__
+
+
 

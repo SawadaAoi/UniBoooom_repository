@@ -3,10 +3,11 @@
 
 #include "Model.h"
 #include "Shader.h"
-#include "CameraBase.h"
-#include "Player.h"
+#include "Camera.h"
+#include "Geometry.h"
 #include "SlimeManager.h"
-#include "ExplosionManager.h"
+#include "Collision.h"
+#include "Player.h"
 
 
 class SceneGame
@@ -17,11 +18,19 @@ public:
 	void Update(float tick);
 	void Draw();
 
+	void SceneGameCollision();
+	void PlayerSlimeCollision();
+	void HammerSlimeCollision();
+	void SlimeSlimeCollision();
+	void ExplosionSlimeCollision();
 private:
-	CameraBase* m_pCamera;
+	Model* m_pModel;
+	VertexShader* m_pVS;
+	CCamera* m_pCamera;
+	CGeometry* m_pBox;
 	CPlayer* m_pPlayer;
-	CSlimeManager* g_pSlimeMng;
-	CExplosionManager* g_pExplodeMng;
+	CSlimeManager* m_pSlimeMng;
+	CCOLLISION* m_pCollision;
 };
 
 #endif // __SCENE_GAME_H__

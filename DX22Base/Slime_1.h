@@ -10,6 +10,7 @@ public:
 
 	void Union() override;
 	void Explosion() override;
+	
 
 
 
