@@ -4,7 +4,9 @@
 #include "Model.h"
 #include "Shader.h"
 #include "CameraBase.h"
-#include "Geometry.h"
+#include "Player.h"
+#include "SlimeManager.h"
+#include "ExplosionManager.h"
 
 
 class SceneGame
@@ -16,11 +18,10 @@ public:
 	void Draw();
 
 private:
-	Model* m_pModel;
-	VertexShader* m_pVS;
 	CameraBase* m_pCamera;
-	CGeometry* m_pBox;
-	CGeometry* m_pPlayer;
+	CPlayer* m_pPlayer;
+	CSlimeManager* g_pSlimeMng;
+	CExplosionManager* g_pExplodeMng;
 };
 
 #endif // __SCENE_GAME_H__

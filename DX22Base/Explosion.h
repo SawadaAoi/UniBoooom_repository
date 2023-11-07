@@ -1,51 +1,51 @@
-//ヘッダー用　----------------------------------------------------
-/*========================================
-HEW/UniBoooom!!
----------------------------------------
-爆発用ヘッダ
----------------------------------------
-Expplosion.h
-
-作成者 鄭 宇恩
-
-変更履歴
-・2023/11/03 ヘッダー作成 / 鄭 宇恩
-・2023/11/05 パラメータ設定 /　鄭 宇恩
-・2023/11/07 変数型TriType→CSphereに /鄭 宇恩
-======================================== */
-
 #ifndef __EXPLOSION_H__
 #define __EXPLOSION_H__
+/*========================================
+	HEW/UniBoooom!!
+	---------------------------------------
+	爆発用ヘッダ
+	---------------------------------------
+	Expplosion.h
+	
+	作成者 鄭 宇恩
+	
+	変更履歴
+	・2023/11/03 ヘッダー作成 / 鄭 宇恩
+	・2023/11/05 パラメータ設定 /　鄭 宇恩
+	・2023/11/07 変数型TriType→CSphereに /鄭 宇恩
+	・2023/11/08 変数、関数の変更 / 澤田蒼生
+	
+======================================== */
+
+// =============== インクルード ===================
 #include "Model.h"
 #include "Shader.h"
 #include "Sphereinfo.h"
 
 
-//=============== 構造体定義 =====================
 
 //=============== クラス定義 =====================
-
-//=============== 列挙定義 =======================
-
 class CExplosion
 {
 public:
+// ===メンバ関数宣言===
 	CExplosion();
 	~CExplosion();
 	void Update();
 	void Draw();
-	void SetSphere(CSphereInfo::Sphere sphere);
-	void SetExplode(bool YN);
-	bool GetExplode();
-	CSphereInfo::Sphere GetSphere();
+	void DisplayTimeAdd();
 
+	void SetPos(TTriType<float> pos);
+
+	CSphereInfo::Sphere GetSphere();
+	void SetSphere(CSphereInfo::Sphere sphere);
 
 protected:
-	Model* m_pModel;
-	VertexShader* m_pVS;
-	CSphereInfo::Sphere m_Sphere;
-	float m_fSize;
-	bool m_bExploded;	//爆発したのフラグ
+// ===メンバ変数宣言===
+	CSphereInfo::Sphere m_Sphere;	// 座標と当たり判定の大きさを持つ
+	float	m_fSize;
+	float	m_fDelFrame;	// 爆発表示カウント
+	bool	m_bDelFlg;		// 爆発終了フラグ
 
 private:
 };
