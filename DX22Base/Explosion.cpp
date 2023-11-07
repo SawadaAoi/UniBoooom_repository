@@ -22,7 +22,6 @@ TeiUon
 #include "Geometry.h"
 
 
-
 //=============== 定数定義 =======================
 
 //=============== プロトタイプ宣言 ===============
@@ -32,17 +31,16 @@ TeiUon
 
 CExplosion::CExplosion()
 	:m_pModel(nullptr)
-	,m_pVS(nullptr)
-	,m_pos(0.0f, 0.0f, 0.0f)
-	,m_fSize(1.0f)
-	,m_bExploded(false)
+	, m_pVS(nullptr)
+	, m_fSize(1.0f)
+	, m_bExploded(false)
 {
 	RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得
 	DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
 	SetRenderTargets(1, &pRTV, pDSV);		//DSVがnullだと2D表示になる
-	
-	
-	
+
+
+
 	if (!m_pModel->Load("Assets/Model/Golem/Golem.FBX", 1.0f, Model::XFlip)) {		//倍率と反転は省略可
 		MessageBox(NULL, "Golem", "Error", MB_OK);	//ここでエラーメッセージ表示
 	}
@@ -53,12 +51,15 @@ CExplosion::CExplosion()
 		MessageBox(nullptr, "VS_Model.cso", "Error", MB_OK);
 	}
 	m_pModel->SetVertexShader(m_pVS);
-	
+
+	//爆発オブジェクト初期化
+	m_Sphere.pos = { 1.0f, 1.0f, 1.0f };
+	m_Sphere.radius = 0.0f;
 }
 
 CExplosion::~CExplosion()
 {
-	
+
 	if (m_pModel)
 	{
 		delete m_pModel;
@@ -69,7 +70,7 @@ CExplosion::~CExplosion()
 		delete m_pVS;
 		m_pVS = nullptr;
 	}
-	
+
 }
 
 /*========================================
@@ -83,7 +84,7 @@ CExplosion::~CExplosion()
 ======================================== */
 void CExplosion::Update()
 {
-	
+
 }
 
 
@@ -99,11 +100,11 @@ void CExplosion::Update()
 
 void CExplosion::Draw()
 {
-	
-	
+
+
 	// 使用してないならreturn
 	if (m_bExploded == false) return;
-	
+
 	DirectX::XMFLOAT4X4 mat[3];
 
 	//-- ワールド行列の計算
@@ -129,7 +130,7 @@ void CExplosion::Draw()
 
 	//-- 行列をシェーダーへ設定
 	m_pVS->WriteBuffer(0, mat);
-		
+
 	//--モデル表示
 	if (m_pModel)
 	{
@@ -160,9 +161,9 @@ bool CExplosion::GetExplode()
 ----------------------------------------
 戻値：なし
 ======================================== */
-TTriType<float> CExplosion::GetPos()
+CSphereInfo::Sphere CExplosion::GetPos()
 {
-	return m_pos;
+	return m_Sphere;
 }
 
 /*========================================
@@ -187,7 +188,7 @@ void CExplosion::SetExplode(bool YN)
 ----------------------------------------
 戻値：なし
 ======================================== */
-void CExplosion::SetPos(TTriType<float> pos)
+void CExplosion::SetPos(CSphereInfo::Sphere pos)
 {
-	m_pos = pos;
+	m_Sphere = pos;
 }

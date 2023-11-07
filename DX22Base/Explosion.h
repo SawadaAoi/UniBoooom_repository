@@ -6,19 +6,19 @@ HEW/UniBoooom!!
 ---------------------------------------
 Expplosion.h
 
-TeiUon
+作成者 鄭 宇恩
 
 変更履歴
-・2023/11/03 ヘッダー作成　鄭宇恩
-・2023/11/05 パラメータ設定　鄭宇恩
-
+・2023/11/03 ヘッダー作成 / 鄭 宇恩
+・2023/11/05 パラメータ設定 /　鄭 宇恩
+・2023/11/07 変数型TriType→CSphereに /鄭 宇恩
 ======================================== */
 
 #ifndef __EXPLOSION_H__
 #define __EXPLOSION_H__
 #include "Model.h"
 #include "Shader.h"
-#include "TriType.h"
+#include "Sphereinfo.h"
 
 
 //=============== 構造体定義 =====================
@@ -36,15 +36,15 @@ public:
 	void Draw();
 
 	void SetExplode(bool YN);
-	void SetPos(TTriType<float> pos);
+	void SetPos(CSphereInfo::Sphere pos);
 	bool GetExplode();
-	TTriType<float> GetPos();
-	
+	CSphereInfo::Sphere GetPos();
+
 
 protected:
 	Model* m_pModel;
 	VertexShader* m_pVS;
-	TTriType<float> m_pos;
+	CSphereInfo::Sphere m_Sphere;
 	float m_fSize;
 	bool m_bExploded;	//爆発したのフラグ
 
@@ -52,4 +52,3 @@ private:
 };
 
 #endif // __EXPLOSION_H__
-

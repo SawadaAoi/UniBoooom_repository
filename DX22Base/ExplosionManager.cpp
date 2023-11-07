@@ -10,7 +10,7 @@
    変更履歴
    ・2023/11/06 爆発マネージャークラス作成 /鄭　宇恩
    ・2023/11/06 爆発発生、削除関数作成 / 鄭 宇恩
-
+   ・2023/11/07 爆発生成関数名の変更、DeleteExplosin()の修正/ 鄭 宇恩
    ======================================== */
 #include "ExplosionManager.h"
 #include "Explosion.h"
@@ -55,16 +55,15 @@ void CExplosionManager::Update()
 
 
 /*========================================
-関数：Explosion関数
+関数：CreateExplosion関数
 ----------------------------------------
-内容：爆発の処理
+内容：爆発の生成
 ----------------------------------------
-引数：TTriType<float>スライム結合の位置
-	：bool結合した判定
+引数：CSphere::Sphere スライム結合の位置
 ----------------------------------------
 戻値：一旦なし
 ======================================== */
-void CExplosionManager::Explosion(TTriType<float> pos, bool bUnion)
+void CExplosionManager::CreateExplosion(CSphereInfo::Sphere pos)
 {
 	//スライム結合、位置の変数
 	//?
@@ -73,11 +72,10 @@ void CExplosionManager::Explosion(TTriType<float> pos, bool bUnion)
 	for (int i = 0; i < MAX_EXPLOSION_NUM; i++)
 	{
 		//スライム結合したかどうか
-		if (bUnion)
-		{
-			g_pExplosion[i]->SetExplode(true);	//Explosionをtrueに
-			g_pExplosion[i]->SetPos(pos);		//posを設定
-		}
+
+		g_pExplosion[i]->SetExplode(true);	//Explosionをtrueに
+		g_pExplosion[i]->SetPos(pos);		//posを設定
+		
 	}
 }
 
@@ -98,6 +96,7 @@ void CExplosionManager::DeleteExplosion()
 	{
 		if (CntDeleteTime % 120 == 0)
 		{
+			if(g_pExplosion[i]->GetExplode() == true)
 			g_pExplosion[i]->SetExplode(false);
 		}
 	}
@@ -119,7 +118,7 @@ void CExplosionManager::Draw()
 	for (int i = 0; i < MAX_EXPLOSION_NUM; i++)
 	{
 		bool bExploded = g_pExplosion[i]->GetExplode();
-		if (!bExploded) continue;
+		if (g_pExplosion[i]->GetExplode() == false) continue;
 		g_pExplosion[i]->Draw();
 	}
 }

@@ -16,6 +16,7 @@
 #define __EXPLOSION_MANAGER_H__
 
 #include "TriType.h"
+#include "Explosion.h"
 
 #define MAX_EXPLOSION_NUM 20
 
@@ -27,11 +28,12 @@ public:
 
 	void Update();
 	void Draw();
-	void Explosion(TTriType<float> pos, bool bUnion);
+	void CreateExplosion(CSphereInfo::Sphere pos);
 	void DeleteExplosion();
+protected:
 
+	CExplosionManager* m_pExplosionMng[MAX_EXPLOSION_NUM];
 private:
-	
 };
 
 #endif // __EXPLOSION_MANAGER_H__
