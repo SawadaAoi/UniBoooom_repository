@@ -65,9 +65,6 @@ CSlimeBase::CSlimeBase()
 	m_playerSphere.pos = { 0.0f, 0.0f, 0.0f };
 	m_playerSphere.radius = 0.0f;
 
-
-	
-
 }
 
 // =============== デストラクタ =================

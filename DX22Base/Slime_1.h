@@ -10,7 +10,7 @@ public:
 
 	void Union() override;
 	void Explosion() override;
-	void HitBranch() override;
+	
 
 
 
