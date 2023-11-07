@@ -7,7 +7,7 @@
 #include "Geometry.h"
 #include "SlimeManager.h"
 #include "Collision.h"
-
+#include "Player.h"
 
 
 class SceneGame
@@ -28,7 +28,7 @@ private:
 	VertexShader* m_pVS;
 	CCamera* m_pCamera;
 	CGeometry* m_pBox;
-	CGeometry* m_pPlayer;
+	CPlayer* m_pPlayer;
 	CSlimeManager* m_pSlimeMng;
 	CCOLLISION* m_pCollision;
 };

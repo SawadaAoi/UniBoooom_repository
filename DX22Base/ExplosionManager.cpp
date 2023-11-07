@@ -1,83 +1,112 @@
 /* ========================================
-   HEW/UniBoooom!!
-   ---------------------------------------
-   爆発管理
-   ---------------------------------------
-   ExplosionManager.cpp
+	HEW/UniBoooom!!
+	---------------------------------------
+	爆発管理用ヘッダ
+	---------------------------------------
+	ExplosionManager.cpp
+	
+	作成者	鄭 宇恩
+	
+	変更履歴
+	・2023/11/06 爆発マネージャークラス作成 /鄭　宇恩
+	・2023/11/06 爆発発生、削除関数作成 / 鄭 宇恩
+	・2023/11/07 爆発生成関数名の変更、DeleteExplosin()の修正/ 鄭 宇恩
+	
+	
+========================================== */
 
-   作成者 鄭 宇恩
-
-   変更履歴
-   ・2023/11/06 爆発マネージャークラス作成 /鄭　宇恩
-   ・2023/11/06 爆発発生、削除関数作成 / 鄭 宇恩
-
-   ======================================== */
+// =============== インクルード ===================
 #include "ExplosionManager.h"
 #include "Explosion.h"
+#include "Sphere.h"
 
-CExplosion* g_pExplosion[MAX_EXPLOSION_NUM];
-
+/* ========================================
+	関数
+	-------------------------------------
+	内容：
+	-------------------------------------
+	引数1：
+	-------------------------------------
+	戻値：
+=========================================== */
 CExplosionManager::CExplosionManager()
 {
-	//爆発
+	// 初期化
 	for (int i = 0; i < MAX_EXPLOSION_NUM; i++)
 	{
-		g_pExplosion[i] = new CExplosion;
+		m_pExplosion[i] = nullptr;
 	}
 }
 
+/* ========================================
+	関数
+	-------------------------------------
+	内容：
+	-------------------------------------
+	引数1：
+	-------------------------------------
+	戻値：
+=========================================== */
 CExplosionManager::~CExplosionManager()
 {
-	
+	// メモリ削除
 	for (int i = 0; i < MAX_EXPLOSION_NUM; i++)
 	{
-		if (g_pExplosion[i] != nullptr)
-		{
-			delete g_pExplosion[i];
-			g_pExplosion[i] = nullptr;
-		}
+		SAFE_DELETE(m_pExplosion[i]);
 	}
 }
 
-/*========================================
-関数：Update関数
-----------------------------------------
-内容：爆発マネージャーの更新処理
-----------------------------------------
-引数：なし
-----------------------------------------
-戻値：なし
-======================================== */
+
+/* ========================================
+	更新処理関数
+	-------------------------------------
+	内容：爆発マネージャーの更新処理
+	-------------------------------------
+	引数1：なし
+	-------------------------------------
+	戻値：なし
+=========================================== */
 void CExplosionManager::Update()
 {
+	// 爆発を検索
+	for (int i = 0; i < MAX_EXPLOSION_NUM; i++)
+	{
+		// 未使用の爆発はスルー
+		if (m_pExplosion[i] == nullptr)
+		{
+			continue;
 
+		}
+
+		m_pExplosion[i]->Update();
+	}
+
+	DeleteCheck();	// 削除チェック
 }
 
 
-/*========================================
-関数：Explosion関数
-----------------------------------------
-内容：爆発の処理
-----------------------------------------
-引数：TTriType<float>スライム結合の位置
-	：bool結合した判定
-----------------------------------------
-戻値：一旦なし
-======================================== */
-void CExplosionManager::Explosion(TTriType<float> pos, bool bUnion)
+
+/* ========================================
+	生成処理関数
+	-------------------------------------
+	内容：爆発の生成
+	-------------------------------------
+	引数1：生成座標(x,y,z)
+	-------------------------------------
+	戻値：なし
+=========================================== */
+void CExplosionManager::Create(TTriType<float> pos)
 {
-	//スライム結合、位置の変数
-	//?
-	
-	//爆発する判定
+	// 爆発を検索
 	for (int i = 0; i < MAX_EXPLOSION_NUM; i++)
 	{
-		//スライム結合したかどうか
-		if (bUnion)
-		{
-			g_pExplosion[i]->SetExplode(true);	//Explosionをtrueに
-			g_pExplosion[i]->SetPos(pos);		//posを設定
-		}
+		// 使用済みの爆発はスルー
+		if (m_pExplosion[i] != nullptr) continue;
+
+		m_pExplosion[i] = new CExplosion(pos);	// 座標を指定して生成
+
+		break;
+
 	}
 }
 
@@ -90,16 +119,18 @@ void CExplosionManager::Explosion(TTriType<float> pos, bool bUnion)
 ----------------------------------------
 戻値：なし
 ======================================== */
-void CExplosionManager::DeleteExplosion()
+void CExplosionManager::DeleteCheck()
 {
-	int CntDeleteTime;
-	CntDeleteTime++;
+	// 爆発を検索
 	for (int i = 0; i < MAX_EXPLOSION_NUM; i++)
 	{
-		if (CntDeleteTime % 120 == 0)
-		{
-			g_pExplosion[i]->SetExplode(false);
-		}
+		// 未使用の爆発はスルー
+		if (m_pExplosion[i] == nullptr) continue;
+		// 削除フラグがたってない爆発はスルー
+		if (m_pExplosion[i]->GetDelFlg() == false) continue;;
+		
+		delete m_pExplosion[i]; m_pExplosion[i] = nullptr;	// 爆発を削除する
+
 	}
 }
 
@@ -114,12 +145,12 @@ void CExplosionManager::DeleteExplosion()
 ======================================== */
 void CExplosionManager::Draw()
 {
-	
-	//爆発の描画
+	// 爆発の検索
 	for (int i = 0; i < MAX_EXPLOSION_NUM; i++)
 	{
-		bool bExploded = g_pExplosion[i]->GetExplode();
-		if (!bExploded) continue;
-		g_pExplosion[i]->Draw();
+		// 未使用の爆発はスルー
+		if (m_pExplosion[i] == nullptr) return;
+		
+		m_pExplosion[i]->Draw(); // 爆発の描画
 	}
 }
