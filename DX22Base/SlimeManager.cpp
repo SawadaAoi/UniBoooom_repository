@@ -126,3 +126,79 @@ void CSlimeManager::Generate(TTriType<float> pos)
 	}
 	
 }
+
+/* ========================================
+	
+	----------------------------------------
+	内容：スライム同士が接触した際に分岐して正しい処理を実行する
+	----------------------------------------
+	引数1：ぶつかりにきたスライムの配列番号
+	引数2：ぶつかられたスライムの配列番号
+	----------------------------------------
+	戻値：なし
+======================================== */
+void CSlimeManager::HitBranch(int HitSlimeArrayNum, int standSlimeArrayNum)
+{
+	E_SLIME_LEVEL hitSlimeLevel, standSlimeLevel;
+	hitSlimeLevel = m_pSlime[HitSlimeArrayNum]->GetSlimeLevel();		//ぶつかりに来たスライムのサイズを取得
+	standSlimeLevel = m_pSlime[standSlimeArrayNum]->GetSlimeLevel();	//ぶつかられたスライムのサイズを取得
+	if (hitSlimeLevel > standSlimeLevel)								//ぶつかりにきたスライムが大きい場合
+	{
+		float speed = m_pSlime[HitSlimeArrayNum]->GetSlimeSpeed();					//ぶつかりに来たスライムの速度を取得
+		CSphereInfo::Sphere sphere = m_pSlime[HitSlimeArrayNum]->GetSphere();		//ぶつかられたスライムのSphereを取得
+		float angle = sphere.Angle(m_pSlime[standSlimeArrayNum]->GetSphere());		//ぶつかられたスライムの方向を割り出す
+		m_pSlime[standSlimeArrayNum]->HitMoveStart(speed, angle);					//ぶつかられたスライムに吹き飛び移動処理
+		m_pSlime[HitSlimeArrayNum]->Reflect();										//ぶつかりに来たスライムの速度に反発の割合を乗算する
+	}
+	else if(hitSlimeLevel < standSlimeLevel)	//ぶつかりにきたスライムが小さい場合
+	{
+		float speed = m_pSlime[HitSlimeArrayNum]->GetSlimeSpeed();					//ぶつかりに来たスライムの速度を取得
+		CSphereInfo::Sphere sphere = m_pSlime[standSlimeArrayNum]->GetSphere();		//ぶつかられたスライムのSphereを取得
+		float angle = sphere.Angle(m_pSlime[HitSlimeArrayNum]->GetSphere());		//ぶつかられたスライムの方向を割り出す
+		m_pSlime[HitSlimeArrayNum]->HitMoveStart(speed, angle);						//ぶつかられたスライムに吹き飛び移動処理
+	}
+	else	//スライムのサイズが同じだった場合
+	{
+		SAFE_DELETE(m_pSlime[HitSlimeArrayNum]);	//ぶつかりに来たスライムを削除
+		SAFE_DELETE(m_pSlime[standSlimeArrayNum]);	//ぶつかられたスライムを削除
+
+		if (hitSlimeLevel == MAX_LEVEL)	//スライムのサイズが最大の時
+		{
+			//爆発処理を行う<=TODO
+		}
+		else	//最大サイズじゃない場合は1段階大きいスライムを生成する
+		{
+			UnionSlime(hitSlimeLevel);	//スライムの結合処理
+		}
+	}
+}
+
+/* ========================================
+	結合関数
+	----------------------------------------
+	内容：1段階上のスライムを生成する関数
+	----------------------------------------
+	引数1：スライムのレベル
+	----------------------------------------
+	戻値：なし
+======================================== */
+void CSlimeManager::UnionSlime(E_SLIME_LEVEL level)
+{
+	for (int i = 0; i < MAX_SLIME; i++)
+	{
+		if (m_pSlime[i] != nullptr) { continue; }
+
+		switch (level)
+		{
+		case LEVEL_1:
+			//サイズ2のスライムを生成<=TODO
+			break;
+		case LEVEL_2:
+			//サイズ3のスライムを生成<=TODO
+			break;
+		case LEVEL_3:
+			//サイズ4のスライムを生成<=TODO
+			break;
+		}
+	}
+}

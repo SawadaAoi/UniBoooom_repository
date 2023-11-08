@@ -170,7 +170,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="CameraBase.cpp" />
     <ClCompile Include="CameraChase.cpp" />
     <ClCompile Include="CameraDebug.cpp" />
     <ClCompile Include="Collision.cpp" />
@@ -196,6 +195,7 @@
     <ClCompile Include="SlimeManager.cpp" />
     <ClCompile Include="Slime_1.cpp" />
     <ClCompile Include="Sphere.cpp" />
+    <ClCompile Include="SphereInfo.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="Startup.cpp" />
     <ClCompile Include="Texture.cpp" />
@@ -206,7 +206,6 @@
   <ItemGroup>
     <ClInclude Include="Box.h" />
     <ClInclude Include="Camera.h" />
-    <ClInclude Include="CameraBase.h" />
     <ClInclude Include="CameraChase.h" />
     <ClInclude Include="CameraDebug.h" />
     <ClInclude Include="Collision.h" />

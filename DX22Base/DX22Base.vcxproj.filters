@@ -135,9 +135,6 @@
     <ClCompile Include="Prot.cpp">
       <Filter>ソース ファイル\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="Collision.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Explosion.cpp">
       <Filter>ソース ファイル\3dObject</Filter>
     </ClCompile>
@@ -153,9 +150,6 @@
     <ClCompile Include="Camera.cpp">
       <Filter>ソース ファイル\System\Camera</Filter>
     </ClCompile>
-    <ClCompile Include="CameraBase.cpp">
-      <Filter>ソース ファイル\System\Camera</Filter>
-    </ClCompile>
     <ClCompile Include="CameraDebug.cpp">
       <Filter>ソース ファイル\System\Camera</Filter>
     </ClCompile>
@@ -164,6 +158,12 @@
     </ClCompile>
     <ClCompile Include="ExplosionManager.cpp">
       <Filter>ソース ファイル\3dObject</Filter>
+    </ClCompile>
+    <ClCompile Include="SphereInfo.cpp">
+      <Filter>ソース ファイル\3dObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Collision.cpp">
+      <Filter>ソース ファイル\System</Filter>
     </ClCompile>
     <ClCompile Include="SceneGameCollision.cpp">
       <Filter>ソース ファイル</Filter>
@@ -236,9 +236,6 @@
     <ClInclude Include="Prot.h">
       <Filter>ヘッダー ファイル\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Collision.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="SphereInfo.h">
       <Filter>ヘッダー ファイル\Info</Filter>
     </ClInclude>
@@ -254,9 +251,6 @@
     <ClInclude Include="SlimeManager.h">
       <Filter>ヘッダー ファイル\3dObject</Filter>
     </ClInclude>
-    <ClInclude Include="CameraBase.h">
-      <Filter>ヘッダー ファイル\System\Camera</Filter>
-    </ClInclude>
     <ClInclude Include="CameraDebug.h">
       <Filter>ヘッダー ファイル\System\Camera</Filter>
     </ClInclude>
@@ -271,6 +265,9 @@
     </ClInclude>
     <ClInclude Include="ExplosionManager.h">
       <Filter>ヘッダー ファイル\3dObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Collision.h">
+      <Filter>ヘッダー ファイル\System</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

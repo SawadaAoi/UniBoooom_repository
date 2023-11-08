@@ -8,6 +8,7 @@
 #include "SlimeManager.h"
 #include "Collision.h"
 #include "ExplosionManager.h"
+#include "Player.h"
 
 
 class SceneGame
@@ -28,7 +29,7 @@ private:
 	VertexShader* m_pVS;
 	CCamera* m_pCamera;
 	CGeometry* m_pBox;
-	CGeometry* m_pPlayer;
+	CPlayer* m_pPlayer;
 	CSlimeManager* m_pSlimeMng;
 	CCOLLISION* m_pCollision;
 	CExplosionManager* m_pExplosionMng;
