@@ -11,6 +11,7 @@
 	・2023/11/04 制作 takagi
 	・2023/11/06 コーディング規約適用・追跡対象登録機構作成 takagi
 	・2023/11/07 GetViewMatrix()関数にconst修飾子付与・コメント修正 takagi
+	・2023/11/08 TPos修正 takagi
 
 ========================================== */
 
@@ -34,7 +35,7 @@ const float SPEED = 0.1f;	//カメラの速度
 	-------------------------------------
 	戻値：なし
 =========================================== */
-CCameraChase::CCameraChase(const TPos<float>* pPos)
+CCameraChase::CCameraChase(const TPos3d<float>* pPos)
 	:m_pTarget(pPos)	//追跡対象(追跡のみを行い値を変更できないようconst修飾子にしている)
 {
 }
@@ -72,7 +73,7 @@ void CCameraChase::Update()
 	-------------------------------------
 	引数1：なし
 	-------------------------------------
-	戻値：なし
+	戻値：作成した行列
 =========================================== */
 DirectX::XMFLOAT4X4 CCameraChase::GetViewMatrix() const
 {
