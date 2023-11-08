@@ -21,7 +21,6 @@
 // =============== インクルード ===================
 #include "SlimeBase.h"
 #include "Geometry.h"
-#include "Model.h"
 
 // =============== 定数定義 =======================
 const float ENEMY_MOVE_SPEED = 0.01f;
@@ -97,12 +96,12 @@ CSlimeBase::~CSlimeBase()
 	-------------------------------------
 	戻値：無し
 =========================================== */
-void CSlimeBase::Update()
+void CSlimeBase::Update(CSphereInfo::Sphere playerSphere)
 {
 
 	if (!m_bHitMove)	//敵が通常の移動状態の時
 	{
-		NormalMove();
+		NormalMove(playerSphere);
 	}
 	else
 	{
@@ -126,7 +125,7 @@ void CSlimeBase::Update()
 	-------------------------------------
 	戻値：無し
 =========================================== */
-void CSlimeBase::Draw()
+void CSlimeBase::Draw(const CCamera* pCamera)
 {
 
 	DirectX::XMFLOAT4X4 mat[3];
@@ -141,19 +140,23 @@ void CSlimeBase::Draw()
 	world = DirectX::XMMatrixTranspose(world);								//転置行列に変換
 	DirectX::XMStoreFloat4x4(&mat[0], world);								//XMMATRIX型(world)からXMFLOAT4X4型(mat[0])へ変換して格納
 
-	//-- ビュー行列の計算
-	DirectX::XMMATRIX view = DirectX::XMMatrixLookAtLH(
-		DirectX::XMVectorSet(1.5f, 2.5f, -3.0f, 0.0f),
-		DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f),
-		DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)); //ビュー行列の設定
-	view = DirectX::XMMatrixTranspose(view);		//転置行列に変換
-	DirectX::XMStoreFloat4x4(&mat[1], view);		//XMMATRIX型(view)からXMFLOAT4X4型(mat[1])へ変換して格納
+	////-- ビュー行列の計算
+	//DirectX::XMMATRIX view = DirectX::XMMatrixLookAtLH(
+	//	DirectX::XMVectorSet(1.5f, 2.5f, -3.0f, 0.0f),
+	//	DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f),
+	//	DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)); //ビュー行列の設定
+	//view = DirectX::XMMatrixTranspose(view);		//転置行列に変換
+	//DirectX::XMStoreFloat4x4(&mat[1], view);		//XMMATRIX型(view)からXMFLOAT4X4型(mat[1])へ変換して格納
 
-	//-- プロジェクション行列の計算
-	DirectX::XMMATRIX proj = DirectX::XMMatrixPerspectiveFovLH(
-		DirectX::XMConvertToRadians(60.0f), (float)16 / 9, 0.1f, 100.0f); //プロジェクショ行列の設定
-	proj = DirectX::XMMatrixTranspose(proj);	//転置行列に変換
-	DirectX::XMStoreFloat4x4(&mat[2], proj);	//XMMATRIX型(proj)からXMFLOAT4X4型(mat[2])へ変換して格納
+	////-- プロジェクション行列の計算
+	//DirectX::XMMATRIX proj = DirectX::XMMatrixPerspectiveFovLH(
+	//	DirectX::XMConvertToRadians(60.0f), (float)16 / 9, 0.1f, 100.0f); //プロジェクショ行列の設定
+	//proj = DirectX::XMMatrixTranspose(proj);	//転置行列に変換
+	//DirectX::XMStoreFloat4x4(&mat[2], proj);	//XMMATRIX型(proj)からXMFLOAT4X4型(mat[2])へ変換して格納
+
+	mat[1] = pCamera->GetViewMatrix();
+	mat[2] = pCamera->GetProjectionMatrix();
+	
 
 	//-- 行列をシェーダーへ設定
 	m_pVS->WriteBuffer(0, mat);
@@ -174,14 +177,13 @@ void CSlimeBase::Draw()
 	----------------------------------------
 	戻値：なし
 ======================================== */
-void CSlimeBase::NormalMove()
+void CSlimeBase::NormalMove(CSphereInfo::Sphere playerSphere)
 {
 	//== 追従処理 ==
 	// 敵からエネミーの距離、角度を計算
-	float distancePlayer	= m_sphere.Distance(m_Player.GetPlayerSphere());
-	float anglePlayer		= m_sphere.Angle(m_Player.GetPlayerSphere());
+	float distancePlayer	= m_sphere.Distance(playerSphere);
 
-	TTriType<float> movePos = m_Player.GetPos() - m_pos;
+	TTriType<float> movePos = playerSphere.pos - m_pos;
 	if (distancePlayer != 0)	//0除算回避
 	{
 		m_move.x = movePos.x / distancePlayer * m_fSpeed;
@@ -328,19 +330,7 @@ float CSlimeBase::GetSpeed()
 	return m_fSpeed;
 }
 
-/* ========================================
-	プレイヤーセット関数
-	-------------------------------------
-	内容：プレイヤーをセットする(追跡処理に使用する)
-	-------------------------------------
-	引数1：プレイヤー
-	-------------------------------------
-	戻値：無し
-=========================================== */
-void CSlimeBase::SetPlayer(CPlayer player)
-{
-	m_Player = player;
-}
+
 
 
 

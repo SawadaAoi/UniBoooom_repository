@@ -35,7 +35,7 @@
 #include "Shader.h"
 #include "SphereInfo.h"
 #include "Pos.h"
-#include "Player.h"
+#include "Camera.h"
 
 // =============== 列挙定義 =======================
 enum E_SLIME_LEVEL
@@ -56,10 +56,10 @@ class CSlimeBase
 public:
 	CSlimeBase();
 	~CSlimeBase();
-	void Update();
-	void Draw();
+	void Update(CSphereInfo::Sphere playerSphere);
+	void Draw(const CCamera* pCamera);
 
-	void NormalMove();								// 通常時の移動処理
+	void NormalMove(CSphereInfo::Sphere playerSphere);								// 通常時の移動処理
 	void HitMove();									//スライムが吹き飛び移動状態の時に毎フレーム呼び出して移動させる
 	void HitMoveStart(float speed, float angle);	//スライムが吹き飛ばされたときに速度と角度を決める
 	void Reflect();									//スライムとぶつかって吹き飛ばした際に自分の移動量を減らす
@@ -71,7 +71,6 @@ public:
 	void SetSphere(CSphereInfo::Sphere Sphere);
 	CSphereInfo::Sphere GetSphere();	//スライムの座標と半径を取得
 
-	void SetPlayer(CPlayer player);
 
 	float GetSpeed();				//スライムの移動速度を取得
 
@@ -92,7 +91,6 @@ protected:
 
 	E_SLIME_LEVEL m_eSlimeSize;		//スライムの大きさの列挙
 	
-	CPlayer m_Player;				// 毎フレームのプレイヤー情報を入れておく
 	
 
 private:

@@ -62,6 +62,7 @@ SceneGame::SceneGame()
 
 	// スライムマネージャー生成
 	m_pSlimeMng = new CSlimeManager();
+	m_pSlimeMng->SetCamera(m_pCamera);
 	m_pExplosionMng = new CExplosionManager();
 }
 
@@ -104,7 +105,7 @@ void SceneGame::Update(float tick)
 	m_pCamera->Update();
 	m_pPlayer->Update();
 	// スライムマネージャー更新
-	m_pSlimeMng->Update();
+	m_pSlimeMng->Update(m_pPlayer->GetPlayerSphere());
 	m_pExplosionMng->Update();
 	m_pCamera->Update();
 

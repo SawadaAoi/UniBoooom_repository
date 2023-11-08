@@ -22,7 +22,7 @@
 
 // =============== インクルード ===================
 #include "Shader.h"
-#include"hammer.h"
+#include "hammer.h"
 #include "Geometry.h"
 #include "SphereInfo.h"
 #include "Pos.h"

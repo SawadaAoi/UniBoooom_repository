@@ -17,6 +17,7 @@
 
 #include "TriType.h"
 #include "SlimeBase.h"
+#include "Camera.h"
 
 
 
@@ -28,18 +29,24 @@ public:
 	CSlimeManager();
 	~CSlimeManager();
 
-	void Update();
+	void Update(CSphereInfo::Sphere playerSphere);
 	void Draw();
-	void Generate(TTriType<float> pos);
+	void Generate(const TPos<float> pos);
 	void HitBranch(int HitSlimeArrayNum,int standSlimeArrayNum);	//スライムの接触が起きた際の分岐処理
 	void UnionSlime(E_SLIME_LEVEL level);							//スライムの結合処理
 	CSlimeBase* GetSlimePtr(int num);
+
+	void SetCamera(CCamera* pCamera);
+
 private:
+	int GetRandom(int min, int max);
+
 	CSlimeBase* m_pSlime[MAX_SLIME];
+	CCamera* m_pCamera;
+
+	int m_GeneCnt;
 
 
-	int m_nRandNum;	//乱数用
-	int _RandNum;	//乱数用
 	
 };
 
