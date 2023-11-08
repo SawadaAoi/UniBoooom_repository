@@ -122,7 +122,7 @@ void CPlayer::Draw()
 	m_pPlayerGeo->Draw();		//プレイヤーを描画
 	if (m_pHammer->Gethammer())	//ハンマーを振るフラグがONの時
 	{
-		m_pHammer->Draw();		//ハンマーの描画
+		m_pHammer->Draw(m_pCamera);		//ハンマーの描画
 	}
 }
 

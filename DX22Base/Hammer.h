@@ -24,6 +24,7 @@
 #include "SphereInfo.h"
 #include "Geometry.h"
 #include <DirectXMath.h>
+#include "Camera.h"
 
 
 class CHammer
@@ -33,7 +34,7 @@ public:
 	~CHammer();	//デストラクタ
 
 	void Update(TPos<float> pPos, float angle);	//更新関数
-	void Draw();								//描画関数
+	void Draw(const CCamera* pCamera);								//描画関数
 	bool Gethammer();							//ハンマーを使用中かどうかのフラグを取得
 	void Swing(TPos<float>pPos,float angle);	//移動による回転移動
 	CSphereInfo::Sphere GetSphere();			//ハンマーのプレイヤー
@@ -47,6 +48,7 @@ private:
 	float m_stateangle;				//
 	bool m_bHammer;					//ハンマーを使用中のフラグ
 	CGeometry* m_pHammerGeo;		//ハンマーを仮表示する図形
+	//CCamera* m_pCamera;				//カメラのポインタ
 };
 
 #endif // !__HAMMER_H__
