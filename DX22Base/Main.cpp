@@ -1,15 +1,27 @@
+/* ========================================
+	HEW/UniBoooom!!
+	------------------------------------
+	プログラムのメイン部分
+	------------------------------------
+	Main.cpp
+	------------------------------------
+	作成者 
+
+	変更履歴
+   ・↓まで 学校の配布物(授業に沿い変形)・Geometryに合わせた改造
+	・2023/11/09 カメラの様々動作チェック。 髙木駿輔
+
+========================================== */
+
 #include "Main.h"
 #include <memory>
 #include "DirectX.h"
 #include "Geometry.h"
-#include "Line.h"
 #include "Sprite.h"
 #include "Input.h"
 #include "SceneGame.h"
 #include "Defines.h"
 
-// =============== デバッグモード =======================
-#define MODE_COORD_AXIS (true)	//座標軸映すかどうか
 
 //--- グローバル変数
 SceneGame* g_pGame;	//
@@ -23,7 +35,6 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
 
 	CGeometry::MakeShader();	//シェーダ作成
 
-	CLine::Init();
 	Sprite::Init();
 	InitInput();
 
@@ -51,37 +62,7 @@ void Draw()
 {
 	BeginDrawDirectX();
 
-	// 軸線の表示
-#if MODE_COORD_AXIS
-	// グリッド
-	DirectX::XMFLOAT4 lineColor(0.5f, 0.5f, 0.5f, 1.0f);
-	float size = DEBUG_GRID_NUM * DEBUG_GRID_MARGIN;
-	for (int i = 1; i <= DEBUG_GRID_NUM; ++i)
-	{
-		float grid = i * DEBUG_GRID_MARGIN;
-		DirectX::XMFLOAT3 pos[2] = {
-			DirectX::XMFLOAT3(grid, 0.0f, size),
-			DirectX::XMFLOAT3(grid, 0.0f,-size),
-		};
-		CLine::Add(pos[0], pos[1], lineColor);
-		pos[0].x = pos[1].x = -grid;
-		CLine::Add(pos[0], pos[1], lineColor);
-		pos[0].x = size;
-		pos[1].x = -size;
-		pos[0].z = pos[1].z = grid;
-		CLine::Add(pos[0], pos[1], lineColor);
-		pos[0].z = pos[1].z = -grid;
-		CLine::Add(pos[0], pos[1], lineColor);
-	}
-	// 軸
-	CLine::Add(DirectX::XMFLOAT3(0,0,0), DirectX::XMFLOAT3(size,0,0), DirectX::XMFLOAT4(1,0,0,1));
-	CLine::Add(DirectX::XMFLOAT3(0,0,0), DirectX::XMFLOAT3(0,size,0), DirectX::XMFLOAT4(0,1,0,1));
-	CLine::Add(DirectX::XMFLOAT3(0,0,0), DirectX::XMFLOAT3(0,0,size), DirectX::XMFLOAT4(0,0,1,1));
-	CLine::Add(DirectX::XMFLOAT3(0,0,0), DirectX::XMFLOAT3(-size,0,0),  DirectX::XMFLOAT4(0,0,0,1));
-	CLine::Add(DirectX::XMFLOAT3(0,0,0), DirectX::XMFLOAT3(0,0,-size),  DirectX::XMFLOAT4(0,0,0,1));
 
-	CLine::Draw();
-#endif
 
 	g_pGame->Draw();
 	EndDrawDirectX();

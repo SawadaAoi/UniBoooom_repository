@@ -36,7 +36,10 @@
    ======================================== */
 void SceneGame::SceneGameCollision()
 {
-
+	PlayerSlimeCollision();
+	HammerSlimeCollision();
+	SlimeSlimeCollision();
+	ExplosionSlimeCollision();
 }
 
 /* ========================================
@@ -64,11 +67,11 @@ void SceneGame::PlayerSlimeCollision()
    ======================================== */
 void SceneGame::HammerSlimeCollision()
 {
-	for (int i = 0; i < MAX_SLIME_1; ++i)	// 自分スライム
+	for (int i = 0; i < MAX_SLIME; ++i)	// 自分スライム
 	{
-		if (/*吹飛状態のスライムはスルー*/) { continue; }	// 吹飛状態のスライムはスルー
+		//if (/*吹飛状態のスライムはスルー*/) { continue; }	// 吹飛状態のスライムはスルー
 			// スライムとハンマーが当たっている場合
-			if (m_pCollision->CheckCollisionSphere(/*ハンマー.スフィア, スライム[添え字].スフィア*/))
+			//if (m_pCollision->CheckCollisionSphere(/*ハンマー.スフィア, スライム[添え字].スフィア*/))
 			{
 				float fAngleSlime;  // スライムが飛ぶ角度を入れる変数
 				fAngleSlime = 0.0f;//プレイヤー.スフィア.Angle(スライム[添え字].スフィア)
@@ -88,14 +91,14 @@ void SceneGame::HammerSlimeCollision()
    ======================================== */
 void SceneGame::SlimeSlimeCollision()
 {
-	for (int i = 0; i < MAX_SLIME_1; ++i)	// 自分スライム
+	for (int i = 0; i < MAX_SLIME; ++i)	// 自分スライム
 	{
-		if (/*通常状態のスライムはスルー*/) { continue; }	// 通常状態のスライムはスルー
+		//if (/*通常状態のスライムはスルー*/) { continue; }	// 通常状態のスライムはスルー
 
-			for (int j = 0; j < MAX_SLIME_1; ++j)	// 相手スライム
+			for (int j = 0; j < MAX_SLIME; ++j)	// 相手スライム
 			{
 				if (i == j) { continue; }	// 自分スライムと相手スライムの添え字が同じ場合スルー
-					if (m_pCollision->CheckCollisionSphere(
+					//if (m_pCollision->CheckCollisionSphere(
 						//自分スライム[添え字].スフィア, 相手スライム[添え字].スフィア))
 					{
 						//HitBranch(自分スライムの[添え字]、相手スライムの[添え字])
@@ -118,11 +121,11 @@ void SceneGame::ExplosionSlimeCollision()
 {
 	for (int i = 0; i < MAX_EXPLOSION_NUM; ++i)	// 爆発
 	{
-		if (/*未使用の爆発はスルー*/) { continue; }	// 未使用の爆発はスルー
+		//if (/*未使用の爆発はスルー*/) { continue; }	// 未使用の爆発はスルー
 
-			for (int j = 0; j < MAX_SLIME_1; ++j)	// スライム
+			for (int j = 0; j < MAX_SLIME; ++j)	// スライム
 			{
-				if (m_pCollision->CheckCollisionSphere(/*爆発[添え字].スフィア, スライム[添え字].スフィア*/))
+				//if (m_pCollision->CheckCollisionSphere(/*爆発[添え字].スフィア, スライム[添え字].スフィア*/))
 				{
 					//スライムマネージャーのスライムの爆発処理
 				}
