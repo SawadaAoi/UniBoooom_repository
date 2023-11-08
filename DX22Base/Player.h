@@ -21,6 +21,7 @@
 #include "Shader.h"
 #include"hammer.h"
 #include "Geometry.h"
+#include "Pos.h"
 // =============== クラス定義 =====================
 class CPlayer
 {
@@ -34,12 +35,16 @@ public:
 	void Damege();	//自身のHPを減らす
 	void Move();
 
+	TPos<float> GetPos() { return m_playerPosition; }
+
+	CHammer* GetHammer() { return m_pHammer; }
+
 private:
 	// ===============メンバ関数宣言===============
 	DirectX::XMMATRIX m_T;				//位置
 	DirectX::XMMATRIX m_S;				//拡縮
 	DirectX::XMMATRIX m_Ry;				//回転
-	TTriType<float> m_playerPosition;	//プレイヤーの位置
+	TPos<float> m_playerPosition;	//プレイヤーの位置
 	TTriType<float> m_playerForward;	// プレイヤーの初期進行方向
 	float m_playerRotation;				// プレイヤーの回転角度
 	int m_nHp;							//プレイヤーの体力
