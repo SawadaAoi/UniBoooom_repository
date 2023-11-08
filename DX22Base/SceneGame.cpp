@@ -9,6 +9,7 @@
 
 	変更履歴
 	・2023/11/08 コメント追加、無駄な箇所を削除　澤田蒼生
+	・2023/11/09 カメラの様々動作チェック。メインから軸線奪取。地面追加。 髙木駿輔
 
 ========================================== */
 
@@ -20,7 +21,12 @@
 #include "CameraChase.h"
 #include "Pos.h"
 #include "Box.h"
+#include "Line.h"
+#include "Defines.h"
 
+// =============== デバッグモード =======================
+#define MODE_COORD_AXIS (true)	//座標軸映すかどうか
+#define MODE_GROUND (true)	//座標軸映すかどうか
 
 /* ========================================
 	コンストラクタ関数
@@ -47,12 +53,22 @@ SceneGame::SceneGame()
 
 	m_pCollision = new CCOLLISION();
 	m_pPlayer = new CPlayer();
-	m_pCamera = new CCameraChase(&m_pPlayer->GetPos()) ;
+	m_pCamera = new CCameraChase(m_pPlayer->GetPosAddress()) ;
+	m_pPlayer->GetCamera(m_pCamera);
+
+#if MODE_GROUND
+	m_pBox = new CBox();
+#endif
 
 	// スライムマネージャー生成
 	m_pSlimeMng = new CSlimeManager();
 
 	m_pExplodeMng = new CExplosionManager();
+
+#if MODE_COORD_AXIS
+	// 軸線の表示
+	CLine::Init();
+#endif
 }
 
 /* ========================================
@@ -91,7 +107,7 @@ void SceneGame::Update(float tick)
 	// スライムマネージャー更新
 	m_pSlimeMng->Update();
 	m_pExplodeMng->Update();
-
+	m_pCamera->Update();
 
 }
 
@@ -106,17 +122,69 @@ void SceneGame::Update(float tick)
 =========================================== */
 void SceneGame::Draw()
 {
+#if MODE_COORD_AXIS
+	// 軸線の表示
+	CLine::Init();
+	CLine::SetView(m_pCamera->GetViewMatrix());
+	CLine::SetProjection(m_pCamera->GetProjectionMatrix());
+	// グリッド
+	DirectX::XMFLOAT4 lineColor(0.5f, 0.5f, 0.5f, 1.0f);
+	float size = DEBUG_GRID_NUM * DEBUG_GRID_MARGIN;
+	for (int i = 1; i <= DEBUG_GRID_NUM; ++i)
+	{
+		float grid = i * DEBUG_GRID_MARGIN;
+		DirectX::XMFLOAT3 pos[2] = {
+			DirectX::XMFLOAT3(grid, 0.0f, size),
+			DirectX::XMFLOAT3(grid, 0.0f,-size),
+		};
+		CLine::Add(pos[0], pos[1], lineColor);
+		pos[0].x = pos[1].x = -grid;
+		CLine::Add(pos[0], pos[1], lineColor);
+		pos[0].x = size;
+		pos[1].x = -size;
+		pos[0].z = pos[1].z = grid;
+		CLine::Add(pos[0], pos[1], lineColor);
+		pos[0].z = pos[1].z = -grid;
+		CLine::Add(pos[0], pos[1], lineColor);
+	}
+	// 軸
+	CLine::Add(DirectX::XMFLOAT3(0, 0, 0), DirectX::XMFLOAT3(size, 0, 0), DirectX::XMFLOAT4(1, 0, 0, 1));
+	CLine::Add(DirectX::XMFLOAT3(0, 0, 0), DirectX::XMFLOAT3(0, size, 0), DirectX::XMFLOAT4(0, 1, 0, 1));
+	CLine::Add(DirectX::XMFLOAT3(0, 0, 0), DirectX::XMFLOAT3(0, 0, size), DirectX::XMFLOAT4(0, 0, 1, 1));
+	CLine::Add(DirectX::XMFLOAT3(0, 0, 0), DirectX::XMFLOAT3(-size, 0, 0), DirectX::XMFLOAT4(0, 0, 0, 1));
+	CLine::Add(DirectX::XMFLOAT3(0, 0, 0), DirectX::XMFLOAT3(0, 0, -size), DirectX::XMFLOAT4(0, 0, 0, 1));
+
+	CLine::Draw();
+#endif
+
+#if MODE_GROUND
 	DirectX::XMFLOAT4X4 mat[3];
 
+	//Geometory用の変換行列を設定
+	DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(0.0f, -0.5f * 0.1f, 0.0f);	//グリッドよりも下に来るように移動
+	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(100.0f, 0.1f, 100.0f);		//地面となるように、前後左右に広く上下に狭い
+	DirectX::XMMATRIX world = S * T;											//全ての行列を一つにまとめる
+	world = DirectX::XMMatrixTranspose(world);
+	DirectX::XMStoreFloat4x4(&mat[0], world);	//matをfMatに格納
+	m_pBox->SetWorld(mat[0]);	//ボックスに変換行列を設定
+
+	//Geometory用の変換行列を設定
 	mat[1] = m_pCamera->GetViewMatrix();
 	mat[2] = m_pCamera->GetProjectionMatrix();
 
-	// 行列をシェーダーへ 
-	m_pVs->WriteBuffer(0, mat);
+	m_pBox->SetView(mat[1]);		//ボックスに変換行列を設定
+	m_pBox->SetProjection(mat[2]);	//ボックスに変換行列を設定
 
-	m_pPlayer->Draw();
+	//// 行列をシェーダーへ 
+	//m_pVs->WriteBuffer(0, mat);
+
+	m_pBox->Draw();
+#endif
+	
+
 	// スライムマネージャー描画
 	m_pSlimeMng->Draw();
+	m_pPlayer->Draw();
 	
 	//爆発マネージャー描画
 	m_pExplodeMng->Draw();	

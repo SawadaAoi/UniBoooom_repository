@@ -10,6 +10,7 @@
    変更履歴
    ・2023/11/03 移動作成 山本凱翔
    ・2023/11/06 方向追加、ダメージ判定、攻撃開始作成 山本凱翔
+   ・2023/11/09 カメラ対応 髙木駿輔
 
 
    ======================================== */
@@ -46,9 +47,10 @@ CPlayer::CPlayer()
 	, m_pPlayer(nullptr)
 	, m_bHammer(false)
 	,m_nHp(0)
+	,m_pCamera(nullptr)
 {
 	m_T = DirectX::XMMatrixTranslation(0.0f, 0.0f, 0.0f);
-	m_S = DirectX::XMMatrixScaling(2.0f, 2.0f, .0f);
+	m_S = DirectX::XMMatrixScaling(2.0f, 2.0f, 2.0f);
 	m_Ry = DirectX::XMMatrixRotationY(0.0f);
 	m_pHammer = new CHammer();
 	m_pPlayer = new CSphere();
@@ -86,6 +88,13 @@ void CPlayer::Update()
 
 void CPlayer::Draw()
 {
+	if (!m_pCamera)
+	{
+		return;
+	}
+
+	m_pPlayer->SetView(m_pCamera->GetViewMatrix());
+	m_pPlayer->SetProjection(m_pCamera->GetProjectionMatrix());
 	m_pPlayer->Draw();
 	if (m_pHammer->Gethammer())
 	{
@@ -169,4 +178,10 @@ void CPlayer::Move()
 	DirectX::XMFLOAT4X4 fMat;	//行列の格納先
 	DirectX::XMStoreFloat4x4(&fMat, mat);
 	m_pPlayer->SetWorld(fMat);
+}
+
+//コメントめんどいtkg
+void CPlayer::GetCamera(const CCamera * pCamera)
+{
+	m_pCamera = pCamera;	//中身は変えられないけどポインタはかえれるのでヨシ！
 }

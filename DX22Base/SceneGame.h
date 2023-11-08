@@ -11,6 +11,7 @@
 
 	変更履歴
 	・2023/11/08 コメント追加と、無駄な箇所を削除
+	・2023/11/09 カメラの移動が分かるように地面追加した 髙木駿輔
 
 ========================================== */
 
@@ -44,6 +45,7 @@ private:
 	VertexShader* m_pVs;
 	CCamera* m_pCamera;
 	CPlayer* m_pPlayer;
+	CGeometry* m_pBox;
 	CSlimeManager* m_pSlimeMng;
 	CExplosionManager* m_pExplodeMng;
 	CCOLLISION* m_pCollision;

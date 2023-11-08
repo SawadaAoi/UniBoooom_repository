@@ -10,7 +10,7 @@
 	変更履歴
 	・2023/11/03 h,作成 山本凱翔
 	・2023/11/06 ダメージ処理追加,コメント追加 山本凱翔
-
+	・2023/11/09 GetPosAddress追加、カメラ追加 髙木駿輔
 
 ========================================== */
 
@@ -22,6 +22,7 @@
 #include"hammer.h"
 #include "Geometry.h"
 #include "Pos.h"
+#include "Camera.h"
 // =============== クラス定義 =====================
 class CPlayer
 {
@@ -36,7 +37,8 @@ public:
 	void Move();
 
 	TPos<float> GetPos() { return m_playerPosition; }
-
+	TPos<float>* GetPosAddress() { return &m_playerPosition; }
+	void GetCamera(const CCamera* pCamera);
 	CHammer* GetHammer() { return m_pHammer; }
 
 private:
@@ -51,6 +53,7 @@ private:
 	CHammer* m_pHammer;
 	CGeometry* m_pPlayer;
 	bool m_bHammer;						//攻撃中かどうかのフラグ
+	const CCamera* m_pCamera;
 };
 
 
