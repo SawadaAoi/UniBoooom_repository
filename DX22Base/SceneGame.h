@@ -7,7 +7,7 @@
 #include "Geometry.h"
 #include "SlimeManager.h"
 #include "Collision.h"
-
+#include "ExplosionManager.h"
 
 
 class SceneGame
@@ -31,6 +31,7 @@ private:
 	CGeometry* m_pPlayer;
 	CSlimeManager* m_pSlimeMng;
 	CCOLLISION* m_pCollision;
+	CExplosionManager* m_pExplosionMng;
 };
 
 #endif // __SCENE_GAME_H__

@@ -42,10 +42,17 @@ SceneGame::SceneGame()
 
 	// スライムマネージャー生成
 	m_pSlimeMng = new CSlimeManager();
+	m_pExplosionMng = new CExplosionManager();
 }
 
 SceneGame::~SceneGame()
 {
+	if (m_pExplosionMng)
+	{
+		delete m_pExplosionMng;
+		m_pExplosionMng = nullptr;
+	}
+
 	// スライムマネージャー削除
 	if (m_pSlimeMng)
 	{
