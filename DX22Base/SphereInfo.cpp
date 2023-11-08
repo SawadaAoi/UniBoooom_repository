@@ -41,5 +41,5 @@ float CSphereInfo::Sphere::Distance(CSphereInfo::Sphere Obj)
 ======================================== */
 float CSphereInfo::Sphere::Angle(CSphereInfo::Sphere Obj)
 {
-	return atan((Obj.pos.z - this->pos.z) / (Obj.pos.x - this->pos.x));
+	return atan2((Obj.pos.z - this->pos.z) , (Obj.pos.x - this->pos.x));
 }
