@@ -13,7 +13,7 @@
 	・2023/11/08 Pos.hをインクルード /山下凌佑
 	・2023/11/08 当たり判定用の球体m_sphereを追加 /山下凌佑
 	・2023/11/08 プレイヤー座標を入れる変数をTTriTypeからTPosに変更 /山下凌佑
-
+	・2023/11/09 GetPosAddress追加、カメラ追加 髙木駿輔
 
 ========================================== */
 
@@ -26,6 +26,7 @@
 #include "Geometry.h"
 #include "SphereInfo.h"
 #include "Pos.h"
+#include "Camera.h"
 // =============== クラス定義 =====================
 class CPlayer
 {
@@ -41,6 +42,9 @@ public:
 	CSphereInfo::Sphere GetPlayerSphere();	//当たり判定を取るためゲッター
 	CSphereInfo::Sphere GetHammerSphere();	//当たり判定を取るためゲッター
 	TPos<float> GetPos();	//プレイヤーの座標を取得
+	TPos<float>* GetPosAddress() { return &m_pos; }
+	void GetCamera(const CCamera* pCamera);
+	CHammer* GetHammer() { return m_pHammer; }
 
 private:
 	// ===============メンバ関数宣言===============
@@ -56,6 +60,7 @@ private:
 	CHammer* m_pHammer;
 	CGeometry* m_pPlayerGeo;
 	bool m_bHammer;						//攻撃中かどうかのフラグ
+	const CCamera* m_pCamera;
 };
 
 

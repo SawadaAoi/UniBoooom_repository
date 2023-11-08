@@ -12,6 +12,7 @@
    ・2023/11/06 方向追加、ダメージ判定、攻撃開始作成 山本凱翔
    ・2023/11/08 プレイヤーの当たり判定の大きさの定数を追加 /山下凌佑
    ・2023/11/08 攻撃中は移動できないように変更 /山下凌佑
+   ・2023/11/09 カメラ対応 髙木駿輔
 
 
    ======================================== */
@@ -50,6 +51,7 @@ CPlayer::CPlayer()
 	, m_pPlayerGeo(nullptr)
 	, m_bHammer(false)
 	,m_nHp(0)
+	,m_pCamera(nullptr)
 {
 	m_T = DirectX::XMMatrixTranslation(0.0f, 0.0f, 0.0f);	//移動の変換行列を初期化
 	m_S = DirectX::XMMatrixScaling(2.0f, 2.0f, 2.0f);		//拡縮の変換行列を初期化
@@ -110,6 +112,13 @@ void CPlayer::Update()
    ======================================== */
 void CPlayer::Draw()
 {
+	if (!m_pCamera)
+	{
+		return;
+	}
+
+	m_pPlayerGeo->SetView(m_pCamera->GetViewMatrix());
+	m_pPlayerGeo->SetProjection(m_pCamera->GetProjectionMatrix());
 	m_pPlayerGeo->Draw();		//プレイヤーを描画
 	if (m_pHammer->Gethammer())	//ハンマーを振るフラグがONの時
 	{
@@ -252,4 +261,10 @@ CSphereInfo::Sphere CPlayer::GetHammerSphere()
 TPos<float> CPlayer::GetPos()
 {
 	return m_pos;
+}
+
+//コメントめんどいtkg
+void CPlayer::GetCamera(const CCamera * pCamera)
+{
+	m_pCamera = pCamera;	//中身は変えられないけどポインタはかえれるのでヨシ！
 }

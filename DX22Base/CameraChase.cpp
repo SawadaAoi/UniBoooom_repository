@@ -11,6 +11,7 @@
 	・2023/11/04 制作 takagi
 	・2023/11/06 コーディング規約適用・追跡対象登録機構作成 takagi
 	・2023/11/07 GetViewMatrix()関数にconst修飾子付与・コメント修正 takagi
+	・2023/11/09 微調整 takagi
 
 ========================================== */
 
@@ -76,15 +77,20 @@ void CCameraChase::Update()
 =========================================== */
 DirectX::XMFLOAT4X4 CCameraChase::GetViewMatrix() const
 {
+	if (!m_pTarget)
+	{
+		return DirectX::XMFLOAT4X4();
+	}
+
 	// =============== 変数宣言 ===================
-	DirectX::XMFLOAT4X4 mat;
+	DirectX::XMFLOAT4X4 mat;	//行列格納用
 
 	// =============== ビュー行列の計算 ===================
 	DirectX::XMStoreFloat4x4(&mat, DirectX::XMMatrixTranspose(
 		DirectX::XMMatrixLookAtLH(
-			DirectX::XMVectorSet(m_pTarget->x, m_pTarget->y, m_pTarget->z - m_fRadius * cosf(m_fAngle), 0.0f),	//カメラ位置
-			DirectX::XMVectorSet(m_pTarget->x, m_pTarget->y, m_pTarget->z, 0.0f),								//注視点
-			DirectX::XMVectorSet(m_fUp.x, m_fUp.y, m_fUp.z, 0.0f)												//アップベクトル
+			DirectX::XMVectorSet(m_pTarget->x, m_pTarget->y + 10.0f, m_pTarget->z - m_fRadius * cosf(m_fAngle), 0.0f),	//カメラ位置
+			DirectX::XMVectorSet(m_pTarget->x, m_pTarget->y, m_pTarget->z, 0.0f),										//注視点
+			DirectX::XMVectorSet(m_fUp.x, m_fUp.y, m_fUp.z, 0.0f)														//アップベクトル
 	)));	//ビュー変換
 
 	// =============== 提供 ===================

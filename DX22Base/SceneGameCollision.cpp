@@ -36,7 +36,10 @@
    ======================================== */
 void SceneGame::SceneGameCollision()
 {
-
+	PlayerSlimeCollision();
+	HammerSlimeCollision();
+	SlimeSlimeCollision();
+	ExplosionSlimeCollision();
 }
 
 /* ========================================

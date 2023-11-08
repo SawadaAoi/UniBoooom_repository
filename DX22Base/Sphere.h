@@ -9,12 +9,13 @@
 
    変更履歴
    ・2023/11/05 制作 takagi
+   ・2023/11/09 インクルードガード修正 takagi
 
 
    ======================================== */
 
-#ifndef __BOX_H__
-#define __BOX_H__
+#ifndef __SPHERE_H__
+#define __SPHERE_H__
 
 // =============== インクルード ===================
 #include "Geometry.h"	//親のヘッダ
@@ -31,4 +32,4 @@ public:
 	void Draw();			//描画
 };	//球
 
-#endif //!__BOX_H__
+#endif //!__SPHERE_H__
