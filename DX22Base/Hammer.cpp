@@ -86,7 +86,7 @@ void CHammer::Update(TPos<float> pPos, float angle)
    ----------------------------------------
    戻値：なし
    ======================================== */
-void CHammer::Draw()
+void CHammer::Draw(const CCamera* pCamera)
 {
 	m_T = DirectX::XMMatrixTranslation(m_pos.x, m_pos.y, m_pos.z);	//ハンマーの座標を移動の行列に格納
 	DirectX::XMMATRIX mat = m_T;			//移動の行列を格納
@@ -94,6 +94,8 @@ void CHammer::Draw()
 	DirectX::XMFLOAT4X4 fMat;				//行列の格納先
 	DirectX::XMStoreFloat4x4(&fMat, mat);	//XMFLOAT4X4に変換
 	m_pHammerGeo->SetWorld(fMat);			//ワールド座標にセット
+	m_pHammerGeo->SetView(pCamera->GetViewMatrix());
+	m_pHammerGeo->SetProjection(pCamera->GetProjectionMatrix());
 
 	m_pHammerGeo->Draw();
 }
@@ -134,7 +136,7 @@ void CHammer::Swing(TPos<float> pPos, float angle)
 	// 球面座標から直交座標系への変換
 	m_pos.x = pPos.x + ROTATE_RADIUS * sin(azimuth);
 
-	//m_pos.y = pPos.y + ROTATE_RADIUS * cos(inclination);	たぶん真横に振るのでY座標は動かさないのでコメントアウト /山下凌佑
+	//m_pos.y = pPos.y + ROTATE_RADIUS * cos(inclination);	//たぶん真横に振るのでY座標は動かさないのでコメントアウト /山下凌佑
 	m_pos.z = pPos.z + ROTATE_RADIUS * cos(azimuth);
 
 	m_sphere.pos = m_pos;		//当たり判定用の球体に座標をコピー
