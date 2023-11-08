@@ -13,6 +13,7 @@
 
    ・2023/11/06 インクルード誤字の修正 / 鄭 宇恩
    ・2023/11/08 GetPos→GetSphereに名前を変更 / 山下凌佑
+   ・2023/11/08 定数定義がヘッダーにあったのでcppに移動 / 山下凌佑
    ======================================== */
 
   // =============== インクルード ===================
@@ -21,7 +22,10 @@
 #include "Model.h"
 
 // =============== 定数定義 =======================
-
+const float ENEMY_MOVE_SPEED = 0.01f;
+const float SPEED_DOWN_RATIO = 0.6f;	//スライムが接触して吹き飛ぶ際にかかる移動速度の変化の割合	RATIO=>割合
+const float MOVE_RESIST = 0.1f;		//吹き飛び移動中のスライムの移動速度に毎フレームかかる減算数値
+const float REFLECT_RATIO = 0.1f;	//スライムがスライムを吹き飛ばした際に吹き飛ばした側のスライムの移動量を変える割合
 // =============== プロトタイプ宣言 ===============
 
 // =============== グローバル変数定義 =============
@@ -227,12 +231,11 @@ void CSlimeBase::HitMove()
 	m_move.x = cos(m_fVecAngle) * (m_fSpeed * SPEED_DOWN_RATIO);
 	m_move.z = sin(m_fVecAngle) * (m_fSpeed * SPEED_DOWN_RATIO);
 
-	//舞フレームの速度の減算処理
-	m_fSpeed -= MOVE_RESIST;
+	m_fSpeed -= MOVE_RESIST;	//毎フレームの速度の減算処理
 	if (m_fSpeed <= 0)	//速度が0以下になったら
 	{
 		m_fSpeed = ENEMY_MOVE_SPEED;	//敵は通常の移動速度になり通常移動する
-		m_bHitMove = false;
+		m_bHitMove = false;				//吹き飛び状態のフラグをOFFにする
 	}
 }
 
@@ -251,6 +254,20 @@ void CSlimeBase::HitMoveStart(float speed, float angle)
 	m_fSpeed = speed;		//移動量を入れる
 	m_fVecAngle = angle;		//移動方向を入れる
 	m_bHitMove = true;		//吹き飛び状態をONにする
+}
+
+/* ========================================
+	反発関数
+	----------------------------------------
+	内容：スライムに反発の割合を乗算する処理
+	----------------------------------------
+	引数1：なし
+	----------------------------------------
+	戻値：なし
+======================================== */
+void CSlimeBase::Reflect()
+{
+	m_fSpeed *= REFLECT_RATIO;
 }
 
 //void CSlimeBase::SetPos(TTriType<float> pos)

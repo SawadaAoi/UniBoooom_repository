@@ -148,7 +148,7 @@ void CSlimeManager::HitBranch(int HitSlimeArrayNum, int standSlimeArrayNum)
 		CSphereInfo::Sphere sphere = m_pSlime[HitSlimeArrayNum]->GetSphere();		//ぶつかられたスライムのSphereを取得
 		float angle = sphere.Angle(m_pSlime[standSlimeArrayNum]->GetSphere());		//ぶつかられたスライムの方向を割り出す
 		m_pSlime[standSlimeArrayNum]->HitMoveStart(speed, angle);					//ぶつかられたスライムに吹き飛び移動処理
-		//ぶつかりに来たスライムに反発処理  <=TODO
+		m_pSlime[HitSlimeArrayNum]->Reflect();										//ぶつかりに来たスライムの速度に反発の割合を乗算する
 	}
 	else if(hitSlimeLevel < standSlimeLevel)	//ぶつかりにきたスライムが小さい場合
 	{
