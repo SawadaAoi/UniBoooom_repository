@@ -62,8 +62,28 @@ SceneGame::SceneGame()
 
 	// スライムマネージャー生成
 	m_pSlimeMng = new CSlimeManager();
+	m_pExplosionMng = new CExplosionManager();
+}
 
-	m_pExplodeMng = new CExplosionManager();
+SceneGame::~SceneGame()
+{
+	if (m_pExplosionMng)
+	{
+		delete m_pExplosionMng;
+		m_pExplosionMng = nullptr;
+	}
+
+	// スライムマネージャー削除
+	if (m_pSlimeMng)
+	{
+		delete m_pSlimeMng;
+		m_pSlimeMng = nullptr;
+	}
+	if (m_pCamera)
+	{
+		delete m_pCamera;
+		m_pCamera = nullptr;
+	}
 
 #if MODE_COORD_AXIS
 	// 軸線の表示
