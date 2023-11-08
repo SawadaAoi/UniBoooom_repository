@@ -33,7 +33,10 @@
    ======================================== */
 void SceneGame::SceneGameCollision()
 {
-
+	PlayerSlimeCollision();
+	HammerSlimeCollision();
+	SlimeSlimeCollision();
+	ExplosionSlimeCollision();
 }
 
 /* ========================================
@@ -61,7 +64,19 @@ void SceneGame::PlayerSlimeCollision()
    ======================================== */
 void SceneGame::HammerSlimeCollision()
 {
+	// スライムの数分処理する
+	for (int i = 0; i < MAX_SLIME;i++)
+	{
+		CSlimeBase* slime = &m_pSlimeMng->GetSlime()[i];
+		if (slime->GetHitMoveFlg())  continue;
 
+		// スライムとハンマーが当たっている場合
+		//if (m_pCollision->CheckCollisionSphere(m_pPlayer->GetHammer()->, スライム[添え字].スフィア))
+		//{
+		//	float HitMoveAngle = プレイヤー.スフィア.Angle(スライム[添え字].スフィア)
+		//		スライム[添え字].HitMoveStart(移動スピード、スライム吹飛角度)
+		//}
+	}
 }
 
 /* ========================================
