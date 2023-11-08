@@ -65,32 +65,6 @@ SceneGame::SceneGame()
 	m_pExplosionMng = new CExplosionManager();
 }
 
-SceneGame::~SceneGame()
-{
-	if (m_pExplosionMng)
-	{
-		delete m_pExplosionMng;
-		m_pExplosionMng = nullptr;
-	}
-
-	// スライムマネージャー削除
-	if (m_pSlimeMng)
-	{
-		delete m_pSlimeMng;
-		m_pSlimeMng = nullptr;
-	}
-	if (m_pCamera)
-	{
-		delete m_pCamera;
-		m_pCamera = nullptr;
-	}
-
-#if MODE_COORD_AXIS
-	// 軸線の表示
-	CLine::Init();
-#endif
-}
-
 /* ========================================
 	デストラクタ関数
 	-------------------------------------
@@ -102,14 +76,19 @@ SceneGame::~SceneGame()
 =========================================== */
 SceneGame::~SceneGame()
 {
-	SAFE_DELETE(m_pExplodeMng);
+	SAFE_DELETE(m_pExplosionMng);
 	SAFE_DELETE(m_pSlimeMng);	// スライムマネージャー削除
 	SAFE_DELETE(m_pCamera);
 	SAFE_DELETE(m_pPlayer);
 	SAFE_DELETE(m_pCollision);
 	SAFE_DELETE(m_pVs);
 
+#if MODE_COORD_AXIS
+	// 軸線の表示
+	CLine::Init();
+#endif
 }
+
 
 /* ========================================
    更新処理関数
@@ -126,7 +105,7 @@ void SceneGame::Update(float tick)
 	m_pPlayer->Update();
 	// スライムマネージャー更新
 	m_pSlimeMng->Update();
-	m_pExplodeMng->Update();
+	m_pExplosionMng->Update();
 	m_pCamera->Update();
 
 }
@@ -207,6 +186,6 @@ void SceneGame::Draw()
 	m_pPlayer->Draw();
 	
 	//爆発マネージャー描画
-	m_pExplodeMng->Draw();	
+	m_pExplosionMng->Draw();
 	
 }

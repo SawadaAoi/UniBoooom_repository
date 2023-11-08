@@ -48,7 +48,6 @@ private:
 	CPlayer* m_pPlayer;
 	CGeometry* m_pBox;
 	CSlimeManager* m_pSlimeMng;
-	CExplosionManager* m_pExplodeMng;
 	CCOLLISION* m_pCollision;
 	CExplosionManager* m_pExplosionMng;
 };
