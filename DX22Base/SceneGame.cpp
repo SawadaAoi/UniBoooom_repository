@@ -171,6 +171,6 @@ void SceneGame::Draw()
 	m_pSlimeMng->Draw();
 	
 	//爆発マネージャー描画
-	g_pExplodeMng->Draw();
+	//g_pExplodeMng->Draw();	//動的確保(newしてなくてエラー吐くからコメントアウト) <=BUG
 	
 }

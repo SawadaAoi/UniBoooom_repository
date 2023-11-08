@@ -19,6 +19,7 @@
    ・2023/11/08 スライムのサイズを返す関数を作成　変更者：山下凌佑
    ・2023/11/08 GetPos→GetSphereに名前を変更 / 山下凌佑
    ・2023/11/08 スライムの移動速度を取得する関数を作成 / 山下凌佑
+   ・2023/11/08 定数定義がヘッダーにあったのでcppに移動 / 山下凌佑
 
    ======================================== */
 
@@ -31,21 +32,17 @@
 //#include "TriType.h"
 #include "SphereInfo.h"
 
-const float ENEMY_MOVE_SPEED = 0.01f;
-const float SPEED_DOWN_RATIO = 0.6f;	//スライムからスライムの吹き飛び移動を
-const float MOVE_RESIST = 0.1f;		//吹き飛び移動中のスライムの移動速度に毎フレームかかる減算数値
-
 // =============== 列挙定義 =======================
 enum E_SLIME_LEVEL
 {
-	LEVEL_NONE,
+	LEVEL_NONE,	//SlimeBaseで生成してまだポリモーフィズムしていない状態
 
-	LEVEL_1,
-	LEVEL_2,
-	LEVEL_3,
-	LEVEL_4,
+	LEVEL_1,	//1段階目
+	LEVEL_2,	//2段階目
+	LEVEL_3,	//3段階目
+	LEVEL_4,	//4段階目
 
-	MAX_LEVEL = LEVEL_4
+	MAX_LEVEL = LEVEL_4	//最大レベルを設定	(スライムの段階が増えたら変更)
 };
 
 
@@ -59,8 +56,9 @@ public:
 
 	virtual void Union() = 0;
 	virtual void Explosion() = 0;
-	void HitMove();
-	void HitMoveStart(float speed, float angle);
+	void HitMove();									//スライムが吹き飛び移動状態の時に毎フレーム呼び出して移動させる
+	void HitMoveStart(float speed, float angle);	//スライムが吹き飛ばされたときに速度と角度を決める
+	void Reflect();									//スライムとぶつかって吹き飛ばした際に自分の移動量を減らす
 
 	//setter
 	//void SetPos(TTriType<float> pos);
@@ -70,7 +68,7 @@ public:
 
 	//getter
 	//TTriType<float> GetPos();
-	CSphereInfo::Sphere GetSphere();
+	CSphereInfo::Sphere GetSphere();	//スライムの座標と半径を取得
 	bool GetUse();
 	E_SLIME_LEVEL GetSlimeLevel();	//スライムのサイズを取得
 	float GetSlimeSpeed();			//スライムの移動速度を取得
@@ -80,12 +78,12 @@ protected:
 	VertexShader* m_pVS;
 
 	//TTriType<float> m_pos;
-	CSphereInfo::Sphere m_sphere;
+	CSphereInfo::Sphere m_sphere;	//スライムの座標および半径を保存する(当たり判定も取る)
 	TTriType<float> m_move;
-	TTriType<float> m_scale;
-	float m_fVecAngle;	//敵の吹き飛ぶ方向
-	bool m_bUse;	//使用中かフラグ
-	float m_fSpeed;       //スライムの移動速度
+	TTriType<float> m_scale;	
+	float m_fVecAngle;			//敵の吹き飛ぶ方向
+	bool m_bUse;				//使用中かフラグ
+	float m_fSpeed;				//スライムの移動速度
 	E_SLIME_LEVEL m_eSlimeSize; //スライムの大きさの列挙
 
 
