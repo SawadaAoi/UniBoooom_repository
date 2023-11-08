@@ -64,11 +64,11 @@ CSlimeBase::CSlimeBase()
 	m_pModel->SetVertexShader(m_pVS);
 
 	//球初期化
-	m_sphere.pos = { 0.0f, 0.0f, 0.0f };
+	m_sphere.pos = { 1.0f, 1.0f, 1.0f };
 	m_sphere.radius = 0.0f;
 
 	//球(player)初期化
-	m_playerSphere.pos = { 0.0f, 0.0f, 0.0f };
+	m_playerSphere.pos = { 1.0f, 1.0f, 1.0f };
 	m_playerSphere.radius = 0.0f;
 
 }
