@@ -1,22 +1,24 @@
 /* ========================================
-   HEW/UniBoooom!!
-   ---------------------------------------
-   スライムベース クラス実装
-   ---------------------------------------
-   SlimeBase.cpp
+	HEW/UniBoooom!!
+	---------------------------------------
+	スライムベース クラス実装
+	---------------------------------------
+	SlimeBase.cpp
+	
+	作成者：鈴村 朋也
+	
+	変更履歴
+	・2023/11/04 スライムベースクラス作成 /鈴村 朋也
+	・2023/11/06 ハンマーもしくは敵により吹っ飛ばされる関数を追加	/山下凌佑
+	
+	・2023/11/06 インクルード誤字の修正 / 鄭 宇恩
+	・2023/11/08 GetPos→GetSphereに名前を変更 / 山下凌佑
+	・2023/11/08 定数定義がヘッダーにあったのでcppに移動 / 山下凌佑
+	・2023/11/08 コメントを追加　澤田蒼生
 
-   作成者：鈴村 朋也
+========================================== */
 
-   変更履歴
-   ・2023/11/04 スライムベースクラス作成 /鈴村 朋也
-   ・2023/11/06 ハンマーもしくは敵により吹っ飛ばされる関数を追加	/山下凌佑
-
-   ・2023/11/06 インクルード誤字の修正 / 鄭 宇恩
-   ・2023/11/08 GetPos→GetSphereに名前を変更 / 山下凌佑
-   ・2023/11/08 定数定義がヘッダーにあったのでcppに移動 / 山下凌佑
-   ======================================== */
-
-  // =============== インクルード ===================
+// =============== インクルード ===================
 #include "SlimeBase.h"
 #include "Geometry.h"
 #include "Model.h"
@@ -26,26 +28,26 @@ const float ENEMY_MOVE_SPEED = 0.01f;
 const float SPEED_DOWN_RATIO = 0.6f;	//スライムが接触して吹き飛ぶ際にかかる移動速度の変化の割合	RATIO=>割合
 const float MOVE_RESIST = 0.1f;		//吹き飛び移動中のスライムの移動速度に毎フレームかかる減算数値
 const float REFLECT_RATIO = 0.1f;	//スライムがスライムを吹き飛ばした際に吹き飛ばした側のスライムの移動量を変える割合
-// =============== プロトタイプ宣言 ===============
 
-// =============== グローバル変数定義 =============
-
-// =============== コンストラクタ =============
+/* ========================================
+	コンストラクタ関数
+	-------------------------------------
+	内容：コンストラクタ
+	-------------------------------------
+	引数1：無し
+	-------------------------------------
+	戻値：無し
+=========================================== */
 CSlimeBase::CSlimeBase()
-	:m_pModel(nullptr)
-	,m_pVS(nullptr)
-	//,m_pos(0.0f,0.0f,0.0f)
-	//,m_sphere{(0.0f,0.0f,0.0f),0.0f}
-	,m_move(0.0f, 0.0f, 0.0f)
-	,m_scale(1.0f,1.0f,1.0f)
-	,m_fVecAngle(0.0f)
-	//,m_playerPos(0.0f, 0.0f, 0.0f)
-	,m_bUse(false)
-	,m_bHitMove(false)
-	,m_anglePlayer(0.0f)
-	,m_distancePlayer(0.0f)
+	: m_pModel(nullptr)
+	, m_pVS(nullptr)
+	, m_move(0.0f, 0.0f, 0.0f)
 	, m_fSpeed(ENEMY_MOVE_SPEED)
-	,m_eSlimeSize(LEVEL_1)	//後でSLIME_NONEにする <=TODO
+	, m_scale(1.0f,1.0f,1.0f)
+	, m_pos(0.0f,0.0f,0.0f)
+	, m_fVecAngle(0.0f)
+	, m_bHitMove(false)
+	, m_eSlimeSize(LEVEL_1)	//後でSLIME_NONEにする <=TODO
 
 {
 	RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得
@@ -63,57 +65,44 @@ CSlimeBase::CSlimeBase()
 	}
 	m_pModel->SetVertexShader(m_pVS);
 
-	//球初期化
+	//当たり判定(自分)初期化
 	m_sphere.pos = { 0.0f, 0.0f, 0.0f };
 	m_sphere.radius = 0.0f;
-
-	//球(player)初期化
-	m_playerSphere.pos = { 0.0f, 0.0f, 0.0f };
-	m_playerSphere.radius = 0.0f;
-
+	
 }
 
-// =============== デストラクタ =================
+/* ========================================
+	デストラクタ関数
+	-------------------------------------
+	内容：デストラクタ
+	-------------------------------------
+	引数1：無し
+	-------------------------------------
+	戻値：無し
+=========================================== */
 CSlimeBase::~CSlimeBase()
 {
 
-	// Model削除
-	if (m_pModel) {
-		delete m_pModel;
-		m_pModel = nullptr;
-	}
+	SAFE_DELETE(m_pModel);
+	SAFE_DELETE(m_pVS);
 
-	if (m_pVS)
-	{
-		delete m_pVS;
-		m_pVS = nullptr;
-	}
 }
 
-/*
- ========================================
-   関数 Update()
- ----------------------------------------
-   内容：更新処理
- ======================================== */
+/* ========================================
+	更新処理関数
+	-------------------------------------
+	内容：更新処理
+	-------------------------------------
+	引数1：無し
+	-------------------------------------
+	戻値：無し
+=========================================== */
 void CSlimeBase::Update()
 {
-	// 使用してないならreturn
-	if (m_bUse == false) return;
 
 	if (!m_bHitMove)	//敵が通常の移動状態の時
 	{
-		//== 追従処理 ==
-		// 敵からエネミーの距離、角度を計算
-		m_distancePlayer = m_sphere.Distance(m_playerSphere);
-		m_anglePlayer = m_sphere.Angle(m_playerSphere);
-
-		TTriType<float> movePos = m_playerSphere.pos - m_sphere.pos;
-		if (m_distancePlayer != 0)	//0除算回避
-		{
-			m_move.x = movePos.x / m_distancePlayer * m_fSpeed;
-			m_move.z = movePos.z / m_distancePlayer * m_fSpeed;
-		}
+		NormalMove();
 	}
 	else
 	{
@@ -122,26 +111,29 @@ void CSlimeBase::Update()
 	}
 
 	// -- 座標更新
-	m_sphere.pos.x += m_move.x;
-	m_sphere.pos.z += m_move.z;
+	m_pos.x += m_move.x;
+	m_pos.z += m_move.z;
+
+	m_sphere.pos = m_pos;	// 当たり判定の位置を座標に合わせる
 }
 
-/*
- ========================================
-   関数 Draw()
- ----------------------------------------
-   内容：描画処理
- ======================================== */
+/* ========================================
+	描画処理関数
+	-------------------------------------
+	内容：描画処理
+	-------------------------------------
+	引数1：無し
+	-------------------------------------
+	戻値：無し
+=========================================== */
 void CSlimeBase::Draw()
 {
-	// 使用してないならreturn
-	if (m_bUse == false) return;
 
 	DirectX::XMFLOAT4X4 mat[3];
 
 	//-- ワールド行列の計算
 	//DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(m_pos.x, m_pos.y, m_pos.z);			//移動行列
-	DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(m_sphere.pos.x, m_sphere.pos.y, m_sphere.pos.z);			//移動行列
+	DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(m_pos.x, m_pos.y, m_pos.z);			//移動行列
 
 	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(m_scale.x, m_scale.y, m_scale.z);		//拡大縮小行列
 	DirectX::XMMATRIX R = DirectX::XMMatrixRotationY(0.0f);		//回転行列
@@ -172,48 +164,29 @@ void CSlimeBase::Draw()
 	}
 }
 
-CSphereInfo::Sphere CSlimeBase::GetSphere()
-{
-	return m_sphere;
-}
-
-/*
-TTriType<float> CSlimeBase::GetPos()
-{
-	return m_pos;
-}
-*/
-bool CSlimeBase::GetUse()
-{
-	return m_bUse;
-}
 
 /* ========================================
-	スライムの大きさの種類を返す関数
+	通常移動関数
 	----------------------------------------
-	内容：スライムの大きさの種類を返す
+	内容：プレイヤーを追跡する移動を行う
 	----------------------------------------
 	引数1：なし
 	----------------------------------------
-	戻値：スライムのサイズを表す列挙
+	戻値：なし
 ======================================== */
-E_SLIME_LEVEL CSlimeBase::GetSlimeLevel()
+void CSlimeBase::NormalMove()
 {
-	return m_eSlimeSize;
-}
+	//== 追従処理 ==
+	// 敵からエネミーの距離、角度を計算
+	float distancePlayer	= m_sphere.Distance(m_Player.GetSphere());
+	float anglePlayer		= m_sphere.Angle(m_Player.GetSphere());
 
-/* ========================================
-	スライムの移動速度を取得
-	----------------------------------------
-	内容：スライムの移動速度を取得
-	----------------------------------------
-	引数1：なし
-	----------------------------------------
-	戻値：スライムの移動速度
-======================================== */
-float CSlimeBase::GetSlimeSpeed()
-{
-	return m_fSpeed;
+	TTriType<float> movePos = m_Player.GetPos() - m_pos;
+	if (distancePlayer != 0)	//0除算回避
+	{
+		m_move.x = movePos.x / distancePlayer * m_fSpeed;
+		m_move.z = movePos.z / distancePlayer * m_fSpeed;
+	}
 }
 
 /* ========================================
@@ -270,25 +243,106 @@ void CSlimeBase::Reflect()
 	m_fSpeed *= REFLECT_RATIO;
 }
 
-//void CSlimeBase::SetPos(TTriType<float> pos)
-//{
-//	m_pos = pos;
-//}
-
-void CSlimeBase::SetPos(CSphereInfo::Sphere sphere)
+/* ========================================
+	当たり判定取得関数
+	-------------------------------------
+	内容：スライムの当たり判定返す
+	-------------------------------------
+	引数1：無し
+	-------------------------------------
+	戻値：当たり判定(Sphere)
+=========================================== */
+CSphereInfo::Sphere CSlimeBase::GetSphere()
 {
-	m_sphere.pos = sphere.pos;
+	return m_sphere;
 }
 
-void CSlimeBase::SetUse(bool onoff)
+/* ========================================
+	当たり判定セット関数
+	-------------------------------------
+	内容：当たり判定をセットする(追跡処理に使用する)
+	-------------------------------------
+	引数1：無し
+	-------------------------------------
+	戻値：当たり判定
+=========================================== */
+void CSlimeBase::SetSphere(CSphereInfo::Sphere Sphere)
 {
-	m_bUse = onoff;
+	m_sphere = Sphere;
 }
 
-void CSlimeBase::SetPlayer(CSphereInfo::Sphere player)
+/* ========================================
+	座標セット関数
+	-------------------------------------
+	内容：スライムの座標をセットする
+	-------------------------------------
+	引数1：座標(x,y,z)
+	-------------------------------------
+	戻値：無し
+=========================================== */
+void CSlimeBase::SetPos(TPos<float> pos)
 {
-	m_playerSphere = player;
+	m_pos = pos;
 }
+
+/* ========================================
+	座標取得関数
+	-------------------------------------
+	内容：スライムの座標を返す
+	-------------------------------------
+	引数1：無し
+	-------------------------------------
+	戻値：座標(x,y,z)
+=========================================== */
+TPos<float> CSlimeBase::GetPos()
+{
+	return m_pos;
+}
+
+
+/* ========================================
+	スライムレベル取得関数
+	----------------------------------------
+	内容：スライムのレベルを返す
+	----------------------------------------
+	引数1：なし
+	----------------------------------------
+	戻値：スライムのレベル
+======================================== */
+E_SLIME_LEVEL CSlimeBase::GetSlimeLevel()
+{
+	return m_eSlimeSize;
+}
+
+/* ========================================
+	移動速度取得関数
+	----------------------------------------
+	内容：スライムの移動速度を返す
+	----------------------------------------
+	引数1：なし
+	----------------------------------------
+	戻値：スライムの移動速度
+======================================== */
+float CSlimeBase::GetSpeed()
+{
+	return m_fSpeed;
+}
+
+/* ========================================
+	プレイヤーセット関数
+	-------------------------------------
+	内容：プレイヤーをセットする(追跡処理に使用する)
+	-------------------------------------
+	引数1：プレイヤー
+	-------------------------------------
+	戻値：無し
+=========================================== */
+void CSlimeBase::SetPlayer(CPlayer player)
+{
+	m_Player = player;
+}
+
+
 
 
 
