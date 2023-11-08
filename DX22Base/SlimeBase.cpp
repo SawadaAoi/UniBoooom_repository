@@ -178,8 +178,8 @@ void CSlimeBase::NormalMove()
 {
 	//== 追従処理 ==
 	// 敵からエネミーの距離、角度を計算
-	float distancePlayer	= m_sphere.Distance(m_Player.GetSphere());
-	float anglePlayer		= m_sphere.Angle(m_Player.GetSphere());
+	float distancePlayer	= m_sphere.Distance(m_Player.GetPlayerSphere());
+	float anglePlayer		= m_sphere.Angle(m_Player.GetPlayerSphere());
 
 	TTriType<float> movePos = m_Player.GetPos() - m_pos;
 	if (distancePlayer != 0)	//0除算回避
