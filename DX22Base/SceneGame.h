@@ -7,6 +7,7 @@
 #include "Geometry.h"
 #include "SlimeManager.h"
 #include "Collision.h"
+#include "ExplosionManager.h"
 #include "Player.h"
 
 
@@ -31,6 +32,7 @@ private:
 	CPlayer* m_pPlayer;
 	CSlimeManager* m_pSlimeMng;
 	CCOLLISION* m_pCollision;
+	CExplosionManager* m_pExplosionMng;
 };
 
 #endif // __SCENE_GAME_H__
