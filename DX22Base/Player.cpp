@@ -258,7 +258,7 @@ CSphereInfo::Sphere CPlayer::GetHammerSphere()
    ----------------------------------------
    ñﬂílÅFTPos
    ======================================== */
-TPos<float> CPlayer::GetPos()
+TPos3d<float> CPlayer::GetPos()
 {
 	return m_pos;
 }

@@ -19,7 +19,7 @@
 #include "Model.h"
 #include "CameraDebug.h"
 #include "CameraChase.h"
-#include "Pos.h"
+#include "Pos3d.h"
 #include "Box.h"
 #include "Line.h"
 #include "Defines.h"
