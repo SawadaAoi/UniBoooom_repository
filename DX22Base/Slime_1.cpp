@@ -52,7 +52,7 @@ CSlime_1::CSlime_1(TPos3d<float> pos)
 	m_pos = pos;			// èâä˙ç¿ïWÇéwíË
 	m_sphere.pos = pos;
 	m_scale = { LEVEL1_SCALE,LEVEL1_SCALE ,LEVEL1_SCALE };
-	m_sphere.radius = LEVEL1_SCALE;
+	m_sphere.radius *= LEVEL1_SCALE;
 	m_eSlimeSize = E_SLIME_LEVEL::LEVEL_1;
 }
 

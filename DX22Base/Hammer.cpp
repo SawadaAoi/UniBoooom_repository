@@ -21,7 +21,7 @@
 const float HALF_PI = 3.141592f / 2;	//ハンマーの開始地点のラジアン角(要修正)
 const float ANGULAR_ANGLE = 0.1f;		//毎フレーム移動する角度量
 const float ROTATE_RADIUS = 1.0f;		//ハンマーが回転するプレイヤーからの距離
-const float HAMMER_SIZE = 1.0f;			//ハンマーの当たり判定の大きさ
+const float HAMMER_SIZE = 0.8f;			//ハンマーの当たり判定の大きさ
 
 #include "hammer.h"
 #include "Sphere.h"
