@@ -16,7 +16,8 @@
 	・2023/11/08 定数定義がヘッダーにあったのでcppに移動 / 山下凌佑
 	・2023/11/08 コメントを追加　澤田蒼生
 	・2023/11/09 プレイヤー追跡移動変更
-
+	・2023/11/09 Update,NormalMoveの引数変更　変更者：澤田蒼生
+	
 ========================================== */
 
 // =============== インクルード ===================
@@ -68,7 +69,7 @@ CSlimeBase::CSlimeBase()
 
 	//当たり判定(自分)初期化
 	m_sphere.pos = { 0.0f, 0.0f, 0.0f };
-	m_sphere.radius = 0.0f;
+	m_sphere.radius = 1.0f;
 	
 }
 
@@ -94,11 +95,11 @@ CSlimeBase::~CSlimeBase()
 	-------------------------------------
 	内容：更新処理
 	-------------------------------------
-	引数1：無し
+	引数1：プレイヤー座標
 	-------------------------------------
 	戻値：無し
 =========================================== */
-void CSlimeBase::Update(CSphereInfo::Sphere playerSphere)
+void CSlimeBase::Update(TPos3d<float> playerSphere)
 {
 
 	if (!m_bHitMove)	//敵が通常の移動状態の時
@@ -175,20 +176,19 @@ void CSlimeBase::Draw(const CCamera* pCamera)
 	----------------------------------------
 	内容：プレイヤーを追跡する移動を行う
 	----------------------------------------
-	引数1：なし
+	引数1：プレイヤー座標
 	----------------------------------------
 	戻値：なし
 ======================================== */
-void CSlimeBase::NormalMove(CSphereInfo::Sphere playerSphere)
+void CSlimeBase::NormalMove(TPos3d<float> playerPos)
 {
-	//== 追従処理 ==
 	// 敵からエネミーの距離、角度を計算
-	float distancePlayer	= m_sphere.Distance(playerSphere);
+	float distancePlayer	= m_pos.Distance(playerPos);
 
 	// プレイヤーと距離が一定以内だったら
 	if (distancePlayer < MOVE_DISTANCE_PLAYER) 
 	{
-		TTriType<float> movePos = playerSphere.pos - m_pos;
+		TPos3d<float> movePos = playerPos - m_pos;
 		if (distancePlayer != 0)	//0除算回避
 		{
 			m_move.x = movePos.x / distancePlayer * m_fSpeed;
@@ -298,6 +298,7 @@ void CSlimeBase::SetSphere(CSphereInfo::Sphere Sphere)
 void CSlimeBase::SetPos(TPos3d<float> pos)
 {
 	m_pos = pos;
+	m_sphere.pos = pos;
 }
 
 /* ========================================
@@ -327,6 +328,21 @@ TPos3d<float> CSlimeBase::GetPos()
 E_SLIME_LEVEL CSlimeBase::GetSlimeLevel()
 {
 	return m_eSlimeSize;
+}
+
+
+/* ========================================
+	吹飛状態フラグ取得関数
+	----------------------------------------
+	内容：吹飛状態フラグを返す
+	----------------------------------------
+	引数1：なし
+	----------------------------------------
+	戻値：吹飛状態フラグ
+======================================== */
+bool CSlimeBase::GetHitMoveFlg()
+{
+	return m_bHitMove;
 }
 
 /* ========================================

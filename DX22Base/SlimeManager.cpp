@@ -39,7 +39,7 @@ const int CREATE_DISTANCE			= 10;		// 生成距離最小値
 	戻値：無し
 =========================================== */
 CSlimeManager::CSlimeManager()
-	: m_GeneCnt(0)
+	: m_CreateCnt(0)
 {
 
 	srand((unsigned int)time(NULL));	// 乱数パターン設定
@@ -86,16 +86,16 @@ void CSlimeManager::Update()
 	for (int i = 0; i < MAX_SLIME; i++)
 	{
 		if (m_pSlime[i] == nullptr) continue;
-		m_pSlime[i]->Update(m_pPlayerSphere);
+		m_pSlime[i]->Update(m_pPlayerPos);
 
 	}
 
-	m_GeneCnt++;
-	if(ENEMY_GENERATE_INTERVAL<=m_GeneCnt)
+	m_CreateCnt++;
+	if(ENEMY_GENERATE_INTERVAL<= m_CreateCnt)
 	{
 		// 敵 生成
 		Create();
-		m_GeneCnt = 0;
+		m_CreateCnt = 0;	// カウントリセット
 	}
 
 }
@@ -131,7 +131,7 @@ void CSlimeManager::Draw()
 =========================================== */
 void CSlimeManager::Create()
 {
-	CSphereInfo::Sphere CreatePos;	// スライムの生成位置(TODO：型を変更する)
+	TPos3d<float> CreatePos;	// スライムの生成位置
 
 	for (int i = 0; i < MAX_SLIME; i++)
 	{
@@ -142,19 +142,16 @@ void CSlimeManager::Create()
 		while (true)
 		{
 			// 乱数をセットする
-			CreatePos.pos.x = GetRandom(RANDOM_POS_MIN, RANDOM_POS_MAX);	//乱数取得
-			CreatePos.pos.z = GetRandom(RANDOM_POS_MIN, RANDOM_POS_MAX);
-			CreatePos.pos.y = 0;
+			CreatePos.x = GetRandom(RANDOM_POS_MIN, RANDOM_POS_MAX);	//乱数取得
+			CreatePos.z = GetRandom(RANDOM_POS_MIN, RANDOM_POS_MAX);
+			CreatePos.y = 0;
 
-			//float Distance = sqrt(pow(Sphere.pos.x - pos.x, 2.0f) + pow(Sphere.pos.z - pos.z, 2.0f));
-			float Distance = CreatePos.Distance(m_pPlayerSphere);
+			float Distance = CreatePos.Distance(m_pPlayerPos);	// 生成座標のプレイヤーとの距離
 
 			if (Distance >= CREATE_DISTANCE) break;	// プレイヤーから一定の距離離れていれば抜ける
 		}
 		
-		m_pSlime[i] = new CSlime_1();	// 動的生成
-		m_pSlime[i]->SetPos(TPos3d<float>(
-			CreatePos.pos.x, CreatePos.pos.y, CreatePos.pos.z));	//posを設定
+		m_pSlime[i] = new CSlime_1(CreatePos);	// 動的生成
 		
 		break;						// 生成したら終了
 		
@@ -274,9 +271,9 @@ void CSlimeManager::SetCamera(CCamera * pCamera)
 	----------------------------------------
 	戻値：無し
 ======================================== */
-void CSlimeManager::SetPlayerSphere(CSphereInfo::Sphere pSphere)
+void CSlimeManager::SetPlayerPos(TPos3d<float> pos)
 {
-	m_pPlayerSphere = pSphere;
+	m_pPlayerPos = pos;
 }
 
 /* ========================================

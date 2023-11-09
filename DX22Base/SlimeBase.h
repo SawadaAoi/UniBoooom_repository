@@ -11,7 +11,6 @@
 	
 	変更履歴
 	・2023/11/04 スライムベースクラス作成 /鈴村 朋也
-	
 	・2023/11/06 吹き飛び移動と吹き飛び移動関数を作成 変更者名：山下凌佑
 	・2023/11/06 m_fSpped(敵の移動速度)とm_fVecAngle(敵の吹き飛ぶ方向)のメンバ変数を追加 変更者名：山下凌佑
 	・2023/11/06 定数SPEED_DOWN_RATIO(ぶつかった先のスライムに速度を渡す際に減少する割合)を追加 変更者名：山下凌佑
@@ -26,6 +25,7 @@
 	・2023/11/08 m_bUse、n_playerDistance、m_playerAngleを削除(一か所でしか使用していない為)変更者：澤田蒼生
 	・2023/11/08 m_Playerを追加　変更者：澤田蒼生
 	・2023/11/08 座標をTPos<Pos>に変更　変更者：澤田蒼生
+	・2023/11/09 Update,NormalMoveの引数変更　変更者：澤田蒼生
 	
 ========================================== */
 
@@ -56,10 +56,10 @@ class CSlimeBase
 public:
 	CSlimeBase();
 	~CSlimeBase();
-	void Update(CSphereInfo::Sphere playerSphere);
+	void Update(TPos3d<float> playerPos);
 	void Draw(const CCamera* pCamera);
 
-	void NormalMove(CSphereInfo::Sphere playerSphere);								// 通常時の移動処理
+	void NormalMove(TPos3d<float> playerSphere);	// 通常時の移動処理
 	void HitMove();									//スライムが吹き飛び移動状態の時に毎フレーム呼び出して移動させる
 	void HitMoveStart(float speed, float angle);	//スライムが吹き飛ばされたときに速度と角度を決める
 	void Reflect();									//スライムとぶつかって吹き飛ばした際に自分の移動量を減らす
@@ -75,7 +75,8 @@ public:
 	float GetSpeed();				//スライムの移動速度を取得
 
 	E_SLIME_LEVEL GetSlimeLevel();		//スライムのサイズを取得
-
+	
+	bool GetHitMoveFlg();
 protected:
 	Model* m_pModel;				// 3Dモデル
 	VertexShader* m_pVS;

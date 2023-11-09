@@ -97,7 +97,6 @@ void CExplosion::Update()
 =========================================== */
 void CExplosion::Draw()
 {
-
 	m_3dModel->Draw();	// ”š”­‰¼3Dƒ‚ƒfƒ‹‚Ì•`‰æ
 
 }

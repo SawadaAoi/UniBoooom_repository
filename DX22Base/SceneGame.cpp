@@ -26,7 +26,7 @@
 
 // =============== デバッグモード =======================
 #define MODE_COORD_AXIS (true)	//座標軸映すかどうか
-#define MODE_GROUND (true)	//座標軸映すかどうか
+#define MODE_GROUND (false)	//座標軸映すかどうか
 
 /* ========================================
 	コンストラクタ関数
@@ -104,13 +104,15 @@ void SceneGame::Update(float tick)
 {
 	m_pCamera->Update();
 	m_pPlayer->Update();
-	m_pSlimeMng->SetPlayerSphere(m_pPlayer->GetPlayerSphere());
+	m_pSlimeMng->SetPlayerPos(m_pPlayer->GetPos());
 
 	// スライムマネージャー更新
 	m_pSlimeMng->Update();
 	m_pExplosionMng->Update();
 	m_pCamera->Update();
 
+
+	SceneGameCollision();
 }
 
 /* ========================================

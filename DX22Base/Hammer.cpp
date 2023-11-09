@@ -47,7 +47,7 @@ CHammer::CHammer()
 	m_S = DirectX::XMMatrixRotationY(0.0f);					//Y軸の回転の変換行列の初期化
 	m_pHammerGeo = new CSphere();							//ハンマーを仮表示するジオメトリー
 	m_sphere.pos = {0.0f, 0.0f, 0.0f};
-	m_sphere.radius = 0.0f;
+	m_sphere.radius = 1.0f;
 }
 
 /* ========================================
