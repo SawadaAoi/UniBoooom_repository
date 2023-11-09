@@ -1,5 +1,3 @@
-#ifndef __EXPLOSION_MANAGER_H__	//ExplosionManager.hインクルードガード
-#define __EXPLOSION_MANAGER_H__
 /* ========================================
    HEW/UniBoooom!!
    ---------------------------------------
@@ -13,7 +11,8 @@
    ・2023/11/06 爆発マネージャークラス作成 /鄭　宇恩
 
 ========================================== */
-
+#ifndef __EXPLOSION_MANAGER_H__	//ExplosionManager.hインクルードガード
+#define __EXPLOSION_MANAGER_H__
 // =============== インクルード ===================
 #include "TriType.h"		//同じ型を３つ持つテンプレートクラス定義ヘッダー
 #include "Explosion.h"		//爆発処理ヘッダー
