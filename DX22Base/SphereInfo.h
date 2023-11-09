@@ -47,7 +47,7 @@ public:
 	======================================== */
 	~CSphereInfo() {}	//デストラクタ
 
-	// =============== 構造体定義 =====================
+	// ===構造体定義=========
 	typedef struct Sphere {
 		TTriType<float> pos;
 		float radius;

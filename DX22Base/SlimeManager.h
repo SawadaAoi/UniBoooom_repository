@@ -49,6 +49,7 @@ public:
 	void SetPlayerSphere(CSphereInfo::Sphere pSphere);
 
 private:
+	// ===ƒƒ“ƒo•Ï”éŒ¾=====
 	int GetRandom(int min, int max);
 	int m_GeneCnt;
 

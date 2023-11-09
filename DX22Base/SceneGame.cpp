@@ -54,7 +54,7 @@ SceneGame::SceneGame()
 	m_pCollision = new CCOLLISION();
 	m_pPlayer = new CPlayer();
 	m_pCamera = new CCameraChase(m_pPlayer->GetPosAddress()) ;
-	m_pPlayer->GetCamera(m_pCamera);
+	m_pPlayer->SetCamera(m_pCamera);
 
 #if MODE_GROUND
 	m_pBox = new CBox();

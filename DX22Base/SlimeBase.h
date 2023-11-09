@@ -75,6 +75,7 @@ public:
 	void SetSphere(CSphereInfo::Sphere Sphere);
 
 protected:
+	// ===メンバ変数宣言=====
 	Model* m_pModel;				// 3Dモデル
 	VertexShader* m_pVS;
 
