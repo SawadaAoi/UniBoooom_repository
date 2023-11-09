@@ -34,7 +34,7 @@
 #include "Model.h"
 #include "Shader.h"
 #include "SphereInfo.h"
-#include "Pos.h"
+#include "Pos3d.h"
 #include "Camera.h"
 
 // =============== 列挙定義 =======================
@@ -64,8 +64,8 @@ public:
 	void HitMoveStart(float speed, float angle);	//スライムが吹き飛ばされたときに速度と角度を決める
 	void Reflect();									//スライムとぶつかって吹き飛ばした際に自分の移動量を減らす
 
-	void SetPos(TPos<float> pos);
-	TPos<float> GetPos();
+	void SetPos(TPos3d<float> pos);
+	TPos3d<float> GetPos();
 
 
 	void SetSphere(CSphereInfo::Sphere Sphere);
@@ -80,7 +80,7 @@ protected:
 	Model* m_pModel;				// 3Dモデル
 	VertexShader* m_pVS;
 
-	TPos<float> m_pos;				// 位置座標
+	TPos3d<float> m_pos;				// 位置座標
 	TTriType<float> m_move;
 	TTriType<float> m_scale;	
 	float m_fVecAngle;				//敵の吹き飛ぶ方向

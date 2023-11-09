@@ -288,7 +288,7 @@ void CSlimeBase::SetSphere(CSphereInfo::Sphere Sphere)
 	-------------------------------------
 	戻値：無し
 =========================================== */
-void CSlimeBase::SetPos(TPos<float> pos)
+void CSlimeBase::SetPos(TPos3d<float> pos)
 {
 	m_pos = pos;
 }
@@ -302,7 +302,7 @@ void CSlimeBase::SetPos(TPos<float> pos)
 	-------------------------------------
 	戻値：座標(x,y,z)
 =========================================== */
-TPos<float> CSlimeBase::GetPos()
+TPos3d<float> CSlimeBase::GetPos()
 {
 	return m_pos;
 }

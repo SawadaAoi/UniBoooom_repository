@@ -12,6 +12,8 @@
 	・2023/11/08 スライム同士が接触した際の分岐処理を作成(分岐した後に行う処理は未実装　※TODOをつけておいた)の /山下凌佑
 	・2023/11/08 結合処理を作成(結合後の生成処理は未実装 Slime_2～Slime_4がまだ無いから) /山下凌佑
 	・2023/11/09 生成処理、変数の変更           /澤田 蒼生
+	・2023/11/09 コメントの追加           /澤田 蒼生
+	
 =========================================== */
 #include "SlimeManager.h"
 #include "Slime_1.h"
@@ -21,8 +23,10 @@
 
 
 // =============== 定数定義 =======================
-const int ENEMY_GENERATE_INTERVAL = 5 * 60;
-
+const int ENEMY_GENERATE_INTERVAL	= 5 * 60;	// 生成間隔
+const int RANDOM_POS_MIN			= -30;		// 生成座標範囲下限(x,z共通)
+const int RANDOM_POS_MAX			= 30;		// 生成座標範囲上限(x,z共通)
+const int CREATE_DISTANCE			= 10;		// 生成距離最小値
 
 
 /* ========================================
@@ -138,18 +142,18 @@ void CSlimeManager::Create()
 		while (true)
 		{
 			// 乱数をセットする
-			CreatePos.pos.x = GetRandom(-30, 30);	//乱数取得
-			CreatePos.pos.z = GetRandom(-30, 30);
+			CreatePos.pos.x = GetRandom(RANDOM_POS_MIN, RANDOM_POS_MAX);	//乱数取得
+			CreatePos.pos.z = GetRandom(RANDOM_POS_MIN, RANDOM_POS_MAX);
 			CreatePos.pos.y = 0;
 
 			//float Distance = sqrt(pow(Sphere.pos.x - pos.x, 2.0f) + pow(Sphere.pos.z - pos.z, 2.0f));
 			float Distance = CreatePos.Distance(m_pPlayerSphere);
 
-			if (Distance >= 10) break;	// プレイヤーから一定の距離離れていれば抜ける
+			if (Distance >= CREATE_DISTANCE) break;	// プレイヤーから一定の距離離れていれば抜ける
 		}
 		
 		m_pSlime[i] = new CSlime_1();	// 動的生成
-		m_pSlime[i]->SetPos(TPos<float>(
+		m_pSlime[i]->SetPos(TPos3d<float>(
 			CreatePos.pos.x, CreatePos.pos.y, CreatePos.pos.z));	//posを設定
 		
 		break;						// 生成したら終了
