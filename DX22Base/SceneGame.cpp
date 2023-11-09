@@ -10,6 +10,7 @@
 	変更履歴
 	・2023/11/08 コメント追加、無駄な箇所を削除　澤田蒼生
 	・2023/11/09 カメラの様々動作チェック。メインから軸線奪取。地面追加。 髙木駿輔
+	・2023/11/10 カメラをスライムと爆発にも渡すようにした 髙木駿輔
 
 ========================================== */
 
@@ -26,7 +27,7 @@
 
 // =============== デバッグモード =======================
 #define MODE_COORD_AXIS (true)	//座標軸映すかどうか
-#define MODE_GROUND (true)	//座標軸映すかどうか
+#define MODE_GROUND (false)	//座標軸映すかどうか
 
 /* ========================================
 	コンストラクタ関数
@@ -64,6 +65,7 @@ SceneGame::SceneGame()
 	m_pSlimeMng = new CSlimeManager();
 	m_pSlimeMng->SetCamera(m_pCamera);
 	m_pExplosionMng = new CExplosionManager();
+	m_pExplosionMng->SetCamera(m_pCamera);
 }
 
 /* ========================================
@@ -107,7 +109,7 @@ void SceneGame::Update(float tick)
 	m_pSlimeMng->SetPlayerSphere(m_pPlayer->GetPlayerSphere());
 
 	// スライムマネージャー更新
-	m_pSlimeMng->Update();
+	m_pSlimeMng->Update(m_pExplosionMng);
 	m_pExplosionMng->Update();
 	m_pCamera->Update();
 

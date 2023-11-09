@@ -1,14 +1,14 @@
 /* ========================================
 	HEW/UniBoooom!!
 	------------------------------------
-	スライムサイズ1用cpp
+	スライムサイズ3用cpp
 	------------------------------------
-	Slime_1.cpp
+	Slime_3.cpp
 	------------------------------------
-	作成者	澤田
+	作成者	山下凌佑
 
 	変更履歴
-	・2023/11/08 作成 澤田蒼生
+	・2023/11/08 作成 山下凌佑
 	・2023/11/08 大きさの定数を定義	山下凌佑
 	・2023/11/08 スライムの移動速度を大きさごとに変更する関数を作成	山下凌佑
 	・2023/11/08 スライムの移動速度を大きさごとに変更する関数を作成	山下凌佑
@@ -16,11 +16,11 @@
 ========================================== */
 
 // =============== インクルード ===================
-#include "Slime_1.h"
+#include "Slime_3.h"
 
 // =============== 定数定義 ===================
-const float LEVEL1_SCALE = 1.0f;
-const float LEVEL1_SPEED = ENEMY_MOVE_SPEED;
+const float LEVEL3_SCALE = 3.0f;
+const float LEVEL3_SPEED = ENEMY_MOVE_SPEED * 0.90;
 
 /* ========================================
 	コンストラクタ関数
@@ -31,11 +31,11 @@ const float LEVEL1_SPEED = ENEMY_MOVE_SPEED;
 	-------------------------------------
 	戻値：無し
 =========================================== */
-CSlime_1::CSlime_1()
+CSlime_3::CSlime_3()
 {
-	m_scale = { LEVEL1_SCALE,LEVEL1_SCALE ,LEVEL1_SCALE };
-	m_sphere.radius = LEVEL1_SCALE;
-	m_eSlimeSize = E_SLIME_LEVEL::LEVEL_1;
+	m_scale = { LEVEL3_SCALE,LEVEL3_SCALE ,LEVEL3_SCALE };
+	m_sphere.radius = LEVEL3_SCALE;
+	m_eSlimeSize = E_SLIME_LEVEL::LEVEL_3;
 }
 
 /* ========================================
@@ -47,7 +47,7 @@ CSlime_1::CSlime_1()
 	-------------------------------------
 	戻値：
 =========================================== */
-CSlime_1::~CSlime_1()
+CSlime_3::~CSlime_3()
 {
 }
 
@@ -60,9 +60,9 @@ CSlime_1::~CSlime_1()
 	-------------------------------------
 	戻値：なし
 =========================================== */
-void CSlime_1::SetSpeed()
+void CSlime_3::SetSpeed()
 {
-	m_fSpeed = LEVEL1_SPEED;	//移動速度に定数をセット
+	m_fSpeed = LEVEL3_SPEED;	//移動速度に定数をセット
 }
 
 

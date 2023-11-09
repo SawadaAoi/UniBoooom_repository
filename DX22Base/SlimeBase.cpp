@@ -24,7 +24,6 @@
 #include "Geometry.h"
 
 // =============== 定数定義 =======================
-const float ENEMY_MOVE_SPEED = 0.01f;
 const float SPEED_DOWN_RATIO = 0.6f;	//スライムが接触して吹き飛ぶ際にかかる移動速度の変化の割合	RATIO=>割合
 const float MOVE_RESIST = 0.1f;		//吹き飛び移動中のスライムの移動速度に毎フレームかかる減算数値
 const float REFLECT_RATIO = 0.1f;	//スライムがスライムを吹き飛ばした際に吹き飛ばした側のスライムの移動量を変える割合
@@ -68,7 +67,7 @@ CSlimeBase::CSlimeBase()
 
 	//当たり判定(自分)初期化
 	m_sphere.pos = { 0.0f, 0.0f, 0.0f };
-	m_sphere.radius = 0.0f;
+	m_sphere.radius = 1.0f;
 	
 }
 
@@ -127,7 +126,7 @@ void CSlimeBase::Update(CSphereInfo::Sphere playerSphere)
 	-------------------------------------
 	戻値：無し
 =========================================== */
-void CSlimeBase::Draw(const CCamera* pCamera)
+void CSlimeBase::Draw()
 {
 
 	DirectX::XMFLOAT4X4 mat[3];
@@ -138,9 +137,9 @@ void CSlimeBase::Draw(const CCamera* pCamera)
 
 	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(m_scale.x, m_scale.y, m_scale.z);		//拡大縮小行列
 	DirectX::XMMATRIX R = DirectX::XMMatrixRotationY(0.0f);		//回転行列
-	DirectX::XMMATRIX world = S * T * R;										//ワールド行列の設定
-	world = DirectX::XMMatrixTranspose(world);								//転置行列に変換
-	DirectX::XMStoreFloat4x4(&mat[0], world);								//XMMATRIX型(world)からXMFLOAT4X4型(mat[0])へ変換して格納
+	DirectX::XMMATRIX world = S * T * R;						//ワールド行列の設定
+	world = DirectX::XMMatrixTranspose(world);					//転置行列に変換
+	DirectX::XMStoreFloat4x4(&mat[0], world);					//XMMATRIX型(world)からXMFLOAT4X4型(mat[0])へ変換して格納
 
 	////-- ビュー行列の計算
 	//DirectX::XMMATRIX view = DirectX::XMMatrixLookAtLH(
@@ -156,8 +155,8 @@ void CSlimeBase::Draw(const CCamera* pCamera)
 	//proj = DirectX::XMMatrixTranspose(proj);	//転置行列に変換
 	//DirectX::XMStoreFloat4x4(&mat[2], proj);	//XMMATRIX型(proj)からXMFLOAT4X4型(mat[2])へ変換して格納
 
-	mat[1] = pCamera->GetViewMatrix();
-	mat[2] = pCamera->GetProjectionMatrix();
+	mat[1] = m_pCamera->GetViewMatrix();
+	mat[2] = m_pCamera->GetProjectionMatrix();
 	
 
 	//-- 行列をシェーダーへ設定
@@ -298,6 +297,20 @@ void CSlimeBase::SetSphere(CSphereInfo::Sphere Sphere)
 void CSlimeBase::SetPos(TPos3d<float> pos)
 {
 	m_pos = pos;
+}
+
+/* ========================================
+	カメラ情報セット関数
+	----------------------------------------
+	内容：描画処理で使用するカメラ情報セット
+	----------------------------------------
+	引数1：なし
+	----------------------------------------
+	戻値：なし
+======================================== */
+void CSlimeBase::SetCamera(const CCamera * pCamera)
+{
+	m_pCamera = pCamera;
 }
 
 /* ========================================
