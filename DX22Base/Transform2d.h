@@ -1,20 +1,15 @@
 /* ========================================
 	HEW/UniBoooom!!
 	------------------------------------
-	シェーダーに渡す定数バッファを定義
+	2Dのシェーダーに渡す定数バッファを定義
 	------------------------------------
 	Transform2d.h
 	------------------------------------
 	作成者	takagi
 
 	変更履歴
-	・2023/10/26 制作 takagi
-	・2023/10/31 継承に対応・コメント修正・べき乗追加 takagi
-	・2023/11/02 べき乗代入演算子追加・powの中身を明示的に型キャスト・べき乗の引数をdouble→float
-					・引数のconst不足を解消・速度(メモリ効率)意識で引数を参照方式に変更・コメント修正 takagi
-	・2023/11/03 %演算子使用時に、計算に使用する値が整数型でないことがある問題を修正・Total()関数を追加 takagi
-	・2023/11/04 .cpp/.h分け→分割解除 takagi
-	・2023/11/07 コーディング規約適用 takagi
+	・2023/11/07 制作 takagi
+	・2023/11/09 一部演算子をオーバーロード
 
 ========================================== */
 
@@ -28,17 +23,29 @@
 #include "DiType.h"		//メンバのヘッダ
 
 // =============== クラス定義 ===================
-struct CTransform2d	//ワールド行列に関わる情報
+struct tagTransform2d	//2Dの定数バッファに関わる情報
 {
 public:
 	// ===メンバ変数宣言===
-	TPos2d<float> m_fPos;		//位置
-	TDiType<float> m_fScale;	//拡縮
-	float m_fRadian;			//角
+	TPos2d<float> fPos;		//位置
+	TDiType<float> fScale;	//拡縮
+	float fRadian;			//角
 
 	// ===メンバ関数宣言===
-	//CTransform2d();		//コンストラクタ
-	//~CTransform2d();	//デストラクタ
+	tagTransform2d();											//コンストラクタ
+	tagTransform2d(const TPos2d<float>& fPos, const TDiType<float>& fScale,
+		const float& fRadian);									//引数付きコンストラクタ
+	tagTransform2d(const tagTransform2d& Obj);					//コピーコンストラクタ
+	~tagTransform2d();											//デストラクタ
+	tagTransform2d& operator=(const tagTransform2d& Obj);		//"="演算子のオーバーロード
+	tagTransform2d operator+(const tagTransform2d& Obj) const;	//"+"演算子のオーバーロード
+	tagTransform2d& operator+=(const tagTransform2d& Obj);		//"+="演算子のオーバーロード
+	tagTransform2d operator-(const tagTransform2d& Obj) const;	//"-"演算子のオーバーロード
+	tagTransform2d& operator-=(const tagTransform2d& Obj);		//"-="演算子のオーバーロード
+	tagTransform2d operator*(const tagTransform2d& Obj) const;	//"*"演算子のオーバーロード
+	tagTransform2d& operator*=(const tagTransform2d& Obj);		//"*="演算子のオーバーロード
+	tagTransform2d operator/(const tagTransform2d& Obj) const;	//"/"演算子のオーバーロード
+	tagTransform2d& operator/=(const tagTransform2d& Obj);		//"/="演算子のオーバーロード
 };	//型テンプレート
 
 #endif //!__TRANSFORM_2D_H__

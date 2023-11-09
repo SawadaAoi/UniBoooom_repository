@@ -3,7 +3,7 @@
 	------------------------------------
 	三次元位置座標を管理するテンプレートクラスを定義
 	------------------------------------
-	Pos3d3d.h
+	Pos3d.h
 	------------------------------------
 	作成者	takagi
 
@@ -14,6 +14,7 @@
 	・2023/11/03 Distance()関数の不具合を修正 takagi
 	・2023/11/04 .cpp/.h分け→分割解除 takagi
 	・2023/11/07 コーディング規約適用 takagi
+	・2023/11/09 変換コンストラクタ作成 takagi
 
 ========================================== */
 
@@ -29,17 +30,12 @@ struct TPos3d :public TTriType<Pos3d>	//テンプレートクラス：位置
 {
 public:
 	// ===メンバ関数宣言===
-	TPos3d();														//コンストラクタ
-	TPos3d(const Pos3d& x, const Pos3d& y, const Pos3d& z);			//引数付きコンストラクタ
-	TPos3d(const TPos3d& Obj);										//コピーコンストラクタ
-	~TPos3d();														//デストラクタ
-	Pos3d Distance(const TPos3d& Obj);								//距離計算
-	//TPos3d<Pos3d> operator+(const TTriType<Pos3d>& Obj) const;	
-	//TPos3d<Pos3d> operator-(const TTriType<Pos3d>& Obj) const;
-	//TPos3d<Pos3d> operator*(const TTriType<Pos3d>& Obj) const;
-	//TPos3d<Pos3d> operator/(const TTriType<Pos3d>& Obj) const;
-	//TPos3d<Pos3d> operator^(const TTriType<Pos3d>& Obj) const;
-
+	TPos3d();												//コンストラクタ
+	TPos3d(const Pos3d& x, const Pos3d& y, const Pos3d& z);	//引数付きコンストラクタ
+	TPos3d(const TTriType<Pos3d>& Tri);						//変換コンストラクタ
+	TPos3d(const TPos3d& Obj);								//コピーコンストラクタ
+	~TPos3d();												//デストラクタ
+	Pos3d Distance(const TPos3d& Obj);						//距離計算
 };	//型テンプレート
 
 /* ========================================
@@ -72,6 +68,22 @@ template<class Pos3d>	//テンプレート関数実装
 TPos3d<Pos3d>::TPos3d(const Pos3d & x, const Pos3d & y, const Pos3d & z)
 	:TTriType<Pos3d>(x, y, z)	//委譲
 {
+}
+
+/* ========================================
+	変換コンストラクタ
+	-------------------------------------
+	内容：親の型からのキャスト演算子
+	-------------------------------------
+	引数1：const TTriType<Pos3d> & Tri：変換元の型
+	-------------------------------------
+	戻値：なし
+=========================================== */
+template<class Pos3d>
+TPos3d<Pos3d>::TPos3d(const TTriType<Pos3d> & Tri)
+{
+	// =============== 格納 ===================
+	*this = Tri;	//型変換
 }
 
 /* ========================================
@@ -121,36 +133,6 @@ Pos3d TPos3d<Pos3d>::Distance(const TPos3d & Obj)
 	// =============== 提供 =======================
 	return (Pos3d)(pow((double)Temp.Total(), 0.5));	//計算結果
 }
-//
-//template<class Pos3d>
-//TPos3d<Pos3d> TPos3d<Pos3d>::operator+(const TTriType<Pos3d>& Obj) const
-//{
-//	return (this + Obj);
-//}
-//
-//template<class Pos3d>
-//TPos3d<Pos3d> TPos3d<Pos3d>::operator-(const TTriType<Pos3d> & Obj) const
-//{
-//	return TPos3d<Pos3d>();
-//}
-//
-//template<class Pos3d>
-//TPos3d<Pos3d> TPos3d<Pos3d>::operator*(const TTriType<Pos3d> & Obj) const
-//{
-//	return TPos3d<Pos3d>();
-//}
-//
-//template<class Pos3d>
-//TPos3d<Pos3d> TPos3d<Pos3d>::operator/(const TTriType<Pos3d> & Obj) const
-//{
-//	return TPos3d<Pos3d>();
-//}
-//
-//template<class Pos3d>
-//inline TPos3d<Pos3d> TPos3d<Pos3d>::operator^(const TTriType<Pos3d> & Obj) const
-//{
-//	return TPos3d<Pos3d>();
-//}
 
 #endif // !___POS_3D_H___
 

@@ -1,7 +1,7 @@
 /* ========================================
 	HEW/UniBoooom!!
 	------------------------------------
-	ワールド行列を定義
+	ワールド行列情報群定義
 	------------------------------------
 	Transform3d.h
 	------------------------------------
@@ -16,6 +16,7 @@
 	・2023/11/04 .cpp/.h分け→分割解除 takagi
 	・2023/11/07 コーディング規約適用 takagi
 	・2023/11/08 行列変換関数追加 takagi
+	・2023/11/09 一部微修正 takagi
 
 ========================================== */
 
@@ -32,8 +33,8 @@ struct tagTransform3d	//ワールド行列に関わる情報
 {
 public:
 	// ===メンバ変数宣言===
-	TPos3d<float> fPos;			//位置
-	TTriType<float> fScale;		//拡縮率
+	TPos3d<float> fPos;		//位置
+	TTriType<float> fScale;	//拡縮率
 	TTriType<float> fRadian;	//回転角
 
 	// ===メンバ関数宣言===
@@ -44,15 +45,15 @@ public:
 	~tagTransform3d();										//デストラクタ
 	DirectX::XMFLOAT4X4 GetWorldMatrixTRS();				//ワールド行列(TRS変換)
 	DirectX::XMFLOAT4X4 GetWorldMatrixSRT();				//ワールド行列(SRT変換)
-	//tagTransform3d& operator=(const tagTransform3d& Obj);	//"="演算子のオーバーロード
-	//tagTransform3d operator+(const tagTransform3d& Obj);	//"+"演算子のオーバーロード
-	//tagTransform3d& operator+=(const tagTransform3d& Obj);	//"+="演算子のオーバーロード
-	//tagTransform3d operator-(const tagTransform3d& Obj);	//"-"演算子のオーバーロード
-	//tagTransform3d& operator-=(const tagTransform3d& Obj);	//"-="演算子のオーバーロード
-	//tagTransform3d operator*(const tagTransform3d& Obj);	//"*"演算子のオーバーロード
-	//tagTransform3d& operator*=(const tagTransform3d& Obj);	//"*="演算子のオーバーロード
-	//tagTransform3d operator/(const tagTransform3d& Obj);	//"/"演算子のオーバーロード
-	//tagTransform3d& operator/=(const tagTransform3d& Obj);	//"/="演算子のオーバーロード
+	tagTransform3d& operator=(const tagTransform3d& Obj);	//"="演算子のオーバーロード
+	tagTransform3d operator+(const tagTransform3d& Obj);	//"+"演算子のオーバーロード
+	tagTransform3d& operator+=(const tagTransform3d& Obj);	//"+="演算子のオーバーロード
+	tagTransform3d operator-(const tagTransform3d& Obj);	//"-"演算子のオーバーロード
+	tagTransform3d& operator-=(const tagTransform3d& Obj);	//"-="演算子のオーバーロード
+	tagTransform3d operator*(const tagTransform3d& Obj);	//"*"演算子のオーバーロード
+	tagTransform3d& operator*=(const tagTransform3d& Obj);	//"*="演算子のオーバーロード
+	tagTransform3d operator/(const tagTransform3d& Obj);	//"/"演算子のオーバーロード
+	tagTransform3d& operator/=(const tagTransform3d& Obj);	//"/="演算子のオーバーロード
 };	//型テンプレート
 
 #endif //!__TRANSFORM_3D_H__

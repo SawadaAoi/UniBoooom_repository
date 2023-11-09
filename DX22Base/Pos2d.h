@@ -3,12 +3,13 @@
 	------------------------------------
 	三次元位置座標を管理するテンプレートクラスを定義
 	------------------------------------
-	Pos3d.h
+	Pos2d.h
 	------------------------------------
 	作成者	takagi
 
 	変更履歴
 	・2023/11/07 3dからコピペ・2d用に変更 takagi
+	・2023/11/09 変換コンストラクタ作成 takagi
 
 ========================================== */
 
@@ -20,15 +21,16 @@
 
 // =============== テンプレートクラス定義 ===================
 template<class Pos2d>
-class TPos2d :public TDiType<Pos2d>	//テンプレートクラス：位置
+struct TPos2d :public TDiType<Pos2d>	//テンプレートクラス：位置
 {
 public:
 	// ===メンバ関数宣言===
-	TPos2d();											//コンストラクタ
-	TPos2d(const Pos2d& x, const Pos2d& y, const Pos2d& z);	//引数付きコンストラクタ
-	TPos2d(const TPos2d& Obj);							//コピーコンストラクタ
-	~TPos2d();										//デストラクタ
-	Pos2d Distance(const TPos2d& Obj);					//距離計算
+	TPos2d();								//コンストラクタ
+	TPos2d(const Pos2d& x, const Pos2d& y);	//引数付きコンストラクタ
+	TPos2d(const TDiType<Pos2d>& Di);		//変換コンストラクタ
+	TPos2d(const TPos2d& Obj);				//コピーコンストラクタ
+	~TPos2d();								//デストラクタ
+	Pos2d Distance(const TPos2d& Obj);		//距離計算
 };	//型テンプレート
 
 /* ========================================
@@ -53,14 +55,29 @@ TPos2d<Pos2d>::TPos2d()
 	-------------------------------------
 	引数1：const Pos2d & x：x軸上の位置の参照
 	引数2：const Pos2d & y：y軸上の位置の参照
-	引数3：const Pos2d & z：z軸上の位置の参照
 	-------------------------------------
 	戻値：なし
 =========================================== */
 template<class Pos2d>	//テンプレート関数実装
-TPos2d<Pos2d>::TPos2d(const Pos2d & x, const Pos2d & y, const Pos2d & z)
-	:TDiType<Pos2d>(x, y, z)	//委譲
+TPos2d<Pos2d>::TPos2d(const Pos2d & x, const Pos2d & y)
+	:TDiType<Pos2d>(x, y)	//委譲
 {
+}
+
+/* ========================================
+	変換コンストラクタ
+	-------------------------------------
+	内容：親の型からのキャスト演算子
+	-------------------------------------
+	引数1：const TDiType<Pos2d> & Di：変換元の型
+	-------------------------------------
+	戻値：なし
+=========================================== */
+template<class Pos2d>
+inline TPos2d<Pos2d>::TPos2d(const TDiType<Pos2d>& Di)
+{
+	// =============== 格納 ===================
+	*this = Di;	//型変換
 }
 
 /* ========================================
@@ -105,10 +122,10 @@ template<class Pos2d>	//テンプレート関数実装
 Pos2d TPos2d<Pos2d>::Distance(const TPos2d & Obj)
 {
 	// =============== 変数宣言 =======================
-	TPos Temp((*this - *Obj) ^ 2);	//引き算の結果
+	TPos2d<Pos2d> Temp((*this - *Obj) ^ 2);	//引き算の結果
 
 	// =============== 提供 =======================
-	return (Pos)(pow((double)Temp.Total(), 0.5));	//計算結果
+	return (Pos2d)(pow((double)Temp.Total(), 0.5));	//計算結果
 }
 
 #endif // !___POS_2D_H___

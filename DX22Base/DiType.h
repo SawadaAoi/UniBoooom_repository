@@ -9,7 +9,8 @@
 
 	変更履歴
 	・2023/11/07 Triからコピペ→改修 takagi
-	・2023/11/08 一部関数にconst修飾子付与
+	・2023/11/08 一部関数にconst修飾子付与 takagi
+	・2023/11/09 コメント揃え takagi
 
 ========================================== */
 
@@ -29,24 +30,24 @@ public:
 	DiType y;	//２つめの変数
 
 	// ===メンバ関数宣言===
-	TDiType();											//コンストラクタ
-	TDiType(const DiType& x, const DiType& y);			//引数付きコンストラクタ
-	TDiType(const TDiType& Obj);						//コピーコンストラクタ
-	virtual ~TDiType();									//デストラクタ
-	virtual DiType Total() const;								//総計
-	virtual TDiType& operator=(const TDiType& Obj);		//"="演算子のオーバーロード
-	virtual TDiType operator+(const TDiType& Obj) const;		//"+"演算子のオーバーロード
-	virtual TDiType& operator+=(const TDiType& Obj);	//"+="演算子のオーバーロード
-	virtual TDiType operator-(const TDiType& Obj) const;		//"-"演算子のオーバーロード
-	virtual TDiType& operator-=(const TDiType& Obj);	//"-="演算子のオーバーロード
-	virtual TDiType operator*(const TDiType& Obj) const;		//"*"演算子のオーバーロード
-	virtual TDiType& operator*=(const TDiType& Obj);	//"*="演算子のオーバーロード
-	virtual TDiType operator/(const TDiType& Obj) const;		//"/"演算子のオーバーロード
-	virtual TDiType& operator/=(const TDiType& Obj);	//"/="演算子のオーバーロード
-	virtual TDiType operator%(const TDiType& Obj) const;		//"%"演算子のオーバーロード
-	virtual TDiType& operator%=(const TDiType& Obj);	//"%="演算子のオーバーロード
+	TDiType();												//コンストラクタ
+	TDiType(const DiType& x, const DiType& y);				//引数付きコンストラクタ
+	TDiType(const TDiType& Obj);							//コピーコンストラクタ
+	virtual ~TDiType();										//デストラクタ
+	virtual DiType Total() const;							//総計
+	virtual TDiType& operator=(const TDiType& Obj);			//"="演算子のオーバーロード
+	virtual TDiType operator+(const TDiType& Obj) const;	//"+"演算子のオーバーロード
+	virtual TDiType& operator+=(const TDiType& Obj);		//"+="演算子のオーバーロード
+	virtual TDiType operator-(const TDiType& Obj) const;	//"-"演算子のオーバーロード
+	virtual TDiType& operator-=(const TDiType& Obj);		//"-="演算子のオーバーロード
+	virtual TDiType operator*(const TDiType& Obj) const;	//"*"演算子のオーバーロード
+	virtual TDiType& operator*=(const TDiType& Obj);		//"*="演算子のオーバーロード
+	virtual TDiType operator/(const TDiType& Obj) const;	//"/"演算子のオーバーロード
+	virtual TDiType& operator/=(const TDiType& Obj);		//"/="演算子のオーバーロード
+	virtual TDiType operator%(const TDiType& Obj) const;	//"%"演算子のオーバーロード
+	virtual TDiType& operator%=(const TDiType& Obj);		//"%="演算子のオーバーロード
 	virtual TDiType operator^(const double& dIndex) const;	//"^"演算子のオーバーロード
-	virtual TDiType& operator^=(const double& dIndex);	//"^="演算子のオーバーロード
+	virtual TDiType& operator^=(const double& dIndex);		//"^="演算子のオーバーロード
 };	//型テンプレート
 
 /* ========================================
