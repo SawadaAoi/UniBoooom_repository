@@ -11,7 +11,7 @@
    ・2023/11/05 スライムマネージャークラス作成 /鈴村 朋也
    ・2023/11/08 スライム同士が接触した際の分岐処理を作成(分岐した後に行う処理は未実装　※TODOをつけておいた)の /山下凌佑
    ・2023/11/08 結合処理を作成(結合後の生成処理は未実装 Slime_2～Slime_4がまだ無いから) /山下凌佑
-
+   ・2023/11/09 スライム生成関数の名前変更/澤田
 
    ======================================== */
 #ifndef __SLIME_MANAGER_H__
@@ -20,6 +20,8 @@
 #include "TriType.h"
 #include "SlimeBase.h"
 #include "ExplosionManager.h"
+#include "Camera.h"
+
 
 const int MAX_SLIME = 20;	//スライムの最大生成数
 
@@ -31,19 +33,27 @@ public:
 
 	void Update();
 	void Draw();
-	void Generate(TTriType<float> pos);
+	void Create();
 	void HitBranch(int HitSlimeArrayNum,int standSlimeArrayNum);	//スライムの接触が起きた際の分岐処理
 	void UnionSlime(E_SLIME_LEVEL level);							//スライムの結合処理
 
 
 	//ゲット関数
 	CSlimeBase* GetSlimePtr(int num);
+
+	void SetCamera(CCamera* pCamera);
+	void SetPlayerSphere(CSphereInfo::Sphere pSphere);
 private:
+	int GetRandom(int min, int max);
+
 	CSlimeBase* m_pSlime[MAX_SLIME];
+	CCamera* m_pCamera;
+
+	CSphereInfo::Sphere m_pPlayerSphere;	// プレイヤーの当たり判定処理
+
+	int m_GeneCnt;
 
 
-	int m_nRandNum;	//乱数用
-	int _RandNum;	//乱数用
 	
 };
 
