@@ -69,7 +69,7 @@ CSlimeBase::CSlimeBase()
 
 	//当たり判定(自分)初期化
 	m_sphere.pos = { 0.0f, 0.0f, 0.0f };
-	m_sphere.radius = 1.0f;
+	m_sphere.radius = 0.5f;
 	
 }
 
@@ -134,7 +134,6 @@ void CSlimeBase::Draw(const CCamera* pCamera)
 	DirectX::XMFLOAT4X4 mat[3];
 
 	//-- ワールド行列の計算
-	//DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(m_pos.x, m_pos.y, m_pos.z);			//移動行列
 	DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(m_pos.x, m_pos.y, m_pos.z);			//移動行列
 
 	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(m_scale.x, m_scale.y, m_scale.z);		//拡大縮小行列

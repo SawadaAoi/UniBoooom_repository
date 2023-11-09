@@ -53,7 +53,19 @@ void SceneGame::SceneGameCollision()
    ======================================== */
 void SceneGame::PlayerSlimeCollision()
 {
+	// スライム
+	for (int i = 0; i < MAX_SLIME; i++)
+	{
+		CSlimeBase* pSlimeNow = m_pSlimeMng->GetSlimePtr(i);	// スライム情報
 
+		if (pSlimeNow == nullptr)				continue;	// 無効なスライムはスルー
+
+		// スライムとハンマーが衝突した場合
+		if (m_pCollision->CheckCollisionSphere(m_pPlayer->GetPlayerSphere(), pSlimeNow->GetSphere()))
+		{
+			m_pPlayer->Damage();
+		}
+	}
 }
 
 /* ========================================
@@ -68,6 +80,8 @@ void SceneGame::PlayerSlimeCollision()
 void SceneGame::HammerSlimeCollision()
 {
 	CHammer* playerHammer = m_pPlayer->GetHammer();	// プレイヤーのハンマー
+
+	if (m_pPlayer->GetHammerFlg() == false) return;	// ハンマー攻撃してない場合は返す
 
 	// スライム
 	for (int i = 0; i < MAX_SLIME; i++)
@@ -139,11 +153,16 @@ void SceneGame::ExplosionSlimeCollision()
 {
 	for (int i = 0; i < MAX_EXPLOSION_NUM; ++i)	// 爆発
 	{
-		//if (/*未使用の爆発はスルー*/) { continue; }	// 未使用の爆発はスルー
+		CExplosion* pExplosion = m_pExplosionMng->GetExplosionPtr(i);	// 衝突する爆発のポインタ
+		if (pExplosion == nullptr) { continue; }	// 未使用の爆発はスルー
 
 		for (int j = 0; j < MAX_SLIME; ++j)	// スライム
 		{
-			//if (m_pCollision->CheckCollisionSphere(/*爆発[添え字].スフィア, スライム[添え字].スフィア*/))
+			CSlimeBase* pSlimeTarget = m_pSlimeMng->GetSlimePtr(j);	// 衝突されるスライムのポインタ
+
+			if (pSlimeTarget == nullptr)	continue;	// 無効なスライムはスルー
+
+			if (m_pCollision->CheckCollisionSphere(pExplosion->GetSphere(), pSlimeTarget->GetSphere()))
 			{
 				//スライムマネージャーのスライムの爆発処理
 			}

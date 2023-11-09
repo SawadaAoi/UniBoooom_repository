@@ -23,9 +23,9 @@
 
 
 // =============== 定数定義 =======================
-const int ENEMY_GENERATE_INTERVAL	= 5 * 60;	// 生成間隔
-const int RANDOM_POS_MIN			= -30;		// 生成座標範囲下限(x,z共通)
-const int RANDOM_POS_MAX			= 30;		// 生成座標範囲上限(x,z共通)
+const int ENEMY_GENERATE_INTERVAL	= 3 * 60;	// 生成間隔
+const int RANDOM_POS_MIN			= -15;		// 生成座標範囲下限(x,z共通)
+const int RANDOM_POS_MAX			= 15;		// 生成座標範囲上限(x,z共通)
 const int CREATE_DISTANCE			= 10;		// 生成距離最小値
 
 

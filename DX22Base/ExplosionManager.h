@@ -10,7 +10,8 @@
    作成者 鄭 宇恩
 
    変更履歴
-   ・2023/11/06 爆発マネージャークラス作成 /鄭　宇恩
+	・2023/11/06 爆発マネージャークラス作成 /鄭　宇恩
+	・2023/11/09 爆発配列を返す処理の追加/ 澤田蒼生
 	
 ========================================== */
 
@@ -35,6 +36,9 @@ public:
 
 	void Create(TTriType<float> pos);
 	void DeleteCheck();
+
+	CExplosion* GetExplosionPtr(int num);
+
 protected:
 	// ===メンバ変数宣言===
 	CExplosion* m_pExplosion[MAX_EXPLOSION_NUM];
