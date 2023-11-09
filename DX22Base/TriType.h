@@ -15,6 +15,8 @@
 	・2023/11/03 %演算子使用時に、計算に使用する値が整数型でないことがある問題を修正・Total()関数を追加 takagi
 	・2023/11/04 .cpp/.h分け→分割解除 takagi
 	・2023/11/07 コーディング規約適用 takagi
+	・2023/11/08 一部関数にconst修飾子付与 takagi
+	・2023/11/09 不要物除去・クラスよりstructのほうが機能の意味として正しいので修正 takagi
 
 ========================================== */
 
@@ -26,7 +28,7 @@
 
 // =============== テンプレートクラス定義 ===================
 template<class TriType>
-class TTriType	//テンプレートクラス：同じ型の変数３つ
+struct TTriType	//テンプレートクラス：同じ型の変数３つ
 {
 public:
 	// ===メンバ変数宣言===
@@ -39,19 +41,19 @@ public:
 	TTriType(const TriType& x, const TriType& y, const TriType& z);	//引数付きコンストラクタ
 	TTriType(const TTriType& Obj);									//コピーコンストラクタ
 	virtual ~TTriType();											//デストラクタ
-	virtual TriType Total();										//総計
+	virtual TriType Total() const;									//総計
 	virtual TTriType& operator=(const TTriType& Obj);				//"="演算子のオーバーロード
-	virtual TTriType operator+(const TTriType& Obj);				//"+"演算子のオーバーロード
+	virtual TTriType operator+(const TTriType& Obj) const;			//"+"演算子のオーバーロード
 	virtual TTriType& operator+=(const TTriType& Obj);				//"+="演算子のオーバーロード
-	virtual TTriType operator-(const TTriType& Obj);				//"-"演算子のオーバーロード
+	virtual TTriType operator-(const TTriType& Obj) const;			//"-"演算子のオーバーロード
 	virtual TTriType& operator-=(const TTriType& Obj);				//"-="演算子のオーバーロード
-	virtual TTriType operator*(const TTriType& Obj);				//"*"演算子のオーバーロード
+	virtual TTriType operator*(const TTriType& Obj) const;			//"*"演算子のオーバーロード
 	virtual TTriType& operator*=(const TTriType& Obj);				//"*="演算子のオーバーロード
-	virtual TTriType operator/(const TTriType& Obj);				//"/"演算子のオーバーロード
+	virtual TTriType operator/(const TTriType& Obj) const;			//"/"演算子のオーバーロード
 	virtual TTriType& operator/=(const TTriType& Obj);				//"/="演算子のオーバーロード
-	virtual TTriType operator%(const TTriType& Obj);				//"%"演算子のオーバーロード
+	virtual TTriType operator%(const TTriType& Obj) const;			//"%"演算子のオーバーロード
 	virtual TTriType& operator%=(const TTriType& Obj);				//"%="演算子のオーバーロード
-	virtual TTriType operator^(const double& dIndex);				//"^"演算子のオーバーロード
+	virtual TTriType operator^(const double& dIndex) const;			//"^"演算子のオーバーロード
 	virtual TTriType& operator^=(const double& dIndex);				//"^="演算子のオーバーロード
 };	//型テンプレート
 
@@ -132,7 +134,7 @@ TTriType<TriType>::~TTriType()
 	戻値：３つのメンバー変数の合計値
 =========================================== */
 template<class TriType>	//テンプレート関数実装
-TriType TTriType<TriType>::Total()
+TriType TTriType<TriType>::Total() const
 {
 	// =============== 提供 ===================
 	return (this->x + this->y + this->z);	//加算結果
@@ -169,7 +171,7 @@ TTriType<TriType>& TTriType<TriType>::operator=(const TTriType & Obj)
 	戻値：自身と引数の加算結果
 =========================================== */
 template<class TriType>	//テンプレート関数実装
-TTriType<TriType> TTriType<TriType>::operator+(const TTriType & Obj)
+TTriType<TriType> TTriType<TriType>::operator+(const TTriType & Obj) const
 {
 	// =============== 提供 ===================
 	return { this->x + Obj.x, this->y + Obj.y, this->z + Obj.z };	//加算結果
@@ -201,7 +203,7 @@ TTriType<TriType> & TTriType<TriType>::operator+=(const TTriType & Obj)
 	戻値：自身 - 引数の結果
 =========================================== */
 template<class TriType>	//テンプレート関数実装
-TTriType<TriType> TTriType<TriType>::operator-(const TTriType & Obj)
+TTriType<TriType> TTriType<TriType>::operator-(const TTriType & Obj) const
 {
 	// =============== 提供 ===================
 	return { this->x - Obj.x, this->y - Obj.y, this->z - Obj.z };	//減算結果
@@ -233,7 +235,7 @@ TTriType<TriType> & TTriType<TriType>::operator-=(const TTriType & Obj)
 	戻値：自身と引数の乗算結果
 =========================================== */
 template<class TriType>	//テンプレート関数実装
-TTriType<TriType> TTriType<TriType>::operator*(const TTriType & Obj)
+TTriType<TriType> TTriType<TriType>::operator*(const TTriType & Obj) const
 {
 	// =============== 提供 ===================
 	return { this->x * Obj.x, this->y * Obj.y, this->z * Obj.z };	//乗算結果
@@ -265,7 +267,7 @@ TTriType<TriType> & TTriType<TriType>::operator*=(const TTriType & Obj)
 	戻値：自身 / 引数の結果
 =========================================== */
 template<class TriType>	//テンプレート関数実装
-TTriType<TriType> TTriType<TriType>::operator/(const TTriType & Obj)
+TTriType<TriType> TTriType<TriType>::operator/(const TTriType & Obj) const
 {
 	// =============== 提供 ===================
 	return { this->x / Obj.x, this->y / Obj.y, this->z / Obj.z };	//除算結果
@@ -297,7 +299,7 @@ TTriType<TriType> & TTriType<TriType>::operator/=(const TTriType & Obj)
 	戻値：自身と引数の剰余演算結果
 =========================================== */
 template<class TriType>	//テンプレート関数実装
-TTriType<TriType> TTriType<TriType>::operator%(const TTriType & Obj)
+TTriType<TriType> TTriType<TriType>::operator%(const TTriType & Obj) const
 {
 	// =============== 提供 ===================
 	return { static_cast<TriType>(static_cast<int>(this->x) % static_cast<int>(Obj.x)), static_cast<TriType>((int)this->y % (int)Obj.y), static_cast<TriType>((int)this->z % (int)Obj.z) };	//剰余演算結果
@@ -330,7 +332,7 @@ TTriType<TriType> & TTriType<TriType>::operator%=(const TTriType & Obj)
 	戻値：自身を引数でべき乗した演算結果
 =========================================== */
 template<class TriType>	//テンプレート関数実装
-TTriType<TriType> TTriType<TriType>::operator^(const double & dIndex)
+TTriType<TriType> TTriType<TriType>::operator^(const double & dIndex) const
 {
 	// =============== 提供 ===================
 	return { (TriType)pow((double)this->x, dIndex), (TriType)pow((double)this->y, dIndex), (TriType)pow((double)this->z, dIndex) };	//べき乗演算結果
