@@ -20,7 +20,7 @@
 #define __HAMMER_H__
 
 #include "Shader.h"
-#include "Pos.h"
+#include "Pos3d.h"
 #include "SphereInfo.h"
 #include "Geometry.h"
 #include <DirectXMath.h>
@@ -33,16 +33,16 @@ public:
 	CHammer();	//コンストラクタ
 	~CHammer();	//デストラクタ
 
-	void Update(TPos<float> pPos, float angle);	//更新関数
+	void Update(TPos3d<float> pPos, float angle);	//更新関数
 	void Draw(const CCamera* pCamera);								//描画関数
 	bool Gethammer();							//ハンマーを使用中かどうかのフラグを取得
-	void Swing(TPos<float>pPos,float angle);	//移動による回転移動
+	void Swing(TPos3d<float>pPos,float angle);	//移動による回転移動
 	CSphereInfo::Sphere GetSphere();			//ハンマーのプレイヤー
 private:
 	DirectX::XMMATRIX m_T;			//移動の変換行列
 	DirectX::XMMATRIX m_S;			//拡縮の変換行列
 	DirectX::XMMATRIX m_Ry;			//Y軸の回転をする変換行列
-	TPos<float> m_pos;	//ハンマーの位置座標
+	TPos3d<float> m_pos;	//ハンマーの位置座標
 	CSphereInfo::Sphere m_sphere;	//ハンマーの当たり判定用の球体
 	float m_nowangle;				//今の角度
 	float m_stateangle;				//

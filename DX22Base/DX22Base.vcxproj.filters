@@ -103,6 +103,15 @@
     <Filter Include="ヘッダー ファイル\2dObject\Effect\Particle\StripeParticle">
       <UniqueIdentifier>{bfe0c776-3581-417b-8745-139a05bf0db7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\Info\Transform">
+      <UniqueIdentifier>{42a0eb1c-52f2-44b0-9fbb-724472721f80}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Info\Pos">
+      <UniqueIdentifier>{4587c013-f442-41b3-af7d-a35feab11cab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Info">
+      <UniqueIdentifier>{8a28753d-f510-42e4-9844-46833e398878}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -228,6 +237,12 @@
     <ClCompile Include="StripeParticle.cpp">
       <Filter>ソース ファイル\2dObject\Effect\Particle\StripeParticle</Filter>
     </ClCompile>
+    <ClCompile Include="Transform3d.cpp">
+      <Filter>ソース ファイル\Info</Filter>
+    </ClCompile>
+    <ClCompile Include="Transform2d.cpp">
+      <Filter>ソース ファイル\Info</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Defines.h">
@@ -259,9 +274,6 @@
     </ClInclude>
     <ClInclude Include="Model.h">
       <Filter>ヘッダー ファイル\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Pos.h">
-      <Filter>ヘッダー ファイル\Info</Filter>
     </ClInclude>
     <ClInclude Include="TriType.h">
       <Filter>ヘッダー ファイル\Info</Filter>
@@ -326,6 +338,24 @@
     <ClInclude Include="ExplosionManager.h">
       <Filter>ヘッダー ファイル\3dObject</Filter>
     </ClInclude>
+    <ClInclude Include="DiType.h">
+      <Filter>ヘッダー ファイル\Info</Filter>
+    </ClInclude>
+    <ClInclude Include="Transform.h">
+      <Filter>ヘッダー ファイル\Info\Transform</Filter>
+    </ClInclude>
+    <ClInclude Include="Transform3d.h">
+      <Filter>ヘッダー ファイル\Info\Transform</Filter>
+    </ClInclude>
+    <ClInclude Include="Transform2d.h">
+      <Filter>ヘッダー ファイル\Info\Transform</Filter>
+    </ClInclude>
+    <ClInclude Include="Pos2d.h">
+      <Filter>ヘッダー ファイル\Info\Pos</Filter>
+    </ClInclude>
+    <ClInclude Include="Pos3d.h">
+      <Filter>ヘッダー ファイル\Info\Pos</Filter>
+    </ClInclude>
     <ClInclude Include="Collision.h">
       <Filter>ヘッダー ファイル\System</Filter>
     </ClInclude>
@@ -356,9 +386,6 @@
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="VS_Model.hlsl">
-      <Filter>リソース ファイル\VertexShader</Filter>
-    </FxCompile>
-    <FxCompile Include="2dShader.hlsl">
       <Filter>リソース ファイル\VertexShader</Filter>
     </FxCompile>
   </ItemGroup>

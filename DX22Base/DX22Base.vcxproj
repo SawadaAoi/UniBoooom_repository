@@ -209,6 +209,8 @@
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="SceneGame.cpp" />
     <ClCompile Include="Title.cpp" />
+    <ClCompile Include="Transform2d.cpp" />
+    <ClCompile Include="Transform3d.cpp" />
     <ClCompile Include="_model.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -226,6 +228,8 @@
     <ClInclude Include="EmitterManager.h" />
     <ClInclude Include="Explosion.h" />
     <ClInclude Include="ExplosionManager.h" />
+    <ClInclude Include="Pos2d.h" />
+    <ClInclude Include="Pos3d.h" />
     <ClInclude Include="ModelParticle.h" />
     <ClInclude Include="Particle.h" />
     <ClInclude Include="Prot.h" />
@@ -237,7 +241,6 @@
     <ClInclude Include="Main.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="Player.h" />
-    <ClInclude Include="Pos.h" />
     <ClInclude Include="QuadParticle.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneGame.h" />
@@ -252,15 +255,12 @@
     <ClInclude Include="StripeParticle.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Title.h" />
+    <ClInclude Include="Transform.h" />
+    <ClInclude Include="Transform2d.h" />
+    <ClInclude Include="Transform3d.h" />
     <ClInclude Include="TriType.h" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="2dShader.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
-    </FxCompile>
     <FxCompile Include="VS_Model.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>

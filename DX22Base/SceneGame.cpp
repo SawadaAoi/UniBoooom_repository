@@ -19,7 +19,7 @@
 #include "Model.h"
 #include "CameraDebug.h"
 #include "CameraChase.h"
-#include "Pos.h"
+#include "Pos3d.h"
 #include "Box.h"
 #include "Line.h"
 #include "Defines.h"
@@ -62,6 +62,7 @@ SceneGame::SceneGame()
 
 	// スライムマネージャー生成
 	m_pSlimeMng = new CSlimeManager();
+	m_pSlimeMng->SetCamera(m_pCamera);
 	m_pExplosionMng = new CExplosionManager();
 }
 
@@ -103,6 +104,8 @@ void SceneGame::Update(float tick)
 {
 	m_pCamera->Update();
 	m_pPlayer->Update();
+	m_pSlimeMng->SetPlayerSphere(m_pPlayer->GetPlayerSphere());
+
 	// スライムマネージャー更新
 	m_pSlimeMng->Update();
 	m_pExplosionMng->Update();
