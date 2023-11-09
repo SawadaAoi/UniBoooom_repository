@@ -23,7 +23,7 @@
 #include "Camera.h"	//自身のヘッダ
 
 // =============== 定数定義 ===================
-const TPos<float> INIT_POS(0.0f, 1.6f, -3.0f);	//初期位置
+const TPos3d<float> INIT_POS(0.0f, 1.6f, -3.0f);	//初期位置
 const float INIT_ANGLE = 1.0f / 3.0f * 3.1415f;	//初期画角
 
 /* ========================================
@@ -125,7 +125,7 @@ void CCamera::SetFlag(const unsigned char & ucBitFlag)
 	-------------------------------------
 	引数1：なし
 	-------------------------------------
-	戻値：なし
+	戻値：作成した行列
 =========================================== */
 DirectX::XMFLOAT4X4 CCamera::GetViewMatrix() const
 {
@@ -151,7 +151,7 @@ DirectX::XMFLOAT4X4 CCamera::GetViewMatrix() const
 	-------------------------------------
 	引数1：なし
 	-------------------------------------
-	戻値：なし
+	戻値：作成した行列
 =========================================== */
 DirectX::XMFLOAT4X4 CCamera::GetProjectionMatrix() const
 {

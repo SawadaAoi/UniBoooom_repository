@@ -13,6 +13,7 @@
 	・2023/11/04 フラグ追加？・private→protected・その他諸々修正 takagi
 	・2023/11/06 フラグ整理・コメント修正 takagi
 	・2023/11/07 GetViewMatrix()関数にconst修飾子付与・コメント修正 takagi
+	・2023/11/08 TPos修正 takagi
 
 ========================================== */
 
@@ -21,7 +22,7 @@
 
 // =============== インクルード ===================
 //#include "System.h"		//親のヘッダ
-#include "Pos.h"			//メンバのヘッダ
+#include "Pos3d.h"			//メンバのヘッダ
 #include "TriType.h"		//メンバのヘッダ
 //#include "main.h"	//画面の情報
 #include <DirectXMath.h>	//マトリックス型使用
@@ -54,8 +55,8 @@ public:
 protected:
 	//＞変数宣言
 	unsigned char m_ucFlag;	//フラグ	char:1バイト(8ビット)
-	TPos<float> m_fPos;		//ワールド座標における自身の位置
-	TPos<float> m_fLook;	//注視点の位置
+	TPos3d<float> m_fPos;	//ワールド座標における自身の位置
+	TPos3d<float> m_fLook;	//注視点の位置
 	TTriType<float> m_fUp;	//上方ベクトル
 	float m_fAngle;			//角度
 	float m_fNear;			//画面手前

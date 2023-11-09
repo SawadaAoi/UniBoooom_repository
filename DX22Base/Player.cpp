@@ -13,7 +13,7 @@
    ・2023/11/08 プレイヤーの当たり判定の大きさの定数を追加 /山下凌佑
    ・2023/11/08 攻撃中は移動できないように変更 /山下凌佑
    ・2023/11/09 カメラ対応 髙木駿輔
-
+   ・2023/11/09 GameOverの表示
 
    ======================================== */
 
@@ -26,11 +26,10 @@
 #define XM_PI (3.141593f)	//円周率
 #define FORWARD_YES	(1.0f)	//その方向を向いる
 #define FORWARD_NO (0.0f)	//その方向を向いていない
-const int HP = 5;
+const int PLAYER_HP = 5;
 const float PLAYER_RADIUS = 1.0f;	//プレイヤーの当たり判定の大きさ
+const int NO_DAMAGE_TIME = 3 * 60;	//プレイヤーの無敵時間
 // =============== グローバル変数定義 =============
-
-
 
 
 /* ========================================
@@ -46,19 +45,23 @@ CPlayer::CPlayer()
 	:m_pos{ 0.0f,0.0f,0.0f }
 	/*,m_playerPosition{ 0.0f,0.0f,0.0f }*/
 	,m_playerForward{ 0.0f,0.0f,0.0f }
-	, m_playerRotation(0.0f)
-	, m_pHammer(nullptr)
-	, m_pPlayerGeo(nullptr)
-	, m_bHammer(false)
+	,m_playerRotation(0.0f)
+	,m_pHammer(nullptr)
+	,m_pPlayerGeo(nullptr)
+	,m_pGameOver(nullptr)
+	,m_bHammer(false)
 	,m_nHp(0)
 	,m_pCamera(nullptr)
+	,m_nNoDamageCnt(0)
+	,m_bCollide(false)
 {
 	m_T = DirectX::XMMatrixTranslation(0.0f, 0.0f, 0.0f);	//移動の変換行列を初期化
 	m_S = DirectX::XMMatrixScaling(2.0f, 2.0f, 2.0f);		//拡縮の変換行列を初期化
 	m_Ry = DirectX::XMMatrixRotationY(0.0f);				//Y軸回転の変換行列を初期化
 	m_pHammer = new CHammer();								//Hammerクラスをインスタンス
 	m_pPlayerGeo = new CSphere();							//プレイヤーとして仮表示する球体オブジェクトのインスタンス
-	m_nHp = HP;												//プレイヤーのHPを決定
+	m_pGameOver = new CSphere();
+	m_nHp = PLAYER_HP;												//プレイヤーのHPを決定
 	m_sphere.pos = { 0.0f,0.0f,0.0f };	//当たり判定用の球体の座標を初期化
 	m_sphere.radius = PLAYER_RADIUS;	//当たり判定用の球体の半径
 }
@@ -73,8 +76,9 @@ CPlayer::CPlayer()
    ======================================== */
 CPlayer::~CPlayer()
 {
-	SAFE_DELETE(m_pHammer);
+	SAFE_DELETE(m_pGameOver);
 	SAFE_DELETE(m_pPlayerGeo);
+	SAFE_DELETE(m_pHammer);
 }
 
 /* ========================================
@@ -98,7 +102,14 @@ void CPlayer::Update()
 	{
 		m_pHammer->Update(m_pos, m_playerRotation);			//ハンマーを振るUpdate処理を行う
 	}
+	
 	m_bHammer = m_pHammer->Gethammer();	//ハンマーを使用中か確認
+	if (m_bCollide)							//無敵状態になっている場合
+	{
+		m_nNoDamageCnt++;						//毎フレームでカウントを追加
+		if (m_nNoDamageCnt >= NO_DAMAGE_TIME)	//カウントが一定時間を超えたら
+			m_bCollide = false;				//無敵を解除
+	}
 }
 
 /* ========================================
@@ -122,7 +133,19 @@ void CPlayer::Draw()
 	m_pPlayerGeo->Draw();		//プレイヤーを描画
 	if (m_pHammer->Gethammer())	//ハンマーを振るフラグがONの時
 	{
-		m_pHammer->Draw();		//ハンマーの描画
+		m_pHammer->Draw(m_pCamera);		//ハンマーの描画
+	}
+
+	if (m_nHp <= 0)	//ゲームオーバーを表すオブジェクトの描画	<=TODO 後々消します
+	{
+		m_pGameOver->SetView(m_pCamera->GetViewMatrix());										//ビューのセット
+		m_pGameOver->SetProjection(m_pCamera->GetProjectionMatrix());							//プロジェクションのセット
+		DirectX::XMMATRIX mat = DirectX::XMMatrixTranslation(0.0f, 2.0f, 0.0f);					//移動の変換行列
+		mat = DirectX::XMMatrixTranspose(mat);													//転置
+		DirectX::XMFLOAT4X4 fmat;																//セットワールド用の変数
+		DirectX::XMStoreFloat4x4(&fmat, mat);													//MATRIX型から変換
+		m_pGameOver->SetWorld(fmat);															//ワールドのセット
+		m_pGameOver->Draw();																	//GameOverの描画
 	}
 }
 
@@ -135,9 +158,11 @@ void CPlayer::Draw()
    ----------------------------------------
    戻値：なし
    ======================================== */
-void CPlayer::Damege()
+void CPlayer::Damage()
 {
 	m_nHp -= 1;
+	m_bCollide = true;	//プレイヤーを一定時間、無敵にする
+	m_nNoDamageCnt = 0;	//プレイヤー無敵時間のカウントを0に戻す
 
 	if (m_nHp <= 0)
 	{
@@ -258,9 +283,23 @@ CSphereInfo::Sphere CPlayer::GetHammerSphere()
    ----------------------------------------
    戻値：TPos
    ======================================== */
-TPos<float> CPlayer::GetPos()
+TPos3d<float> CPlayer::GetPos()
 {
 	return m_pos;
+}
+
+/* ========================================
+   Collision確認関数
+   ----------------------------------------
+   内容：プレイヤーが無敵状態かの確認
+   ----------------------------------------
+   引数：なし
+   ----------------------------------------
+   戻値：bool
+   ======================================== */
+bool CPlayer::GetCollide()
+{
+	return m_bCollide;
 }
 
 //コメントめんどいtkg
