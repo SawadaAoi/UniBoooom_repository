@@ -1,9 +1,9 @@
-#ifndef __EXPLOSION_MANAGER_H__
+#ifndef __EXPLOSION_MANAGER_H__	//ExplosionManager.hインクルードガード
 #define __EXPLOSION_MANAGER_H__
 /* ========================================
    HEW/UniBoooom!!
    ---------------------------------------
-   爆発管理
+   爆発管理ヘッダー
    ---------------------------------------
    ExplosionManager.h
 
@@ -11,33 +11,33 @@
 
    変更履歴
    ・2023/11/06 爆発マネージャークラス作成 /鄭　宇恩
-	
+
 ========================================== */
 
 // =============== インクルード ===================
-#include "TriType.h"
-#include "Explosion.h"
+#include "TriType.h"		//同じ型を３つ持つテンプレートクラス定義ヘッダー
+#include "Explosion.h"		//爆発処理ヘッダー
 
 // =============== 定数定義 =======================
-const int MAX_EXPLOSION_NUM = 20;
+const int MAX_EXPLOSION_NUM = 20;	//最大爆発数
 
 // =============== クラス定義 =====================
 class CExplosionManager
 {
 public:
 	// ===メンバ関数宣言===
-	CExplosionManager();
-	~CExplosionManager();
+	CExplosionManager();		//コンストラクタ
+	~CExplosionManager();		//デストラクタ
 
-	void Update();
-	void Draw();
+	void Update();				//更新関数
+	void Draw();				//描画関数
 
 
-	void Create(TTriType<float> pos);
-	void DeleteCheck();
+	void Create(TTriType<float> pos);	//爆発生成関数
+	void DeleteCheck();					//時間より爆発を削除関数
 protected:
 	// ===メンバ変数宣言===
-	CExplosion* m_pExplosion[MAX_EXPLOSION_NUM];
+	CExplosion* m_pExplosion[MAX_EXPLOSION_NUM];	//爆発の配列
 private:
 };
 

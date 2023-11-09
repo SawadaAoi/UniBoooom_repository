@@ -1,7 +1,7 @@
 /*========================================
 	HEW/UniBoooom!!
 	---------------------------------------
-	爆発用cpp
+	爆発処理cpp
 	---------------------------------------
 	Explosion.cpp
 
@@ -18,12 +18,12 @@
 
 
 //=============== インクルード ===================
-#include "Explosion.h"
-#include "Geometry.h"
-#include "Sphere.h"
+#include "Explosion.h"	//自身のヘッダー
+#include "Geometry.h"	//空間における形状の抽象クラス定義のヘッダー
+#include "Sphere.h"		//球定義のヘッダー
 
 // =============== 定数定義 =======================
-const float MAX_DISPLAY_TIME = 60 * 5.0f;
+const float MAX_DISPLAY_TIME = 60 * 5.0f;	//爆発オブジェクトの最大残る時間
 
 
 /* ========================================
@@ -75,6 +75,7 @@ CExplosion::~CExplosion()
 =========================================== */
 void CExplosion::Update()
 {
+	//爆発のモデル設定
 	DirectX::XMMATRIX mat = DirectX::XMMatrixTranslation(m_Sphere.pos.x, m_Sphere.pos.y, m_Sphere.pos.z);
 	mat = DirectX::XMMatrixTranspose(mat);
 	DirectX::XMFLOAT4X4 fMat;	//行列の格納先

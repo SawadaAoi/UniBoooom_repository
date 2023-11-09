@@ -13,7 +13,7 @@
 
 ========================================== */
 
-#ifndef __TRANSFORM_2D_H__
+#ifndef __TRANSFORM_2D_H__	//Transform2d.hインクルードガード
 #define __TRANSFORM_2D_H__
 
 // =============== インクルード ===================
