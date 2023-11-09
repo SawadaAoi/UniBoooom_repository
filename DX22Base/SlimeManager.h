@@ -17,23 +17,26 @@
 #ifndef __SLIME_MANAGER_H__
 #define __SLIME_MANAGER_H__
 
+// =============== インクルード ===================
 #include "TriType.h"
 #include "SlimeBase.h"
 #include "ExplosionManager.h"
 #include "Camera.h"
 
-
+// =============== 定数定義 =======================
 const int MAX_SLIME = 20;	//スライムの最大生成数
 
+// =============== クラス定義 =====================
 class CSlimeManager
 {
 public:
+	// ===プロトタイプ宣言===
 	CSlimeManager();
 	~CSlimeManager();
 
 	void Update();
 	void Draw();
-	void Create();
+	void Create();	//スライムを生成する処理
 	void HitBranch(int HitSlimeArrayNum,int standSlimeArrayNum);	//スライムの接触が起きた際の分岐処理
 	void UnionSlime(E_SLIME_LEVEL level);							//スライムの結合処理
 
@@ -41,17 +44,18 @@ public:
 	//ゲット関数
 	CSlimeBase* GetSlimePtr(int num);
 
+	//セット関数
 	void SetCamera(CCamera* pCamera);
 	void SetPlayerSphere(CSphereInfo::Sphere pSphere);
+
 private:
 	int GetRandom(int min, int max);
+	int m_GeneCnt;
 
 	CSlimeBase* m_pSlime[MAX_SLIME];
 	CCamera* m_pCamera;
-
 	CSphereInfo::Sphere m_pPlayerSphere;	// プレイヤーの当たり判定処理
 
-	int m_GeneCnt;
 
 
 	

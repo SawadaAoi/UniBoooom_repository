@@ -1,5 +1,3 @@
-#ifndef __SLIME_BASE_H__
-#define __SLIME_BASE_H__
 /* ========================================
 	HEW/UniBoooom!!
 	---------------------------------------
@@ -28,7 +26,8 @@
 	・2023/11/08 座標をTPos<Pos>に変更　変更者：澤田蒼生
 	
 ========================================== */
-
+#ifndef __SLIME_BASE_H__
+#define __SLIME_BASE_H__
 
 // =============== インクルード ===================
 #include "Model.h"
@@ -50,10 +49,11 @@ enum E_SLIME_LEVEL
 	MAX_LEVEL = LEVEL_4	//最大レベルを設定	(スライムの段階が増えたら変更)
 };
 
-
+// =============== クラス定義 =====================
 class CSlimeBase
 {
 public:
+	// ===プロトタイプ宣言===
 	CSlimeBase();
 	~CSlimeBase();
 	void Update(CSphereInfo::Sphere playerSphere);
@@ -64,17 +64,15 @@ public:
 	void HitMoveStart(float speed, float angle);	//スライムが吹き飛ばされたときに速度と角度を決める
 	void Reflect();									//スライムとぶつかって吹き飛ばした際に自分の移動量を減らす
 
-	void SetPos(TPos3d<float> pos);
+	// ゲット関数
 	TPos3d<float> GetPos();
-
-
-	void SetSphere(CSphereInfo::Sphere Sphere);
 	CSphereInfo::Sphere GetSphere();	//スライムの座標と半径を取得
-
-
 	float GetSpeed();				//スライムの移動速度を取得
-
 	E_SLIME_LEVEL GetSlimeLevel();		//スライムのサイズを取得
+
+	// セット関数
+	void SetPos(TPos3d<float> pos);
+	void SetSphere(CSphereInfo::Sphere Sphere);
 
 protected:
 	Model* m_pModel;				// 3Dモデル
@@ -90,8 +88,6 @@ protected:
 	CSphereInfo::Sphere m_sphere;	// 当たり判定の座標および半径を保存する
 
 	E_SLIME_LEVEL m_eSlimeSize;		//スライムの大きさの列挙
-	
-	
 
 private:
 

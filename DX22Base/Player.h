@@ -47,7 +47,8 @@ public:
 	TPos3d<float>* GetPosAddress() { return &m_pos; }
 	CHammer* GetHammer() { return m_pHammer; }
 	bool GetCollide();							//“–‚½‚è”»’è‚ª‚ ‚é‚©‚ÌŠm”F
-	void GetCamera(const CCamera* pCamera);
+
+	void SetCamera(const CCamera* pCamera);
 
 
 private:
