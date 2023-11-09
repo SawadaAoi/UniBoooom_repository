@@ -188,7 +188,10 @@ void CSlimeBase::NormalMove(TPos3d<float> playerPos)
 	// プレイヤーと距離が一定以内だったら
 	if (distancePlayer < MOVE_DISTANCE_PLAYER) 
 	{
-		TPos3d<float> movePos = playerPos - m_pos;
+		TPos3d<float> movePos;
+		movePos.x = playerPos.x - m_pos.x;
+		movePos.y = playerPos.y - m_pos.y;
+		movePos.z = playerPos.z - m_pos.z;
 		if (distancePlayer != 0)	//0除算回避
 		{
 			m_move.x = movePos.x / distancePlayer * m_fSpeed;
