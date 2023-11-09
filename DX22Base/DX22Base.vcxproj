@@ -176,8 +176,13 @@
     <ClCompile Include="Controller.cpp" />
     <ClCompile Include="Cylinder.cpp" />
     <ClCompile Include="DirectX.cpp" />
+    <ClCompile Include="Effect.cpp" />
+    <ClCompile Include="Emitter.cpp" />
+    <ClCompile Include="EmitterManager.cpp" />
     <ClCompile Include="Explosion.cpp" />
     <ClCompile Include="ExplosionManager.cpp" />
+    <ClCompile Include="ModelParticle.cpp" />
+    <ClCompile Include="Particle.cpp" />
     <ClCompile Include="Prot.cpp" />
     <ClCompile Include="Hammer.cpp" />
     <ClCompile Include="Input.cpp" />
@@ -188,6 +193,7 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="QuadParticle.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneGameCollision.cpp" />
     <ClCompile Include="SceneManager.cpp" />
@@ -199,6 +205,7 @@
     <ClCompile Include="SphereInfo.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="Startup.cpp" />
+    <ClCompile Include="StripeParticle.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="SceneGame.cpp" />
     <ClCompile Include="Title.cpp" />
@@ -216,11 +223,15 @@
     <ClInclude Include="Cylinder.h" />
     <ClInclude Include="Defines.h" />
     <ClInclude Include="DirectX.h" />
-    <ClInclude Include="DiType.h" />
+    <ClInclude Include="Effect.h" />
+    <ClInclude Include="Emitter.h" />
+    <ClInclude Include="EmitterManager.h" />
     <ClInclude Include="Explosion.h" />
     <ClInclude Include="ExplosionManager.h" />
     <ClInclude Include="Pos2d.h" />
     <ClInclude Include="Pos3d.h" />
+    <ClInclude Include="ModelParticle.h" />
+    <ClInclude Include="Particle.h" />
     <ClInclude Include="Prot.h" />
     <ClInclude Include="Hammer.h" />
     <ClInclude Include="Input.h" />
@@ -230,6 +241,7 @@
     <ClInclude Include="Main.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="QuadParticle.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneGame.h" />
     <ClInclude Include="SceneManager.h" />
@@ -240,6 +252,7 @@
     <ClInclude Include="SlimeManager.h" />
     <ClInclude Include="Slime_1.h" />
     <ClInclude Include="Sprite.h" />
+    <ClInclude Include="StripeParticle.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Title.h" />
     <ClInclude Include="Transform.h" />

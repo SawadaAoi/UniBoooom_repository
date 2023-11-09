@@ -67,6 +67,42 @@
     <Filter Include="ヘッダー ファイル\System\Camera">
       <UniqueIdentifier>{e51fcb26-a388-49ec-b748-cd8fe67225d8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\2dObject">
+      <UniqueIdentifier>{982c9d7b-0d17-4703-af32-cc77a4f51dd8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\2dObject\Effect">
+      <UniqueIdentifier>{0b69555e-5e2c-4067-ab76-5084adc00263}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\2dObject\Effect\Particle">
+      <UniqueIdentifier>{18baf731-5081-4dd1-89e7-6e6a4249d38c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\2dObject\Effect\Particle\ModelParticle">
+      <UniqueIdentifier>{6701af9f-d1d6-4b3c-ad2c-24846fb42fc9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\2dObject\Effect\Particle\QuadParticle">
+      <UniqueIdentifier>{aac39599-ed75-4b87-89a9-2a720d143484}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\2dObject">
+      <UniqueIdentifier>{956544a7-603e-42b3-bfab-932cff43106c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\2dObject\Effect">
+      <UniqueIdentifier>{b95ca52c-d424-4e4d-a919-7649217b5a00}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\2dObject\Effect\Particle">
+      <UniqueIdentifier>{33698c5e-3fce-4b89-9016-51917eb872e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\2dObject\Effect\Particle\ModelParticle">
+      <UniqueIdentifier>{238e6673-495f-4451-ac17-72d2157c3e52}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\2dObject\Effect\Particle\QuadParticle">
+      <UniqueIdentifier>{6ac34c7d-649c-43ac-8773-34ff50f91da9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\2dObject\Effect\Particle\StripeParticle">
+      <UniqueIdentifier>{293c03dd-1393-402a-b929-8df7c7ad51b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\2dObject\Effect\Particle\StripeParticle">
+      <UniqueIdentifier>{bfe0c776-3581-417b-8745-139a05bf0db7}</UniqueIdentifier>
+    </Filter>
     <Filter Include="ヘッダー ファイル\Info\Transform">
       <UniqueIdentifier>{42a0eb1c-52f2-44b0-9fbb-724472721f80}</UniqueIdentifier>
     </Filter>
@@ -176,6 +212,27 @@
     </ClCompile>
     <ClCompile Include="Controller.cpp">
       <Filter>ソース ファイル\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Effect.cpp">
+      <Filter>ソース ファイル\2dObject\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="Emitter.cpp">
+      <Filter>ソース ファイル\2dObject\Effect\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="EmitterManager.cpp">
+      <Filter>ソース ファイル\2dObject\Effect\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="Particle.cpp">
+      <Filter>ソース ファイル\2dObject\Effect\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelParticle.cpp">
+      <Filter>ソース ファイル\2dObject\Effect\Particle\ModelParticle</Filter>
+    </ClCompile>
+    <ClCompile Include="QuadParticle.cpp">
+      <Filter>ソース ファイル\2dObject\Effect\Particle\QuadParticle</Filter>
+    </ClCompile>
+    <ClCompile Include="StripeParticle.cpp">
+      <Filter>ソース ファイル\2dObject\Effect\Particle\StripeParticle</Filter>
     </ClCompile>
     <ClCompile Include="Transform3d.cpp">
       <Filter>ソース ファイル\Info</Filter>
@@ -304,6 +361,27 @@
     </ClInclude>
     <ClInclude Include="Controller.h">
       <Filter>ヘッダー ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Effect.h">
+      <Filter>ヘッダー ファイル\2dObject\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="Emitter.h">
+      <Filter>ヘッダー ファイル\2dObject\Effect\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="EmitterManager.h">
+      <Filter>ヘッダー ファイル\2dObject\Effect\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="Particle.h">
+      <Filter>ヘッダー ファイル\2dObject\Effect\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelParticle.h">
+      <Filter>ヘッダー ファイル\2dObject\Effect\Particle\ModelParticle</Filter>
+    </ClInclude>
+    <ClInclude Include="QuadParticle.h">
+      <Filter>ヘッダー ファイル\2dObject\Effect\Particle\QuadParticle</Filter>
+    </ClInclude>
+    <ClInclude Include="StripeParticle.h">
+      <Filter>ヘッダー ファイル\2dObject\Effect\Particle\StripeParticle</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
