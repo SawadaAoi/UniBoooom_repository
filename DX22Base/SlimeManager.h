@@ -9,7 +9,7 @@
 
    変更履歴
    ・2023/11/05 スライムマネージャークラス作成 /鈴村 朋也
-
+   ・2023/11/09 スライム生成関数の名前変更/澤田
 
    ======================================== */
 #ifndef __SLIME_MANAGER_H__
@@ -29,20 +29,22 @@ public:
 	CSlimeManager();
 	~CSlimeManager();
 
-	void Update(CSphereInfo::Sphere playerSphere);
+	void Update();
 	void Draw();
-	void Generate(const TPos<float> pos);
+	void Create();
 	void HitBranch(int HitSlimeArrayNum,int standSlimeArrayNum);	//スライムの接触が起きた際の分岐処理
 	void UnionSlime(E_SLIME_LEVEL level);							//スライムの結合処理
 	CSlimeBase* GetSlimePtr(int num);
 
 	void SetCamera(CCamera* pCamera);
-
+	void SetPlayerSphere(CSphereInfo::Sphere pSphere);
 private:
 	int GetRandom(int min, int max);
 
 	CSlimeBase* m_pSlime[MAX_SLIME];
 	CCamera* m_pCamera;
+
+	CSphereInfo::Sphere m_pPlayerSphere;	// プレイヤーの当たり判定処理
 
 	int m_GeneCnt;
 

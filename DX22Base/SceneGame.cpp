@@ -104,8 +104,10 @@ void SceneGame::Update(float tick)
 {
 	m_pCamera->Update();
 	m_pPlayer->Update();
+	m_pSlimeMng->SetPlayerSphere(m_pPlayer->GetPlayerSphere());
+
 	// スライムマネージャー更新
-	m_pSlimeMng->Update(m_pPlayer->GetPlayerSphere());
+	m_pSlimeMng->Update();
 	m_pExplosionMng->Update();
 	m_pCamera->Update();
 

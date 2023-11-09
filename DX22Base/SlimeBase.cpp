@@ -27,6 +27,7 @@ const float ENEMY_MOVE_SPEED = 0.01f;
 const float SPEED_DOWN_RATIO = 0.6f;	//スライムが接触して吹き飛ぶ際にかかる移動速度の変化の割合	RATIO=>割合
 const float MOVE_RESIST = 0.1f;		//吹き飛び移動中のスライムの移動速度に毎フレームかかる減算数値
 const float REFLECT_RATIO = 0.1f;	//スライムがスライムを吹き飛ばした際に吹き飛ばした側のスライムの移動量を変える割合
+const float MOVE_DISTANCE_PLAYER = 5;
 
 /* ========================================
 	コンストラクタ関数
@@ -183,12 +184,17 @@ void CSlimeBase::NormalMove(CSphereInfo::Sphere playerSphere)
 	// 敵からエネミーの距離、角度を計算
 	float distancePlayer	= m_sphere.Distance(playerSphere);
 
-	TTriType<float> movePos = playerSphere.pos - m_pos;
-	if (distancePlayer != 0)	//0除算回避
+	// プレイヤーと距離が一定以内だったら
+	if (distancePlayer < MOVE_DISTANCE_PLAYER) 
 	{
-		m_move.x = movePos.x / distancePlayer * m_fSpeed;
-		m_move.z = movePos.z / distancePlayer * m_fSpeed;
+		TTriType<float> movePos = playerSphere.pos - m_pos;
+		if (distancePlayer != 0)	//0除算回避
+		{
+			m_move.x = movePos.x / distancePlayer * m_fSpeed;
+			m_move.z = movePos.z / distancePlayer * m_fSpeed;
+		}
 	}
+
 }
 
 /* ========================================

@@ -39,10 +39,9 @@ CSlimeManager::CSlimeManager()
 	: m_GeneCnt(0)
 {
 
-	srand((unsigned int)time(NULL));	//時間により乱数生成
+	srand((unsigned int)time(NULL));	// 乱数パターン設定
 
-
-	//"スライム1"生成
+	// スライム初期化
 	for (int i = 0; i < MAX_SLIME; i++)
 	{
 		m_pSlime[i] = nullptr;
@@ -61,7 +60,7 @@ CSlimeManager::CSlimeManager()
 =========================================== */
 CSlimeManager::~CSlimeManager()
 {
-	//"スライム1"削除
+	// スライム削除
 	for (int i = 0; i < MAX_SLIME; i++)
 	{
 		SAFE_DELETE(m_pSlime[i]);
@@ -77,19 +76,14 @@ CSlimeManager::~CSlimeManager()
 	-------------------------------------
 	戻値：無し
 =========================================== */
-void CSlimeManager::Update(CSphereInfo::Sphere playerSphere)
+void CSlimeManager::Update()
 {
 	
-	//"スライム1"更新
+	// スライム更新
 	for (int i = 0; i < MAX_SLIME; i++)
 	{
 		if (m_pSlime[i] == nullptr) continue;
-
-		
-		
-
-		m_pSlime[i]->Update(playerSphere);
-	
+		m_pSlime[i]->Update(m_pPlayerSphere);
 
 	}
 
@@ -97,7 +91,7 @@ void CSlimeManager::Update(CSphereInfo::Sphere playerSphere)
 	if(ENEMY_GENERATE_INTERVAL<=m_GeneCnt)
 	{
 		// 敵 生成
-		Generate(TPos<float>(playerSphere.pos.x, 0.0f, playerSphere.pos.z));
+		Create();
 		m_GeneCnt = 0;
 	}
 
@@ -132,34 +126,34 @@ void CSlimeManager::Draw()
 	-------------------------------------
 	戻値：無し
 =========================================== */
-void CSlimeManager::Generate(const TPos<float> pos)
+void CSlimeManager::Create()
 {
-	TPos<float> Pos;
+	CSphereInfo::Sphere CreatePos;	// スライムの生成位置(TODO：型を変更する)
 
 	for (int i = 0; i < MAX_SLIME; i++)
 	{
 		// スライムのuseを検索
 		if (m_pSlime[i] != nullptr) continue;
 
-
-		float m_distanceFromPlayer = 0.0f;
-		float m_posX, m_posZ;
-
+		// 適切な座標が出るまで繰り返す
 		while (true)
 		{
-			Pos.x = GetRandom(1, 30);	//乱数取得
-			Pos.z = GetRandom(1, 30);
-			Pos.y = 0;
-			float Distance = sqrt(pow(Pos.x - pos.x, 2.0f) + pow(Pos.z - pos.z, 2.0f));
+			// 乱数をセットする
+			CreatePos.pos.x = GetRandom(-30, 30);	//乱数取得
+			CreatePos.pos.z = GetRandom(-30, 30);
+			CreatePos.pos.y = 0;
 
-			
+			//float Distance = sqrt(pow(Sphere.pos.x - pos.x, 2.0f) + pow(Sphere.pos.z - pos.z, 2.0f));
+			float Distance = CreatePos.Distance(m_pPlayerSphere);
 
-			if (Distance >= 10) break;
+			if (Distance >= 10) break;	// プレイヤーから一定の距離離れていれば抜ける
 		}
 		
-		m_pSlime[i] = new CSlime_1();	//useをtrueに
-		m_pSlime[i]->SetPos(Pos);	//posを設定
-		break;						//見つけたらbreak
+		m_pSlime[i] = new CSlime_1();	// 動的生成
+		m_pSlime[i]->SetPos(TPos<float>(
+			CreatePos.pos.x, CreatePos.pos.y, CreatePos.pos.z));	//posを設定
+		
+		break;						// 生成したら終了
 		
 	}
 	
@@ -254,9 +248,32 @@ CSlimeBase* CSlimeManager::GetSlimePtr(int num)
 	return m_pSlime[num];
 }
 
+/* ========================================
+	カメラ情報セット関数
+	----------------------------------------
+	内容：描画処理で使用するカメラ情報セット
+	----------------------------------------
+	引数1：なし
+	----------------------------------------
+	戻値：なし
+======================================== */
 void CSlimeManager::SetCamera(CCamera * pCamera)
 {
 	m_pCamera = pCamera;
+}
+
+/* ========================================
+	プレイヤーの座標取得関数
+	----------------------------------------
+	内容：現在のプレイヤーの座標を取得する
+	----------------------------------------
+	引数1：プレイヤーの座標(現在はスフィアだが、今後変更する)
+	----------------------------------------
+	戻値：無し
+======================================== */
+void CSlimeManager::SetPlayerSphere(CSphereInfo::Sphere pSphere)
+{
+	m_pPlayerSphere = pSphere;
 }
 
 /* ========================================
