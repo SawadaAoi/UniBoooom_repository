@@ -97,11 +97,6 @@ void CPlayer::Update()
 		Move();
 	}
 
-	if (IsKeyTrigger(VK_SPACE))
-	{
-		Damage();
-	}
-
 
 	if (IsKeyTrigger(VK_SPACE) || m_pHammer->Gethammer())	//スペースキーを押した時もしくはハンマーを振るフラグがONの時
 	{
