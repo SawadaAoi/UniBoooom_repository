@@ -243,6 +243,15 @@
     <ClCompile Include="Transform2d.cpp">
       <Filter>ソース ファイル\Info</Filter>
     </ClCompile>
+    <ClCompile Include="Slime_2.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Slime_4.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Slime_3.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Defines.h">
@@ -361,6 +370,15 @@
     </ClInclude>
     <ClInclude Include="Controller.h">
       <Filter>ヘッダー ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Slime_2.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Slime_3.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Slime_4.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Effect.h">
       <Filter>ヘッダー ファイル\2dObject\Effect</Filter>

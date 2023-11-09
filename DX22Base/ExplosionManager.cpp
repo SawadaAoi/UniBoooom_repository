@@ -11,8 +11,7 @@
 	・2023/11/06 爆発マネージャークラス作成 /鄭　宇恩
 	・2023/11/06 爆発発生、削除関数作成 / 鄭 宇恩
 	・2023/11/07 爆発生成関数名の変更、DeleteExplosin()の修正/ 鄭 宇恩
-	
-	
+	・2023/11/10 他のオブジェクトと同一のカメラをセットするようにした 山下凌佑
 ========================================== */
 
 // =============== インクルード ===================
@@ -95,7 +94,7 @@ void CExplosionManager::Update()
 	-------------------------------------
 	戻値：なし
 =========================================== */
-void CExplosionManager::Create(TTriType<float> pos)
+void CExplosionManager::Create(TTriType<float> pos,float size)
 {
 	// 爆発を検索
 	for (int i = 0; i < MAX_EXPLOSION_NUM; i++)
@@ -103,7 +102,8 @@ void CExplosionManager::Create(TTriType<float> pos)
 		// 使用済みの爆発はスルー
 		if (m_pExplosion[i] != nullptr) continue;
 
-		m_pExplosion[i] = new CExplosion(pos);	// 座標を指定して生成
+		m_pExplosion[i] = new CExplosion(pos,size);	// 座標を指定して生成
+		m_pExplosion[i]->SetCamera(m_pCamera);
 
 		break;
 
@@ -132,6 +132,20 @@ void CExplosionManager::DeleteCheck()
 		delete m_pExplosion[i]; m_pExplosion[i] = nullptr;	// 爆発を削除する
 
 	}
+}
+
+/* ========================================
+	カメラ情報セット関数
+	----------------------------------------
+	内容：描画処理で使用するカメラ情報セット
+	----------------------------------------
+	引数1：なし
+	----------------------------------------
+	戻値：なし
+======================================== */
+void CExplosionManager::SetCamera(const CCamera * pCamera)
+{
+	m_pCamera = pCamera;
 }
 
 /*========================================
