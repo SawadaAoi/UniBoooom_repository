@@ -11,6 +11,9 @@
 
    変更履歴
 	・2023/11/06 爆発マネージャークラス作成 /鄭　宇恩
+	・2023/11/10 他のオブジェクトと同一のカメラをセットするようにした 山下凌佑
+
+	・2023/11/06 爆発マネージャークラス作成 /鄭　宇恩
 	・2023/11/09 爆発配列を返す処理の追加/ 澤田蒼生
 	
 ========================================== */
@@ -32,16 +35,17 @@ public:
 
 	void Update();
 	void Draw();
-
-
-	void Create(TTriType<float> pos);
+	
+	void Create(TTriType<float> pos,float size);
 	void DeleteCheck();
 
 	CExplosion* GetExplosionPtr(int num);
 
+	void SetCamera(const CCamera* pCamera);	//他のオブジェクトと同一のカメラをセット
 protected:
 	// ===メンバ変数宣言===
 	CExplosion* m_pExplosion[MAX_EXPLOSION_NUM];
+	const CCamera* m_pCamera;
 private:
 };
 

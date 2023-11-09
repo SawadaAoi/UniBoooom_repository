@@ -122,7 +122,7 @@ void SceneGame::SlimeSlimeCollision()
 		if (pSlimeFly->GetHitMoveFlg() == false)	continue; 	// 通常状態のスライムはスルー
 
 		// 衝突されるスライム
-		for (int j = 0; j < MAX_SLIME; j++)
+		for (int j = i + 1; j < MAX_SLIME; j++)
 		{
 			CSlimeBase* pSlimeTarget = m_pSlimeMng->GetSlimePtr(j);	// 衝突されるスライムのポインタ
 
@@ -132,8 +132,9 @@ void SceneGame::SlimeSlimeCollision()
 			// スライム同士が衝突した場合
 			if (m_pCollision->CheckCollisionSphere(pSlimeFly->GetSphere(), pSlimeTarget->GetSphere()))
 			{
-				m_pSlimeMng->HitBranch(i, j);	// 爆発処理、結合処理(スライム同士の情報によって処理を変える)
-				
+
+				m_pSlimeMng->HitBranch(i, j,m_pExplosionMng);	// 爆発処理、結合処理(スライム同士の情報によって処理を変える)
+				break;
 			}
 		}
 

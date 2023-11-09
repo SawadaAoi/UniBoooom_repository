@@ -13,7 +13,7 @@
 	・2023/11/06 爆発のモデル設定、描画、位置
 	・2023/11/06 boolの設定と取得関数制作 / 鄭 宇恩
 	・2023/11/08 変数、関数の変更 / 澤田蒼生
-
+	・2023/11/10 他のオブジェクトと同一カメラでビューとプロジェクションをセットできるようにした / 山下凌佑
 ======================================== */
 
 
@@ -35,7 +35,7 @@ const float MAX_DISPLAY_TIME = 60 * 5.0f;
 	-------------------------------------
 	戻値：無し
 =========================================== */
-CExplosion::CExplosion(TTriType<float> pos)
+CExplosion::CExplosion(TTriType<float> pos, float size)
 	: m_fSize(1.0f)
 	, m_fDelFrame(0.0f)
 	, m_bDelFlg(false)
@@ -43,8 +43,8 @@ CExplosion::CExplosion(TTriType<float> pos)
 
 	//爆発オブジェクト初期化
 	m_Sphere.pos = pos;
-	m_Sphere.radius = 1.0f;
-
+	m_Sphere.radius = size;
+	m_fSize = size;
 	m_3dModel = new CSphere();
 }
 
@@ -75,11 +75,7 @@ CExplosion::~CExplosion()
 =========================================== */
 void CExplosion::Update()
 {
-	DirectX::XMMATRIX mat = DirectX::XMMatrixTranslation(m_Sphere.pos.x, m_Sphere.pos.y, m_Sphere.pos.z);
-	mat = DirectX::XMMatrixTranspose(mat);
-	DirectX::XMFLOAT4X4 fMat;	//行列の格納先
-	DirectX::XMStoreFloat4x4(&fMat, mat);
-	m_3dModel->SetWorld(fMat);
+
 
 	DisplayTimeAdd();
 }
@@ -97,8 +93,18 @@ void CExplosion::Update()
 =========================================== */
 void CExplosion::Draw()
 {
-	m_3dModel->Draw();	// 爆発仮3Dモデルの描画
+	DirectX::XMMATRIX mat = DirectX::XMMatrixTranslation(m_Sphere.pos.x, m_Sphere.pos.y, m_Sphere.pos.z);
+	DirectX::XMMATRIX Scale = DirectX::XMMatrixScaling(m_fSize, m_fSize, m_fSize);
+	mat = Scale * mat;
+	mat = DirectX::XMMatrixTranspose(mat);
+	DirectX::XMFLOAT4X4 fMat;	//行列の格納先
+	DirectX::XMStoreFloat4x4(&fMat, mat);
+	m_3dModel->SetWorld(fMat);
 
+	m_3dModel->SetView(m_pCamera->GetViewMatrix());
+	m_3dModel->SetProjection(m_pCamera->GetProjectionMatrix());
+
+	m_3dModel->Draw();	// 爆発仮3Dモデルの描画
 }
 
 
@@ -177,6 +183,20 @@ CSphereInfo::Sphere CExplosion::GetSphere()
 bool CExplosion::GetDelFlg()
 {
 	return m_bDelFlg;
+}
+
+/* ========================================
+	カメラ情報セット関数
+	----------------------------------------
+	内容：描画処理で使用するカメラ情報セット
+	----------------------------------------
+	引数1：なし
+	----------------------------------------
+	戻値：なし
+======================================== */
+void CExplosion::SetCamera(const CCamera * pCamera)
+{
+	m_pCamera = pCamera;
 }
 
 
