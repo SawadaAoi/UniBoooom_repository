@@ -144,9 +144,6 @@
     <ClCompile Include="Prot.cpp">
       <Filter>ソース ファイル\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="Collision.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Explosion.cpp">
       <Filter>ソース ファイル\3dObject</Filter>
     </ClCompile>
@@ -170,6 +167,18 @@
     </ClCompile>
     <ClCompile Include="ExplosionManager.cpp">
       <Filter>ソース ファイル\3dObject</Filter>
+    </ClCompile>
+    <ClCompile Include="SphereInfo.cpp">
+      <Filter>ソース ファイル\3dObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Collision.cpp">
+      <Filter>ソース ファイル\System</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneGameCollision.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Controller.cpp">
+      <Filter>ソース ファイル\System</Filter>
     </ClCompile>
     <ClCompile Include="Transform3d.cpp">
       <Filter>ソース ファイル\Info</Filter>
@@ -242,9 +251,6 @@
     <ClInclude Include="Prot.h">
       <Filter>ヘッダー ファイル\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Collision.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="SphereInfo.h">
       <Filter>ヘッダー ファイル\Info</Filter>
     </ClInclude>
@@ -292,6 +298,12 @@
     </ClInclude>
     <ClInclude Include="Pos3d.h">
       <Filter>ヘッダー ファイル\Info\Pos</Filter>
+    </ClInclude>
+    <ClInclude Include="Collision.h">
+      <Filter>ヘッダー ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Controller.h">
+      <Filter>ヘッダー ファイル\System</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -13,6 +13,7 @@
 	・2023/11/04 更新関数の実装部分削除 takagi
 	・2023/11/06 フラグ整理・コメント修正 takagi
 	・2023/11/07 GetViewMatrix()関数にconst修飾子付与・コメント修正 takagi
+	・2023/11/09 カメラの様々動作チェック。 髙木駿輔
 
 ========================================== */
 
@@ -35,12 +36,15 @@ const float INIT_ANGLE = 1.0f / 3.0f * 3.1415f;	//初期画角
 	戻値：なし
 =========================================== */
 CCamera::CCamera(const E_DRAW_TYPE& eDraw)
-	:m_fPos(INIT_POS),	//位置
-	m_fLook(0.0f, 0.0f, 10.0f),	//注視点
-	m_fUp(0.0f, 1.0f, 1.0f),	//上方ベクトル
-	m_fAngle(INIT_ANGLE),		//角度
-	m_fNear(2.0f),				//画面手前
-	m_fFar(50.0f)				//画面奥
+	:m_fPos(INIT_POS)	//位置
+	,m_fLook(0.0f, 0.0f, 10.0f)	//注視点
+	,m_fUp(0.0f, 1.0f, 1.0f)	//上方ベクトル
+	,m_fAngle(INIT_ANGLE)		//角度
+	,m_fNear(1.0f)				//画面手前
+	,m_fFar(300.0f)				//画面奥
+	,m_fRadius(30.0f)			//注視点とカメラの距離
+	,m_fRadXZ(0.0f)				//X-Z面の回転角
+	,m_fRadY(0.0f)				//Y-XZ面の回転角
 {
 	//＞分岐処理
 	switch (eDraw)	//投影選択

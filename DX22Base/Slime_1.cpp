@@ -19,7 +19,3 @@ void CSlime_1::Explosion()
 {
 }
 
-void CSlime_1::HitBranch()
-{
-}
-

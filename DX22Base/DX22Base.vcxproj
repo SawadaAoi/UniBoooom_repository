@@ -173,6 +173,7 @@
     <ClCompile Include="CameraChase.cpp" />
     <ClCompile Include="CameraDebug.cpp" />
     <ClCompile Include="Collision.cpp" />
+    <ClCompile Include="Controller.cpp" />
     <ClCompile Include="Cylinder.cpp" />
     <ClCompile Include="DirectX.cpp" />
     <ClCompile Include="Explosion.cpp" />
@@ -188,12 +189,14 @@
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="SceneGameCollision.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="SlimeBase.cpp" />
     <ClCompile Include="SlimeManager.cpp" />
     <ClCompile Include="Slime_1.cpp" />
     <ClCompile Include="Sphere.cpp" />
+    <ClCompile Include="SphereInfo.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="Startup.cpp" />
     <ClCompile Include="Texture.cpp" />
@@ -209,6 +212,7 @@
     <ClInclude Include="CameraChase.h" />
     <ClInclude Include="CameraDebug.h" />
     <ClInclude Include="Collision.h" />
+    <ClInclude Include="Controller.h" />
     <ClInclude Include="Cylinder.h" />
     <ClInclude Include="Defines.h" />
     <ClInclude Include="DirectX.h" />
