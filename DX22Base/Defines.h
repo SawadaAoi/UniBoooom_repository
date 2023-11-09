@@ -11,7 +11,7 @@
 
 // タイトル
 #ifdef _DEBUG
-#define APP_TITLE "Define.hでタイトルが変更できるので、[クラス記号氏名]に変えておくこと"
+#define APP_TITLE "UniBoooom!!"
 #else
 #define APP_TITLE "Define.hでタイトルが変更できるので、ゲームのタイトルに変えておくこと"
 #endif

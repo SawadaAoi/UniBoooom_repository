@@ -19,17 +19,17 @@
 #include "Cylinder.h"	//自身のヘッダ
 
 // =============== 定数定義 ===================
-const float CYLINDER_RADIUS = 0.5f;
-const float CYLINDER_HEIGHT = 2.0f;
-const int CORNER_NUM = 8;
-const int VTX_TOP_SURFACE = CORNER_NUM;
-const int VTX_BOTTOM_SURFACE = VTX_TOP_SURFACE;
-const int VTX_CIRCLE = VTX_TOP_SURFACE + VTX_BOTTOM_SURFACE;
-const int VTX_SIDE_SURFACE = VTX_TOP_SURFACE + VTX_BOTTOM_SURFACE + 2;
-const int SURFACE_TOP = CORNER_NUM - 2;
-const int SURFACE_BOTTOM = CORNER_NUM - 2;
-const int SURFACE_SIDE = CORNER_NUM * 2;
-const int SURFACE_CYLINDER_NUM = SURFACE_TOP + SURFACE_BOTTOM + SURFACE_SIDE;
+const float CYLINDER_RADIUS = 0.5f;		// 円柱の半径
+const float CYLINDER_HEIGHT = 2.0f;		// 円柱の高さ
+const int CORNER_NUM = 8;				// 角の数
+const int VTX_TOP_SURFACE = CORNER_NUM;		// 天面の頂点
+const int VTX_BOTTOM_SURFACE = VTX_TOP_SURFACE;	// 底面の頂点
+const int VTX_CIRCLE = VTX_TOP_SURFACE + VTX_BOTTOM_SURFACE;	// 円の頂点
+const int VTX_SIDE_SURFACE = VTX_TOP_SURFACE + VTX_BOTTOM_SURFACE + 2;	// 側面の頂点
+const int SURFACE_TOP = CORNER_NUM - 2;		// 天面の表面
+const int SURFACE_BOTTOM = CORNER_NUM - 2;	// 底面の表面
+const int SURFACE_SIDE = CORNER_NUM * 2;	// 側面の表面
+const int SURFACE_CYLINDER_NUM = SURFACE_TOP + SURFACE_BOTTOM + SURFACE_SIDE;	// 円柱の表面
 
 
 
@@ -46,27 +46,29 @@ CCylinder::CCylinder()
 {
 	// =============== 頂点の作成 ===================
 	// 天面、底面
-	Vertex vtx[CORNER_NUM + VTX_BOTTOM_SURFACE + VTX_SIDE_SURFACE];
-	float angle = 0.0f;
-	float radian;
-	float posX;
-	float posY;
-	float posZ;
-	float u, v;
+	Vertex vtx[CORNER_NUM + VTX_BOTTOM_SURFACE + VTX_SIDE_SURFACE];	// テクスチャ用の頂点情報
+	float angle = 0.0f;	// 円の角度
+	float radian;		// 円の半径
+	float posX;			// X座標
+	float posY;			// Y座標
+	float posZ;			// Z座標
+	float u, v;			// テクスチャ座標
 
+	// 天面の頂点データ作成
 	for (int i = 0; i < VTX_TOP_SURFACE; i++)
 	{
-		angle = i * (360 / CORNER_NUM);
-		radian = DirectX::XMConvertToRadians(angle);
-		posX = sin(radian) * CYLINDER_RADIUS;
-		posY = CYLINDER_HEIGHT / 2;
-		posZ = cos(radian) * CYLINDER_RADIUS;
-		u = (posX / CYLINDER_RADIUS) + 0.5f;
+		angle = i * (360 / CORNER_NUM);					// 中心角
+		radian = DirectX::XMConvertToRadians(angle);	// 円の半径
+		posX = sin(radian) * CYLINDER_RADIUS;			// X座標
+		posY = CYLINDER_HEIGHT / 2;						// Y座標
+		posZ = cos(radian) * CYLINDER_RADIUS;			// Z座標
+		u = (posX / CYLINDER_RADIUS) + 0.5f;			// テクスチャ座標
 		v = -(posZ / CYLINDER_RADIUS) + 0.5f;
 
 		vtx[i] = { {posX,posY,posZ},{u,v} };
 	}
 
+	// 底面の頂点データ作成
 	for (int i = 0; i < VTX_BOTTOM_SURFACE; i++)
 	{
 		angle = i * (360 / CORNER_NUM);

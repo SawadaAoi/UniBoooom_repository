@@ -19,6 +19,7 @@ Collision.h
 class CCOLLISION
 {
 public:
+	// ===プロトタイプ宣言===
 	CCOLLISION() {};	//コンストラクタ
 	~CCOLLISION() {};	//デストラクタ
 
