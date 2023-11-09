@@ -16,7 +16,8 @@
 	・2023/11/08 定数定義がヘッダーにあったのでcppに移動 / 山下凌佑
 	・2023/11/08 コメントを追加　澤田蒼生
 	・2023/11/09 プレイヤー追跡移動変更
-
+	・2023/11/09 Update,NormalMoveの引数変更　変更者：澤田蒼生
+	
 ========================================== */
 
 // =============== インクルード ===================
@@ -67,7 +68,7 @@ CSlimeBase::CSlimeBase()
 
 	//当たり判定(自分)初期化
 	m_sphere.pos = { 0.0f, 0.0f, 0.0f };
-	m_sphere.radius = 1.0f;
+	m_sphere.radius = 0.5f;
 	
 }
 
@@ -93,11 +94,11 @@ CSlimeBase::~CSlimeBase()
 	-------------------------------------
 	内容：更新処理
 	-------------------------------------
-	引数1：無し
+	引数1：プレイヤー座標
 	-------------------------------------
 	戻値：無し
 =========================================== */
-void CSlimeBase::Update(CSphereInfo::Sphere playerSphere)
+void CSlimeBase::Update(TPos3d<float> playerSphere)
 {
 
 	if (!m_bHitMove)	//敵が通常の移動状態の時
@@ -126,13 +127,12 @@ void CSlimeBase::Update(CSphereInfo::Sphere playerSphere)
 	-------------------------------------
 	戻値：無し
 =========================================== */
-void CSlimeBase::Draw()
+void CSlimeBase::Draw(const CCamera* pCamera)
 {
 
 	DirectX::XMFLOAT4X4 mat[3];
 
 	//-- ワールド行列の計算
-	//DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(m_pos.x, m_pos.y, m_pos.z);			//移動行列
 	DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(m_pos.x, m_pos.y, m_pos.z);			//移動行列
 
 	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(m_scale.x, m_scale.y, m_scale.z);		//拡大縮小行列
@@ -155,8 +155,8 @@ void CSlimeBase::Draw()
 	//proj = DirectX::XMMatrixTranspose(proj);	//転置行列に変換
 	//DirectX::XMStoreFloat4x4(&mat[2], proj);	//XMMATRIX型(proj)からXMFLOAT4X4型(mat[2])へ変換して格納
 
-	mat[1] = m_pCamera->GetViewMatrix();
-	mat[2] = m_pCamera->GetProjectionMatrix();
+	mat[1] = pCamera->GetViewMatrix();
+	mat[2] = pCamera->GetProjectionMatrix();
 	
 
 	//-- 行列をシェーダーへ設定
@@ -174,20 +174,22 @@ void CSlimeBase::Draw()
 	----------------------------------------
 	内容：プレイヤーを追跡する移動を行う
 	----------------------------------------
-	引数1：なし
+	引数1：プレイヤー座標
 	----------------------------------------
 	戻値：なし
 ======================================== */
-void CSlimeBase::NormalMove(CSphereInfo::Sphere playerSphere)
+void CSlimeBase::NormalMove(TPos3d<float> playerPos)
 {
-	//== 追従処理 ==
 	// 敵からエネミーの距離、角度を計算
-	float distancePlayer	= m_sphere.Distance(playerSphere);
+	float distancePlayer	= m_pos.Distance(playerPos);
 
 	// プレイヤーと距離が一定以内だったら
 	if (distancePlayer < MOVE_DISTANCE_PLAYER) 
 	{
-		TTriType<float> movePos = playerSphere.pos - m_pos;
+		TPos3d<float> movePos;
+		movePos.x = playerPos.x - m_pos.x;
+		movePos.y = playerPos.y - m_pos.y;
+		movePos.z = playerPos.z - m_pos.z;
 		if (distancePlayer != 0)	//0除算回避
 		{
 			m_move.x = movePos.x / distancePlayer * m_fSpeed;
@@ -297,6 +299,7 @@ void CSlimeBase::SetSphere(CSphereInfo::Sphere Sphere)
 void CSlimeBase::SetPos(TPos3d<float> pos)
 {
 	m_pos = pos;
+	m_sphere.pos = pos;
 }
 
 /* ========================================
@@ -340,6 +343,21 @@ TPos3d<float> CSlimeBase::GetPos()
 E_SLIME_LEVEL CSlimeBase::GetSlimeLevel()
 {
 	return m_eSlimeSize;
+}
+
+
+/* ========================================
+	吹飛状態フラグ取得関数
+	----------------------------------------
+	内容：吹飛状態フラグを返す
+	----------------------------------------
+	引数1：なし
+	----------------------------------------
+	戻値：吹飛状態フラグ
+======================================== */
+bool CSlimeBase::GetHitMoveFlg()
+{
+	return m_bHitMove;
 }
 
 /* ========================================

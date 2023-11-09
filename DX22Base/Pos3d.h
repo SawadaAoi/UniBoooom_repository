@@ -128,7 +128,7 @@ template<class Pos3d>	//テンプレート関数実装
 Pos3d TPos3d<Pos3d>::Distance(const TPos3d & Obj)
 {
 	// =============== 変数宣言 =======================
-	TPos3d Temp((*this - *Obj) ^ 2);	//引き算の結果
+	TTriType<Pos3d> Temp = (*this - Obj) ^ 2.0;	//引き算の結果
 
 	// =============== 提供 =======================
 	return (Pos3d)(pow((double)Temp.Total(), 0.5));	//計算結果

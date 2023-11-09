@@ -13,6 +13,7 @@
    ・2023/11/08 結合処理を作成(結合後の生成処理は未実装 Slime_2～Slime_4がまだ無いから) /山下凌佑
    ・2023/11/09 スライム生成関数の名前変更/澤田
    ・2023/11/09 スライムのの生成をランダムに変更	/山下凌佑
+   ・2023/11/09 プレイヤー座標取得の型をTPos3d<float>に変更
 
    ======================================== */
 #ifndef __SLIME_MANAGER_H__
@@ -43,17 +44,17 @@ public:
 	//ゲット関数
 	CSlimeBase* GetSlimePtr(int num);
 
-	void SetCamera(CCamera* pCamera);						//スライムを移すカメラのポインタをセット
-	void SetPlayerSphere(CSphereInfo::Sphere pSphere);		
+	void SetCamera(CCamera* pCamera);		//スライムを移すカメラのポインタをセット
+	void SetPlayerPos(TPos3d<float> pos);
 private:
 	int GetRandom(int min, int max);
 
 	CSlimeBase* m_pSlime[MAX_SLIME];
 	CCamera* m_pCamera;
 
-	CSphereInfo::Sphere m_pPlayerSphere;	// プレイヤーの当たり判定処理
+	TPos3d<float> m_pPlayerPos;	// プレイヤーの座標
 
-	int m_GeneCnt;
+	int m_CreateCnt;	// 生成間隔用カウント
 
 
 	

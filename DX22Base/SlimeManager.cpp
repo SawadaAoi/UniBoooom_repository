@@ -27,9 +27,9 @@
 
 
 // =============== 定数定義 =======================
-const int ENEMY_GENERATE_INTERVAL	= 2 * 60;	// 生成間隔
-const int RANDOM_POS_MIN			= -30;		// 生成座標範囲下限(x,z共通)
-const int RANDOM_POS_MAX			= 30;		// 生成座標範囲上限(x,z共通)
+const int ENEMY_GENERATE_INTERVAL	= 3 * 60;	// 生成間隔
+const int RANDOM_POS_MIN			= -15;		// 生成座標範囲下限(x,z共通)
+const int RANDOM_POS_MAX			= 15;		// 生成座標範囲上限(x,z共通)
 const int CREATE_DISTANCE			= 10;		// 生成距離最小値
 const int SLIME_LEVEL1_PER = 50;				// スライム_1の生成確立
 const int SLIME_LEVEL2_PER = 30;				// スライム_2の生成確立
@@ -46,7 +46,7 @@ const float MAX_SIZE_EXPLODE = 5.0f;
 	戻値：無し
 =========================================== */
 CSlimeManager::CSlimeManager()
-	: m_GeneCnt(0)
+	: m_CreateCnt(0)
 {
 
 	srand((unsigned int)time(NULL));	// 乱数パターン設定
@@ -93,16 +93,16 @@ void CSlimeManager::Update(CExplosionManager* pExpMng)
 	for (int i = 0; i < MAX_SLIME; i++)
 	{
 		if (m_pSlime[i] == nullptr) continue;
-		m_pSlime[i]->Update(m_pPlayerSphere);
+		m_pSlime[i]->Update(m_pPlayerPos);
 
 	}
 
-	m_GeneCnt++;
-	if(ENEMY_GENERATE_INTERVAL<=m_GeneCnt)	//カウントが生成時間の間隔を満たしたら
+	m_CreateCnt++;
+	if(ENEMY_GENERATE_INTERVAL<= m_CreateCnt)
 	{
 		// 敵 生成
-		//Create(GetRandomLevel());	//スライムのレベルをランダムに選んで生成する
-		m_GeneCnt = 0;				//カウントをリセット
+		Create(GetRandomLevel());	//スライムのレベルをランダムに選んで生成する
+		m_CreateCnt = 0;				//カウントをリセット
 	}
 }
 
@@ -121,7 +121,7 @@ void CSlimeManager::Draw()
 	for (int i = 0; i < MAX_SLIME; i++)
 	{
 		if (m_pSlime[i] == nullptr) continue;
-		m_pSlime[i]->Draw();
+		m_pSlime[i]->Draw(m_pCamera);
 	}
 }
 
@@ -137,7 +137,7 @@ void CSlimeManager::Draw()
 =========================================== */
 void CSlimeManager::Create(E_SLIME_LEVEL level)
 {
-	CSphereInfo::Sphere CreatePos;	// スライムの生成位置(TODO：型を変更する)
+	TPos3d<float> CreatePos;	// スライムの生成位置
 
 	for (int i = 0; i < MAX_SLIME; i++)
 	{
@@ -148,12 +148,11 @@ void CSlimeManager::Create(E_SLIME_LEVEL level)
 		while (true)
 		{
 			// 乱数をセットする
-			CreatePos.pos.x = GetRandom(RANDOM_POS_MIN, RANDOM_POS_MAX);	//乱数取得
-			CreatePos.pos.z = GetRandom(RANDOM_POS_MIN, RANDOM_POS_MAX);
-			CreatePos.pos.y = 0;
+			CreatePos.x = GetRandom(RANDOM_POS_MIN, RANDOM_POS_MAX);	//乱数取得
+			CreatePos.z = GetRandom(RANDOM_POS_MIN, RANDOM_POS_MAX);
+			CreatePos.y = 0;
 
-			//float Distance = sqrt(pow(Sphere.pos.x - pos.x, 2.0f) + pow(Sphere.pos.z - pos.z, 2.0f));
-			float Distance = CreatePos.Distance(m_pPlayerSphere);
+			float Distance = CreatePos.Distance(m_pPlayerPos);	// 生成座標のプレイヤーとの距離
 
 			if (Distance >= CREATE_DISTANCE) break;	// プレイヤーから一定の距離離れていれば抜ける
 		}
@@ -161,23 +160,20 @@ void CSlimeManager::Create(E_SLIME_LEVEL level)
 		switch (level)
 		{
 		case LEVEL_1:
-			m_pSlime[i] = new CSlime_1();	// 動的生成
+			m_pSlime[i] = new CSlime_1(CreatePos);	// 動的生成
 			break;
 		case LEVEL_2:
-			m_pSlime[i] = new CSlime_2();	// 動的生成
+			m_pSlime[i] = new CSlime_2(CreatePos);	// 動的生成
 			break;
 		case LEVEL_3:
-			m_pSlime[i] = new CSlime_3();	// 動的生成
+			m_pSlime[i] = new CSlime_3(CreatePos);	// 動的生成
 			break;
 		case LEVEL_4:
-			m_pSlime[i] = new CSlime_4();	// 動的生成
+			m_pSlime[i] = new CSlime_4(CreatePos);	// 動的生成
 			break;
 		}
 
 		m_pSlime[i]->SetCamera(m_pCamera);	//カメラをセット
-		m_pSlime[i]->SetPos(TPos3d<float>(
-			CreatePos.pos.x, CreatePos.pos.y, CreatePos.pos.z));	//posを設定
-		
 		break;						// 生成したら終了
 		
 	}
@@ -250,19 +246,18 @@ void CSlimeManager::UnionSlime(E_SLIME_LEVEL level ,TPos3d<float> pos)
 		{
 		case LEVEL_1:
 			//サイズ2のスライムを生成
-			m_pSlime[i] = new CSlime_2();
+			m_pSlime[i] = new CSlime_2(pos);
 			break;
 		case LEVEL_2:
 			//サイズ3のスライムを生成
-			m_pSlime[i] = new CSlime_3();
+			m_pSlime[i] = new CSlime_3(pos);
 			break;
 		case LEVEL_3:
 			//サイズ4のスライムを生成
-			m_pSlime[i] = new CSlime_4();
+			m_pSlime[i] = new CSlime_4(pos);
 			break;
 		}
 
-		m_pSlime[i]->SetPos(pos);	//生成位置をセット
 		m_pSlime[i]->SetCamera(m_pCamera);	//カメラをセット
 
 		break;
@@ -335,9 +330,9 @@ void CSlimeManager::SetCamera(CCamera * pCamera)
 	----------------------------------------
 	戻値：無し
 ======================================== */
-void CSlimeManager::SetPlayerSphere(CSphereInfo::Sphere pSphere)
+void CSlimeManager::SetPlayerPos(TPos3d<float> pos)
 {
-	m_pPlayerSphere = pSphere;
+	m_pPlayerPos = pos;
 }
 
 /* ========================================

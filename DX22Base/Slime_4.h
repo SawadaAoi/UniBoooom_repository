@@ -25,6 +25,7 @@ class CSlime_4 :
 public:
 	// ===プロトタイプ宣言===
 	CSlime_4();
+	CSlime_4(TPos3d<float> pos);
 	~CSlime_4();
 
 	void SetSpeed() override;

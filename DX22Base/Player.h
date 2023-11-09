@@ -50,7 +50,7 @@ public:
 	CHammer* GetHammer() { return m_pHammer; }
 	bool GetCollide();							//“–‚½‚è”»’è‚ª‚ ‚é‚©‚ÌŠm”F
 	void GetCamera(const CCamera* pCamera);
-
+	bool GetHammerFlg();
 
 private:
 	// ===============ƒƒ“ƒoŠÖ”éŒ¾===============

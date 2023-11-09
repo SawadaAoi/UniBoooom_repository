@@ -28,7 +28,7 @@
 #define FORWARD_YES	(1.0f)	//その方向を向いる
 #define FORWARD_NO (0.0f)	//その方向を向いていない
 const int PLAYER_HP = 5;
-const float PLAYER_RADIUS = 1.0f;	//プレイヤーの当たり判定の大きさ
+const float PLAYER_RADIUS = 0.5f;	//プレイヤーの当たり判定の大きさ
 const int NO_DAMAGE_TIME = 3 * 60;	//プレイヤーの無敵時間
 // =============== グローバル変数定義 =============
 
@@ -346,4 +346,9 @@ bool CPlayer::GetCollide()
 void CPlayer::GetCamera(const CCamera * pCamera)
 {
 	m_pCamera = pCamera;	//中身は変えられないけどポインタはかえれるのでヨシ！
+}
+
+bool CPlayer::GetHammerFlg()
+{
+	return m_bHammer;
 }

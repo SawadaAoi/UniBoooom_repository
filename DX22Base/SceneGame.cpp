@@ -106,13 +106,15 @@ void SceneGame::Update(float tick)
 {
 	m_pCamera->Update();
 	m_pPlayer->Update();
-	m_pSlimeMng->SetPlayerSphere(m_pPlayer->GetPlayerSphere());
+	m_pSlimeMng->SetPlayerPos(m_pPlayer->GetPos());
 
 	// スライムマネージャー更新
 	m_pSlimeMng->Update(m_pExplosionMng);
 	m_pExplosionMng->Update();
 	m_pCamera->Update();
 
+
+	SceneGameCollision();
 }
 
 /* ========================================
