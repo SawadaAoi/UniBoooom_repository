@@ -25,7 +25,7 @@
 #include"hammer.h"
 #include "Geometry.h"
 #include "SphereInfo.h"
-#include "Pos.h"
+#include "Pos3d.h"
 #include "Camera.h"
 // =============== クラス定義 =====================
 class CPlayer
@@ -41,8 +41,8 @@ public:
 	void Move();	//移動関数
 	CSphereInfo::Sphere GetPlayerSphere();	//当たり判定を取るためゲッター
 	CSphereInfo::Sphere GetHammerSphere();	//当たり判定を取るためゲッター
-	TPos<float> GetPos();	//プレイヤーの座標を取得
-	TPos<float>* GetPosAddress() { return &m_pos; }
+	TPos3d<float> GetPos();	//プレイヤーの座標を取得
+	TPos3d<float>* GetPosAddress() { return &m_pos; }
 	void GetCamera(const CCamera* pCamera);
 	CHammer* GetHammer() { return m_pHammer; }
 
@@ -52,7 +52,7 @@ private:
 	DirectX::XMMATRIX m_S;				//拡縮
 	DirectX::XMMATRIX m_Ry;				//回転
 	//TTriType<float> m_playerPosition;	//プレイヤーの位置
-	TPos<float> m_pos;					//プレイヤーの座標
+	TPos3d<float> m_pos;					//プレイヤーの座標
 	CSphereInfo::Sphere m_sphere;		//プレイヤーの当たり判定用の球体
 	TTriType<float> m_playerForward;	// プレイヤーの初期進行方向
 	float m_playerRotation;				// プレイヤーの回転角度

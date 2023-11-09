@@ -65,7 +65,7 @@ CHammer::~CHammer()
 }
 
 
-void CHammer::Update(TPos<float> pPos, float angle)
+void CHammer::Update(TPos3d<float> pPos, float angle)
 {
 	Swing(pPos,angle);	//回転による移動関数
 
@@ -124,7 +124,7 @@ bool CHammer::Gethammer()
    ----------------------------------------
    戻値：なし
    ======================================== */
-void CHammer::Swing(TPos<float> pPos, float angle)
+void CHammer::Swing(TPos3d<float> pPos, float angle)
 {
 	m_bHammer = true;		//ハンマーの使用フラグをON
 	m_stateangle = angle;	//-2.5f ;	//振り始めの角度	
