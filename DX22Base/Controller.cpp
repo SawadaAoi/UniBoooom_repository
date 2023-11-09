@@ -28,10 +28,10 @@ Controller::Controller()
 	m_joyInfoEx.dwSize = sizeof(m_joyInfoEx);	// この構造体のサイズ (バイト単位)。
 	m_joyInfoEx.dwFlags = JOY_RETURNALL;		// 構造体で返される有効な情報を示すフラグ
 
-	if (JOYERR_NOERROR != joyGetPosEx(0, &m_joyInfoEx))
-	{
-		MessageBox(NULL, "コントローラーを接続してください", "Error", MB_OK);
-	}
+	//if (JOYERR_NOERROR != joyGetPosEx(0, &m_joyInfoEx))
+	//{
+	//	MessageBox(NULL, "コントローラーを接続してください", "Error", MB_OK);
+	//}
 }
 
 /* ========================================
