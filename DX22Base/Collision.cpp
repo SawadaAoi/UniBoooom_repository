@@ -11,17 +11,29 @@ Collision.cpp
 
 ======================================== */
 
-#include "Collision.h"
+// =============== インクルード ===================
+#include "Collision.h"	// 自身のヘッダ
 
+/* ========================================
+	球体衝突判定関数
+	-------------------------------------
+	内容：球体の衝突判定
+	-------------------------------------
+	引数1：当たりに行く側の球体の情報（構造体）
+	-------------------------------------
+	引数2：当たられる側の球体の情報（構造体）
+	-------------------------------------
+	戻値：true または false
+=========================================== */
 
 bool CCOLLISION::CheckCollisionSphere(CSphereInfo::Sphere hitObj, CSphereInfo::Sphere noMoveObj)
 {
-	float Distance = hitObj.Distance(noMoveObj);
+	float Distance = hitObj.Distance(noMoveObj);	// オブジェクト間の距離
 
-	if (Distance < hitObj.radius + noMoveObj.radius)
+	if (Distance < hitObj.radius + noMoveObj.radius)	// オブジェクト間の距離の距離が半径の合計より小さくなったら
 	{
-		return true;
+		return true;	// 衝突している
 	}
 
-	return false;
+	return false;	// それ以外は衝突していない
 }

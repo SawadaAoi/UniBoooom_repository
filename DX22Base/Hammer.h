@@ -19,6 +19,7 @@
 #ifndef __HAMMER_H__
 #define __HAMMER_H__
 
+// =============== インクルード ===================
 #include "Shader.h"
 #include "Pos3d.h"
 #include "SphereInfo.h"
@@ -26,10 +27,12 @@
 #include <DirectXMath.h>
 #include "Camera.h"
 
-
+// =============== クラス定義 =====================
 class CHammer
 {
 public:
+	// ===プロトタイプ宣言===
+	
 	CHammer();	//コンストラクタ
 	~CHammer();	//デストラクタ
 
@@ -39,6 +42,7 @@ public:
 	void Swing(TPos3d<float>pPos,float angle);	//移動による回転移動
 	CSphereInfo::Sphere GetSphere();			//ハンマーのプレイヤー
 private:
+	// ===メンバ変数宣言=====
 	DirectX::XMMATRIX m_T;			//移動の変換行列
 	DirectX::XMMATRIX m_S;			//拡縮の変換行列
 	DirectX::XMMATRIX m_Ry;			//Y軸の回転をする変換行列

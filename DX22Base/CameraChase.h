@@ -26,7 +26,7 @@
 class CCameraChase :public CCamera	//カメラ
 {
 public:
-	// ===メンバ関数宣言===
+	// ===プロトタイプ宣言===
 	CCameraChase(const TPos3d<float>* pPos);			//コンストラクタ
 	~CCameraChase();								//デストラクタ
 	void Update();									//更新

@@ -1,12 +1,13 @@
-#ifndef __CONTROLLER_H__
-#define __CONTROLLER_H__
+
 /* ========================================
-   DX21
+   HEW/UniBoooom!!
    ---------------------------------------
    コントローラー用ヘッダ
    ---------------------------------------
    Controller.h
    ======================================== */
+#ifndef __CONTROLLER_H__
+#define __CONTROLLER_H__
 
  // =============== インクルード ===================
 #include <Windows.h>
@@ -16,6 +17,7 @@
 class Controller
 {
 public:
+	// ===プロトタイプ宣言===
 	Controller();
 	~Controller();
 	void Update();
@@ -29,6 +31,7 @@ public:
 private:
 	void SetKeyState();
 
+	// ===メンバ変数宣言=====
 	bool Button1();
 	bool Button2();
 	bool Button3();
