@@ -14,6 +14,7 @@
 	・2023/11/06 boolの設定と取得関数制作 / 鄭 宇恩
 	・2023/11/08 変数、関数の変更 / 澤田蒼生
 	・2023/11/10 他のオブジェクトと同一カメラでビューとプロジェクションをセットできるようにした / 山下凌佑
+	・2023/11/10 爆発の大きさを徐々に大きくなるように変更 / 澤田蒼生
 ======================================== */
 
 
@@ -23,7 +24,8 @@
 #include "Sphere.h"		//球定義のヘッダー
 
 // =============== 定数定義 =======================
-const float MAX_DISPLAY_TIME = 60 * 3.0f;
+const float MAX_DISPLAY_TIME = 60 * 3.0f;	// 爆発持続秒数
+const float ONE_SECOND_FRAME = 60;			// 大きくなるまでの秒数
 
 
 /* ========================================
@@ -43,8 +45,8 @@ CExplosion::CExplosion(TTriType<float> pos, float size)
 
 	//爆発オブジェクト初期化
 	m_Sphere.pos = pos;
-	m_fSize = size;
-	m_fSizeAdd = m_fSize / MAX_DISPLAY_TIME;
+	m_fSize = size / 2;
+	m_fSizeAdd = size / ONE_SECOND_FRAME;
 	m_3dModel = new CSphere();
 	
 }
@@ -122,14 +124,21 @@ void CExplosion::DisplayTimeAdd()
 {
 	m_fDelFrame++;	// フレーム加算
 
-	m_fSize -= m_fSizeAdd;
-	m_Sphere.radius = m_fSize/2;
+	// 一定秒数まで大きくする
+	if (m_fDelFrame <= ONE_SECOND_FRAME  )
+	{
+		m_fSize += m_fSizeAdd;
 
+	}
 	// 一定秒数時間が経ったら
 	if (MAX_DISPLAY_TIME <= m_fDelFrame)
 	{
 		m_bDelFlg = true;	// 削除フラグを立てる
 	}
+
+	
+	m_Sphere.radius = m_fSize / 2;	// 当たり判定をセットする
+
 }
 
 /* ========================================

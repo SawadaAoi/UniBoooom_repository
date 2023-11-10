@@ -24,13 +24,13 @@
 class CSceneManager	//管理
 {
 public:
-	// =============== プロトタイプ宣言 ===============
+	// ===プロトタイプ宣言===
 	CSceneManager();		//コンストラクタ
 	~CSceneManager();		//デストラクタ
 	void Update();			//更新
 	void Draw() const;		//描画
 private:
-	// =============== メンバー変数宣言 ===============
+	// ===メンバ変数宣言=====
 	CScene* m_pScene;	//シーン
 };	//シーン管理
 

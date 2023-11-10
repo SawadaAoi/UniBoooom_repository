@@ -33,9 +33,9 @@
 class CPlayer
 {
 public:
-	// =============== プロトタイプ宣言 ===============
-	CPlayer();
-	~CPlayer();
+	// ===プロトタイプ宣言===
+	CPlayer();		//コンストラクタ
+	~CPlayer();		//デストラクタ
 
 	void Update();	//更新
 	void Draw();	//描画
@@ -43,17 +43,20 @@ public:
 	void Move();	//移動関数
 	void ControllerMove();	// コントローラ用入力
 
+
+	// ゲット関数
 	CSphereInfo::Sphere GetPlayerSphere();	//当たり判定を取るためゲッター
 	CSphereInfo::Sphere GetHammerSphere();	//当たり判定を取るためゲッター
 	TPos3d<float> GetPos();	//プレイヤーの座標を取得
 	TPos3d<float>* GetPosAddress() { return &m_pos; }
 	CHammer* GetHammer() { return m_pHammer; }
 	bool GetCollide();							//当たり判定があるかの確認
-	void GetCamera(const CCamera* pCamera);
+	// セット関数
+	void SetCamera(const CCamera* pCamera);
 	bool GetHammerFlg();
 
 private:
-	// ===============メンバ関数宣言===============
+	// ===メンバ変数宣言=====
 	DirectX::XMMATRIX m_T;				//位置
 	DirectX::XMMATRIX m_S;				//拡縮
 	DirectX::XMMATRIX m_Ry;				//回転

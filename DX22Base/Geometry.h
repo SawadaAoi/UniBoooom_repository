@@ -11,6 +11,7 @@
    ・↓まで 学校の配布物(授業に沿い変形)
    ・2023/11/05 ファイル分割・抽象クラス化・コメント付与 takagi
    ・2023/11/10 Uninit削除 takagi
+   ・2023/11/10 Uninit作成(シェーダ用) 澤田蒼生
 
    ======================================== */
 
@@ -48,6 +49,8 @@ public:
 	virtual ~CGeometry();		//デストラクタ
 	static void MakeShader();	//シェーダ作成
 	virtual void Draw() = 0;	//描画
+	static void Uninit();
+
 	void SetWorld(DirectX::XMFLOAT4X4 World);		//ワールド行列登録
 	void SetView(DirectX::XMFLOAT4X4 View);			//ビュー行列登録
 	void SetProjection(DirectX::XMFLOAT4X4 Proj);	//プロジェクション行列登録

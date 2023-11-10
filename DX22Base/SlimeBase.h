@@ -1,5 +1,3 @@
-#ifndef __SLIME_BASE_H__
-#define __SLIME_BASE_H__
 /* ========================================
 	HEW/UniBoooom!!
 	---------------------------------------
@@ -31,7 +29,8 @@
 	・2023/11/10 カメラポインタを追加 /山下凌佑
 	・2023/11/10 他のオブジェクトと同一のカメラをセットするようにした 山下凌佑
 ========================================== */
-
+#ifndef __SLIME_BASE_H__
+#define __SLIME_BASE_H__
 
 // =============== インクルード ===================
 #include "Model.h"
@@ -56,10 +55,12 @@ enum E_SLIME_LEVEL
 // =============== 定数定義 =======================
 const float ENEMY_MOVE_SPEED = 0.01f;	//継承先でも使いたいのでヘッダーに書きます	山下凌佑
 
+// =============== クラス定義 =====================
 
 class CSlimeBase
 {
 public:
+	// ===プロトタイプ宣言===
 	CSlimeBase();
 	~CSlimeBase();
 	void Update(TPos3d<float> playerPos);
@@ -70,7 +71,7 @@ public:
 	void HitMoveStart(float speed, float angle);	//スライムが吹き飛ばされたときに速度と角度を決める
 	void Reflect();									//スライムとぶつかって吹き飛ばした際に自分の移動量を減らす
 
-	//ゲット関数
+	// ゲット関数
 	TPos3d<float> GetPos();
 	CSphereInfo::Sphere GetSphere();	//スライムの座標と半径を取得
 	float GetSpeed();				//スライムの移動速度を取得

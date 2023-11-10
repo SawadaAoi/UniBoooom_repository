@@ -19,18 +19,21 @@
 #ifndef __SLIME_MANAGER_H__
 #define __SLIME_MANAGER_H__
 
+// =============== インクルード ===================
 #include "TriType.h"
 #include "SlimeBase.h"
 #include "ExplosionManager.h"
 #include "Camera.h"
 #include "ExplosionManager.h"
 
-
+// =============== 定数定義 =======================
 const int MAX_SLIME = 30;	//スライムの最大生成数
 
+// =============== クラス定義 =====================
 class CSlimeManager
 {
 public:
+	// ===プロトタイプ宣言===
 	CSlimeManager();
 	~CSlimeManager();
 
@@ -48,6 +51,7 @@ public:
 	void SetCamera(CCamera* pCamera);		//スライムを移すカメラのポインタをセット
 	void SetPlayerPos(TPos3d<float> pos);
 private:
+	// ===メンバ変数宣言=====
 	int GetRandom(int min, int max);
 
 	CSlimeBase* m_pSlime[MAX_SLIME];

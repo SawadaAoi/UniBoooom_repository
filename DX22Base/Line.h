@@ -33,7 +33,7 @@ protected:
 		float color[4];	//色
 	};	//テクスチャを貼らない場合の頂点情報？
 private:
-	// =============== 構造体定義 =====================
+	// ===列挙定義===========
 	enum E_MATRIX
 	{
 		E_MATRIX_WORLD = 0,		//ワールド行列
@@ -41,7 +41,7 @@ private:
 		E_MATRIX_PROJECTION,	//プロジェクション行列
 	};	//行列
 public:
-	// =============== プロトタイプ宣言 ===============
+	// ===プロトタイプ宣言===
 	static void Init();			//コンストラクタ
 	CLine(CLine& Obj);	//コピーコンストラクタ
 	virtual ~CLine();	//デストラクタ
@@ -60,7 +60,7 @@ public:
 	static void SetView(DirectX::XMFLOAT4X4 View);			//ビュー行列登録
 	static void SetProjection(DirectX::XMFLOAT4X4 Proj);	//プロジェクション行列登録
 protected:
-	// =============== メンバー変数宣言 ===============
+	// === メンバー変数宣言 ===
 	static Shader* m_pVS;			//頂点シェーダ
 	static Shader* m_pPS;			//ピクセルシェーダ
 	static DirectX::XMFLOAT4X4 m_WVP[3];	//各座標系における行列(0:world, 1:view, 2:projection)
@@ -70,7 +70,7 @@ protected:
 	static void* m_pLineVtx;
 	static int m_lineCnt;
 private:
-	// =============== プロトタイプ宣言 ===============
+	// ===プロトタイプ宣言===
 	static void MakeVS();	//頂点シェーダ作成
 	static void MakePS();	//ピクセルシェーダ作成
 };	//空間形状

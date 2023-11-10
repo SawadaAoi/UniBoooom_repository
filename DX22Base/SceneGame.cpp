@@ -59,7 +59,7 @@ SceneGame::SceneGame()
 	m_pCollision = new CCOLLISION();
 	m_pPlayer = new CPlayer();
 	m_pCamera = new CCameraChase(m_pPlayer->GetPosAddress()) ;
-	m_pPlayer->GetCamera(m_pCamera);
+	m_pPlayer->SetCamera(m_pCamera);
 
 #if MODE_GROUND
 	m_pBox = new CBox();
@@ -101,7 +101,7 @@ SceneGame::~SceneGame()
    -------------------------------------
    内容：更新処理
    -------------------------------------
-   引数1：無し
+   引数1：ティック数?(未使用)
    -------------------------------------
    戻値：無し
 =========================================== */

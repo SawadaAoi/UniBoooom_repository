@@ -25,7 +25,7 @@ class CSphere :public CGeometry	//形状
 {
 	//static const int CIRCLE_DETAIL = 16;
 public:
-	// =============== プロトタイプ宣言 ===============
+	// ===プロトタイプ宣言===
 	CSphere();				//コンストラクタ
 	CSphere(CSphere& Obj);	//コピーコンストラクタ
 	~CSphere();				//デストラクタ
