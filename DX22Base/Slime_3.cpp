@@ -34,7 +34,7 @@ const float LEVEL3_SPEED = ENEMY_MOVE_SPEED * 0.90;
 CSlime_3::CSlime_3()
 {
 	m_scale = { LEVEL3_SCALE,LEVEL3_SCALE ,LEVEL3_SCALE };
-	m_sphere.radius = LEVEL3_SCALE;
+	m_sphere.radius *= LEVEL3_SCALE;
 	m_eSlimeSize = E_SLIME_LEVEL::LEVEL_3;
 }
 
@@ -52,7 +52,7 @@ CSlime_3::CSlime_3(TPos3d<float> pos)
 	m_pos = pos;			// èâä˙ç¿ïWÇéwíË
 	m_sphere.pos = pos;
 	m_scale = { LEVEL3_SCALE,LEVEL3_SCALE ,LEVEL3_SCALE };
-	m_sphere.radius = LEVEL3_SCALE;
+	m_sphere.radius *= LEVEL3_SCALE;
 	m_eSlimeSize = E_SLIME_LEVEL::LEVEL_3;
 }
 

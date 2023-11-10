@@ -39,6 +39,7 @@ public:
 	void Create(E_SLIME_LEVEL level);
 	void HitBranch(int HitSlimeArrayNum,int standSlimeArrayNum,CExplosionManager* pExpMng);	//スライムの接触が起きた際の分岐処理
 	void UnionSlime(E_SLIME_LEVEL level, TPos3d<float> pos);							//スライムの結合処理
+	void TouchExplosion(int DelSlime, CExplosionManager* pExpMng);	// スライムの爆発処理
 	E_SLIME_LEVEL GetRandomLevel();									//ランダムなスライムのレベルを返す(1～3レべル)
 
 	//ゲット関数

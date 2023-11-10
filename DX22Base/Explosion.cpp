@@ -23,7 +23,7 @@
 #include "Sphere.h"
 
 // =============== 定数定義 =======================
-const float MAX_DISPLAY_TIME = 60 * 5.0f;
+const float MAX_DISPLAY_TIME = 60 * 3.0f;
 
 
 /* ========================================
@@ -36,16 +36,17 @@ const float MAX_DISPLAY_TIME = 60 * 5.0f;
 	戻値：無し
 =========================================== */
 CExplosion::CExplosion(TTriType<float> pos, float size)
-	: m_fSize(1.0f)
+	: m_fSize(0.0f)
 	, m_fDelFrame(0.0f)
 	, m_bDelFlg(false)
 {
 
 	//爆発オブジェクト初期化
 	m_Sphere.pos = pos;
-	m_Sphere.radius = size;
 	m_fSize = size;
+	m_fSizeAdd = m_fSize / MAX_DISPLAY_TIME;
 	m_3dModel = new CSphere();
+	
 }
 
 /* ========================================
@@ -94,7 +95,7 @@ void CExplosion::Update()
 void CExplosion::Draw()
 {
 	DirectX::XMMATRIX mat = DirectX::XMMatrixTranslation(m_Sphere.pos.x, m_Sphere.pos.y, m_Sphere.pos.z);
-	DirectX::XMMATRIX Scale = DirectX::XMMatrixScaling(m_fSize, m_fSize, m_fSize);
+	DirectX::XMMATRIX Scale = DirectX::XMMatrixScaling(m_fSize / 2, m_fSize / 2, m_fSize / 2);
 	mat = Scale * mat;
 	mat = DirectX::XMMatrixTranspose(mat);
 	DirectX::XMFLOAT4X4 fMat;	//行列の格納先
@@ -120,6 +121,9 @@ void CExplosion::Draw()
 void CExplosion::DisplayTimeAdd()
 {
 	m_fDelFrame++;	// フレーム加算
+
+	m_fSize -= m_fSizeAdd;
+	m_Sphere.radius = m_fSize/2;
 
 	// 一定秒数時間が経ったら
 	if (MAX_DISPLAY_TIME <= m_fDelFrame)

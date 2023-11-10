@@ -45,11 +45,13 @@ public:
 private:
 // ===メンバ変数宣言===
 	CSphereInfo::Sphere m_Sphere;	// 座標と当たり判定の大きさを持つ
-	float	m_fSize;
-	int	m_fDelFrame;	// 爆発表示カウント
-	bool	m_bDelFlg;		// 爆発終了フラグ
-	CGeometry* m_3dModel;		// 爆発仮3Dモデル
-	const CCamera* m_pCamera;	//カメラのポインタ
+	float			m_fSize;
+	float			m_fMaxSize;
+	float			m_fSizeAdd;
+	int				m_fDelFrame;	// 爆発表示カウント
+	bool			m_bDelFlg;		// 爆発終了フラグ
+	CGeometry*		m_3dModel;		// 爆発仮3Dモデル
+	const CCamera*	m_pCamera;	//カメラのポインタ
 };
 
 #endif // __EXPLOSION_H__
