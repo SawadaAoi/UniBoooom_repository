@@ -13,19 +13,13 @@
 	・2023/11/07 GetViewMatrix()関数にconst修飾子付与・コメント修正 takagi
 	・2023/11/08 TPos修正 takagi
 	・2023/11/09 微調整 takagi
+	・2023/11/10 パラメタ修正 takagi
 
 ========================================== */
-
-
 
 // =============== インクルード ===================
 #include "CameraChase.h"	//自身のヘッダ
 #include "Input.h"			//入力受付
-
-// =============== 定数定義 ===================
-const float SPEED = 0.1f;	//カメラの速度
-
-
 
 /* ========================================
 	コンストラクタ
@@ -89,7 +83,7 @@ DirectX::XMFLOAT4X4 CCameraChase::GetViewMatrix() const
 	// =============== ビュー行列の計算 ===================
 	DirectX::XMStoreFloat4x4(&mat, DirectX::XMMatrixTranspose(
 		DirectX::XMMatrixLookAtLH(
-			DirectX::XMVectorSet(m_pTarget->x, m_pTarget->y + 10.0f, m_pTarget->z - m_fRadius * cosf(m_fAngle), 0.0f),	//カメラ位置
+			DirectX::XMVectorSet(m_pTarget->x, m_pTarget->y + m_fRadius * sinf(m_fAngle), m_pTarget->z - m_fRadius * cosf(m_fAngle), 0.0f),	//カメラ位置
 			DirectX::XMVectorSet(m_pTarget->x, m_pTarget->y, m_pTarget->z, 0.0f),										//注視点
 			DirectX::XMVectorSet(m_fUp.x, m_fUp.y, m_fUp.z, 0.0f)														//アップベクトル
 	)));	//ビュー変換

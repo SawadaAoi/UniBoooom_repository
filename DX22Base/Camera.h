@@ -14,6 +14,7 @@
 	・2023/11/06 フラグ整理・コメント修正 takagi
 	・2023/11/07 GetViewMatrix()関数にconst修飾子付与・コメント修正 takagi
 	・2023/11/08 TPos修正 takagi
+	・2023/11/10 パラメタ修正 takagi
 
 ========================================== */
 
@@ -26,10 +27,7 @@
 #include "TriType.h"		//メンバのヘッダ
 //#include "main.h"	//画面の情報
 #include <DirectXMath.h>	//マトリックス型使用
-
-// =============== 定数定義 =====================
-//const float ASPECT = _WIDTH / _HEIGHT;
-const float ASPECT = 16.0f / 9.0f;	//画面比率(y / x)
+#include "Defines.h"		//画面情報
 
 // =============== クラス定義 =====================
 class CCamera	//システム
@@ -62,8 +60,6 @@ protected:
 	float m_fNear;			//画面手前
 	float m_fFar;			//画面奥
 	float m_fRadius;		//距離
-	float m_fRadXZ;			//X-Z座標の回転角(rad)
-	float m_fRadY;			//Y-XZ座標の回転角(rad)
 public:
 	//＞プロトタイプ宣言
 	CCamera(const E_DRAW_TYPE& eDraw = E_DRAW_TYPE_3D);	//コンストラクタ
