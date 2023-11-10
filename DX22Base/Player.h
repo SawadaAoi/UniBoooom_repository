@@ -52,7 +52,7 @@ public:
 	CHammer* GetHammer() { return m_pHammer; }
 	bool GetCollide();							//当たり判定があるかの確認
 	// セット関数
-	void GetCamera(const CCamera* pCamera);
+	void SetCamera(const CCamera* pCamera);
 	bool GetHammerFlg();
 
 private:
