@@ -13,18 +13,26 @@
 	・2023/11/04 更新関数の実装部分削除 takagi
 	・2023/11/06 フラグ整理・コメント修正 takagi
 	・2023/11/07 GetViewMatrix()関数にconst修飾子付与・コメント修正 takagi
-	・2023/11/09 カメラの様々動作チェック。 髙木駿輔
+	・2023/11/09 カメラの様々動作チェック。 takagi
+	・2023/11/10 パラメタ修正 takagi
 
 ========================================== */
 
-
-
 // =============== インクルード ===================
-#include "Camera.h"	//自身のヘッダ
+#include "Camera.h"		//自身のヘッダ
+#include "Defines.h"	//画面情報
 
 // =============== 定数定義 ===================
-const TPos3d<float> INIT_POS(0.0f, 1.6f, -3.0f);	//初期位置
-const float INIT_ANGLE = 1.0f / 3.0f * 3.1415f;	//初期画角
+// =============== 定数定義 =====================
+const float ASPECT = (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT;	//画面比率(y / x)
+//const float ASPECT = 16.0f / 9.0f;								//画面比率(y / x)
+const TPos3d<float> INIT_POS(0.0f, 1.6f, -3.0f);					//初期位置
+const TPos3d<float> INIT_LOOK(0.0f, 0.0f, 0.0f);					//初期注視地点
+const TTriType<float> INIT_UP_VECTOR(0.0f, 1.0f, 0.0f);				//カメラの上方向
+const float INIT_ANGLE = 2.0f * 24.0f / 360.0f * 3.1415f;			//初期画角const 
+const float INIT_NEAR = 1.0f;										//画面手前初期z値
+const float INIT_FAR = 150.0f;										//画面奥初期z値
+const float INIT_RADIUS = 40.0f;									//カメラと注視点との距離(初期値)
 
 /* ========================================
 	コンストラクタ
@@ -36,15 +44,13 @@ const float INIT_ANGLE = 1.0f / 3.0f * 3.1415f;	//初期画角
 	戻値：なし
 =========================================== */
 CCamera::CCamera(const E_DRAW_TYPE& eDraw)
-	:m_fPos(INIT_POS)	//位置
-	,m_fLook(0.0f, 0.0f, 10.0f)	//注視点
-	,m_fUp(0.0f, 1.0f, 1.0f)	//上方ベクトル
+	:m_fPos(INIT_POS)			//位置
+	,m_fLook(INIT_LOOK)			//注視点
+	,m_fUp(INIT_UP_VECTOR)		//上方ベクトル
 	,m_fAngle(INIT_ANGLE)		//角度
-	,m_fNear(1.0f)				//画面手前
-	,m_fFar(300.0f)				//画面奥
-	,m_fRadius(30.0f)			//注視点とカメラの距離
-	,m_fRadXZ(0.0f)				//X-Z面の回転角
-	,m_fRadY(0.0f)				//Y-XZ面の回転角
+	,m_fNear(INIT_NEAR)			//画面手前
+	,m_fFar(INIT_FAR)			//画面奥
+	,m_fRadius(INIT_RADIUS)		//注視点とカメラの距離
 {
 	//＞分岐処理
 	switch (eDraw)	//投影選択
