@@ -13,7 +13,8 @@
    ・2023/11/08 プレイヤーの当たり判定の大きさの定数を追加 /山下凌佑
    ・2023/11/08 攻撃中は移動できないように変更 /山下凌佑
    ・2023/11/09 カメラ対応 髙木駿輔
-   ・2023/11/09 GameOverの表示
+   ・2023/11/09 GameOverの表示　山下凌佑
+   ・2023/11/09 コントローラ移動の追加　澤田蒼生
 
    ======================================== */
 
@@ -27,7 +28,7 @@
 #define FORWARD_YES	(1.0f)	//その方向を向いる
 #define FORWARD_NO (0.0f)	//その方向を向いていない
 const int PLAYER_HP = 5;
-const float PLAYER_RADIUS = 1.0f;	//プレイヤーの当たり判定の大きさ
+const float PLAYER_RADIUS = 0.5f;	//プレイヤーの当たり判定の大きさ
 const int NO_DAMAGE_TIME = 3 * 60;	//プレイヤーの無敵時間
 // =============== グローバル変数定義 =============
 
@@ -94,11 +95,18 @@ void CPlayer::Update()
 {
 	if (!m_bHammer)	//攻撃中は移動しない
 	{
-		Move();
+		if (GetUseVController() == false)
+		{
+			Move();
+		}
+		else
+		{
+			ControllerMove();
+		}
 	}
 
 
-	if (IsKeyTrigger(VK_SPACE) || m_pHammer->Gethammer())	//スペースキーを押した時もしくはハンマーを振るフラグがONの時
+	if ((IsKeyTrigger(VK_SPACE)|| IsKeyTriggerController(BUTTON_B)) || m_pHammer->Gethammer())	//スペースキーを押した時もしくはハンマーを振るフラグがONの時
 	{
 		m_pHammer->Update(m_pos, m_playerRotation);			//ハンマーを振るUpdate処理を行う
 	}
@@ -247,6 +255,45 @@ void CPlayer::Move()
 }
 
 /* ========================================
+   コントローラ入力関数
+   ----------------------------------------
+   内容：コントローラ入力の移動処理
+   ----------------------------------------
+   引数：なし
+   ----------------------------------------
+   戻値：なし
+   ======================================== */
+void CPlayer::ControllerMove()
+{
+	// コントローラーの左スティックの傾きを取得
+	float stick_x = IsStickLeft().x;
+	float stick_y = IsStickLeft().y;	
+
+	// スティックが真ん中の場合移動しない
+	if (stick_x != 0 || stick_y != 0)
+	{
+		float moveRad = atan2(stick_y * -1, stick_x);	// スティックを倒した方向の角度を求める(y軸が逆なので－1を掛ける)
+
+		// 角度方向に移動する処理
+		m_pos.x += cosf(moveRad) * PLAYERMOVE;
+		m_pos.z += sinf(moveRad) * PLAYERMOVE;
+
+		m_playerRotation = atan2(stick_y, stick_x) + (XM_PI/2);	// XMMatrixTranslationが時計回りで角度が90度ずれている(↑が0)ので調整
+	}
+
+	m_sphere.pos = m_pos;	//プレイヤーの座標を当たり判定用の球体にコピー
+
+	m_T = DirectX::XMMatrixTranslation(m_pos.x, m_pos.y, m_pos.z);		//移動の変換行列
+	DirectX::XMMATRIX Ry = DirectX::XMMatrixRotationY(m_playerRotation);//Y軸の回転行列
+	DirectX::XMMATRIX mat = Ry * m_T;									//変換行列を結合
+	mat = DirectX::XMMatrixTranspose(mat);								//変換行列を転置
+	DirectX::XMFLOAT4X4 fMat;											//行列の格納先
+	DirectX::XMStoreFloat4x4(&fMat, mat);								//XMFLOAT4X4に変換して格納
+	m_pPlayerGeo->SetWorld(fMat);										//ワールド座標にセット
+}
+	
+
+/* ========================================
    プレイヤーのsphereのゲット関数
    ----------------------------------------
    内容：プレイヤーの当たり判定用の球体を取得する関数
@@ -306,4 +353,9 @@ bool CPlayer::GetCollide()
 void CPlayer::GetCamera(const CCamera * pCamera)
 {
 	m_pCamera = pCamera;	//中身は変えられないけどポインタはかえれるのでヨシ！
+}
+
+bool CPlayer::GetHammerFlg()
+{
+	return m_bHammer;
 }

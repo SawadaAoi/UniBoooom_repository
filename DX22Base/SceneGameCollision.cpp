@@ -53,7 +53,21 @@ void SceneGame::SceneGameCollision()
    ======================================== */
 void SceneGame::PlayerSlimeCollision()
 {
+	if (m_pPlayer->GetCollide()) return;	//	無敵時間の時はスルー
 
+	// スライム
+	for (int i = 0; i < MAX_SLIME; i++)
+	{
+		CSlimeBase* pSlimeNow = m_pSlimeMng->GetSlimePtr(i);	// スライム情報
+
+		if (pSlimeNow == nullptr)				continue;	// 無効なスライムはスルー
+
+		// スライムとハンマーが衝突した場合
+		if (m_pCollision->CheckCollisionSphere(m_pPlayer->GetPlayerSphere(), pSlimeNow->GetSphere()))
+		{
+			m_pPlayer->Damage();
+		}
+	}
 }
 
 /* ========================================
@@ -67,16 +81,26 @@ void SceneGame::PlayerSlimeCollision()
    ======================================== */
 void SceneGame::HammerSlimeCollision()
 {
-	for (int i = 0; i < MAX_SLIME; ++i)	// 自分スライム
+	CHammer* playerHammer = m_pPlayer->GetHammer();	// プレイヤーのハンマー
+
+	if (m_pPlayer->GetHammerFlg() == false) return;	// ハンマー攻撃してない場合は返す
+
+	// スライム
+	for (int i = 0; i < MAX_SLIME; i++)
 	{
-		//if (/*吹飛状態のスライムはスルー*/) { continue; }	// 吹飛状態のスライムはスルー
-			// スライムとハンマーが当たっている場合
-			//if (m_pCollision->CheckCollisionSphere(/*ハンマー.スフィア, スライム[添え字].スフィア*/))
-			{
-				float fAngleSlime;  // スライムが飛ぶ角度を入れる変数
-				fAngleSlime = 0.0f;//プレイヤー.スフィア.Angle(スライム[添え字].スフィア)
-				//スライム[添え字].HitMoveStart(移動スピード、スライム吹飛角度)
-			}
+		CSlimeBase* pSlimeNow = m_pSlimeMng->GetSlimePtr(i);	// スライム情報
+
+		if (pSlimeNow == nullptr)				continue;	// 無効なスライムはスルー
+		if (pSlimeNow->GetHitMoveFlg()==true)	continue; 	// 吹飛状態のスライムはスルー
+
+		// スライムとハンマーが衝突した場合
+		if (m_pCollision->CheckCollisionSphere(playerHammer->GetSphere(), pSlimeNow->GetSphere()))
+		{
+			float fAngleSlime
+				= m_pPlayer->GetPlayerSphere().Angle(pSlimeNow->GetSphere());	// スライムが飛ぶ角度を取得
+
+			pSlimeNow->HitMoveStart(1.0,fAngleSlime);	// スライムを飛ばす
+		}
 	}
 }
 
@@ -91,19 +115,30 @@ void SceneGame::HammerSlimeCollision()
    ======================================== */
 void SceneGame::SlimeSlimeCollision()
 {
-	for (int i = 0; i < MAX_SLIME; ++i)	// 自分スライム
+	// 衝突するスライム
+	for (int i = 0; i < MAX_SLIME; i++)
 	{
-		//if (/*通常状態のスライムはスルー*/) { continue; }	// 通常状態のスライムはスルー
+		CSlimeBase* pSlimeFly = m_pSlimeMng->GetSlimePtr(i);	// 衝突するスライムのポインタ
 
-			for (int j = 0; j < MAX_SLIME; ++j)	// 相手スライム
+		if (pSlimeFly == nullptr)					continue;	// 無効なスライムはスルー
+		if (pSlimeFly->GetHitMoveFlg() == false)	continue; 	// 通常状態のスライムはスルー
+
+		// 衝突されるスライム
+		for (int j = 0; j < MAX_SLIME; j++)
+		{
+			CSlimeBase* pSlimeTarget = m_pSlimeMng->GetSlimePtr(j);	// 衝突されるスライムのポインタ
+
+			if (pSlimeTarget == nullptr)	continue;	// 無効なスライムはスルー
+			if (i == j)						continue;	// 自分と同じスライムはスルー
+
+			// スライム同士が衝突した場合
+			if (m_pCollision->CheckCollisionSphere(pSlimeFly->GetSphere(), pSlimeTarget->GetSphere()))
 			{
-				if (i == j) { continue; }	// 自分スライムと相手スライムの添え字が同じ場合スルー
-					//if (m_pCollision->CheckCollisionSphere(
-						//自分スライム[添え字].スフィア, 相手スライム[添え字].スフィア))
-					{
-						//HitBranch(自分スライムの[添え字]、相手スライムの[添え字])
-					}
+
+				m_pSlimeMng->HitBranch(i, j,m_pExplosionMng);	// 爆発処理、結合処理(スライム同士の情報によって処理を変える)
+				break;
 			}
+		}
 
 	}
 }
@@ -121,15 +156,21 @@ void SceneGame::ExplosionSlimeCollision()
 {
 	for (int i = 0; i < MAX_EXPLOSION_NUM; ++i)	// 爆発
 	{
-		//if (/*未使用の爆発はスルー*/) { continue; }	// 未使用の爆発はスルー
+		CExplosion* pExplosion = m_pExplosionMng->GetExplosionPtr(i);	// 衝突する爆発のポインタ
+		if (pExplosion == nullptr) { continue; }	// 未使用の爆発はスルー
 
-			for (int j = 0; j < MAX_SLIME; ++j)	// スライム
+		for (int j = 0; j < MAX_SLIME; ++j)	// スライム
+		{
+			CSlimeBase* pSlimeTarget = m_pSlimeMng->GetSlimePtr(j);	// 衝突されるスライムのポインタ
+
+			if (pSlimeTarget == nullptr)	continue;	// 無効なスライムはスルー
+
+			if (m_pCollision->CheckCollisionSphere(pExplosion->GetSphere(), pSlimeTarget->GetSphere()))
 			{
-				//if (m_pCollision->CheckCollisionSphere(/*爆発[添え字].スフィア, スライム[添え字].スフィア*/))
-				{
-					//スライムマネージャーのスライムの爆発処理
-				}
+				m_pSlimeMng->TouchExplosion(j, m_pExplosionMng);// スライムの爆発処理
+				break;
 			}
+		}
 
 	}
 }

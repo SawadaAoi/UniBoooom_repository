@@ -24,13 +24,19 @@ const int STICK_MINUS	= 0;		// コントローラーのスティックが-方向に入力されている
 
    ======================================== */
 Controller::Controller()
+	: m_bUse(false)
 {
 	m_joyInfoEx.dwSize = sizeof(m_joyInfoEx);	// この構造体のサイズ (バイト単位)。
 	m_joyInfoEx.dwFlags = JOY_RETURNALL;		// 構造体で返される有効な情報を示すフラグ
 
+	// コントローラが接続されてない場合
 	if (JOYERR_NOERROR != joyGetPosEx(0, &m_joyInfoEx))
 	{
-		MessageBox(NULL, "コントローラーを接続してください", "Error", MB_OK);
+		m_bUse = false;
+	}
+	else
+	{
+		m_bUse = true;
 	}
 }
 
@@ -58,6 +64,16 @@ void Controller::Update()
 
 	SetKeyState();	// 現フレームのボタン入力情報を配列にセット
 
+
+	// コントローラが接続されてない場合
+	if (JOYERR_NOERROR != joyGetPosEx(0, &m_joyInfoEx))
+	{
+		m_bUse = false;
+	}
+	else
+	{
+		m_bUse = true;
+	}
 }
 
 

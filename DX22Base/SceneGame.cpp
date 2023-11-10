@@ -10,6 +10,7 @@
 	変更履歴
 	・2023/11/08 コメント追加、無駄な箇所を削除　澤田蒼生
 	・2023/11/09 カメラの様々動作チェック。メインから軸線奪取。地面追加。 髙木駿輔
+	・2023/11/10 カメラをスライムと爆発にも渡すようにした・lineのメモリリーク対策 髙木駿輔
 
 ========================================== */
 
@@ -26,7 +27,7 @@
 
 // =============== デバッグモード =======================
 #define MODE_COORD_AXIS (true)	//座標軸映すかどうか
-#define MODE_GROUND (true)	//座標軸映すかどうか
+#define MODE_GROUND (false)	//座標軸映すかどうか
 
 /* ========================================
 	コンストラクタ関数
@@ -50,6 +51,10 @@ SceneGame::SceneGame()
 	DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
 	SetRenderTargets(1, &pRTV, pDSV);		//DSVがnullだと2D表示になる
 
+#if MODE_COORD_AXIS
+	// 軸線の表示
+	CLine::Init();
+#endif
 
 	m_pCollision = new CCOLLISION();
 	m_pPlayer = new CPlayer();
@@ -64,6 +69,7 @@ SceneGame::SceneGame()
 	m_pSlimeMng = new CSlimeManager();
 	m_pSlimeMng->SetCamera(m_pCamera);
 	m_pExplosionMng = new CExplosionManager();
+	m_pExplosionMng->SetCamera(m_pCamera);
 }
 
 /* ========================================
@@ -82,12 +88,11 @@ SceneGame::~SceneGame()
 	SAFE_DELETE(m_pCamera);
 	SAFE_DELETE(m_pPlayer);
 	SAFE_DELETE(m_pCollision);
-	SAFE_DELETE(m_pVs);
-
 #if MODE_COORD_AXIS
 	// 軸線の表示
-	CLine::Init();
+	CLine::Uninit();
 #endif
+	SAFE_DELETE(m_pVs);
 }
 
 
@@ -104,13 +109,15 @@ void SceneGame::Update(float tick)
 {
 	m_pCamera->Update();
 	m_pPlayer->Update();
-	m_pSlimeMng->SetPlayerSphere(m_pPlayer->GetPlayerSphere());
+	m_pSlimeMng->SetPlayerPos(m_pPlayer->GetPos());
 
 	// スライムマネージャー更新
-	m_pSlimeMng->Update();
+	m_pSlimeMng->Update(m_pExplosionMng);
 	m_pExplosionMng->Update();
 	m_pCamera->Update();
 
+
+	SceneGameCollision();
 }
 
 /* ========================================
@@ -126,7 +133,6 @@ void SceneGame::Draw()
 {
 #if MODE_COORD_AXIS
 	// 軸線の表示
-	CLine::Init();
 	CLine::SetView(m_pCamera->GetViewMatrix());
 	CLine::SetProjection(m_pCamera->GetProjectionMatrix());
 	// グリッド
