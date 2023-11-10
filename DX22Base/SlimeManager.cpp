@@ -34,7 +34,8 @@ const int CREATE_DISTANCE			= 10;		// 生成距離最小値
 const int SLIME_LEVEL1_PER = 50;				// スライム_1の生成確立
 const int SLIME_LEVEL2_PER = 30;				// スライム_2の生成確立
 const int SLIME_LEVEL3_PER = 100 - SLIME_LEVEL1_PER - SLIME_LEVEL2_PER;	// スライム_3の生成確立
-const float MAX_SIZE_EXPLODE = 5.0f;
+const float MAX_SIZE_EXPLODE = 5.0f;	// スライム4同士の爆発の大きさ
+const float EXPLODE_BASE_RATIO = 1.0f;	// スライムの爆発接触での爆発の大きさのベース
 
 /* ========================================
 	コンストラクタ関数
@@ -262,6 +263,41 @@ void CSlimeManager::UnionSlime(E_SLIME_LEVEL level ,TPos3d<float> pos)
 
 		break;
 	}
+}
+
+/* ========================================
+	爆発接触関数
+	----------------------------------------
+	内容：画面上の爆発にスライムが接触した時の処理
+	----------------------------------------
+	引数1：爆発するスライムの配列番号
+	引数2：爆発マネージャーのポインタ
+	----------------------------------------
+	戻値：なし
+======================================== */
+void CSlimeManager::TouchExplosion(int DelSlime, CExplosionManager * pExpMng)
+{
+	TPos3d<float> pos(m_pSlime[DelSlime]->GetPos());	//衝突先のスライムの位置を確保
+
+	float ExplosionSize;	// 爆発の大きさ
+	switch (m_pSlime[DelSlime]->GetSlimeLevel())
+	{
+	case LEVEL_1:
+		ExplosionSize = 1.0f * EXPLODE_BASE_RATIO;
+		break;
+	case LEVEL_2:
+		ExplosionSize = 2.0f * EXPLODE_BASE_RATIO;
+		break;
+	case LEVEL_3:
+		ExplosionSize = 3.0f * EXPLODE_BASE_RATIO;
+		break;
+	case LEVEL_4:
+		ExplosionSize = 4.0f * EXPLODE_BASE_RATIO;
+		break;
+	
+	}
+	SAFE_DELETE(m_pSlime[DelSlime]);					//ぶつかりに来たスライムを削除
+	pExpMng->Create(pos, ExplosionSize);				//衝突先のスライムの位置で爆発
 }
 
 /* ========================================

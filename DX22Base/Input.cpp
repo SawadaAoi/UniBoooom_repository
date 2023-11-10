@@ -118,3 +118,8 @@ TTriType<float> IsStickLeft()
 {
 	return g_Controller.GetStickLeft();
 }
+
+bool GetUseVController()
+{
+	return g_Controller.GetUse();
+}

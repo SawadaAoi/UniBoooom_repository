@@ -53,6 +53,8 @@ void SceneGame::SceneGameCollision()
    ======================================== */
 void SceneGame::PlayerSlimeCollision()
 {
+	if (m_pPlayer->GetCollide()) return;	//	無敵時間の時はスルー
+
 	// スライム
 	for (int i = 0; i < MAX_SLIME; i++)
 	{
@@ -122,7 +124,7 @@ void SceneGame::SlimeSlimeCollision()
 		if (pSlimeFly->GetHitMoveFlg() == false)	continue; 	// 通常状態のスライムはスルー
 
 		// 衝突されるスライム
-		for (int j = i + 1; j < MAX_SLIME; j++)
+		for (int j = 0; j < MAX_SLIME; j++)
 		{
 			CSlimeBase* pSlimeTarget = m_pSlimeMng->GetSlimePtr(j);	// 衝突されるスライムのポインタ
 
@@ -165,7 +167,8 @@ void SceneGame::ExplosionSlimeCollision()
 
 			if (m_pCollision->CheckCollisionSphere(pExplosion->GetSphere(), pSlimeTarget->GetSphere()))
 			{
-				//スライムマネージャーのスライムの爆発処理
+				m_pSlimeMng->TouchExplosion(j, m_pExplosionMng);// スライムの爆発処理
+				break;
 			}
 		}
 

@@ -37,5 +37,6 @@ bool IsKeyReleaseController(ControllerButton nKey);
 TTriType<float> IsStickRight();
 TTriType<float> IsStickLeft();
 
+bool GetUseVController();
 
 #endif // __INPUT_H__

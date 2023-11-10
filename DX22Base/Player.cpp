@@ -95,8 +95,14 @@ void CPlayer::Update()
 {
 	if (!m_bHammer)	//攻撃中は移動しない
 	{
-		Move();
-		ControllerMove();
+		if (GetUseVController() == false)
+		{
+			Move();
+		}
+		else
+		{
+			ControllerMove();
+		}
 	}
 
 
@@ -275,6 +281,7 @@ void CPlayer::ControllerMove()
 		m_playerRotation = atan2(stick_y, stick_x) + (XM_PI/2);	// XMMatrixTranslationが時計回りで角度が90度ずれている(↑が0)ので調整
 	}
 
+	m_sphere.pos = m_pos;	//プレイヤーの座標を当たり判定用の球体にコピー
 
 	m_T = DirectX::XMMatrixTranslation(m_pos.x, m_pos.y, m_pos.z);		//移動の変換行列
 	DirectX::XMMATRIX Ry = DirectX::XMMatrixRotationY(m_playerRotation);//Y軸の回転行列

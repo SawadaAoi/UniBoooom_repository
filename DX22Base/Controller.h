@@ -25,6 +25,7 @@ public:
 	int* GetKeyState() { return m_keyState; }
 	int* GetKeyStateOld() { return m_oldState; }
 
+	bool GetUse() { return m_bUse; }
 private:
 	void SetKeyState();
 
@@ -48,6 +49,7 @@ private:
 	int m_keyState[10];			// ボタン押下情報セット配列(現在)
 	int m_oldState[10];			// ボタン押下情報セット配列(1フレーム前)
 
+	bool m_bUse;	// コントローラの有効無効フラグ
 };
 
 

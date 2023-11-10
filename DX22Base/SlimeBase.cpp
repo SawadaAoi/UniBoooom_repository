@@ -29,6 +29,7 @@ const float SPEED_DOWN_RATIO = 0.6f;	//スライムが接触して吹き飛ぶ�
 const float MOVE_RESIST = 0.1f;		//吹き飛び移動中のスライムの移動速度に毎フレームかかる減算数値
 const float REFLECT_RATIO = 0.1f;	//スライムがスライムを吹き飛ばした際に吹き飛ばした側のスライムの移動量を変える割合
 const float MOVE_DISTANCE_PLAYER = 20;	// プレイヤー追跡移動に切り替える距離
+const float SLIME_BASE_RADIUS = 0.5f;	// スライムの基準の大きさ
 
 /* ========================================
 	コンストラクタ関数
@@ -68,7 +69,7 @@ CSlimeBase::CSlimeBase()
 
 	//当たり判定(自分)初期化
 	m_sphere.pos = { 0.0f, 0.0f, 0.0f };
-	m_sphere.radius = 0.5f;
+	m_sphere.radius = SLIME_BASE_RADIUS;
 	
 }
 
