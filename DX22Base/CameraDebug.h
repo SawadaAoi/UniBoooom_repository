@@ -24,7 +24,7 @@
 class CCameraDebug :public CCamera	//カメラ
 {
 public:
-	// ===メンバ関数宣言===
+	// ===プロトタイプ宣言===
 	CCameraDebug();		//コンストラクタ
 	~CCameraDebug();	//デストラクタ
 	void Update();		//更新

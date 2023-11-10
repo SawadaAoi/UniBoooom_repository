@@ -23,7 +23,7 @@
 class CCylinder :public CGeometry	//形状
 {
 public:
-	// =============== プロトタイプ宣言 ===============
+	// ===プロトタイプ宣言===
 	CCylinder();				//コンストラクタ
 	CCylinder(CCylinder& Obj);	//コピーコンストラクタ
 	~CCylinder();			//デストラクタ

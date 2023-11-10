@@ -35,7 +35,7 @@ const float ASPECT = 16.0f / 9.0f;	//画面比率(y / x)
 class CCamera	//システム
 {
 public:
-	//＞列挙定義
+	// ===列挙定義===========
 	enum E_DRAW_TYPE
 	{
 		E_DRAW_TYPE_2D,	//2D表示
@@ -53,7 +53,7 @@ public:
 		E_BIT_FLAG_8 = 0x80,			//
 	};	//フラグ
 protected:
-	//＞変数宣言
+	// ===メンバ変数宣言=====
 	unsigned char m_ucFlag;	//フラグ	char:1バイト(8ビット)
 	TPos3d<float> m_fPos;	//ワールド座標における自身の位置
 	TPos3d<float> m_fLook;	//注視点の位置
@@ -65,7 +65,7 @@ protected:
 	float m_fRadXZ;			//X-Z座標の回転角(rad)
 	float m_fRadY;			//Y-XZ座標の回転角(rad)
 public:
-	//＞プロトタイプ宣言
+	// ===プロトタイプ宣言===
 	CCamera(const E_DRAW_TYPE& eDraw = E_DRAW_TYPE_3D);	//コンストラクタ
 	virtual~CCamera();									//デストラクタ
 	virtual void Update() = 0;							//更新
