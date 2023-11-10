@@ -41,6 +41,8 @@ public:
 	void Draw();	//描画
 	void Damage();	//自身のHPを減らす
 	void Move();	//移動関数
+	void ControllerMove();	// コントローラ用入力
+
 
 	// ゲット関数
 	CSphereInfo::Sphere GetPlayerSphere();	//当たり判定を取るためゲッター
@@ -49,10 +51,9 @@ public:
 	TPos3d<float>* GetPosAddress() { return &m_pos; }
 	CHammer* GetHammer() { return m_pHammer; }
 	bool GetCollide();							//当たり判定があるかの確認
-
 	// セット関数
-	void SetCamera(const CCamera* pCamera);
-
+	void GetCamera(const CCamera* pCamera);
+	bool GetHammerFlg();
 
 private:
 	// ===メンバ変数宣言=====

@@ -20,7 +20,7 @@
 
 ========================================== */
 
-#ifndef __TRANSFORM_3D_H__
+#ifndef __TRANSFORM_3D_H__	//Transform3d.hインクルードガード
 #define __TRANSFORM_3D_H__
 
 // =============== インクルード ===================

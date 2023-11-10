@@ -20,6 +20,8 @@ void UpdateInput()
 	memcpy_s(g_oldTable, sizeof(g_oldTable), g_keyTable, sizeof(g_keyTable));
 	// Œ»İ‚Ì“ü—Í‚ğæ“¾
 	GetKeyboardState(g_keyTable);
+
+	g_Controller.Update();
 }
 
 bool IsKeyPress(BYTE key)
@@ -115,4 +117,9 @@ TTriType<float> IsStickRight()
 TTriType<float> IsStickLeft()
 {
 	return g_Controller.GetStickLeft();
+}
+
+bool GetUseVController()
+{
+	return g_Controller.GetUse();
 }

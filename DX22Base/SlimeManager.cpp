@@ -19,17 +19,25 @@
 // =============== インクルード ===================
 #include "SlimeManager.h"
 #include "Slime_1.h"
+#include "Slime_2.h"
+#include "Slime_3.h"
+#include "Slime_4.h"
 #include <time.h>
+#include "Input.h"		//後で消す
 
 #include <stdlib.h>
 
 
 // =============== 定数定義 =======================
-const int ENEMY_GENERATE_INTERVAL	= 5 * 60;	// 生成間隔
-const int RANDOM_POS_MIN			= -30;		// 生成座標範囲下限(x,z共通)
-const int RANDOM_POS_MAX			= 30;		// 生成座標範囲上限(x,z共通)
+const int ENEMY_GENERATE_INTERVAL	= 3 * 60;	// 生成間隔
+const int RANDOM_POS_MIN			= -15;		// 生成座標範囲下限(x,z共通)
+const int RANDOM_POS_MAX			= 15;		// 生成座標範囲上限(x,z共通)
 const int CREATE_DISTANCE			= 10;		// 生成距離最小値
-
+const int SLIME_LEVEL1_PER = 50;				// スライム_1の生成確立
+const int SLIME_LEVEL2_PER = 30;				// スライム_2の生成確立
+const int SLIME_LEVEL3_PER = 100 - SLIME_LEVEL1_PER - SLIME_LEVEL2_PER;	// スライム_3の生成確立
+const float MAX_SIZE_EXPLODE = 5.0f;	// スライム4同士の爆発の大きさ
+const float EXPLODE_BASE_RATIO = 1.0f;	// スライムの爆発接触での爆発の大きさのベース
 
 /* ========================================
 	コンストラクタ関数
@@ -41,7 +49,7 @@ const int CREATE_DISTANCE			= 10;		// 生成距離最小値
 	戻値：無し
 =========================================== */
 CSlimeManager::CSlimeManager()
-	: m_GeneCnt(0)
+	: m_CreateCnt(0)
 {
 
 	srand((unsigned int)time(NULL));	// 乱数パターン設定
@@ -81,25 +89,24 @@ CSlimeManager::~CSlimeManager()
 	-------------------------------------
 	戻値：無し
 =========================================== */
-void CSlimeManager::Update()
+void CSlimeManager::Update(CExplosionManager* pExpMng)
 {
 	
 	// スライム更新
 	for (int i = 0; i < MAX_SLIME; i++)
 	{
 		if (m_pSlime[i] == nullptr) continue;
-		m_pSlime[i]->Update(m_pPlayerSphere);
+		m_pSlime[i]->Update(m_pPlayerPos);
 
 	}
 
-	m_GeneCnt++;
-	if(ENEMY_GENERATE_INTERVAL<=m_GeneCnt)
+	m_CreateCnt++;
+	if(ENEMY_GENERATE_INTERVAL<= m_CreateCnt)
 	{
 		// 敵 生成
-		Create();
-		m_GeneCnt = 0;
+		Create(GetRandomLevel());	//スライムのレベルをランダムに選んで生成する
+		m_CreateCnt = 0;				//カウントをリセット
 	}
-
 }
 
 /* ========================================
@@ -131,9 +138,9 @@ void CSlimeManager::Draw()
 	-------------------------------------
 	戻値：無し
 =========================================== */
-void CSlimeManager::Create()
+void CSlimeManager::Create(E_SLIME_LEVEL level)
 {
-	CSphereInfo::Sphere CreatePos;	// スライムの生成位置(TODO：型を変更する)
+	TPos3d<float> CreatePos;	// スライムの生成位置
 
 	for (int i = 0; i < MAX_SLIME; i++)
 	{
@@ -144,20 +151,32 @@ void CSlimeManager::Create()
 		while (true)
 		{
 			// 乱数をセットする
-			CreatePos.pos.x = GetRandom(RANDOM_POS_MIN, RANDOM_POS_MAX);	//乱数取得
-			CreatePos.pos.z = GetRandom(RANDOM_POS_MIN, RANDOM_POS_MAX);
-			CreatePos.pos.y = 0;
+			CreatePos.x = GetRandom(RANDOM_POS_MIN, RANDOM_POS_MAX);	//乱数取得
+			CreatePos.z = GetRandom(RANDOM_POS_MIN, RANDOM_POS_MAX);
+			CreatePos.y = 0;
 
-			//float Distance = sqrt(pow(Sphere.pos.x - pos.x, 2.0f) + pow(Sphere.pos.z - pos.z, 2.0f));
-			float Distance = CreatePos.Distance(m_pPlayerSphere);
+			float Distance = CreatePos.Distance(m_pPlayerPos);	// 生成座標のプレイヤーとの距離
 
 			if (Distance >= CREATE_DISTANCE) break;	// プレイヤーから一定の距離離れていれば抜ける
 		}
 		
-		m_pSlime[i] = new CSlime_1();	// 動的生成
-		m_pSlime[i]->SetPos(TPos3d<float>(
-			CreatePos.pos.x, CreatePos.pos.y, CreatePos.pos.z));	//posを設定
-		
+		switch (level)
+		{
+		case LEVEL_1:
+			m_pSlime[i] = new CSlime_1(CreatePos);	// 動的生成
+			break;
+		case LEVEL_2:
+			m_pSlime[i] = new CSlime_2(CreatePos);	// 動的生成
+			break;
+		case LEVEL_3:
+			m_pSlime[i] = new CSlime_3(CreatePos);	// 動的生成
+			break;
+		case LEVEL_4:
+			m_pSlime[i] = new CSlime_4(CreatePos);	// 動的生成
+			break;
+		}
+
+		m_pSlime[i]->SetCamera(m_pCamera);	//カメラをセット
 		break;						// 生成したら終了
 		
 	}
@@ -173,7 +192,7 @@ void CSlimeManager::Create()
 	----------------------------------------
 	戻値：なし
 ======================================== */
-void CSlimeManager::HitBranch(int HitSlimeArrayNum, int standSlimeArrayNum)
+void CSlimeManager::HitBranch(int HitSlimeArrayNum, int standSlimeArrayNum, CExplosionManager* pExpMng)
 {
 	E_SLIME_LEVEL hitSlimeLevel, standSlimeLevel;
 	hitSlimeLevel = m_pSlime[HitSlimeArrayNum]->GetSlimeLevel();		//ぶつかりに来たスライムのサイズを取得
@@ -195,17 +214,18 @@ void CSlimeManager::HitBranch(int HitSlimeArrayNum, int standSlimeArrayNum)
 	}
 	else	//スライムのサイズが同じだった場合
 	{
+		TPos3d<float> pos(m_pSlime[standSlimeArrayNum]->GetPos());	//衝突先のスライムの位置を確保
 		SAFE_DELETE(m_pSlime[HitSlimeArrayNum]);	//ぶつかりに来たスライムを削除
 		SAFE_DELETE(m_pSlime[standSlimeArrayNum]);	//ぶつかられたスライムを削除
 
 		if (hitSlimeLevel == MAX_LEVEL)	//スライムのサイズが最大の時
 		{
 			//爆発処理を行う<=TODO
-			//2023/11/09：ここじゃなくてSceneGameCollisionでやるべきかも？(むやみにポインタを渡すのは良くない？)
+			pExpMng->Create(pos, MAX_SIZE_EXPLODE);	//衝突先のスライムの位置で爆発
 		}
 		else	//最大サイズじゃない場合は1段階大きいスライムを生成する
 		{
-			UnionSlime(hitSlimeLevel);	//スライムの結合処理
+			UnionSlime(hitSlimeLevel,pos);	//スライムの結合処理
 		}
 	}
 }
@@ -219,7 +239,7 @@ void CSlimeManager::HitBranch(int HitSlimeArrayNum, int standSlimeArrayNum)
 	----------------------------------------
 	戻値：なし
 ======================================== */
-void CSlimeManager::UnionSlime(E_SLIME_LEVEL level)
+void CSlimeManager::UnionSlime(E_SLIME_LEVEL level ,TPos3d<float> pos)
 {
 	for (int i = 0; i < MAX_SLIME; i++)
 	{
@@ -228,17 +248,89 @@ void CSlimeManager::UnionSlime(E_SLIME_LEVEL level)
 		switch (level)
 		{
 		case LEVEL_1:
-			//サイズ2のスライムを生成<=TODO
+			//サイズ2のスライムを生成
+			m_pSlime[i] = new CSlime_2(pos);
 			break;
 		case LEVEL_2:
-			//サイズ3のスライムを生成<=TODO
+			//サイズ3のスライムを生成
+			m_pSlime[i] = new CSlime_3(pos);
 			break;
 		case LEVEL_3:
-			//サイズ4のスライムを生成<=TODO
+			//サイズ4のスライムを生成
+			m_pSlime[i] = new CSlime_4(pos);
 			break;
 		}
+
+		m_pSlime[i]->SetCamera(m_pCamera);	//カメラをセット
+
+		break;
 	}
 }
+
+/* ========================================
+	爆発接触関数
+	----------------------------------------
+	内容：画面上の爆発にスライムが接触した時の処理
+	----------------------------------------
+	引数1：爆発するスライムの配列番号
+	引数2：爆発マネージャーのポインタ
+	----------------------------------------
+	戻値：なし
+======================================== */
+void CSlimeManager::TouchExplosion(int DelSlime, CExplosionManager * pExpMng)
+{
+	TPos3d<float> pos(m_pSlime[DelSlime]->GetPos());	//衝突先のスライムの位置を確保
+
+	float ExplosionSize;	// 爆発の大きさ
+	switch (m_pSlime[DelSlime]->GetSlimeLevel())
+	{
+	case LEVEL_1:
+		ExplosionSize = 1.0f * EXPLODE_BASE_RATIO;
+		break;
+	case LEVEL_2:
+		ExplosionSize = 2.0f * EXPLODE_BASE_RATIO;
+		break;
+	case LEVEL_3:
+		ExplosionSize = 3.0f * EXPLODE_BASE_RATIO;
+		break;
+	case LEVEL_4:
+		ExplosionSize = 4.0f * EXPLODE_BASE_RATIO;
+		break;
+	
+	}
+	SAFE_DELETE(m_pSlime[DelSlime]);					//ぶつかりに来たスライムを削除
+	pExpMng->Create(pos, ExplosionSize);				//衝突先のスライムの位置で爆発
+}
+
+/* ========================================
+	スライム配列取得関数
+	----------------------------------------
+	内容：スライム配列の取得
+	----------------------------------------
+	引数1：なし
+	----------------------------------------
+	戻値：スライムの配列
+======================================== */
+E_SLIME_LEVEL CSlimeManager::GetRandomLevel()
+{
+	int random = abs(rand() % 100);	//ランダムに0～99の数字を作成
+	
+	//定数で定義した確率で1～3レベルのスライムを生成
+	if (SLIME_LEVEL1_PER > random)	
+	{
+		return LEVEL_1;
+	}
+	else if ((SLIME_LEVEL1_PER + SLIME_LEVEL2_PER) > random)
+	{
+		return LEVEL_2;
+	}
+	else
+	{
+		return LEVEL_3;
+	}
+	
+}
+
 /* ========================================
 	スライム配列取得関数
 	----------------------------------------
@@ -276,9 +368,9 @@ void CSlimeManager::SetCamera(CCamera * pCamera)
 	----------------------------------------
 	戻値：無し
 ======================================== */
-void CSlimeManager::SetPlayerSphere(CSphereInfo::Sphere pSphere)
+void CSlimeManager::SetPlayerPos(TPos3d<float> pos)
 {
-	m_pPlayerSphere = pSphere;
+	m_pPlayerPos = pos;
 }
 
 /* ========================================

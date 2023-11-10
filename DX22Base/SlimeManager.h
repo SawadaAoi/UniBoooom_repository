@@ -12,6 +12,8 @@
    ・2023/11/08 スライム同士が接触した際の分岐処理を作成(分岐した後に行う処理は未実装　※TODOをつけておいた)の /山下凌佑
    ・2023/11/08 結合処理を作成(結合後の生成処理は未実装 Slime_2～Slime_4がまだ無いから) /山下凌佑
    ・2023/11/09 スライム生成関数の名前変更/澤田
+   ・2023/11/09 スライムのの生成をランダムに変更	/山下凌佑
+   ・2023/11/09 プレイヤー座標取得の型をTPos3d<float>に変更
 
    ======================================== */
 #ifndef __SLIME_MANAGER_H__
@@ -22,9 +24,10 @@
 #include "SlimeBase.h"
 #include "ExplosionManager.h"
 #include "Camera.h"
+#include "ExplosionManager.h"
 
 // =============== 定数定義 =======================
-const int MAX_SLIME = 20;	//スライムの最大生成数
+const int MAX_SLIME = 30;	//スライムの最大生成数
 
 // =============== クラス定義 =====================
 class CSlimeManager
@@ -34,29 +37,29 @@ public:
 	CSlimeManager();
 	~CSlimeManager();
 
-	void Update();
+	void Update(CExplosionManager* pExpMng);
 	void Draw();
-	void Create();	//スライムを生成する処理
-	void HitBranch(int HitSlimeArrayNum,int standSlimeArrayNum);	//スライムの接触が起きた際の分岐処理
-	void UnionSlime(E_SLIME_LEVEL level);							//スライムの結合処理
-
+	void Create(E_SLIME_LEVEL level);
+	void HitBranch(int HitSlimeArrayNum,int standSlimeArrayNum,CExplosionManager* pExpMng);	//スライムの接触が起きた際の分岐処理
+	void UnionSlime(E_SLIME_LEVEL level, TPos3d<float> pos);							//スライムの結合処理
+	void TouchExplosion(int DelSlime, CExplosionManager* pExpMng);	// スライムの爆発処理
+	E_SLIME_LEVEL GetRandomLevel();									//ランダムなスライムのレベルを返す(1～3レべル)
 
 	//ゲット関数
 	CSlimeBase* GetSlimePtr(int num);
 
-	//セット関数
-	void SetCamera(CCamera* pCamera);
-	void SetPlayerSphere(CSphereInfo::Sphere pSphere);
-
+	void SetCamera(CCamera* pCamera);		//スライムを移すカメラのポインタをセット
+	void SetPlayerPos(TPos3d<float> pos);
 private:
 	// ===メンバ変数宣言=====
 	int GetRandom(int min, int max);
-	int m_GeneCnt;
 
 	CSlimeBase* m_pSlime[MAX_SLIME];
 	CCamera* m_pCamera;
-	CSphereInfo::Sphere m_pPlayerSphere;	// プレイヤーの当たり判定処理
 
+	TPos3d<float> m_pPlayerPos;	// プレイヤーの座標
+
+	int m_CreateCnt;	// 生成間隔用カウント
 
 
 	

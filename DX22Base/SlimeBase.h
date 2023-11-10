@@ -9,7 +9,6 @@
 	
 	変更履歴
 	・2023/11/04 スライムベースクラス作成 /鈴村 朋也
-	
 	・2023/11/06 吹き飛び移動と吹き飛び移動関数を作成 変更者名：山下凌佑
 	・2023/11/06 m_fSpped(敵の移動速度)とm_fVecAngle(敵の吹き飛ぶ方向)のメンバ変数を追加 変更者名：山下凌佑
 	・2023/11/06 定数SPEED_DOWN_RATIO(ぶつかった先のスライムに速度を渡す際に減少する割合)を追加 変更者名：山下凌佑
@@ -24,7 +23,11 @@
 	・2023/11/08 m_bUse、n_playerDistance、m_playerAngleを削除(一か所でしか使用していない為)変更者：澤田蒼生
 	・2023/11/08 m_Playerを追加　変更者：澤田蒼生
 	・2023/11/08 座標をTPos<Pos>に変更　変更者：澤田蒼生
+	・2023/11/09 Update,NormalMoveの引数変更　変更者：澤田蒼生
 	
+	・2023/11/08 スライムの移動速度の定数をcppからhに移動　変更者：澤田蒼生
+	・2023/11/10 カメラポインタを追加 /山下凌佑
+	・2023/11/10 他のオブジェクトと同一のカメラをセットするようにした 山下凌佑
 ========================================== */
 #ifndef __SLIME_BASE_H__
 #define __SLIME_BASE_H__
@@ -49,17 +52,21 @@ enum E_SLIME_LEVEL
 	MAX_LEVEL = LEVEL_4	//最大レベルを設定	(スライムの段階が増えたら変更)
 };
 
+// =============== 定数定義 =======================
+const float ENEMY_MOVE_SPEED = 0.01f;	//継承先でも使いたいのでヘッダーに書きます	山下凌佑
+
 // =============== クラス定義 =====================
+
 class CSlimeBase
 {
 public:
 	// ===プロトタイプ宣言===
 	CSlimeBase();
 	~CSlimeBase();
-	void Update(CSphereInfo::Sphere playerSphere);
+	void Update(TPos3d<float> playerPos);
 	void Draw(const CCamera* pCamera);
 
-	void NormalMove(CSphereInfo::Sphere playerSphere);								// 通常時の移動処理
+	void NormalMove(TPos3d<float> playerSphere);	// 通常時の移動処理
 	void HitMove();									//スライムが吹き飛び移動状態の時に毎フレーム呼び出して移動させる
 	void HitMoveStart(float speed, float angle);	//スライムが吹き飛ばされたときに速度と角度を決める
 	void Reflect();									//スライムとぶつかって吹き飛ばした際に自分の移動量を減らす
@@ -69,19 +76,19 @@ public:
 	CSphereInfo::Sphere GetSphere();	//スライムの座標と半径を取得
 	float GetSpeed();				//スライムの移動速度を取得
 	E_SLIME_LEVEL GetSlimeLevel();		//スライムのサイズを取得
-
-	// セット関数
-	void SetPos(TPos3d<float> pos);
+	//セット関数
 	void SetSphere(CSphereInfo::Sphere Sphere);
-
+	void SetPos(TPos3d<float> pos);
+	virtual void SetSpeed() = 0;
+	void SetCamera(const CCamera* pCamera);
+	bool GetHitMoveFlg();
 protected:
-	// ===メンバ変数宣言=====
-	Model* m_pModel;				// 3Dモデル
-	VertexShader* m_pVS;
+	Model* m_pModel;				//3Dモデル
+	VertexShader* m_pVS;			//バーテックスシェーダーのポインタ
+	TPos3d<float> m_pos;			//位置座標
+	TTriType<float> m_move;			//移動量
+	TTriType<float> m_scale;		//サイズ？
 
-	TPos3d<float> m_pos;				// 位置座標
-	TTriType<float> m_move;
-	TTriType<float> m_scale;	
 	float m_fVecAngle;				//敵の吹き飛ぶ方向
 	float m_fSpeed;					//スライムの移動速度
 	bool m_bHitMove;				//吹っ飛び中かどうか
@@ -89,6 +96,8 @@ protected:
 	CSphereInfo::Sphere m_sphere;	// 当たり判定の座標および半径を保存する
 
 	E_SLIME_LEVEL m_eSlimeSize;		//スライムの大きさの列挙
+	const CCamera* m_pCamera;		//カメラのポインタ
+	
 
 private:
 

@@ -70,6 +70,7 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
 void Uninit()
 {
 	delete g_pGame;
+	CGeometry::Uninit();
 	UninitInput();
 	Sprite::Uninit();
 	UninitDirectX();
