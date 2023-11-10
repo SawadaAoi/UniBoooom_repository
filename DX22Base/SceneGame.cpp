@@ -10,7 +10,7 @@
 	変更履歴
 	・2023/11/08 コメント追加、無駄な箇所を削除　澤田蒼生
 	・2023/11/09 カメラの様々動作チェック。メインから軸線奪取。地面追加。 髙木駿輔
-	・2023/11/10 カメラをスライムと爆発にも渡すようにした 髙木駿輔
+	・2023/11/10 カメラをスライムと爆発にも渡すようにした・lineのメモリリーク対策 髙木駿輔
 
 ========================================== */
 
@@ -51,6 +51,10 @@ SceneGame::SceneGame()
 	DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
 	SetRenderTargets(1, &pRTV, pDSV);		//DSVがnullだと2D表示になる
 
+#if MODE_COORD_AXIS
+	// 軸線の表示
+	CLine::Init();
+#endif
 
 	m_pCollision = new CCOLLISION();
 	m_pPlayer = new CPlayer();
@@ -84,12 +88,11 @@ SceneGame::~SceneGame()
 	SAFE_DELETE(m_pCamera);
 	SAFE_DELETE(m_pPlayer);
 	SAFE_DELETE(m_pCollision);
-	SAFE_DELETE(m_pVs);
-
 #if MODE_COORD_AXIS
 	// 軸線の表示
-	CLine::Init();
+	CLine::Uninit();
 #endif
+	SAFE_DELETE(m_pVs);
 }
 
 
@@ -130,7 +133,6 @@ void SceneGame::Draw()
 {
 #if MODE_COORD_AXIS
 	// 軸線の表示
-	CLine::Init();
 	CLine::SetView(m_pCamera->GetViewMatrix());
 	CLine::SetProjection(m_pCamera->GetProjectionMatrix());
 	// グリッド

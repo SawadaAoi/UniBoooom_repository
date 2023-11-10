@@ -10,7 +10,7 @@
    変更履歴
    ・↓まで 学校の配布物(授業に沿い変形)
    ・2023/11/05 ファイル分割・抽象クラス化・コメント付与 takagi
-
+   ・2023/11/10 Uninit静的化 takagi
 
    ======================================== */
 
@@ -51,7 +51,7 @@ public:
 	static void Make();
 	static void Draw();
 
-	void Uninit();				//終了
+	static void Uninit();				//終了
 
 	static void Add(DirectX::XMFLOAT3 start, DirectX::XMFLOAT3 end,
 		DirectX::XMFLOAT4 color = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f));
