@@ -14,7 +14,7 @@
 	・2023/11/09 生成処理、変数の変更 sawada
 	・2023/11/09 コメントの追加 sawada
 	・2023/11/11 parameter用ヘッダ追加 suzumura
-	
+	・2023/11/11 スライム同士が重ならない関数を追加 yamashita
 =========================================== */
 
 // =============== インクルード ===================
@@ -340,6 +340,58 @@ E_SLIME_LEVEL CSlimeManager::GetRandomLevel()
 		return LEVEL_3;
 	}
 	
+}
+
+/* ========================================
+	重ならない関数
+	----------------------------------------
+	内容：ぶつかったスライムが少し押し戻される関数
+	----------------------------------------
+	引数1：衝突したスライムのポインタ
+	引数2：衝突されたスライムのポインタ
+	----------------------------------------
+	戻値：
+======================================== */
+void CSlimeManager::PreventOverlap(CSlimeBase * pMoveSlime, CSlimeBase * pStandSlime)
+{
+	//↓のコメントアウトは理想的な処理のやりかけ
+	/*
+	CSphereInfo::Sphere standSlimeSphere = pStandSlime->GetSphere();
+	CSphereInfo::Sphere moveSlimeSphere = pMoveSlime->GetSphere();
+	float standSlimeToPlayerAngle = standSlimeSphere.Angle(m_pPlayer->GetPlayerSphere());
+	float standSlimeToMoveSlimeAngle = standSlimeSphere.Angle(moveSlimeSphere);
+	float Distance = standSlimeSphere.Distance(pMoveSlime->GetSphere());
+	float posX, posY, posZ;
+
+	if (standSlimeToMoveSlimeAngle < 0) { standSlimeToMoveSlimeAngle = (2 * PI) + standSlimeToMoveSlimeAngle; }
+	if (standSlimeToPlayerAngle < 0) { standSlimeToPlayerAngle = (2 * PI) + standSlimeToPlayerAngle; }
+	standSlimeToMoveSlimeAngle -= standSlimeToPlayerAngle;
+
+	if (PI < standSlimeToMoveSlimeAngle)
+	{
+		standSlimeToMoveSlimeAngle -= DirectX::XMConvertToRadians(5.0f);
+	}
+	else
+	{
+		standSlimeToMoveSlimeAngle += DirectX::XMConvertToRadians(5.0f);
+	}
+	TPos3d<float> pos = pStandSlime->GetPos();
+	pos.x +=  cosf(standSlimeToMoveSlimeAngle) * (standSlimeSphere.radius + moveSlimeSphere.radius + 0.05);
+	pos.z += sinf(standSlimeToMoveSlimeAngle) * (standSlimeSphere.radius + moveSlimeSphere.radius + 0.05);
+
+	pMoveSlime->SetPos(pos);
+
+	pMoveSlime->ReversePos();
+	*/
+
+	float angle = pStandSlime->GetSphere().Angle(pMoveSlime->GetSphere());				//衝突してきた角度
+	float distance = pStandSlime->GetSphere().radius + pMoveSlime->GetSphere().radius;	//お互いのスライムの半径を足した数
+
+	TPos3d<float> pos = pStandSlime->GetPos();		//押し戻す基準の座標
+	pos.x += cosf(angle) * (distance + 0.001f);		//ぶつからないギリギリの距離を設定
+	pos.z += sinf(angle) * (distance + 0.001f);		//ぶつからないギリギリの距離を設定
+
+	pMoveSlime->SetPos(pos);						//ぶつからないギリギリの距離に移動
 }
 
 /* ========================================

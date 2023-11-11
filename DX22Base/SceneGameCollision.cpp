@@ -8,11 +8,10 @@
 	作成者 仁枝潤哉
 
 	変更履歴
-	・2023/11/07 新規作成 仁枝潤哉
-	・2023/11/08 HammerSlimeCollision関数
-				 SlimeSlimeCollision関数
-				 ExplosionSlimeCollision関数
-				 内容追記	仁枝潤哉
+	・2023/11/07 新規作成 Nieda
+	・2023/11/08 コメント修正	Nieda
+	・2023/11/12 スライム同士重複防止関数追加	Yamashita
+
 ========================================== */
 
 // =============== インクルード ===================
@@ -32,7 +31,7 @@ const float HAMMER_HIT_MOVE = 1.0f;		// ハンマーに飛ばされた時のスピード
 
 
 /* ========================================
-   関数：SceneGameCollision関数
+   シーンゲーム当たり判定まとめ関数
    ----------------------------------------
    内容：SceneGame当たり判定をまとめる関数
    ----------------------------------------
@@ -46,10 +45,11 @@ void SceneGame::SceneGameCollision()
 	HammerSlimeCollision();
 	SlimeSlimeCollision();
 	ExplosionSlimeCollision();
+	SlimeSlimeNormalMoveCollision();
 }
 
 /* ========================================
-   関数：PlayerSlimeCollision関数
+   プレイヤースライム当たり判定関数
    ----------------------------------------
    内容：プレイヤーとスライムが衝突した際に行う処理
    ----------------------------------------
@@ -77,7 +77,7 @@ void SceneGame::PlayerSlimeCollision()
 }
 
 /* ========================================
-   関数：HammerSlimeCollision関数
+   ハンマースライム当たり判定関数
    ----------------------------------------
    内容：ハンマーとスライムが衝突した際に行う処理
    ----------------------------------------
@@ -111,7 +111,7 @@ void SceneGame::HammerSlimeCollision()
 }
 
 /* ========================================
-   関数：SlimeSlimeCollision関数
+   スライム同士当たり判定関数(吹飛状態)
    ----------------------------------------
    内容：スライムとスライムが衝突した際に行う処理
    ----------------------------------------
@@ -150,7 +150,7 @@ void SceneGame::SlimeSlimeCollision()
 }
 
 /* ========================================
-   関数：ExplosionSlimeCollision関数
+   爆発スライム当たり判定関数
    ----------------------------------------
    内容：爆発とスライムが衝突した際に行う処理
    ----------------------------------------
@@ -174,6 +174,47 @@ void SceneGame::ExplosionSlimeCollision()
 			if (m_pCollision->CheckCollisionSphere(pExplosion->GetSphere(), pSlimeTarget->GetSphere()))
 			{
 				m_pSlimeMng->TouchExplosion(j, m_pExplosionMng);// スライムの爆発処理
+				break;
+			}
+		}
+
+	}
+}
+
+/* ========================================
+   スライム同士重複防止関数
+   ----------------------------------------
+   内容：スライム同士が通常移動で重ならないようにする関数
+   ----------------------------------------
+   引数：なし
+   ----------------------------------------
+   戻値：なし
+   ======================================== */
+void SceneGame::SlimeSlimeNormalMoveCollision()
+{
+	// 衝突するスライム
+	for (int i = 0; i < MAX_SLIME; i++)
+	{
+		CSlimeBase* pMoveSlime = m_pSlimeMng->GetSlimePtr(i);	//移動するスライムのポインタ
+
+		if (pMoveSlime == nullptr)					continue;	// 無効なスライムはスルー
+		if (pMoveSlime->GetHitMoveFlg() == true)	continue;	// 吹き飛び中のスライムはスルー
+
+		// 衝突されるスライム
+		for (int j = 0; j < MAX_SLIME; j++)
+		{
+			CSlimeBase* pStandSlime = m_pSlimeMng->GetSlimePtr(j);	// 止まっているスライムのポインタ
+
+			if (pStandSlime == nullptr)					continue;	// 無効なスライムはスルー
+			if (pMoveSlime->GetHitMoveFlg() == true)	continue;	// 吹き飛び中のスライムはスルー
+			if (i == j)									continue;	// 自分と同じスライムはスルー
+
+			// スライム同士が衝突した場合
+			if (m_pCollision->CheckCollisionSphere(pMoveSlime->GetSphere(), pStandSlime->GetSphere()))
+			{
+				m_pSlimeMng->PreventOverlap(pMoveSlime, pStandSlime);	//スライムの位置を押し戻す処理
+
+
 				break;
 			}
 		}
