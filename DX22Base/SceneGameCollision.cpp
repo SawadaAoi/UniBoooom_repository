@@ -174,3 +174,44 @@ void SceneGame::ExplosionSlimeCollision()
 
 	}
 }
+
+/* ========================================
+   関数：重ならない関数
+   ----------------------------------------
+   内容：スライム同士が通常移動で重ならないようにする関数
+   ----------------------------------------
+   引数：なし
+   ----------------------------------------
+   戻値：なし
+   ======================================== */
+void SceneGame::SlimeSlimeNormalMoveCollision()
+{
+	// 衝突するスライム
+	for (int i = 0; i < MAX_SLIME; i++)
+	{
+		CSlimeBase* pMoveSlime = m_pSlimeMng->GetSlimePtr(i);	//移動するスライムのポインタ
+
+		if (pMoveSlime == nullptr)					continue;	// 無効なスライムはスルー
+		if (pMoveSlime->GetHitMoveFlg() == true)	continue;	// 吹き飛び中のスライムはスルー
+
+		// 衝突されるスライム
+		for (int j = 0; j < MAX_SLIME; j++)
+		{
+			CSlimeBase* pStandSlime = m_pSlimeMng->GetSlimePtr(j);	// 止まっているスライムのポインタ
+
+			if (pStandSlime == nullptr)					continue;	// 無効なスライムはスルー
+			if (pMoveSlime->GetHitMoveFlg() == true)	continue;	// 吹き飛び中のスライムはスルー
+			if (i == j)									continue;	// 自分と同じスライムはスルー
+
+			// スライム同士が衝突した場合
+			if (m_pCollision->CheckCollisionSphere(pMoveSlime->GetSphere(), pStandSlime->GetSphere()))
+			{
+				m_pSlimeMng->PreventOverlap(pMoveSlime, pStandSlime);	//スライムの位置を押し戻す処理
+
+
+				break;
+			}
+		}
+
+	}
+}
