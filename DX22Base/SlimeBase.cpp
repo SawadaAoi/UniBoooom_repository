@@ -25,6 +25,8 @@
 // =============== インクルード ===================
 #include "SlimeBase.h"
 #include "Geometry.h"
+#include "GameParameter.h"		//定数定義用ヘッダー
+
 
 // =============== 定数定義 =======================
 #if MODE_GAME_PARAMETER

@@ -24,6 +24,7 @@
 #include "Slime_3.h"
 #include "Slime_4.h"
 #include "Input.h"		//後で消す
+#include "GameParameter.h"		//定数定義用ヘッダー
 
 #include <stdlib.h>
 
