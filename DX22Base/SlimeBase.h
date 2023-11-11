@@ -28,6 +28,8 @@
 	・2023/11/08 スライムの移動速度の定数をcppからhに移動　変更者：澤田蒼生
 	・2023/11/10 カメラポインタを追加 /山下凌佑
 	・2023/11/10 他のオブジェクトと同一のカメラをセットするようにした 山下凌佑
+	DirectX::XMMATRIX m_Ry;				//回転
+	・2023/11/12　m_Ryを追加（スライムの向きを変える時に使用） YamamotoKaito
 ========================================== */
 #ifndef __SLIME_BASE_H__
 #define __SLIME_BASE_H__
@@ -98,7 +100,7 @@ protected:
 	E_SLIME_LEVEL m_eSlimeSize;		//スライムの大きさの列挙
 	const CCamera* m_pCamera;		//カメラのポインタ
 	
-
+	DirectX::XMMATRIX m_Ry;				//回転
 private:
 
 };
