@@ -19,58 +19,35 @@
 #define MODE_GAME_PARAMETER	(true)
 
 #if MODE_GAME_PARAMETER
-//--.h
-//===ExplosionManager.h======
-const int MAX_EXPLOSION_NUM = 20;			// 最大爆発数
 
-//===SlimeBase.h=======
-const float ENEMY_MOVE_SPEED = 0.01f;		// 敵の移動速度
+// プレイヤー ================================================
+const float PLAYER_MOVE_SPEED	= 0.1f;		// プレイヤーの移動速度
+const int	PLAYER_HP			= 5;		// プレイヤーのHP
+const float PLAYER_RADIUS		= 0.5f;		// プレイヤーの当たり判定の大きさ
+const int	NO_DAMAGE_TIME		= 3 * 60;	// プレイヤーの無敵時間
+const int	DAMAGE_FLASH_FRAME	= 0.1 * 60;	// プレイヤーのダメージ点滅の切り替え間隔
 
-//===SlimeManager.h======
-const int MAX_SLIME = 30;					// スライムの最大生成数
-
-//--.cpp
-//===Explosion.cpp=======
-const float MAX_DISPLAY_TIME = 60 * 3.0f;    // 爆発持続秒数
-const float ONE_SECOND_FRAME = 60;           // 大きくなるまでの秒数
-
-//===Hammer.cpp=======
+// ハンマー
 const float ANGULAR_ANGLE = 0.1f;        // 毎フレーム移動する角度量
 const float ROTATE_RADIUS = 1.0f;        // ハンマーが回転するプレイヤーからの距離
 const float HAMMER_SIZE = 1.0f;          // ハンマーの当たり判定の大きさ
 
-//===Player.cpp======
-const float PLAYERMOVE(0.1f);				// プレイヤーの移動速度
-const int PLAYER_HP = 5;					// プレイヤーのHP
-const float PLAYER_RADIUS = 0.5f;			// プレイヤーの当たり判定の大きさ
-const int NO_DAMAGE_TIME = 3 * 60;			// プレイヤーの無敵時間
-const int DAMAGE_FLASH_FRAME = 0.1 * 60;	// プレイヤーのダメージ点滅の切り替え間隔
+// 敵キャラ ==================================================
 
+// 共通
+const int	MAX_SLIME_NUM = 30;				// スライムの最大生成数
+const int START_ENEMY_NUM = 10;			// ゲーム開始時の敵キャラの数
+const float ENEMY_MOVE_SPEED = 0.01f;		// 敵の移動速度
+const float HAMMER_HIT_MOVE = 1.0f;			// ハンマーに吹き飛ばされた時のスピード
+const int	RANDOM_MOVE_SWITCH_TIME = 5 * 60;	// ランダム移動の方向切り替え
 
-//===SlimeBase.cpp======
 const float SPEED_DOWN_RATIO = 0.6f;		// スライムが接触して吹き飛ぶ際にかかる移動速度の変化の割合    RATIO=>割合
 const float MOVE_RESIST = 0.1f;				// 吹き飛び移動中のスライムの移動速度に毎フレームかかる減算数値
 const float REFLECT_RATIO = 0.1f;			// スライムがスライムを吹き飛ばした際に吹き飛ばした側のスライムの移動量を変える割合
 const float MOVE_DISTANCE_PLAYER = 20.0f;   // プレイヤー追跡移動に切り替える距離
 const float SLIME_BASE_RADIUS = 0.5f;		// スライムの基準の大きさ
 
-//===Slime_01.cpp======
-const float LEVEL1_SCALE = 1.0f;					// スライム＿レベル１のサイズ倍率
-const float LEVEL1_SPEED = ENEMY_MOVE_SPEED;		// 移動速度
 
-//===Slime_02.cpp======
-const float LEVEL2_SCALE = 2.0f;					// スライム＿レベル２のサイズ倍率
-const float LEVEL2_SPEED = ENEMY_MOVE_SPEED * 0.95;	// 移動速度
-
-//===Slime_03.cpp======
-const float LEVEL3_SCALE = 3.0f;					// スライム＿レベル３のサイズ倍率
-const float LEVEL3_SPEED = ENEMY_MOVE_SPEED * 0.90;	// 移動速度
-
-//===Slime_04.cpp======
-const float LEVEL4_SCALE = 4.0f;					// スライム＿レベル４のサイズ倍率
-const float LEVEL4_SPEED = ENEMY_MOVE_SPEED * 0.85;	// 移動速度
-
-//===SlimeManager.cpp======
 const int ENEMY_GENERATE_INTERVAL = 3 * 60;									// 生成間隔
 const int RANDOM_POS_MIN = -15;												// 生成座標範囲下限(x,z共通)
 const int RANDOM_POS_MAX = 15;												// 生成座標範囲上限(x,z共通)
@@ -80,6 +57,41 @@ const int SLIME_LEVEL2_PER = 30;											// スライム_2の生成確立
 const int SLIME_LEVEL3_PER = 100 - SLIME_LEVEL1_PER - SLIME_LEVEL2_PER;		// スライム_3の生成確立
 const float MAX_SIZE_EXPLODE = 5.0f;										// スライム4同士の爆発の大きさ
 const float EXPLODE_BASE_RATIO = 1.0f;										// スライムの爆発接触での爆発の大きさのベース
+
+
+
+// サイズ1
+const float LEVEL1_SCALE = 1.0f;					// スライム＿レベル１の大きさ(当たり判定含む)
+const float LEVEL1_SPEED = ENEMY_MOVE_SPEED;		// 移動速度
+
+// サイズ2
+const float LEVEL2_SCALE = 2.0f;					// スライム＿レベル２の大きさ(当たり判定含む)
+const float LEVEL2_SPEED = ENEMY_MOVE_SPEED * 0.95;	// 移動速度
+
+// サイズ3
+const float LEVEL3_SCALE = 3.0f;					// スライム＿レベル３の大きさ(当たり判定含む)
+const float LEVEL3_SPEED = ENEMY_MOVE_SPEED * 0.90;	// 移動速度
+
+// サイズ4
+const float LEVEL4_SCALE = 4.0f;					// スライム＿レベル４の大きさ(当たり判定含む)
+const float LEVEL4_SPEED = ENEMY_MOVE_SPEED * 0.85;	// 移動速度
+
+
+// 爆発 =====================================================
+const int MAX_EXPLOSION_NUM		= 20;			// 最大爆発数
+const float MAX_DISPLAY_TIME = 3.0f * 60;		// 爆発持続秒数
+const float ONE_SECOND_FRAME = 1.0f * 60;		// 大きくなるまでの秒数
+
+
+// カメラ =====================================================
+const float INIT_ANGLE = DirectX::XMConvertToRadians(24.0f);        //カメラの角度
+const float INIT_NEAR = 1.0f;										//画面手前初期z値
+const float INIT_FAR = 150.0f;										//画面奥初期z値
+const float INIT_RADIUS = 40.0f;									//カメラと注視点との距離(初期値)
+
+
+
+
 
 #endif
 

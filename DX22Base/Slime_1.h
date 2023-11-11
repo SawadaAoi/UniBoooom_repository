@@ -28,7 +28,7 @@ public:
 	CSlime_1(TPos3d<float> pos);
 	~CSlime_1();
 
-	void SetSpeed() override;
+	void SetNormalSpeed() override;
 private:
 
 };

@@ -23,7 +23,6 @@
 #include "Slime_2.h"
 #include "Slime_3.h"
 #include "Slime_4.h"
-#include <time.h>
 #include "Input.h"		//後で消す
 
 #include <stdlib.h>
@@ -35,11 +34,12 @@ const int ENEMY_GENERATE_INTERVAL	= 3 * 60;	// 生成間隔
 const int RANDOM_POS_MIN			= -15;		// 生成座標範囲下限(x,z共通)
 const int RANDOM_POS_MAX			= 15;		// 生成座標範囲上限(x,z共通)
 const int CREATE_DISTANCE			= 10;		// 生成距離最小値
-const int SLIME_LEVEL1_PER = 50;				// スライム_1の生成確立
-const int SLIME_LEVEL2_PER = 30;				// スライム_2の生成確立
+const int SLIME_LEVEL1_PER = 10;				// スライム_1の生成確立
+const int SLIME_LEVEL2_PER = 10;				// スライム_2の生成確立
 const int SLIME_LEVEL3_PER = 100 - SLIME_LEVEL1_PER - SLIME_LEVEL2_PER;	// スライム_3の生成確立
 const float MAX_SIZE_EXPLODE = 5.0f;	// スライム4同士の爆発の大きさ
 const float EXPLODE_BASE_RATIO = 1.0f;	// スライムの爆発接触での爆発の大きさのベース
+const int START_ENEMY_NUM = 10;			// ゲーム開始時の敵キャラの数
 #endif
 
 /* ========================================
@@ -55,12 +55,18 @@ CSlimeManager::CSlimeManager()
 	: m_CreateCnt(0)
 {
 
-	srand((unsigned int)time(NULL));	// 乱数パターン設定
 
 	// スライム初期化
-	for (int i = 0; i < MAX_SLIME; i++)
+	for (int i = 0; i < MAX_SLIME_NUM; i++)
 	{
 		m_pSlime[i] = nullptr;
+	}
+
+	// ゲーム開始時に敵キャラを生成する
+	for (int i = 0; i < 10; i++)
+	{
+		int ranLv = rand() % 3 + 1;		// 生成するスライムのレベルを乱数で指定
+		Create((E_SLIME_LEVEL)ranLv);	// 生成処理
 	}
 	
 }
@@ -77,7 +83,7 @@ CSlimeManager::CSlimeManager()
 CSlimeManager::~CSlimeManager()
 {
 	// スライム削除
-	for (int i = 0; i < MAX_SLIME; i++)
+	for (int i = 0; i < MAX_SLIME_NUM; i++)
 	{
 		SAFE_DELETE(m_pSlime[i]);
 	}
@@ -96,7 +102,7 @@ void CSlimeManager::Update(CExplosionManager* pExpMng)
 {
 	
 	// スライム更新
-	for (int i = 0; i < MAX_SLIME; i++)
+	for (int i = 0; i < MAX_SLIME_NUM; i++)
 	{
 		if (m_pSlime[i] == nullptr) continue;
 		m_pSlime[i]->Update(m_pPlayerPos);
@@ -124,7 +130,7 @@ void CSlimeManager::Update(CExplosionManager* pExpMng)
 void CSlimeManager::Draw()
 {
 	//"スライム1"描画
-	for (int i = 0; i < MAX_SLIME; i++)
+	for (int i = 0; i < MAX_SLIME_NUM; i++)
 	{
 		if (m_pSlime[i] == nullptr) continue;
 		m_pSlime[i]->Draw(m_pCamera);
@@ -145,7 +151,7 @@ void CSlimeManager::Create(E_SLIME_LEVEL level)
 {
 	TPos3d<float> CreatePos;	// スライムの生成位置
 
-	for (int i = 0; i < MAX_SLIME; i++)
+	for (int i = 0; i < MAX_SLIME_NUM; i++)
 	{
 		// スライムのuseを検索
 		if (m_pSlime[i] != nullptr) continue;
@@ -202,7 +208,7 @@ void CSlimeManager::HitBranch(int HitSlimeArrayNum, int standSlimeArrayNum, CExp
 	standSlimeLevel = m_pSlime[standSlimeArrayNum]->GetSlimeLevel();	//ぶつかられたスライムのサイズを取得
 	if (hitSlimeLevel > standSlimeLevel)								//ぶつかりにきたスライムが大きい場合
 	{
-		float speed = m_pSlime[HitSlimeArrayNum]->GetSpeed();					//ぶつかりに来たスライムの速度を取得
+		float speed = m_pSlime[HitSlimeArrayNum]->GetSpeed();						//ぶつかりに来たスライムの速度を取得
 		CSphereInfo::Sphere sphere = m_pSlime[HitSlimeArrayNum]->GetSphere();		//ぶつかられたスライムのSphereを取得
 		float angle = sphere.Angle(m_pSlime[standSlimeArrayNum]->GetSphere());		//ぶつかられたスライムの方向を割り出す
 		m_pSlime[standSlimeArrayNum]->HitMoveStart(speed, angle);					//ぶつかられたスライムに吹き飛び移動処理
@@ -214,6 +220,7 @@ void CSlimeManager::HitBranch(int HitSlimeArrayNum, int standSlimeArrayNum, CExp
 		CSphereInfo::Sphere sphere = m_pSlime[standSlimeArrayNum]->GetSphere();		//ぶつかられたスライムのSphereを取得
 		float angle = sphere.Angle(m_pSlime[HitSlimeArrayNum]->GetSphere());		//ぶつかられたスライムの方向を割り出す
 		m_pSlime[HitSlimeArrayNum]->HitMoveStart(speed, angle);						//ぶつかられたスライムに吹き飛び移動処理
+
 	}
 	else	//スライムのサイズが同じだった場合
 	{
@@ -244,7 +251,7 @@ void CSlimeManager::HitBranch(int HitSlimeArrayNum, int standSlimeArrayNum, CExp
 ======================================== */
 void CSlimeManager::UnionSlime(E_SLIME_LEVEL level ,TPos3d<float> pos)
 {
-	for (int i = 0; i < MAX_SLIME; i++)
+	for (int i = 0; i < MAX_SLIME_NUM; i++)
 	{
 		if (m_pSlime[i] != nullptr) { continue; }
 

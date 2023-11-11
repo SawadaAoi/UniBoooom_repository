@@ -54,12 +54,10 @@ CSlime_3::CSlime_3()
 	戻値：無し
 =========================================== */
 CSlime_3::CSlime_3(TPos3d<float> pos)
+	: CSlime_3()
 {
 	m_pos = pos;			// 初期座標を指定
 	m_sphere.pos = pos;
-	m_scale = { LEVEL3_SCALE,LEVEL3_SCALE ,LEVEL3_SCALE };
-	m_sphere.radius *= LEVEL3_SCALE;
-	m_eSlimeSize = E_SLIME_LEVEL::LEVEL_3;
 }
 
 /* ========================================
@@ -84,7 +82,7 @@ CSlime_3::~CSlime_3()
 	-------------------------------------
 	戻値：なし
 =========================================== */
-void CSlime_3::SetSpeed()
+void CSlime_3::SetNormalSpeed()
 {
 	m_fSpeed = LEVEL3_SPEED;	//移動速度に定数をセット
 }

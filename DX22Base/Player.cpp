@@ -33,7 +33,7 @@ const float XM_PI(3.141593f);	//円周率
 
 #if MODE_GAME_PARAMETER
 #else
-const float PLAYERMOVE(0.1f);		//プレイヤーの移動量
+const float PLAYER_MOVE_SPEED = 0.1f;		//プレイヤーの移動量
 const int PLAYER_HP = 5;
 const float PLAYER_RADIUS = 0.5f;	//プレイヤーの当たり判定の大きさ
 const int NO_DAMAGE_TIME = 3 * 60;	//プレイヤーの無敵時間
@@ -219,45 +219,45 @@ void CPlayer::Move()
 {//＝＝＝playerの位置と進行方向を更新＝＝＝
 	if (IsKeyPress('W'))
 	{	//前に移動
-		m_pos.z += PLAYERMOVE;					//playerを+Z方向に移動
+		m_pos.z += PLAYER_MOVE_SPEED;					//playerを+Z方向に移動
 		m_playerForward.z = FORWARD_YES;		//向いている方向
 		m_playerForward.x = FORWARD_NO;
 		if (IsKeyPress('A'))
 		{//左前に移動
-			m_pos.x -= PLAYERMOVE;
+			m_pos.x -= PLAYER_MOVE_SPEED;
 			m_playerForward.x = -FORWARD_YES;
 		}
 		else if (IsKeyPress('D'))
 		{//右前に移動
-			m_pos.x += PLAYERMOVE;
+			m_pos.x += PLAYER_MOVE_SPEED;
 			m_playerForward.x = FORWARD_YES;
 		}
 	}
 	else if (IsKeyPress('S'))
 	{//後ろに移動
-		m_pos.z -= PLAYERMOVE;
+		m_pos.z -= PLAYER_MOVE_SPEED;
 		m_playerForward.z = -FORWARD_YES;
 		m_playerForward.x = FORWARD_NO;
 		if (IsKeyPress('A'))
 		{//左後ろに移動
-			m_pos.x -= PLAYERMOVE;
+			m_pos.x -= PLAYER_MOVE_SPEED;
 			m_playerForward.x = -FORWARD_YES;
 		}
 		else if (IsKeyPress('D'))
 		{//右後ろに移動
-			m_pos.x += PLAYERMOVE;
+			m_pos.x += PLAYER_MOVE_SPEED;
 			m_playerForward.x = FORWARD_YES;
 		}
 	}
 	else if (IsKeyPress('D'))
 	{//右に移動
-		m_pos.x += PLAYERMOVE;
+		m_pos.x += PLAYER_MOVE_SPEED;
 		m_playerForward.x = FORWARD_YES;
 		m_playerForward.z = FORWARD_NO;
 	}
 	else if (IsKeyPress('A'))
 	{//左に移動
-		m_pos.x -= PLAYERMOVE;
+		m_pos.x -= PLAYER_MOVE_SPEED;
 		m_playerForward.x = -FORWARD_YES;
 		m_playerForward.z = FORWARD_NO;
 	}
@@ -312,8 +312,8 @@ void CPlayer::ControllerMove()
 		float moveRad = atan2(stick_y * -1, stick_x);	// スティックを倒した方向の角度を求める(y軸が逆なので－1を掛ける)
 
 		// 角度方向に移動する処理
-		m_pos.x += cosf(moveRad) * PLAYERMOVE;
-		m_pos.z += sinf(moveRad) * PLAYERMOVE;
+		m_pos.x += cosf(moveRad) * PLAYER_MOVE_SPEED;
+		m_pos.z += sinf(moveRad) * PLAYER_MOVE_SPEED;
 
 		m_playerRotation = atan2(stick_y, stick_x) + (XM_PI/2);	// XMMatrixTranslationが時計回りで角度が90度ずれている(↑が0)ので調整
 	}

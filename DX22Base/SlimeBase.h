@@ -71,6 +71,7 @@ public:
 	void Draw(const CCamera* pCamera);
 
 	void NormalMove(TPos3d<float> playerSphere);	// 通常時の移動処理
+	void RandomMove();
 	void HitMove();									//スライムが吹き飛び移動状態の時に毎フレーム呼び出して移動させる
 	void HitMoveStart(float speed, float angle);	//スライムが吹き飛ばされたときに速度と角度を決める
 	void Reflect();									//スライムとぶつかって吹き飛ばした際に自分の移動量を減らす
@@ -83,7 +84,7 @@ public:
 	//セット関数
 	void SetSphere(CSphereInfo::Sphere Sphere);
 	void SetPos(TPos3d<float> pos);
-	virtual void SetSpeed() = 0;
+	virtual void SetNormalSpeed() = 0;
 	void SetCamera(const CCamera* pCamera);
 	bool GetHitMoveFlg();
 protected:
@@ -91,7 +92,7 @@ protected:
 	VertexShader* m_pVS;			//バーテックスシェーダーのポインタ
 	TPos3d<float> m_pos;			//位置座標
 	TTriType<float> m_move;			//移動量
-	TTriType<float> m_scale;		//サイズ？
+	TTriType<float> m_scale;		//サイズ
 
 	float m_fVecAngle;				//敵の吹き飛ぶ方向
 	float m_fSpeed;					//スライムの移動速度
@@ -103,6 +104,8 @@ protected:
 	const CCamera* m_pCamera;		//カメラのポインタ
 	
 	DirectX::XMMATRIX m_Ry;				//回転
+
+	int m_RanMoveCnt;			// ランダム移動の加算値
 private:
 
 };

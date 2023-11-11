@@ -31,7 +31,7 @@
 #include "GameParameter.h"		//定数定義用ヘッダー
 
 #else
-const int MAX_SLIME = 30;	//スライムの最大生成数
+const int MAX_SLIME_NUM = 30;	//スライムの最大生成数
 #endif
 // =============== クラス定義 =====================
 class CSlimeManager
@@ -58,7 +58,7 @@ private:
 	// ===メンバ変数宣言=====
 	int GetRandom(int min, int max);
 
-	CSlimeBase* m_pSlime[MAX_SLIME];
+	CSlimeBase* m_pSlime[MAX_SLIME_NUM];
 	CCamera* m_pCamera;
 
 	TPos3d<float> m_pPlayerPos;	// プレイヤーの座標
