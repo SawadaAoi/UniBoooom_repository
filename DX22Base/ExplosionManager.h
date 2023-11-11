@@ -8,9 +8,9 @@
    作成者 鄭 宇恩
 
    変更履歴
-	・2023/11/06 爆発マネージャークラス作成 /鄭　宇恩
-	・2023/11/09 爆発配列を返す処理の追加/ 澤田蒼生
-	・2023/11/10 他のオブジェクトと同一のカメラをセットするようにした 山下凌佑
+	・2023/11/06 爆発マネージャークラス作成 tei
+	・2023/11/09 爆発配列を返す処理の追加 sawada
+	・2023/11/10 他のオブジェクトと同一のカメラをセットするようにした yamashita
 
 	
 
@@ -18,12 +18,15 @@
 #ifndef __EXPLOSION_MANAGER_H__	//ExplosionManager.hインクルードガード
 #define __EXPLOSION_MANAGER_H__
 // =============== インクルード ===================
-#include "TriType.h"		//同じ型を３つ持つテンプレートクラス定義ヘッダー
-#include "Explosion.h"		//爆発処理ヘッダー
+#include "TriType.h"			//同じ型を３つ持つテンプレートクラス定義ヘッダー
+#include "Explosion.h"			//爆発処理ヘッダー
+#include "GameParameter.h"		//定数定義用ヘッダー
 
 // =============== 定数定義 =======================
+#if MODE_DEFINE
+#else
 const int MAX_EXPLOSION_NUM = 20;	//最大爆発数
-
+#endif
 // =============== クラス定義 =====================
 class CExplosionManager
 {

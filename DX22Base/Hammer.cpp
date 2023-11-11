@@ -8,24 +8,28 @@
 	作成者
 		山本凱翔
 	変更履歴
-	・2023/11/08 コメント追加 /山下凌佑
-	・2023/11/08 できる限りの変数はメンバイニシャライザで初期化 /山下凌佑
-	・2023/11/08 定数HALF_PI、ANGULAR_ANGLE、ROTATE_RADIUSを定義 /山下凌佑
-	・2023/11/08 Updateに書かれていた処理をSwing関数に分けた　/山下凌佑
-	・2023/11/08 動的確保したポインタをdeleteからSAFE_DELETEに変更　/山下凌佑
-	・当たり判定用のSphereのゲット関数を追加 /山下凌佑
-
+	・2023/11/08 コメント追加 yamashita
+	・2023/11/08 できる限りの変数はメンバイニシャライザで初期化 yamashita
+	・2023/11/08 定数HALF_PI、ANGULAR_ANGLE、ROTATE_RADIUSを定義 yamashita
+	・2023/11/08 Updateに書かれていた処理をSwing関数に分けた　yamashita
+	・2023/11/08 動的確保したポインタをdeleteからSAFE_DELETEに変更　yamashita
+	・2023/11/09? 当たり判定用のSphereのゲット関数を追加 yamashita
+	・2023/11/11 parameter用ヘッダ追加 suzumura
 ========================================== */
+
+// =============== インクルード ===================
+#include "hammer.h"				// 自身のヘッダ
+#include "Sphere.h"				// 球体の情報用ヘッダ
+#include "GameParameter.h"		// 定数定義用ヘッダー
 
 // =============== 定数定義 =======================
 const float HALF_PI = 3.141592f / 2;	//ハンマーの開始地点のラジアン角(要修正)
+#if MODE_DEFINE
+#else
 const float ANGULAR_ANGLE = 0.1f;		//毎フレーム移動する角度量
 const float ROTATE_RADIUS = 1.0f;		//ハンマーが回転するプレイヤーからの距離
 const float HAMMER_SIZE = 1.0f;			//ハンマーの当たり判定の大きさ
-
-// =============== インクルード ===================
-#include "hammer.h"		// 自身のヘッダ
-#include "Sphere.h"		// 球体の情報用ヘッダ
+#endif
 
 /* ========================================
    コンストラクタ関数

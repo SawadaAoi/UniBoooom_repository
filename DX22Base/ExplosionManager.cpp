@@ -8,13 +8,11 @@
 	作成者	鄭 宇恩
 	
 	変更履歴
-	・2023/11/06 爆発マネージャークラス作成 /鄭　宇恩
-	・2023/11/06 爆発発生、削除関数作成 / 鄭 宇恩
-	・2023/11/07 爆発生成関数名の変更、DeleteExplosin()の修正/ 鄭 宇恩
-	・2023/11/09 爆発配列を返す処理の追加/ 澤田蒼生
-	
-	
-	・2023/11/10 他のオブジェクトと同一のカメラをセットするようにした 山下凌佑
+	・2023/11/06 爆発マネージャークラス作成 tei
+	・2023/11/06 爆発発生、削除関数作成 tei
+	・2023/11/07 爆発生成関数名の変更、DeleteExplosin()の修正 tei
+	・2023/11/09 爆発配列を返す処理の追加 sawada
+	・2023/11/10 他のオブジェクトと同一のカメラをセットするようにした yamashita
 ========================================== */
 
 // =============== インクルード ===================
@@ -130,7 +128,7 @@ void CExplosionManager::DeleteCheck()
 		// 未使用の爆発はスルー
 		if (m_pExplosion[i] == nullptr) continue;
 		// 削除フラグがたってない爆発はスルー
-		if (m_pExplosion[i]->GetDelFlg() == false) continue;;
+		if (m_pExplosion[i]->GetDelFlg() == false) continue;
 
 		delete m_pExplosion[i]; m_pExplosion[i] = nullptr;	// 爆発を削除する
 
@@ -180,7 +178,7 @@ void CExplosionManager::Draw()
 	for (int i = 0; i < MAX_EXPLOSION_NUM; i++)
 	{
 		// 未使用の爆発はスルー
-		if (m_pExplosion[i] == nullptr) return;
+		if (m_pExplosion[i] == nullptr) continue;
 
 		m_pExplosion[i]->Draw(); // 爆発の描画
 	}

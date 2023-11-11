@@ -8,28 +8,36 @@
    作成者
 	山本凱翔
    変更履歴
-   ・2023/11/03 移動作成 山本凱翔
-   ・2023/11/06 方向追加、ダメージ判定、攻撃開始作成 山本凱翔
-   ・2023/11/08 プレイヤーの当たり判定の大きさの定数を追加 /山下凌佑
-   ・2023/11/08 攻撃中は移動できないように変更 /山下凌佑
-   ・2023/11/09 カメラ対応 髙木駿輔
-   ・2023/11/09 GameOverの表示　山下凌佑
-   ・2023/11/09 コントローラ移動の追加　澤田蒼生
+	・2023/11/03 移動作成 yamamoto
+	・2023/11/06 方向追加、ダメージ判定、攻撃開始作成 yamamoto
+	・2023/11/08 プレイヤーの当たり判定の大きさの定数を追加 yamashita
+	・2023/11/08 攻撃中は移動できないように変更 yamashita
+	・2023/11/09 カメラ対応 takagi
+	・2023/11/09 GameOverの表示 yamashita
+	・2023/11/09 コントローラ移動の追加 sawada
+	・2023/11/11 parameter用ヘッダ追加 suzumura
 
    ======================================== */
 
    // =============== インクルード ===================
-#include"Player.h"
+#include "Player.h"
 #include "Input.h"
 #include "Sphere.h"
+#include "GameParameter.h"		//定数定義用ヘッダー
+
 // =============== 定数定義 =======================
-#define PLAYERMOVE (0.1f)	//playerの移動量
-#define XM_PI (3.141593f)	//円周率
-#define FORWARD_YES	(1.0f)	//その方向を向いる
-#define FORWARD_NO (0.0f)	//その方向を向いていない
+const float FORWARD_YES(1.0f);	//その方向を向いる
+const float FORWARD_NO(0.0f);	//その方向を向いていない
+const float XM_PI(3.141593f);	//円周率
+
+#if MODE_DEFINE
+#else
+const float PLAYERMOVE(0.1f);	//playerの移動量
 const int PLAYER_HP = 5;
 const float PLAYER_RADIUS = 0.5f;	//プレイヤーの当たり判定の大きさ
 const int NO_DAMAGE_TIME = 3 * 60;	//プレイヤーの無敵時間
+#endif
+
 // =============== グローバル変数定義 =============
 
 
