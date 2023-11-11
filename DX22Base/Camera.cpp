@@ -15,21 +15,19 @@
 	・2023/11/07 GetViewMatrix()関数にconst修飾子付与・コメント修正 takagi
 	・2023/11/09 カメラの様々動作チェック。 takagi
 	・2023/11/10 パラメタ修正 takagi
-
+	・2023/11/11 define用ヘッダ追加 suzumura
 ========================================== */
 
 // =============== インクルード ===================
 #include "Camera.h"		//自身のヘッダ
 #include "Defines.h"	//画面情報
 
-// =============== 定数定義 ===================
 // =============== 定数定義 =====================
 const float ASPECT = (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT;	//画面比率(y / x)
-//const float ASPECT = 16.0f / 9.0f;								//画面比率(y / x)
 const TPos3d<float> INIT_POS(0.0f, 1.6f, -3.0f);					//初期位置
 const TPos3d<float> INIT_LOOK(0.0f, 0.0f, 0.0f);					//初期注視地点
 const TTriType<float> INIT_UP_VECTOR(0.0f, 1.0f, 0.0f);				//カメラの上方向
-const float INIT_ANGLE = 2.0f * 24.0f / 360.0f * 3.1415f;			//初期画角const 
+const float INIT_ANGLE = DirectX::XMConvertToRadians(24.0f);        //カメラの角度
 const float INIT_NEAR = 1.0f;										//画面手前初期z値
 const float INIT_FAR = 150.0f;										//画面奥初期z値
 const float INIT_RADIUS = 40.0f;									//カメラと注視点との距離(初期値)

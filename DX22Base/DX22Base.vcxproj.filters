@@ -398,6 +398,9 @@
     <ClInclude Include="Slime_3.h">
       <Filter>ヘッダー ファイル\3dObject</Filter>
     </ClInclude>
+    <ClInclude Include="GameParameter.h">
+      <Filter>ヘッダー ファイル\Info</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="VS_Model.hlsl">

@@ -224,6 +224,7 @@
     <ClInclude Include="Collision.h" />
     <ClInclude Include="Controller.h" />
     <ClInclude Include="Cylinder.h" />
+    <ClInclude Include="GameParameter.h" />
     <ClInclude Include="Defines.h" />
     <ClInclude Include="DirectX.h" />
     <ClInclude Include="Effect.h" />

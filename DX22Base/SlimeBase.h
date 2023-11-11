@@ -8,26 +8,25 @@
 	作成者 鈴村 朋也
 	
 	変更履歴
-	・2023/11/04 スライムベースクラス作成 /鈴村 朋也
-	・2023/11/06 吹き飛び移動と吹き飛び移動関数を作成 変更者名：山下凌佑
-	・2023/11/06 m_fSpped(敵の移動速度)とm_fVecAngle(敵の吹き飛ぶ方向)のメンバ変数を追加 変更者名：山下凌佑
-	・2023/11/06 定数SPEED_DOWN_RATIO(ぶつかった先のスライムに速度を渡す際に減少する割合)を追加 変更者名：山下凌佑
-	・2023/11/06 定数MOVE_RESIST(吹き飛び移動中のスライムの移動速度に毎フレームかかる減算数値)を追加 変更者名：山下凌佑
-	・2023/11/07 HitBranch関数(スライムとの接触分岐処理)をSlimeManagerに移動するために削除 変更者名：山下凌佑
-	・2023/11/08 スライムのサイズを表す列挙を定義　変更者：山下凌佑
-	・2023/11/08 スライムのサイズを返す関数を作成　変更者：山下凌佑
-	・2023/11/08 GetPos→GetSphereに名前を変更 / 山下凌佑
-	・2023/11/08 スライムの移動速度を取得する関数を作成 / 山下凌佑
-	・2023/11/08 定数定義がヘッダーにあったのでcppに移動 / 山下凌佑
-	・2023/11/08 UnionとExplosionを削除(マネージャーに移動させたので) 変更者：澤田蒼生
-	・2023/11/08 m_bUse、n_playerDistance、m_playerAngleを削除(一か所でしか使用していない為)変更者：澤田蒼生
-	・2023/11/08 m_Playerを追加　変更者：澤田蒼生
-	・2023/11/08 座標をTPos<Pos>に変更　変更者：澤田蒼生
-	・2023/11/09 Update,NormalMoveの引数変更　変更者：澤田蒼生
-	
-	・2023/11/08 スライムの移動速度の定数をcppからhに移動　変更者：澤田蒼生
-	・2023/11/10 カメラポインタを追加 /山下凌佑
-	・2023/11/10 他のオブジェクトと同一のカメラをセットするようにした 山下凌佑
+	・2023/11/04 スライムベースクラス作成 suzumura
+	・2023/11/06 吹き飛び移動と吹き飛び移動関数を作成 yamashita
+	・2023/11/06 m_fSpped(敵の移動速度)とm_fVecAngle(敵の吹き飛ぶ方向)のメンバ変数を追加 yamashita
+	・2023/11/06 定数SPEED_DOWN_RATIO(ぶつかった先のスライムに速度を渡す際に減少する割合)を追加 yamashita
+	・2023/11/06 定数MOVE_RESIST(吹き飛び移動中のスライムの移動速度に毎フレームかかる減算数値)を追加 yamashita
+	・2023/11/07 HitBranch関数(スライムとの接触分岐処理)をSlimeManagerに移動するために削除 yamashita
+	・2023/11/08 スライムのサイズを表す列挙を定義 yamashita
+	・2023/11/08 スライムのサイズを返す関数を作成 yamashita
+	・2023/11/08 GetPos→GetSphereに名前を変更 yamashita
+	・2023/11/08 スライムの移動速度を取得する関数を作成 yamashita
+	・2023/11/08 定数定義がヘッダーにあったのでcppに移動 yamashita
+	・2023/11/08 UnionとExplosionを削除(マネージャーに移動させたので) yamashita
+	・2023/11/08 m_bUse、n_playerDistance、m_playerAngleを削除(一か所でしか使用していない為) yamashita
+	・2023/11/08 m_Playerを追加 yamashita
+	・2023/11/08 座標をTPos<Pos>に変更 yamashita
+	・2023/11/09 Update,NormalMoveの引数変更 yamashita
+	・2023/11/08 スライムの移動速度の定数をcppからhに移動 yamashita
+	・2023/11/10 カメラポインタを追加 yamashita
+	・2023/11/10 他のオブジェクトと同一のカメラをセットするようにした yamashita
 ========================================== */
 #ifndef __SLIME_BASE_H__
 #define __SLIME_BASE_H__
@@ -38,6 +37,7 @@
 #include "SphereInfo.h"
 #include "Pos3d.h"
 #include "Camera.h"
+#include "GameParameter.h"		//定数定義用ヘッダー
 
 // =============== 列挙定義 =======================
 enum E_SLIME_LEVEL
@@ -53,8 +53,10 @@ enum E_SLIME_LEVEL
 };
 
 // =============== 定数定義 =======================
-const float ENEMY_MOVE_SPEED = 0.01f;	//継承先でも使いたいのでヘッダーに書きます	山下凌佑
-
+#if MODE_GAME_PARAMETER
+#else
+const float ENEMY_MOVE_SPEED = 0.01f;	//敵の移動速度
+#endif
 // =============== クラス定義 =====================
 
 class CSlimeBase
