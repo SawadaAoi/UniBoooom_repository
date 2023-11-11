@@ -40,10 +40,12 @@ const float ROTATE_RADIUS = 1.0f;        // ハンマーが回転するプレイヤーからの距
 const float HAMMER_SIZE = 1.0f;          // ハンマーの当たり判定の大きさ
 
 //===Player.cpp======
-const float PLAYERMOVE(0.1f);		// プレイヤーの移動速度
-const int PLAYER_HP = 5;			// プレイヤーのHP
-const float PLAYER_RADIUS = 0.5f;   // プレイヤーの当たり判定の大きさ
-const int NO_DAMAGE_TIME = 3 * 60;  // プレイヤーの無敵時間
+const float PLAYERMOVE(0.1f);				// プレイヤーの移動速度
+const int PLAYER_HP = 5;					// プレイヤーのHP
+const float PLAYER_RADIUS = 0.5f;			// プレイヤーの当たり判定の大きさ
+const int NO_DAMAGE_TIME = 3 * 60;			// プレイヤーの無敵時間
+const int DAMAGE_FLASH_FRAME = 0.1 * 60;	// プレイヤーのダメージ点滅の切り替え間隔
+
 
 //===SlimeBase.cpp======
 const float SPEED_DOWN_RATIO = 0.6f;		// スライムが接触して吹き飛ぶ際にかかる移動速度の変化の割合    RATIO=>割合

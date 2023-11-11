@@ -33,7 +33,7 @@ const float XM_PI(3.141593f);	//円周率
 
 #if MODE_GAME_PARAMETER
 #else
-const float PLAYERMOVE(0.1f);	//playerの移動量
+const float PLAYERMOVE(0.1f);		//プレイヤーの移動量
 const int PLAYER_HP = 5;
 const float PLAYER_RADIUS = 0.5f;	//プレイヤーの当たり判定の大きさ
 const int NO_DAMAGE_TIME = 3 * 60;	//プレイヤーの無敵時間
