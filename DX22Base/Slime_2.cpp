@@ -19,10 +19,11 @@
 
 // =============== インクルード ===================
 #include "Slime_2.h"
-#include "GameParameter.h"		//定数定義用ヘッダー
 
 // =============== 定数定義 =======================
-#if MODE_DEFINE
+#if MODE_GAME_PARAMETER
+#include "GameParameter.h"		//定数定義用ヘッダー
+
 #else
 const float LEVEL2_SCALE = 2.0f;
 const float LEVEL2_SPEED = ENEMY_MOVE_SPEED * 0.95;

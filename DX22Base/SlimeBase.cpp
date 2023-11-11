@@ -25,7 +25,7 @@
 #include "Geometry.h"
 
 // =============== 定数定義 =======================
-#if MODE_DEFINE
+#if MODE_GAME_PARAMETER
 #else
 const float SPEED_DOWN_RATIO = 0.6f;	//スライムが接触して吹き飛ぶ際にかかる移動速度の変化の割合	RATIO=>割合
 const float MOVE_RESIST = 0.1f;		//吹き飛び移動中のスライムの移動速度に毎フレームかかる減算数値

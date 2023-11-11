@@ -13,16 +13,17 @@
 	・2023/11/08 スライムの移動速度を大きさごとに変更する関数を作成	yamashita
 	・2023/11/08 スライムの移動速度を大きさごとに変更する関数を作成	yamashita
 	・2023/11/08 コンストラクタでレベルごとのパラメータをセット	yamashita
-	・2023/11/11 parameter用ヘッダ追加 suzumura
+	・2023/11/11 define用ヘッダ追加 suzumura
 
 ========================================== */
 
 // =============== インクルード ===================
 #include "Slime_1.h"
-#include "GameParameter.h"		//定数定義用ヘッダー
 
 // =============== 定数定義 =======================
-#if MODE_DEFINE
+#if MODE_GAME_PARAMETER
+#include "GameParameter.h"		//定数定義用ヘッダー
+
 #else
 const float LEVEL1_SCALE = 1.0f;
 const float LEVEL1_SPEED = ENEMY_MOVE_SPEED;

@@ -29,7 +29,7 @@
 #include <stdlib.h>
 
 // =============== ’è”’è‹` =======================
-#if MODE_DEFINE
+#if MODE_GAME_PARAMETER
 #else
 const int ENEMY_GENERATE_INTERVAL	= 3 * 60;	// ¶¬ŠÔŠu
 const int RANDOM_POS_MIN			= -15;		// ¶¬À•W”ÍˆÍ‰ºŒÀ(x,z‹¤’Ê)

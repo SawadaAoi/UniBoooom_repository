@@ -22,10 +22,10 @@
 #include "Explosion.h"			//自身のヘッダー
 #include "Geometry.h"			//空間における形状の抽象クラス定義のヘッダー
 #include "Sphere.h"				//球定義のヘッダー
-#include "GameParameter.h"		//定数定義用ヘッダー
 
 // =============== 定数定義 =======================
-#if MODE_DEFINE
+#if MODE_GAME_PARAMETER
+#include "GameParameter.h"		//定数定義用ヘッダー
 #else
 const float MAX_DISPLAY_TIME = 60 * 3.0f;	// 爆発持続秒数
 const float ONE_SECOND_FRAME = 60;			// 大きくなるまでの秒数

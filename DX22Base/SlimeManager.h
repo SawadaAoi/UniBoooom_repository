@@ -25,10 +25,11 @@
 #include "ExplosionManager.h"
 #include "Camera.h"
 #include "ExplosionManager.h"
-#include "GameParameter.h"		//定数定義用ヘッダー
 
 // =============== 定数定義 =======================
-#if MODE_DEFINE
+#if MODE_GAME_PARAMETER
+#include "GameParameter.h"		//定数定義用ヘッダー
+
 #else
 const int MAX_SLIME = 30;	//スライムの最大生成数
 #endif

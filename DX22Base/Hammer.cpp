@@ -20,11 +20,13 @@
 // =============== インクルード ===================
 #include "hammer.h"				// 自身のヘッダ
 #include "Sphere.h"				// 球体の情報用ヘッダ
-#include "GameParameter.h"		// 定数定義用ヘッダー
 
 // =============== 定数定義 =======================
 const float HALF_PI = 3.141592f / 2;	//ハンマーの開始地点のラジアン角(要修正)
-#if MODE_DEFINE
+
+#if MODE_GAME_PARAMETER
+#include "GameParameter.h"		// 定数定義用ヘッダー
+
 #else
 const float ANGULAR_ANGLE = 0.1f;		//毎フレーム移動する角度量
 const float ROTATE_RADIUS = 1.0f;		//ハンマーが回転するプレイヤーからの距離
