@@ -16,7 +16,8 @@
 	・2023/11/09 GetPosAddress追加、カメラ追加 髙木駿輔
 	・2023/11/09 プレイヤーの無敵時間をカウントの変数と無敵状態のフラグを追加 山下凌佑
 	・2023/11/09 プレイヤーの無敵状態を取得するゲット関数を追加 山下凌佑
-	
+	・2023/11/11 プレイヤーの点滅処理追加 Tei
+
 ========================================== */
 
 #ifndef __PLAYER_H__
@@ -42,6 +43,7 @@ public:
 	void Damage();	//自身のHPを減らす
 	void Move();	//移動関数
 	void ControllerMove();	// コントローラ用入力
+	void DamageAnimation();
 
 
 	// ゲット関数
@@ -73,6 +75,8 @@ private:
 	CGeometry* m_pPlayerGeo;			//プレイヤーを仮表示するジオメトリー
 	const CCamera* m_pCamera;			//プレイヤーを追従するカメラ
 	CGeometry* m_pGameOver;				//ゲームオーバーを仮表示するジオメトリー
+	bool m_DrawFlg;					//プレイヤーがダメージを受けたら点滅するフラグ
+	int m_FlashCnt;						//点滅の時間の長さ
 
 };
 

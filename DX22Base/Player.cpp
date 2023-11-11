@@ -1,88 +1,93 @@
 /* ========================================
    HEW/UniBoooom!!
    ---------------------------------------
-   Player�pcpp
+   Player用cpp
    ---------------------------------------
    Player.cpp
 
-   �쐬��
-	�R�{�M��
-   �ύX����
-	�E2023/11/03 �ړ��쐬 yamamoto
-	�E2023/11/06 �����ǉ��A�_���[�W����A�U���J�n�쐬 yamamoto
-	�E2023/11/08 �v���C���[�̓����蔻��̑傫���̒萔��ǉ� yamashita
-	�E2023/11/08 �U�����͈ړ��ł��Ȃ��悤�ɕύX yamashita
-	�E2023/11/09 �J�����Ή� takagi
-	�E2023/11/09 GameOver�̕\�� yamashita
-	�E2023/11/09 �R���g���[���ړ��̒ǉ� sawada
-	�E2023/11/11 parameter�p�w�b�_�ǉ� suzumura
+   作成者
+	山本凱翔
+   変更履歴
+	・2023/11/03 移動作成 yamamoto
+	・2023/11/06 方向追加、ダメージ判定、攻撃開始作成 yamamoto
+	・2023/11/08 プレイヤーの当たり判定の大きさの定数を追加 yamashita
+	・2023/11/08 攻撃中は移動できないように変更 yamashita
+	・2023/11/09 カメラ対応 takagi
+	・2023/11/09 GameOverの表示 yamashita
+	・2023/11/09 コントローラ移動の追加 sawada
+	・2023/11/11 parameter用ヘッダ追加 suzumura
+  ・2023/11/11 プレイヤーの点滅処理追加 Tei
 
-   ======================================== */
+======================================== */
 
-   // =============== �C���N���[�h ===================
+// =============== インクルード ===================
 #include "Player.h"
 #include "Input.h"
 #include "Sphere.h"
-#include "GameParameter.h"		//�萔��`�p�w�b�_�[
+#include "GameParameter.h"		//定数定義用ヘッダー
 
-// =============== �萔��` =======================
-const float FORWARD_YES(1.0f);	//���̕�����������
-const float FORWARD_NO(0.0f);	//���̕����������Ă��Ȃ�
-const float XM_PI(3.141593f);	//�~����
+// =============== 定数定義 =======================
+const float FORWARD_YES(1.0f);	//その方向を向いる
+const float FORWARD_NO(0.0f);	//その方向を向いていない
+const float XM_PI(3.141593f);	//円周率
 
 #if MODE_GAME_PARAMETER
 #else
-const float PLAYERMOVE(0.1f);	//player�̈ړ���
+const float PLAYERMOVE(0.1f);	//playerの移動量
 const int PLAYER_HP = 5;
-const float PLAYER_RADIUS = 0.5f;	//�v���C���[�̓����蔻��̑傫��
-const int NO_DAMAGE_TIME = 3 * 60;	//�v���C���[�̖��G����
+const float PLAYER_RADIUS = 0.5f;	//プレイヤーの当たり判定の大きさ
+const int NO_DAMAGE_TIME = 3 * 60;	//プレイヤーの無敵時間
+const int DAMAGE_FLASH_FRAME = 0.1 * 60;	// プレイヤーのダメージ点滅の切り替え間隔
+
 #endif
 
-// =============== �O���[�o���ϐ���` =============
+// =============== グローバル変数定義 =============
 
 
 /* ========================================
-   �֐��F�R���X�g���N�^
+   関数：コンストラクタ
    ----------------------------------------
-   ���e�F�������ɍs������
+   内容：生成時に行う処理
    ----------------------------------------
-   �����F�Ȃ�
+   引数：なし
    ----------------------------------------
-   �ߒl�F�Ȃ�
-   ======================================== */
+   戻値：なし
+======================================== */
 CPlayer::CPlayer()
 	:m_pos{ 0.0f,0.0f,0.0f }
 	/*,m_playerPosition{ 0.0f,0.0f,0.0f }*/
-	,m_playerForward{ 0.0f,0.0f,0.0f }
-	,m_playerRotation(0.0f)
-	,m_pHammer(nullptr)
-	,m_pPlayerGeo(nullptr)
-	,m_pGameOver(nullptr)
-	,m_bHammer(false)
-	,m_nHp(0)
-	,m_pCamera(nullptr)
-	,m_nNoDamageCnt(0)
-	,m_bCollide(false)
+	, m_playerForward{ 0.0f,0.0f,0.0f }
+	, m_playerRotation(0.0f)
+	, m_pHammer(nullptr)
+	, m_pPlayerGeo(nullptr)
+	, m_pGameOver(nullptr)
+	, m_bHammer(false)
+	, m_nHp(0)
+	, m_pCamera(nullptr)
+	, m_nNoDamageCnt(0)
+	, m_bCollide(false)
+	, m_DrawFlg(true)
+	, m_FlashCnt(0)
 {
-	m_T = DirectX::XMMatrixTranslation(0.0f, 0.0f, 0.0f);	//�ړ��̕ϊ��s���������
-	m_S = DirectX::XMMatrixScaling(2.0f, 2.0f, 2.0f);		//�g�k�̕ϊ��s���������
-	m_Ry = DirectX::XMMatrixRotationY(0.0f);				//Y����]�̕ϊ��s���������
-	m_pHammer = new CHammer();								//Hammer�N���X���C���X�^���X
-	m_pPlayerGeo = new CSphere();							//�v���C���[�Ƃ��ĉ��\�����鋅�̃I�u�W�F�N�g�̃C���X�^���X
+	m_T = DirectX::XMMatrixTranslation(0.0f, 0.0f, 0.0f);	// 移動の変換行列を初期化
+	m_S = DirectX::XMMatrixScaling(2.0f, 2.0f, 2.0f);		// 拡縮の変換行列を初期化
+	m_Ry = DirectX::XMMatrixRotationY(0.0f);				// Y軸回転の変換行列を初期化
+	m_pHammer = new CHammer();								// Hammerクラスをインスタンス
+	m_pPlayerGeo = new CSphere();							// プレイヤーとして仮表示する球体オブジェクトのインスタンス
 	m_pGameOver = new CSphere();
-	m_nHp = PLAYER_HP;												//�v���C���[��HP������
-	m_sphere.pos = { 0.0f,0.0f,0.0f };	//�����蔻��p�̋��̂̍��W��������
-	m_sphere.radius = PLAYER_RADIUS;	//�����蔻��p�̋��̂̔��a
+	m_nHp = PLAYER_HP;										// プレイヤーのHPを決定
+	m_sphere.pos = { 0.0f,0.0f,0.0f };				// 当たり判定用の球体の座標を初期化
+	m_sphere.radius = PLAYER_RADIUS;				// 当たり判定用の球体の半径
 }
 /* ========================================
-   �֐��F�f�X�g���N�^
+   関数：デストラクタ
    ----------------------------------------
-   ���e�F�j�����ɍs������
+   内容：破棄時に行う処理
    ----------------------------------------
-   �����F�Ȃ�
+   引数：なし
    ----------------------------------------
-   �ߒl�F�Ȃ�
-   ======================================== */
+   戻値：なし
+======================================== */
 CPlayer::~CPlayer()
 {
 	SAFE_DELETE(m_pGameOver);
@@ -91,17 +96,17 @@ CPlayer::~CPlayer()
 }
 
 /* ========================================
-   �X�V�����֐��֐�
+   更新処理関数関数
    ----------------------------------------
-   ���e�F�X�V����
+   内容：更新処理
    ----------------------------------------
-   �����F�Ȃ�
+   引数：なし
    ----------------------------------------
-   �ߒl�F�Ȃ�
-   ======================================== */
+   戻値：なし
+======================================== */
 void CPlayer::Update()
 {
-	if (!m_bHammer)	//�U�����͈ړ����Ȃ�
+	if (!m_bHammer)	//攻撃中は移動しない
 	{
 		if (GetUseVController() == false)
 		{
@@ -114,29 +119,35 @@ void CPlayer::Update()
 	}
 
 
-	if ((IsKeyTrigger(VK_SPACE)|| IsKeyTriggerController(BUTTON_B)) || m_pHammer->Gethammer())	//�X�y�[�X�L�[�����������������̓n���}�[��U��t���O��ON�̎�
+	if ((IsKeyTrigger(VK_SPACE)|| IsKeyTriggerController(BUTTON_B)) || m_pHammer->Gethammer())	//スペースキーを押した時もしくはハンマーを振るフラグがONの時
 	{
-		m_pHammer->Update(m_pos, m_playerRotation);			//�n���}�[��U��Update�������s��
+		m_pHammer->Update(m_pos, m_playerRotation);			//ハンマーを振るUpdate処理を行う
 	}
 	
-	m_bHammer = m_pHammer->Gethammer();	//�n���}�[���g�p�����m�F
-	if (m_bCollide)							//���G��ԂɂȂ��Ă���ꍇ
+	m_bHammer = m_pHammer->Gethammer();	//ハンマーを使用中か確認
+	if (m_bCollide)							//無敵状態になっている場合
 	{
-		m_nNoDamageCnt++;						//���t���[���ŃJ�E���g��ǉ�
-		if (m_nNoDamageCnt >= NO_DAMAGE_TIME)	//�J�E���g����莞�Ԃ𒴂�����
-			m_bCollide = false;				//���G������
+		m_nNoDamageCnt++;					//毎フレームでカウントを追加
+		DamageAnimation();					//プレイヤー点滅関数呼び出す
+		if (m_nNoDamageCnt >= NO_DAMAGE_TIME)	//カウントが一定時間を超えたら
+		{
+			m_DrawFlg = true;				//点滅を解除
+			m_bCollide = false;				//無敵を解除
+		}
+		
 	}
+	
 }
 
 /* ========================================
-   �`�揈���֐�
+   描画処理関数
    ----------------------------------------
-   ���e�F�`�揈��
+   内容：描画処理
    ----------------------------------------
-   �����F�Ȃ�
+   引数：なし
    ----------------------------------------
-   �ߒl�F�Ȃ�
-   ======================================== */
+   戻値：なし
+======================================== */
 void CPlayer::Draw()
 {
 	if (!m_pCamera)
@@ -144,252 +155,292 @@ void CPlayer::Draw()
 		return;
 	}
 
-	m_pPlayerGeo->SetView(m_pCamera->GetViewMatrix());
-	m_pPlayerGeo->SetProjection(m_pCamera->GetProjectionMatrix());
-	m_pPlayerGeo->Draw();		//�v���C���[��`��
-	if (m_pHammer->Gethammer())	//�n���}�[��U��t���O��ON�̎�
+	// 描画しない(点滅処理中)
+	if (m_DrawFlg == false)
 	{
-		m_pHammer->Draw(m_pCamera);		//�n���}�[�̕`��
+		return;
 	}
 
-	if (m_nHp <= 0)	//�Q�[���I�[�o�[��\���I�u�W�F�N�g�̕`��	<=TODO ��X�����܂�
+	m_pPlayerGeo->SetView(m_pCamera->GetViewMatrix());
+	m_pPlayerGeo->SetProjection(m_pCamera->GetProjectionMatrix());
+
+	
+	m_pPlayerGeo->Draw();		//プレイヤーを描画
+	
+	if (m_pHammer->Gethammer())	//ハンマーを振るフラグがONの時
 	{
-		m_pGameOver->SetView(m_pCamera->GetViewMatrix());										//�r���[�̃Z�b�g
-		m_pGameOver->SetProjection(m_pCamera->GetProjectionMatrix());							//�v���W�F�N�V�����̃Z�b�g
-		DirectX::XMMATRIX mat = DirectX::XMMatrixTranslation(0.0f, 2.0f, 0.0f);					//�ړ��̕ϊ��s��
-		mat = DirectX::XMMatrixTranspose(mat);													//�]�u
-		DirectX::XMFLOAT4X4 fmat;																//�Z�b�g���[���h�p�̕ϐ�
-		DirectX::XMStoreFloat4x4(&fmat, mat);													//MATRIX�^����ϊ�
-		m_pGameOver->SetWorld(fmat);															//���[���h�̃Z�b�g
-		m_pGameOver->Draw();																	//GameOver�̕`��
+		m_pHammer->Draw(m_pCamera);		//ハンマーの描画
+	}
+
+	if (m_nHp <= 0)	//ゲームオーバーを表すオブジェクトの描画	<=TODO 後々消します
+	{
+		m_pGameOver->SetView(m_pCamera->GetViewMatrix());										//ビューのセット
+		m_pGameOver->SetProjection(m_pCamera->GetProjectionMatrix());							//プロジェクションのセット
+		DirectX::XMMATRIX mat = DirectX::XMMatrixTranslation(0.0f, 2.0f, 0.0f);					//移動の変換行列
+		mat = DirectX::XMMatrixTranspose(mat);													//転置
+		DirectX::XMFLOAT4X4 fmat;																//セットワールド用の変数
+		DirectX::XMStoreFloat4x4(&fmat, mat);													//MATRIX型から変換
+		m_pGameOver->SetWorld(fmat);															//ワールドのセット
+		m_pGameOver->Draw();																	//GameOverの描画
 	}
 }
 
 /* ========================================
-   �_���[�W�֐�
+   ダメージ関数
    ----------------------------------------
-   ���e�F�v���C���[���_���[�W���󂯂�
+   内容：プレイヤーがダメージを受ける
    ----------------------------------------
-   �����F�Ȃ�
+   引数：なし
    ----------------------------------------
-   �ߒl�F�Ȃ�
-   ======================================== */
+   戻値：なし
+======================================== */
 void CPlayer::Damage()
 {
 	m_nHp -= 1;
-	m_bCollide = true;	//�v���C���[����莞�ԁA���G�ɂ���
-	m_nNoDamageCnt = 0;	//�v���C���[���G���Ԃ̃J�E���g��0�ɖ߂�
+	m_bCollide = true;	//プレイヤーを一定時間、無敵にする
+	m_nNoDamageCnt = 0;	//プレイヤー無敵時間のカウントを0に戻す
 
 	if (m_nHp <= 0)
 	{
-		//�Q�[���I�[�o�[���� <= TODO
+		//ゲームオーバー処理 <= TODO
 	}
 }
 
 /* ========================================
-   �v���C���[�̈ړ��֐�
+   プレイヤーの移動関数
    ----------------------------------------
-   ���e�F�v���C���[���ړ�����֐�
+   内容：プレイヤーが移動する関数
    ----------------------------------------
-   �����F�Ȃ�
+   引数：なし
    ----------------------------------------
-   �ߒl�F�Ȃ�
-   ======================================== */
+   戻値：なし
+======================================== */
 void CPlayer::Move()
-{//������player�̈ʒu�Ɛi�s�������X�V������
+{//＝＝＝playerの位置と進行方向を更新＝＝＝
 	if (IsKeyPress('W'))
-	{	//�O�Ɉړ�
-		m_pos.z += PLAYERMOVE;					//player��+Z�����Ɉړ�
-		m_playerForward.z = FORWARD_YES;		//�����Ă������
+	{	//前に移動
+		m_pos.z += PLAYERMOVE;					//playerを+Z方向に移動
+		m_playerForward.z = FORWARD_YES;		//向いている方向
 		m_playerForward.x = FORWARD_NO;
 		if (IsKeyPress('A'))
-		{//���O�Ɉړ�
+		{//左前に移動
 			m_pos.x -= PLAYERMOVE;
 			m_playerForward.x = -FORWARD_YES;
 		}
 		else if (IsKeyPress('D'))
-		{//�E�O�Ɉړ�
+		{//右前に移動
 			m_pos.x += PLAYERMOVE;
 			m_playerForward.x = FORWARD_YES;
 		}
 	}
 	else if (IsKeyPress('S'))
-	{//���Ɉړ�
+	{//後ろに移動
 		m_pos.z -= PLAYERMOVE;
 		m_playerForward.z = -FORWARD_YES;
 		m_playerForward.x = FORWARD_NO;
 		if (IsKeyPress('A'))
-		{//�����Ɉړ�
+		{//左後ろに移動
 			m_pos.x -= PLAYERMOVE;
 			m_playerForward.x = -FORWARD_YES;
 		}
 		else if (IsKeyPress('D'))
-		{//�E���Ɉړ�
+		{//右後ろに移動
 			m_pos.x += PLAYERMOVE;
 			m_playerForward.x = FORWARD_YES;
 		}
 	}
 	else if (IsKeyPress('D'))
-	{//�E�Ɉړ�
+	{//右に移動
 		m_pos.x += PLAYERMOVE;
 		m_playerForward.x = FORWARD_YES;
 		m_playerForward.z = FORWARD_NO;
 	}
 	else if (IsKeyPress('A'))
-	{//���Ɉړ�
+	{//左に移動
 		m_pos.x -= PLAYERMOVE;
 		m_playerForward.x = -FORWARD_YES;
 		m_playerForward.z = FORWARD_NO;
 	}
 
-	m_sphere.pos = m_pos;	//�v���C���[�̍��W�𓖂��蔻��p�̋��̂ɃR�s�[
+	m_sphere.pos = m_pos;	//プレイヤーの座標を当たり判定用の球体にコピー
 
-	//�i�s��������player�̌��������߂�
-	if (m_playerForward.x == FORWARD_NO)	//x�����������ĂȂ�������Z���i�O��j�ɓ�������
+	//進行方向からplayerの向きを決める
+	if (m_playerForward.x == FORWARD_NO)	//x方向を向いてなかったらZ軸（前後）に動くだけ
 	{
-		if (m_playerForward.z > 0.0f) {//+Z�O�����ɂ���
-			m_playerRotation = 0.0f; // �O����
+		if (m_playerForward.z > 0.0f) {//+Z前方向にする
+			m_playerRotation = 0.0f; // 前方向
 		}
 		else {
-			m_playerRotation = XM_PI; // �����
+			m_playerRotation = XM_PI; // 後方向
 		}
 	}
-	else {//Z�̕����ɂ������Ă�Ȃ�΂߁A�����ĂȂ��Ȃ牡�̕���������
-		m_playerRotation = atan(m_playerForward.x / m_playerForward.z);	//�����Ŏ΂߂����f
+	else {//Zの方向にも向いてるなら斜め、向いてないなら横の方向を向く
+		m_playerRotation = atan(m_playerForward.x / m_playerForward.z);	//ここで斜めか判断
 		if (m_playerForward.z < 0.0f) {
-			m_playerRotation += XM_PI; // ����-�Ȃ���Ȃ̂ő����Č�둤��
+			m_playerRotation += XM_PI; // ｚが-なら後ろなので足して後ろ側に
 		}
 	}
 
-	//=====player�̍��W�A��]���Z�b�g=====
-	m_T = DirectX::XMMatrixTranslation(m_pos.x, m_pos.y, m_pos.z);		//�ړ��̕ϊ��s��
-	DirectX::XMMATRIX Ry = DirectX::XMMatrixRotationY(m_playerRotation);//Y���̉�]�s��
-	DirectX::XMMATRIX mat = Ry * m_T;									//�ϊ��s�������
-	mat = DirectX::XMMatrixTranspose(mat);								//�ϊ��s���]�u
-	DirectX::XMFLOAT4X4 fMat;											//�s��̊i�[��
-	DirectX::XMStoreFloat4x4(&fMat, mat);								//XMFLOAT4X4�ɕϊ����Ċi�[
-	m_pPlayerGeo->SetWorld(fMat);										//���[���h���W�ɃZ�b�g
+	//=====playerの座標、回転をセット=====
+	m_T = DirectX::XMMatrixTranslation(m_pos.x, m_pos.y, m_pos.z);		//移動の変換行列
+	DirectX::XMMATRIX Ry = DirectX::XMMatrixRotationY(m_playerRotation);//Y軸の回転行列
+	DirectX::XMMATRIX mat = Ry * m_T;									//変換行列を結合
+	mat = DirectX::XMMatrixTranspose(mat);								//変換行列を転置
+	DirectX::XMFLOAT4X4 fMat;											//行列の格納先
+	DirectX::XMStoreFloat4x4(&fMat, mat);								//XMFLOAT4X4に変換して格納
+	m_pPlayerGeo->SetWorld(fMat);										//ワールド座標にセット
 }
 
 /* ========================================
-   �R���g���[�����͊֐�
+   コントローラ入力関数
    ----------------------------------------
-   ���e�F�R���g���[�����͂̈ړ�����
+   内容：コントローラ入力の移動処理
    ----------------------------------------
-   �����F�Ȃ�
+   引数：なし
    ----------------------------------------
-   �ߒl�F�Ȃ�
-   ======================================== */
+   戻値：なし
+======================================== */
 void CPlayer::ControllerMove()
 {
-	// �R���g���[���[�̍��X�e�B�b�N�̌X�����擾
+	// コントローラーの左スティックの傾きを取得
 	float stick_x = IsStickLeft().x;
 	float stick_y = IsStickLeft().y;	
 
-	// �X�e�B�b�N���^�񒆂̏ꍇ�ړ����Ȃ�
+	// スティックが真ん中の場合移動しない
 	if (stick_x != 0 || stick_y != 0)
 	{
-		float moveRad = atan2(stick_y * -1, stick_x);	// �X�e�B�b�N��|���������̊p�x�����߂�(y�����t�Ȃ̂Ł|1���|����)
+		float moveRad = atan2(stick_y * -1, stick_x);	// スティックを倒した方向の角度を求める(y軸が逆なので－1を掛ける)
 
-		// �p�x�����Ɉړ����鏈��
+		// 角度方向に移動する処理
 		m_pos.x += cosf(moveRad) * PLAYERMOVE;
 		m_pos.z += sinf(moveRad) * PLAYERMOVE;
 
-		m_playerRotation = atan2(stick_y, stick_x) + (XM_PI/2);	// XMMatrixTranslation�����v���Ŋp�x��90�x����Ă���(����0)�̂Œ���
+		m_playerRotation = atan2(stick_y, stick_x) + (XM_PI/2);	// XMMatrixTranslationが時計回りで角度が90度ずれている(↑が0)ので調整
 	}
 
-	m_sphere.pos = m_pos;	//�v���C���[�̍��W�𓖂��蔻��p�̋��̂ɃR�s�[
+	m_sphere.pos = m_pos;	//プレイヤーの座標を当たり判定用の球体にコピー
 
-	m_T = DirectX::XMMatrixTranslation(m_pos.x, m_pos.y, m_pos.z);		//�ړ��̕ϊ��s��
-	DirectX::XMMATRIX Ry = DirectX::XMMatrixRotationY(m_playerRotation);//Y���̉�]�s��
-	DirectX::XMMATRIX mat = Ry * m_T;									//�ϊ��s�������
-	mat = DirectX::XMMatrixTranspose(mat);								//�ϊ��s���]�u
-	DirectX::XMFLOAT4X4 fMat;											//�s��̊i�[��
-	DirectX::XMStoreFloat4x4(&fMat, mat);								//XMFLOAT4X4�ɕϊ����Ċi�[
-	m_pPlayerGeo->SetWorld(fMat);										//���[���h���W�ɃZ�b�g
+	m_T = DirectX::XMMatrixTranslation(m_pos.x, m_pos.y, m_pos.z);		//移動の変換行列
+	DirectX::XMMATRIX Ry = DirectX::XMMatrixRotationY(m_playerRotation);//Y軸の回転行列
+	DirectX::XMMATRIX mat = Ry * m_T;									//変換行列を結合
+	mat = DirectX::XMMatrixTranspose(mat);								//変換行列を転置
+	DirectX::XMFLOAT4X4 fMat;											//行列の格納先
+	DirectX::XMStoreFloat4x4(&fMat, mat);								//XMFLOAT4X4に変換して格納
+	m_pPlayerGeo->SetWorld(fMat);										//ワールド座標にセット
 }
-	
+
+
 
 /* ========================================
-   �v���C���[�����蔻��擾�֐�
+   プレイヤー当たり判定取得関数
    ----------------------------------------
-   ���e�F�v���C���[�̓����蔻��p�̋��̂��擾����֐�
+   内容：プレイヤーの当たり判定用の球体を取得する関数
    ----------------------------------------
-   �����F�Ȃ�
+   引数：なし
    ----------------------------------------
-   �ߒl�F�����蔻��(Sphere)
-   ======================================== */
+   戻値：当たり判定(Sphere)
+======================================== */
 CSphereInfo::Sphere CPlayer::GetPlayerSphere()
 {
 	return m_sphere;
 }
 
 /* ========================================
-   �n���}�[�����蔻��擾�֐�
+   ハンマー当たり判定取得関数
    ----------------------------------------
-   ���e�F�n���}�[�̓����蔻��p�̋��̂��擾����֐�
+   内容：ハンマーの当たり判定用の球体を取得する関数
    ----------------------------------------
-   �����F�Ȃ�
+   引数：なし
    ----------------------------------------
-   �ߒl�F�����蔻��(Sphere)
-   ======================================== */
+   戻値：当たり判定(Sphere)
+======================================== */
 CSphereInfo::Sphere CPlayer::GetHammerSphere()
 {
 	return m_pHammer->GetSphere();
 }
 
 /* ========================================
-   �v���C���[���W�̎擾�֐�
+   プレイヤー座標の取得関数
    ----------------------------------------
-   ���e�F�v���C���[�̍��W���擾����֐�
+   内容：プレイヤーの座標を取得する関数
    ----------------------------------------
-   �����F�Ȃ�
+   引数：なし
    ----------------------------------------
-   �ߒl�F���W(x,y,z)
-   ======================================== */
+   戻値：座標(x,y,z)
+======================================== */
 TPos3d<float> CPlayer::GetPos()
 {
 	return m_pos;
 }
 
 /* ========================================
-   Collision�m�F�֐�
+   Collision確認関数
    ----------------------------------------
-   ���e�F�v���C���[�����G��Ԃ��̊m�F
+   内容：プレイヤーが無敵状態かの確認
    ----------------------------------------
-   �����F�Ȃ�
+   引数：なし
    ----------------------------------------
-   �ߒl�Fbool
-   ======================================== */
+   戻値：bool
+======================================== */
 bool CPlayer::GetCollide()
 {
 	return m_bCollide;
 }
 
 /* ========================================
-   �J�����̃Z�b�g�֐�
+   カメラのセット関数
    ----------------------------------------
-   ���e�F�v���C���[�Ǐ]�J�������Z�b�g����
+   内容：プレイヤー追従カメラをセットする
    ----------------------------------------
-   �����F�J����
+   引数：カメラ
    ----------------------------------------
-   �ߒl�F�Ȃ�
-   ======================================== */
+   戻値：なし
+======================================== */
 void CPlayer::SetCamera(const CCamera * pCamera)
 {
-	m_pCamera = pCamera;	//���g�͕ς����Ȃ����ǃ|�C���^�͂������̂Ń��V�I
+	m_pCamera = pCamera;	//中身は変えられないけどポインタはかえれるのでヨシ！
 }
 
 /* ========================================
-   �n���}�[�U���t���O�擾�֐�
+   ハンマー攻撃フラグ取得関数
    ----------------------------------------
-   ���e�F�n���}�[�U���t���O�擾����
+   内容：ハンマー攻撃フラグ取得する
    ----------------------------------------
-   �����F����
+   引数：無し
    ----------------------------------------
-   �ߒl�F�n���}�[�U���t���O
-   ======================================== */
+   戻値：ハンマー攻撃フラグ
+======================================== */
 bool CPlayer::GetHammerFlg()
 {
 	return m_bHammer;
+}
+
+/* ========================================
+   プレイヤー点滅関数
+   ----------------------------------------
+   内容：プレイヤーがダメージを受けたら点滅する
+   ----------------------------------------
+   引数：無し
+   ----------------------------------------
+   戻値：無し
+======================================== */
+void CPlayer::DamageAnimation()
+{
+					
+	m_FlashCnt++;						//毎フレームでカウントを追加
+	if (m_FlashCnt >= DAMAGE_FLASH_FRAME)
+	{
+		// 描画するかしない切り替え
+		if (m_DrawFlg)
+		{
+			m_DrawFlg = false;
+		}	
+		else
+		{
+			m_DrawFlg = true;
+		}
+
+		m_FlashCnt = 0;
+	}
+
 }
