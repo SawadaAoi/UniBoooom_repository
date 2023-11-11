@@ -17,6 +17,7 @@
 	・2023/11/09 プレイヤー追跡移動変更 sawada
 	・2023/11/09 Update,NormalMoveの引数変更 sawada
 	・2023/11/11 parameter用ヘッダ追加 suzumura
+  ・2023/11/12 プレイヤーの方向を向きながら進むように変更 　YamamotoKaito
 	
 ========================================== */
 
@@ -32,7 +33,9 @@ const float MOVE_RESIST = 0.1f;		//吹き飛び移動中のスライムの移動
 const float REFLECT_RATIO = 0.1f;	//スライムがスライムを吹き飛ばした際に吹き飛ばした側のスライムの移動量を変える割合
 const float MOVE_DISTANCE_PLAYER = 20;	// プレイヤー追跡移動に切り替える距離
 const float SLIME_BASE_RADIUS = 0.5f;	// スライムの基準の大きさ
+
 #endif
+
 /* ========================================
 	コンストラクタ関数
 	-------------------------------------
@@ -72,6 +75,8 @@ CSlimeBase::CSlimeBase()
 	//当たり判定(自分)初期化
 	m_sphere.pos = { 0.0f, 0.0f, 0.0f };
 	m_sphere.radius = SLIME_BASE_RADIUS;
+	int random = abs(rand() % 360);	//ランダムに0～359の数字を作成
+	m_Ry = DirectX::XMMatrixRotationY(random);
 	
 }
 
@@ -139,8 +144,9 @@ void CSlimeBase::Draw(const CCamera* pCamera)
 	DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(m_pos.x, m_pos.y, m_pos.z);			//移動行列
 
 	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(m_scale.x, m_scale.y, m_scale.z);		//拡大縮小行列
-	DirectX::XMMATRIX R = DirectX::XMMatrixRotationY(0.0f);		//回転行列
-	DirectX::XMMATRIX world = S * T * R;						//ワールド行列の設定
+	//DirectX::XMMATRIX R = DirectX::XMMatrixLookToLH(DirectX::XMVectorZero(), direction, DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
+	//DirectX::XMMATRIX R = DirectX::XMMatrixRotationY(0.0f);		//回転行列
+	DirectX::XMMATRIX world = m_Ry*S * T ;						//ワールド行列の設定
 	world = DirectX::XMMatrixTranspose(world);					//転置行列に変換
 	DirectX::XMStoreFloat4x4(&mat[0], world);					//XMMATRIX型(world)からXMFLOAT4X4型(mat[0])へ変換して格納
 
@@ -198,6 +204,19 @@ void CSlimeBase::NormalMove(TPos3d<float> playerPos)
 			m_move.x = movePos.x / distancePlayer * m_fSpeed;
 			m_move.z = movePos.z / distancePlayer * m_fSpeed;
 		}
+		// 敵からプレイヤーへのベクトル
+		DirectX::XMFLOAT3 directionVector;
+		directionVector.x = m_pos.x-playerPos.x;
+		directionVector.y = m_pos.y-playerPos.y;
+		directionVector.z = m_pos.z-playerPos.z;
+
+		// ベクトルを正規化して方向ベクトルを得る
+		DirectX::XMVECTOR direction = DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&directionVector));
+		// 方向ベクトルから回転行列を計算
+		m_Ry = DirectX::XMMatrixRotationY(std::atan2(directionVector.x, directionVector.z));
+
+		
+
 	}
 	else
 	{
