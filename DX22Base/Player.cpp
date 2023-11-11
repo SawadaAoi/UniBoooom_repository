@@ -23,6 +23,7 @@
 #include "Player.h"
 #include "Input.h"
 #include "Sphere.h"
+#include "GameParameter.h"		//定数定義用ヘッダー
 
 // =============== 定数定義 =======================
 const float FORWARD_YES(1.0f);	//その方向を向いる
@@ -30,7 +31,6 @@ const float FORWARD_NO(0.0f);	//その方向を向いていない
 const float XM_PI(3.141593f);	//円周率
 
 #if MODE_GAME_PARAMETER
-#include "GameParameter.h"		//定数定義用ヘッダー
 #else
 const float PLAYERMOVE(0.1f);	//playerの移動量
 const int PLAYER_HP = 5;

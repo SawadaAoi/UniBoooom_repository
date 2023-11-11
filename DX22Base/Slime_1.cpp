@@ -19,11 +19,10 @@
 
 // =============== インクルード ===================
 #include "Slime_1.h"
+#include "GameParameter.h"		//定数定義用ヘッダー
 
 // =============== 定数定義 =======================
 #if MODE_GAME_PARAMETER
-#include "GameParameter.h"		//定数定義用ヘッダー
-
 #else
 const float LEVEL1_SCALE = 1.0f;
 const float LEVEL1_SPEED = ENEMY_MOVE_SPEED;

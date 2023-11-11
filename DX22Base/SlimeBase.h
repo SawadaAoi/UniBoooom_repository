@@ -37,7 +37,7 @@
 #include "SphereInfo.h"
 #include "Pos3d.h"
 #include "Camera.h"
-
+#include "GameParameter.h"		//定数定義用ヘッダー
 
 // =============== 列挙定義 =======================
 enum E_SLIME_LEVEL
@@ -54,7 +54,6 @@ enum E_SLIME_LEVEL
 
 // =============== 定数定義 =======================
 #if MODE_GAME_PARAMETER
-#include "GameParameter.h"		//定数定義用ヘッダー
 #else
 const float ENEMY_MOVE_SPEED = 0.01f;	//敵の移動速度
 #endif

@@ -20,10 +20,10 @@
 // =============== インクルード ===================
 #include "TriType.h"			//同じ型を３つ持つテンプレートクラス定義ヘッダー
 #include "Explosion.h"			//爆発処理ヘッダー
+#include "GameParameter.h"		//定数定義用ヘッダー
 
 // =============== 定数定義 =======================
 #if MODE_GAME_PARAMETER
-#include "GameParameter.h"		//定数定義用ヘッダー
 #else
 const int MAX_EXPLOSION_NUM = 20;	//最大爆発数
 #endif
