@@ -136,6 +136,8 @@ void SceneGame::SlimeSlimeCollision()
 
 			if (pSlimeTarget == nullptr)	continue;	// 無効なスライムはスルー
 			if (i == j)						continue;	// 自分と同じスライムはスルー
+			if (pSlimeTarget->GetHitMoveFlg() == true)	continue; 	// 通常状態のスライムはスルー
+
 
 			// スライム同士が衝突した場合
 			if (m_pCollision->CheckCollisionSphere(pSlimeFly->GetSphere(), pSlimeTarget->GetSphere()))

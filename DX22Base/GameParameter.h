@@ -50,7 +50,7 @@ const float SLIME_BASE_RADIUS		= 0.5f;		// スライムの基準の大きさ
 
 const int ENEMY_CREATE_INTERVAL		= 2 * 60;									// 生成間隔
 const int RANDOM_POS				= 15;										// 生成座標範囲
-const int CREATE_DISTANCE			= 10;										// プレイヤーからどれくらい離れた距離に生成するか
+const int CREATE_DISTANCE			= 15;										// プレイヤーからどれくらい離れた距離に生成するか
 const int SLIME_LEVEL1_PER			= 50;										// スライム_1の生成確立
 const int SLIME_LEVEL2_PER			= 30;										// スライム_2の生成確立
 const int SLIME_LEVEL3_PER			= 100 - SLIME_LEVEL1_PER - SLIME_LEVEL2_PER;// スライム_3の生成確立
@@ -59,8 +59,8 @@ const float EXPLODE_BASE_RATIO		= 2.0f;										// スライムの爆発接触での爆発の
 
 // スライム同士の反射の減算値
 // ↓1.0fでそのまま
-const float COL_SUB_HIT_TO_BIG		= 0.5f;			// スライム衝突(小→大)の衝突側の減算値(反射する移動)
-const float COL_SUB_STAND_TO_SMALL	= 0.3f;			// スライム衝突(小→大)の衝突される側の減算値(衝突された方向)
+const float COL_SUB_HIT_TO_BIG		= 0.1f;			// スライム衝突(小→大)の衝突側の減算値(反射する移動)
+const float COL_SUB_STAND_TO_SMALL	= 0.5f;			// スライム衝突(小→大)の衝突される側の減算値(衝突された方向)
 const float COL_SUB_HIT_TO_SMALL	= 0.3f;			// スライム衝突(大→小)の衝突側の減算値(移動方向)
 const float COL_SUB_STAND_TO_BIG	= 1.2f;			// スライム衝突(大→小)の衝突される側の減算値(衝突された方向)
 
@@ -84,7 +84,7 @@ const float LEVEL4_SPEED = ENEMY_MOVE_SPEED * 0.5;	// 移動速度
 // 爆発 =====================================================
 const int	MAX_EXPLOSION_NUM		= 20;				// 最大爆発数
 const float MAX_DISPLAY_TIME		= 2.0f * 60;		// 爆発持続秒数
-const float ONE_SECOND_FRAME		= 1.0f * 30;		// 大きくなるまでの秒数
+const float ONE_SECOND_FRAME		= 0.5f * 60;		// 大きくなるまでの秒数
 
 
 // カメラ =====================================================
