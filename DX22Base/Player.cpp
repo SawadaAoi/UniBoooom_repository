@@ -35,6 +35,7 @@ const float XM_PI(3.141593f);	//円周率
 #else
 const float PLAYER_MOVE_SPEED	= 0.1f;		//プレイヤーの移動量
 const int	PLAYER_HP			= 5;
+const float PLAYER_RADIUS = 0.3f;		// プレイヤーの当たり判定の大きさ
 const float PLAYER_SIZE			= 1.0f;		// プレイヤーの大きさ
 const int	NO_DAMAGE_TIME		= 3 * 60;	//プレイヤーの無敵時間
 const int	DAMAGE_FLASH_FRAME	= 0.1 * 60;	// プレイヤーのダメージ点滅の切り替え間隔
