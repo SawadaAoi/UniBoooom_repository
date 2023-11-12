@@ -16,8 +16,14 @@
 
 // =============== インクルード ===================
 #include "SceneGame.h"
+#include "GameParameter.h"
 
 // =============== 定数定義 =======================
+#if MODE_GAME_PARAMETER
+#else
+const float HAMMER_HIT_MOVE_SPEED = 1.0f;		// ハンマーに飛ばされた時のスピード
+
+#endif 
 
 // =============== プロトタイプ宣言 ===============
 
@@ -56,7 +62,7 @@ void SceneGame::PlayerSlimeCollision()
 	if (m_pPlayer->GetCollide()) return;	//	無敵時間の時はスルー
 
 	// スライム
-	for (int i = 0; i < MAX_SLIME; i++)
+	for (int i = 0; i < MAX_SLIME_NUM; i++)
 	{
 		CSlimeBase* pSlimeNow = m_pSlimeMng->GetSlimePtr(i);	// スライム情報
 
@@ -86,7 +92,7 @@ void SceneGame::HammerSlimeCollision()
 	if (m_pPlayer->GetHammerFlg() == false) return;	// ハンマー攻撃してない場合は返す
 
 	// スライム
-	for (int i = 0; i < MAX_SLIME; i++)
+	for (int i = 0; i < MAX_SLIME_NUM; i++)
 	{
 		CSlimeBase* pSlimeNow = m_pSlimeMng->GetSlimePtr(i);	// スライム情報
 
@@ -99,7 +105,7 @@ void SceneGame::HammerSlimeCollision()
 			float fAngleSlime
 				= m_pPlayer->GetPlayerSphere().Angle(pSlimeNow->GetSphere());	// スライムが飛ぶ角度を取得
 
-			pSlimeNow->HitMoveStart(1.0,fAngleSlime);	// スライムを飛ばす
+			pSlimeNow->HitMoveStart(HAMMER_HIT_MOVE_SPEED,fAngleSlime);	// スライムを飛ばす
 		}
 	}
 }
@@ -116,7 +122,7 @@ void SceneGame::HammerSlimeCollision()
 void SceneGame::SlimeSlimeCollision()
 {
 	// 衝突するスライム
-	for (int i = 0; i < MAX_SLIME; i++)
+	for (int i = 0; i < MAX_SLIME_NUM; i++)
 	{
 		CSlimeBase* pSlimeFly = m_pSlimeMng->GetSlimePtr(i);	// 衝突するスライムのポインタ
 
@@ -124,7 +130,7 @@ void SceneGame::SlimeSlimeCollision()
 		if (pSlimeFly->GetHitMoveFlg() == false)	continue; 	// 通常状態のスライムはスルー
 
 		// 衝突されるスライム
-		for (int j = 0; j < MAX_SLIME; j++)
+		for (int j = 0; j < MAX_SLIME_NUM; j++)
 		{
 			CSlimeBase* pSlimeTarget = m_pSlimeMng->GetSlimePtr(j);	// 衝突されるスライムのポインタ
 
@@ -159,7 +165,7 @@ void SceneGame::ExplosionSlimeCollision()
 		CExplosion* pExplosion = m_pExplosionMng->GetExplosionPtr(i);	// 衝突する爆発のポインタ
 		if (pExplosion == nullptr) { continue; }	// 未使用の爆発はスルー
 
-		for (int j = 0; j < MAX_SLIME; ++j)	// スライム
+		for (int j = 0; j < MAX_SLIME_NUM; ++j)	// スライム
 		{
 			CSlimeBase* pSlimeTarget = m_pSlimeMng->GetSlimePtr(j);	// 衝突されるスライムのポインタ
 
@@ -187,7 +193,7 @@ void SceneGame::ExplosionSlimeCollision()
 void SceneGame::SlimeSlimeNormalMoveCollision()
 {
 	// 衝突するスライム
-	for (int i = 0; i < MAX_SLIME; i++)
+	for (int i = 0; i < MAX_SLIME_NUM; i++)
 	{
 		CSlimeBase* pMoveSlime = m_pSlimeMng->GetSlimePtr(i);	//移動するスライムのポインタ
 
@@ -195,7 +201,7 @@ void SceneGame::SlimeSlimeNormalMoveCollision()
 		if (pMoveSlime->GetHitMoveFlg() == true)	continue;	// 吹き飛び中のスライムはスルー
 
 		// 衝突されるスライム
-		for (int j = 0; j < MAX_SLIME; j++)
+		for (int j = 0; j < MAX_SLIME_NUM; j++)
 		{
 			CSlimeBase* pStandSlime = m_pSlimeMng->GetSlimePtr(j);	// 止まっているスライムのポインタ
 

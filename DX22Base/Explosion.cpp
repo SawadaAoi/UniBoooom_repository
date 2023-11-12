@@ -27,8 +27,8 @@
 // =============== 定数定義 =======================
 #if MODE_GAME_PARAMETER
 #else
-const float MAX_DISPLAY_TIME = 60 * 3.0f;	// 爆発持続秒数
-const float ONE_SECOND_FRAME = 60;			// 大きくなるまでの秒数
+const float MAX_DISPLAY_TIME = 3.0f * 60;	// 爆発持続秒数
+const float ONE_SECOND_FRAME = 1.0f * 60;	// 大きくなるまでの秒数
 #endif
 
 /* ========================================
@@ -47,8 +47,9 @@ CExplosion::CExplosion(TTriType<float> pos, float size)
 {
 
 	//爆発オブジェクト初期化
+	
 	m_Sphere.pos = pos;
-	m_fSize = size / 2;
+	m_Sphere.radius = size / 2;	// 当たり判定をセットする
 	m_fSizeAdd = size / ONE_SECOND_FRAME;
 	m_3dModel = new CSphere();
 	
@@ -100,7 +101,7 @@ void CExplosion::Update()
 void CExplosion::Draw()
 {
 	DirectX::XMMATRIX mat = DirectX::XMMatrixTranslation(m_Sphere.pos.x, m_Sphere.pos.y, m_Sphere.pos.z);
-	DirectX::XMMATRIX Scale = DirectX::XMMatrixScaling(m_fSize / 2, m_fSize / 2, m_fSize / 2);
+	DirectX::XMMATRIX Scale = DirectX::XMMatrixScaling(m_fSize, m_fSize, m_fSize);
 	mat = Scale * mat;
 	mat = DirectX::XMMatrixTranspose(mat);
 	DirectX::XMFLOAT4X4 fMat;	//行列の格納先

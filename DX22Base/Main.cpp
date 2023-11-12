@@ -22,6 +22,7 @@
 #include "Input.h"
 #include "SceneGame.h"
 #include "Defines.h"
+#include <time.h>
 
 
 // =============== グローバル変数定義 =============
@@ -47,7 +48,8 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
 	hr = InitDirectX(hWnd, width, height, false);
 	if (FAILED(hr)) { return hr; }
 
-	CGeometry::MakeShader();	//シェーダ作成
+	CGeometry::MakeShader();			//シェーダ作成
+	srand((unsigned int)time(NULL));	// 乱数パターン設定
 
 	Sprite::Init();
 	InitInput();

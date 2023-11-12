@@ -8,32 +8,36 @@
 	作成者：鈴村 朋也
 	
 	変更履歴
-	・2023/11/04 スライムベースクラス作成 suzumura
-	・2023/11/06 ハンマーもしくは敵により吹っ飛ばされる関数を追加 yamashita
-	・2023/11/06 インクルード誤字の修正 tei
-	・2023/11/08 GetPos→GetSphereに名前を変更 yamashita
-	・2023/11/08 定数定義がヘッダーにあったのでcppに移動 yamashita
-	・2023/11/08 コメントを追加 sawada
-	・2023/11/09 プレイヤー追跡移動変更 sawada
-	・2023/11/09 Update,NormalMoveの引数変更 sawada
-	・2023/11/11 parameter用ヘッダ追加 suzumura
-  ・2023/11/12 プレイヤーの方向を向きながら進むように変更 　YamamotoKaito
+	・2023/11/04 スライムベースクラス作成 Suzumura
+	・2023/11/06 ハンマーもしくは敵により吹っ飛ばされる関数を追加 Yamashita
+	・2023/11/06 インクルード誤字の修正 Tei
+	・2023/11/08 GetPos→GetSphereに名前を変更 Yamashita
+	・2023/11/08 定数定義がヘッダーにあったのでcppに移動 Yamashita
+	・2023/11/08 コメントを追加 Sawada
+	・2023/11/09 プレイヤー追跡移動変更 Sawada
+	・2023/11/09 Update,NormalMoveの引数変更 Sawada
+	・2023/11/11 parameter用ヘッダ追加 Suzumura
+	・2023/11/12 プレイヤーの方向を向きながら進むように変更 　Yamamoto
+	・2023/11/12 ランダム移動を追加 　Sawada
 	
 ========================================== */
 
 // =============== インクルード ===================
 #include "SlimeBase.h"
 #include "Geometry.h"
+#include "GameParameter.h"		//定数定義用ヘッダー
+
 
 // =============== 定数定義 =======================
+const float REFLECT_RATIO = 0.1f;				//スライムがスライムを吹き飛ばした際に吹き飛ばした側のスライムの移動量を変える割合
+
 #if MODE_GAME_PARAMETER
 #else
-const float SPEED_DOWN_RATIO = 0.6f;	//スライムが接触して吹き飛ぶ際にかかる移動速度の変化の割合	RATIO=>割合
-const float MOVE_RESIST = 0.1f;		//吹き飛び移動中のスライムの移動速度に毎フレームかかる減算数値
-const float REFLECT_RATIO = 0.1f;	//スライムがスライムを吹き飛ばした際に吹き飛ばした側のスライムの移動量を変える割合
-const float MOVE_DISTANCE_PLAYER = 20;	// プレイヤー追跡移動に切り替える距離
-const float SLIME_BASE_RADIUS = 0.5f;	// スライムの基準の大きさ
-
+const float SPEED_DOWN_RATIO = 0.7f;			//スライムが接触して吹き飛ぶ際にかかる移動速度の変化の割合	RATIO=>割合
+const float MOVE_RESIST = 0.05f;				//吹き飛び移動中のスライムの移動速度に毎フレームかかる減算数値
+const float MOVE_DISTANCE_PLAYER = 15;			// プレイヤー追跡移動に切り替える距離
+const float SLIME_BASE_RADIUS = 0.5f;			// スライムの基準の大きさ
+const int	RANDOM_MOVE_SWITCH_TIME = 5 * 60;	// ランダム移動の方向切り替え
 #endif
 
 /* ========================================
@@ -55,13 +59,14 @@ CSlimeBase::CSlimeBase()
 	, m_fVecAngle(0.0f)
 	, m_bHitMove(false)
 	, m_eSlimeSize(LEVEL_1)	//後でSLIME_NONEにする <=TODO
+	, m_RanMoveCnt(RANDOM_MOVE_SWITCH_TIME)	// 初期
 
 {
 	RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得
 	DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
 	SetRenderTargets(1, &pRTV, pDSV);		//DSVがnullだと2D表示になる
 	m_pModel = new Model;
-	if (!m_pModel->Load("Assets/Model/eyeBat/eyeBat.FBX", 0.075f, Model::XFlip)) {		//倍率と反転は省略可
+	if (!m_pModel->Load("Assets/Model/eyeBat/eyeBat.FBX", 0.1f, Model::XFlip)) {		//倍率と反転は省略可
 		MessageBox(NULL, "eyeBat", "Error", MB_OK);	//ここでエラーメッセージ表示
 	}
 
@@ -75,6 +80,7 @@ CSlimeBase::CSlimeBase()
 	//当たり判定(自分)初期化
 	m_sphere.pos = { 0.0f, 0.0f, 0.0f };
 	m_sphere.radius = SLIME_BASE_RADIUS;
+
 	int random = abs(rand() % 360);	//ランダムに0～359の数字を作成
 	m_Ry = DirectX::XMMatrixRotationY(random);
 	
@@ -142,27 +148,12 @@ void CSlimeBase::Draw(const CCamera* pCamera)
 
 	//-- ワールド行列の計算
 	DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(m_pos.x, m_pos.y, m_pos.z);			//移動行列
-
 	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(m_scale.x, m_scale.y, m_scale.z);		//拡大縮小行列
-	//DirectX::XMMATRIX R = DirectX::XMMatrixLookToLH(DirectX::XMVectorZero(), direction, DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
-	//DirectX::XMMATRIX R = DirectX::XMMatrixRotationY(0.0f);		//回転行列
-	DirectX::XMMATRIX world = m_Ry*S * T ;						//ワールド行列の設定
+
+	DirectX::XMMATRIX world = m_Ry * S * T ;					//ワールド行列の設定
 	world = DirectX::XMMatrixTranspose(world);					//転置行列に変換
 	DirectX::XMStoreFloat4x4(&mat[0], world);					//XMMATRIX型(world)からXMFLOAT4X4型(mat[0])へ変換して格納
 
-	////-- ビュー行列の計算
-	//DirectX::XMMATRIX view = DirectX::XMMatrixLookAtLH(
-	//	DirectX::XMVectorSet(1.5f, 2.5f, -3.0f, 0.0f),
-	//	DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f),
-	//	DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)); //ビュー行列の設定
-	//view = DirectX::XMMatrixTranspose(view);		//転置行列に変換
-	//DirectX::XMStoreFloat4x4(&mat[1], view);		//XMMATRIX型(view)からXMFLOAT4X4型(mat[1])へ変換して格納
-
-	////-- プロジェクション行列の計算
-	//DirectX::XMMATRIX proj = DirectX::XMMatrixPerspectiveFovLH(
-	//	DirectX::XMConvertToRadians(60.0f), (float)16 / 9, 0.1f, 100.0f); //プロジェクショ行列の設定
-	//proj = DirectX::XMMatrixTranspose(proj);	//転置行列に変換
-	//DirectX::XMStoreFloat4x4(&mat[2], proj);	//XMMATRIX型(proj)からXMFLOAT4X4型(mat[2])へ変換して格納
 
 	mat[1] = pCamera->GetViewMatrix();
 	mat[2] = pCamera->GetProjectionMatrix();
@@ -196,9 +187,7 @@ void CSlimeBase::NormalMove(TPos3d<float> playerPos)
 	if (distancePlayer < MOVE_DISTANCE_PLAYER) 
 	{
 		TPos3d<float> movePos;
-		movePos.x = playerPos.x - m_pos.x;
-		movePos.y = playerPos.y - m_pos.y;
-		movePos.z = playerPos.z - m_pos.z;
+		movePos = playerPos - m_pos;	// プレイヤーへのベクトルを計算
 		if (distancePlayer != 0)	//0除算回避
 		{
 			m_move.x = movePos.x / distancePlayer * m_fSpeed;
@@ -214,16 +203,43 @@ void CSlimeBase::NormalMove(TPos3d<float> playerPos)
 		DirectX::XMVECTOR direction = DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&directionVector));
 		// 方向ベクトルから回転行列を計算
 		m_Ry = DirectX::XMMatrixRotationY(std::atan2(directionVector.x, directionVector.z));
-
-		
-
 	}
 	else
 	{
-		m_move.x = 0;
-		m_move.z = 0;
+		RandomMove();	// ランダム移動
 
 	}
+
+}
+
+/* ========================================
+	ランダム移動関数
+	----------------------------------------
+	内容：360度にランダム移動を行う
+	----------------------------------------
+	引数1：無し
+	----------------------------------------
+	戻値：無し
+======================================== */
+void CSlimeBase::RandomMove()
+{
+	m_RanMoveCnt++;		// 移動方向切り替え間隔時間加算
+
+	// 移動方向切り替え時間が経ったら
+	if (m_RanMoveCnt >= RANDOM_MOVE_SWITCH_TIME)
+	{
+		int ranAngle = rand() % 360;	// 移動方向決定
+
+		// 角度方向に移動する
+		m_move.x = -cosf(DirectX::XMConvertToRadians(ranAngle)) * m_fSpeed;
+		m_move.z = sinf(DirectX::XMConvertToRadians(ranAngle)) * m_fSpeed;
+
+		// 向きを変える
+		m_Ry = DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(ranAngle + 90));
+
+		m_RanMoveCnt = 0;	// 加算値をリセット
+	}
+
 
 }
 
@@ -245,8 +261,8 @@ void CSlimeBase::HitMove()
 	m_fSpeed -= MOVE_RESIST;	//毎フレームの速度の減算処理
 	if (m_fSpeed <= 0)	//速度が0以下になったら
 	{
-		m_fSpeed = ENEMY_MOVE_SPEED;	//敵は通常の移動速度になり通常移動する
 		m_bHitMove = false;				//吹き飛び状態のフラグをOFFにする
+		SetNormalSpeed();	// 継承した関数を使用して大きさごとのスピードをセットする
 	}
 }
 

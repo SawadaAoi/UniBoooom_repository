@@ -59,11 +59,9 @@ public:
 
 private:
 	// ===メンバ変数宣言=====
-	DirectX::XMMATRIX m_T;				//位置
-	DirectX::XMMATRIX m_S;				//拡縮
-	DirectX::XMMATRIX m_Ry;				//回転
-	//TTriType<float> m_playerPosition;	//プレイヤーの位置
 	TPos3d<float> m_pos;					//プレイヤーの座標
+	TTriType<float> m_scale;		//サイズ
+
 	CSphereInfo::Sphere m_sphere;		//プレイヤーの当たり判定用の球体
 	TTriType<float> m_playerForward;	// プレイヤーの初期進行方向
 	float m_playerRotation;				// プレイヤーの回転角度
