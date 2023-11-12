@@ -37,7 +37,7 @@ const float HAMMER_SIZE		= 1.0f;        // ハンマーの当たり判定の大きさ
 
 // 共通
 const int	MAX_SLIME_NUM			= 50;		// スライムの最大生成数
-const int	START_ENEMY_NUM			= 1;		// ゲーム開始時の敵キャラの数
+const int	START_ENEMY_NUM			= 6;		// ゲーム開始時の敵キャラの数
 const float ENEMY_MOVE_SPEED		= 0.035f;	// 敵の通常移動速度
 const float HAMMER_HIT_MOVE_SPEED	= 1.0f;		// ハンマーに吹き飛ばされた時のスピード
 const int	RANDOM_MOVE_SWITCH_TIME = 3 * 60;	// ランダム移動の方向切り替え
@@ -48,7 +48,7 @@ const float MOVE_DISTANCE_PLAYER	= 13.0f;	// プレイヤー追跡移動に切り替える距離
 const float SLIME_BASE_RADIUS		= 0.5f;		// スライムの基準の大きさ
 
 
-const int ENEMY_CREATE_INTERVAL		= 3 * 40;									// 生成間隔
+const int ENEMY_CREATE_INTERVAL		= 2 * 60;									// 生成間隔
 const int RANDOM_POS				= 15;										// 生成座標範囲
 const int CREATE_DISTANCE			= 10;										// プレイヤーからどれくらい離れた距離に生成するか
 const int SLIME_LEVEL1_PER			= 50;										// スライム_1の生成確立

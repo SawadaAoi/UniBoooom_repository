@@ -180,7 +180,6 @@ void CSlimeBase::Draw(const CCamera* pCamera)
 ======================================== */
 void CSlimeBase::NormalMove(TPos3d<float> playerPos)
 {
-	SetNormalSpeed();	
 	// 敵からエネミーの距離、角度を計算
 	float distancePlayer	= m_pos.Distance(playerPos);
 
