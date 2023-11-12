@@ -31,16 +31,21 @@
 // =============== 定数定義 =======================
 #if MODE_GAME_PARAMETER
 #else
-const int ENEMY_GENERATE_INTERVAL	= 3 * 60;	// 生成間隔
-const int RANDOM_POS_MIN			= -15;		// 生成座標範囲下限(x,z共通)
-const int RANDOM_POS_MAX			= 15;		// 生成座標範囲上限(x,z共通)
-const int CREATE_DISTANCE			= 10;		// 生成距離最小値
-const int SLIME_LEVEL1_PER = 10;				// スライム_1の生成確立
-const int SLIME_LEVEL2_PER = 10;				// スライム_2の生成確立
-const int SLIME_LEVEL3_PER = 100 - SLIME_LEVEL1_PER - SLIME_LEVEL2_PER;	// スライム_3の生成確立
-const float MAX_SIZE_EXPLODE = 5.0f;	// スライム4同士の爆発の大きさ
-const float EXPLODE_BASE_RATIO = 1.0f;	// スライムの爆発接触での爆発の大きさのベース
-const int START_ENEMY_NUM = 10;			// ゲーム開始時の敵キャラの数
+const int ENEMY_CREATE_INTERVAL	= 3 * 60;		// 生成間隔
+const int RANDOM_POS			= 15;			// 生成座標範囲
+const int CREATE_DISTANCE		= 10;			// 生成距離最小値
+const int SLIME_LEVEL1_PER		= 10;			// スライム_1の生成確立
+const int SLIME_LEVEL2_PER		= 10;			// スライム_2の生成確立
+const int SLIME_LEVEL3_PER		= 100 - SLIME_LEVEL1_PER - SLIME_LEVEL2_PER;	// スライム_3の生成確立
+const float MAX_SIZE_EXPLODE	= 5.0f;			// スライム4同士の爆発の大きさ
+const float EXPLODE_BASE_RATIO	= 1.0f;			// スライムの爆発接触での爆発の大きさのベース
+const int START_ENEMY_NUM		= 10;			// ゲーム開始時の敵キャラの数
+
+// ↓1.0fでそのまま
+const float COL_SUB_HIT_TO_BIG = 0.7f;				// スライム衝突(小→大)の衝突側の減算値(反射する移動)
+const float COL_SUB_STAND_TO_SMALL = 0.3f;			// スライム衝突(小→大)の衝突される側の減算値(衝突された方向)
+const float COL_SUB_HIT_TO_SMALL = 0.3f;			// スライム衝突(大→小)の衝突側の減算値(移動方向)
+const float COL_SUB_STAND_TO_BIG = 1.2f;			// スライム衝突(大→小)の衝突される側の減算値(衝突された方向)
 #endif
 
 /* ========================================
@@ -111,7 +116,7 @@ void CSlimeManager::Update(CExplosionManager* pExpMng)
 	}
 
 	m_CreateCnt++;
-	if(ENEMY_GENERATE_INTERVAL<= m_CreateCnt)
+	if(ENEMY_CREATE_INTERVAL<= m_CreateCnt)
 	{
 		// 敵 生成
 		Create(GetRandomLevel());	//スライムのレベルをランダムに選んで生成する
@@ -161,8 +166,8 @@ void CSlimeManager::Create(E_SLIME_LEVEL level)
 		while (true)
 		{
 			// 乱数をセットする
-			CreatePos.x = GetRandom(RANDOM_POS_MIN, RANDOM_POS_MAX);	//乱数取得
-			CreatePos.z = GetRandom(RANDOM_POS_MIN, RANDOM_POS_MAX);
+			CreatePos.x = GetRandom(-RANDOM_POS, RANDOM_POS);	//乱数取得
+			CreatePos.z = GetRandom(-RANDOM_POS, RANDOM_POS);
 			CreatePos.y = 0;
 
 			float Distance = CreatePos.Distance(m_pPlayerPos);	// 生成座標のプレイヤーとの距離
@@ -197,42 +202,55 @@ void CSlimeManager::Create(E_SLIME_LEVEL level)
 	----------------------------------------
 	内容：スライム同士が接触した際に分岐して正しい処理を実行する
 	----------------------------------------
-	引数1：ぶつかりにきたスライムの配列番号
-	引数2：ぶつかられたスライムの配列番号
+	引数1：衝突するスライムの配列番号
+	引数2：衝突されたスライムの配列番号
+	引数3：爆発マネージャー
 	----------------------------------------
 	戻値：なし
 ======================================== */
-void CSlimeManager::HitBranch(int HitSlimeArrayNum, int standSlimeArrayNum, CExplosionManager* pExpMng)
+void CSlimeManager::HitBranch(int HitSlimeNum, int StandSlimeNum, CExplosionManager* pExpMng)
 {
-	E_SLIME_LEVEL hitSlimeLevel, standSlimeLevel;
-	hitSlimeLevel = m_pSlime[HitSlimeArrayNum]->GetSlimeLevel();		//ぶつかりに来たスライムのサイズを取得
-	standSlimeLevel = m_pSlime[standSlimeArrayNum]->GetSlimeLevel();	//ぶつかられたスライムのサイズを取得
-	if (hitSlimeLevel > standSlimeLevel)								//ぶつかりにきたスライムが大きい場合
+	E_SLIME_LEVEL hitSlimeLevel, standSlimeLevel;				// レベル
+	CSphereInfo::Sphere hitSlimeSphere, standSlimeSphere;		// 当たり判定
+	float hitSlimeSpeed, standSlimeSpeed;						// 移動スピード
+	float travelAngle, reflectionAngle;							// 移動方向
+
+	hitSlimeLevel = m_pSlime[HitSlimeNum]->GetSlimeLevel();		// 衝突するスライムのサイズを取得
+	hitSlimeSphere = m_pSlime[HitSlimeNum]->GetSphere();		// 衝突するスライムの当たり判定を取得
+	hitSlimeSpeed = m_pSlime[HitSlimeNum]->GetSpeed();			// 衝突するスライムの速度を取得
+
+	standSlimeLevel = m_pSlime[StandSlimeNum]->GetSlimeLevel();	// 衝突されたスライムのサイズを取得
+	standSlimeSphere = m_pSlime[StandSlimeNum]->GetSphere();	// 衝突されたスライムの当たり判定を取得
+
+	travelAngle = hitSlimeSphere.Angle(standSlimeSphere);		// 衝突する側の進行方向
+	reflectionAngle = standSlimeSphere.Angle(hitSlimeSphere);	// 衝突する側の逆方向(反射)
+	
+	// 衝突するスライムが小さい場合(小→大)
+	if (hitSlimeLevel < standSlimeLevel)
 	{
-		float speed = m_pSlime[HitSlimeArrayNum]->GetSpeed();						//ぶつかりに来たスライムの速度を取得
-		CSphereInfo::Sphere sphere = m_pSlime[HitSlimeArrayNum]->GetSphere();		//ぶつかられたスライムのSphereを取得
-		float angle = sphere.Angle(m_pSlime[standSlimeArrayNum]->GetSphere());		//ぶつかられたスライムの方向を割り出す
-		m_pSlime[standSlimeArrayNum]->HitMoveStart(speed, angle);					//ぶつかられたスライムに吹き飛び移動処理
-		m_pSlime[HitSlimeArrayNum]->Reflect();										//ぶつかりに来たスライムの速度に反発の割合を乗算する
-	}
-	else if(hitSlimeLevel < standSlimeLevel)	//ぶつかりにきたスライムが小さい場合
-	{
-		float speed = m_pSlime[HitSlimeArrayNum]->GetSpeed();					//ぶつかりに来たスライムの速度を取得
-		CSphereInfo::Sphere sphere = m_pSlime[standSlimeArrayNum]->GetSphere();		//ぶつかられたスライムのSphereを取得
-		float angle = sphere.Angle(m_pSlime[HitSlimeArrayNum]->GetSphere());		//ぶつかられたスライムの方向を割り出す
-		m_pSlime[HitSlimeArrayNum]->HitMoveStart(speed, angle);						//ぶつかられたスライムに吹き飛び移動処理
+		m_pSlime[HitSlimeNum]->HitMoveStart(hitSlimeSpeed * COL_SUB_HIT_TO_BIG, reflectionAngle);	// 衝突するスライムに吹き飛び移動処理
+		m_pSlime[StandSlimeNum]->HitMoveStart(hitSlimeSpeed * COL_SUB_STAND_TO_SMALL, travelAngle);			// 衝突されたスライムに吹き飛び移動処理
 
 	}
-	else	//スライムのサイズが同じだった場合
+	
+	// 衝突するスライムが大きい場合(大→小)
+	else if (hitSlimeLevel > standSlimeLevel)
 	{
-		TPos3d<float> pos(m_pSlime[standSlimeArrayNum]->GetPos());	//衝突先のスライムの位置を確保
-		SAFE_DELETE(m_pSlime[HitSlimeArrayNum]);	//ぶつかりに来たスライムを削除
-		SAFE_DELETE(m_pSlime[standSlimeArrayNum]);	//ぶつかられたスライムを削除
+		m_pSlime[HitSlimeNum]->HitMoveStart(hitSlimeSpeed * COL_SUB_HIT_TO_SMALL, travelAngle);	// 衝突するスライムに吹き飛び移動処理
+		m_pSlime[StandSlimeNum]->HitMoveStart(hitSlimeSpeed * COL_SUB_STAND_TO_BIG, travelAngle);			// 衝突されたスライムに吹き飛び移動処理
+
+	}
+	//スライムのサイズが同じだった場合
+	else
+	{
+		TPos3d<float> pos(m_pSlime[StandSlimeNum]->GetPos());	//衝突されたスライムの位置を確保
+		SAFE_DELETE(m_pSlime[HitSlimeNum]);						//衝突するスライムを削除
+		SAFE_DELETE(m_pSlime[StandSlimeNum]);					//衝突されたスライムを削除
 
 		if (hitSlimeLevel == MAX_LEVEL)	//スライムのサイズが最大の時
 		{
 			//爆発処理を行う<=TODO
-			pExpMng->Create(pos, MAX_SIZE_EXPLODE);	//衝突先のスライムの位置で爆発
+			pExpMng->Create(pos, MAX_SIZE_EXPLODE);	//衝突されたスライムの位置で爆発
 		}
 		else	//最大サイズじゃない場合は1段階大きいスライムを生成する
 		{

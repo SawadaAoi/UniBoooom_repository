@@ -33,11 +33,11 @@ const float XM_PI(3.141593f);	//円周率
 
 #if MODE_GAME_PARAMETER
 #else
-const float PLAYER_MOVE_SPEED = 0.1f;		//プレイヤーの移動量
-const int PLAYER_HP = 5;
-const float PLAYER_RADIUS = 0.5f;	//プレイヤーの当たり判定の大きさ
-const int NO_DAMAGE_TIME = 3 * 60;	//プレイヤーの無敵時間
-const int DAMAGE_FLASH_FRAME = 0.1 * 60;	// プレイヤーのダメージ点滅の切り替え間隔
+const float PLAYER_MOVE_SPEED	= 0.1f;		//プレイヤーの移動量
+const int	PLAYER_HP			= 5;
+const float PLAYER_SIZE			= 1.0f;		// プレイヤーの大きさ
+const int	NO_DAMAGE_TIME		= 3 * 60;	//プレイヤーの無敵時間
+const int	DAMAGE_FLASH_FRAME	= 0.1 * 60;	// プレイヤーのダメージ点滅の切り替え間隔
 
 #endif
 
@@ -54,8 +54,8 @@ const int DAMAGE_FLASH_FRAME = 0.1 * 60;	// プレイヤーのダメージ点滅
    戻値：なし
 ======================================== */
 CPlayer::CPlayer()
-	:m_pos{ 0.0f,0.0f,0.0f }
-	/*,m_playerPosition{ 0.0f,0.0f,0.0f }*/
+	: m_pos{ 0.0f,0.0f,0.0f }
+	, m_scale{ PLAYER_SIZE,PLAYER_SIZE,PLAYER_SIZE }
 	, m_playerForward{ 0.0f,0.0f,0.0f }
 	, m_playerRotation(0.0f)
 	, m_pHammer(nullptr)
@@ -69,9 +69,6 @@ CPlayer::CPlayer()
 	, m_DrawFlg(true)
 	, m_FlashCnt(0)
 {
-	m_T = DirectX::XMMatrixTranslation(0.0f, 0.0f, 0.0f);	// 移動の変換行列を初期化
-	m_S = DirectX::XMMatrixScaling(2.0f, 2.0f, 2.0f);		// 拡縮の変換行列を初期化
-	m_Ry = DirectX::XMMatrixRotationY(0.0f);				// Y軸回転の変換行列を初期化
 	m_pHammer = new CHammer();								// Hammerクラスをインスタンス
 	m_pPlayerGeo = new CSphere();							// プレイヤーとして仮表示する球体オブジェクトのインスタンス
 	m_pGameOver = new CSphere();
@@ -160,6 +157,16 @@ void CPlayer::Draw()
 	{
 		return;
 	}
+
+	DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(m_pos.x, m_pos.y, m_pos.z);			//移動行列
+	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(m_scale.x, m_scale.y, m_scale.z);		//拡大縮小行列
+	DirectX::XMMATRIX Ry = DirectX::XMMatrixRotationY(m_playerRotation);//Y軸の回転行列
+
+	DirectX::XMMATRIX mat = Ry * S * T;									//変換行列を結合
+	mat = DirectX::XMMatrixTranspose(mat);								//変換行列を転置
+	DirectX::XMFLOAT4X4 fMat;											//行列の格納先
+	DirectX::XMStoreFloat4x4(&fMat, mat);								//XMFLOAT4X4に変換して格納
+	m_pPlayerGeo->SetWorld(fMat);										//ワールド座標にセット
 
 	m_pPlayerGeo->SetView(m_pCamera->GetViewMatrix());
 	m_pPlayerGeo->SetProjection(m_pCamera->GetProjectionMatrix());
@@ -280,15 +287,6 @@ void CPlayer::Move()
 			m_playerRotation += XM_PI; // ｚが-なら後ろなので足して後ろ側に
 		}
 	}
-
-	//=====playerの座標、回転をセット=====
-	m_T = DirectX::XMMatrixTranslation(m_pos.x, m_pos.y, m_pos.z);		//移動の変換行列
-	DirectX::XMMATRIX Ry = DirectX::XMMatrixRotationY(m_playerRotation);//Y軸の回転行列
-	DirectX::XMMATRIX mat = Ry * m_T;									//変換行列を結合
-	mat = DirectX::XMMatrixTranspose(mat);								//変換行列を転置
-	DirectX::XMFLOAT4X4 fMat;											//行列の格納先
-	DirectX::XMStoreFloat4x4(&fMat, mat);								//XMFLOAT4X4に変換して格納
-	m_pPlayerGeo->SetWorld(fMat);										//ワールド座標にセット
 }
 
 /* ========================================
@@ -320,13 +318,7 @@ void CPlayer::ControllerMove()
 
 	m_sphere.pos = m_pos;	//プレイヤーの座標を当たり判定用の球体にコピー
 
-	m_T = DirectX::XMMatrixTranslation(m_pos.x, m_pos.y, m_pos.z);		//移動の変換行列
-	DirectX::XMMATRIX Ry = DirectX::XMMatrixRotationY(m_playerRotation);//Y軸の回転行列
-	DirectX::XMMATRIX mat = Ry * m_T;									//変換行列を結合
-	mat = DirectX::XMMatrixTranspose(mat);								//変換行列を転置
-	DirectX::XMFLOAT4X4 fMat;											//行列の格納先
-	DirectX::XMStoreFloat4x4(&fMat, mat);								//XMFLOAT4X4に変換して格納
-	m_pPlayerGeo->SetWorld(fMat);										//ワールド座標にセット
+
 }
 
 

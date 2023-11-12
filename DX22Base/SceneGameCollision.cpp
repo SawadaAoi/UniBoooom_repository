@@ -21,7 +21,7 @@
 // =============== 定数定義 =======================
 #if MODE_GAME_PARAMETER
 #else
-const float HAMMER_HIT_MOVE = 1.0f;		// ハンマーに飛ばされた時のスピード
+const float HAMMER_HIT_MOVE_SPEED = 1.0f;		// ハンマーに飛ばされた時のスピード
 
 #endif 
 
@@ -105,7 +105,7 @@ void SceneGame::HammerSlimeCollision()
 			float fAngleSlime
 				= m_pPlayer->GetPlayerSphere().Angle(pSlimeNow->GetSphere());	// スライムが飛ぶ角度を取得
 
-			pSlimeNow->HitMoveStart(HAMMER_HIT_MOVE,fAngleSlime);	// スライムを飛ばす
+			pSlimeNow->HitMoveStart(HAMMER_HIT_MOVE_SPEED,fAngleSlime);	// スライムを飛ばす
 		}
 	}
 }
@@ -193,7 +193,7 @@ void SceneGame::ExplosionSlimeCollision()
 void SceneGame::SlimeSlimeNormalMoveCollision()
 {
 	// 衝突するスライム
-	for (int i = 0; i < MAX_SLIME; i++)
+	for (int i = 0; i < MAX_SLIME_NUM; i++)
 	{
 		CSlimeBase* pMoveSlime = m_pSlimeMng->GetSlimePtr(i);	//移動するスライムのポインタ
 
@@ -201,7 +201,7 @@ void SceneGame::SlimeSlimeNormalMoveCollision()
 		if (pMoveSlime->GetHitMoveFlg() == true)	continue;	// 吹き飛び中のスライムはスルー
 
 		// 衝突されるスライム
-		for (int j = 0; j < MAX_SLIME; j++)
+		for (int j = 0; j < MAX_SLIME_NUM; j++)
 		{
 			CSlimeBase* pStandSlime = m_pSlimeMng->GetSlimePtr(j);	// 止まっているスライムのポインタ
 
