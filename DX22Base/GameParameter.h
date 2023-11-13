@@ -16,39 +16,40 @@
 #define __GAME_PARAMETER_H__
 
 // =============== ƒpƒ‰ƒ[ƒ^[ ƒ‚[ƒh =======================
-#define MODE_GAME_PARAMETER	(false)
+#define MODE_GAME_PARAMETER	(true)
 
 #if MODE_GAME_PARAMETER
 
 // ƒvƒŒƒCƒ„[ ================================================
 const float PLAYER_MOVE_SPEED	= 0.1f;		// ƒvƒŒƒCƒ„[‚ÌˆÚ“®‘¬“x
 const int	PLAYER_HP			= 5;		// ƒvƒŒƒCƒ„[‚ÌHP
-const float PLAYER_RADIUS		= 0.3f;		// ƒvƒŒƒCƒ„[‚Ì“–‚½‚è”»’è‚Ì‘å‚«‚³
+const float PLAYER_RADIUS		= 0.1f;		// ƒvƒŒƒCƒ„[‚Ì“–‚½‚è”»’è‚Ì‘å‚«‚³
 const float PLAYER_SIZE			= 1.0f;		// ƒvƒŒƒCƒ„[‚Ì‘å‚«‚³
 const int	NO_DAMAGE_TIME		= 3 * 60;	// ƒvƒŒƒCƒ„[‚Ì–³“GŽžŠÔ
 const int	DAMAGE_FLASH_FRAME	= 0.1 * 60;	// ƒvƒŒƒCƒ„[‚Ìƒ_ƒ[ƒW“_–Å‚ÌØ‚è‘Ö‚¦ŠÔŠu
 
 // ƒnƒ“ƒ}[
-const float ANGULAR_ANGLE	= 0.1f;        // –ˆƒtƒŒ[ƒ€ˆÚ“®‚·‚éŠp“x—Ê
+const float ANGULAR_ANGLE	= 0.15f;        // –ˆƒtƒŒ[ƒ€ˆÚ“®‚·‚éŠp“x—Ê
 const float ROTATE_RADIUS	= 1.0f;        // ƒnƒ“ƒ}[‚ª‰ñ“]‚·‚éƒvƒŒƒCƒ„[‚©‚ç‚Ì‹——£
-const float HAMMER_SIZE		= 1.0f;        // ƒnƒ“ƒ}[‚Ì“–‚½‚è”»’è‚Ì‘å‚«‚³
+const float HAMMER_COL_SIZE = 0.75f;		//ƒnƒ“ƒ}[‚Ì“–‚½‚è”»’è‚Ì‘å‚«‚³
+const float HAMMER_SIZE		= 1.5f;			//ƒnƒ“ƒ}[‚Ì‘å‚«‚³
 
 // “GƒLƒƒƒ‰ ==================================================
 
 // ‹¤’Ê
-const int	MAX_SLIME_NUM			= 30;		// ƒXƒ‰ƒCƒ€‚ÌÅ‘å¶¬”
-const int	START_ENEMY_NUM			= 10;		// ƒQ[ƒ€ŠJŽnŽž‚Ì“GƒLƒƒƒ‰‚Ì”
-const float ENEMY_MOVE_SPEED		= 0.01f;	// “G‚Ì’ÊíˆÚ“®‘¬“x
+const int	MAX_SLIME_NUM			= 50;		// ƒXƒ‰ƒCƒ€‚ÌÅ‘å¶¬”
+const int	START_ENEMY_NUM			= 6;		// ƒQ[ƒ€ŠJŽnŽž‚Ì“GƒLƒƒƒ‰‚Ì”
+const float ENEMY_MOVE_SPEED		= 0.035f;	// “G‚Ì’ÊíˆÚ“®‘¬“x
 const float HAMMER_HIT_MOVE_SPEED	= 1.0f;		// ƒnƒ“ƒ}[‚É‚«”ò‚Î‚³‚ê‚½Žž‚ÌƒXƒs[ƒh
 const int	RANDOM_MOVE_SWITCH_TIME = 3 * 60;	// ƒ‰ƒ“ƒ_ƒ€ˆÚ“®‚Ì•ûŒüØ‚è‘Ö‚¦
 
 const float SPEED_DOWN_RATIO		= 0.6f;		// ‚«”ò‚ÔÛ‚É‚©‚©‚éˆÚ“®‘¬“x‚Ì•Ï‰»‚ÌŠ„‡    RATIO=>Š„‡
 const float MOVE_RESIST				= 0.05f;	// ‚«”ò‚ÑˆÚ“®’†‚ÌƒXƒ‰ƒCƒ€‚ÌˆÚ“®‘¬“x‚É–ˆƒtƒŒ[ƒ€‚©‚©‚éŒ¸ŽZ”’l
-const float MOVE_DISTANCE_PLAYER	= 15.0f;	// ƒvƒŒƒCƒ„[’ÇÕˆÚ“®‚ÉØ‚è‘Ö‚¦‚é‹——£
+const float MOVE_DISTANCE_PLAYER	= 13.0f;	// ƒvƒŒƒCƒ„[’ÇÕˆÚ“®‚ÉØ‚è‘Ö‚¦‚é‹——£
 const float SLIME_BASE_RADIUS		= 0.5f;		// ƒXƒ‰ƒCƒ€‚ÌŠî€‚Ì‘å‚«‚³
 
 
-const int ENEMY_CREATE_INTERVAL		= 3 * 60;									// ¶¬ŠÔŠu
+const int ENEMY_CREATE_INTERVAL		= 2 * 60;									// ¶¬ŠÔŠu
 const int RANDOM_POS				= 15;										// ¶¬À•W”ÍˆÍ
 const int CREATE_DISTANCE			= 10;										// ƒvƒŒƒCƒ„[‚©‚ç‚Ç‚ê‚­‚ç‚¢—£‚ê‚½‹——£‚É¶¬‚·‚é‚©
 const int SLIME_LEVEL1_PER			= 50;										// ƒXƒ‰ƒCƒ€_1‚Ì¶¬Šm—§
@@ -66,8 +67,8 @@ const float LEVEL_4_EXPLODE_TIME = 3.0f * 60.0f;								// ƒXƒ‰ƒCƒ€_4‚Ì”š”­‘ŽžŠ
 
 // ƒXƒ‰ƒCƒ€“¯Žm‚Ì”½ŽË‚ÌŒ¸ŽZ’l
 // «1.0f‚Å‚»‚Ì‚Ü‚Ü
-const float COL_SUB_HIT_TO_BIG		= 0.5f;			// ƒXƒ‰ƒCƒ€Õ“Ë(¬¨‘å)‚ÌÕ“Ë‘¤‚ÌŒ¸ŽZ’l(”½ŽË‚·‚éˆÚ“®)
-const float COL_SUB_STAND_TO_SMALL	= 0.3f;			// ƒXƒ‰ƒCƒ€Õ“Ë(¬¨‘å)‚ÌÕ“Ë‚³‚ê‚é‘¤‚ÌŒ¸ŽZ’l(Õ“Ë‚³‚ê‚½•ûŒü)
+const float COL_SUB_HIT_TO_BIG		= 0.1f;			// ƒXƒ‰ƒCƒ€Õ“Ë(¬¨‘å)‚ÌÕ“Ë‘¤‚ÌŒ¸ŽZ’l(”½ŽË‚·‚éˆÚ“®)
+const float COL_SUB_STAND_TO_SMALL	= 0.8f;			// ƒXƒ‰ƒCƒ€Õ“Ë(¬¨‘å)‚ÌÕ“Ë‚³‚ê‚é‘¤‚ÌŒ¸ŽZ’l(Õ“Ë‚³‚ê‚½•ûŒü)
 const float COL_SUB_HIT_TO_SMALL	= 0.3f;			// ƒXƒ‰ƒCƒ€Õ“Ë(‘å¨¬)‚ÌÕ“Ë‘¤‚ÌŒ¸ŽZ’l(ˆÚ“®•ûŒü)
 const float COL_SUB_STAND_TO_BIG	= 1.2f;			// ƒXƒ‰ƒCƒ€Õ“Ë(‘å¨¬)‚ÌÕ“Ë‚³‚ê‚é‘¤‚ÌŒ¸ŽZ’l(Õ“Ë‚³‚ê‚½•ûŒü)
 
@@ -77,15 +78,15 @@ const float LEVEL1_SPEED = ENEMY_MOVE_SPEED;		// ˆÚ“®‘¬“x
 
 // ƒTƒCƒY2
 const float LEVEL2_SCALE = 2.0f;					// ƒXƒ‰ƒCƒ€QƒŒƒxƒ‹‚Q‚Ì‘å‚«‚³(“–‚½‚è”»’èŠÜ‚Þ)
-const float LEVEL2_SPEED = ENEMY_MOVE_SPEED * 0.95;	// ˆÚ“®‘¬“x
+const float LEVEL2_SPEED = ENEMY_MOVE_SPEED * 0.9;	// ˆÚ“®‘¬“x
 
 // ƒTƒCƒY3
 const float LEVEL3_SCALE = 3.0f;					// ƒXƒ‰ƒCƒ€QƒŒƒxƒ‹‚R‚Ì‘å‚«‚³(“–‚½‚è”»’èŠÜ‚Þ)
-const float LEVEL3_SPEED = ENEMY_MOVE_SPEED * 0.90;	// ˆÚ“®‘¬“x
+const float LEVEL3_SPEED = ENEMY_MOVE_SPEED * 0.7;	// ˆÚ“®‘¬“x
 
 // ƒTƒCƒY4
-const float LEVEL4_SCALE = 4.0f;					// ƒXƒ‰ƒCƒ€QƒŒƒxƒ‹‚S‚Ì‘å‚«‚³(“–‚½‚è”»’èŠÜ‚Þ)
-const float LEVEL4_SPEED = ENEMY_MOVE_SPEED * 0.85;	// ˆÚ“®‘¬“x
+const float LEVEL4_SCALE = 5.0f;					// ƒXƒ‰ƒCƒ€QƒŒƒxƒ‹‚S‚Ì‘å‚«‚³(“–‚½‚è”»’èŠÜ‚Þ)
+const float LEVEL4_SPEED = ENEMY_MOVE_SPEED * 0.5;	// ˆÚ“®‘¬“x
 
 
 // ”š”­ =====================================================
@@ -98,7 +99,7 @@ const TPos3d<float> INIT_POS(0.0f, 2.6f, -3.0f);					// ‰ŠúˆÊ’u
 const float INIT_ANGLE	= DirectX::XMConvertToRadians(73.0f);       // ƒJƒƒ‰‚ÌŠp“x
 const float INIT_NEAR	= 1.0f;										// ‰æ–ÊŽè‘O‰Šúz’l
 const float INIT_FAR	= 150.0f;									// ‰æ–Ê‰œ‰Šúz’l
-const float INIT_RADIUS = 12.0f;									// ƒJƒƒ‰‚Æ’Ž‹“_‚Æ‚Ì‹——£(‰Šú’l)
+const float INIT_RADIUS = 15.0f;									// ƒJƒƒ‰‚Æ’Ž‹“_‚Æ‚Ì‹——£(‰Šú’l)
 
 
 

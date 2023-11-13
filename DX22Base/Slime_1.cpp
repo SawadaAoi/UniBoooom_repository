@@ -41,6 +41,8 @@ CSlime_1::CSlime_1()
 	m_scale = { LEVEL1_SCALE,LEVEL1_SCALE ,LEVEL1_SCALE };
 	m_sphere.radius *= LEVEL1_SCALE;
 	m_eSlimeSize = E_SLIME_LEVEL::LEVEL_1;
+	SetNormalSpeed();
+
 }
 
 /* ========================================
