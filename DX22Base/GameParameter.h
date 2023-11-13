@@ -29,9 +29,10 @@ const int	NO_DAMAGE_TIME		= 3 * 60;	// プレイヤーの無敵時間
 const int	DAMAGE_FLASH_FRAME	= 0.1 * 60;	// プレイヤーのダメージ点滅の切り替え間隔
 
 // ハンマー
-const float ANGULAR_ANGLE	= 0.1f;        // 毎フレーム移動する角度量
+const float ANGULAR_ANGLE	= 0.15f;        // 毎フレーム移動する角度量
 const float ROTATE_RADIUS	= 1.0f;        // ハンマーが回転するプレイヤーからの距離
-const float HAMMER_SIZE		= 1.0f;        // ハンマーの当たり判定の大きさ
+const float HAMMER_COL_SIZE = 0.75f;		//ハンマーの当たり判定の大きさ
+const float HAMMER_SIZE		= 1.5f;			//ハンマーの大きさ
 
 // 敵キャラ ==================================================
 
@@ -50,7 +51,7 @@ const float SLIME_BASE_RADIUS		= 0.5f;		// スライムの基準の大きさ
 
 const int ENEMY_CREATE_INTERVAL		= 2 * 60;									// 生成間隔
 const int RANDOM_POS				= 15;										// 生成座標範囲
-const int CREATE_DISTANCE			= 15;										// プレイヤーからどれくらい離れた距離に生成するか
+const int CREATE_DISTANCE			= 10;										// プレイヤーからどれくらい離れた距離に生成するか
 const int SLIME_LEVEL1_PER			= 50;										// スライム_1の生成確立
 const int SLIME_LEVEL2_PER			= 30;										// スライム_2の生成確立
 const int SLIME_LEVEL3_PER			= 100 - SLIME_LEVEL1_PER - SLIME_LEVEL2_PER;// スライム_3の生成確立
@@ -60,7 +61,7 @@ const float EXPLODE_BASE_RATIO		= 2.0f;										// スライムの爆発接触での爆発の
 // スライム同士の反射の減算値
 // ↓1.0fでそのまま
 const float COL_SUB_HIT_TO_BIG		= 0.1f;			// スライム衝突(小→大)の衝突側の減算値(反射する移動)
-const float COL_SUB_STAND_TO_SMALL	= 0.5f;			// スライム衝突(小→大)の衝突される側の減算値(衝突された方向)
+const float COL_SUB_STAND_TO_SMALL	= 0.8f;			// スライム衝突(小→大)の衝突される側の減算値(衝突された方向)
 const float COL_SUB_HIT_TO_SMALL	= 0.3f;			// スライム衝突(大→小)の衝突側の減算値(移動方向)
 const float COL_SUB_STAND_TO_BIG	= 1.2f;			// スライム衝突(大→小)の衝突される側の減算値(衝突された方向)
 
@@ -84,7 +85,7 @@ const float LEVEL4_SPEED = ENEMY_MOVE_SPEED * 0.5;	// 移動速度
 // 爆発 =====================================================
 const int	MAX_EXPLOSION_NUM		= 20;				// 最大爆発数
 const float MAX_DISPLAY_TIME		= 2.0f * 60;		// 爆発持続秒数
-const float ONE_SECOND_FRAME		= 0.5f * 60;		// 大きくなるまでの秒数
+const float ONE_SECOND_FRAME		= 1.0f * 30;		// 大きくなるまでの秒数
 
 
 // カメラ =====================================================
