@@ -36,20 +36,22 @@ public:
 	CHammer();	//コンストラクタ
 	~CHammer();	//デストラクタ
 
-	void Update(TPos3d<float> pPos, float angle);	//更新関数
-	void Draw(const CCamera* pCamera);								//描画関数
-	bool Gethammer();							//ハンマーを使用中かどうかのフラグを取得
-	void Swing(TPos3d<float>pPos,float angle);	//移動による回転移動
-	CSphereInfo::Sphere GetSphere();			//ハンマーのプレイヤー
+	void Update(TPos3d<float> pPos, float angle);	// 更新関数
+	void Draw(const CCamera* pCamera);				// 描画関数
+	void Swing(TPos3d<float>pPos,float angle);		// 移動による回転移動
+	void AttackStart();								// 攻撃開始処理
+
+	bool GetAttackFlg();								// ハンマーを使用中かどうかのフラグを取得
+	CSphereInfo::Sphere GetSphere();				// あたり判定取得
 private:
 	// ===メンバ変数宣言=====
-	TPos3d<float> m_pos;	//ハンマーの位置座標
-	CSphereInfo::Sphere m_sphere;	//ハンマーの当たり判定用の球体
-	TTriType<float> m_scale;		//サイズ
+	TPos3d<float> m_pos;			// ハンマーの位置座標
+	CSphereInfo::Sphere m_sphere;	// ハンマーの当たり判定用の球体
+	TTriType<float> m_scale;		// サイズ
 
-	float m_nowangle;				//今の角度
+	float m_nowangle;				// 今の角度
 	float m_stateangle;				//
-	bool m_bHammer;					//ハンマーを使用中のフラグ
+	bool m_bAttackFlg;				//ハンマーを使用中のフラグ
 	CGeometry* m_pHammerGeo;		//ハンマーを仮表示する図形
 };
 

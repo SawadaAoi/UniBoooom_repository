@@ -47,7 +47,7 @@ CHammer::CHammer()
 	, m_scale{ HAMMER_SIZE,HAMMER_SIZE,HAMMER_SIZE }
 	, m_stateangle(0.0f)
 	, m_nowangle(HALF_PI)
-	, m_bHammer(false)
+	, m_bAttackFlg(false)
 	, m_pHammerGeo(nullptr)
 {
 	m_pHammerGeo = new CSphere();							//ハンマーを仮表示するジオメトリー
@@ -83,10 +83,10 @@ void CHammer::Update(TPos3d<float> pPos, float angle)
 {
 	Swing(pPos,angle);	//回転による移動関数
 
-	//現在角度が0になったら動作終了
+	// 現在角度が0になったら動作終了
 	if (m_nowangle <= 0.0f)
 	{
-		m_bHammer = false;		//ハンマーの使用フラグをOFF
+		m_bAttackFlg = false;		//ハンマーの使用フラグをOFF
 		m_nowangle = HALF_PI;	//ハンマーの現在角度を初期値に戻す
 	}
 }
@@ -116,19 +116,7 @@ void CHammer::Draw(const CCamera* pCamera)
 	m_pHammerGeo->Draw();
 }
 
-/* ========================================
-   フラグのゲット関数
-   ----------------------------------------
-   内容：ハンマーを振っている状態か取得する
-   ----------------------------------------
-   引数：なし
-   ----------------------------------------
-   戻値：bool
-   ======================================== */
-bool CHammer::Gethammer()
-{
-	return m_bHammer;
-}
+
 
 /* ========================================
    ハンマーの回転関数
@@ -142,7 +130,7 @@ bool CHammer::Gethammer()
    ======================================== */
 void CHammer::Swing(TPos3d<float> pPos, float angle)
 {
-	m_bHammer = true;		//ハンマーの使用フラグをON
+	m_bAttackFlg = true;		//ハンマーの使用フラグをON
 	m_stateangle = angle;	//-2.5f ;	//振り始めの角度	
 
 	m_nowangle -= ANGULAR_ANGLE;				//現在の角度量から移動する角度の分移動
@@ -156,6 +144,25 @@ void CHammer::Swing(TPos3d<float> pPos, float angle)
 	m_pos.z = pPos.z + ROTATE_RADIUS * cos(azimuth);
 
 	m_sphere.pos = m_pos;		//当たり判定用の球体に座標をコピー
+}
+
+void CHammer::AttackStart()
+{
+	m_bAttackFlg = true;	// 攻撃処理開始
+}
+
+/* ========================================
+   フラグのゲット関数
+   ----------------------------------------
+   内容：ハンマーを振っている状態か取得する
+   ----------------------------------------
+   引数：なし
+   ----------------------------------------
+   戻値：bool
+   ======================================== */
+bool CHammer::GetAttackFlg()
+{
+	return m_bAttackFlg;
 }
 
 /* ========================================

@@ -16,7 +16,7 @@
 	・2023/11/09 GameOverの表示 yamashita
 	・2023/11/09 コントローラ移動の追加 sawada
 	・2023/11/11 parameter用ヘッダ追加 suzumura
-  ・2023/11/11 プレイヤーの点滅処理追加 Tei
+	・2023/11/11 プレイヤーの点滅処理追加 Tei
 
 ======================================== */
 
@@ -62,7 +62,7 @@ CPlayer::CPlayer()
 	, m_pHammer(nullptr)
 	, m_pPlayerGeo(nullptr)
 	, m_pGameOver(nullptr)
-	, m_bHammer(false)
+	, m_bAttackFlg(false)
 	, m_nHp(0)
 	, m_pCamera(nullptr)
 	, m_nNoDamageCnt(0)
@@ -104,7 +104,7 @@ CPlayer::~CPlayer()
 ======================================== */
 void CPlayer::Update()
 {
-	if (!m_bHammer)	//攻撃中は移動しない
+	if (!m_bAttackFlg)	//攻撃中は移動しない
 	{
 		if (GetUseVController() == false)
 		{
@@ -117,12 +117,12 @@ void CPlayer::Update()
 	}
 
 
-	if ((IsKeyTrigger(VK_SPACE)|| IsKeyTriggerController(BUTTON_B)) || m_pHammer->Gethammer())	//スペースキーを押した時もしくはハンマーを振るフラグがONの時
+	if ((IsKeyTrigger(VK_SPACE)|| IsKeyTriggerController(BUTTON_B)) || m_pHammer->GetAttackFlg())	//スペースキーを押した時もしくはハンマーを振るフラグがONの時
 	{
 		m_pHammer->Update(m_pos, m_playerRotation);			//ハンマーを振るUpdate処理を行う
 	}
 	
-	m_bHammer = m_pHammer->Gethammer();	//ハンマーを使用中か確認
+	m_bAttackFlg = m_pHammer->GetAttackFlg();	//ハンマーを使用中か確認
 	if (m_bCollide)							//無敵状態になっている場合
 	{
 		m_nNoDamageCnt++;					//毎フレームでカウントを追加
@@ -175,7 +175,7 @@ void CPlayer::Draw()
 	
 	m_pPlayerGeo->Draw();		//プレイヤーを描画
 	
-	if (m_pHammer->Gethammer())	//ハンマーを振るフラグがONの時
+	if (m_pHammer->GetAttackFlg())	//ハンマーを振るフラグがONの時
 	{
 		m_pHammer->Draw(m_pCamera);		//ハンマーの描画
 	}
@@ -405,7 +405,7 @@ void CPlayer::SetCamera(const CCamera * pCamera)
 ======================================== */
 bool CPlayer::GetHammerFlg()
 {
-	return m_bHammer;
+	return m_bAttackFlg;
 }
 
 /* ========================================

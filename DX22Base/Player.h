@@ -66,7 +66,7 @@ private:
 	TTriType<float> m_playerForward;	// プレイヤーの初期進行方向
 	float m_playerRotation;				// プレイヤーの回転角度
 	int m_nHp;							//プレイヤーの体力
-	bool m_bHammer;						//攻撃中かどうかのフラグ
+	bool m_bAttackFlg;						//攻撃中かどうかのフラグ
 	int m_nNoDamageCnt;					//プレイヤーの無敵時間をカウント
 	bool m_bCollide;					//プレイヤーの無敵状態のフラグ(当たり判定をOFF)
 	CHammer* m_pHammer;					//ハンマークラスのポインタ(プレイヤーが管理する)
