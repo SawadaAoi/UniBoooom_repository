@@ -25,13 +25,13 @@
 #include "Collision.h"
 #include "Player.h"
 #include "ExplosionManager.h"
-
+#include "DirectWrite.h"
 // =============== クラス定義 =====================
 class SceneGame
 {
 public:
 	// ===メンバ関数宣言===
-	SceneGame();
+	SceneGame(DirectWrite* pDirectWrite);
 	~SceneGame();
 	void Update(float tick);
 	void Draw();
@@ -42,6 +42,7 @@ public:
 	void SlimeSlimeCollision();
 	void ExplosionSlimeCollision();
 	void SlimeSlimeNormalMoveCollision();
+	void SetDirectWrite(DirectWrite* pDirectWrite);
 private:
 	// ===メンバ変数宣言===
 	VertexShader* m_pVs;
@@ -51,6 +52,7 @@ private:
 	CSlimeManager* m_pSlimeMng;
 	CCOLLISION* m_pCollision;
 	CExplosionManager* m_pExplosionMng;
+	DirectWrite* m_pDirectWrite;
 };
 
 #endif // __SCENE_GAME_H__

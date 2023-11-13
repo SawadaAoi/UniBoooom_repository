@@ -55,7 +55,7 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
 	InitInput();
 
 	// ÉVÅ[ÉìçÏê¨
-	g_pGame = new SceneGame();
+	g_pGame = new SceneGame(GetDirectWrite());
 
 	return hr;
 }

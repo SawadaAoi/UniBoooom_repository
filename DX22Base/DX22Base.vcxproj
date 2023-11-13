@@ -176,6 +176,7 @@
     <ClCompile Include="Controller.cpp" />
     <ClCompile Include="Cylinder.cpp" />
     <ClCompile Include="DirectX.cpp" />
+    <ClCompile Include="DirecWrite.cpp" />
     <ClCompile Include="Effect.cpp" />
     <ClCompile Include="Emitter.cpp" />
     <ClCompile Include="EmitterManager.cpp" />
@@ -224,6 +225,7 @@
     <ClInclude Include="Collision.h" />
     <ClInclude Include="Controller.h" />
     <ClInclude Include="Cylinder.h" />
+    <ClInclude Include="DirectWrite.h" />
     <ClInclude Include="GameParameter.h" />
     <ClInclude Include="Defines.h" />
     <ClInclude Include="DirectX.h" />
