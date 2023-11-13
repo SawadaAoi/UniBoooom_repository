@@ -37,6 +37,81 @@
     <Filter Include="ヘッダー ファイル\System">
       <UniqueIdentifier>{23598e8f-8b92-47d1-ac2c-8d127274e433}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\Info">
+      <UniqueIdentifier>{d897d083-6e2e-412e-a1e5-d3759d7e792f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\3dObject">
+      <UniqueIdentifier>{256adb97-1618-49c4-a934-d69469919f94}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\3dObject">
+      <UniqueIdentifier>{4ed2bbd8-4161-4a9a-aafd-084cf3508d02}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Geometry">
+      <UniqueIdentifier>{1d13bd25-3fe0-4e11-a191-8a5a00a4b47a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Geometry">
+      <UniqueIdentifier>{4110178c-d2c6-4d5d-854d-552848beea87}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Scene">
+      <UniqueIdentifier>{3892fbb0-488d-4de1-b651-4b00cf8ea3e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Scene">
+      <UniqueIdentifier>{ad1d9d81-304b-41ce-affd-6a0141f600c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\3DObject">
+      <UniqueIdentifier>{dd4cea9d-ae9d-4976-8b5b-79b3a5c68b64}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\System\Camera">
+      <UniqueIdentifier>{e89c5f9b-42c3-44f9-bcd6-662379c7102a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\System\Camera">
+      <UniqueIdentifier>{e51fcb26-a388-49ec-b748-cd8fe67225d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\2dObject">
+      <UniqueIdentifier>{982c9d7b-0d17-4703-af32-cc77a4f51dd8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\2dObject\Effect">
+      <UniqueIdentifier>{0b69555e-5e2c-4067-ab76-5084adc00263}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\2dObject\Effect\Particle">
+      <UniqueIdentifier>{18baf731-5081-4dd1-89e7-6e6a4249d38c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\2dObject\Effect\Particle\ModelParticle">
+      <UniqueIdentifier>{6701af9f-d1d6-4b3c-ad2c-24846fb42fc9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\2dObject\Effect\Particle\QuadParticle">
+      <UniqueIdentifier>{aac39599-ed75-4b87-89a9-2a720d143484}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\2dObject">
+      <UniqueIdentifier>{956544a7-603e-42b3-bfab-932cff43106c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\2dObject\Effect">
+      <UniqueIdentifier>{b95ca52c-d424-4e4d-a919-7649217b5a00}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\2dObject\Effect\Particle">
+      <UniqueIdentifier>{33698c5e-3fce-4b89-9016-51917eb872e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\2dObject\Effect\Particle\ModelParticle">
+      <UniqueIdentifier>{238e6673-495f-4451-ac17-72d2157c3e52}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\2dObject\Effect\Particle\QuadParticle">
+      <UniqueIdentifier>{6ac34c7d-649c-43ac-8773-34ff50f91da9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\2dObject\Effect\Particle\StripeParticle">
+      <UniqueIdentifier>{293c03dd-1393-402a-b929-8df7c7ad51b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\2dObject\Effect\Particle\StripeParticle">
+      <UniqueIdentifier>{bfe0c776-3581-417b-8745-139a05bf0db7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Info\Transform">
+      <UniqueIdentifier>{42a0eb1c-52f2-44b0-9fbb-724472721f80}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Info\Pos">
+      <UniqueIdentifier>{4587c013-f442-41b3-af7d-a35feab11cab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Info">
+      <UniqueIdentifier>{8a28753d-f510-42e4-9844-46833e398878}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -54,9 +129,6 @@
     <ClCompile Include="DirectX.cpp">
       <Filter>ソース ファイル\DirectX</Filter>
     </ClCompile>
-    <ClCompile Include="Geometory.cpp">
-      <Filter>ソース ファイル\System</Filter>
-    </ClCompile>
     <ClCompile Include="Input.cpp">
       <Filter>ソース ファイル\System</Filter>
     </ClCompile>
@@ -65,9 +137,6 @@
     </ClCompile>
     <ClCompile Include="SceneGame.cpp">
       <Filter>ソース ファイル\App</Filter>
-    </ClCompile>
-    <ClCompile Include="_geometory.cpp">
-      <Filter>ソース ファイル\System</Filter>
     </ClCompile>
     <ClCompile Include="Startup.cpp">
       <Filter>ソース ファイル\System</Filter>
@@ -78,14 +147,110 @@
     <ClCompile Include="Model.cpp">
       <Filter>ソース ファイル\System</Filter>
     </ClCompile>
-    <ClCompile Include="CameraBase.cpp">
-      <Filter>ソース ファイル\System</Filter>
+    <ClCompile Include="Player.cpp">
+      <Filter>ソース ファイル\3dObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Hammer.cpp">
+      <Filter>ソース ファイル\3dObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Box.cpp">
+      <Filter>ソース ファイル\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Line.cpp">
+      <Filter>ソース ファイル\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Cylinder.cpp">
+      <Filter>ソース ファイル\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Sphere.cpp">
+      <Filter>ソース ファイル\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Geometry.cpp">
+      <Filter>ソース ファイル\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>ソース ファイル\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneManager.cpp">
+      <Filter>ソース ファイル\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Title.cpp">
+      <Filter>ソース ファイル\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Prot.cpp">
+      <Filter>ソース ファイル\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Explosion.cpp">
+      <Filter>ソース ファイル\3dObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Slime_1.cpp">
+      <Filter>ソース ファイル\3dObject</Filter>
+    </ClCompile>
+    <ClCompile Include="SlimeBase.cpp">
+      <Filter>ソース ファイル\3dObject</Filter>
+    </ClCompile>
+    <ClCompile Include="SlimeManager.cpp">
+      <Filter>ソース ファイル\3dObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>ソース ファイル\System\Camera</Filter>
     </ClCompile>
     <ClCompile Include="CameraDebug.cpp">
+      <Filter>ソース ファイル\System\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraChase.cpp">
+      <Filter>ソース ファイル\System\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="ExplosionManager.cpp">
+      <Filter>ソース ファイル\3dObject</Filter>
+    </ClCompile>
+    <ClCompile Include="SphereInfo.cpp">
+      <Filter>ソース ファイル\3dObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Collision.cpp">
       <Filter>ソース ファイル\System</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\DX22Base\DX22Base\Explosion.cpp">
+    <ClCompile Include="Controller.cpp">
+      <Filter>ソース ファイル\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Effect.cpp">
+      <Filter>ソース ファイル\2dObject\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="Emitter.cpp">
+      <Filter>ソース ファイル\2dObject\Effect\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="EmitterManager.cpp">
+      <Filter>ソース ファイル\2dObject\Effect\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="Particle.cpp">
+      <Filter>ソース ファイル\2dObject\Effect\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelParticle.cpp">
+      <Filter>ソース ファイル\2dObject\Effect\Particle\ModelParticle</Filter>
+    </ClCompile>
+    <ClCompile Include="QuadParticle.cpp">
+      <Filter>ソース ファイル\2dObject\Effect\Particle\QuadParticle</Filter>
+    </ClCompile>
+    <ClCompile Include="StripeParticle.cpp">
+      <Filter>ソース ファイル\2dObject\Effect\Particle\StripeParticle</Filter>
+    </ClCompile>
+    <ClCompile Include="Transform3d.cpp">
+      <Filter>ソース ファイル\Info</Filter>
+    </ClCompile>
+    <ClCompile Include="Transform2d.cpp">
+      <Filter>ソース ファイル\Info</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneGameCollision.cpp">
       <Filter>ソース ファイル\App</Filter>
+    </ClCompile>
+    <ClCompile Include="Slime_4.cpp">
+      <Filter>ソース ファイル\3dObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Slime_2.cpp">
+      <Filter>ソース ファイル\3dObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Slime_3.cpp">
+      <Filter>ソース ファイル\3dObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -107,9 +272,6 @@
     <ClInclude Include="DirectX.h">
       <Filter>ヘッダー ファイル\DirectX</Filter>
     </ClInclude>
-    <ClInclude Include="Geometory.h">
-      <Filter>ヘッダー ファイル\System</Filter>
-    </ClInclude>
     <ClInclude Include="Input.h">
       <Filter>ヘッダー ファイル\System</Filter>
     </ClInclude>
@@ -122,14 +284,122 @@
     <ClInclude Include="Model.h">
       <Filter>ヘッダー ファイル\System</Filter>
     </ClInclude>
-    <ClInclude Include="CameraBase.h">
-      <Filter>ヘッダー ファイル\System</Filter>
+    <ClInclude Include="TriType.h">
+      <Filter>ヘッダー ファイル\Info</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>ヘッダー ファイル\3dObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Hammer.h">
+      <Filter>ヘッダー ファイル\3dObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Line.h">
+      <Filter>ヘッダー ファイル\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Box.h">
+      <Filter>ヘッダー ファイル\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Cylinder.h">
+      <Filter>ヘッダー ファイル\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Geometry.h">
+      <Filter>ヘッダー ファイル\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>ヘッダー ファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneManager.h">
+      <Filter>ヘッダー ファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Title.h">
+      <Filter>ヘッダー ファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Prot.h">
+      <Filter>ヘッダー ファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="SphereInfo.h">
+      <Filter>ヘッダー ファイル\Info</Filter>
+    </ClInclude>
+    <ClInclude Include="SlimeBase.h">
+      <Filter>ヘッダー ファイル\3DObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Slime_1.h">
+      <Filter>ヘッダー ファイル\3DObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Explosion.h">
+      <Filter>ヘッダー ファイル\3dObject</Filter>
+    </ClInclude>
+    <ClInclude Include="SlimeManager.h">
+      <Filter>ヘッダー ファイル\3dObject</Filter>
     </ClInclude>
     <ClInclude Include="CameraDebug.h">
+      <Filter>ヘッダー ファイル\System\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>ヘッダー ファイル\System\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraChase.h">
+      <Filter>ヘッダー ファイル\System\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Sphere.h">
+      <Filter>ヘッダー ファイル\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="ExplosionManager.h">
+      <Filter>ヘッダー ファイル\3dObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Transform.h">
+      <Filter>ヘッダー ファイル\Info\Transform</Filter>
+    </ClInclude>
+    <ClInclude Include="Transform3d.h">
+      <Filter>ヘッダー ファイル\Info\Transform</Filter>
+    </ClInclude>
+    <ClInclude Include="Transform2d.h">
+      <Filter>ヘッダー ファイル\Info\Transform</Filter>
+    </ClInclude>
+    <ClInclude Include="Pos2d.h">
+      <Filter>ヘッダー ファイル\Info\Pos</Filter>
+    </ClInclude>
+    <ClInclude Include="Pos3d.h">
+      <Filter>ヘッダー ファイル\Info\Pos</Filter>
+    </ClInclude>
+    <ClInclude Include="Collision.h">
       <Filter>ヘッダー ファイル\System</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\DX22Base\DX22Base\Explosion.h">
-      <Filter>ヘッダー ファイル\App</Filter>
+    <ClInclude Include="Controller.h">
+      <Filter>ヘッダー ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Effect.h">
+      <Filter>ヘッダー ファイル\2dObject\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="Emitter.h">
+      <Filter>ヘッダー ファイル\2dObject\Effect\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="EmitterManager.h">
+      <Filter>ヘッダー ファイル\2dObject\Effect\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="Particle.h">
+      <Filter>ヘッダー ファイル\2dObject\Effect\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelParticle.h">
+      <Filter>ヘッダー ファイル\2dObject\Effect\Particle\ModelParticle</Filter>
+    </ClInclude>
+    <ClInclude Include="QuadParticle.h">
+      <Filter>ヘッダー ファイル\2dObject\Effect\Particle\QuadParticle</Filter>
+    </ClInclude>
+    <ClInclude Include="StripeParticle.h">
+      <Filter>ヘッダー ファイル\2dObject\Effect\Particle\StripeParticle</Filter>
+    </ClInclude>
+    <ClInclude Include="Slime_4.h">
+      <Filter>ヘッダー ファイル\3dObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Slime_2.h">
+      <Filter>ヘッダー ファイル\3dObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Slime_3.h">
+      <Filter>ヘッダー ファイル\3dObject</Filter>
+    </ClInclude>
+    <ClInclude Include="GameParameter.h">
+      <Filter>ヘッダー ファイル\Info</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

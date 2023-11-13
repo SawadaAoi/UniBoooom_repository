@@ -1,118 +1,200 @@
+/* ========================================
+	HEW/UniBoooom!!
+	------------------------------------
+	ã‚²ãƒ¼ãƒ ã‚·ãƒ¼ãƒ³ç”¨cpp
+	------------------------------------
+	GameScene.cpp
+	------------------------------------
+	ä½œæˆè€… æ¾¤ç”°è’¼ç”Ÿ
+
+	å¤‰æ›´å±¥æ­´
+	ãƒ»2023/11/08 ã‚³ãƒ¡ãƒ³ãƒˆè¿½åŠ ã€ç„¡é§„ãªç®‡æ‰€ã‚’å‰Šé™¤ã€€æ¾¤ç”°è’¼ç”Ÿ
+	ãƒ»2023/11/09 ã‚«ãƒ¡ãƒ©ã®æ§˜ã€…å‹•ä½œãƒã‚§ãƒƒã‚¯ã€‚ãƒ¡ã‚¤ãƒ³ã‹ã‚‰è»¸ç·šå¥ªå–ã€‚åœ°é¢è¿½åŠ ã€‚ é«™æœ¨é§¿è¼”
+	ãƒ»2023/11/10 ã‚«ãƒ¡ãƒ©ã‚’ã‚¹ãƒ©ã‚¤ãƒ ã¨çˆ†ç™ºã«ã‚‚æ¸¡ã™ã‚ˆã†ã«ã—ãŸãƒ»lineã®ãƒ¡ãƒ¢ãƒªãƒªãƒ¼ã‚¯å¯¾ç­– é«™æœ¨é§¿è¼”
+
+========================================== */
+
+// =============== ã‚¤ãƒ³ã‚¯ãƒ«ãƒ¼ãƒ‰ ===================
 #include "SceneGame.h"
-#include "Geometory.h"
+#include "Geometry.h"
 #include "Model.h"
 #include "CameraDebug.h"
+#include "CameraChase.h"
+#include "Pos3d.h"
+#include "Box.h"
+#include "Line.h"
+#include "Defines.h"
 
+// =============== ãƒ‡ãƒãƒƒã‚°ãƒ¢ãƒ¼ãƒ‰ =======================
+#define MODE_COORD_AXIS (true)	//åº§æ¨™è»¸æ˜ ã™ã‹ã©ã†ã‹
+#define MODE_GROUND (false)	//åº§æ¨™è»¸æ˜ ã™ã‹ã©ã†ã‹
+
+/* ========================================
+	ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿é–¢æ•°
+	-------------------------------------
+	å†…å®¹ï¼šã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	-------------------------------------
+	å¼•æ•°1ï¼šç„¡ã—
+	-------------------------------------
+	æˆ»å€¤ï¼šç„¡ã—
+=========================================== */
 SceneGame::SceneGame()
 {
-	
-	// ’¸“_ƒVƒF[ƒ_‚Ì“Çž
-	m_pVS = new VertexShader();
-	if (FAILED(m_pVS->Load("Assets/shader/VS_Model.cso"))) {
+	// é ‚ç‚¹ã‚·ã‚§ãƒ¼ãƒ€ã®èª­è¾¼
+	m_pVs = new VertexShader();
+	if (FAILED(m_pVs->Load("Assets/shader/VS_Model.cso"))) {
 		MessageBox(nullptr, "VS_Model.cso", "Error", MB_OK);
 	}
 
+	// ãƒ¬ãƒ³ãƒ€ãƒ¼ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã€æ·±åº¦ãƒãƒƒãƒ•ã‚¡ã®è¨­å®š
+	RenderTarget* pRTV = GetDefaultRTV();	//ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã§ä½¿ç”¨ã—ã¦ã„ã‚‹RenderTargetViewã®å–å¾—
+	DepthStencil* pDSV = GetDefaultDSV();	//ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã§ä½¿ç”¨ã—ã¦ã„ã‚‹DepthStencilViewã®å–å¾—
+	SetRenderTargets(1, &pRTV, pDSV);		//DSVãŒnullã ã¨2Dè¡¨ç¤ºã«ãªã‚‹
 
-	// ƒ‚ƒfƒ‹‚Ì“Ç‚Ýž‚Ý
-	m_pModel = new Model;
-	if (!m_pModel->Load("Assets/Model/eyeBat/eyeBat.FBX", 0.075f, Model::XFlip))	//”{—¦Žw’è‚Æ”½“]Ý’è‚ÍÈ—ª‰Â
-	{
-		MessageBox(NULL, "eyeBat", "Error", MB_OK);	//ƒGƒ‰[ƒƒbƒZ[ƒW‚Ì•\Ž¦
-	}
+#if MODE_COORD_AXIS
+	// è»¸ç·šã®è¡¨ç¤º
+	CLine::Init();
+#endif
 
-	
-	m_pModel->SetVertexShader(m_pVS);	// ’¸“_ƒVƒF[ƒ_‚ðƒ‚ƒfƒ‹‚ÉƒZƒbƒg
+	m_pCollision = new CCOLLISION();
+	m_pPlayer = new CPlayer();
+	m_pCamera = new CCameraChase(m_pPlayer->GetPosAddress()) ;
+	m_pPlayer->SetCamera(m_pCamera);
 
-	// ƒŒƒ“ƒ_[ƒ^[ƒQƒbƒgA[“xƒoƒbƒtƒ@‚ÌÝ’è
-	RenderTarget* pRTV = GetDefaultRTV();	//ƒfƒtƒHƒ‹ƒg‚ÅŽg—p‚µ‚Ä‚¢‚éRenderTargetView‚ÌŽæ“¾
-	DepthStencil* pDSV = GetDefaultDSV();	//ƒfƒtƒHƒ‹ƒg‚ÅŽg—p‚µ‚Ä‚¢‚éDepthStencilView‚ÌŽæ“¾
-	SetRenderTargets(1, &pRTV, pDSV);		//DSV‚ªnull‚¾‚Æ2D•\Ž¦‚É‚È‚é
-	
+#if MODE_GROUND
+	m_pBox = new CBox();
+#endif
 
-	m_pCamera = new CameraDebug() ;
+	// ã‚¹ãƒ©ã‚¤ãƒ ãƒžãƒãƒ¼ã‚¸ãƒ£ãƒ¼ç”Ÿæˆ
+	m_pSlimeMng = new CSlimeManager();
+	m_pSlimeMng->SetCamera(m_pCamera);
+	m_pExplosionMng = new CExplosionManager();
+	m_pExplosionMng->SetCamera(m_pCamera);
 }
 
+/* ========================================
+	ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿é–¢æ•°
+	-------------------------------------
+	å†…å®¹ï¼šãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	-------------------------------------
+	å¼•æ•°1ï¼šç„¡ã—
+	-------------------------------------
+	æˆ»å€¤ï¼šç„¡ã—
+=========================================== */
 SceneGame::~SceneGame()
 {
-	if (m_pCamera)
-	{
-		delete m_pCamera;
-		m_pCamera = nullptr;
-	}
-
-	if (m_pModel)
-	{
-		delete m_pModel;
-		m_pModel = nullptr;
-	}
-
-	if (m_pVS) {
-		delete m_pVS;
-		m_pVS = nullptr;
-	}
+	SAFE_DELETE(m_pExplosionMng);
+	SAFE_DELETE(m_pSlimeMng);	// ã‚¹ãƒ©ã‚¤ãƒ ãƒžãƒãƒ¼ã‚¸ãƒ£ãƒ¼å‰Šé™¤
+	SAFE_DELETE(m_pCamera);
+	SAFE_DELETE(m_pPlayer);
+	SAFE_DELETE(m_pCollision);
+#if MODE_COORD_AXIS
+	// è»¸ç·šã®è¡¨ç¤º
+	CLine::Uninit();
+#endif
+	SAFE_DELETE(m_pVs);
 }
 
+
+/* ========================================
+   æ›´æ–°å‡¦ç†é–¢æ•°
+   -------------------------------------
+   å†…å®¹ï¼šæ›´æ–°å‡¦ç†
+   -------------------------------------
+   å¼•æ•°1ï¼šãƒ†ã‚£ãƒƒã‚¯æ•°?(æœªä½¿ç”¨)
+   -------------------------------------
+   æˆ»å€¤ï¼šç„¡ã—
+=========================================== */
 void SceneGame::Update(float tick)
 {
 	m_pCamera->Update();
+	m_pPlayer->Update();
+	m_pSlimeMng->SetPlayerPos(m_pPlayer->GetPos());
 
+	// ã‚¹ãƒ©ã‚¤ãƒ ãƒžãƒãƒ¼ã‚¸ãƒ£ãƒ¼æ›´æ–°
+	m_pSlimeMng->Update(m_pExplosionMng);
+	m_pExplosionMng->Update();
+	m_pCamera->Update();
+
+
+	SceneGameCollision();
 }
 
+/* ========================================
+   æç”»å‡¦ç†é–¢æ•°
+   -------------------------------------
+   å†…å®¹ï¼šæç”»å‡¦ç†
+   -------------------------------------
+   å¼•æ•°1ï¼šç„¡ã—
+   -------------------------------------
+   æˆ»å€¤ï¼šç„¡ã—
+=========================================== */
 void SceneGame::Draw()
 {
+#if MODE_COORD_AXIS
+	// è»¸ç·šã®è¡¨ç¤º
+	CLine::SetView(m_pCamera->GetViewMatrix());
+	CLine::SetProjection(m_pCamera->GetProjectionMatrix());
+	// ã‚°ãƒªãƒƒãƒ‰
+	DirectX::XMFLOAT4 lineColor(0.5f, 0.5f, 0.5f, 1.0f);
+	float size = DEBUG_GRID_NUM * DEBUG_GRID_MARGIN;
+	for (int i = 1; i <= DEBUG_GRID_NUM; ++i)
+	{
+		float grid = i * DEBUG_GRID_MARGIN;
+		DirectX::XMFLOAT3 pos[2] = {
+			DirectX::XMFLOAT3(grid, 0.0f, size),
+			DirectX::XMFLOAT3(grid, 0.0f,-size),
+		};
+		CLine::Add(pos[0], pos[1], lineColor);
+		pos[0].x = pos[1].x = -grid;
+		CLine::Add(pos[0], pos[1], lineColor);
+		pos[0].x = size;
+		pos[1].x = -size;
+		pos[0].z = pos[1].z = grid;
+		CLine::Add(pos[0], pos[1], lineColor);
+		pos[0].z = pos[1].z = -grid;
+		CLine::Add(pos[0], pos[1], lineColor);
+	}
+	// è»¸
+	CLine::Add(DirectX::XMFLOAT3(0, 0, 0), DirectX::XMFLOAT3(size, 0, 0), DirectX::XMFLOAT4(1, 0, 0, 1));
+	CLine::Add(DirectX::XMFLOAT3(0, 0, 0), DirectX::XMFLOAT3(0, size, 0), DirectX::XMFLOAT4(0, 1, 0, 1));
+	CLine::Add(DirectX::XMFLOAT3(0, 0, 0), DirectX::XMFLOAT3(0, 0, size), DirectX::XMFLOAT4(0, 0, 1, 1));
+	CLine::Add(DirectX::XMFLOAT3(0, 0, 0), DirectX::XMFLOAT3(-size, 0, 0), DirectX::XMFLOAT4(0, 0, 0, 1));
+	CLine::Add(DirectX::XMFLOAT3(0, 0, 0), DirectX::XMFLOAT3(0, 0, -size), DirectX::XMFLOAT4(0, 0, 0, 1));
+
+	CLine::Draw();
+#endif
+
+#if MODE_GROUND
 	DirectX::XMFLOAT4X4 mat[3];
 
-	// --- ƒ[ƒ‹ƒhs—ñ‚ÌŒvŽZ
-	DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(0.0f, 0.0f, 0.0f);	// ˆÊ’u‚ðˆÚ“®
-	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(1.0f, 1.0f, 1.0f);		// ‘å‚«‚³‚ð•ÏX
-	DirectX::XMMATRIX world = T * S;
+	//Geometoryç”¨ã®å¤‰æ›è¡Œåˆ—ã‚’è¨­å®š
+	DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(0.0f, -0.5f * 0.1f, 0.0f);	//ã‚°ãƒªãƒƒãƒ‰ã‚ˆã‚Šã‚‚ä¸‹ã«æ¥ã‚‹ã‚ˆã†ã«ç§»å‹•
+	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(100.0f, 0.1f, 100.0f);		//åœ°é¢ã¨ãªã‚‹ã‚ˆã†ã«ã€å‰å¾Œå·¦å³ã«åºƒãä¸Šä¸‹ã«ç‹­ã„
+	DirectX::XMMATRIX world = S * T;											//å…¨ã¦ã®è¡Œåˆ—ã‚’ä¸€ã¤ã«ã¾ã¨ã‚ã‚‹
 	world = DirectX::XMMatrixTranspose(world);
-	DirectX::XMStoreFloat4x4(&mat[0], world);
-	
-	//--ƒrƒ…[s—ñ‚ÌŒvŽZ
-	DirectX::XMMATRIX view = DirectX::XMMatrixLookAtLH(
-		DirectX::XMVectorSet(1.5f, 2.5f, -3.0f, 0.0f),	 // ƒJƒƒ‰‚ÌˆÊ’u
-		DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f),	 // ƒJƒƒ‰‚ª’–Ú‚µ‚Ä‚¢‚éˆÊ’u
-		DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));	 // ƒJƒƒ‰‚Ìã•ûŒü
-	view = DirectX::XMMatrixTranspose(view);
-	DirectX::XMStoreFloat4x4(&mat[1], view);
+	DirectX::XMStoreFloat4x4(&mat[0], world);	//matã‚’fMatã«æ ¼ç´
+	m_pBox->SetWorld(mat[0]);	//ãƒœãƒƒã‚¯ã‚¹ã«å¤‰æ›è¡Œåˆ—ã‚’è¨­å®š
 
-	//-- ƒvƒƒWƒFƒNƒVƒ‡ƒ“s—ñ‚ÌŒvŽZ 
-	DirectX::XMMATRIX proj = DirectX::XMMatrixPerspectiveFovLH(
-		DirectX::XMConvertToRadians(60.0f),	// c•ûŒü‚Ì‰æŠp
-		16.0f / 9.0f,						// ƒAƒXƒyƒNƒg”ä
-		0.1f,								// ‰æ–Ê‚ÉŽÊ‚èŽn‚ß‚é‹——£
-		100.0f);							// ŽÊ‚¹‚éŒÀŠE‹——£
-	proj = DirectX::XMMatrixTranspose(proj);
-	DirectX::XMStoreFloat4x4(&mat[2], proj);
-
-
+	//Geometoryç”¨ã®å¤‰æ›è¡Œåˆ—ã‚’è¨­å®š
 	mat[1] = m_pCamera->GetViewMatrix();
 	mat[2] = m_pCamera->GetProjectionMatrix();
-	// s—ñ‚ðƒVƒF[ƒ_[‚Ö 
-	m_pVS->WriteBuffer(0, mat);
 
-	// ƒ‚ƒfƒ‹‚Ì•`‰æ
-	if (m_pModel)
-	{
-		m_pModel->Draw();
-	}
+	m_pBox->SetView(mat[1]);		//ãƒœãƒƒã‚¯ã‚¹ã«å¤‰æ›è¡Œåˆ—ã‚’è¨­å®š
+	m_pBox->SetProjection(mat[2]);	//ãƒœãƒƒã‚¯ã‚¹ã«å¤‰æ›è¡Œåˆ—ã‚’è¨­å®š
 
+	//// è¡Œåˆ—ã‚’ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼ã¸ 
+	//m_pVs->WriteBuffer(0, mat);
 
-	// Genetory —p‚Ì•ÏŠ·s—ñ‚ðŒvŽZ
-	T = DirectX::XMMatrixTranslation(0.0f, -0.05f, 0.0f);	// ˆÊ’u‚ðˆÚ“®
-	S = DirectX::XMMatrixScaling(5.0f, 0.1f, 5.0f);		// ‘å‚«‚³‚ð•ÏX
-	world = T * S;	// ‘S‚Ä‚Ìs—ñ‚ðˆê‚Â‚É‚·‚é
-	world = DirectX::XMMatrixTranspose(world);
-	DirectX::XMStoreFloat4x4(&mat[0], world);
-
-	
-	// Genetory —p‚Ì •ÏŠ·s—ñ‚ðÝ’è
-	Geometory::SetWorld(mat[0]);
-	Geometory::SetView (mat[1]);
-	Geometory::SetProjection(mat[2]);
-
-	Geometory::DrawBox();
+	m_pBox->Draw();
+#endif
 	
 
+	// ã‚¹ãƒ©ã‚¤ãƒ ãƒžãƒãƒ¼ã‚¸ãƒ£ãƒ¼æç”»
+	m_pSlimeMng->Draw();
+	m_pPlayer->Draw();
+	
+	//çˆ†ç™ºãƒžãƒãƒ¼ã‚¸ãƒ£ãƒ¼æç”»
+	m_pExplosionMng->Draw();
+	
 }

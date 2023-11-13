@@ -1,4 +1,16 @@
-#ifndef __DEFINES_H__
+/* ========================================
+	HEW/UniBoooom!!
+	------------------------------------
+	Define用ヘッダ
+	------------------------------------
+	Defines.h
+	------------------------------------
+	作成者　佐々木先生
+		
+	変更履歴
+	
+========================================== */
+#ifndef __DEFINES_H__	//Defines.hインクルードガード
 #define __DEFINES_H__
 
 #include <assert.h>
@@ -11,7 +23,7 @@
 
 // タイトル
 #ifdef _DEBUG
-#define APP_TITLE "Define.hでタイトルが変更できるので、[クラス記号氏名]に変えておくこと"
+#define APP_TITLE "UniBoooom!!"
 #else
 #define APP_TITLE "Define.hでタイトルが変更できるので、ゲームのタイトルに変えておくこと"
 #endif
