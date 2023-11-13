@@ -8,13 +8,15 @@
    作成者：鈴村 朋也
 
    変更履歴
-	・2023/11/05 スライムマネージャークラス作成 suzumura
-	・2023/11/08 スライム同士が接触した際の分岐処理を作成(分岐した後に行う処理は未実装　※TODOをつけておいた)の yamashita
-	・2023/11/08 結合処理を作成(結合後の生成処理は未実装 Slime_2～Slime_4がまだ無いから) yamashita
-	・2023/11/09 生成処理、変数の変更 sawada
-	・2023/11/09 コメントの追加 sawada
-	・2023/11/11 parameter用ヘッダ追加 suzumura
-	・2023/11/11 スライム同士が重ならない関数を追加 yamashita
+	・2023/11/05 スライムマネージャークラス作成 Suzumura
+	・2023/11/08 スライム同士が接触した際の分岐処理を作成(分岐した後に行う処理は未実装　※TODOをつけておいた)の Yamashita
+	・2023/11/08 結合処理を作成(結合後の生成処理は未実装 Slime_2～Slime_4がまだ無いから) Yamashita
+	・2023/11/09 生成処理、変数の変更 Sawada
+	・2023/11/09 コメントの追加 Sawada
+	・2023/11/11 parameter用ヘッダ追加 Suzumura
+	・2023/11/11 スライム同士が重ならない関数を追加 Yamashita
+	・2023/11/13 スライムレベルごとに爆発時間を設定できるように変更 Suzumura
+
 =========================================== */
 
 // =============== インクルード ===================
@@ -37,9 +39,16 @@ const int CREATE_DISTANCE		= 10;			// 生成距離最小値
 const int SLIME_LEVEL1_PER		= 10;			// スライム_1の生成確立
 const int SLIME_LEVEL2_PER		= 10;			// スライム_2の生成確立
 const int SLIME_LEVEL3_PER		= 100 - SLIME_LEVEL1_PER - SLIME_LEVEL2_PER;	// スライム_3の生成確立
+
 const float MAX_SIZE_EXPLODE	= 5.0f;			// スライム4同士の爆発の大きさ
-const float EXPLODE_BASE_RATIO	= 1.0f;			// スライムの爆発接触での爆発の大きさのベース
+const float EXPLODE_BASE_RATIO	= 1.5f;			// スライムの爆発接触での爆発の大きさのベース
 const int START_ENEMY_NUM		= 10;			// ゲーム開始時の敵キャラの数
+
+const float LEVEL_1_EXPLODE_TIME = 0.5f * 60.0f;	// スライム_1の爆発総時間
+const float LEVEL_2_EXPLODE_TIME = 1.0f * 60.0f;	// スライム_2の爆発総時間
+const float LEVEL_3_EXPLODE_TIME = 2.0f * 60.0f;	// スライム_3の爆発総時間
+const float LEVEL_4_EXPLODE_TIME = 3.0f * 60.0f;	// スライム_4の爆発総時間
+
 
 // ↓1.0fでそのまま
 const float COL_SUB_HIT_TO_BIG = 0.7f;				// スライム衝突(小→大)の衝突側の減算値(反射する移動)
@@ -243,14 +252,15 @@ void CSlimeManager::HitBranch(int HitSlimeNum, int StandSlimeNum, CExplosionMana
 	//スライムのサイズが同じだった場合
 	else
 	{
-		TPos3d<float> pos(m_pSlime[StandSlimeNum]->GetPos());	//衝突されたスライムの位置を確保
-		SAFE_DELETE(m_pSlime[HitSlimeNum]);						//衝突するスライムを削除
-		SAFE_DELETE(m_pSlime[StandSlimeNum]);					//衝突されたスライムを削除
+		TPos3d<float> pos(m_pSlime[StandSlimeNum]->GetPos());			// 衝突されたスライムの位置を確保
+		SAFE_DELETE(m_pSlime[HitSlimeNum]);								// 衝突するスライムを削除
+		SAFE_DELETE(m_pSlime[StandSlimeNum]);							// 衝突されたスライムを削除
 
 		if (hitSlimeLevel == MAX_LEVEL)	//スライムのサイズが最大の時
 		{
-			//爆発処理を行う<=TODO
-			pExpMng->Create(pos, MAX_SIZE_EXPLODE);	//衝突されたスライムの位置で爆発
+			//スライム爆発処理
+			pExpMng->Create(pos, MAX_SIZE_EXPLODE * EXPLODE_BASE_RATIO, LEVEL_4_EXPLODE_TIME);	//衝突されたスライムの位置でレベル４爆発
+
 		}
 		else	//最大サイズじゃない場合は1段階大きいスライムを生成する
 		{
@@ -308,27 +318,40 @@ void CSlimeManager::UnionSlime(E_SLIME_LEVEL level ,TPos3d<float> pos)
 ======================================== */
 void CSlimeManager::TouchExplosion(int DelSlime, CExplosionManager * pExpMng)
 {
-	TPos3d<float> pos(m_pSlime[DelSlime]->GetPos());	//衝突先のスライムの位置を確保
+	TPos3d<float> pos(m_pSlime[DelSlime]->GetPos());			// 衝突先のスライムの位置を確保
+	E_SLIME_LEVEL level = m_pSlime[DelSlime]->GetSlimeLevel();	// 衝突先のスライムのレベルを確保
+	TTriType<float> size = m_pSlime[DelSlime]->GetScale();		// 衝突先のスライムサイズを確保
 
-	float ExplosionSize;	// 爆発の大きさ
-	switch (m_pSlime[DelSlime]->GetSlimeLevel())
+	float ExplosionSize;							// 爆発の大きさ
+	ExplosionSize = size.x * EXPLODE_BASE_RATIO;	// 爆発の大きさを スライムの大きさ * 定数倍 に設定 ->補足:size.xのみを取ってきているが、現状x,y,zは等しいため問題なし
+
+	switch (level)
 	{
 	case LEVEL_1:
-		ExplosionSize = 1.0f * EXPLODE_BASE_RATIO;
+		//ExplosionSize = 1.0f * EXPLODE_BASE_RATIO;
+		pExpMng->Create(pos, ExplosionSize, LEVEL_1_EXPLODE_TIME);	//衝突されたスライムの位置でレベル１爆発
+
 		break;
 	case LEVEL_2:
-		ExplosionSize = 2.0f * EXPLODE_BASE_RATIO;
+		//ExplosionSize = 2.0f * EXPLODE_BASE_RATIO;
+		pExpMng->Create(pos, ExplosionSize, LEVEL_2_EXPLODE_TIME);	//衝突されたスライムの位置でレベル２爆発
+
 		break;
 	case LEVEL_3:
-		ExplosionSize = 3.0f * EXPLODE_BASE_RATIO;
+		//ExplosionSize = 3.0f * EXPLODE_BASE_RATIO;
+		pExpMng->Create(pos, ExplosionSize, LEVEL_3_EXPLODE_TIME);	//衝突されたスライムの位置でレベル３爆発
+
 		break;
 	case LEVEL_4:
-		ExplosionSize = 4.0f * EXPLODE_BASE_RATIO;
+		//ExplosionSize = 4.0f * EXPLODE_BASE_RATIO;
+		pExpMng->Create(pos, ExplosionSize, LEVEL_4_EXPLODE_TIME);	//衝突されたスライムの位置でレベル４爆発
+
 		break;
 	
 	}
 	SAFE_DELETE(m_pSlime[DelSlime]);					//ぶつかりに来たスライムを削除
-	pExpMng->Create(pos, ExplosionSize);				//衝突先のスライムの位置で爆発
+
+	//pExpMng->Create(pos, ExplosionSize);				//衝突先のスライムの位置で爆発
 }
 
 /* ========================================

@@ -8,8 +8,8 @@
 	作成者	鈴村朋也
 
 	変更履歴
-	・2023/11/11 ヘッダ作成 suzumura
-
+	・2023/11/11 ヘッダ作成 Suzumura
+	・2023/11/13 Paramerter追加(LEVEL_〇_EXPLODE_TIME) Suzumura
 
 =========================================== */
 #ifndef __GAME_PARAMETER_H__
@@ -55,7 +55,14 @@ const int SLIME_LEVEL1_PER			= 50;										// スライム_1の生成確立
 const int SLIME_LEVEL2_PER			= 30;										// スライム_2の生成確立
 const int SLIME_LEVEL3_PER			= 100 - SLIME_LEVEL1_PER - SLIME_LEVEL2_PER;// スライム_3の生成確立
 const float MAX_SIZE_EXPLODE		= 5.0f;										// スライム4同士の爆発の大きさ
-const float EXPLODE_BASE_RATIO		= 2.0f;										// スライムの爆発接触での爆発の大きさのベース
+const float EXPLODE_BASE_RATIO		= 1.5f;										// スライムの爆発接触での爆発の大きさのベース
+
+const float LEVEL_1_EXPLODE_TIME = 0.5f * 60.0f;								// スライム_1の爆発総時間
+const float LEVEL_2_EXPLODE_TIME = 1.0f * 60.0f;								// スライム_2の爆発総時間
+const float LEVEL_3_EXPLODE_TIME = 2.0f * 60.0f;								// スライム_3の爆発総時間
+const float LEVEL_4_EXPLODE_TIME = 3.0f * 60.0f;								// スライム_4の爆発総時間
+
+
 
 // スライム同士の反射の減算値
 // ↓1.0fでそのまま
@@ -82,10 +89,8 @@ const float LEVEL4_SPEED = ENEMY_MOVE_SPEED * 0.85;	// 移動速度
 
 
 // 爆発 =====================================================
-const int	MAX_EXPLOSION_NUM		= 20;				// 最大爆発数
-const float MAX_DISPLAY_TIME		= 3.0f * 60;		// 爆発持続秒数
-const float ONE_SECOND_FRAME		= 1.0f * 60;		// 大きくなるまでの秒数
-
+const int	MAX_EXPLOSION_NUM		= 20;		// 最大爆発数
+const float EXPAND_QUICK_RATE		= 0.2f;		// 膨張加速割合 
 
 // カメラ =====================================================
 const TPos3d<float> INIT_POS(0.0f, 2.6f, -3.0f);					// 初期位置

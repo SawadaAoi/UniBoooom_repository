@@ -8,11 +8,13 @@
 	作成者	鄭 宇恩
 	
 	変更履歴
-	・2023/11/06 爆発マネージャークラス作成 tei
-	・2023/11/06 爆発発生、削除関数作成 tei
-	・2023/11/07 爆発生成関数名の変更、DeleteExplosin()の修正 tei
-	・2023/11/09 爆発配列を返す処理の追加 sawada
-	・2023/11/10 他のオブジェクトと同一のカメラをセットするようにした yamashita
+	・2023/11/06 爆発マネージャークラス作成 Tei
+	・2023/11/06 爆発発生、削除関数作成 Tei
+	・2023/11/07 爆発生成関数名の変更、DeleteExplosin()の修正 Tei
+	・2023/11/09 爆発配列を返す処理の追加 Sawada
+	・2023/11/10 他のオブジェクトと同一のカメラをセットするようにした Yamashita
+	・2023/11/13 Create関数の引数にtimeを追加 Suzumura
+
 ========================================== */
 
 // =============== インクルード ===================
@@ -93,9 +95,13 @@ void CExplosionManager::Update()
 	-------------------------------------
 	引数1：生成座標(x,y,z)
 	-------------------------------------
+	引数2：爆発の大きさ
+	-------------------------------------
+	引数3：爆発総時間
+	-------------------------------------
 	戻値：なし
 =========================================== */
-void CExplosionManager::Create(TTriType<float> pos,float size)
+void CExplosionManager::Create(TTriType<float> pos,float size, float time)
 {
 	// 爆発を検索
 	for (int i = 0; i < MAX_EXPLOSION_NUM; i++)
@@ -103,7 +109,7 @@ void CExplosionManager::Create(TTriType<float> pos,float size)
 		// 使用済みの爆発はスルー
 		if (m_pExplosion[i] != nullptr) continue;
 
-		m_pExplosion[i] = new CExplosion(pos,size);	// 座標を指定して生成
+		m_pExplosion[i] = new CExplosion(pos,size,time);	// 座標を指定して生成
 		m_pExplosion[i]->SetCamera(m_pCamera);
 
 		break;
@@ -114,7 +120,7 @@ void CExplosionManager::Create(TTriType<float> pos,float size)
 /* ========================================
 	関数：爆発削除関数
 	----------------------------------------
-	内容：爆発があっったらチェックしてから削除
+	内容：爆発があったらチェックしてから削除
 	----------------------------------------
 	引数：なし
 	----------------------------------------
