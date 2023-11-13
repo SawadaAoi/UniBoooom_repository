@@ -1,5 +1,6 @@
 #include "DirectX.h"
 #include "Texture.h"
+#include "DirectWrite.h"
 
 //--- グローバル変数
 ID3D11Device *g_pDevice;
@@ -11,6 +12,7 @@ ID3D11RasterizerState* g_pRasterizerState[3];
 ID3D11BlendState* g_pBlendState[BLEND_MAX];
 ID3D11SamplerState* g_pSamplerState[SAMPLER_MAX];
 
+DirectWrite* g_pDirectWrite;
 
 ID3D11Device* GetDevice()
 {
@@ -31,6 +33,11 @@ RenderTarget* GetDefaultRTV()
 DepthStencil* GetDefaultDSV()
 {
 	return g_pDSV;
+}
+
+DirectWrite * GetDirectWrite()
+{
+	return g_pDirectWrite;
 }
 
 HRESULT InitDirectX(HWND hWnd, UINT width, UINT height, bool fullscreen)
@@ -61,7 +68,7 @@ HRESULT InitDirectX(HWND hWnd, UINT width, UINT height, bool fullscreen)
 	UINT numDriverTypes = ARRAYSIZE(driverTypes);
 
 	UINT createDeviceFlags = 0;
-	createDeviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
+	createDeviceFlags |= D3D11_CREATE_DEVICE_BGRA_SUPPORT;
 
 	// 機能レベル
 	D3D_FEATURE_LEVEL featureLevels[] =
@@ -178,11 +185,18 @@ HRESULT InitDirectX(HWND hWnd, UINT width, UINT height, bool fullscreen)
 	}
 	SetSamplerState(SAMPLER_LINEAR);
 
+	FontData fontData = FontData::FontData();
+
+	g_pDirectWrite = new DirectWrite(&fontData);
+	g_pDirectWrite->Init();			//2Dの文字描画のクラスを初期化
+
 	return S_OK;
 }
 
 void UninitDirectX()
 {
+	g_pDirectWrite->Release();
+
 	SAFE_DELETE(g_pDSV);
 	SAFE_DELETE(g_pRTV);
 
