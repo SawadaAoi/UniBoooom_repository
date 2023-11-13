@@ -29,7 +29,8 @@ const float HALF_PI = 3.141592f / 2;	//ハンマーの開始地点のラジアン角(要修正)
 #else
 const float ANGULAR_ANGLE = 0.1f;		//毎フレーム移動する角度量
 const float ROTATE_RADIUS = 1.0f;		//ハンマーが回転するプレイヤーからの距離
-const float HAMMER_SIZE = 1.0f;			//ハンマーの当たり判定の大きさ
+const float HAMMER_COL_SIZE = 0.75f;	//ハンマーの当たり判定の大きさ
+const float HAMMER_SIZE = 1.5f;			//ハンマーの大きさ
 #endif
 
 /* ========================================
@@ -42,18 +43,16 @@ const float HAMMER_SIZE = 1.0f;			//ハンマーの当たり判定の大きさ
    戻値：なし
    ======================================== */
 CHammer::CHammer()
-	:m_pos{ 0.0f,0.0f,0.0f }
-	,m_stateangle(0.0f)
+	: m_pos{ 0.0f,0.0f,0.0f }
+	, m_scale{ HAMMER_SIZE,HAMMER_SIZE,HAMMER_SIZE }
+	, m_stateangle(0.0f)
 	, m_nowangle(HALF_PI)
 	, m_bHammer(false)
 	, m_pHammerGeo(nullptr)
 {
-	m_T = DirectX::XMMatrixTranslation(0.0f, 0.0f, 0.0f);	//移動の変換行列の初期化
-	m_S = DirectX::XMMatrixScaling(0.0f, 0.0f, 0.0f);		//拡縮の変換行列の初期化
-	m_S = DirectX::XMMatrixRotationY(0.0f);					//Y軸の回転の変換行列の初期化
 	m_pHammerGeo = new CSphere();							//ハンマーを仮表示するジオメトリー
 	m_sphere.pos = {0.0f, 0.0f, 0.0f};
-	m_sphere.radius = 0.5f;
+	m_sphere.radius = HAMMER_COL_SIZE;
 }
 
 /* ========================================
@@ -103,8 +102,10 @@ void CHammer::Update(TPos3d<float> pPos, float angle)
    ======================================== */
 void CHammer::Draw(const CCamera* pCamera)
 {
-	m_T = DirectX::XMMatrixTranslation(m_pos.x, m_pos.y, m_pos.z);	//ハンマーの座標を移動の行列に格納
-	DirectX::XMMATRIX mat = m_T;			//移動の行列を格納
+	DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(m_pos.x, m_pos.y, m_pos.z);	// ハンマーの座標を移動の行列に格納
+	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(m_scale.x, m_scale.y, m_scale.z);// 拡大縮小行列
+
+	DirectX::XMMATRIX mat = S * T;			//移動の行列を格納
 	mat = DirectX::XMMatrixTranspose(mat);	//転置
 	DirectX::XMFLOAT4X4 fMat;				//行列の格納先
 	DirectX::XMStoreFloat4x4(&fMat, mat);	//XMFLOAT4X4に変換

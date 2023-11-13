@@ -43,16 +43,14 @@ public:
 	CSphereInfo::Sphere GetSphere();			//ハンマーのプレイヤー
 private:
 	// ===メンバ変数宣言=====
-	DirectX::XMMATRIX m_T;			//移動の変換行列
-	DirectX::XMMATRIX m_S;			//拡縮の変換行列
-	DirectX::XMMATRIX m_Ry;			//Y軸の回転をする変換行列
 	TPos3d<float> m_pos;	//ハンマーの位置座標
 	CSphereInfo::Sphere m_sphere;	//ハンマーの当たり判定用の球体
+	TTriType<float> m_scale;		//サイズ
+
 	float m_nowangle;				//今の角度
 	float m_stateangle;				//
 	bool m_bHammer;					//ハンマーを使用中のフラグ
 	CGeometry* m_pHammerGeo;		//ハンマーを仮表示する図形
-	//CCamera* m_pCamera;				//カメラのポインタ
 };
 
 #endif // !__HAMMER_H__

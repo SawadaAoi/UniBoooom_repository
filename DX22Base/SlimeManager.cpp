@@ -69,7 +69,7 @@ CSlimeManager::CSlimeManager()
 	}
 
 	// ゲーム開始時に敵キャラを生成する
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < START_ENEMY_NUM; i++)
 	{
 		int ranLv = rand() % 3 + 1;		// 生成するスライムのレベルを乱数で指定
 		Create((E_SLIME_LEVEL)ranLv);	// 生成処理
