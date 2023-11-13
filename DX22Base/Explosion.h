@@ -8,11 +8,14 @@
 	作成者 鄭 宇恩
 
 	変更履歴
-	・2023/11/03 ヘッダー作成 / 鄭 宇恩
-	・2023/11/05 パラメータ設定 /　鄭 宇恩
-	・2023/11/07 変数型TriType→CSphereに /鄭 宇恩
-	・2023/11/08 変数、関数の変更 / 澤田蒼生
-	・2023/11/10 カメラポインタを追加 /山下凌佑
+	・2023/11/03 ヘッダー作成 Tei
+	・2023/11/05 パラメータ設定 Tei
+	・2023/11/07 変数型TriType→CSphereに Tei
+	・2023/11/08 変数、関数の変更 Sawada
+	・2023/11/10 カメラポインタを追加 Ymashita
+	・2023/11/13 コンストラクタにtimeを追加 Suzumura
+	・2023/11/13 爆発総時間の変数を追加 Suzumura
+
 ======================================== */
 #ifndef __EXPLOSION_H__	//Explosion.hインクルードガード
 #define __EXPLOSION_H__
@@ -28,11 +31,11 @@ class CExplosion
 {
 public:
 	// ===メンバ関数宣言===
-	CExplosion(TTriType<float> pos, float size);	//コンストラクタ
-	~CExplosion();									//デストラクタ
-	void Update();									//更新関数
-	void Draw();									//描画関数
-	void DisplayTimeAdd();							//爆発表示カウント加算処理関数
+	CExplosion(TTriType<float> pos, float size, float time);	//コンストラクタ
+	~CExplosion();												//デストラクタ
+	void Update();												//更新関数
+	void Draw();												//描画関数
+	void DisplayTimeAdd();										//爆発表示カウント加算処理関数
 
 	void SetPos(TTriType<float> pos);	//爆発座標設定関数
 	TTriType<float> GetPos();			//使ってない関数
@@ -48,8 +51,10 @@ private:
 	float			m_fSize;		// 爆発の大きさ
 	float			m_fMaxSize;
 	float			m_fSizeAdd;
-	int				m_fDelFrame;	// 爆発表示カウント
-	bool			m_bDelFlg;		// 爆発終了フラグ
+	int				m_fDelFrame;		// 爆発表示カウント
+	bool			m_bDelFlg;			// 爆発終了フラグ
+	float			m_fExplodeTime;		// 爆発総時間
+
 	CGeometry*		m_3dModel;		// 爆発仮3Dモデル
 	const CCamera*	m_pCamera;	//カメラのポインタ
 };

@@ -17,8 +17,9 @@
 	・2023/11/09 プレイヤー追跡移動変更 Sawada
 	・2023/11/09 Update,NormalMoveの引数変更 Sawada
 	・2023/11/11 parameter用ヘッダ追加 Suzumura
-	・2023/11/12 プレイヤーの方向を向きながら進むように変更 　Yamamoto
-	・2023/11/12 ランダム移動を追加 　Sawada
+	・2023/11/12 プレイヤーの方向を向きながら進むように変更  Yamamoto
+	・2023/11/12 ランダム移動を追加  Sawada
+	・2023/11/13 GetScale関数を追加 Suzumura
 	
 ========================================== */
 
@@ -33,8 +34,8 @@ const float REFLECT_RATIO = 0.1f;				//スライムがスライムを吹き飛�
 
 #if MODE_GAME_PARAMETER
 #else
-const float SPEED_DOWN_RATIO = 0.7f;			//スライムが接触して吹き飛ぶ際にかかる移動速度の変化の割合	RATIO=>割合
-const float MOVE_RESIST = 0.05f;				//吹き飛び移動中のスライムの移動速度に毎フレームかかる減算数値
+const float SPEED_DOWN_RATIO = 0.7f;			// スライムが接触して吹き飛ぶ際にかかる移動速度の変化の割合	RATIO=>割合
+const float MOVE_RESIST = 0.05f;				// 吹き飛び移動中のスライムの移動速度に毎フレームかかる減算数値
 const float MOVE_DISTANCE_PLAYER = 15;			// プレイヤー追跡移動に切り替える距離
 const float SLIME_BASE_RADIUS = 0.5f;			// スライムの基準の大きさ
 const int	RANDOM_MOVE_SWITCH_TIME = 5 * 60;	// ランダム移動の方向切り替え
@@ -381,6 +382,20 @@ TPos3d<float> CSlimeBase::GetPos()
 E_SLIME_LEVEL CSlimeBase::GetSlimeLevel()
 {
 	return m_eSlimeSize;
+}
+
+/* ========================================
+	スライムサイズ取得関数
+	----------------------------------------
+	内容：スライムのサイズを返す
+	----------------------------------------
+	引数1：なし
+	----------------------------------------
+	戻値：スライムのサイズ
+======================================== */
+TTriType<float> CSlimeBase::GetScale()
+{
+	return m_scale;
 }
 
 

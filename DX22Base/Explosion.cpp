@@ -8,14 +8,16 @@
 	TeiUon
 
 	変更履歴
-	・2023/11/03 cpp作成 tei
-	・2023/11/05 爆発cppの初期設定 tei
+	・2023/11/03 cpp作成 Tei
+	・2023/11/05 爆発cppの初期設定 Tei
 	・2023/11/06 爆発のモデル設定、描画、位置
-	・2023/11/06 boolの設定と取得関数制作 tei
-	・2023/11/08 変数、関数の変更 sawada
-	・2023/11/10 他のオブジェクトと同一カメラでビューとプロジェクションをセットできるようにした yamashita
-	・2023/11/10 爆発の大きさを徐々に大きくなるように変更 sawada
-	・2023/11/11 parameter用ヘッダ追加 suzumura
+	・2023/11/06 boolの設定と取得関数制作 Tei
+	・2023/11/08 変数、関数の変更 Sawada
+	・2023/11/10 他のオブジェクトと同一カメラでビューとプロジェクションをセットできるようにした Yamashita
+	・2023/11/10 爆発の大きさを徐々に大きくなるように変更 Sawada
+	・2023/11/11 parameter用ヘッダ追加 Suzumura
+	・2023/11/13 スライムレベルによって爆破の膨らみの速度の調整ができるように変更 Suzumura
+
 ======================================== */
 
 // =============== インクルード ===================
@@ -27,8 +29,10 @@
 // =============== 定数定義 =======================
 #if MODE_GAME_PARAMETER
 #else
-const float MAX_DISPLAY_TIME = 3.0f * 60;	// 爆発持続秒数
-const float ONE_SECOND_FRAME = 1.0f * 60;	// 大きくなるまでの秒数
+//const float MAX_DISPLAY_TIME = 3.0f * 60;	// 爆発持続秒数
+const float EXPAND_QUICK_RATE = 0.2f;   // 膨張加速割合 
+
+
 #endif
 
 /* ========================================
@@ -40,18 +44,23 @@ const float ONE_SECOND_FRAME = 1.0f * 60;	// 大きくなるまでの秒数
 	-------------------------------------
 	戻値：無し
 =========================================== */
-CExplosion::CExplosion(TTriType<float> pos, float size)
+CExplosion::CExplosion(TTriType<float> pos, float size,float time)
 	: m_fSize(0.0f)
+	, m_fSizeAdd(0.0f)
 	, m_fDelFrame(0.0f)
 	, m_bDelFlg(false)
+	, m_fExplodeTime(0.0f)
+	, m_fMaxSize(0.0f)
 {
 
 	//爆発オブジェクト初期化
-	
 	m_Sphere.pos = pos;
 	m_Sphere.radius = size / 2;	// 当たり判定をセットする
-	m_fSizeAdd = size / ONE_SECOND_FRAME;
+	//m_fSizeAdd = size / ONE_SECOND_FRAME;
 	m_3dModel = new CSphere();
+
+	m_fExplodeTime = time;		//爆発総時間をセットする
+	m_fMaxSize = size;	//最大サイズをセットする
 	
 }
 
@@ -129,13 +138,20 @@ void CExplosion::DisplayTimeAdd()
 	m_fDelFrame++;	// フレーム加算
 
 	// 一定秒数まで大きくする
-	if (m_fDelFrame <= ONE_SECOND_FRAME  )
+	if (m_fDelFrame <= m_fExplodeTime )
 	{
-		m_fSize += m_fSizeAdd;
+		// m_fTimeに基づいてm_fSizeAddを決定
+		m_fSizeAdd = m_fMaxSize / m_fExplodeTime / EXPAND_QUICK_RATE;
+
+		// 最大サイズになるまでSizeを加算
+		if (m_fSize < m_fMaxSize)
+		{
+			m_fSize += m_fSizeAdd;
+		}
 
 	}
 	// 一定秒数時間が経ったら
-	if (MAX_DISPLAY_TIME <= m_fDelFrame)
+	if (m_fExplodeTime <= m_fDelFrame)
 	{
 		m_bDelFlg = true;	// 削除フラグを立てる
 	}
