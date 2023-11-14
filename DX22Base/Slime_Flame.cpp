@@ -95,10 +95,8 @@ CSlime_Flame::~CSlime_Flame()
 =========================================== */
 void CSlime_Flame::NormalMove(TPos3d<float> playerSphere)
 {
-	if (m_eSlimeSize == LEVEL_FLAME)
-	{
-		RandomMove();	// ƒ‰ƒ“ƒ_ƒ€ˆÚ“®
-	}
+	RandomMove();	// ƒ‰ƒ“ƒ_ƒ€ˆÚ“®
+
 }
 
 /* ========================================
