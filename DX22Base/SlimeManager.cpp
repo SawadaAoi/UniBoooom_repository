@@ -42,7 +42,7 @@ const int CREATE_DISTANCE		= 10;			// 生成距離最小値
 const int SLIME_LEVEL1_PER		= 50;			// スライム_1の生成確立
 const int SLIME_LEVEL2_PER		= 35;			// スライム_2の生成確立
 const int SLIME_LEVEL3_PER		= 10;			// スライム_3の生成確立
-const int SLIME_LEVEL_FLAME_PER		= 100 - SLIME_LEVEL1_PER - SLIME_LEVEL2_PER - SLIME_LEVEL3_PER;	// スライム_フレイムの生成確立
+const int SLIME_LEVEL_FLAME_PER	= 100 - SLIME_LEVEL1_PER - SLIME_LEVEL2_PER - SLIME_LEVEL3_PER;	// スライム_フレイムの生成確立
 
 const int START_ENEMY_NUM		= 10;			// ゲーム開始時の敵キャラの数
 
@@ -321,14 +321,14 @@ bool CSlimeManager::HitFlameBranch(int HitSlimeNum, int StandSlimeNum, CExplosio
 	// フレイム　→　ノーマル
 	else if (hitSlimeLevel == LEVEL_FLAME)
 	{
-		pExpMng->SwitchExplode(hitSlimeLevel,hitSlimeTransform.fPos,hitSlimeSize);	//スライムのレベルによって爆発の時間とサイズを分岐
+		pExpMng->SwitchExplode(standSlimeLevel,hitSlimeTransform.fPos,standSlimeSize);	//スライムのレベルによって爆発の時間とサイズを分岐
 
 		SAFE_DELETE(m_pSlime[HitSlimeNum]);								// 衝突するスライムを削除
 		SAFE_DELETE(m_pSlime[StandSlimeNum]);							// 衝突されたスライムを削除
 
 		return true;
 	}
-	// ノーマル　→　スライム
+	// ノーマル　→　フレイム
 	else if (standSlimeLevel == LEVEL_FLAME)
 	{
 		pExpMng->SwitchExplode(hitSlimeLevel, hitSlimeTransform.fPos, hitSlimeSize);	//スライムのレベルによって爆発の時間とサイズを分岐
