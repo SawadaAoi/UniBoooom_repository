@@ -26,6 +26,8 @@
 #include "Player.h"
 #include "ExplosionManager.h"
 #include "DirectWrite.h"
+#include "Timer.h"
+
 // =============== ƒNƒ‰ƒX’è‹` =====================
 class SceneGame
 {
@@ -53,6 +55,7 @@ private:
 	CCOLLISION* m_pCollision;
 	CExplosionManager* m_pExplosionMng;
 	DirectWrite* m_pDirectWrite;
+	CTimer* m_pTimer;
 };
 
 #endif // __SCENE_GAME_H__
