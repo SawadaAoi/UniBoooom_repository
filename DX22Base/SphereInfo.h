@@ -54,7 +54,7 @@ public:
 	======================================== */
 	~tagSphereInfo() {}	//デストラクタ
 	//float Distance(tagSphereInfo& Obj);	//引数のオブジェクトとの距離を測る関数
-	float Angle(tagSphereInfo Obj);	//引数のオブジェクトとの角度を測る関数
+	float Angle(const tagSphereInfo& Obj);	//引数のオブジェクトとの角度を測る関数
 };
 
 #endif // !__SPHEREINFO_H__

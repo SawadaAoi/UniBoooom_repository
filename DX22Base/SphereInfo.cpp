@@ -40,7 +40,7 @@
 ----------------------------------------
 –ß’lFŠp“x
 ======================================== */
-float tagSphereInfo::Angle(tagSphereInfo Obj)
+float tagSphereInfo::Angle(const tagSphereInfo& Obj)
 {
 	return atan2((Obj.fPos.z - this->fPos.z) , (Obj.fPos.x - this->fPos.x));
 }
