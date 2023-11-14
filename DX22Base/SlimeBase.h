@@ -79,13 +79,13 @@ public:
 
 	// ゲット関数
 	TPos3d<float> GetPos();
-	CSphereInfo::Sphere GetSphere();	// スライムの座標と半径を取得
+	tagSphereInfo::Sphere GetSphere();	// スライムの座標と半径を取得
 	float GetSpeed();					// スライムの移動速度を取得
 	E_SLIME_LEVEL GetSlimeLevel();		// スライムのレベルを取得
 	TTriType<float> GetScale();			// スライムのサイズを取得
 
 	//セット関数
-	void SetSphere(CSphereInfo::Sphere Sphere);
+	void SetSphere(tagSphereInfo::Sphere Sphere);
 	void SetPos(TPos3d<float> pos);
 	virtual void SetNormalSpeed() = 0;
 	void SetCamera(const CCamera* pCamera);
@@ -101,7 +101,7 @@ protected:
 	float m_fSpeed;					//スライムの移動速度
 	bool m_bHitMove;				//吹っ飛び中かどうか
 
-	CSphereInfo::Sphere m_sphere;	// 当たり判定の座標および半径を保存する
+	tagSphereInfo::Sphere m_sphere;	// 当たり判定の座標および半径を保存する
 
 	E_SLIME_LEVEL m_eSlimeSize;		//スライムの大きさの列挙
 	const CCamera* m_pCamera;		//カメラのポインタ

@@ -167,7 +167,7 @@ void CHammer::Swing(TPos3d<float> pPos, float angle)
    ----------------------------------------
    –ß’lF“–‚½‚è”»’è‚Ì‹…‘Ì
    ======================================== */
-CSphereInfo::Sphere CHammer::GetSphere()
+tagSphereInfo::Sphere CHammer::GetSphere()
 {
 	return m_sphere;
 }

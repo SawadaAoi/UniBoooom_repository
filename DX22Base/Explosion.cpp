@@ -185,7 +185,7 @@ void CExplosion::SetPos(TTriType<float> pos)
 	-------------------------------------
 	戻値：無し
 =========================================== */
-void CExplosion::SetSphere(CSphereInfo::Sphere sphere)
+void CExplosion::SetSphere(tagSphereInfo::Sphere sphere)
 {
 	m_Sphere = sphere;
 }
@@ -199,7 +199,7 @@ void CExplosion::SetSphere(CSphereInfo::Sphere sphere)
 	-------------------------------------
 	戻値：Sphere情報
 =========================================== */
-CSphereInfo::Sphere CExplosion::GetSphere()
+tagSphereInfo::Sphere CExplosion::GetSphere()
 {
 	return m_Sphere;
 }

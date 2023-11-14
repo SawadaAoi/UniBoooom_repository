@@ -307,7 +307,7 @@ void CSlimeBase::Reflect()
 	-------------------------------------
 	戻値：当たり判定(Sphere)
 =========================================== */
-CSphereInfo::Sphere CSlimeBase::GetSphere()
+tagSphereInfo::Sphere CSlimeBase::GetSphere()
 {
 	return m_sphere;
 }
@@ -321,7 +321,7 @@ CSphereInfo::Sphere CSlimeBase::GetSphere()
 	-------------------------------------
 	戻値：なし
 =========================================== */
-void CSlimeBase::SetSphere(CSphereInfo::Sphere Sphere)
+void CSlimeBase::SetSphere(tagSphereInfo::Sphere Sphere)
 {
 	m_sphere = Sphere;
 }

@@ -333,7 +333,7 @@ void CPlayer::ControllerMove()
    ----------------------------------------
    戻値：当たり判定(Sphere)
 ======================================== */
-CSphereInfo::Sphere CPlayer::GetPlayerSphere()
+tagSphereInfo::Sphere CPlayer::GetPlayerSphere()
 {
 	return m_sphere;
 }
@@ -347,7 +347,7 @@ CSphereInfo::Sphere CPlayer::GetPlayerSphere()
    ----------------------------------------
    戻値：当たり判定(Sphere)
 ======================================== */
-CSphereInfo::Sphere CPlayer::GetHammerSphere()
+tagSphereInfo::Sphere CPlayer::GetHammerSphere()
 {
 	return m_pHammer->GetSphere();
 }

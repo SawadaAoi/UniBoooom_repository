@@ -9,26 +9,27 @@
 	
 	変更履歴
 	・2023/11/07 変更内容：Distance関数とAngle関数の中身を.hから.cppに移動
+	・2023/11/14 変更内容：継承・修正：高木駿輔
 
 =========================================== */
 #include "SphereInfo.h"
 
 
-/* ========================================
-	関数：Distance
-	----------------------------------------
-	内容：引数との距離を測る関数
-	----------------------------------------
-	引数1：測りたい相手のSphere構造体
-	----------------------------------------
-	戻値：距離
-======================================== */
-float CSphereInfo::Sphere::Distance(CSphereInfo::Sphere Obj)
-{
-	return sqrt(pow(Obj.pos.x - this->pos.x, 2.0f) +
-		pow(Obj.pos.y - this->pos.y, 2.0f) +
-		pow(Obj.pos.z - this->pos.z, 2.0f));
-}
+///* ========================================
+//	関数：Distance
+//	----------------------------------------
+//	内容：引数との距離を測る関数
+//	----------------------------------------
+//	引数1：測りたい相手のSphere構造体
+//	----------------------------------------
+//	戻値：距離
+//======================================== */
+//float tagSphereInfo::Distance(tagSphereInfo& Obj)
+//{
+//	return sqrt(pow(Obj.pos.x - this->pos.x, 2.0f) +
+//		pow(Obj.pos.y - this->pos.y, 2.0f) +
+//		pow(Obj.pos.z - this->pos.z, 2.0f));
+//}
 
 /* ========================================
 関数：Angle
@@ -39,7 +40,7 @@ float CSphereInfo::Sphere::Distance(CSphereInfo::Sphere Obj)
 ----------------------------------------
 戻値：角度
 ======================================== */
-float CSphereInfo::Sphere::Angle(CSphereInfo::Sphere Obj)
+float tagSphereInfo::Angle(tagSphereInfo& Obj)
 {
-	return atan2((Obj.pos.z - this->pos.z) , (Obj.pos.x - this->pos.x));
+	return atan2((Obj.fPos.z - this->fPos.z) , (Obj.fPos.x - this->fPos.x));
 }
