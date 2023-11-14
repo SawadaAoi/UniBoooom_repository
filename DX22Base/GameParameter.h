@@ -29,10 +29,11 @@ const int	NO_DAMAGE_TIME		= 3 * 60;	// プレイヤーの無敵時間
 const int	DAMAGE_FLASH_FRAME	= 0.1 * 60;	// プレイヤーのダメージ点滅の切り替え間隔
 
 // ハンマー
-const float ANGULAR_ANGLE	= 0.15f;        // 毎フレーム移動する角度量
-const float ROTATE_RADIUS	= 1.0f;        // ハンマーが回転するプレイヤーからの距離
-const float HAMMER_COL_SIZE = 0.75f;		//ハンマーの当たり判定の大きさ
-const float HAMMER_SIZE		= 1.5f;			//ハンマーの大きさ
+const float SWING_ANGLE			= DirectX::XMConvertToRadians(90.0f);	// ハンマーを振る範囲(扇形の角度の大きさ)
+const float SWING_TIME_FRAME	= 0.15f * 60;							// ハンマーを振る時間(フレーム単位)
+const float ROTATE_RADIUS		= 1.0f;									// ハンマーが回転するプレイヤーからの距離
+const float HAMMER_COL_SIZE		= 0.75f;								//ハンマーの当たり判定の大きさ
+const float HAMMER_SIZE			= 1.5f;									//ハンマーの大きさ
 
 // 敵キャラ ==================================================
 

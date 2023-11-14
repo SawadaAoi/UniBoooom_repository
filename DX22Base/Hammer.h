@@ -8,11 +8,12 @@
 	作成者
 		山本凱翔
 	変更履歴
-	・2023/11/08 プレイヤー座標を入れる変数をTTriTypeからTPosに変更 /山下凌佑
-	・2023/11/08 めちゃくちゃコメント追加した /山下凌佑
-	・2023/11/08 回転による移動のSwing関数追加 /山下凌佑
-	・当たり判定用のSphere変数を追加 /山下凌佑
-	・当たり判定用のSphereのゲット関数を追加 /山下凌佑
+	・2023/11/08 プレイヤー座標を入れる変数をTTriTypeからTPosに変更 Yamashita
+	・2023/11/08 めちゃくちゃコメント追加した Yamashita
+	・2023/11/08 回転による移動のSwing関数追加 Yamashita
+	・2023/11/10 当たり判定用のSphere変数を追加 Yamashita
+	・2023/11/10 当たり判定用のSphereのゲット関数を追加 Yamashita
+	・2023/11/14 全体的に処理の流れが分かりづらかったので修正 Sawada
 	・2023/11/14 SphereInfoの変更に対応 Takagi
 
 ========================================== */
@@ -37,20 +38,24 @@ public:
 	CHammer();	//コンストラクタ
 	~CHammer();	//デストラクタ
 
-	void Update(TPos3d<float> pPos, float angle);	//更新関数
-	void Draw(const CCamera* pCamera);								//描画関数
-	bool Gethammer();							//ハンマーを使用中かどうかのフラグを取得
+	bool Update();	// 更新関数
+	void Draw(const CCamera* pCamera);				// 描画関数
+	void Swing();									// 移動による回転移動
 	TPos3d<float> GetPos();
-	void Swing(TPos3d<float>pPos,float angle);	//移動による回転移動
-	tagSphereInfo GetSphere();			//ハンマーのプレイヤー
+	void AttackStart(TPos3d<float>pPos, float angle);								// 攻撃開始処理
+
+	tagSphereInfo GetSphere();					// あたり判定取得
 private:
 	// ===メンバ変数宣言=====
-	tagTransform3d m_Transform;	//ワールド系座標情報
-	tagSphereInfo m_sphere;	//ハンマーの当たり判定用の球体
+	tagTransform3d m_Transform;			// ハンマーの位置座標
+	tagSphereInfo m_sphere;			// ハンマーの当たり判定用の球体
 
-	float m_stateangle;				//
-	bool m_bHammer;					//ハンマーを使用中のフラグ
-	CGeometry* m_pHammerGeo;		//ハンマーを仮表示する図形
+	CGeometry* m_pHammerGeo;		// ハンマーを仮表示する図形
+	TPos3d<float> m_tPlayerPos;		// 現在のプレイヤー座標
+
+	float m_fAngleNow;				// 今の角度
+	int m_dAddAngleCnt;				// 角度加算フレーム値
+
 };
 
 #endif // !__HAMMER_H__

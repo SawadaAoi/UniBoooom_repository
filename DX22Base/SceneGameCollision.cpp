@@ -88,9 +88,9 @@ void SceneGame::PlayerSlimeCollision()
    ======================================== */
 void SceneGame::HammerSlimeCollision()
 {
-	CHammer* playerHammer = m_pPlayer->GetHammer();	// プレイヤーのハンマー
+	CHammer* playerHammer = m_pPlayer->GetHammerPtr();	// プレイヤーのハンマー
 
-	if (m_pPlayer->GetHammerFlg() == false) return;	// ハンマー攻撃してない場合は返す
+	if (m_pPlayer->GetAttackFlg() == false) return;	// ハンマー攻撃してない場合は返す
 
 	// スライム
 	for (int i = 0; i < MAX_SLIME_NUM; i++)
