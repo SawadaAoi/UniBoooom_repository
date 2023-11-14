@@ -40,11 +40,11 @@ public:
 	void Draw(const CCamera* pCamera);								//描画関数
 	bool Gethammer();							//ハンマーを使用中かどうかのフラグを取得
 	void Swing(TPos3d<float>pPos,float angle);	//移動による回転移動
-	tagSphereInfo::Sphere GetSphere();			//ハンマーのプレイヤー
+	tagSphereInfo GetSphere();			//ハンマーのプレイヤー
 private:
 	// ===メンバ変数宣言=====
 	TPos3d<float> m_pos;	//ハンマーの位置座標
-	tagSphereInfo::Sphere m_sphere;	//ハンマーの当たり判定用の球体
+	tagSphereInfo m_sphere;	//ハンマーの当たり判定用の球体
 	TTriType<float> m_scale;		//サイズ
 
 	float m_nowangle;				//今の角度

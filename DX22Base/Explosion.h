@@ -39,15 +39,15 @@ public:
 
 	void SetPos(TTriType<float> pos);	//爆発座標設定関数
 	TTriType<float> GetPos();			//使ってない関数
-	tagSphereInfo::Sphere GetSphere();	//Sphere情報取得処理関数
-	void SetSphere(tagSphereInfo::Sphere sphere);	//Sphere情報設定処理関数
+	tagSphereInfo GetSphere();	//Sphere情報取得処理関数
+	void SetSphere(tagSphereInfo sphere);	//Sphere情報設定処理関数
 	bool GetDelFlg();					//削除フラグ取得処理関数
 	void SetCamera(const CCamera* m_pCamera);	//他のオブジェクトと同一のカメラをセット
 
 
 private:
 	// ===メンバ変数宣言===
-	tagSphereInfo::Sphere m_Sphere;	// 座標と当たり判定の大きさを持つ
+	tagSphereInfo m_Sphere;	// 座標と当たり判定の大きさを持つ
 	float			m_fSize;		// 爆発の大きさ
 	float			m_fMaxSize;
 	float			m_fSizeAdd;

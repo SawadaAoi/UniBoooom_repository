@@ -220,7 +220,7 @@ void CSlimeManager::Create(E_SLIME_LEVEL level)
 void CSlimeManager::HitBranch(int HitSlimeNum, int StandSlimeNum, CExplosionManager* pExpMng)
 {
 	E_SLIME_LEVEL hitSlimeLevel, standSlimeLevel;				// レベル
-	tagSphereInfo::Sphere hitSlimeSphere, standSlimeSphere;		// 当たり判定
+	tagSphereInfo hitSlimeSphere, standSlimeSphere;		// 当たり判定
 	float hitSlimeSpeed, standSlimeSpeed;						// 移動スピード
 	float travelAngle, reflectionAngle;							// 移動方向
 
