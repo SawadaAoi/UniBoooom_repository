@@ -27,18 +27,20 @@
 #include "GameParameter.h"		// 定数定義用ヘッダー
 
 // =============== 定数定義 =======================
-const float ADJUST_DIRECTX_TO_COSINE = DirectX::XMConvertToRadians(90.0f);	// 三角関数とDirectX角度の差分(DirectXの角度は↑が0度、三角関数は→が0度)
-const float ONE_FRAME_ADD_ANGLE = SWING_ANGLE / SWING_TIME_FRAME;			// 1フレームで移動する角度量
-
+const float HALF_PI = 3.141592f / 2;	//ハンマーの開始地点のラジアン角(要修正)
 
 #if MODE_GAME_PARAMETER
 #else
-const float SWING_ANGLE			= DirectX::XMConvertToRadians(90.0f);	// ハンマーを振る範囲(扇形の角度の大きさ)
-const float SWING_TIME_FRAME	= 0.15f * 60;							// ハンマーを振る時間(フレーム単位)
-const float ROTATE_RADIUS		= 1.0f;									// ハンマーが回転するプレイヤーからの距離
-const float HAMMER_COL_SIZE		= 0.75f;								// ハンマーの当たり判定の大きさ
-const float HAMMER_SIZE			= 1.5f;									// ハンマーの大きさ
+const float SWING_ANGLE = DirectX::XMConvertToRadians(90.0f);	// ハンマーを振る範囲(扇形の角度の大きさ)
+const float SWING_TIME_FRAME = 0.15f * 60;							// ハンマーを振る時間(フレーム単位)
+const float ROTATE_RADIUS = 1.0f;									// ハンマーが回転するプレイヤーからの距離
+const float HAMMER_COL_SIZE = 0.75f;								// ハンマーの当たり判定の大きさ
+const float HAMMER_SIZE = 1.5f;									// ハンマーの大きさ
 #endif
+
+const float ADJUST_DIRECTX_TO_COSINE = DirectX::XMConvertToRadians(90.0f);	// 三角関数とDirectX角度の差分(DirectXの角度は↑が0度、三角関数は→が0度)
+const float ONE_FRAME_ADD_ANGLE = SWING_ANGLE / SWING_TIME_FRAME;			// 1フレームで移動する角度量
+
 
 /* ========================================
    コンストラクタ関数
@@ -81,7 +83,7 @@ CHammer::~CHammer()
    ----------------------------------------
    内容：更新を行う
    ----------------------------------------
-   引数1：なそ
+   引数1：なし
    ----------------------------------------
    戻値：ハンマーの有効無効
    ======================================== */

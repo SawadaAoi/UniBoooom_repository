@@ -206,6 +206,7 @@
     <ClCompile Include="Slime_1.cpp" />
     <ClCompile Include="Slime_2.cpp" />
     <ClCompile Include="Slime_4.cpp" />
+    <ClCompile Include="Slime_Flame.cpp" />
     <ClCompile Include="Sphere.cpp" />
     <ClCompile Include="SphereInfo.cpp" />
     <ClCompile Include="Sprite.cpp" />
@@ -257,6 +258,7 @@
     <ClInclude Include="Slime_2.h" />
     <ClInclude Include="Slime_3.h" />
     <ClInclude Include="Slime_4.h" />
+    <ClInclude Include="Slime_Flame.h" />
     <ClInclude Include="Sphere.h" />
     <ClInclude Include="SphereInfo.h" />
     <ClInclude Include="SlimeBase.h" />

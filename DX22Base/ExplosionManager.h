@@ -16,14 +16,20 @@
 #ifndef __EXPLOSION_MANAGER_H__	//ExplosionManager.hインクルードガード
 #define __EXPLOSION_MANAGER_H__
 // =============== インクルード ===================
-#include "TriType.h"			//同じ型を３つ持つテンプレートクラス定義ヘッダー
 #include "Explosion.h"			//爆発処理ヘッダー
 #include "GameParameter.h"		//定数定義用ヘッダー
+#include "SlimeBase.h"
 
 // =============== 定数定義 =======================
 #if MODE_GAME_PARAMETER
 #else
 const int MAX_EXPLOSION_NUM = 20;	//最大爆発数
+const float EXPLODE_BASE_RATIO = 1.5f;			// スライムの爆発接触での爆発の大きさのベース
+const float MAX_SIZE_EXPLODE = 5.0f;			// スライム4同士の爆発の大きさ
+const float LEVEL_1_EXPLODE_TIME = 0.5f * 60.0f;	// スライム_1の爆発総時間
+const float LEVEL_2_EXPLODE_TIME = 1.0f * 60.0f;	// スライム_2の爆発総時間
+const float LEVEL_3_EXPLODE_TIME = 2.0f * 60.0f;	// スライム_3の爆発総時間
+const float LEVEL_4_EXPLODE_TIME = 3.0f * 60.0f;	// スライム_4の爆発総時間
 #endif
 // =============== クラス定義 =====================
 class CExplosionManager
@@ -40,6 +46,7 @@ public:
 	void DeleteCheck();							   				//時間より爆発を削除関数
 
 	CExplosion* GetExplosionPtr(int num);
+	void SwitchExplode(E_SLIME_LEVEL slimeLevel,TPos3d<float> pos, TTriType<float> slimeSize);					//スライムのレベルに応じて爆発を変更
 
 	void SetCamera(const CCamera* pCamera);	//他のオブジェクトと同一のカメラをセット
 protected:
