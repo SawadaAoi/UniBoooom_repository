@@ -8,15 +8,16 @@
    作成者：鈴村 朋也
 
    変更履歴
-	・2023/11/05 スライムマネージャークラス作成 Suzumura
-	・2023/11/08 スライム同士が接触した際の分岐処理を作成(分岐した後に行う処理は未実装　※TODOをつけておいた)の Yamashita
-	・2023/11/08 結合処理を作成(結合後の生成処理は未実装 Slime_2～Slime_4がまだ無いから) Yamashita
-	・2023/11/09 生成処理、変数の変更 Sawada
-	・2023/11/09 コメントの追加 Sawada
-	・2023/11/11 parameter用ヘッダ追加 Suzumura
-	・2023/11/11 スライム同士が重ならない関数を追加 Yamashita
+	・2023/11/05 スライムマネージャークラス作成 suzumura
+	・2023/11/08 スライム同士が接触した際の分岐処理を作成(分岐した後に行う処理は未実装　※TODOをつけておいた)の yamashita
+	・2023/11/08 結合処理を作成(結合後の生成処理は未実装 Slime_2～Slime_4がまだ無いから) yamashita
+	・2023/11/09 生成処理、変数の変更 sawada
+	・2023/11/09 コメントの追加 sawada
+	・2023/11/11 parameter用ヘッダ追加 suzumura
+	・2023/11/11 スライム同士が重ならない関数を追加 yamashita
 	・2023/11/13 スライムレベルごとに爆発時間を設定できるように変更 Suzumura
 	・2023/11/14 炎スライムの処理を実装 Suzumura
+	・2023/11/14 SphereInfoの変更に対応 Takagi
 
 =========================================== */
 
@@ -43,15 +44,7 @@ const int SLIME_LEVEL2_PER		= 35;			// スライム_2の生成確立
 const int SLIME_LEVEL3_PER		= 10;			// スライム_3の生成確立
 const int SLIME_LEVEL_FLAME_PER		= 100 - SLIME_LEVEL1_PER - SLIME_LEVEL2_PER - SLIME_LEVEL3_PER;	// スライム_フレイムの生成確立
 
-const float MAX_SIZE_EXPLODE	= 5.0f;			// スライム4同士の爆発の大きさ
-const float EXPLODE_BASE_RATIO	= 1.5f;			// スライムの爆発接触での爆発の大きさのベース
 const int START_ENEMY_NUM		= 10;			// ゲーム開始時の敵キャラの数
-
-const float LEVEL_1_EXPLODE_TIME = 0.5f * 60.0f;	// スライム_1の爆発総時間
-const float LEVEL_2_EXPLODE_TIME = 1.0f * 60.0f;	// スライム_2の爆発総時間
-const float LEVEL_3_EXPLODE_TIME = 2.0f * 60.0f;	// スライム_3の爆発総時間
-const float LEVEL_4_EXPLODE_TIME = 3.0f * 60.0f;	// スライム_4の爆発総時間
-
 
 // ↓1.0fでそのまま
 const float COL_SUB_HIT_TO_BIG = 0.7f;				// スライム衝突(小→大)の衝突側の減算値(反射する移動)
@@ -225,21 +218,24 @@ void CSlimeManager::Create(E_SLIME_LEVEL level)
 ======================================== */
 void CSlimeManager::HitBranch(int HitSlimeNum, int StandSlimeNum, CExplosionManager* pExpMng)
 {
-	E_SLIME_LEVEL hitSlimeLevel, standSlimeLevel;						// レベル
-	CSphereInfo::Sphere hitSlimeSphere, standSlimeSphere;				// 当たり判定
-	float hitSlimeSpeed, standSlimeSpeed;								// 移動スピード
-	float travelAngle, reflectionAngle;									// 移動方向
-	TPos3d<float> pos = m_pSlime[StandSlimeNum]->GetPos();		// 衝突されたスライムの位置を確保
-	
+	E_SLIME_LEVEL hitSlimeLevel, standSlimeLevel;				// レベル
+	tagSphereInfo hitSlimeSphere, standSlimeSphere;				// 当たり判定
+	tagTransform3d hitSlimeTransform, standSlimeTransform;		//ワールド座標系
+	float hitSlimeSpeed, standSlimeSpeed;						// 移動スピード
+	float travelAngle, reflectionAngle;							// 移動方向
+
 	hitSlimeLevel = m_pSlime[HitSlimeNum]->GetSlimeLevel();		// 衝突するスライムのサイズを取得
 	hitSlimeSphere = m_pSlime[HitSlimeNum]->GetSphere();		// 衝突するスライムの当たり判定を取得
+	hitSlimeTransform = m_pSlime[HitSlimeNum]->GetTransform();	// 衝突するスライムのワールド座標情報を取得
 	hitSlimeSpeed = m_pSlime[HitSlimeNum]->GetSpeed();			// 衝突するスライムの速度を取得
 
 	standSlimeLevel = m_pSlime[StandSlimeNum]->GetSlimeLevel();	// 衝突されたスライムのサイズを取得
 	standSlimeSphere = m_pSlime[StandSlimeNum]->GetSphere();	// 衝突されたスライムの当たり判定を取得
+	standSlimeTransform = m_pSlime[StandSlimeNum]->GetTransform();	// 衝突するスライムのワールド座標情報を取得
 
-	travelAngle = hitSlimeSphere.Angle(standSlimeSphere);		// 衝突する側の進行方向
-	reflectionAngle = standSlimeSphere.Angle(hitSlimeSphere);	// 衝突する側の逆方向(反射)
+	travelAngle = hitSlimeTransform.Angle(standSlimeTransform);		// 衝突する側の進行方向
+	reflectionAngle = standSlimeTransform.Angle(hitSlimeTransform);	// 衝突する側の逆方向(反射)
+	TPos3d<float> pos = m_pSlime[StandSlimeNum]->GetPos();        // 衝突されたスライムの位置を確保
 	
 	//-- フレイムスライムヒット処理 呼び出し
 	if (HitFlameBranch(HitSlimeNum, StandSlimeNum, pExpMng)) 
@@ -299,53 +295,34 @@ bool CSlimeManager::HitFlameBranch(int HitSlimeNum, int StandSlimeNum, CExplosio
 	float hitSlimeSpeed;												// 移動スピード
 	float travelAngle;													// 移動方向
 	float ExplosionSize;												// 爆発の大きさ
-	CSphereInfo::Sphere hitSlimeSphere, standSlimeSphere;				// 当たり判定
+	tagTransform3d hitSlimeTransform, standSlimeTransform;				//ワールド行列に関わる情報
 
 	TPos3d<float> pos = m_pSlime[StandSlimeNum]->GetPos();					// 衝突されたスライムの位置を確保
 	TTriType<float> hitSlimeSize = m_pSlime[HitSlimeNum]->GetScale();		// 衝突先のスライムのサイズを確保
 	TTriType<float> standSlimeSize = m_pSlime[StandSlimeNum]->GetScale();	// 吹っ飛んできたスライムのサイズを確保
 
-	hitSlimeSphere = m_pSlime[HitSlimeNum]->GetSphere();					// 衝突するスライムの当たり判定を取得
+	hitSlimeTransform = m_pSlime[HitSlimeNum]->GetTransform();				// 衝突するのワールド行列に関わる情報
+	standSlimeTransform = m_pSlime[StandSlimeNum]->GetTransform();			// 衝突されたワールド行列に関わる情報
 	hitSlimeLevel = m_pSlime[HitSlimeNum]->GetSlimeLevel();					// 衝突するスライムのサイズを取得
 	hitSlimeSpeed = m_pSlime[HitSlimeNum]->GetSpeed();						// 衝突するスライムの速度を取得
-	travelAngle = hitSlimeSphere.Angle(standSlimeSphere);					// 衝突する側の進行方向
+	travelAngle = hitSlimeTransform.Angle(standSlimeTransform);				// 衝突する側の進行方向
 	standSlimeLevel = m_pSlime[StandSlimeNum]->GetSlimeLevel();				// 衝突されたスライムのサイズを取得
 
 	//-- フレイムスライムヒット処理
 	// フレイム　→　フレイム
 	if (hitSlimeLevel == LEVEL_FLAME && standSlimeLevel == LEVEL_FLAME)
 	{
-	// 『衝突するスライムが大きい場合(大→小)』と同じ動きをさせる
-	m_pSlime[HitSlimeNum]->HitMoveStart(hitSlimeSpeed * COL_SUB_HIT_TO_SMALL, travelAngle);	// 衝突するスライムに吹き飛び移動処理
-	m_pSlime[StandSlimeNum]->HitMoveStart(hitSlimeSpeed * COL_SUB_STAND_TO_BIG, travelAngle);			// 衝突されたスライムに吹き飛び移動処理
+		// 『衝突するスライムが大きい場合(大→小)』と同じ動きをさせる
+		m_pSlime[HitSlimeNum]->HitMoveStart(hitSlimeSpeed * COL_SUB_HIT_TO_SMALL, travelAngle);		// 衝突するスライムに吹き飛び移動処理
+		m_pSlime[StandSlimeNum]->HitMoveStart(hitSlimeSpeed * COL_SUB_STAND_TO_BIG, travelAngle);	// 衝突されたスライムに吹き飛び移動処理
 
-	return true;
-
+		return true;
 	}
 	// フレイム　→　ノーマル
 	else if (hitSlimeLevel == LEVEL_FLAME)
 	{
-		ExplosionSize = standSlimeSize.x * EXPLODE_BASE_RATIO;	// 爆発の大きさを スライムの大きさ * 定数倍 に設定 ->補足:size.xのみを取ってきているが、現状x,y,zは等しいため問題なし
+		pExpMng->SwitchExplode(hitSlimeLevel,hitSlimeTransform.fPos,hitSlimeSize);	//スライムのレベルによって爆発の時間とサイズを分岐
 
-		// ぶつけられたスライムのレベルによって分岐
-		switch (standSlimeLevel) {
-		case LEVEL_1:
-			//スライム爆発処理
-			pExpMng->Create(pos, ExplosionSize * EXPLODE_BASE_RATIO, LEVEL_1_EXPLODE_TIME);	//衝突されたスライムの位置でレベル１爆発
-			break;
-		case LEVEL_2:
-			//スライム爆発処理
-			pExpMng->Create(pos, ExplosionSize * EXPLODE_BASE_RATIO, LEVEL_2_EXPLODE_TIME);	//衝突されたスライムの位置でレベル２爆発
-			break;
-		case LEVEL_3:
-			//スライム爆発処理
-			pExpMng->Create(pos, ExplosionSize * EXPLODE_BASE_RATIO, LEVEL_3_EXPLODE_TIME);	//衝突されたスライムの位置でレベル３爆発
-			break;
-		case LEVEL_4:
-			//スライム爆発処理
-			pExpMng->Create(pos, ExplosionSize * EXPLODE_BASE_RATIO, LEVEL_4_EXPLODE_TIME);	//衝突されたスライムの位置でレベル４爆発
-			break;
-		}
 		SAFE_DELETE(m_pSlime[HitSlimeNum]);								// 衝突するスライムを削除
 		SAFE_DELETE(m_pSlime[StandSlimeNum]);							// 衝突されたスライムを削除
 
@@ -354,27 +331,8 @@ bool CSlimeManager::HitFlameBranch(int HitSlimeNum, int StandSlimeNum, CExplosio
 	// ノーマル　→　スライム
 	else if (standSlimeLevel == LEVEL_FLAME)
 	{
-		ExplosionSize = hitSlimeSize.x * EXPLODE_BASE_RATIO;	// 爆発の大きさを スライムの大きさ * 定数倍 に設定 ->補足:size.xのみを取ってきているが、現状x,y,zは等しいため問題なし
+		pExpMng->SwitchExplode(hitSlimeLevel, hitSlimeTransform.fPos, hitSlimeSize);	//スライムのレベルによって爆発の時間とサイズを分岐
 
-		// 吹っ飛んできたスライムのレベルによって分岐
-		switch (hitSlimeLevel) {
-		case LEVEL_1:
-			//スライム爆発処理
-			pExpMng->Create(pos, ExplosionSize * EXPLODE_BASE_RATIO, LEVEL_1_EXPLODE_TIME);	//衝突されたスライムの位置でレベル１爆発
-			break;
-		case LEVEL_2:
-			//スライム爆発処理
-			pExpMng->Create(pos, ExplosionSize * EXPLODE_BASE_RATIO, LEVEL_2_EXPLODE_TIME);	//衝突されたスライムの位置でレベル２爆発
-			break;
-		case LEVEL_3:
-			//スライム爆発処理
-			pExpMng->Create(pos, ExplosionSize * EXPLODE_BASE_RATIO, LEVEL_3_EXPLODE_TIME);	//衝突されたスライムの位置でレベル３爆発
-			break;
-		case LEVEL_4:
-			//スライム爆発処理
-			pExpMng->Create(pos, ExplosionSize * EXPLODE_BASE_RATIO, LEVEL_4_EXPLODE_TIME);	//衝突されたスライムの位置でレベル４爆発
-			break;
-		}
 		SAFE_DELETE(m_pSlime[HitSlimeNum]);								// 衝突するスライムを削除
 		SAFE_DELETE(m_pSlime[StandSlimeNum]);							// 衝突されたスライムを削除
 
@@ -437,38 +395,8 @@ void CSlimeManager::TouchExplosion(int DelSlime, CExplosionManager * pExpMng)
 	E_SLIME_LEVEL level = m_pSlime[DelSlime]->GetSlimeLevel();	// 衝突先のスライムのレベルを確保
 	TTriType<float> size = m_pSlime[DelSlime]->GetScale();		// 衝突先のスライムサイズを確保
 
-	float ExplosionSize;							// 爆発の大きさ
-	ExplosionSize = size.x * EXPLODE_BASE_RATIO;	// 爆発の大きさを スライムの大きさ * 定数倍 に設定 ->補足:size.xのみを取ってきているが、現状x,y,zは等しいため問題なし
+	pExpMng->SwitchExplode(level,pos,size);
 
-	switch (level)
-	{
-	case LEVEL_1:
-		//ExplosionSize = 1.0f * EXPLODE_BASE_RATIO;
-		pExpMng->Create(pos, ExplosionSize, LEVEL_1_EXPLODE_TIME);	//衝突されたスライムの位置でレベル１爆発
-
-		break;
-	case LEVEL_2:
-		//ExplosionSize = 2.0f * EXPLODE_BASE_RATIO;
-		pExpMng->Create(pos, ExplosionSize, LEVEL_2_EXPLODE_TIME);	//衝突されたスライムの位置でレベル２爆発
-
-		break;
-	case LEVEL_3:
-		//ExplosionSize = 3.0f * EXPLODE_BASE_RATIO;
-		pExpMng->Create(pos, ExplosionSize, LEVEL_3_EXPLODE_TIME);	//衝突されたスライムの位置でレベル３爆発
-
-		break;
-	case LEVEL_4:
-		//ExplosionSize = 4.0f * EXPLODE_BASE_RATIO;
-		pExpMng->Create(pos, ExplosionSize, LEVEL_4_EXPLODE_TIME);	//衝突されたスライムの位置でレベル４爆発
-
-		break;
-
-	case LEVEL_FLAME:
-		pExpMng->Create(pos, ExplosionSize, LEVEL_1_EXPLODE_TIME);	//衝突されたスライムの位置でレベル１爆発
-
-		break;
-	
-	}
 	SAFE_DELETE(m_pSlime[DelSlime]);					//ぶつかりに来たスライムを削除
 
 	//pExpMng->Create(pos, ExplosionSize);				//衝突先のスライムの位置で爆発
@@ -521,8 +449,8 @@ void CSlimeManager::PreventOverlap(CSlimeBase * pMoveSlime, CSlimeBase * pStandS
 {
 	//↓のコメントアウトは理想的な処理のやりかけ
 	/*
-	CSphereInfo::Sphere standSlimeSphere = pStandSlime->GetSphere();
-	CSphereInfo::Sphere moveSlimeSphere = pMoveSlime->GetSphere();
+	tagSphereInfo::Sphere standSlimeSphere = pStandSlime->GetSphere();
+	tagSphereInfo::Sphere moveSlimeSphere = pMoveSlime->GetSphere();
 	float standSlimeToPlayerAngle = standSlimeSphere.Angle(m_pPlayer->GetPlayerSphere());
 	float standSlimeToMoveSlimeAngle = standSlimeSphere.Angle(moveSlimeSphere);
 	float Distance = standSlimeSphere.Distance(pMoveSlime->GetSphere());
@@ -549,8 +477,8 @@ void CSlimeManager::PreventOverlap(CSlimeBase * pMoveSlime, CSlimeBase * pStandS
 	pMoveSlime->ReversePos();
 	*/
 
-	float angle = pStandSlime->GetSphere().Angle(pMoveSlime->GetSphere());				//衝突してきた角度
-	float distance = pStandSlime->GetSphere().radius + pMoveSlime->GetSphere().radius;	//お互いのスライムの半径を足した数
+	float angle = pStandSlime->GetTransform().Angle(pMoveSlime->GetTransform());				//衝突してきた角度
+	float distance = pStandSlime->GetSphere().fRadius + pMoveSlime->GetSphere().fRadius;	//お互いのスライムの半径を足した数
 
 	TPos3d<float> pos = pStandSlime->GetPos();		//押し戻す基準の座標
 	pos.x += cosf(angle) * (distance + 0.001f);		//ぶつからないギリギリの距離を設定

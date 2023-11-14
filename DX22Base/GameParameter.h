@@ -30,10 +30,11 @@ const int	NO_DAMAGE_TIME		= 3 * 60;	// プレイヤーの無敵時間
 const int	DAMAGE_FLASH_FRAME	= 0.1 * 60;	// プレイヤーのダメージ点滅の切り替え間隔
 
 // ハンマー
-const float ANGULAR_ANGLE	= 0.15f;        // 毎フレーム移動する角度量
-const float ROTATE_RADIUS	= 1.0f;        // ハンマーが回転するプレイヤーからの距離
-const float HAMMER_COL_SIZE = 0.75f;		//ハンマーの当たり判定の大きさ
-const float HAMMER_SIZE		= 1.5f;			//ハンマーの大きさ
+const float SWING_ANGLE			= DirectX::XMConvertToRadians(90.0f);	// ハンマーを振る範囲(扇形の角度の大きさ)
+const float SWING_TIME_FRAME	= 0.15f * 60;							// ハンマーを振る時間(フレーム単位)
+const float ROTATE_RADIUS		= 1.0f;									// ハンマーが回転するプレイヤーからの距離
+const float HAMMER_COL_SIZE		= 0.75f;								//ハンマーの当たり判定の大きさ
+const float HAMMER_SIZE			= 1.5f;									//ハンマーの大きさ
 
 // 敵キャラ ==================================================
 
@@ -94,6 +95,10 @@ const float LEVEL_FLAME_SPEED = ENEMY_MOVE_SPEED * 0.2f;	// 移動速度
 // 爆発 =====================================================
 const int	MAX_EXPLOSION_NUM		= 20;		// 最大爆発数
 const float EXPAND_QUICK_RATE		= 0.2f;		// 膨張加速割合 
+const float LEVEL_1_EXPLODE_TIME = 0.5f * 60.0f;	// スライム_1の爆発総時間
+const float LEVEL_2_EXPLODE_TIME = 1.0f * 60.0f;	// スライム_2の爆発総時間
+const float LEVEL_3_EXPLODE_TIME = 2.0f * 60.0f;	// スライム_3の爆発総時間
+const float LEVEL_4_EXPLODE_TIME = 3.0f * 60.0f;	// スライム_4の爆発総時間
 
 // カメラ =====================================================
 const TPos3d<float> INIT_POS(0.0f, 2.6f, -3.0f);					// 初期位置

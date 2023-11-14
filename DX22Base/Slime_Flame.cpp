@@ -49,8 +49,8 @@ CSlime_Flame::CSlime_Flame()
 	}
 	m_pModel->SetVertexShader(m_pVS);
 
-	m_scale = { LEVEL_FLAME_SCALE,LEVEL_FLAME_SCALE ,LEVEL_FLAME_SCALE };
-	m_sphere.radius *= LEVEL_FLAME_SCALE;
+	m_Transform.fScale = { LEVEL_FLAME_SCALE,LEVEL_FLAME_SCALE ,LEVEL_FLAME_SCALE };
+	m_sphere.fRadius *= LEVEL_FLAME_SCALE;
 	m_eSlimeSize = E_SLIME_LEVEL::LEVEL_FLAME;
 	SetNormalSpeed();
 
@@ -68,8 +68,7 @@ CSlime_Flame::CSlime_Flame()
 CSlime_Flame::CSlime_Flame(TPos3d<float> pos)
 	: CSlime_Flame()
 {
-	m_pos = pos;			// 初期座標を指定
-	m_sphere.pos = pos;
+	m_Transform.fPos = pos;			// 初期座標を指定
 }
 
 /* ========================================

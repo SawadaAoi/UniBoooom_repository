@@ -8,13 +8,14 @@
 	作成者	澤田
 
 	変更履歴
-	・2023/11/08 作成 Sawada
-	・2023/11/08 大きさの定数を定義	Yamashita
-	・2023/11/08 スライムの移動速度を大きさごとに変更する関数を作成	Yamashita
-	・2023/11/08 スライムの移動速度を大きさごとに変更する関数を作成	Yamashita
-	・2023/11/08 コンストラクタでレベルごとのパラメータをセット	Yamashita
-	・2023/11/11 define用ヘッダ追加 Suzumura
+	・2023/11/08 作成 sawada
+	・2023/11/08 大きさの定数を定義	yamashita
+	・2023/11/08 スライムの移動速度を大きさごとに変更する関数を作成	yamashita
+	・2023/11/08 スライムの移動速度を大きさごとに変更する関数を作成	yamashita
+	・2023/11/08 コンストラクタでレベルごとのパラメータをセット	yamashita
+	・2023/11/11 define用ヘッダ追加 suzumura
 	・2023/11/14 Baseからモデル、シェーダの読み込みを移動 Suzumura
+	・2023/11/14 SphereInfoの変更に対応 takagi
 
 ========================================== */
 
@@ -54,8 +55,8 @@ CSlime_1::CSlime_1()
 	}
 	m_pModel->SetVertexShader(m_pVS);
 
-	m_scale = { LEVEL1_SCALE,LEVEL1_SCALE ,LEVEL1_SCALE };
-	m_sphere.radius *= LEVEL1_SCALE;
+	m_Transform.fScale = { LEVEL1_SCALE,LEVEL1_SCALE ,LEVEL1_SCALE };
+	m_sphere.fRadius *= LEVEL1_SCALE;
 	m_eSlimeSize = E_SLIME_LEVEL::LEVEL_1;
 	SetNormalSpeed();
 
@@ -73,8 +74,7 @@ CSlime_1::CSlime_1()
 CSlime_1::CSlime_1(TPos3d<float> pos)
 	: CSlime_1()
 {
-	m_pos = pos;			// 初期座標を指定
-	m_sphere.pos = pos;
+	m_Transform.fPos = pos;			// 初期座標を指定
 }
 
 /* ========================================

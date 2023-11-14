@@ -17,6 +17,7 @@
 	・2023/11/07 コーディング規約適用 takagi
 	・2023/11/08 行列変換関数追加 takagi
 	・2023/11/09 一部微修正 takagi
+	・2023/11/14 角度演算 takagi
 
 ========================================== */
 
@@ -45,6 +46,7 @@ public:
 	~tagTransform3d();										//デストラクタ
 	DirectX::XMFLOAT4X4 GetWorldMatrixTRS();				//ワールド行列(TRS変換)
 	DirectX::XMFLOAT4X4 GetWorldMatrixSRT();				//ワールド行列(SRT変換)
+	float Angle(const tagTransform3d& Obj);					//角度演算
 	tagTransform3d& operator=(const tagTransform3d& Obj);	//"="演算子のオーバーロード
 	tagTransform3d operator+(const tagTransform3d& Obj);	//"+"演算子のオーバーロード
 	tagTransform3d& operator+=(const tagTransform3d& Obj);	//"+="演算子のオーバーロード
