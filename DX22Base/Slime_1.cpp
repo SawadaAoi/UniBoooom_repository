@@ -14,6 +14,7 @@
 	・2023/11/08 スライムの移動速度を大きさごとに変更する関数を作成	yamashita
 	・2023/11/08 コンストラクタでレベルごとのパラメータをセット	yamashita
 	・2023/11/11 define用ヘッダ追加 suzumura
+	・2023/11/14 SphereInfoの変更に対応 takagi
 
 ========================================== */
 
@@ -38,8 +39,8 @@ const float LEVEL1_SPEED = ENEMY_MOVE_SPEED;
 =========================================== */
 CSlime_1::CSlime_1()
 {
-	m_scale = { LEVEL1_SCALE,LEVEL1_SCALE ,LEVEL1_SCALE };
-	m_sphere.radius *= LEVEL1_SCALE;
+	m_Transform.fScale = { LEVEL1_SCALE,LEVEL1_SCALE ,LEVEL1_SCALE };
+	m_sphere.fRadius *= LEVEL1_SCALE;
 	m_eSlimeSize = E_SLIME_LEVEL::LEVEL_1;
 	SetNormalSpeed();
 
@@ -57,8 +58,7 @@ CSlime_1::CSlime_1()
 CSlime_1::CSlime_1(TPos3d<float> pos)
 	: CSlime_1()
 {
-	m_pos = pos;			// 初期座標を指定
-	m_sphere.fPos = pos;
+	m_Transform.fPos = pos;			// 初期座標を指定
 }
 
 /* ========================================
