@@ -15,6 +15,8 @@
 	・2023/11/08 動的確保したポインタをdeleteからSAFE_DELETEに変更　yamashita
 	・2023/11/09? 当たり判定用のSphereのゲット関数を追加 yamashita
 	・2023/11/11 parameter用ヘッダ追加 suzumura
+	・2023/11/14 SphereInfoの変更に対応 Takagi
+
 ========================================== */
 
 // =============== インクルード ===================
@@ -43,16 +45,13 @@ const float HAMMER_SIZE = 1.5f;			//ハンマーの大きさ
    戻値：なし
    ======================================== */
 CHammer::CHammer()
-	: m_pos{ 0.0f,0.0f,0.0f }
-	, m_scale{ HAMMER_SIZE,HAMMER_SIZE,HAMMER_SIZE }
+	: m_Transform({ 0.0f }, { HAMMER_SIZE }, { 0.0f, HALF_PI, 0.0f })
 	, m_stateangle(0.0f)
-	, m_nowangle(HALF_PI)
 	, m_bHammer(false)
 	, m_pHammerGeo(nullptr)
 {
 	m_pHammerGeo = new CSphere();							//ハンマーを仮表示するジオメトリー
-	m_sphere.fPos = {0.0f, 0.0f, 0.0f};
-	m_sphere.radius = HAMMER_COL_SIZE;
+	m_sphere.fRadius = HAMMER_COL_SIZE;
 }
 
 /* ========================================
@@ -84,10 +83,10 @@ void CHammer::Update(TPos3d<float> pPos, float angle)
 	Swing(pPos,angle);	//回転による移動関数
 
 	//現在角度が0になったら動作終了
-	if (m_nowangle <= 0.0f)
+	if (m_Transform.fRadian.y <= 0.0f)
 	{
 		m_bHammer = false;		//ハンマーの使用フラグをOFF
-		m_nowangle = HALF_PI;	//ハンマーの現在角度を初期値に戻す
+		m_Transform.fRadian.y = HALF_PI;	//ハンマーの現在角度を初期値に戻す
 	}
 }
 
@@ -102,14 +101,7 @@ void CHammer::Update(TPos3d<float> pPos, float angle)
    ======================================== */
 void CHammer::Draw(const CCamera* pCamera)
 {
-	DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(m_pos.x, m_pos.y, m_pos.z);	// ハンマーの座標を移動の行列に格納
-	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(m_scale.x, m_scale.y, m_scale.z);// 拡大縮小行列
-
-	DirectX::XMMATRIX mat = S * T;			//移動の行列を格納
-	mat = DirectX::XMMatrixTranspose(mat);	//転置
-	DirectX::XMFLOAT4X4 fMat;				//行列の格納先
-	DirectX::XMStoreFloat4x4(&fMat, mat);	//XMFLOAT4X4に変換
-	m_pHammerGeo->SetWorld(fMat);			//ワールド座標にセット
+	m_pHammerGeo->SetWorld(m_Transform.GetWorldMatrixSRT());			//ワールド座標にセット
 	m_pHammerGeo->SetView(pCamera->GetViewMatrix());
 	m_pHammerGeo->SetProjection(pCamera->GetProjectionMatrix());
 
@@ -131,6 +123,20 @@ bool CHammer::Gethammer()
 }
 
 /* ========================================
+   位置のゲット関数
+   ----------------------------------------
+   内容：ハンマーの位置を取得する
+   ----------------------------------------
+   引数：なし
+   ----------------------------------------
+   戻値：TPos3d<float> 
+   ======================================== */
+TPos3d<float> CHammer::GetPos()
+{
+	return m_Transform.fPos;
+}
+
+/* ========================================
    ハンマーの回転関数
    ----------------------------------------
    内容：ハンマーの回転による移動の処理
@@ -145,17 +151,15 @@ void CHammer::Swing(TPos3d<float> pPos, float angle)
 	m_bHammer = true;		//ハンマーの使用フラグをON
 	m_stateangle = angle;	//-2.5f ;	//振り始めの角度	
 
-	m_nowangle -= ANGULAR_ANGLE;				//現在の角度量から移動する角度の分移動
-	float azimuth = m_stateangle + m_nowangle; // 方位角（角度）
+	m_Transform.fRadian.y -= ANGULAR_ANGLE;				//現在の角度量から移動する角度の分移動
+	float azimuth = m_stateangle + m_Transform.fRadian.y; // 方位角（角度）
 	float inclination = 1.0f; // 仰角
 	azimuth -= inclination;
 	// 球面座標から直交座標系への変換
-	m_pos.x = pPos.x + ROTATE_RADIUS * sin(azimuth);
+	m_Transform.fPos.x = pPos.x + ROTATE_RADIUS * sin(azimuth);
 
 	//m_pos.y = pPos.y + ROTATE_RADIUS * cos(inclination);	//たぶん真横に振るのでY座標は動かさないのでコメントアウト /山下凌佑
-	m_pos.z = pPos.z + ROTATE_RADIUS * cos(azimuth);
-
-	m_sphere.fPos = m_pos;		//当たり判定用の球体に座標をコピー
+	m_Transform.fPos.z = pPos.z + ROTATE_RADIUS * cos(azimuth);
 }
 
 /* ========================================

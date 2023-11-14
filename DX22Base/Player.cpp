@@ -16,7 +16,8 @@
 	・2023/11/09 GameOverの表示 yamashita
 	・2023/11/09 コントローラ移動の追加 sawada
 	・2023/11/11 parameter用ヘッダ追加 suzumura
-  ・2023/11/11 プレイヤーの点滅処理追加 Tei
+	・2023/11/11 プレイヤーの点滅処理追加 Tei
+	・2023/11/14 SphereInfoの変更に対応 Takagi
 
 ======================================== */
 
@@ -55,10 +56,8 @@ const int	DAMAGE_FLASH_FRAME	= 0.1 * 60;	// プレイヤーのダメージ点滅
    戻値：なし
 ======================================== */
 CPlayer::CPlayer()
-	: m_pos{ 0.0f,0.0f,0.0f }
-	, m_scale{ PLAYER_SIZE,PLAYER_SIZE,PLAYER_SIZE }
+	: m_Transform({0.0f}, {PLAYER_SIZE}, {0.0f})
 	, m_playerForward{ 0.0f,0.0f,0.0f }
-	, m_playerRotation(0.0f)
 	, m_pHammer(nullptr)
 	, m_pPlayerGeo(nullptr)
 	, m_pGameOver(nullptr)
@@ -74,8 +73,7 @@ CPlayer::CPlayer()
 	m_pPlayerGeo = new CSphere();							// プレイヤーとして仮表示する球体オブジェクトのインスタンス
 	m_pGameOver = new CSphere();
 	m_nHp = PLAYER_HP;										// プレイヤーのHPを決定
-	m_sphere.fPos = { 0.0f,0.0f,0.0f };				// 当たり判定用の球体の座標を初期化
-	m_sphere.radius = PLAYER_RADIUS;				// 当たり判定用の球体の半径
+	m_sphere.fRadius = PLAYER_RADIUS;				// 当たり判定用の球体の半径
 }
 /* ========================================
    関数：デストラクタ
@@ -119,7 +117,7 @@ void CPlayer::Update()
 
 	if ((IsKeyTrigger(VK_SPACE)|| IsKeyTriggerController(BUTTON_B)) || m_pHammer->Gethammer())	//スペースキーを押した時もしくはハンマーを振るフラグがONの時
 	{
-		m_pHammer->Update(m_pos, m_playerRotation);			//ハンマーを振るUpdate処理を行う
+		m_pHammer->Update(m_Transform.fPos, m_Transform.fRadian.y);			//ハンマーを振るUpdate処理を行う
 	}
 	
 	m_bHammer = m_pHammer->Gethammer();	//ハンマーを使用中か確認
@@ -159,16 +157,7 @@ void CPlayer::Draw()
 		return;
 	}
 
-	DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(m_pos.x, m_pos.y, m_pos.z);			//移動行列
-	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(m_scale.x, m_scale.y, m_scale.z);		//拡大縮小行列
-	DirectX::XMMATRIX Ry = DirectX::XMMatrixRotationY(m_playerRotation);//Y軸の回転行列
-
-	DirectX::XMMATRIX mat = Ry * S * T;									//変換行列を結合
-	mat = DirectX::XMMatrixTranspose(mat);								//変換行列を転置
-	DirectX::XMFLOAT4X4 fMat;											//行列の格納先
-	DirectX::XMStoreFloat4x4(&fMat, mat);								//XMFLOAT4X4に変換して格納
-	m_pPlayerGeo->SetWorld(fMat);										//ワールド座標にセット
-
+	m_pPlayerGeo->SetWorld(m_Transform.GetWorldMatrixSRT());	//ワールド座標にセット
 	m_pPlayerGeo->SetView(m_pCamera->GetViewMatrix());
 	m_pPlayerGeo->SetProjection(m_pCamera->GetProjectionMatrix());
 
@@ -227,65 +216,63 @@ void CPlayer::Move()
 {//＝＝＝playerの位置と進行方向を更新＝＝＝
 	if (IsKeyPress('W'))
 	{	//前に移動
-		m_pos.z += PLAYER_MOVE_SPEED;					//playerを+Z方向に移動
+		m_Transform.fPos.z += PLAYER_MOVE_SPEED;					//playerを+Z方向に移動
 		m_playerForward.z = FORWARD_YES;		//向いている方向
 		m_playerForward.x = FORWARD_NO;
 		if (IsKeyPress('A'))
 		{//左前に移動
-			m_pos.x -= PLAYER_MOVE_SPEED;
+			m_Transform.fPos.x -= PLAYER_MOVE_SPEED;
 			m_playerForward.x = -FORWARD_YES;
 		}
 		else if (IsKeyPress('D'))
 		{//右前に移動
-			m_pos.x += PLAYER_MOVE_SPEED;
+			m_Transform.fPos.x += PLAYER_MOVE_SPEED;
 			m_playerForward.x = FORWARD_YES;
 		}
 	}
 	else if (IsKeyPress('S'))
 	{//後ろに移動
-		m_pos.z -= PLAYER_MOVE_SPEED;
+		m_Transform.fPos.z -= PLAYER_MOVE_SPEED;
 		m_playerForward.z = -FORWARD_YES;
 		m_playerForward.x = FORWARD_NO;
 		if (IsKeyPress('A'))
 		{//左後ろに移動
-			m_pos.x -= PLAYER_MOVE_SPEED;
+			m_Transform.fPos.x -= PLAYER_MOVE_SPEED;
 			m_playerForward.x = -FORWARD_YES;
 		}
 		else if (IsKeyPress('D'))
 		{//右後ろに移動
-			m_pos.x += PLAYER_MOVE_SPEED;
+			m_Transform.fPos.x += PLAYER_MOVE_SPEED;
 			m_playerForward.x = FORWARD_YES;
 		}
 	}
 	else if (IsKeyPress('D'))
 	{//右に移動
-		m_pos.x += PLAYER_MOVE_SPEED;
+		m_Transform.fPos.x += PLAYER_MOVE_SPEED;
 		m_playerForward.x = FORWARD_YES;
 		m_playerForward.z = FORWARD_NO;
 	}
 	else if (IsKeyPress('A'))
 	{//左に移動
-		m_pos.x -= PLAYER_MOVE_SPEED;
+		m_Transform.fPos.x -= PLAYER_MOVE_SPEED;
 		m_playerForward.x = -FORWARD_YES;
 		m_playerForward.z = FORWARD_NO;
 	}
-
-	m_sphere.fPos = m_pos;	//プレイヤーの座標を当たり判定用の球体にコピー
 
 	//進行方向からplayerの向きを決める
 	if (m_playerForward.x == FORWARD_NO)	//x方向を向いてなかったらZ軸（前後）に動くだけ
 	{
 		if (m_playerForward.z > 0.0f) {//+Z前方向にする
-			m_playerRotation = 0.0f; // 前方向
+			m_Transform.fRadian.y = 0.0f; // 前方向
 		}
 		else {
-			m_playerRotation = XM_PI; // 後方向
+			m_Transform.fRadian.y = XM_PI; // 後方向
 		}
 	}
 	else {//Zの方向にも向いてるなら斜め、向いてないなら横の方向を向く
-		m_playerRotation = atan(m_playerForward.x / m_playerForward.z);	//ここで斜めか判断
+		m_Transform.fRadian.y = atan(m_playerForward.x / m_playerForward.z);	//ここで斜めか判断
 		if (m_playerForward.z < 0.0f) {
-			m_playerRotation += XM_PI; // ｚが-なら後ろなので足して後ろ側に
+			m_Transform.fRadian.y += XM_PI; // ｚが-なら後ろなので足して後ろ側に
 		}
 	}
 }
@@ -311,15 +298,11 @@ void CPlayer::ControllerMove()
 		float moveRad = atan2(stick_y * -1, stick_x);	// スティックを倒した方向の角度を求める(y軸が逆なので－1を掛ける)
 
 		// 角度方向に移動する処理
-		m_pos.x += cosf(moveRad) * PLAYER_MOVE_SPEED;
-		m_pos.z += sinf(moveRad) * PLAYER_MOVE_SPEED;
+		m_Transform.fPos.x += cosf(moveRad) * PLAYER_MOVE_SPEED;
+		m_Transform.fPos.z += sinf(moveRad) * PLAYER_MOVE_SPEED;
 
-		m_playerRotation = atan2(stick_y, stick_x) + (XM_PI/2);	// XMMatrixTranslationが時計回りで角度が90度ずれている(↑が0)ので調整
+		m_Transform.fRadian.y = atan2(stick_y, stick_x) + (XM_PI/2);	// XMMatrixTranslationが時計回りで角度が90度ずれている(↑が0)ので調整
 	}
-
-	m_sphere.fPos = m_pos;	//プレイヤーの座標を当たり判定用の球体にコピー
-
-
 }
 
 
@@ -363,7 +346,7 @@ tagSphereInfo CPlayer::GetHammerSphere()
 ======================================== */
 TPos3d<float> CPlayer::GetPos()
 {
-	return m_pos;
+	return m_Transform.fPos;
 }
 
 /* ========================================

@@ -16,6 +16,7 @@
 	・2023/11/11 parameter用ヘッダ追加 Suzumura
 	・2023/11/11 スライム同士が重ならない関数を追加 Yamashita
 	・2023/11/13 スライムレベルごとに爆発時間を設定できるように変更 Suzumura
+	・2023/11/14 SphereInfoの変更に対応 Takagi
 
 =========================================== */
 
@@ -221,18 +222,21 @@ void CSlimeManager::HitBranch(int HitSlimeNum, int StandSlimeNum, CExplosionMana
 {
 	E_SLIME_LEVEL hitSlimeLevel, standSlimeLevel;				// レベル
 	tagSphereInfo hitSlimeSphere, standSlimeSphere;		// 当たり判定
+	tagTransform3d hitSlimeTransform, standSlimeTransform;		//ワールド座標系
 	float hitSlimeSpeed, standSlimeSpeed;						// 移動スピード
 	float travelAngle, reflectionAngle;							// 移動方向
 
 	hitSlimeLevel = m_pSlime[HitSlimeNum]->GetSlimeLevel();		// 衝突するスライムのサイズを取得
 	hitSlimeSphere = m_pSlime[HitSlimeNum]->GetSphere();		// 衝突するスライムの当たり判定を取得
+	hitSlimeTransform = m_pSlime[HitSlimeNum]->GetTransform();	// 衝突するスライムのワールド座標情報を取得
 	hitSlimeSpeed = m_pSlime[HitSlimeNum]->GetSpeed();			// 衝突するスライムの速度を取得
 
 	standSlimeLevel = m_pSlime[StandSlimeNum]->GetSlimeLevel();	// 衝突されたスライムのサイズを取得
 	standSlimeSphere = m_pSlime[StandSlimeNum]->GetSphere();	// 衝突されたスライムの当たり判定を取得
+	standSlimeTransform = m_pSlime[StandSlimeNum]->GetTransform();	// 衝突するスライムのワールド座標情報を取得
 
-	travelAngle = hitSlimeSphere.Angle(standSlimeSphere);		// 衝突する側の進行方向
-	reflectionAngle = standSlimeSphere.Angle(hitSlimeSphere);	// 衝突する側の逆方向(反射)
+	travelAngle = hitSlimeTransform.Angle(standSlimeTransform);		// 衝突する側の進行方向
+	reflectionAngle = standSlimeTransform.Angle(hitSlimeTransform);	// 衝突する側の逆方向(反射)
 	
 	// 衝突するスライムが小さい場合(小→大)
 	if (hitSlimeLevel < standSlimeLevel)
@@ -425,8 +429,8 @@ void CSlimeManager::PreventOverlap(CSlimeBase * pMoveSlime, CSlimeBase * pStandS
 	pMoveSlime->ReversePos();
 	*/
 
-	float angle = pStandSlime->GetSphere().Angle(pMoveSlime->GetSphere());				//衝突してきた角度
-	float distance = pStandSlime->GetSphere().radius + pMoveSlime->GetSphere().radius;	//お互いのスライムの半径を足した数
+	float angle = pStandSlime->GetTransform().Angle(pMoveSlime->GetTransform());				//衝突してきた角度
+	float distance = pStandSlime->GetSphere().fRadius + pMoveSlime->GetSphere().fRadius;	//お互いのスライムの半径を足した数
 
 	TPos3d<float> pos = pStandSlime->GetPos();		//押し戻す基準の座標
 	pos.x += cosf(angle) * (distance + 0.001f);		//ぶつからないギリギリの距離を設定
