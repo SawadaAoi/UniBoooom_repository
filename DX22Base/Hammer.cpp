@@ -51,7 +51,7 @@ CHammer::CHammer()
 	, m_pHammerGeo(nullptr)
 {
 	m_pHammerGeo = new CSphere();							//ハンマーを仮表示するジオメトリー
-	m_sphere.pos = {0.0f, 0.0f, 0.0f};
+	m_sphere.fPos = {0.0f, 0.0f, 0.0f};
 	m_sphere.radius = HAMMER_COL_SIZE;
 }
 
@@ -155,7 +155,7 @@ void CHammer::Swing(TPos3d<float> pPos, float angle)
 	//m_pos.y = pPos.y + ROTATE_RADIUS * cos(inclination);	//たぶん真横に振るのでY座標は動かさないのでコメントアウト /山下凌佑
 	m_pos.z = pPos.z + ROTATE_RADIUS * cos(azimuth);
 
-	m_sphere.pos = m_pos;		//当たり判定用の球体に座標をコピー
+	m_sphere.fPos = m_pos;		//当たり判定用の球体に座標をコピー
 }
 
 /* ========================================
@@ -167,7 +167,7 @@ void CHammer::Swing(TPos3d<float> pPos, float angle)
    ----------------------------------------
    戻値：当たり判定の球体
    ======================================== */
-CSphereInfo::Sphere CHammer::GetSphere()
+tagSphereInfo CHammer::GetSphere()
 {
 	return m_sphere;
 }

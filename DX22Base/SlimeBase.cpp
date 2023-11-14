@@ -79,7 +79,7 @@ CSlimeBase::CSlimeBase()
 	m_pModel->SetVertexShader(m_pVS);
 
 	//当たり判定(自分)初期化
-	m_sphere.pos = { 0.0f, 0.0f, 0.0f };
+	m_sphere.fPos = { 0.0f, 0.0f, 0.0f };
 	m_sphere.radius = SLIME_BASE_RADIUS;
 
 	int random = abs(rand() % 360);	//ランダムに0～359の数字を作成
@@ -130,7 +130,7 @@ void CSlimeBase::Update(TPos3d<float> playerSphere)
 	m_pos.x += m_move.x;
 	m_pos.z += m_move.z;
 
-	m_sphere.pos = m_pos;	// 当たり判定の位置を座標に合わせる
+	m_sphere.fPos = m_pos;	// 当たり判定の位置を座標に合わせる
 }
 
 /* ========================================
@@ -307,7 +307,7 @@ void CSlimeBase::Reflect()
 	-------------------------------------
 	戻値：当たり判定(Sphere)
 =========================================== */
-CSphereInfo::Sphere CSlimeBase::GetSphere()
+tagSphereInfo CSlimeBase::GetSphere()
 {
 	return m_sphere;
 }
@@ -321,7 +321,7 @@ CSphereInfo::Sphere CSlimeBase::GetSphere()
 	-------------------------------------
 	戻値：なし
 =========================================== */
-void CSlimeBase::SetSphere(CSphereInfo::Sphere Sphere)
+void CSlimeBase::SetSphere(tagSphereInfo Sphere)
 {
 	m_sphere = Sphere;
 }
@@ -338,7 +338,7 @@ void CSlimeBase::SetSphere(CSphereInfo::Sphere Sphere)
 void CSlimeBase::SetPos(TPos3d<float> pos)
 {
 	m_pos = pos;
-	m_sphere.pos = pos;
+	m_sphere.fPos = pos;
 }
 
 /* ========================================

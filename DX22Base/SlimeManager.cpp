@@ -220,7 +220,7 @@ void CSlimeManager::Create(E_SLIME_LEVEL level)
 void CSlimeManager::HitBranch(int HitSlimeNum, int StandSlimeNum, CExplosionManager* pExpMng)
 {
 	E_SLIME_LEVEL hitSlimeLevel, standSlimeLevel;				// レベル
-	CSphereInfo::Sphere hitSlimeSphere, standSlimeSphere;		// 当たり判定
+	tagSphereInfo hitSlimeSphere, standSlimeSphere;		// 当たり判定
 	float hitSlimeSpeed, standSlimeSpeed;						// 移動スピード
 	float travelAngle, reflectionAngle;							// 移動方向
 
@@ -397,8 +397,8 @@ void CSlimeManager::PreventOverlap(CSlimeBase * pMoveSlime, CSlimeBase * pStandS
 {
 	//↓のコメントアウトは理想的な処理のやりかけ
 	/*
-	CSphereInfo::Sphere standSlimeSphere = pStandSlime->GetSphere();
-	CSphereInfo::Sphere moveSlimeSphere = pMoveSlime->GetSphere();
+	tagSphereInfo::Sphere standSlimeSphere = pStandSlime->GetSphere();
+	tagSphereInfo::Sphere moveSlimeSphere = pMoveSlime->GetSphere();
 	float standSlimeToPlayerAngle = standSlimeSphere.Angle(m_pPlayer->GetPlayerSphere());
 	float standSlimeToMoveSlimeAngle = standSlimeSphere.Angle(moveSlimeSphere);
 	float Distance = standSlimeSphere.Distance(pMoveSlime->GetSphere());

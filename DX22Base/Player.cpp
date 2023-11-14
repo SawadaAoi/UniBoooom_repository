@@ -74,7 +74,7 @@ CPlayer::CPlayer()
 	m_pPlayerGeo = new CSphere();							// プレイヤーとして仮表示する球体オブジェクトのインスタンス
 	m_pGameOver = new CSphere();
 	m_nHp = PLAYER_HP;										// プレイヤーのHPを決定
-	m_sphere.pos = { 0.0f,0.0f,0.0f };				// 当たり判定用の球体の座標を初期化
+	m_sphere.fPos = { 0.0f,0.0f,0.0f };				// 当たり判定用の球体の座標を初期化
 	m_sphere.radius = PLAYER_RADIUS;				// 当たり判定用の球体の半径
 }
 /* ========================================
@@ -270,7 +270,7 @@ void CPlayer::Move()
 		m_playerForward.z = FORWARD_NO;
 	}
 
-	m_sphere.pos = m_pos;	//プレイヤーの座標を当たり判定用の球体にコピー
+	m_sphere.fPos = m_pos;	//プレイヤーの座標を当たり判定用の球体にコピー
 
 	//進行方向からplayerの向きを決める
 	if (m_playerForward.x == FORWARD_NO)	//x方向を向いてなかったらZ軸（前後）に動くだけ
@@ -317,7 +317,7 @@ void CPlayer::ControllerMove()
 		m_playerRotation = atan2(stick_y, stick_x) + (XM_PI/2);	// XMMatrixTranslationが時計回りで角度が90度ずれている(↑が0)ので調整
 	}
 
-	m_sphere.pos = m_pos;	//プレイヤーの座標を当たり判定用の球体にコピー
+	m_sphere.fPos = m_pos;	//プレイヤーの座標を当たり判定用の球体にコピー
 
 
 }
@@ -333,7 +333,7 @@ void CPlayer::ControllerMove()
    ----------------------------------------
    戻値：当たり判定(Sphere)
 ======================================== */
-CSphereInfo::Sphere CPlayer::GetPlayerSphere()
+tagSphereInfo CPlayer::GetPlayerSphere()
 {
 	return m_sphere;
 }
@@ -347,7 +347,7 @@ CSphereInfo::Sphere CPlayer::GetPlayerSphere()
    ----------------------------------------
    戻値：当たり判定(Sphere)
 ======================================== */
-CSphereInfo::Sphere CPlayer::GetHammerSphere()
+tagSphereInfo CPlayer::GetHammerSphere()
 {
 	return m_pHammer->GetSphere();
 }

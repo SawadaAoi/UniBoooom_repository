@@ -58,7 +58,7 @@ CSlime_2::CSlime_2(TPos3d<float> pos)
 	: CSlime_2()
 {
 	m_pos = pos;			// ‰ŠúÀ•W‚ğw’è
-	m_sphere.pos = pos;
+	m_sphere.fPos = pos;
 }
 
 /* ========================================

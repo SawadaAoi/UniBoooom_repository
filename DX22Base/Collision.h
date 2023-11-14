@@ -23,7 +23,7 @@ public:
 	CCOLLISION() {};	//コンストラクタ
 	~CCOLLISION() {};	//デストラクタ
 
-	bool CheckCollisionSphere(CSphereInfo::Sphere hitObj, CSphereInfo::Sphere noMoveObj);
+	bool CheckCollisionSphere(tagSphereInfo hitObj, tagSphereInfo noMoveObj);
 private:
 
 };

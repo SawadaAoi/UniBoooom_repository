@@ -26,9 +26,9 @@ Collision.cpp
 	戻値：true または false
 =========================================== */
 
-bool CCOLLISION::CheckCollisionSphere(CSphereInfo::Sphere hitObj, CSphereInfo::Sphere noMoveObj)
+bool CCOLLISION::CheckCollisionSphere(tagSphereInfo hitObj, tagSphereInfo noMoveObj)
 {
-	float Distance = hitObj.Distance(noMoveObj);	// オブジェクト間の距離
+	float Distance = hitObj.fPos.Distance(noMoveObj.fPos);	// オブジェクト間の距離
 
 	if (Distance < hitObj.radius + noMoveObj.radius)	// オブジェクト間の距離の距離が半径の合計より小さくなったら
 	{

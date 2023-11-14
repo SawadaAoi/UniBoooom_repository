@@ -54,7 +54,7 @@ CExplosion::CExplosion(TTriType<float> pos, float size,float time)
 {
 
 	//爆発オブジェクト初期化
-	m_Sphere.pos = pos;
+	m_Sphere.fPos = pos;
 	m_Sphere.radius = size / 2;	// 当たり判定をセットする
 	//m_fSizeAdd = size / ONE_SECOND_FRAME;
 	m_3dModel = new CSphere();
@@ -109,7 +109,7 @@ void CExplosion::Update()
 =========================================== */
 void CExplosion::Draw()
 {
-	DirectX::XMMATRIX mat = DirectX::XMMatrixTranslation(m_Sphere.pos.x, m_Sphere.pos.y, m_Sphere.pos.z);
+	DirectX::XMMATRIX mat = DirectX::XMMatrixTranslation(m_Sphere.fPos.x, m_Sphere.fPos.y, m_Sphere.fPos.z);
 	DirectX::XMMATRIX Scale = DirectX::XMMatrixScaling(m_fSize, m_fSize, m_fSize);
 	mat = Scale * mat;
 	mat = DirectX::XMMatrixTranspose(mat);
@@ -172,7 +172,7 @@ void CExplosion::DisplayTimeAdd()
 =========================================== */
 void CExplosion::SetPos(TTriType<float> pos)
 {
-	m_Sphere.pos = pos;
+	m_Sphere.fPos = pos;
 }
 
 
@@ -185,7 +185,7 @@ void CExplosion::SetPos(TTriType<float> pos)
 	-------------------------------------
 	戻値：無し
 =========================================== */
-void CExplosion::SetSphere(CSphereInfo::Sphere sphere)
+void CExplosion::SetSphere(tagSphereInfo sphere)
 {
 	m_Sphere = sphere;
 }
@@ -199,7 +199,7 @@ void CExplosion::SetSphere(CSphereInfo::Sphere sphere)
 	-------------------------------------
 	戻値：Sphere情報
 =========================================== */
-CSphereInfo::Sphere CExplosion::GetSphere()
+tagSphereInfo CExplosion::GetSphere()
 {
 	return m_Sphere;
 }
