@@ -44,14 +44,14 @@ void CTimer::Draw()
 
 int CTimer::GetMinite()
 {
-	m_nMinute = m_nTimeCnt / 3600;	//分 = 総タイム割る（60秒 * 60フレーム）
+	m_nMinute = m_nTimeCnt / 3600;			//分 = 総タイム割る（60秒 * 60フレーム）
 
 	return m_nMinute;
 }
 
 int CTimer::GetSecond()
 {
-	m_nSecond = m_nTimeCnt % 3600;	//秒 = 分の部分を抜くの残り
+	m_nSecond = ( m_nTimeCnt / 60 ) % 60;	//秒 = 分の部分を抜くの残り
 
 	return m_nSecond;
 }
