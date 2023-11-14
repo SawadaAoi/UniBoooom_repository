@@ -9,7 +9,8 @@
 
 	•ÏX—š—ð
 	E2023/11/11 ƒwƒbƒ_ì¬ Suzumura
-	E2023/11/13 Paramerter’Ç‰Á(LEVEL_Z_EXPLODE_TIME) Suzumura
+	E2023/11/13 ƒpƒ‰ƒ[ƒ^[’Ç‰Á(LEVEL_Z_EXPLODE_TIME) Suzumura
+	E2023/11/14 ƒpƒ‰ƒ[ƒ^[’Ç‰Á(// ƒtƒŒƒCƒ€ƒXƒ‰ƒCƒ€) Suzumura
 
 =========================================== */
 #ifndef __GAME_PARAMETER_H__
@@ -29,10 +30,11 @@ const int	NO_DAMAGE_TIME		= 3 * 60;	// ƒvƒŒƒCƒ„[‚Ì–³“GŽžŠÔ
 const int	DAMAGE_FLASH_FRAME	= 0.1 * 60;	// ƒvƒŒƒCƒ„[‚Ìƒ_ƒ[ƒW“_–Å‚ÌØ‚è‘Ö‚¦ŠÔŠu
 
 // ƒnƒ“ƒ}[
-const float ANGULAR_ANGLE	= 0.15f;        // –ˆƒtƒŒ[ƒ€ˆÚ“®‚·‚éŠp“x—Ê
-const float ROTATE_RADIUS	= 1.0f;        // ƒnƒ“ƒ}[‚ª‰ñ“]‚·‚éƒvƒŒƒCƒ„[‚©‚ç‚Ì‹——£
-const float HAMMER_COL_SIZE = 0.75f;		//ƒnƒ“ƒ}[‚Ì“–‚½‚è”»’è‚Ì‘å‚«‚³
-const float HAMMER_SIZE		= 1.5f;			//ƒnƒ“ƒ}[‚Ì‘å‚«‚³
+const float SWING_ANGLE			= DirectX::XMConvertToRadians(90.0f);	// ƒnƒ“ƒ}[‚ðU‚é”ÍˆÍ(îŒ`‚ÌŠp“x‚Ì‘å‚«‚³)
+const float SWING_TIME_FRAME	= 0.15f * 60;							// ƒnƒ“ƒ}[‚ðU‚éŽžŠÔ(ƒtƒŒ[ƒ€’PˆÊ)
+const float ROTATE_RADIUS		= 1.0f;									// ƒnƒ“ƒ}[‚ª‰ñ“]‚·‚éƒvƒŒƒCƒ„[‚©‚ç‚Ì‹——£
+const float HAMMER_COL_SIZE		= 0.75f;								//ƒnƒ“ƒ}[‚Ì“–‚½‚è”»’è‚Ì‘å‚«‚³
+const float HAMMER_SIZE			= 1.5f;									//ƒnƒ“ƒ}[‚Ì‘å‚«‚³
 
 // “GƒLƒƒƒ‰ ==================================================
 
@@ -48,21 +50,15 @@ const float MOVE_RESIST				= 0.05f;	// ‚«”ò‚ÑˆÚ“®’†‚ÌƒXƒ‰ƒCƒ€‚ÌˆÚ“®‘¬“x‚É–ˆƒtƒ
 const float MOVE_DISTANCE_PLAYER	= 13.0f;	// ƒvƒŒƒCƒ„[’ÇÕˆÚ“®‚ÉØ‚è‘Ö‚¦‚é‹——£
 const float SLIME_BASE_RADIUS		= 0.5f;		// ƒXƒ‰ƒCƒ€‚ÌŠî€‚Ì‘å‚«‚³
 
-
-const int ENEMY_CREATE_INTERVAL		= 2 * 60;									// ¶¬ŠÔŠu
-const int RANDOM_POS				= 15;										// ¶¬À•W”ÍˆÍ
-const int CREATE_DISTANCE			= 10;										// ƒvƒŒƒCƒ„[‚©‚ç‚Ç‚ê‚­‚ç‚¢—£‚ê‚½‹——£‚É¶¬‚·‚é‚©
-const int SLIME_LEVEL1_PER			= 50;										// ƒXƒ‰ƒCƒ€_1‚Ì¶¬Šm—§
-const int SLIME_LEVEL2_PER			= 30;										// ƒXƒ‰ƒCƒ€_2‚Ì¶¬Šm—§
-const int SLIME_LEVEL3_PER			= 100 - SLIME_LEVEL1_PER - SLIME_LEVEL2_PER;// ƒXƒ‰ƒCƒ€_3‚Ì¶¬Šm—§
+const int ENEMY_CREATE_INTERVAL		= 2 * 60;													// ¶¬ŠÔŠu
+const int RANDOM_POS				= 15;														// ¶¬À•W”ÍˆÍ
+const int CREATE_DISTANCE			= 10;														// ƒvƒŒƒCƒ„[‚©‚ç‚Ç‚ê‚­‚ç‚¢—£‚ê‚½‹——£‚É¶¬‚·‚é‚©
+const int SLIME_LEVEL1_PER = 45;																// ƒXƒ‰ƒCƒ€_1‚Ì¶¬Šm—§
+const int SLIME_LEVEL2_PER = 35;																// ƒXƒ‰ƒCƒ€_2‚Ì¶¬Šm—§
+const int SLIME_LEVEL3_PER = 10;																// ƒXƒ‰ƒCƒ€_3‚Ì¶¬Šm—§
+const int SLIME_LEVEL_FLAME_PER = 100 - SLIME_LEVEL1_PER - SLIME_LEVEL2_PER - SLIME_LEVEL3_PER;	// ƒXƒ‰ƒCƒ€_ƒtƒŒƒCƒ€‚Ì¶¬Šm—§
 const float MAX_SIZE_EXPLODE		= 5.0f;										// ƒXƒ‰ƒCƒ€4“¯Žm‚Ì”š”­‚Ì‘å‚«‚³
 const float EXPLODE_BASE_RATIO		= 1.5f;										// ƒXƒ‰ƒCƒ€‚Ì”š”­ÚG‚Å‚Ì”š”­‚Ì‘å‚«‚³‚Ìƒx[ƒX
-
-const float LEVEL_1_EXPLODE_TIME = 0.5f * 60.0f;								// ƒXƒ‰ƒCƒ€_1‚Ì”š”­‘ŽžŠÔ
-const float LEVEL_2_EXPLODE_TIME = 1.0f * 60.0f;								// ƒXƒ‰ƒCƒ€_2‚Ì”š”­‘ŽžŠÔ
-const float LEVEL_3_EXPLODE_TIME = 2.0f * 60.0f;								// ƒXƒ‰ƒCƒ€_3‚Ì”š”­‘ŽžŠÔ
-const float LEVEL_4_EXPLODE_TIME = 3.0f * 60.0f;								// ƒXƒ‰ƒCƒ€_4‚Ì”š”­‘ŽžŠÔ
-
 
 
 // ƒXƒ‰ƒCƒ€“¯Žm‚Ì”½ŽË‚ÌŒ¸ŽZ’l
@@ -88,10 +84,17 @@ const float LEVEL3_SPEED = ENEMY_MOVE_SPEED * 0.7;	// ˆÚ“®‘¬“x
 const float LEVEL4_SCALE = 5.0f;					// ƒXƒ‰ƒCƒ€QƒŒƒxƒ‹‚S‚Ì‘å‚«‚³(“–‚½‚è”»’èŠÜ‚Þ)
 const float LEVEL4_SPEED = ENEMY_MOVE_SPEED * 0.5;	// ˆÚ“®‘¬“x
 
+// ƒtƒŒƒCƒ€ƒXƒ‰ƒCƒ€
+const float LEVEL_FLAME_SCALE = 1.0f;						// ƒXƒ‰ƒCƒ€QƒtƒŒƒCƒ€‚Ì‘å‚«‚³(“–‚½‚è”»’èŠÜ‚Þ)
+const float LEVEL_FLAME_SPEED = ENEMY_MOVE_SPEED * 0.2f;	// ˆÚ“®‘¬“x
 
 // ”š”­ =====================================================
 const int	MAX_EXPLOSION_NUM		= 20;		// Å‘å”š”­”
 const float EXPAND_QUICK_RATE		= 0.2f;		// –c’£‰Á‘¬Š„‡ 
+const float LEVEL_1_EXPLODE_TIME = 0.5f * 60.0f;	// ƒXƒ‰ƒCƒ€_1‚Ì”š”­‘ŽžŠÔ
+const float LEVEL_2_EXPLODE_TIME = 1.0f * 60.0f;	// ƒXƒ‰ƒCƒ€_2‚Ì”š”­‘ŽžŠÔ
+const float LEVEL_3_EXPLODE_TIME = 2.0f * 60.0f;	// ƒXƒ‰ƒCƒ€_3‚Ì”š”­‘ŽžŠÔ
+const float LEVEL_4_EXPLODE_TIME = 3.0f * 60.0f;	// ƒXƒ‰ƒCƒ€_4‚Ì”š”­‘ŽžŠÔ
 
 // ƒJƒƒ‰ =====================================================
 const TPos3d<float> INIT_POS(0.0f, 2.6f, -3.0f);					// ‰ŠúˆÊ’u

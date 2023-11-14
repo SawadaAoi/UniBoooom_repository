@@ -20,6 +20,7 @@
 	・2023/11/12 プレイヤーの方向を向きながら進むように変更  Yamamoto
 	・2023/11/12 ランダム移動を追加  Sawada
 	・2023/11/13 GetScale関数を追加 Suzumura
+	・2023/11/14 SphereInfoの変更に対応 Takagi
 	
 ========================================== */
 
@@ -55,32 +56,17 @@ CSlimeBase::CSlimeBase()
 	, m_pVS(nullptr)
 	, m_move(0.0f, 0.0f, 0.0f)
 	, m_fSpeed(ENEMY_MOVE_SPEED)
-	, m_scale(1.0f,1.0f,1.0f)
-	, m_pos(0.0f,0.0f,0.0f)
+	, m_Transform({ 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f })
 	, m_fVecAngle(0.0f)
 	, m_bHitMove(false)
 	, m_eSlimeSize(LEVEL_1)	//後でSLIME_NONEにする <=TODO
 	, m_RanMoveCnt(RANDOM_MOVE_SWITCH_TIME)	// 初期
 
 {
-	RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得
-	DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
-	SetRenderTargets(1, &pRTV, pDSV);		//DSVがnullだと2D表示になる
-	m_pModel = new Model;
-	if (!m_pModel->Load("Assets/Model/eyeBat/eyeBat.FBX", 0.1f, Model::XFlip)) {		//倍率と反転は省略可
-		MessageBox(NULL, "eyeBat", "Error", MB_OK);	//ここでエラーメッセージ表示
-	}
-
-	//頂点シェーダ読み込み
-	m_pVS = new VertexShader();
-	if (FAILED(m_pVS->Load("Assets/Shader/VS_Model.cso"))) {
-		MessageBox(nullptr, "VS_Model.cso", "Error", MB_OK);
-	}
-	m_pModel->SetVertexShader(m_pVS);
+	
 
 	//当たり判定(自分)初期化
-	m_sphere.pos = { 0.0f, 0.0f, 0.0f };
-	m_sphere.radius = SLIME_BASE_RADIUS;
+	m_sphere.fRadius = SLIME_BASE_RADIUS;
 
 	int random = abs(rand() % 360);	//ランダムに0～359の数字を作成
 	m_Ry = DirectX::XMMatrixRotationY(random);
@@ -127,10 +113,8 @@ void CSlimeBase::Update(TPos3d<float> playerSphere)
 	}
 
 	// -- 座標更新
-	m_pos.x += m_move.x;
-	m_pos.z += m_move.z;
-
-	m_sphere.pos = m_pos;	// 当たり判定の位置を座標に合わせる
+	m_Transform.fPos.x += m_move.x;
+	m_Transform.fPos.z += m_move.z;
 }
 
 /* ========================================
@@ -147,19 +131,10 @@ void CSlimeBase::Draw(const CCamera* pCamera)
 
 	DirectX::XMFLOAT4X4 mat[3];
 
-	//-- ワールド行列の計算
-	DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(m_pos.x, m_pos.y, m_pos.z);			//移動行列
-	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(m_scale.x, m_scale.y, m_scale.z);		//拡大縮小行列
-
-	DirectX::XMMATRIX world = m_Ry * S * T ;					//ワールド行列の設定
-	world = DirectX::XMMatrixTranspose(world);					//転置行列に変換
-	DirectX::XMStoreFloat4x4(&mat[0], world);					//XMMATRIX型(world)からXMFLOAT4X4型(mat[0])へ変換して格納
-
-
+	mat[0] = m_Transform.GetWorldMatrixSRT();
 	mat[1] = pCamera->GetViewMatrix();
 	mat[2] = pCamera->GetProjectionMatrix();
 	
-
 	//-- 行列をシェーダーへ設定
 	m_pVS->WriteBuffer(0, mat);
 
@@ -182,13 +157,14 @@ void CSlimeBase::Draw(const CCamera* pCamera)
 void CSlimeBase::NormalMove(TPos3d<float> playerPos)
 {
 	// 敵からエネミーの距離、角度を計算
-	float distancePlayer	= m_pos.Distance(playerPos);
+	float distancePlayer	= m_Transform.fPos.Distance(playerPos);
 
 	// プレイヤーと距離が一定以内だったら
 	if (distancePlayer < MOVE_DISTANCE_PLAYER) 
 	{
+	
 		TPos3d<float> movePos;
-		movePos = playerPos - m_pos;	// プレイヤーへのベクトルを計算
+		movePos = playerPos - m_Transform.fPos;	// プレイヤーへのベクトルを計算
 		if (distancePlayer != 0)	//0除算回避
 		{
 			m_move.x = movePos.x / distancePlayer * m_fSpeed;
@@ -196,14 +172,14 @@ void CSlimeBase::NormalMove(TPos3d<float> playerPos)
 		}
 		// 敵からプレイヤーへのベクトル
 		DirectX::XMFLOAT3 directionVector;
-		directionVector.x = m_pos.x-playerPos.x;
-		directionVector.y = m_pos.y-playerPos.y;
-		directionVector.z = m_pos.z-playerPos.z;
+		directionVector.x = m_Transform.fPos.x-playerPos.x;
+		directionVector.y = m_Transform.fPos.y-playerPos.y;
+		directionVector.z = m_Transform.fPos.z-playerPos.z;
 
 		// ベクトルを正規化して方向ベクトルを得る
 		DirectX::XMVECTOR direction = DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&directionVector));
 		// 方向ベクトルから回転行列を計算
-		m_Ry = DirectX::XMMatrixRotationY(std::atan2(directionVector.x, directionVector.z));
+		m_Transform.fRadian.y = atan2(directionVector.x, directionVector.z);
 	}
 	else
 	{
@@ -236,7 +212,7 @@ void CSlimeBase::RandomMove()
 		m_move.z = sinf(DirectX::XMConvertToRadians(ranAngle)) * m_fSpeed;
 
 		// 向きを変える
-		m_Ry = DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(ranAngle + 90));
+		m_Transform.fRadian.y = DirectX::XMConvertToRadians(ranAngle + 90);
 
 		m_RanMoveCnt = 0;	// 加算値をリセット
 	}
@@ -264,6 +240,7 @@ void CSlimeBase::HitMove()
 	{
 		m_bHitMove = false;				//吹き飛び状態のフラグをOFFにする
 		SetNormalSpeed();	// 継承した関数を使用して大きさごとのスピードをセットする
+		m_RanMoveCnt = RANDOM_MOVE_SWITCH_TIME;
 	}
 }
 
@@ -307,7 +284,7 @@ void CSlimeBase::Reflect()
 	-------------------------------------
 	戻値：当たり判定(Sphere)
 =========================================== */
-CSphereInfo::Sphere CSlimeBase::GetSphere()
+tagSphereInfo CSlimeBase::GetSphere()
 {
 	return m_sphere;
 }
@@ -321,7 +298,7 @@ CSphereInfo::Sphere CSlimeBase::GetSphere()
 	-------------------------------------
 	戻値：なし
 =========================================== */
-void CSlimeBase::SetSphere(CSphereInfo::Sphere Sphere)
+void CSlimeBase::SetSphere(tagSphereInfo Sphere)
 {
 	m_sphere = Sphere;
 }
@@ -337,8 +314,7 @@ void CSlimeBase::SetSphere(CSphereInfo::Sphere Sphere)
 =========================================== */
 void CSlimeBase::SetPos(TPos3d<float> pos)
 {
-	m_pos = pos;
-	m_sphere.pos = pos;
+	m_Transform.fPos = pos;
 }
 
 /* ========================================
@@ -366,7 +342,7 @@ void CSlimeBase::SetCamera(const CCamera * pCamera)
 =========================================== */
 TPos3d<float> CSlimeBase::GetPos()
 {
-	return m_pos;
+	return m_Transform.fPos;
 }
 
 
@@ -395,8 +371,9 @@ E_SLIME_LEVEL CSlimeBase::GetSlimeLevel()
 ======================================== */
 TTriType<float> CSlimeBase::GetScale()
 {
-	return m_scale;
+	return m_Transform.fScale;
 }
+
 
 
 /* ========================================

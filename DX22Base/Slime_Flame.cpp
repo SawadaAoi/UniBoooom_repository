@@ -1,35 +1,28 @@
 /* ========================================
 	HEW/UniBoooom!!
 	------------------------------------
-	スライムサイズ3用cpp
+	フレイムスライムcpp
 	------------------------------------
-	Slime_3.cpp
+	Slime_Flame.cpp
 	------------------------------------
-	作成者	山下凌佑
+	作成者	鈴村朋也
 
 	変更履歴
-	・2023/11/08 作成 yamashita
-	・2023/11/08 大きさの定数を定義	yamashita
-	・2023/11/08 スライムの移動速度を大きさごとに変更する関数を作成	yamashita
-	・2023/11/08 スライムの移動速度を大きさごとに変更する関数を作成	yamashita
-	・2023/11/08 コンストラクタでレベルごとのパラメータをセット	yamashita
-	・2023/11/11 parameter用ヘッダ追加 suzumura
-	・2023/11/14 Baseからモデル、シェーダの読み込みを移動 Suzumura
-	・2023/11/14 SphereInfoの変更に対応 takagi
+	・2023/11/14 クラス作成 Suzumura
+	・2023/11/14 炎スライム仕様の実装 Suzumura
 
 ========================================== */
 
 // =============== インクルード ===================
-#include "Slime_3.h"
+#include "Slime_Flame.h"
 #include "GameParameter.h"		//定数定義用ヘッダー
 
 // =============== 定数定義 =======================
 #if MODE_GAME_PARAMETER
 #else
-const float LEVEL3_SCALE = 3.0f;
-const float LEVEL3_SPEED = ENEMY_MOVE_SPEED * 0.90;
+const float LEVEL_FLAME_SCALE = 1.0f;
+const float LEVEL_FLAME_SPEED = ENEMY_MOVE_SPEED * 0.2f;
 #endif
-
 /* ========================================
 	コンストラクタ関数
 	-------------------------------------
@@ -39,14 +32,14 @@ const float LEVEL3_SPEED = ENEMY_MOVE_SPEED * 0.90;
 	-------------------------------------
 	戻値：無し
 =========================================== */
-CSlime_3::CSlime_3()
+CSlime_Flame::CSlime_Flame()
 {
 	RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得
 	DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
 	SetRenderTargets(1, &pRTV, pDSV);		//DSVがnullだと2D表示になる
 	m_pModel = new Model;
-	if (!m_pModel->Load("Assets/Model/eyeBat/eyeBat.FBX", 0.1f, Model::XFlip)) {		//倍率と反転は省略可
-		MessageBox(NULL, "eyeBat", "Error", MB_OK);	//ここでエラーメッセージ表示
+	if (!m_pModel->Load("Assets/Model/Golem/Golem.FBX", 0.01f, Model::XFlip)) {		//倍率と反転は省略可
+		MessageBox(NULL, "Golem", "Error", MB_OK);	//ここでエラーメッセージ表示
 	}
 
 	//頂点シェーダ読み込み
@@ -56,9 +49,9 @@ CSlime_3::CSlime_3()
 	}
 	m_pModel->SetVertexShader(m_pVS);
 
-	m_Transform.fScale = { LEVEL3_SCALE,LEVEL3_SCALE ,LEVEL3_SCALE };
-	m_sphere.fRadius *= LEVEL3_SCALE;
-	m_eSlimeSize = E_SLIME_LEVEL::LEVEL_3;
+	m_Transform.fScale = { LEVEL_FLAME_SCALE,LEVEL_FLAME_SCALE ,LEVEL_FLAME_SCALE };
+	m_sphere.fRadius *= LEVEL_FLAME_SCALE;
+	m_eSlimeSize = E_SLIME_LEVEL::LEVEL_FLAME;
 	SetNormalSpeed();
 
 }
@@ -72,8 +65,8 @@ CSlime_3::CSlime_3()
 	-------------------------------------
 	戻値：無し
 =========================================== */
-CSlime_3::CSlime_3(TPos3d<float> pos)
-	: CSlime_3()
+CSlime_Flame::CSlime_Flame(TPos3d<float> pos)
+	: CSlime_Flame()
 {
 	m_Transform.fPos = pos;			// 初期座標を指定
 }
@@ -87,8 +80,23 @@ CSlime_3::CSlime_3(TPos3d<float> pos)
 	-------------------------------------
 	戻値：
 =========================================== */
-CSlime_3::~CSlime_3()
+CSlime_Flame::~CSlime_Flame()
 {
+}
+
+/* ========================================
+	通常移動関数
+	-------------------------------------
+	内容：スライムの通常移動をオーバーライド
+	-------------------------------------
+	引数1：プレイヤー当たり判定(Sphere) ※使用してない
+	-------------------------------------
+	戻値：なし
+=========================================== */
+void CSlime_Flame::NormalMove(TPos3d<float> playerSphere)
+{
+	RandomMove();	// ランダム移動
+
 }
 
 /* ========================================
@@ -100,9 +108,9 @@ CSlime_3::~CSlime_3()
 	-------------------------------------
 	戻値：なし
 =========================================== */
-void CSlime_3::SetNormalSpeed()
+void CSlime_Flame::SetNormalSpeed()
 {
-	m_fSpeed = LEVEL3_SPEED;	//移動速度に定数をセット
+	m_fSpeed = LEVEL_FLAME_SPEED;	//移動速度に定数をセット
 }
 
 

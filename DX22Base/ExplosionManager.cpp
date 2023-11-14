@@ -22,6 +22,9 @@
 #include "Explosion.h"			//爆発処理ヘッダー
 #include "Sphere.h"				//球定義ヘッダー
 
+// =============== 定数定義 =======================
+
+
 /* ========================================
 	関数：コンストラクタ
 	-------------------------------------
@@ -167,6 +170,46 @@ void CExplosionManager::SetCamera(const CCamera * pCamera)
 CExplosion* CExplosionManager::GetExplosionPtr(int num)
 {
 	return m_pExplosion[num];;
+}
+
+/* ========================================
+	関数：爆発分岐関数
+	----------------------------------------
+	内容：スライムのレベルに応じて爆発の時間と大きさを変更
+	----------------------------------------
+	引数1：スライムのレベル
+	引数2：発生場所
+	引数3：スライムの大きさ
+	----------------------------------------
+	戻値：なし
+======================================== */
+void CExplosionManager::SwitchExplode(E_SLIME_LEVEL slimeLevel, TPos3d<float> pos, TTriType<float> slimeSize)
+{
+	float ExplosionSize = slimeSize.x * EXPLODE_BASE_RATIO;
+
+	// ぶつけられたスライムのレベルによって分岐
+	switch (slimeLevel) {
+	case LEVEL_1:
+		//スライム爆発処理
+		Create(pos, ExplosionSize, LEVEL_1_EXPLODE_TIME);	//衝突されたスライムの位置でレベル１爆発
+		break;
+	case LEVEL_2:
+		//スライム爆発処理
+		Create(pos, ExplosionSize, LEVEL_2_EXPLODE_TIME);	//衝突されたスライムの位置でレベル２爆発
+		break;
+	case LEVEL_3:
+		//スライム爆発処理
+		Create(pos, ExplosionSize, LEVEL_3_EXPLODE_TIME);	//衝突されたスライムの位置でレベル３爆発
+		break;
+	case LEVEL_4:
+		//スライム爆発処理
+		Create(pos, ExplosionSize, LEVEL_4_EXPLODE_TIME);	//衝突されたスライムの位置でレベル４爆発
+		break;
+	case LEVEL_FLAME:
+		Create(pos, ExplosionSize, LEVEL_1_EXPLODE_TIME);	//衝突されたスライムの位置でレベル１爆発
+
+		break;
+	}
 }
 
 /* ========================================

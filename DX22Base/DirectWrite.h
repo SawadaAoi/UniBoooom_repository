@@ -64,22 +64,22 @@ class DirectWrite
 public:
 	DirectWrite() = delete;
 	//~DirectWrite();
-	DirectWrite(FontData* set);	//引数付きコンストラクタ1
-	//引数付きコンストラクタ2
-	DirectWrite(Font font,IDWriteFontCollection* fontCollection,DWRITE_FONT_WEIGHT fontWeight,
+	DirectWrite(FontData* set);																	//引数付きコンストラクタ1
+	DirectWrite(Font font,IDWriteFontCollection* fontCollection,DWRITE_FONT_WEIGHT fontWeight,	//引数付きコンストラクタ2
 		DWRITE_FONT_STYLE fontStyle,DWRITE_FONT_STRETCH fontStretch,FLOAT fontSize,
 		WCHAR const* localName,DWRITE_TEXT_ALIGNMENT textAlignment,D2D1_COLOR_F Color);
-	void SetFont(FontData* set);	//フォント設定
-	void SetFont(Font font,IDWriteFontCollection* fontCollection,DWRITE_FONT_WEIGHT fontWeight,	//フォント設定
+	void SetFont(FontData* set);																//フォント設定1
+	void SetFont(Font font,IDWriteFontCollection* fontCollection,DWRITE_FONT_WEIGHT fontWeight,	//フォント設定2
 		DWRITE_FONT_STYLE fontStyle,DWRITE_FONT_STRETCH fontStretch,FLOAT fontSize,
 		WCHAR const* localName,DWRITE_TEXT_ALIGNMENT textAlignment,D2D1_COLOR_F Color);
 
-	void DrawString(std::string str, DirectX::XMFLOAT2 pos, D2D1_DRAW_TEXT_OPTIONS options);
-	void DrawString(std::string str,D2D1_RECT_F rect,D2D1_DRAW_TEXT_OPTIONS options);
+	void DrawString(std::string str, DirectX::XMFLOAT2 pos, D2D1_DRAW_TEXT_OPTIONS options);	//文字表示(書きはじめを指定)
+	void DrawString(std::string str,D2D1_RECT_F rect,D2D1_DRAW_TEXT_OPTIONS options);			//文字表示(表示場所を四角形で範囲指定)
 	void Init();
 	void Release();
 
 private:
+	//すまん、メンバ変数はよくわからん
 	ID2D1Factory*			pID2D1Factory;
 	IDWriteFactory*			pIDWriteFactory;
 	IDWriteTextFormat*		pTextFormat;

@@ -1,7 +1,15 @@
 #include "DirectWrite.h"
 #include "DirectX.h"
 
-//フォント設定
+/* ========================================
+	引数付きコンストラクタ(簡易版)
+	-------------------------------------
+	フォントの設定
+	-------------------------------------
+	引数1：初期化したフォントデータ
+	-------------------------------------
+	戻値：無し
+=========================================== */
 DirectWrite::DirectWrite(FontData* set) 
 	:Setting(set) 
 	, pID2D1Factory(nullptr)
@@ -16,7 +24,23 @@ DirectWrite::DirectWrite(FontData* set)
 	pTextLayout;
 }
 
-//フォント設定
+/* ========================================
+	引数付きコンストラクタ(全部自分で設定)
+	-------------------------------------
+	フォントの設定
+	-------------------------------------
+	引数1：書体
+	引数2：よく分からんけどnullptrでいい					Font型
+	引数3：文字の太さ										IDWriteFontCollection型
+	引数4：普通にするかイタリックとかにするか				DWRITE_FONT_WEIGHT型
+	引数5：縦横比を変更										DWRITE_FONT_STYLE型
+	引数6：文字の大きさ										DWRITE_FONT_STRETCH型
+	引数7：よくわからん										FLOAT型
+	引数8：表示場所に対して前詰めか中央か後ろ詰め表示か 	WCHAR const *型
+	引数9：文字の色											DWRITE_TEXT_ALIGNMENT型
+	-------------------------------------					D2D1_COLOR_F型
+	戻値：無し
+=========================================== */
 DirectWrite::DirectWrite(Font font, IDWriteFontCollection * fontCollection, DWRITE_FONT_WEIGHT fontWeight, 
 	DWRITE_FONT_STYLE fontStyle, DWRITE_FONT_STRETCH fontStretch, FLOAT fontSize, WCHAR const * localName, 
 	DWRITE_TEXT_ALIGNMENT textAlignment, D2D1_COLOR_F Color)
@@ -31,6 +55,23 @@ DirectWrite::DirectWrite(Font font, IDWriteFontCollection * fontCollection, DWRI
 	DirectWrite::Setting->Color = Color;
 }
 
+/* ========================================
+	フォントセット関数
+	-------------------------------------
+	フォントの設定
+	-------------------------------------
+	引数1：書体
+	引数2：よく分からんけどnullptrでいい					Font型
+	引数3：文字の太さ										IDWriteFontCollection型
+	引数4：普通にするかイタリックとかにするか				DWRITE_FONT_WEIGHT型
+	引数5：縦横比を変更										DWRITE_FONT_STYLE型
+	引数6：文字の大きさ										DWRITE_FONT_STRETCH型
+	引数7：よくわからん										FLOAT型
+	引数8：表示場所に対して前詰めか中央か後ろ詰め表示か 	WCHAR const *型
+	引数9：文字の色											DWRITE_TEXT_ALIGNMENT型
+	-------------------------------------					D2D1_COLOR_F型
+	戻値：無し
+=========================================== */
 void DirectWrite::SetFont(FontData * set)
 {
 	pIDWriteFactory->CreateTextFormat(FontList[(int)set->font], set->fontCollection,set->fontWeight,
@@ -39,6 +80,23 @@ void DirectWrite::SetFont(FontData * set)
 	pRT->CreateSolidColorBrush(set->Color, &pSolidBrush);
 }
 
+/* ========================================
+	フォントセット関数
+	-------------------------------------
+	フォントの設定
+	-------------------------------------
+	引数1：書体
+	引数2：よく分からんけどnullptrでいい					Font型
+	引数3：文字の太さ										IDWriteFontCollection型
+	引数4：普通にするかイタリックとかにするか				DWRITE_FONT_WEIGHT型
+	引数5：縦横比を変更										DWRITE_FONT_STYLE型
+	引数6：文字の大きさ										DWRITE_FONT_STRETCH型
+	引数7：よくわからん										FLOAT型
+	引数8：表示場所に対して前詰めか中央か後ろ詰め表示か 	WCHAR const *型
+	引数9：文字の色											DWRITE_TEXT_ALIGNMENT型
+	-------------------------------------					D2D1_COLOR_F型
+	戻値：無し
+=========================================== */
 void DirectWrite::SetFont(Font font, IDWriteFontCollection * fontCollection, DWRITE_FONT_WEIGHT fontWeight, 
 	DWRITE_FONT_STYLE fontStyle, DWRITE_FONT_STRETCH fontStretch, FLOAT fontSize, WCHAR const * localName, 
 	DWRITE_TEXT_ALIGNMENT textAlignment, D2D1_COLOR_F Color)
@@ -49,7 +107,16 @@ void DirectWrite::SetFont(Font font, IDWriteFontCollection * fontCollection, DWR
 	pRT->CreateSolidColorBrush(Color, &pSolidBrush);
 }
 
-//文字描画
+/* ========================================
+	フォントセット関数
+	-------------------------------------
+	フォントの設定
+	-------------------------------------
+	引数1：表示したい文字
+	引数2：表示したい場所をXY座標で((0,0)は左上)
+	引数3：よくわからんから｢D2D1_DRAW_TEXT_OPTIONS_NONE｣これ書いて
+	戻値：無し
+=========================================== */
 void DirectWrite::DrawString(std::string str, DirectX::XMFLOAT2 pos, D2D1_DRAW_TEXT_OPTIONS options)
 {
 	//文字列の変換
@@ -77,7 +144,16 @@ void DirectWrite::DrawString(std::string str, DirectX::XMFLOAT2 pos, D2D1_DRAW_T
 	pRT->EndDraw();
 }
 
-//文字描画
+/* ========================================
+	フォントセット関数
+	-------------------------------------
+	フォントの設定
+	-------------------------------------
+	引数1：表示したい文字
+	引数2：表示したい場所を左上右下の順番で設定((0,0)は左上)
+	引数3：よくわからんから｢D2D1_DRAW_TEXT_OPTIONS_NONE｣これ書いて
+	戻値：無し
+=========================================== */
 void DirectWrite::DrawString(std::string str, D2D1_RECT_F rect, D2D1_DRAW_TEXT_OPTIONS options)
 {
 	//文字列の変換
@@ -93,7 +169,14 @@ void DirectWrite::DrawString(std::string str, D2D1_RECT_F rect, D2D1_DRAW_TEXT_O
 	pRT->EndDraw();
 }
 
-//初期化
+/* ========================================
+	このクラスの初期化(DirectX.cppで呼んでるから他の所では書かない)
+	-------------------------------------
+	マジで何やってるか分からん	参考サイト"https://islingtonsystem.hatenablog.jp/entry/2022/06/18/222040"
+	-------------------------------------
+	引数1：
+	戻値：無し
+=========================================== */
 void DirectWrite::Init()
 {
 	//Direct2D,DirectWriteの初期化
@@ -130,7 +213,14 @@ void DirectWrite::Init()
 	pTextLayout;
 }
 
-//終了処理
+/* ========================================
+	このクラスの終了処理(DirectX.cppで呼んでるから他の所では書かない)
+	-------------------------------------
+	色んなものをリリース
+	-------------------------------------
+	引数1：
+	戻値：無し
+=========================================== */
 void DirectWrite::Release()
 {
 	SAFE_DELETE(Setting);
@@ -144,6 +234,14 @@ void DirectWrite::Release()
 	if (pTextLayout)pTextLayout->Release();
 }
 
+/* ========================================
+	SJIS変換関数
+	-------------------------------------
+	なんかSJISも使えるようになるらしい
+	-------------------------------------
+	引数1：文字列
+	戻値：無し
+=========================================== */
 std::wstring DirectWrite::StringToWString(std::string oString)
 {
 	//SJIS->wstring
