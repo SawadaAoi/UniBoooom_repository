@@ -255,6 +255,9 @@
     <ClCompile Include="DirecWrite.cpp">
       <Filter>ソース ファイル\System</Filter>
     </ClCompile>
+    <ClCompile Include="Slime_Flame.cpp">
+      <Filter>ソース ファイル\3dObject</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Defines.h">
@@ -406,6 +409,9 @@
     </ClInclude>
     <ClInclude Include="DirectWrite.h">
       <Filter>ヘッダー ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Slime_Flame.h">
+      <Filter>ヘッダー ファイル\3dObject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

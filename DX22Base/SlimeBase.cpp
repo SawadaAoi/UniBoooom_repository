@@ -63,20 +63,7 @@ CSlimeBase::CSlimeBase()
 	, m_RanMoveCnt(RANDOM_MOVE_SWITCH_TIME)	// 初期
 
 {
-	RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得
-	DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
-	SetRenderTargets(1, &pRTV, pDSV);		//DSVがnullだと2D表示になる
-	m_pModel = new Model;
-	if (!m_pModel->Load("Assets/Model/eyeBat/eyeBat.FBX", 0.1f, Model::XFlip)) {		//倍率と反転は省略可
-		MessageBox(NULL, "eyeBat", "Error", MB_OK);	//ここでエラーメッセージ表示
-	}
-
-	//頂点シェーダ読み込み
-	m_pVS = new VertexShader();
-	if (FAILED(m_pVS->Load("Assets/Shader/VS_Model.cso"))) {
-		MessageBox(nullptr, "VS_Model.cso", "Error", MB_OK);
-	}
-	m_pModel->SetVertexShader(m_pVS);
+	
 
 	//当たり判定(自分)初期化
 	m_sphere.pos = { 0.0f, 0.0f, 0.0f };
@@ -187,6 +174,7 @@ void CSlimeBase::NormalMove(TPos3d<float> playerPos)
 	// プレイヤーと距離が一定以内だったら
 	if (distancePlayer < MOVE_DISTANCE_PLAYER) 
 	{
+	
 		TPos3d<float> movePos;
 		movePos = playerPos - m_pos;	// プレイヤーへのベクトルを計算
 		if (distancePlayer != 0)	//0除算回避
@@ -204,6 +192,7 @@ void CSlimeBase::NormalMove(TPos3d<float> playerPos)
 		DirectX::XMVECTOR direction = DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&directionVector));
 		// 方向ベクトルから回転行列を計算
 		m_Ry = DirectX::XMMatrixRotationY(std::atan2(directionVector.x, directionVector.z));
+
 	}
 	else
 	{
@@ -264,6 +253,7 @@ void CSlimeBase::HitMove()
 	{
 		m_bHitMove = false;				//吹き飛び状態のフラグをOFFにする
 		SetNormalSpeed();	// 継承した関数を使用して大きさごとのスピードをセットする
+		m_RanMoveCnt = RANDOM_MOVE_SWITCH_TIME;
 	}
 }
 
@@ -397,6 +387,7 @@ TTriType<float> CSlimeBase::GetScale()
 {
 	return m_scale;
 }
+
 
 
 /* ========================================

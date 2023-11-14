@@ -29,6 +29,7 @@
 	・2023/11/10 他のオブジェクトと同一のカメラをセットするようにした Yamashita
 	・2023/11/12 m_Ryを追加（スライムの向きを変える時に使用） Yamamoto
 	・2023/11/13 GetScale関数の追加 Suzumura
+	・2023/11/14 列挙にFLAMEを追加、NormalMoveを仮想関数に Suzumura
 
 ========================================== */
 #ifndef __SLIME_BASE_H__
@@ -47,10 +48,12 @@ enum E_SLIME_LEVEL
 {
 	LEVEL_NONE,	//SlimeBaseで生成してまだポリモーフィズムしていない状態
 
-	LEVEL_1,	//1段階目
-	LEVEL_2,	//2段階目
-	LEVEL_3,	//3段階目
-	LEVEL_4,	//4段階目
+	LEVEL_1,		//1段階目
+	LEVEL_2,		//2段階目
+	LEVEL_3,		//3段階目
+	LEVEL_4,		//4段階目
+
+	LEVEL_FLAME,	// フレイムスライム
 
 	MAX_LEVEL = LEVEL_4	//最大レベルを設定	(スライムの段階が増えたら変更)
 };
@@ -71,7 +74,7 @@ public:
 	void Update(TPos3d<float> playerPos);
 	void Draw(const CCamera* pCamera);
 
-	void NormalMove(TPos3d<float> playerSphere);	// 通常時の移動処理
+	virtual void NormalMove(TPos3d<float> playerSphere);	// 通常時の移動処理
 	void RandomMove();
 	void HitMove();									//スライムが吹き飛び移動状態の時に毎フレーム呼び出して移動させる
 	void HitMoveStart(float speed, float angle);	//スライムが吹き飛ばされたときに速度と角度を決める
