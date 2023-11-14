@@ -46,7 +46,7 @@ const float EXPAND_QUICK_RATE = 0.2f;   // ñcí£â¡ë¨äÑçá
 	ñﬂílÅFñ≥Çµ
 =========================================== */
 CExplosion::CExplosion(TPos3d<float> fPos, float fSize,float fTime)
-	: m_Transform(fPos, { fSize, fSize, fSize }, 0.0f)
+	: m_Transform(fPos, { 0.0f, 0.0f, 0.0f }, 0.0f)
 	, m_fSizeAdd(0.0f)
 	, m_fDelFrame(0.0f)
 	, m_bDelFlg(false)
