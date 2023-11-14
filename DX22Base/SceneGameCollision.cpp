@@ -11,6 +11,7 @@
 	・2023/11/07 新規作成 Nieda
 	・2023/11/08 コメント修正	Nieda
 	・2023/11/12 スライム同士重複防止関数追加	Yamashita
+	・2023/11/14 SphereInfoの変更に対応 Takagi
 
 ========================================== */
 
@@ -69,7 +70,7 @@ void SceneGame::PlayerSlimeCollision()
 		if (pSlimeNow == nullptr)				continue;	// 無効なスライムはスルー
 
 		// スライムとハンマーが衝突した場合
-		if (m_pCollision->CheckCollisionSphere(m_pPlayer->GetPlayerSphere(), pSlimeNow->GetSphere()))
+		if (m_pCollision->CheckCollisionSphere(m_pPlayer->GetPlayerSphere(), pSlimeNow->GetSphere(), m_pPlayer->GetPos(), pSlimeNow->GetPos()))
 		{
 			m_pPlayer->Damage();
 		}
@@ -87,9 +88,9 @@ void SceneGame::PlayerSlimeCollision()
    ======================================== */
 void SceneGame::HammerSlimeCollision()
 {
-	CHammer* playerHammer = m_pPlayer->GetHammer();	// プレイヤーのハンマー
+	CHammer* playerHammer = m_pPlayer->GetHammerPtr();	// プレイヤーのハンマー
 
-	if (m_pPlayer->GetHammerFlg() == false) return;	// ハンマー攻撃してない場合は返す
+	if (m_pPlayer->GetAttackFlg() == false) return;	// ハンマー攻撃してない場合は返す
 
 	// スライム
 	for (int i = 0; i < MAX_SLIME_NUM; i++)
@@ -100,10 +101,10 @@ void SceneGame::HammerSlimeCollision()
 		if (pSlimeNow->GetHitMoveFlg()==true)	continue; 	// 吹飛状態のスライムはスルー
 
 		// スライムとハンマーが衝突した場合
-		if (m_pCollision->CheckCollisionSphere(playerHammer->GetSphere(), pSlimeNow->GetSphere()))
+		if (m_pCollision->CheckCollisionSphere(playerHammer->GetSphere(), pSlimeNow->GetSphere(), playerHammer->GetPos(), pSlimeNow->GetPos()))
 		{
 			float fAngleSlime
-				= m_pPlayer->GetPlayerSphere().Angle(pSlimeNow->GetSphere());	// スライムが飛ぶ角度を取得
+				= m_pPlayer->GetTransform().Angle(pSlimeNow->GetTransform());	// スライムが飛ぶ角度を取得
 
 			pSlimeNow->HitMoveStart(HAMMER_HIT_MOVE_SPEED,fAngleSlime);	// スライムを飛ばす
 		}
@@ -140,7 +141,7 @@ void SceneGame::SlimeSlimeCollision()
 
 
 			// スライム同士が衝突した場合
-			if (m_pCollision->CheckCollisionSphere(pSlimeFly->GetSphere(), pSlimeTarget->GetSphere()))
+			if (m_pCollision->CheckCollisionSphere(pSlimeFly->GetSphere(), pSlimeTarget->GetSphere(), pSlimeFly->GetPos(), pSlimeTarget->GetPos()))
 			{
 
 				m_pSlimeMng->HitBranch(i, j,m_pExplosionMng);	// 爆発処理、結合処理(スライム同士の情報によって処理を変える)
@@ -173,7 +174,7 @@ void SceneGame::ExplosionSlimeCollision()
 
 			if (pSlimeTarget == nullptr)	continue;	// 無効なスライムはスルー
 
-			if (m_pCollision->CheckCollisionSphere(pExplosion->GetSphere(), pSlimeTarget->GetSphere()))
+			if (m_pCollision->CheckCollisionSphere(pExplosion->GetSphere(), pSlimeTarget->GetSphere(), pExplosion->GetPos(), pSlimeTarget->GetPos()))
 			{
 				m_pSlimeMng->TouchExplosion(j, m_pExplosionMng);// スライムの爆発処理
 				break;
@@ -212,7 +213,7 @@ void SceneGame::SlimeSlimeNormalMoveCollision()
 			if (i == j)									continue;	// 自分と同じスライムはスルー
 
 			// スライム同士が衝突した場合
-			if (m_pCollision->CheckCollisionSphere(pMoveSlime->GetSphere(), pStandSlime->GetSphere()))
+			if (m_pCollision->CheckCollisionSphere(pMoveSlime->GetSphere(), pStandSlime->GetSphere(), pMoveSlime->GetPos(), pStandSlime->GetPos()))
 			{
 				m_pSlimeMng->PreventOverlap(pMoveSlime, pStandSlime);	//スライムの位置を押し戻す処理
 

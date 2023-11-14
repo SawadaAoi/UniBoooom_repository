@@ -17,6 +17,7 @@
 	・2023/11/09 コントローラ移動の追加 sawada
 	・2023/11/11 parameter用ヘッダ追加 suzumura
 	・2023/11/11 プレイヤーの点滅処理追加 Tei
+	・2023/11/14 SphereInfoの変更に対応 Takagi
 	・2023/11/14 キーボードの入力移動処理内容を適切な形に変更 Sawada
 
 ======================================== */
@@ -56,9 +57,7 @@ const int	DAMAGE_FLASH_FRAME	= 0.1 * 60;	// プレイヤーのダメージ点滅
    戻値：なし
 ======================================== */
 CPlayer::CPlayer()
-	: m_pos{ 0.0f,0.0f,0.0f }
-	, m_scale{ PLAYER_SIZE,PLAYER_SIZE,PLAYER_SIZE }
-	, m_playerRotation(0.0f)
+	: m_Transform({0.0f}, {PLAYER_SIZE}, {0.0f})
 	, m_pHammer(nullptr)
 	, m_pPlayerGeo(nullptr)
 	, m_pGameOver(nullptr)
@@ -74,8 +73,7 @@ CPlayer::CPlayer()
 	m_pPlayerGeo = new CSphere();							// プレイヤーとして仮表示する球体オブジェクトのインスタンス
 	m_pGameOver = new CSphere();
 	m_nHp = PLAYER_HP;										// プレイヤーのHPを決定
-	m_sphere.pos = { 0.0f,0.0f,0.0f };				// 当たり判定用の球体の座標を初期化
-	m_sphere.radius = PLAYER_RADIUS;				// 当たり判定用の球体の半径
+	m_sphere.fRadius = PLAYER_RADIUS;				// 当たり判定用の球体の半径
 }
 /* ========================================
    関数：デストラクタ
@@ -129,7 +127,7 @@ void CPlayer::Update()
 		// スペースキーを押した時、またはコントローラのBボタンを押した時
 		if (IsKeyTrigger(VK_SPACE) || IsKeyTriggerController(BUTTON_B))
 		{
-			m_pHammer->AttackStart(m_pos, m_playerRotation);	// ハンマー攻撃開始
+			m_pHammer->AttackStart(m_Transform.fPos, m_Transform.fRadian.y);	// ハンマー攻撃開始
 			m_bAttackFlg = true;	// 攻撃フラグを有効にする
 		}
 		
@@ -174,16 +172,7 @@ void CPlayer::Draw()
 		return;
 	}
 
-	DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(m_pos.x, m_pos.y, m_pos.z);			//移動行列
-	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(m_scale.x, m_scale.y, m_scale.z);		//拡大縮小行列
-	DirectX::XMMATRIX Ry = DirectX::XMMatrixRotationY(m_playerRotation);//Y軸の回転行列
-
-	DirectX::XMMATRIX mat = Ry * S * T;									//変換行列を結合
-	mat = DirectX::XMMatrixTranspose(mat);								//変換行列を転置
-	DirectX::XMFLOAT4X4 fMat;											//行列の格納先
-	DirectX::XMStoreFloat4x4(&fMat, mat);								//XMFLOAT4X4に変換して格納
-	m_pPlayerGeo->SetWorld(fMat);										//ワールド座標にセット
-
+	m_pPlayerGeo->SetWorld(m_Transform.GetWorldMatrixSRT());	//ワールド座標にセット
 	m_pPlayerGeo->SetView(m_pCamera->GetViewMatrix());
 	m_pPlayerGeo->SetProjection(m_pCamera->GetProjectionMatrix());
 
@@ -258,11 +247,10 @@ void CPlayer::MoveKeyboard()
 	MoveSizeInputSet(fMoveInput);	// 入力値から移動量と向きをセット
 
 	// 座標を移動
-	m_pos.x += m_fMove.x;
-	m_pos.z += m_fMove.z;
+	m_Transform.fPos.x += m_fMove.x;
+	m_Transform.fPos.z += m_fMove.z;
 
-	m_sphere.pos = m_pos;	//プレイヤーの座標を当たり判定用の球体にコピー
-
+	
 
 }
 
@@ -287,10 +275,9 @@ void CPlayer::MoveController()
 	MoveSizeInputSet(fMoveInput);	// 入力値から移動量と向きをセット
 
 	// 座標を移動
-	m_pos.x += m_fMove.x;
-	m_pos.z += m_fMove.z;
+	m_Transform.fPos.x += m_fMove.x;
+	m_Transform.fPos.z += m_fMove.z;
 
-	m_sphere.pos = m_pos;	//プレイヤーの座標を当たり判定用の球体にコピー
 
 }
 
@@ -315,7 +302,7 @@ void CPlayer::MoveSizeInputSet(TPos3d<float> fInput)
 		m_fMove.z = sinf(moveRad) * PLAYER_MOVE_SPEED;
 
 		// 方向セット
-		m_playerRotation =
+		m_Transform.fRadian.y =
 			atan2(fInput.z * -1, fInput.x)			// DirectXと三角関数で回転方向が逆なので調整
 			+ DirectX::XMConvertToRadians(90.0f);	// DirectXと三角関数で0度の位置が90度ずれている(↑が0)ので調整
 	}
@@ -339,7 +326,7 @@ void CPlayer::MoveSizeInputSet(TPos3d<float> fInput)
    ----------------------------------------
    戻値：当たり判定(Sphere)
 ======================================== */
-CSphereInfo::Sphere CPlayer::GetPlayerSphere()
+tagSphereInfo CPlayer::GetPlayerSphere()
 {
 	return m_sphere;
 }
@@ -353,7 +340,7 @@ CSphereInfo::Sphere CPlayer::GetPlayerSphere()
    ----------------------------------------
    戻値：当たり判定(Sphere)
 ======================================== */
-CSphereInfo::Sphere CPlayer::GetHammerSphere()
+tagSphereInfo CPlayer::GetHammerSphere()
 {
 	return m_pHammer->GetSphere();
 }
@@ -369,7 +356,7 @@ CSphereInfo::Sphere CPlayer::GetHammerSphere()
 ======================================== */
 TPos3d<float> CPlayer::GetPos()
 {
-	return m_pos;
+	return m_Transform.fPos;
 }
 
 /* ========================================
@@ -383,7 +370,7 @@ TPos3d<float> CPlayer::GetPos()
 ======================================== */
 TPos3d<float>* CPlayer::GetPosAddress()
 { 
-	return &m_pos; 
+	return &m_Transform.fPos;
 }
 
 /* ========================================
@@ -395,7 +382,7 @@ TPos3d<float>* CPlayer::GetPosAddress()
    ----------------------------------------
    戻値：ハンマーポインタ
 ======================================== */
-CHammer* CPlayer::GetHammer()
+CHammer* CPlayer::GetHammerPtr()
 { 
 	return m_pHammer; 
 }
@@ -437,7 +424,7 @@ void CPlayer::SetCamera(const CCamera * pCamera)
    ----------------------------------------
    戻値：ハンマー攻撃フラグ
 ======================================== */
-bool CPlayer::GetHammerFlg()
+bool CPlayer::GetAttackFlg()
 {
 	return m_bAttackFlg;
 }

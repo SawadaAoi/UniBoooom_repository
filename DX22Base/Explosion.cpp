@@ -8,14 +8,17 @@
 	TeiUon
 
 	変更履歴
-	・2023/11/03 cpp作成 tei
-	・2023/11/05 爆発cppの初期設定 tei
+	・2023/11/03 cpp作成 Tei
+	・2023/11/05 爆発cppの初期設定 Tei
 	・2023/11/06 爆発のモデル設定、描画、位置
-	・2023/11/06 boolの設定と取得関数制作 tei
-	・2023/11/08 変数、関数の変更 sawada
-	・2023/11/10 他のオブジェクトと同一カメラでビューとプロジェクションをセットできるようにした yamashita
-	・2023/11/10 爆発の大きさを徐々に大きくなるように変更 sawada
-	・2023/11/11 parameter用ヘッダ追加 suzumura
+	・2023/11/06 boolの設定と取得関数制作 Tei
+	・2023/11/08 変数、関数の変更 Sawada
+	・2023/11/10 他のオブジェクトと同一カメラでビューとプロジェクションをセットできるようにした Yamashita
+	・2023/11/10 爆発の大きさを徐々に大きくなるように変更 Sawada
+	・2023/11/11 parameter用ヘッダ追加 Suzumura
+	・2023/11/13 スライムレベルによって爆破の膨らみの速度の調整ができるように変更 Suzumura
+	・2023/11/14 SphereInfoの変更に対応 Takagi
+
 ======================================== */
 
 // =============== インクルード ===================
@@ -27,8 +30,10 @@
 // =============== 定数定義 =======================
 #if MODE_GAME_PARAMETER
 #else
-const float MAX_DISPLAY_TIME = 3.0f * 60;	// 爆発持続秒数
-const float ONE_SECOND_FRAME = 1.0f * 60;	// 大きくなるまでの秒数
+//const float MAX_DISPLAY_TIME = 3.0f * 60;	// 爆発持続秒数
+const float EXPAND_QUICK_RATE = 0.2f;   // 膨張加速割合 
+
+
 #endif
 
 /* ========================================
@@ -40,18 +45,22 @@ const float ONE_SECOND_FRAME = 1.0f * 60;	// 大きくなるまでの秒数
 	-------------------------------------
 	戻値：無し
 =========================================== */
-CExplosion::CExplosion(TTriType<float> pos, float size)
-	: m_fSize(0.0f)
+CExplosion::CExplosion(TPos3d<float> fPos, float fSize,float fTime)
+	: m_Transform(fPos, { fSize, fSize, fSize }, 0.0f)
+	, m_fSizeAdd(0.0f)
 	, m_fDelFrame(0.0f)
 	, m_bDelFlg(false)
+	, m_fExplodeTime(0.0f)
+	, m_fMaxSize(0.0f)
 {
 
 	//爆発オブジェクト初期化
-	
-	m_Sphere.pos = pos;
-	m_Sphere.radius = size / 2;	// 当たり判定をセットする
-	m_fSizeAdd = size / ONE_SECOND_FRAME;
+	m_Sphere.fRadius = fSize / 2;	// 当たり判定をセットする
+	//m_fSizeAdd = fSize / ONE_SECOND_FRAME;
 	m_3dModel = new CSphere();
+
+	m_fExplodeTime = fTime;		//爆発総時間をセットする
+	m_fMaxSize = fSize;	//最大サイズをセットする
 	
 }
 
@@ -100,13 +109,7 @@ void CExplosion::Update()
 =========================================== */
 void CExplosion::Draw()
 {
-	DirectX::XMMATRIX mat = DirectX::XMMatrixTranslation(m_Sphere.pos.x, m_Sphere.pos.y, m_Sphere.pos.z);
-	DirectX::XMMATRIX Scale = DirectX::XMMatrixScaling(m_fSize, m_fSize, m_fSize);
-	mat = Scale * mat;
-	mat = DirectX::XMMatrixTranspose(mat);
-	DirectX::XMFLOAT4X4 fMat;	//行列の格納先
-	DirectX::XMStoreFloat4x4(&fMat, mat);
-	m_3dModel->SetWorld(fMat);
+	m_3dModel->SetWorld(m_Transform.GetWorldMatrixSRT());
 
 	m_3dModel->SetView(m_pCamera->GetViewMatrix());
 	m_3dModel->SetProjection(m_pCamera->GetProjectionMatrix());
@@ -129,19 +132,26 @@ void CExplosion::DisplayTimeAdd()
 	m_fDelFrame++;	// フレーム加算
 
 	// 一定秒数まで大きくする
-	if (m_fDelFrame <= ONE_SECOND_FRAME  )
+	if (m_fDelFrame <= m_fExplodeTime )
 	{
-		m_fSize += m_fSizeAdd;
+		// m_fTimeに基づいてm_fSizeAddを決定
+		m_fSizeAdd = m_fMaxSize / m_fExplodeTime / EXPAND_QUICK_RATE;
+
+		// 最大サイズになるまでSizeを加算
+		if (m_Transform.fScale.y < m_fMaxSize)
+		{
+			m_Transform.fScale += m_fSizeAdd;
+		}
 
 	}
 	// 一定秒数時間が経ったら
-	if (MAX_DISPLAY_TIME <= m_fDelFrame)
+	if (m_fExplodeTime <= m_fDelFrame)
 	{
 		m_bDelFlg = true;	// 削除フラグを立てる
 	}
 
 	
-	m_Sphere.radius = m_fSize / 2;	// 当たり判定をセットする
+	m_Sphere.fRadius = m_Transform.fScale.y / 2;	// 当たり判定をセットする
 
 }
 
@@ -154,9 +164,23 @@ void CExplosion::DisplayTimeAdd()
 	-------------------------------------
 	戻値：無し
 =========================================== */
-void CExplosion::SetPos(TTriType<float> pos)
+void CExplosion::SetPos(TPos3d<float> pos)
 {
-	m_Sphere.pos = pos;
+	m_Transform.fPos = pos;
+}
+
+/* ========================================
+	座標情報取得関数
+	-------------------------------------
+	内容：座標情報を取得する
+	-------------------------------------
+	引数1：無し
+	-------------------------------------
+	戻値：座標情報(x,y,z)
+=========================================== */
+TPos3d<float> CExplosion::GetPos()
+{
+	return m_Transform.fPos;
 }
 
 
@@ -169,7 +193,7 @@ void CExplosion::SetPos(TTriType<float> pos)
 	-------------------------------------
 	戻値：無し
 =========================================== */
-void CExplosion::SetSphere(CSphereInfo::Sphere sphere)
+void CExplosion::SetSphere(tagSphereInfo sphere)
 {
 	m_Sphere = sphere;
 }
@@ -183,7 +207,7 @@ void CExplosion::SetSphere(CSphereInfo::Sphere sphere)
 	-------------------------------------
 	戻値：Sphere情報
 =========================================== */
-CSphereInfo::Sphere CExplosion::GetSphere()
+tagSphereInfo CExplosion::GetSphere()
 {
 	return m_Sphere;
 }

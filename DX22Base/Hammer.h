@@ -14,6 +14,7 @@
 	・2023/11/10 当たり判定用のSphere変数を追加 Yamashita
 	・2023/11/10 当たり判定用のSphereのゲット関数を追加 Yamashita
 	・2023/11/14 全体的に処理の流れが分かりづらかったので修正 Sawada
+	・2023/11/14 SphereInfoの変更に対応 Takagi
 
 ========================================== */
 
@@ -22,8 +23,8 @@
 
 // =============== インクルード ===================
 #include "Shader.h"
-#include "Pos3d.h"
 #include "SphereInfo.h"
+#include "Transform3d.h"
 #include "Geometry.h"
 #include <DirectXMath.h>
 #include "Camera.h"
@@ -40,14 +41,14 @@ public:
 	bool Update();	// 更新関数
 	void Draw(const CCamera* pCamera);				// 描画関数
 	void Swing();									// 移動による回転移動
+	TPos3d<float> GetPos();
 	void AttackStart(TPos3d<float>pPos, float angle);								// 攻撃開始処理
 
-	CSphereInfo::Sphere GetSphere();				// あたり判定取得
+	tagSphereInfo GetSphere();					// あたり判定取得
 private:
 	// ===メンバ変数宣言=====
-	TPos3d<float> m_pos;			// ハンマーの位置座標
-	CSphereInfo::Sphere m_sphere;	// ハンマーの当たり判定用の球体
-	TTriType<float> m_scale;		// サイズ
+	tagTransform3d m_Transform;			// ハンマーの位置座標
+	tagSphereInfo m_sphere;			// ハンマーの当たり判定用の球体
 
 	CGeometry* m_pHammerGeo;		// ハンマーを仮表示する図形
 	TPos3d<float> m_tPlayerPos;		// 現在のプレイヤー座標

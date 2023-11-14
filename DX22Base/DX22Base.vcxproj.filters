@@ -204,9 +204,6 @@
     <ClCompile Include="ExplosionManager.cpp">
       <Filter>ソース ファイル\3dObject</Filter>
     </ClCompile>
-    <ClCompile Include="SphereInfo.cpp">
-      <Filter>ソース ファイル\3dObject</Filter>
-    </ClCompile>
     <ClCompile Include="Collision.cpp">
       <Filter>ソース ファイル\System</Filter>
     </ClCompile>
@@ -251,6 +248,12 @@
     </ClCompile>
     <ClCompile Include="Slime_3.cpp">
       <Filter>ソース ファイル\3dObject</Filter>
+    </ClCompile>
+    <ClCompile Include="DirecWrite.cpp">
+      <Filter>ソース ファイル\System</Filter>
+    </ClCompile>
+    <ClCompile Include="SphereInfo.cpp">
+      <Filter>ソース ファイル\Info</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -400,6 +403,9 @@
     </ClInclude>
     <ClInclude Include="GameParameter.h">
       <Filter>ヘッダー ファイル\Info</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectWrite.h">
+      <Filter>ヘッダー ファイル\System</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

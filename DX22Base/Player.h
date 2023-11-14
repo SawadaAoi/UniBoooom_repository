@@ -17,6 +17,7 @@
 	・2023/11/09 プレイヤーの無敵時間をカウントの変数と無敵状態のフラグを追加 山下凌佑
 	・2023/11/09 プレイヤーの無敵状態を取得するゲット関数を追加 山下凌佑
 	・2023/11/11 プレイヤーの点滅処理追加 Tei
+	・2023/11/14 SphereInfoの変更に対応 Takagi
 	・2023/11/14 キーボードの入力移動処理内容を適切な形に変更 Sawada
 
 ========================================== */
@@ -29,6 +30,7 @@
 #include "hammer.h"
 #include "Geometry.h"
 #include "SphereInfo.h"
+#include "Transform3d.h"
 #include "Pos3d.h"
 #include "Camera.h"
 // =============== クラス定義 =====================
@@ -49,24 +51,23 @@ public:
 
 
 	// ゲット関数
-	CSphereInfo::Sphere GetPlayerSphere();	//当たり判定を取るためゲッター
-	CSphereInfo::Sphere GetHammerSphere();	//当たり判定を取るためゲッター
+	tagSphereInfo GetPlayerSphere();	//当たり判定を取るためゲッター
+	tagSphereInfo GetHammerSphere();	//当たり判定を取るためゲッター
 	TPos3d<float> GetPos();	//プレイヤーの座標を取得
+	tagTransform3d GetTransform() { return m_Transform; }
 	TPos3d<float>* GetPosAddress();
-	CHammer* GetHammer();
+	CHammer* GetHammerPtr();
 	bool GetCollide();							//当たり判定があるかの確認
 	// セット関数
 	void SetCamera(const CCamera* pCamera);
-	bool GetHammerFlg();
+	bool GetAttackFlg();
 
 private:
 	// ===メンバ変数宣言=====
-	TPos3d<float> m_pos;				// プレイヤーの座標
-	TTriType<float> m_scale;			// サイズ
+	tagTransform3d m_Transform;	//ワールド座標系情報
 
 	TPos3d<float> m_fMove;				// 移動量
-	CSphereInfo::Sphere m_sphere;		// プレイヤーの当たり判定用の球体
-	float m_playerRotation;				// プレイヤーの回転角度
+	tagSphereInfo m_sphere;		//プレイヤーの当たり判定用の球体
 	int m_nHp;							// プレイヤーの体力
 	bool m_bAttackFlg;					// 攻撃中かどうかのフラグ
 	int m_nNoDamageCnt;					// プレイヤーの無敵時間をカウント

@@ -17,6 +17,7 @@
 	・2023/11/07 コーディング規約適用 takagi
 	・2023/11/08 一部関数にconst修飾子付与 takagi
 	・2023/11/09 不要物除去・クラスよりstructのほうが機能の意味として正しいので修正 takagi
+	・2023/11/14 １つの値だけのコンストラクタを実装 takagi
 
 ========================================== */
 
@@ -39,6 +40,7 @@ public:
 	// ===メンバ関数宣言===
 	TTriType();														//コンストラクタ
 	TTriType(const TriType& x, const TriType& y, const TriType& z);	//引数付きコンストラクタ
+	TTriType(const TriType& Tri);									//引数付きコンストラクタ
 	TTriType(const TTriType& Obj);									//コピーコンストラクタ
 	virtual ~TTriType();											//デストラクタ
 	virtual TriType Total() const;									//総計
@@ -68,7 +70,7 @@ public:
 =========================================== */
 template<class TriType>	//テンプレート関数実装
 TTriType<TriType>::TTriType()
-	:TTriType((TriType)0, (TriType)0, (TriType)0)	//委譲
+	:TTriType((TriType)0)	//委譲
 {
 }
 
@@ -90,6 +92,21 @@ TTriType<TriType>::TTriType(const TriType & x, const TriType & y, const TriType 
 	this->x = x;	//１つめ初期化
 	this->y = y;	//２つめ初期化
 	this->z = z;	//３つめ初期化
+}
+
+/* ========================================
+	コンストラクタ
+	-------------------------------------
+	内容：生成時に行う処理(１つの値を３つの変数に格納)
+	-------------------------------------
+	引数1：const TriType & Tri：代入したい値の参照
+	-------------------------------------
+	戻値：なし
+=========================================== */
+template<class TriType>
+inline TTriType<TriType>::TTriType(const TriType& Tri)
+	:TTriType(Tri, Tri, Tri)	//委譲
+{
 }
 
 /* ========================================
