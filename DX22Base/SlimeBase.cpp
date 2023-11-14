@@ -191,7 +191,7 @@ void CSlimeBase::NormalMove(TPos3d<float> playerPos)
 		// ベクトルを正規化して方向ベクトルを得る
 		DirectX::XMVECTOR direction = DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&directionVector));
 		// 方向ベクトルから回転行列を計算
-		m_Ry = DirectX::XMMatrixRotationY(std::atan2(directionVector.x, directionVector.z));
+		m_Transform.fRadian.y = atan2(directionVector.x, directionVector.z);
 	}
 	else
 	{
@@ -224,7 +224,7 @@ void CSlimeBase::RandomMove()
 		m_move.z = sinf(DirectX::XMConvertToRadians(ranAngle)) * m_fSpeed;
 
 		// 向きを変える
-		m_Ry = DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(ranAngle + 90));
+		m_Transform.fRadian.y = DirectX::XMConvertToRadians(ranAngle + 90);
 
 		m_RanMoveCnt = 0;	// 加算値をリセット
 	}
