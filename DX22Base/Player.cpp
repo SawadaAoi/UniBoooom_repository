@@ -17,6 +17,7 @@
 	・2023/11/09 コントローラ移動の追加 sawada
 	・2023/11/11 parameter用ヘッダ追加 suzumura
 	・2023/11/11 プレイヤーの点滅処理追加 Tei
+	・2023/11/14 キーボードの入力移動処理内容を適切な形に変更 Sawada
 
 ======================================== */
 
@@ -25,17 +26,17 @@
 #include "Input.h"
 #include "Sphere.h"
 #include "GameParameter.h"		//定数定義用ヘッダー
+#define _USE_MATH_DEFINES		// 円周率
+#include <math.h>				// 円周率
 
 // =============== 定数定義 =======================
-const float FORWARD_YES(1.0f);	//その方向を向いる
-const float FORWARD_NO(0.0f);	//その方向を向いていない
-const float XM_PI(3.141593f);	//円周率
+const float KEYBOARD_INPUT_SIZE = 1.0f;	// キーボードの入力値の大きさ
 
 #if MODE_GAME_PARAMETER
 #else
 const float PLAYER_MOVE_SPEED	= 0.1f;		//プレイヤーの移動量
 const int	PLAYER_HP			= 5;
-const float PLAYER_RADIUS = 0.3f;		// プレイヤーの当たり判定の大きさ
+const float PLAYER_RADIUS		= 0.3f;		// プレイヤーの当たり判定の大きさ
 const float PLAYER_SIZE			= 1.0f;		// プレイヤーの大きさ
 const int	NO_DAMAGE_TIME		= 3 * 60;	//プレイヤーの無敵時間
 const int	DAMAGE_FLASH_FRAME	= 0.1 * 60;	// プレイヤーのダメージ点滅の切り替え間隔
@@ -57,7 +58,6 @@ const int	DAMAGE_FLASH_FRAME	= 0.1 * 60;	// プレイヤーのダメージ点滅
 CPlayer::CPlayer()
 	: m_pos{ 0.0f,0.0f,0.0f }
 	, m_scale{ PLAYER_SIZE,PLAYER_SIZE,PLAYER_SIZE }
-	, m_playerForward{ 0.0f,0.0f,0.0f }
 	, m_playerRotation(0.0f)
 	, m_pHammer(nullptr)
 	, m_pPlayerGeo(nullptr)
@@ -104,33 +104,48 @@ CPlayer::~CPlayer()
 ======================================== */
 void CPlayer::Update()
 {
-	if (!m_bAttackFlg)	//攻撃中は移動しない
+	// ハンマー攻撃中
+	if (m_bAttackFlg == true)
 	{
+		// ハンマーの攻撃が終了したら
+		if (m_pHammer->Update() == false)
+		{
+			m_bAttackFlg = false;	// 攻撃中フラグをオフにする
+		}
+	}
+	else
+	{
+		// コントローラが接続されてない場合
 		if (GetUseVController() == false)
 		{
-			Move();
+			MoveKeyboard();
 		}
+		// コントローラが接続されている場合
 		else
 		{
-			ControllerMove();
+			MoveController();
 		}
-	}
 
-
-	if ((IsKeyTrigger(VK_SPACE)|| IsKeyTriggerController(BUTTON_B)) || m_pHammer->GetAttackFlg())	//スペースキーを押した時もしくはハンマーを振るフラグがONの時
-	{
-		m_pHammer->Update(m_pos, m_playerRotation);			//ハンマーを振るUpdate処理を行う
+		// スペースキーを押した時、またはコントローラのBボタンを押した時
+		if (IsKeyTrigger(VK_SPACE) || IsKeyTriggerController(BUTTON_B))
+		{
+			m_pHammer->AttackStart(m_pos, m_playerRotation);	// ハンマー攻撃開始
+			m_bAttackFlg = true;	// 攻撃フラグを有効にする
+		}
+		
 	}
 	
-	m_bAttackFlg = m_pHammer->GetAttackFlg();	//ハンマーを使用中か確認
-	if (m_bCollide)							//無敵状態になっている場合
+	// 無敵状態になっている場合
+	if (m_bCollide)							
 	{
-		m_nNoDamageCnt++;					//毎フレームでカウントを追加
-		DamageAnimation();					//プレイヤー点滅関数呼び出す
-		if (m_nNoDamageCnt >= NO_DAMAGE_TIME)	//カウントが一定時間を超えたら
+		m_nNoDamageCnt++;					// 毎フレームでカウントを追加
+		DamageAnimation();					// プレイヤー点滅関数呼び出す
+
+		// カウントが一定時間を超えたら
+		if (m_nNoDamageCnt >= NO_DAMAGE_TIME)	
 		{
-			m_DrawFlg = true;				//点滅を解除
-			m_bCollide = false;				//無敵を解除
+			m_DrawFlg = true;				// 点滅を解除
+			m_bCollide = false;				// 無敵を解除
 		}
 		
 	}
@@ -175,12 +190,14 @@ void CPlayer::Draw()
 	
 	m_pPlayerGeo->Draw();		//プレイヤーを描画
 	
-	if (m_pHammer->GetAttackFlg())	//ハンマーを振るフラグがONの時
+	// 攻撃中の場合
+	if (m_bAttackFlg == true)
 	{
 		m_pHammer->Draw(m_pCamera);		//ハンマーの描画
 	}
 
-	if (m_nHp <= 0)	//ゲームオーバーを表すオブジェクトの描画	<=TODO 後々消します
+	// HPが0になったら
+	if (m_nHp <= 0)	//ゲームオーバーを表すオブジェクトの描画	<=TODO 後々消します(Damage処理がある為)
 	{
 		m_pGameOver->SetView(m_pCamera->GetViewMatrix());										//ビューのセット
 		m_pGameOver->SetProjection(m_pCamera->GetProjectionMatrix());							//プロジェクションのセット
@@ -215,83 +232,42 @@ void CPlayer::Damage()
 }
 
 /* ========================================
-   プレイヤーの移動関数
+   キーボード用入力移動関数
    ----------------------------------------
-   内容：プレイヤーが移動する関数
+   内容：キーボード入力の移動処理
    ----------------------------------------
    引数：なし
    ----------------------------------------
    戻値：なし
 ======================================== */
-void CPlayer::Move()
-{//＝＝＝playerの位置と進行方向を更新＝＝＝
-	if (IsKeyPress('W'))
-	{	//前に移動
-		m_pos.z += PLAYER_MOVE_SPEED;					//playerを+Z方向に移動
-		m_playerForward.z = FORWARD_YES;		//向いている方向
-		m_playerForward.x = FORWARD_NO;
-		if (IsKeyPress('A'))
-		{//左前に移動
-			m_pos.x -= PLAYER_MOVE_SPEED;
-			m_playerForward.x = -FORWARD_YES;
-		}
-		else if (IsKeyPress('D'))
-		{//右前に移動
-			m_pos.x += PLAYER_MOVE_SPEED;
-			m_playerForward.x = FORWARD_YES;
-		}
-	}
-	else if (IsKeyPress('S'))
-	{//後ろに移動
-		m_pos.z -= PLAYER_MOVE_SPEED;
-		m_playerForward.z = -FORWARD_YES;
-		m_playerForward.x = FORWARD_NO;
-		if (IsKeyPress('A'))
-		{//左後ろに移動
-			m_pos.x -= PLAYER_MOVE_SPEED;
-			m_playerForward.x = -FORWARD_YES;
-		}
-		else if (IsKeyPress('D'))
-		{//右後ろに移動
-			m_pos.x += PLAYER_MOVE_SPEED;
-			m_playerForward.x = FORWARD_YES;
-		}
-	}
-	else if (IsKeyPress('D'))
-	{//右に移動
-		m_pos.x += PLAYER_MOVE_SPEED;
-		m_playerForward.x = FORWARD_YES;
-		m_playerForward.z = FORWARD_NO;
-	}
-	else if (IsKeyPress('A'))
-	{//左に移動
-		m_pos.x -= PLAYER_MOVE_SPEED;
-		m_playerForward.x = -FORWARD_YES;
-		m_playerForward.z = FORWARD_NO;
-	}
+void CPlayer::MoveKeyboard()
+{
+	TPos3d<float> fMoveInput;	// キーボードの入力値を入れる変数
+
+	// キー入力
+	// 上下
+	if		(IsKeyPress('W'))	{ fMoveInput.z =  KEYBOARD_INPUT_SIZE; }	// ↑
+	else if (IsKeyPress('S'))	{ fMoveInput.z = -KEYBOARD_INPUT_SIZE; }	// ↓
+	else						{ fMoveInput.z =  0.0f; }					// 入力無し
+	// 左右
+	if		(IsKeyPress('D'))	{ fMoveInput.x =  KEYBOARD_INPUT_SIZE; }	// →
+	else if (IsKeyPress('A'))	{ fMoveInput.x = -KEYBOARD_INPUT_SIZE; }	// ←
+	else						{ fMoveInput.x =  0.0f; }					// 入力無し
+
+
+	MoveSizeInputSet(fMoveInput);	// 入力値から移動量と向きをセット
+
+	// 座標を移動
+	m_pos.x += m_fMove.x;
+	m_pos.z += m_fMove.z;
 
 	m_sphere.pos = m_pos;	//プレイヤーの座標を当たり判定用の球体にコピー
 
-	//進行方向からplayerの向きを決める
-	if (m_playerForward.x == FORWARD_NO)	//x方向を向いてなかったらZ軸（前後）に動くだけ
-	{
-		if (m_playerForward.z > 0.0f) {//+Z前方向にする
-			m_playerRotation = 0.0f; // 前方向
-		}
-		else {
-			m_playerRotation = XM_PI; // 後方向
-		}
-	}
-	else {//Zの方向にも向いてるなら斜め、向いてないなら横の方向を向く
-		m_playerRotation = atan(m_playerForward.x / m_playerForward.z);	//ここで斜めか判断
-		if (m_playerForward.z < 0.0f) {
-			m_playerRotation += XM_PI; // ｚが-なら後ろなので足して後ろ側に
-		}
-	}
+
 }
 
 /* ========================================
-   コントローラ入力関数
+   コントローラ用入力移動関数
    ----------------------------------------
    内容：コントローラ入力の移動処理
    ----------------------------------------
@@ -299,27 +275,57 @@ void CPlayer::Move()
    ----------------------------------------
    戻値：なし
 ======================================== */
-void CPlayer::ControllerMove()
+void CPlayer::MoveController()
 {
+
+	TPos3d<float> fMoveInput;	// スティックの入力値を入れる変数
+
 	// コントローラーの左スティックの傾きを取得
-	float stick_x = IsStickLeft().x;
-	float stick_y = IsStickLeft().y;	
+	fMoveInput.x = IsStickLeft().x;
+	fMoveInput.z = IsStickLeft().y * -1;	// 上下逆(↑が－1)
 
-	// スティックが真ん中の場合移動しない
-	if (stick_x != 0 || stick_y != 0)
-	{
-		float moveRad = atan2(stick_y * -1, stick_x);	// スティックを倒した方向の角度を求める(y軸が逆なので－1を掛ける)
+	MoveSizeInputSet(fMoveInput);	// 入力値から移動量と向きをセット
 
-		// 角度方向に移動する処理
-		m_pos.x += cosf(moveRad) * PLAYER_MOVE_SPEED;
-		m_pos.z += sinf(moveRad) * PLAYER_MOVE_SPEED;
-
-		m_playerRotation = atan2(stick_y, stick_x) + (XM_PI/2);	// XMMatrixTranslationが時計回りで角度が90度ずれている(↑が0)ので調整
-	}
+	// 座標を移動
+	m_pos.x += m_fMove.x;
+	m_pos.z += m_fMove.z;
 
 	m_sphere.pos = m_pos;	//プレイヤーの座標を当たり判定用の球体にコピー
 
+}
 
+/* ========================================
+   移動量インプットセット関数
+   ----------------------------------------
+   内容：入力値から移動量と向きをセットする
+   ----------------------------------------
+   引数1：入力値(xとzを使用する)
+   ----------------------------------------
+   戻値：なし
+======================================== */
+void CPlayer::MoveSizeInputSet(TPos3d<float> fInput)
+{
+	// キー入力がある場合
+	if (fInput.z != 0 || fInput.x != 0)
+	{
+		float moveRad = atan2(fInput.z, fInput.x);	// 移動入力した方向の角度を求める
+
+		// 角度方向に移動する移動量をセット
+		m_fMove.x = cosf(moveRad) * PLAYER_MOVE_SPEED;
+		m_fMove.z = sinf(moveRad) * PLAYER_MOVE_SPEED;
+
+		// 方向セット
+		m_playerRotation =
+			atan2(fInput.z * -1, fInput.x)			// DirectXと三角関数で回転方向が逆なので調整
+			+ DirectX::XMConvertToRadians(90.0f);	// DirectXと三角関数で0度の位置が90度ずれている(↑が0)ので調整
+	}
+	// キー入力がない場合
+	else
+	{
+		// 移動しない
+		m_fMove.z = 0.0f;
+		m_fMove.x = 0.0f;
+	}
 }
 
 
@@ -364,6 +370,34 @@ CSphereInfo::Sphere CPlayer::GetHammerSphere()
 TPos3d<float> CPlayer::GetPos()
 {
 	return m_pos;
+}
+
+/* ========================================
+   プレイヤー座標ポインタ取得関数
+   ----------------------------------------
+   内容：プレイヤーの座標のポインタの取得する関数(カメラに使用する)
+   ----------------------------------------
+   引数：なし
+   ----------------------------------------
+   戻値：座標ポインタアドレス
+======================================== */
+TPos3d<float>* CPlayer::GetPosAddress()
+{ 
+	return &m_pos; 
+}
+
+/* ========================================
+   ハンマーポインタ取得関数
+   ----------------------------------------
+   内容：プレイヤーのハンマーポインタを取得する関数
+   ----------------------------------------
+   引数：なし
+   ----------------------------------------
+   戻値：ハンマーポインタ
+======================================== */
+CHammer* CPlayer::GetHammer()
+{ 
+	return m_pHammer; 
 }
 
 /* ========================================
