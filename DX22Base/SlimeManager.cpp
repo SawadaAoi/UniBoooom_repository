@@ -219,18 +219,15 @@ void CSlimeManager::Create(E_SLIME_LEVEL level)
 void CSlimeManager::HitBranch(int HitSlimeNum, int StandSlimeNum, CExplosionManager* pExpMng)
 {
 	E_SLIME_LEVEL hitSlimeLevel, standSlimeLevel;				// レベル
-	tagSphereInfo hitSlimeSphere, standSlimeSphere;				// 当たり判定
 	tagTransform3d hitSlimeTransform, standSlimeTransform;		//ワールド座標系
 	float hitSlimeSpeed, standSlimeSpeed;						// 移動スピード
 	float travelAngle, reflectionAngle;							// 移動方向
 
 	hitSlimeLevel = m_pSlime[HitSlimeNum]->GetSlimeLevel();		// 衝突するスライムのサイズを取得
-	hitSlimeSphere = m_pSlime[HitSlimeNum]->GetSphere();		// 衝突するスライムの当たり判定を取得
 	hitSlimeTransform = m_pSlime[HitSlimeNum]->GetTransform();	// 衝突するスライムのワールド座標情報を取得
 	hitSlimeSpeed = m_pSlime[HitSlimeNum]->GetSpeed();			// 衝突するスライムの速度を取得
 
 	standSlimeLevel = m_pSlime[StandSlimeNum]->GetSlimeLevel();	// 衝突されたスライムのサイズを取得
-	standSlimeSphere = m_pSlime[StandSlimeNum]->GetSphere();	// 衝突されたスライムの当たり判定を取得
 	standSlimeTransform = m_pSlime[StandSlimeNum]->GetTransform();	// 衝突するスライムのワールド座標情報を取得
 
 	travelAngle = hitSlimeTransform.Angle(standSlimeTransform);		// 衝突する側の進行方向
@@ -294,10 +291,8 @@ bool CSlimeManager::HitFlameBranch(int HitSlimeNum, int StandSlimeNum, CExplosio
 	E_SLIME_LEVEL hitSlimeLevel, standSlimeLevel;						// レベル
 	float hitSlimeSpeed;												// 移動スピード
 	float travelAngle;													// 移動方向
-	float ExplosionSize;												// 爆発の大きさ
 	tagTransform3d hitSlimeTransform, standSlimeTransform;				//ワールド行列に関わる情報
 
-	TPos3d<float> pos = m_pSlime[StandSlimeNum]->GetPos();					// 衝突されたスライムの位置を確保
 	TTriType<float> hitSlimeSize = m_pSlime[HitSlimeNum]->GetScale();		// 衝突先のスライムのサイズを確保
 	TTriType<float> standSlimeSize = m_pSlime[StandSlimeNum]->GetScale();	// 吹っ飛んできたスライムのサイズを確保
 
@@ -321,7 +316,7 @@ bool CSlimeManager::HitFlameBranch(int HitSlimeNum, int StandSlimeNum, CExplosio
 	// フレイム　→　ノーマル
 	else if (hitSlimeLevel == LEVEL_FLAME)
 	{
-		pExpMng->SwitchExplode(standSlimeLevel,hitSlimeTransform.fPos,standSlimeSize);	//スライムのレベルによって爆発の時間とサイズを分岐
+		pExpMng->SwitchExplode(standSlimeLevel, standSlimeTransform.fPos,standSlimeSize);	//スライムのレベルによって爆発の時間とサイズを分岐
 
 		SAFE_DELETE(m_pSlime[HitSlimeNum]);								// 衝突するスライムを削除
 		SAFE_DELETE(m_pSlime[StandSlimeNum]);							// 衝突されたスライムを削除
