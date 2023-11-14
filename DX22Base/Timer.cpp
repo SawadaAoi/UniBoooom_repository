@@ -22,7 +22,6 @@ CTimer::CTimer()
 	:m_nTimeCnt(STAGE_TIME)
 {
 
-	
 }
 
 CTimer::~CTimer()
@@ -41,4 +40,18 @@ void CTimer::Update()
 void CTimer::Draw()
 {
 	//TODO時間の描画
+}
+
+int CTimer::GetMinite()
+{
+	m_nMinute = m_nTimeCnt / 3600;	//分 = 総タイム割る（60秒 * 60フレーム）
+
+	return m_nMinute;
+}
+
+int CTimer::GetSecond()
+{
+	m_nSecond = m_nTimeCnt % 3600;	//秒 = 分の部分を抜くの残り
+
+	return m_nSecond;
 }

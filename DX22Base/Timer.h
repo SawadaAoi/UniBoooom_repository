@@ -27,11 +27,15 @@ public:
 	void Update();
 	void Draw();
 
-	int GetTime() { return m_nTimeCnt; }
+	int GetMinite();	//時間（分）の取得
+	int GetSecond();	//時間（秒）の取得
 
 private:
 	// ===メンバ変数宣言===
-	int m_nTimeCnt;
+	int m_nTimeCnt;	//時間のカウントダウン
+	int m_nMinute;	//
+	int m_nSecond;	//
+
 };
 
 
