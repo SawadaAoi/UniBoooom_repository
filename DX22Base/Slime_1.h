@@ -25,7 +25,7 @@ class CSlime_1 :
 public:
 	// ===プロトタイプ宣言===
 	CSlime_1();
-	CSlime_1(TPos3d<float> pos);
+	CSlime_1(TPos3d<float> pos, VertexShader* pVS, Model* pModel);
 	~CSlime_1();
 
 	void SetNormalSpeed() override;
