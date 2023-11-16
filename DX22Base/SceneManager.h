@@ -29,9 +29,16 @@ public:
 	~CSceneManager();		//デストラクタ
 	void Update();			//更新
 	void Draw() const;		//描画
+	bool IsFin() const;		//終了確認
 private:
 	// ===メンバ変数宣言=====
-	CScene* m_pScene;	//シーン
+	CScene* m_pScene;				//シーン
+	CScene::E_TYPE m_ePastScene;	//前のシーン
+	CScene::E_TYPE m_eNextScene;	//シーン遷移先
+	bool m_bFinish;					//終了予約用(trueで終了)
+
+	// ===プロトタイプ宣言===
+	void ChangeScene();	//シーン変更
 };	//シーン管理
 
 #endif	//!__SCENE_MANAGER_H__
