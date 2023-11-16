@@ -11,6 +11,8 @@
 	・2023/10/24	仮制作 takagi
 	・2023/11/05 現段階のコーディング規約適用 takagi
 	・2023/11/07 コメント修正 takagi
+	・2023/11/16 シーン遷移の流れを実装 takagi
+	・2023/11/17 過去シーンに戻る処理を追加 takagi
 
 ========================================== */
 
@@ -38,7 +40,8 @@ private:
 	bool m_bFinish;					//終了予約用(trueで終了)
 
 	// ===プロトタイプ宣言===
-	void ChangeScene();	//シーン変更
+	void ChangeScene();		//シーン変更
+	void MakeNewScene();	//新シーン動的確保
 };	//シーン管理
 
 #endif	//!__SCENE_MANAGER_H__

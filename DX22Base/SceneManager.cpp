@@ -11,6 +11,8 @@
 	・2023/10/24 仮制作 takagi
 	・2023/11/05 現段階のコーディング規約適用 takagi
 	・2023/11/07 コメント修正 takagi
+	・2023/11/16 シーン遷移の流れを実装 takagi
+	・2023/11/17 過去シーンに戻る処理を追加 takagi
 
 ========================================== */
 
@@ -40,15 +42,15 @@
 	戻値：なし
 =========================================== */
 CSceneManager::CSceneManager()
-	: m_pScene(nullptr)					//シーン
-	, m_ePastScene(CScene::E_TYPE_NONE)	//前のシーン
-	, m_eNextScene(CScene::E_TYPE_NONE)	//シーン遷移先
-	, m_bFinish(false)					//シーン管理を開始
+	: m_pScene(nullptr)						//シーン
+	, m_ePastScene(CScene::E_TYPE_NONE)		//前のシーン
+	, m_eNextScene(CScene::E_TYPE_STAGE1)	//シーン遷移先
+	, m_bFinish(false)						//シーン管理を開始
 {
 	if (!m_pScene)	//ヌルチェック
 	{
 		// =============== 動的確保 ===================
-		m_pScene = new CStage1();	//最初に始めるシーン作成
+		MakeNewScene();	//最初に始めるシーン作成
 	}
 }
 
@@ -158,8 +160,29 @@ void CSceneManager::ChangeScene()
 	}
 
 	// =============== シーン切換 =====================
+	MakeNewScene();	//新シーン作成
+}
+
+/* ========================================
+	新シーン作成関数
+	----------------------------------------
+	内容：次シーン情報を元に、シーンの動的確保分岐処理
+	----------------------------------------
+	引数1：なし
+	----------------------------------------
+	戻値：なし
+=========================================== */
+void CSceneManager::MakeNewScene()
+{
+	// =============== シーン検査 =====================
+	if (m_pScene)	//すでにシーンがあるか
+	{
+		return;	//処理中断
+	}
+
+	// =============== シーン作成 =====================
 	switch (m_eNextScene)	//分岐
-	{	
+	{
 		// =============== タイトルシーン =====================
 	case CScene::E_TYPE_TITLE:		//遷移先：タイトル
 		m_pScene = new CTitle();	//動的確保
@@ -190,10 +213,16 @@ void CSceneManager::ChangeScene()
 		m_pScene = new CResult();	//動的確保
 		break;						//分岐処理終了
 
+		// =============== 前のシーン =====================
+	case CScene::E_TYPE_PAST:			//遷移：戻る
+		m_eNextScene = m_ePastScene;	//過去シーンを次シーンに登録
+		MakeNewScene();					//処理をやり直す
+		break;							//分岐処理終了
+
 		// =============== その他 =====================
 	default:	//該当なし
 #if _DEBUG
-		MessageBox(nullptr, "存在しないシーン", "SceneManager.cpp->Error", MB_OK);	//エラー通知
+		MessageBox(nullptr, "存在しないシーンが呼び出されました", "SceneManager.cpp->Error", MB_OK);	//エラー通知
 #endif
 		break;	//分岐処理終了
 	}
