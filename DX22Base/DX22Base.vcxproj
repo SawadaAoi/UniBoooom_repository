@@ -177,7 +177,7 @@
     <ClCompile Include="Controller.cpp" />
     <ClCompile Include="Cylinder.cpp" />
     <ClCompile Include="DirectX.cpp" />
-    <ClCompile Include="DirecWrite.cpp" />
+    <ClCompile Include="DirectWrite.cpp" />
     <ClCompile Include="Effect.cpp" />
     <ClCompile Include="Emitter.cpp" />
     <ClCompile Include="EmitterManager.cpp" />
@@ -277,7 +277,6 @@
     <ClInclude Include="StripeParticle.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Title.h" />
-    <ClInclude Include="Transform.h" />
     <ClInclude Include="Transform2d.h" />
     <ClInclude Include="Transform3d.h" />
     <ClInclude Include="TriType.h" />
