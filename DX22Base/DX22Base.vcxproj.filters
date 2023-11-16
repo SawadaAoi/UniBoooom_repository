@@ -112,6 +112,12 @@
     <Filter Include="ソース ファイル\Info">
       <UniqueIdentifier>{8a28753d-f510-42e4-9844-46833e398878}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Scene\Stage">
+      <UniqueIdentifier>{6734b53d-3b98-4faa-a3f3-8960ddc3c3f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Scene\Stage">
+      <UniqueIdentifier>{2039f944-9e68-40cd-a6b6-c0497db649c4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -175,9 +181,6 @@
       <Filter>ソース ファイル\Scene</Filter>
     </ClCompile>
     <ClCompile Include="Title.cpp">
-      <Filter>ソース ファイル\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="Prot.cpp">
       <Filter>ソース ファイル\Scene</Filter>
     </ClCompile>
     <ClCompile Include="Explosion.cpp">
@@ -249,9 +252,6 @@
     <ClCompile Include="Slime_3.cpp">
       <Filter>ソース ファイル\3dObject</Filter>
     </ClCompile>
-    <ClCompile Include="DirecWrite.cpp">
-      <Filter>ソース ファイル\System</Filter>
-    </ClCompile>
     <ClCompile Include="SphereInfo.cpp">
       <Filter>ソース ファイル\Info</Filter>
     </ClCompile>
@@ -260,6 +260,30 @@
     </ClCompile>
     <ClCompile Include="Floor.cpp">
       <Filter>ソース ファイル\3dObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Result.cpp">
+      <Filter>ソース ファイル\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Stage.cpp">
+      <Filter>ソース ファイル\Scene\Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionOfStage.cpp">
+      <Filter>ソース ファイル\Scene\Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="Stage1.cpp">
+      <Filter>ソース ファイル\Scene\Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="Stage2.cpp">
+      <Filter>ソース ファイル\Scene\Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="Stage3.cpp">
+      <Filter>ソース ファイル\Scene\Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="SelectStage.cpp">
+      <Filter>ソース ファイル\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectWrite.cpp">
+      <Filter>ソース ファイル\System</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -323,9 +347,6 @@
     <ClInclude Include="Title.h">
       <Filter>ヘッダー ファイル\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Prot.h">
-      <Filter>ヘッダー ファイル\Scene</Filter>
-    </ClInclude>
     <ClInclude Include="SphereInfo.h">
       <Filter>ヘッダー ファイル\Info</Filter>
     </ClInclude>
@@ -355,9 +376,6 @@
     </ClInclude>
     <ClInclude Include="ExplosionManager.h">
       <Filter>ヘッダー ファイル\3dObject</Filter>
-    </ClInclude>
-    <ClInclude Include="Transform.h">
-      <Filter>ヘッダー ファイル\Info\Transform</Filter>
     </ClInclude>
     <ClInclude Include="Transform3d.h">
       <Filter>ヘッダー ファイル\Info\Transform</Filter>
@@ -418,6 +436,24 @@
     </ClInclude>
     <ClInclude Include="Floor.h">
       <Filter>ヘッダー ファイル\3dObject</Filter>
+    </ClCompile>
+    <ClInclude Include="Stage.h">
+      <Filter>ヘッダー ファイル\Scene\Stage</Filter>
+    </ClInclude>
+    <ClInclude Include="Result.h">
+      <Filter>ヘッダー ファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Stage1.h">
+      <Filter>ヘッダー ファイル\Scene\Stage</Filter>
+    </ClInclude>
+    <ClInclude Include="Stage2.h">
+      <Filter>ヘッダー ファイル\Scene\Stage</Filter>
+    </ClInclude>
+    <ClInclude Include="Stage3.h">
+      <Filter>ヘッダー ファイル\Scene\Stage</Filter>
+    </ClInclude>
+    <ClInclude Include="SelectStage.h">
+      <Filter>ヘッダー ファイル\Scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
