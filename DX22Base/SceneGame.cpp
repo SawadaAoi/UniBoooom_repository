@@ -66,6 +66,9 @@ SceneGame::SceneGame(DirectWrite* pDirectWrite)
 	m_pBox = new CBox();
 #endif
 
+
+	m_pFloor = new CFloor();
+	m_pFloor->SetCamera(m_pCamera);
 	// スライムマネージャー生成
 	m_pSlimeMng = new CSlimeManager();
 	m_pSlimeMng->SetCamera(m_pCamera);
@@ -86,6 +89,7 @@ SceneGame::~SceneGame()
 {
 	SAFE_DELETE(m_pExplosionMng);
 	SAFE_DELETE(m_pSlimeMng);	// スライムマネージャー削除
+	SAFE_DELETE(m_pFloor);
 	SAFE_DELETE(m_pCamera);
 	SAFE_DELETE(m_pPlayer);
 	SAFE_DELETE(m_pCollision);
@@ -190,7 +194,8 @@ void SceneGame::Draw()
 	m_pBox->Draw();
 #endif
 	
-
+	//床の描画
+	m_pFloor->Draw();
 	// スライムマネージャー描画
 	m_pSlimeMng->Draw();
 	m_pPlayer->Draw();

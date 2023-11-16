@@ -258,6 +258,9 @@
     <ClCompile Include="Slime_Flame.cpp">
       <Filter>ソース ファイル\3dObject</Filter>
     </ClCompile>
+    <ClCompile Include="Floor.cpp">
+      <Filter>ソース ファイル\3dObject</Filter>
+    </ClCompile>
     <ClCompile Include="Result.cpp">
       <Filter>ソース ファイル\Scene</Filter>
     </ClCompile>
@@ -431,6 +434,9 @@
     <ClInclude Include="Slime_Flame.h">
       <Filter>ヘッダー ファイル\3dObject</Filter>
     </ClInclude>
+    <ClInclude Include="Floor.h">
+      <Filter>ヘッダー ファイル\3dObject</Filter>
+    </ClCompile>
     <ClInclude Include="Stage.h">
       <Filter>ヘッダー ファイル\Scene\Stage</Filter>
     </ClInclude>

@@ -183,6 +183,7 @@
     <ClCompile Include="EmitterManager.cpp" />
     <ClCompile Include="Explosion.cpp" />
     <ClCompile Include="ExplosionManager.cpp" />
+    <ClCompile Include="Floor.cpp" />
     <ClCompile Include="ModelParticle.cpp" />
     <ClCompile Include="Particle.cpp" />
     <ClCompile Include="SelectStage.cpp" />
@@ -233,6 +234,7 @@
     <ClInclude Include="Controller.h" />
     <ClInclude Include="Cylinder.h" />
     <ClInclude Include="DirectWrite.h" />
+    <ClInclude Include="Floor.h" />
     <ClInclude Include="GameParameter.h" />
     <ClInclude Include="Defines.h" />
     <ClInclude Include="DirectX.h" />
