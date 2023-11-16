@@ -30,6 +30,7 @@ public:
 	void Update();						//更新
 	void Draw() const;					//描画	
 	E_TYPE GetType() const override;	//自身の種類ゲッタ
+	E_TYPE GetNext() const override;	//次のシーンゲッタ
 };	//ステージ3
 
 #endif	//!__STAGE3_H__

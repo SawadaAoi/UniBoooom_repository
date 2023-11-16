@@ -15,7 +15,7 @@
 	・2023/11/04 列挙中身追加 takagi
 	・2023/11/05 現段階のコーディング規約適用 takagi
 	・2023/11/07 コメント修正 takagi
-	・2023/11/16 列挙追加・コメント修正 takagi
+	・2023/11/16 列挙追加・GetNext()関数追加・終了フラグ周り実装・コメント修正 takagi
 
 ========================================== */
 
@@ -36,14 +36,21 @@ public:
 		E_TYPE_STAGE2,			//ステージ2
 		E_TYPE_STAGE3,			//ステージ3
 		E_TYPE_RESULT,			//リザルトシーン
+		E_TYPE_MAX,				//要素数
+		E_TYPE_NONE = -1,		//該当なし
 	};	//シーンの種類
 public:
 	// ===プロトタイプ宣言===
 	CScene();							//コンストラクタ
 	virtual ~CScene();					//デストラクタ
 	virtual void Update();				//更新
-	virtual void Draw() const;			//描画	
+	virtual void Draw() const;			//描画
+	bool IsFin() const;					//終了確認
 	virtual E_TYPE GetType() const = 0;	//自身の種類ゲッタ
+	virtual E_TYPE GetNext() const = 0;	//次のシーンゲッタ
+protected:
+	// ===メンバ変数宣言=====
+	bool m_bFinish;	//終了予約用(trueで終了)
 };	//シーン
 
 #endif	//!__SCENE_H__

@@ -1,9 +1,9 @@
 /* ========================================
 	HEW/UniBoooom!!
 	---------------------------------------
-	リザルトシーン定義
+	ステージセレクト定義
 	---------------------------------------
-	Result.h
+	SelectStage.h
 
 	作成者
 			takagi
@@ -14,23 +14,23 @@
 
 ========================================== */
 
-#ifndef __RESULT_H__	//Result.hインクルードガード
-#define __RESULT_H__
+#ifndef __SELECT_STAGE_H__	//SelectStage.hインクルードガード
+#define __SELECT_STAGE_H__
 
 // =============== インクルード ===================
 #include "Scene.h"	//親のヘッダ
 
 // =============== クラス定義 =====================
-class CResult :public CScene	//シーン
+class CSelectStage :public CScene	//シーン
 {
 public:
 	// =============== プロトタイプ宣言 ===============
-	CResult();							//コンストラクタ
-	~CResult();							//デストラクタ
+	CSelectStage();						//コンストラクタ
+	~CSelectStage();					//デストラクタ
 	void Update();						//更新
 	void Draw() const;					//描画	
 	E_TYPE GetType() const override;	//自身の種類ゲッタ
 	E_TYPE GetNext() const override;	//次のシーンゲッタ
-};	//リザルト
+};	//ステージセレクト
 
-#endif	//!__RESULT_H__
+#endif	//!__SELECT_STAGE_H__

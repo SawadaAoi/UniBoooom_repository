@@ -10,14 +10,14 @@
 			nieda
 
 	変更履歴
-	・2023/10/26	仮制作 takagi
+	・2023/10/26 仮制作 takagi
 	・2023/11/05 現段階のコーディング規約適用 takagi
 	・2023/11/07 コメント修正 takagi
-	!memo(見たら消してー)：コピペしやすいように形だけ作っただけなので実装しなくていいです(プロトタイプの間は使うことはありません。)
+	・2023/11/16 オーバーライド関数追加 takagi
 
 ========================================== */
 
-#ifndef __TITLE_H__
+#ifndef __TITLE_H__	//Title.hインクルードガード
 #define __TITLE_H__
 
 // =============== インクルード ===================
@@ -33,6 +33,7 @@ public:
 	void Update();						//更新
 	void Draw() const;					//描画	
 	E_TYPE GetType() const override;	//自身の種類ゲッタ
+	E_TYPE GetNext() const override;	//次のシーンゲッタ
 };	//タイトル
 
 #endif	//!__TITLE_H__

@@ -20,18 +20,17 @@
 
 // =============== インクルード ===================
 #include "Scene.h"			//親のヘッダ
-#include "DirectWrite.h"	//文字列描画
 
 // =============== クラス定義 =====================
 class CStage :public CScene	//シーン
 {
 public:
 	// =============== プロトタイプ宣言 ===============
-	CStage();							//コンストラクタ
-	virtual ~CStage();					//デストラクタ
-	virtual void Update();				//更新
-	virtual void Draw() const;			//描画	
-	virtual E_TYPE GetType() const = 0;	//自身の種類ゲッタ
+	//CStage();							//コンストラクタ
+	//virtual ~CStage();					//デストラクタ
+	//virtual void Update();				//更新
+	//virtual void Draw() const;			//描画	
+	//virtual E_TYPE GetType() const = 0;	//自身の種類ゲッタ
 private:
 	void Collision();
 	void PlayerSlimeCollision();

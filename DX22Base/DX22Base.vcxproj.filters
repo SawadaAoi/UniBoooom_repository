@@ -279,6 +279,9 @@
     <ClCompile Include="Stage3.cpp">
       <Filter>ソース ファイル\Scene\Stage</Filter>
     </ClCompile>
+    <ClCompile Include="SelectStage.cpp">
+      <Filter>ソース ファイル\Scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Defines.h">
@@ -445,6 +448,9 @@
     </ClInclude>
     <ClInclude Include="Stage3.h">
       <Filter>ヘッダー ファイル\Scene\Stage</Filter>
+    </ClInclude>
+    <ClInclude Include="SelectStage.h">
+      <Filter>ヘッダー ファイル\Scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
