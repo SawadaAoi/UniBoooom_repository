@@ -36,7 +36,7 @@ CFloor::CFloor()
 	//床のモデル読み込み
 	m_pModel = new Model;
 	if (!m_pModel->Load("Assets/Model/floor/floor_1.1.FBX", 1.0f, Model::XFlip)) {		//倍率と反転は省略可
-		MessageBox(NULL, "slime_blue", "Error", MB_OK);	//ここでエラーメッセージ表示
+		MessageBox(NULL, "floor", "Error", MB_OK);	//ここでエラーメッセージ表示
 	}
 	m_pModel->SetVertexShader(m_pVS);
 
@@ -94,6 +94,9 @@ void CFloor::Draw()
 	mat[0] = m_Transform.GetWorldMatrixSRT();
 	mat[1] = m_pCamera->GetViewMatrix();
 	mat[2] = m_pCamera->GetProjectionMatrix();
+
+	//-- 行列をシェーダーへ設定
+	m_pVS->WriteBuffer(0, mat);
 
 	//-- モデル表示
 	if (m_pModel) {
