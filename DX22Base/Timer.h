@@ -29,12 +29,18 @@ public:
 
 	int GetMinite();	//時間（分）の取得
 	int GetSecond();	//時間（秒）の取得
-	void TimeStart(int StartCnt);	//タイマーカウント開始前の待つ時間（秒）
+	void TimeStart();	//タイマーカウント開始前の待つ時間（秒）
+	void TimeStart(float maxTime);	//タイマーカウント開始前の待つ時間（秒）
+	void TimeStart(float maxTime, float waitTime);	//タイマーカウント開始前の待つ時間（秒）
 
 private:
+	void WaitTimeCheck();
+
 	// ===メンバ変数宣言===
-	int m_nTimeCnt;		//時間のカウントダウン
-	bool m_bProgreFlg;	//カウントダウン開始フラグ
+	bool m_bStartFlg;	//カウントダウン開始フラグ
+
+	int m_nTimeCnt;			//時間のカウントダウン
+	int m_dWaitCnt;	//カウントダウン開始フラグ
 
 };
 

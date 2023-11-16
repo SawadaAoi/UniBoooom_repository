@@ -29,7 +29,8 @@ const int STAGE_TIME = 180 * 60;	//ステージ制限時間（秒*フレーム）
 =========================================== */
 CTimer::CTimer()
 	: m_nTimeCnt(STAGE_TIME)
-	, m_bProgreFlg(false)
+	, m_bStartFlg(false)
+	, m_dWaitCnt(0)
 {
 
 }
@@ -58,14 +59,18 @@ CTimer::~CTimer()
 =========================================== */
 void CTimer::Update()
 {
-	//タイムカウント開始
-	if (m_bProgreFlg)
+	// 待ち時間がある場合のみ
+	if (0 < m_dWaitCnt)
 	{
-		m_nTimeCnt--;
+		WaitTimeCheck();
+		return;
 	}
 
+
+	m_nTimeCnt--;
+
 	//時間が0になったら終了処理に
-	if (m_nTimeCnt == 0)
+	if (m_nTimeCnt <= 0)
 	{
 		// TODOゲーム終了処理
 	}
@@ -109,12 +114,15 @@ int CTimer::GetMinite()
 	----------------------------------------
 	戻値：時間の秒
 =========================================== */
-
 int CTimer::GetSecond()
 {
 	m_nTimeCnt = ( m_nTimeCnt / 60 ) % 60;	//秒 = 分の部分を抜くの残り
 
 	return m_nTimeCnt;
+}
+
+void CTimer::TimeStart()
+{
 }
 
 /* ========================================
@@ -126,14 +134,24 @@ int CTimer::GetSecond()
 	----------------------------------------
 	戻値：なし
 =========================================== */
-void CTimer::TimeStart(int StartCnt)
+void CTimer::TimeStart(float maxTime)
 {
-	//タイマーカウント開始前の待つ時間
-	StartCnt = StartCnt * 60;
-	StartCnt--;
-	//0になったらタイムカウント開始
-	if (StartCnt == 0)
+	m_nTimeCnt = maxTime * 60;
+	m_bStartFlg = true;
+}
+
+void CTimer::TimeStart(float maxTime, float waitTime)
+{
+	m_dWaitCnt = waitTime * 60;
+}
+
+void CTimer::WaitTimeCheck()
+{
+	m_dWaitCnt--;
+	// 0になったらタイムカウント開始
+	if (m_dWaitCnt <= 0)
 	{
-		m_bProgreFlg = true;
+		m_bStartFlg = true;
 	}
+
 }
