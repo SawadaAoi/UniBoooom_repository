@@ -16,7 +16,7 @@
 
 // =============== インクルード ===================
 #include "SceneManager.h"	//自身のヘッダ
-#include "Prot.h"			//インスタンス候補
+//#include "Prot.h"			//インスタンス候補
 
 // =============== 定数定義 ===================
 #define MODE_PROTTYPE (true)	//プロトタイプであるか
@@ -39,7 +39,7 @@ CSceneManager::CSceneManager()
 	if (!m_pScene)	//ヌルチェック
 	{
 		// =============== 動的確保 ===================
-		m_pScene = new CProt();	//プロトタイプシーン作成
+		//m_pScene = new CProt();	//プロトタイプシーン作成
 	}
 #endif
 }

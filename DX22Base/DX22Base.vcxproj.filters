@@ -112,6 +112,12 @@
     <Filter Include="ソース ファイル\Info">
       <UniqueIdentifier>{8a28753d-f510-42e4-9844-46833e398878}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Scene\Stage">
+      <UniqueIdentifier>{6734b53d-3b98-4faa-a3f3-8960ddc3c3f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Scene\Stage">
+      <UniqueIdentifier>{2039f944-9e68-40cd-a6b6-c0497db649c4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -175,9 +181,6 @@
       <Filter>ソース ファイル\Scene</Filter>
     </ClCompile>
     <ClCompile Include="Title.cpp">
-      <Filter>ソース ファイル\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="Prot.cpp">
       <Filter>ソース ファイル\Scene</Filter>
     </ClCompile>
     <ClCompile Include="Explosion.cpp">
@@ -258,6 +261,24 @@
     <ClCompile Include="Slime_Flame.cpp">
       <Filter>ソース ファイル\3dObject</Filter>
     </ClCompile>
+    <ClCompile Include="Result.cpp">
+      <Filter>ソース ファイル\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Stage.cpp">
+      <Filter>ソース ファイル\Scene\Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionOfStage.cpp">
+      <Filter>ソース ファイル\Scene\Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="Stage1.cpp">
+      <Filter>ソース ファイル\Scene\Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="Stage2.cpp">
+      <Filter>ソース ファイル\Scene\Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="Stage3.cpp">
+      <Filter>ソース ファイル\Scene\Stage</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Defines.h">
@@ -318,9 +339,6 @@
       <Filter>ヘッダー ファイル\Scene</Filter>
     </ClInclude>
     <ClInclude Include="Title.h">
-      <Filter>ヘッダー ファイル\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="Prot.h">
       <Filter>ヘッダー ファイル\Scene</Filter>
     </ClInclude>
     <ClInclude Include="SphereInfo.h">
@@ -412,6 +430,21 @@
     </ClInclude>
     <ClInclude Include="Slime_Flame.h">
       <Filter>ヘッダー ファイル\3dObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Stage.h">
+      <Filter>ヘッダー ファイル\Scene\Stage</Filter>
+    </ClInclude>
+    <ClInclude Include="Result.h">
+      <Filter>ヘッダー ファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Stage1.h">
+      <Filter>ヘッダー ファイル\Scene\Stage</Filter>
+    </ClInclude>
+    <ClInclude Include="Stage2.h">
+      <Filter>ヘッダー ファイル\Scene\Stage</Filter>
+    </ClInclude>
+    <ClInclude Include="Stage3.h">
+      <Filter>ヘッダー ファイル\Scene\Stage</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
