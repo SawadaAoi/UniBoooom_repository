@@ -75,6 +75,7 @@ SceneGame::SceneGame(DirectWrite* pDirectWrite)
 
 	// タイマー生成
 	m_pTimer = new CTimer();
+	m_pTimer->TimeStart();
 }
 
 /* ========================================
@@ -121,7 +122,6 @@ void SceneGame::Update(float tick)
 	m_pSlimeMng->Update(m_pExplosionMng);
 	m_pExplosionMng->Update();
 	m_pTimer->Update();
-
 
 	SceneGameCollision();
 }
