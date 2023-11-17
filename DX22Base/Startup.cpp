@@ -1,3 +1,18 @@
+/* ========================================
+	HEW/UniBoooom!!
+	------------------------------------
+	ウィンドウまわりの設定、四大処理呼び出し
+	------------------------------------
+	Main.cpp
+	------------------------------------
+	作成者
+
+	変更履歴
+   ・↓まで 学校の配布物(授業に沿い変形)・Geometryに合わせた改造
+	・2023/11/17 終了条件でゲームループを抜けるように変更 takagi
+
+========================================== */
+
 #include <windows.h>
 #include "Defines.h"
 #include "Main.h"
@@ -96,6 +111,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				Update(diff * 0.001f);
 				Draw();
 				preExecTime = nowTime;
+
+#if USE_SCENE_MANAGER
+				if (IsFin())
+					break;
+#endif
 			}
 		}
 	}
