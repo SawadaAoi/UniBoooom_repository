@@ -27,6 +27,8 @@
    戻値：なし
    ======================================== */
 CObject::CObject()
+	: m_Transform({ 0.0f }, { 0.0f }, { 0.0f })
+	, m_Sphere({ 0.0f }, { 0.0f,0.0f,0.0f })
 {
 }
 /* ========================================
@@ -104,7 +106,7 @@ TTriType<float> CObject::GetScale()//ワールド座標系の拡縮率をとるためのゲッター
 ======================================== */
 tagSphereInfo CObject::GetSphere()
 {
-	return m_sphere;
+	return m_Sphere;
 }
 /* ========================================
    当たり判定の円の半径取得関数
@@ -117,7 +119,7 @@ tagSphereInfo CObject::GetSphere()
 ======================================== */
 float CObject::GetRadius()
 {
-	return m_sphere.fRadius;
+	return m_Sphere.fRadius;
 }
 /* ========================================
    当たり判定位置のずれ取得関数
@@ -130,7 +132,7 @@ float CObject::GetRadius()
 ======================================== */
 TPos3d<float> CObject::GetShift()
 {
-	return m_sphere.fShift;
+	return m_Sphere.fShift;
 }
 /* ========================================
 	ワールド座標系セット関数
@@ -195,7 +197,7 @@ void CObject::SetScale(TTriType<float> Scale)
 =========================================== */
 void CObject::SetSphere(tagSphereInfo Sphere)
 {
-	m_sphere = Sphere;
+	m_Sphere = Sphere;
 }
 /* ========================================
 	当たり判定半径セット関数
@@ -208,7 +210,7 @@ void CObject::SetSphere(tagSphereInfo Sphere)
 =========================================== */
 void CObject::SetRadius(float Radius)
 {
-	m_sphere.fRadius = Radius;
+	m_Sphere.fRadius = Radius;
 }
 /* ========================================
 	当たり判定位置ずれセット関数
@@ -221,5 +223,5 @@ void CObject::SetRadius(float Radius)
 =========================================== */
 void CObject::SetShift(TPos3d<float> Shift)
 {
-	m_sphere.fShift = Shift;
+	m_Sphere.fShift = Shift;
 }

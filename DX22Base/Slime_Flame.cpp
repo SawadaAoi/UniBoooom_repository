@@ -50,7 +50,7 @@ CSlime_Flame::CSlime_Flame()
 	m_pModel->SetVertexShader(m_pVS);
 
 	m_Transform.fScale = { LEVEL_FLAME_SCALE,LEVEL_FLAME_SCALE ,LEVEL_FLAME_SCALE };
-	m_sphere.fRadius *= LEVEL_FLAME_SCALE;
+	m_Sphere.fRadius *= LEVEL_FLAME_SCALE;
 	m_eSlimeSize = E_SLIME_LEVEL::LEVEL_FLAME;
 	SetNormalSpeed();
 

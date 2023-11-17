@@ -56,7 +56,7 @@ CSlime_2::CSlime_2()
 	m_pModel->SetVertexShader(m_pVS);
 
 	m_Transform.fScale = { LEVEL2_SCALE,LEVEL2_SCALE ,LEVEL2_SCALE };
-	m_sphere.fRadius *= LEVEL2_SCALE;
+	m_Sphere.fRadius *= LEVEL2_SCALE;
 	m_eSlimeSize = E_SLIME_LEVEL::LEVEL_2;
 	SetNormalSpeed();
 

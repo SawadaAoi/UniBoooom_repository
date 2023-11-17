@@ -44,10 +44,10 @@ public:
 	void SetRadius(float Radius);
 	void SetShift(TPos3d<float> Shift);
 
-private:
+protected:
 	// ===メンバ変数宣言=====
 	tagTransform3d m_Transform;	//ワールド座標系情報
-	tagSphereInfo m_sphere;		//当たり判定用の球体
+	tagSphereInfo m_Sphere;		//当たり判定用の球体
 };
 
 #endif //!__OBJECT_H__

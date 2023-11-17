@@ -16,7 +16,7 @@
 	・2023/11/13 コンストラクタにtimeを追加 Suzumura
 	・2023/11/13 爆発総時間の変数を追加 Suzumura
 	・2023/11/14 SphereInfoの変更に対応 Takagi
-
+	・2023/11/15 Objectクラスを継承したので修正　yamamoto
 ======================================== */
 #ifndef __EXPLOSION_H__	//Explosion.hインクルードガード
 #define __EXPLOSION_H__
@@ -27,9 +27,10 @@
 #include "Transform3d.h"	//ワールド座標系情報ヘッダー
 #include "Sphere.h"			//球定義ヘッダー
 #include "Camera.h"			//カメラ定義ヘッダー
-
+#include "Object.h"			//
 //=============== クラス定義 =====================
 class CExplosion
+	:public CObject
 {
 public:
 	// ===メンバ関数宣言===
@@ -39,18 +40,12 @@ public:
 	void Draw();												//描画関数
 	void DisplayTimeAdd();										//爆発表示カウント加算処理関数
 
-	void SetPos(TPos3d<float> pos);	//爆発座標設定関数
-	TPos3d<float> GetPos();			//使ってない関数
-	tagSphereInfo GetSphere();	//Sphere情報取得処理関数
-	void SetSphere(tagSphereInfo sphere);	//Sphere情報設定処理関数
 	bool GetDelFlg();					//削除フラグ取得処理関数
 	void SetCamera(const CCamera* m_pCamera);	//他のオブジェクトと同一のカメラをセット
 
 
 private:
 	// ===メンバ変数宣言===
-	tagSphereInfo m_Sphere;	// 座標と当たり判定の大きさを持つ
-	tagTransform3d m_Transform;	//ワールド座標系に必要な情報
 	float			m_fMaxSize;
 	TTriType<float>	m_fSizeAdd;
 	int				m_fDelFrame;		// 爆発表示カウント
