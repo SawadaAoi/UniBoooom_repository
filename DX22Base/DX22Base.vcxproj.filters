@@ -436,7 +436,7 @@
     </ClInclude>
     <ClInclude Include="Floor.h">
       <Filter>ヘッダー ファイル\3dObject</Filter>
-    </ClCompile>
+    </ClInclude>
     <ClInclude Include="Stage.h">
       <Filter>ヘッダー ファイル\Scene\Stage</Filter>
     </ClInclude>
