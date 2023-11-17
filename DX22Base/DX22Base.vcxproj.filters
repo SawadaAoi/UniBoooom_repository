@@ -258,6 +258,12 @@
     <ClCompile Include="Slime_Flame.cpp">
       <Filter>ソース ファイル\3dObject</Filter>
     </ClCompile>
+    <ClCompile Include="HpUI.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="HpManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Defines.h">
@@ -412,6 +418,12 @@
     </ClInclude>
     <ClInclude Include="Slime_Flame.h">
       <Filter>ヘッダー ファイル\3dObject</Filter>
+    </ClInclude>
+    <ClInclude Include="HpUI.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="HpManager.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

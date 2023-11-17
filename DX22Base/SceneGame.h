@@ -25,7 +25,9 @@
 #include "Collision.h"
 #include "Player.h"
 #include "ExplosionManager.h"
+#include "HpManager.h"
 #include "DirectWrite.h"
+
 // =============== ƒNƒ‰ƒX’è‹` =====================
 class SceneGame
 {
@@ -52,6 +54,7 @@ private:
 	CSlimeManager* m_pSlimeMng;
 	CCOLLISION* m_pCollision;
 	CExplosionManager* m_pExplosionMng;
+	ChpManager* m_pHpMng;
 	DirectWrite* m_pDirectWrite;
 };
 

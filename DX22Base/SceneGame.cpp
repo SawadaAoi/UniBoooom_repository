@@ -71,6 +71,9 @@ SceneGame::SceneGame(DirectWrite* pDirectWrite)
 	m_pSlimeMng->SetCamera(m_pCamera);
 	m_pExplosionMng = new CExplosionManager();
 	m_pExplosionMng->SetCamera(m_pCamera);
+
+	// HPマネージャー生成
+	m_pHpMng = new ChpManager;
 }
 
 /* ========================================
@@ -84,6 +87,7 @@ SceneGame::SceneGame(DirectWrite* pDirectWrite)
 =========================================== */
 SceneGame::~SceneGame()
 {
+	SAFE_DELETE(m_pHpMng);
 	SAFE_DELETE(m_pExplosionMng);
 	SAFE_DELETE(m_pSlimeMng);	// スライムマネージャー削除
 	SAFE_DELETE(m_pCamera);
@@ -116,7 +120,6 @@ void SceneGame::Update(float tick)
 	m_pSlimeMng->Update(m_pExplosionMng);
 	m_pExplosionMng->Update();
 	m_pCamera->Update();
-
 
 	SceneGameCollision();
 }
@@ -198,6 +201,8 @@ void SceneGame::Draw()
 	//爆発マネージャー描画
 	m_pExplosionMng->Draw();
 	
+	// HPマネージャー描画
+	m_pHpMng->Draw();
 }
 
 

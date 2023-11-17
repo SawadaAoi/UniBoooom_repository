@@ -73,6 +73,7 @@ void SceneGame::PlayerSlimeCollision()
 		if (m_pCollision->CheckCollisionSphere(m_pPlayer->GetPlayerSphere(), pSlimeNow->GetSphere(), m_pPlayer->GetPos(), pSlimeNow->GetPos()))
 		{
 			m_pPlayer->Damage();
+			m_pHpMng->Update();
 		}
 	}
 }
