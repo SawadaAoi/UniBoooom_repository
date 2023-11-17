@@ -40,11 +40,6 @@ CFloor::CFloor()
 	}
 	m_pModel->SetVertexShader(m_pVS);
 
-	// レンダーターゲット、深度バッファの設定
-	RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得
-	DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
-	SetRenderTargets(1, &pRTV, pDSV);		//DSVがnullだと2D表示になる
-
 	m_Transform.fPos = { 0.0f, 0.0f, 0.0f };	//ポジションの初期化
 	m_Transform.fScale = { 1.0f, 1.0f, 1.0f };	//スケールの初期化
 	m_Transform.fRadian = { 0.0f, 0.0f, 0.0f };	//回転角を初期化
