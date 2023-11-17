@@ -13,8 +13,12 @@
 	・2023/11/08 定数HALF_PI、ANGULAR_ANGLE、ROTATE_RADIUSを定義 yamashita
 	・2023/11/08 Updateに書かれていた処理をSwing関数に分けた　yamashita
 	・2023/11/08 動的確保したポインタをdeleteからSAFE_DELETEに変更　yamashita
-	・2023/11/09? 当たり判定用のSphereのゲット関数を追加 yamashita
+	・2023/11/09 当たり判定用のSphereのゲット関数を追加 yamashita
 	・2023/11/11 parameter用ヘッダ追加 suzumura
+	・2023/11/14 SphereInfoの変更に対応 Takagi
+
+	・2023/11/14 全体的に処理の流れが分かりづらかったので修正 Sawada
+
 ========================================== */
 
 // =============== インクルード ===================
@@ -27,11 +31,16 @@ const float HALF_PI = 3.141592f / 2;	//ハンマーの開始地点のラジアン角(要修正)
 
 #if MODE_GAME_PARAMETER
 #else
-const float ANGULAR_ANGLE = 0.1f;		//毎フレーム移動する角度量
-const float ROTATE_RADIUS = 1.0f;		//ハンマーが回転するプレイヤーからの距離
-const float HAMMER_COL_SIZE = 0.75f;	//ハンマーの当たり判定の大きさ
-const float HAMMER_SIZE = 1.5f;			//ハンマーの大きさ
+const float SWING_ANGLE = DirectX::XMConvertToRadians(90.0f);	// ハンマーを振る範囲(扇形の角度の大きさ)
+const float SWING_TIME_FRAME = 0.15f * 60;							// ハンマーを振る時間(フレーム単位)
+const float ROTATE_RADIUS = 1.0f;									// ハンマーが回転するプレイヤーからの距離
+const float HAMMER_COL_SIZE = 0.75f;								// ハンマーの当たり判定の大きさ
+const float HAMMER_SIZE = 1.5f;									// ハンマーの大きさ
 #endif
+
+const float ADJUST_DIRECTX_TO_COSINE = DirectX::XMConvertToRadians(90.0f);	// 三角関数とDirectX角度の差分(DirectXの角度は↑が0度、三角関数は→が0度)
+const float ONE_FRAME_ADD_ANGLE = SWING_ANGLE / SWING_TIME_FRAME;			// 1フレームで移動する角度量
+
 
 /* ========================================
    コンストラクタ関数
@@ -43,16 +52,16 @@ const float HAMMER_SIZE = 1.5f;			//ハンマーの大きさ
    戻値：なし
    ======================================== */
 CHammer::CHammer()
-	: m_pos{ 0.0f,0.0f,0.0f }
-	, m_scale{ HAMMER_SIZE,HAMMER_SIZE,HAMMER_SIZE }
-	, m_stateangle(0.0f)
-	, m_nowangle(HALF_PI)
-	, m_bHammer(false)
+	: m_Transform({ 0.0f }, { HAMMER_SIZE }, { 0.0f, 0.0f, 0.0f })
 	, m_pHammerGeo(nullptr)
+	, m_tPlayerPos(0.0f,0.0f,0.0f)
+	, m_fAngleNow(0)
+	, m_dAddAngleCnt(0)
+
 {
 	m_pHammerGeo = new CSphere();							//ハンマーを仮表示するジオメトリー
-	m_sphere.pos = {0.0f, 0.0f, 0.0f};
-	m_sphere.radius = HAMMER_COL_SIZE;
+	m_sphere.fRadius = HAMMER_COL_SIZE;
+	m_sphere.fShift = { 0.0f,0.0f,0.0f };
 }
 
 /* ========================================
@@ -74,20 +83,25 @@ CHammer::~CHammer()
    ----------------------------------------
    内容：更新を行う
    ----------------------------------------
-   引数1：ハンマーの位置情報
-   引数2：ハンマーの角度
+   引数1：なし
    ----------------------------------------
-   戻値：なし
+   戻値：ハンマーの有効無効
    ======================================== */
-void CHammer::Update(TPos3d<float> pPos, float angle)
+bool CHammer::Update()
 {
-	Swing(pPos,angle);	//回転による移動関数
+	Swing();	//回転による移動関数
 
-	//現在角度が0になったら動作終了
-	if (m_nowangle <= 0.0f)
+	// 設定値まで移動しきったら
+	if (m_dAddAngleCnt >= SWING_TIME_FRAME)
 	{
-		m_bHammer = false;		//ハンマーの使用フラグをOFF
-		m_nowangle = HALF_PI;	//ハンマーの現在角度を初期値に戻す
+		m_dAddAngleCnt = 0;		// 角度変更フレームカウントリセット
+		
+		return false;
+	}
+	// 移動中はtrueを返す
+	else
+	{
+		return true;
 	}
 }
 
@@ -102,60 +116,76 @@ void CHammer::Update(TPos3d<float> pPos, float angle)
    ======================================== */
 void CHammer::Draw(const CCamera* pCamera)
 {
-	DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(m_pos.x, m_pos.y, m_pos.z);	// ハンマーの座標を移動の行列に格納
-	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(m_scale.x, m_scale.y, m_scale.z);// 拡大縮小行列
-
-	DirectX::XMMATRIX mat = S * T;			//移動の行列を格納
-	mat = DirectX::XMMatrixTranspose(mat);	//転置
-	DirectX::XMFLOAT4X4 fMat;				//行列の格納先
-	DirectX::XMStoreFloat4x4(&fMat, mat);	//XMFLOAT4X4に変換
-	m_pHammerGeo->SetWorld(fMat);			//ワールド座標にセット
+	m_pHammerGeo->SetWorld(m_Transform.GetWorldMatrixSRT());			//ワールド座標にセット
 	m_pHammerGeo->SetView(pCamera->GetViewMatrix());
 	m_pHammerGeo->SetProjection(pCamera->GetProjectionMatrix());
 
 	m_pHammerGeo->Draw();
 }
 
+
+
 /* ========================================
-   フラグのゲット関数
+   ハンマー回転関数
    ----------------------------------------
-   内容：ハンマーを振っている状態か取得する
+   内容：ハンマーの回転による移動の処理
+   ----------------------------------------
+   引数1：なし
+   ----------------------------------------
+   戻値：なし
+   ======================================== */
+void CHammer::Swing()
+{
+	m_fAngleNow -= ONE_FRAME_ADD_ANGLE;	// ハンマー当たり判定角度移動		
+
+	// 角度から座標を取得(プレイヤーの位置＋距離＋プレイヤーの周りの円状の位置)
+	m_Transform.fPos.x = m_tPlayerPos.x + ROTATE_RADIUS * -cosf(m_fAngleNow);	// 三角関数(反時計回り)とDirectX(時計回り)の角度の向きが逆なので反転する
+	m_Transform.fPos.z = m_tPlayerPos.z + ROTATE_RADIUS * sinf(m_fAngleNow);
+
+	m_dAddAngleCnt++;	// 角度変更フレームカウント加算
+
+}
+
+/* ========================================
+   位置のゲット関数
+   ----------------------------------------
+   内容：ハンマーの位置を取得する
    ----------------------------------------
    引数：なし
    ----------------------------------------
-   戻値：bool
+   戻値：TPos3d<float> 
    ======================================== */
-bool CHammer::Gethammer()
+TPos3d<float> CHammer::GetPos()
 {
-	return m_bHammer;
+	return m_Transform.fPos;
 }
 
 /* ========================================
    ハンマーの回転関数
    ----------------------------------------
-   内容：ハンマーの回転による移動の処理
+   内容：攻撃処理を開始する
    ----------------------------------------
-   引数1：プレイヤーのポジション
-   引数2：プレイヤーの向いてる角度
+   引数1：プレイヤー座標
+   引数2：プレイヤーの向き
    ----------------------------------------
    戻値：なし
    ======================================== */
-void CHammer::Swing(TPos3d<float> pPos, float angle)
+void CHammer::AttackStart(TPos3d<float>pPos, float angle)
 {
-	m_bHammer = true;		//ハンマーの使用フラグをON
-	m_stateangle = angle;	//-2.5f ;	//振り始めの角度	
+	float StartAngle =
+		  angle						// プレイヤーの向き
+		+ ADJUST_DIRECTX_TO_COSINE	// ＋三角関数とDirectX角度の差分
+		+ (SWING_ANGLE / 2);		// ＋ハンマーを振る角度の半分(扇形の右端からスタートする為)
 
-	m_nowangle -= ANGULAR_ANGLE;				//現在の角度量から移動する角度の分移動
-	float azimuth = m_stateangle + m_nowangle; // 方位角（角度）
-	float inclination = 1.0f; // 仰角
-	azimuth -= inclination;
-	// 球面座標から直交座標系への変換
-	m_pos.x = pPos.x + ROTATE_RADIUS * sin(azimuth);
+	m_fAngleNow = StartAngle;	// 開始角度をセット
 
-	//m_pos.y = pPos.y + ROTATE_RADIUS * cos(inclination);	//たぶん真横に振るのでY座標は動かさないのでコメントアウト /山下凌佑
-	m_pos.z = pPos.z + ROTATE_RADIUS * cos(azimuth);
+	m_tPlayerPos = pPos;		// プレイヤー座標をセット
 
-	m_sphere.pos = m_pos;		//当たり判定用の球体に座標をコピー
+	// 角度から座標を取得(プレイヤーの位置＋距離＋プレイヤーの周りの円状の位置)
+	m_Transform.fPos.x = m_tPlayerPos.x + ROTATE_RADIUS * -cosf(m_fAngleNow);
+	m_Transform.fPos.z = m_tPlayerPos.z + ROTATE_RADIUS * sinf(m_fAngleNow);
+
+
 }
 
 /* ========================================
@@ -167,7 +197,7 @@ void CHammer::Swing(TPos3d<float> pPos, float angle)
    ----------------------------------------
    戻値：当たり判定の球体
    ======================================== */
-CSphereInfo::Sphere CHammer::GetSphere()
+tagSphereInfo CHammer::GetSphere()
 {
 	return m_sphere;
 }

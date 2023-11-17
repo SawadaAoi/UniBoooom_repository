@@ -204,9 +204,6 @@
     <ClCompile Include="ExplosionManager.cpp">
       <Filter>ソース ファイル\3dObject</Filter>
     </ClCompile>
-    <ClCompile Include="SphereInfo.cpp">
-      <Filter>ソース ファイル\3dObject</Filter>
-    </ClCompile>
     <ClCompile Include="Collision.cpp">
       <Filter>ソース ファイル\System</Filter>
     </ClCompile>
@@ -257,6 +254,12 @@
     </ClCompile>
     <ClCompile Include="Timer.cpp">
       <Filter>ソース ファイル\2dObject</Filter>
+    </ClCompile>
+    <ClCompile Include="SphereInfo.cpp">
+      <Filter>ソース ファイル\Info</Filter>
+    </ClCompile>
+    <ClCompile Include="Slime_Flame.cpp">
+      <Filter>ソース ファイル\3dObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -412,6 +415,9 @@
     </ClInclude>
     <ClInclude Include="Timer.h">
       <Filter>ヘッダー ファイル\2dObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Slime_Flame.h">
+      <Filter>ヘッダー ファイル\3dObject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

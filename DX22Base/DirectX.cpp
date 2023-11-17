@@ -185,17 +185,18 @@ HRESULT InitDirectX(HWND hWnd, UINT width, UINT height, bool fullscreen)
 	}
 	SetSamplerState(SAMPLER_LINEAR);
 
+	//画面内にテキストを表示するクラスの初期化
 	FontData fontData = FontData::FontData();
-
 	g_pDirectWrite = new DirectWrite(&fontData);
-	g_pDirectWrite->Init();			//2Dの文字描画のクラスを初期化
+	g_pDirectWrite->Init();
 
 	return S_OK;
 }
 
 void UninitDirectX()
 {
-	g_pDirectWrite->Release();
+	g_pDirectWrite->Release();	//画面内にテキストを表示するクラスの終了処理
+	delete g_pDirectWrite;
 
 	SAFE_DELETE(g_pDSV);
 	SAFE_DELETE(g_pRTV);
