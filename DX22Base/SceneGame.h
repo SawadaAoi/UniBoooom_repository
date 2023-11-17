@@ -34,7 +34,7 @@ class SceneGame
 {
 public:
 	// ===メンバ関数宣言===
-	SceneGame(DirectWrite* pDirectWrite);
+	SceneGame();
 	~SceneGame();
 	void Update(float tick);
 	void Draw();
@@ -45,7 +45,6 @@ public:
 	void SlimeSlimeCollision();
 	void ExplosionSlimeCollision();
 	void SlimeSlimeNormalMoveCollision();
-	void SetDirectWrite(DirectWrite* pDirectWrite);
 private:
 	// ===メンバ変数宣言===
 	VertexShader* m_pVs;
@@ -55,7 +54,6 @@ private:
 	CSlimeManager* m_pSlimeMng;
 	CCOLLISION* m_pCollision;
 	CExplosionManager* m_pExplosionMng;
-	DirectWrite* m_pDirectWrite;
 	CTimer* m_pTimer;
 	CFloor* m_pFloor;
 };

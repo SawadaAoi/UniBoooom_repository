@@ -242,7 +242,7 @@ aiMatrix4x4t<TReal>& aiMatrix4x4t<TReal>::Inverse() {
     const TReal det = Determinant();
     if(det == static_cast<TReal>(0.0))
     {
-        // Matrix not invertible. Setting all elements to nan is not really
+        // Matrix not invertible. m_pSetting all elements to nan is not really
         // correct in a mathematical sense but it is easy to debug for the
         // programmer.
         const TReal nan = std::numeric_limits<TReal>::quiet_NaN();

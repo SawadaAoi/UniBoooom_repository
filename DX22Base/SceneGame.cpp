@@ -39,7 +39,7 @@
 	-------------------------------------
 	戻値：無し
 =========================================== */
-SceneGame::SceneGame(DirectWrite* pDirectWrite)
+SceneGame::SceneGame()
 {
 	// 頂点シェーダの読込
 	m_pVs = new VertexShader();
@@ -51,7 +51,6 @@ SceneGame::SceneGame(DirectWrite* pDirectWrite)
 	RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得
 	DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
 	SetRenderTargets(1, &pRTV, pDSV);		//DSVがnullだと2D表示になる
-	SetDirectWrite(pDirectWrite);
 
 #if MODE_COORD_AXIS
 	// 軸線の表示
@@ -211,10 +210,6 @@ void SceneGame::Draw()
 	//タイマー描画
 	m_pTimer->Draw();
 	
-}
-
-
-void SceneGame::SetDirectWrite(DirectWrite* pDirectWrite)
-{
-	m_pDirectWrite = pDirectWrite;
+	std::string str = "abc";
+	DirectWrite::DrawString(str,DirectX::XMFLOAT2(0.0f,0.0f));
 }
