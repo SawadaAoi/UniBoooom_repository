@@ -25,6 +25,7 @@
 #include "Line.h"
 #include "Defines.h"
 
+
 // =============== デバッグモード =======================
 #define MODE_COORD_AXIS (true)	//座標軸映すかどうか
 #define MODE_GROUND (false)	//座標軸映すかどうか
@@ -74,6 +75,10 @@ SceneGame::SceneGame(DirectWrite* pDirectWrite)
 	m_pSlimeMng->SetCamera(m_pCamera);
 	m_pExplosionMng = new CExplosionManager();
 	m_pExplosionMng->SetCamera(m_pCamera);
+
+	// タイマー生成
+	m_pTimer = new CTimer();
+	m_pTimer->TimeStart();
 }
 
 /* ========================================
@@ -87,6 +92,7 @@ SceneGame::SceneGame(DirectWrite* pDirectWrite)
 =========================================== */
 SceneGame::~SceneGame()
 {
+	SAFE_DELETE(m_pTimer);
 	SAFE_DELETE(m_pExplosionMng);
 	SAFE_DELETE(m_pSlimeMng);	// スライムマネージャー削除
 	SAFE_DELETE(m_pFloor);
@@ -119,8 +125,7 @@ void SceneGame::Update(float tick)
 	// スライムマネージャー更新
 	m_pSlimeMng->Update(m_pExplosionMng);
 	m_pExplosionMng->Update();
-	m_pCamera->Update();
-
+	m_pTimer->Update();
 
 	SceneGameCollision();
 }
@@ -202,6 +207,9 @@ void SceneGame::Draw()
 	
 	//爆発マネージャー描画
 	m_pExplosionMng->Draw();
+
+	//タイマー描画
+	m_pTimer->Draw();
 	
 }
 

@@ -1,22 +1,22 @@
 /* ========================================
 	HEW/UniBoooom!!
 	------------------------------------
-	ƒQ[ƒ€ƒV[ƒ“—pƒwƒbƒ_
+	ã‚²ãƒ¼ãƒ ã‚·ãƒ¼ãƒ³ç”¨ãƒ˜ãƒƒãƒ€
 	------------------------------------
 	SceneGame.h
 	------------------------------------
-	ì¬Ò àV“c
+	ä½œæˆè€… æ¾¤ç”°
 
-	•ÏX—š—ğ
-	E2023/11/08 ƒRƒƒ“ƒg’Ç‰Á‚ÆA–³‘Ê‚È‰ÓŠ‚ğíœ
-	E2023/11/09 ƒJƒƒ‰‚ÌˆÚ“®‚ª•ª‚©‚é‚æ‚¤‚É’n–Ê’Ç‰Á‚µ‚½ ûü–Øx•ã
-	E2023/11/11 ƒXƒ‰ƒCƒ€“¯m‚ªd‚È‚ç‚È‚¢ˆ—‚ğ’Ç‰Á yamashita
+	å¤‰æ›´å±¥æ­´
+	ãƒ»2023/11/08 ã‚³ãƒ¡ãƒ³ãƒˆè¿½åŠ ã¨ã€ç„¡é§„ãªç®‡æ‰€ã‚’å‰Šé™¤
+	ãƒ»2023/11/09 ã‚«ãƒ¡ãƒ©ã®ç§»å‹•ãŒåˆ†ã‹ã‚‹ã‚ˆã†ã«åœ°é¢è¿½åŠ ã—ãŸ é«™æœ¨é§¿è¼”
+	ãƒ»2023/11/11 ã‚¹ãƒ©ã‚¤ãƒ åŒå£«ãŒé‡ãªã‚‰ãªã„å‡¦ç†ã‚’è¿½åŠ  yamashita
 
 ========================================== */
 #ifndef __SCENE_GAME_H__
 #define __SCENE_GAME_H__
 
-// =============== ƒCƒ“ƒNƒ‹[ƒh ===================
+// =============== ã‚¤ãƒ³ã‚¯ãƒ«ãƒ¼ãƒ‰ ===================
 #include "Model.h"
 #include "Shader.h"
 #include "Camera.h"
@@ -26,12 +26,14 @@
 #include "Player.h"
 #include "ExplosionManager.h"
 #include "DirectWrite.h"
+#include "Timer.h"
 #include "Floor.h"
-// =============== ƒNƒ‰ƒX’è‹` =====================
+
+// =============== ã‚¯ãƒ©ã‚¹å®šç¾© =====================
 class SceneGame
 {
 public:
-	// ===ƒƒ“ƒoŠÖ”éŒ¾===
+	// ===ãƒ¡ãƒ³ãƒé–¢æ•°å®£è¨€===
 	SceneGame(DirectWrite* pDirectWrite);
 	~SceneGame();
 	void Update(float tick);
@@ -45,7 +47,7 @@ public:
 	void SlimeSlimeNormalMoveCollision();
 	void SetDirectWrite(DirectWrite* pDirectWrite);
 private:
-	// ===ƒƒ“ƒo•Ï”éŒ¾===
+	// ===ãƒ¡ãƒ³ãƒå¤‰æ•°å®£è¨€===
 	VertexShader* m_pVs;
 	CCamera* m_pCamera;
 	CPlayer* m_pPlayer;
@@ -54,6 +56,7 @@ private:
 	CCOLLISION* m_pCollision;
 	CExplosionManager* m_pExplosionMng;
 	DirectWrite* m_pDirectWrite;
+	CTimer* m_pTimer;
 	CFloor* m_pFloor;
 };
 

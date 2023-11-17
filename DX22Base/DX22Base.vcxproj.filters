@@ -252,6 +252,9 @@
     <ClCompile Include="Slime_3.cpp">
       <Filter>ソース ファイル\3dObject</Filter>
     </ClCompile>
+    <ClCompile Include="Timer.cpp">
+      <Filter>ソース ファイル\2dObject</Filter>
+    </ClCompile>
     <ClCompile Include="SphereInfo.cpp">
       <Filter>ソース ファイル\Info</Filter>
     </ClCompile>
@@ -430,6 +433,9 @@
     </ClInclude>
     <ClInclude Include="DirectWrite.h">
       <Filter>ヘッダー ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer.h">
+      <Filter>ヘッダー ファイル\2dObject</Filter>
     </ClInclude>
     <ClInclude Include="Slime_Flame.h">
       <Filter>ヘッダー ファイル\3dObject</Filter>

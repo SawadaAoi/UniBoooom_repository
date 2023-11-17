@@ -220,6 +220,7 @@
     <ClCompile Include="StripeParticle.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="SceneGame.cpp" />
+    <ClCompile Include="Timer.cpp" />
     <ClCompile Include="Title.cpp" />
     <ClCompile Include="Transform2d.cpp" />
     <ClCompile Include="Transform3d.cpp" />
@@ -278,6 +279,7 @@
     <ClInclude Include="Stage3.h" />
     <ClInclude Include="StripeParticle.h" />
     <ClInclude Include="Texture.h" />
+    <ClInclude Include="Timer.h" />
     <ClInclude Include="Title.h" />
     <ClInclude Include="Transform2d.h" />
     <ClInclude Include="Transform3d.h" />
