@@ -18,6 +18,8 @@
 	・2023/11/13 スライムレベルごとに爆発時間を設定できるように変更 Suzumura
 	・2023/11/14 炎スライムの処理を実装 Suzumura
 	・2023/11/14 SphereInfoの変更に対応 Takagi
+	・2023/11/15 各モデルの読み込みをbaseから移動 yamashita
+	・2023/11/15 各モデルの読み込みを関数化 yamashita
 
 =========================================== */
 
@@ -64,8 +66,15 @@ const float COL_SUB_STAND_TO_BIG = 1.2f;			// スライム衝突(大→小)の衝突される側
 =========================================== */
 CSlimeManager::CSlimeManager()
 	: m_CreateCnt(0)
+	, m_pVS(nullptr)
+	, m_pBlueModel(nullptr)
+	, m_pGreenModel(nullptr)
+	, m_pYellowModel(nullptr)
+	, m_pRedModel(nullptr)
+	, m_pFlameModel(nullptr)
 {
-
+	//スライムのモデルと頂点シェーダーの読み込み
+	LoadModel();
 
 	// スライム初期化
 	for (int i = 0; i < MAX_SLIME_NUM; i++)
@@ -93,6 +102,13 @@ CSlimeManager::CSlimeManager()
 =========================================== */
 CSlimeManager::~CSlimeManager()
 {
+	SAFE_DELETE(m_pVS);
+	SAFE_DELETE(m_pFlameModel);
+	SAFE_DELETE(m_pRedModel);
+	SAFE_DELETE(m_pYellowModel);
+	SAFE_DELETE(m_pGreenModel);
+	SAFE_DELETE(m_pBlueModel);
+
 	// スライム削除
 	for (int i = 0; i < MAX_SLIME_NUM; i++)
 	{
@@ -183,19 +199,19 @@ void CSlimeManager::Create(E_SLIME_LEVEL level)
 		switch (level)
 		{
 		case LEVEL_1:
-			m_pSlime[i] = new CSlime_1(CreatePos);	// 動的生成
+			m_pSlime[i] = new CSlime_1(CreatePos,m_pVS,m_pBlueModel);	// 動的生成
 			break;
 		case LEVEL_2:
-			m_pSlime[i] = new CSlime_2(CreatePos);	// 動的生成
+			m_pSlime[i] = new CSlime_2(CreatePos, m_pVS, m_pGreenModel);	// 動的生成
 			break;
 		case LEVEL_3:
-			m_pSlime[i] = new CSlime_3(CreatePos);	// 動的生成
+			m_pSlime[i] = new CSlime_3(CreatePos, m_pVS, m_pYellowModel);	// 動的生成
 			break;
 		case LEVEL_4:
-			m_pSlime[i] = new CSlime_4(CreatePos);	// 動的生成
+			m_pSlime[i] = new CSlime_4(CreatePos, m_pVS, m_pRedModel);	// 動的生成
 			break;
 		case LEVEL_FLAME:
-			m_pSlime[i] = new CSlime_Flame(CreatePos);	// 動的生成
+			m_pSlime[i] = new CSlime_Flame(CreatePos,m_pVS,m_pFlameModel);	// 動的生成
 			break;
 		}
 
@@ -356,15 +372,15 @@ void CSlimeManager::UnionSlime(E_SLIME_LEVEL level ,TPos3d<float> pos)
 		{
 		case LEVEL_1:
 			//サイズ2のスライムを生成
-			m_pSlime[i] = new CSlime_2(pos);
+			m_pSlime[i] = new CSlime_2(pos, m_pVS, m_pGreenModel);
 			break;
 		case LEVEL_2:
 			//サイズ3のスライムを生成
-			m_pSlime[i] = new CSlime_3(pos);
+			m_pSlime[i] = new CSlime_3(pos, m_pVS, m_pYellowModel);
 			break;
 		case LEVEL_3:
 			//サイズ4のスライムを生成
-			m_pSlime[i] = new CSlime_4(pos);
+			m_pSlime[i] = new CSlime_4(pos, m_pVS, m_pRedModel);
 			break;
 		}
 
@@ -480,6 +496,54 @@ void CSlimeManager::PreventOverlap(CSlimeBase * pMoveSlime, CSlimeBase * pStandS
 	pos.z += sinf(angle) * (distance + 0.001f);		//ぶつからないギリギリの距離を設定
 
 	pMoveSlime->SetPos(pos);						//ぶつからないギリギリの距離に移動
+}
+
+/* ========================================
+	モデル読み込み関数
+	----------------------------------------
+	内容：スライムのモデルと頂点シェーダーの読み込み
+	----------------------------------------
+	引数1：なし
+	----------------------------------------
+	戻値：
+======================================== */
+void CSlimeManager::LoadModel()
+{
+	//頂点シェーダ読み込み
+	m_pVS = new VertexShader();
+	if (FAILED(m_pVS->Load("Assets/Shader/VS_Model.cso"))) {
+		MessageBox(nullptr, "VS_Model.cso", "Error", MB_OK);
+	}
+	//レベル1スライムのモデル読み込み
+	m_pBlueModel = new Model;
+	if (!m_pBlueModel->Load("Assets/Model/slime/slime_blue1.28.FBX", 0.15f, Model::XFlip)) {		//倍率と反転は省略可
+		MessageBox(NULL, "slime_blue", "Error", MB_OK);	//ここでエラーメッセージ表示
+	}
+	m_pBlueModel->SetVertexShader(m_pVS);
+	//レベル2スライムのモデル読み込み
+	m_pGreenModel = new Model;
+	if (!m_pGreenModel->Load("Assets/Model/slime/slime_green1.28.FBX", 0.15f, Model::XFlip)) {		//倍率と反転は省略可
+		MessageBox(NULL, "slime_green", "Error", MB_OK);	//ここでエラーメッセージ表示
+	}
+	m_pGreenModel->SetVertexShader(m_pVS);
+	//レベル3スライムのモデル読み込み
+	m_pYellowModel = new Model;
+	if (!m_pYellowModel->Load("Assets/Model/slime/slime_Yellow1.28.FBX", 0.15f, Model::XFlip)) {		//倍率と反転は省略可
+		MessageBox(NULL, "slime_yellow", "Error", MB_OK);	//ここでエラーメッセージ表示
+	}
+	m_pYellowModel->SetVertexShader(m_pVS);
+	//レベル4スライムのモデル読み込み
+	m_pRedModel = new Model;
+	if (!m_pRedModel->Load("Assets/Model/slime/slime_red1.28.FBX", 0.18f, Model::XFlip)) {		//倍率と反転は省略可
+		MessageBox(NULL, "slime_red", "Error", MB_OK);		//ここでエラーメッセージ表示
+	}
+	m_pRedModel->SetVertexShader(m_pVS);
+	//フレイムスライムのモデル読み込み
+	m_pFlameModel = new Model;
+	if (!m_pFlameModel->Load("Assets/Model/Golem/Golem.FBX", 0.015f, Model::XFlip)) {		//倍率と反転は省略可
+		MessageBox(NULL, "Flame_Slime", "Error", MB_OK);	//ここでエラーメッセージ表示
+	}
+	m_pFlameModel->SetVertexShader(m_pVS);
 }
 
 /* ========================================
