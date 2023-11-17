@@ -77,14 +77,13 @@ public:
 	static void Release();
 
 private:
-	//すまん、メンバ変数はよくわからん
-	static ID2D1Factory*			pID2D1Factory;
-	static IDWriteFactory*			pIDWriteFactory;
-	static IDWriteTextFormat*		pTextFormat;
-	static IDWriteTextLayout*		pTextLayout;
-	static ID2D1RenderTarget*		pRT;
-	static ID2D1SolidColorBrush*	pSolidBrush;
-	static IDXGISurface*			pBackBuffer;
+	static ID2D1Factory*			pID2D1Factory;		//2D表示の為のメソッド
+	static IDWriteFactory*			pIDWriteFactory;	//
+	static IDWriteTextFormat*		pTextFormat;		//テキストのファーマットを決める
+	static IDWriteTextLayout*		pTextLayout;		//テキストのレイアウトを決める
+	static ID2D1RenderTarget*		pRT;				//レンダーターゲットを作成する
+	static ID2D1SolidColorBrush*	pSolidBrush;		//ブラシを作成する
+	static IDXGISurface*			pBackBuffer;		
 
 	//フォントデータ
 	static FontData* m_pSetting;
