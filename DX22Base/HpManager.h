@@ -19,22 +19,21 @@
 #include "HpUI.h"
 
 // =============== 定数定義 =======================
-#define MAX_HP	(5)
+#define MAX_HP	(5)		// HPの最大数
 
 // =============== クラス定義 =====================
-class ChpManager
+class CHpManager
 {
 public:
 	// ===メンバ関数宣言===
-	ChpManager();
-	~ChpManager();
-	void Update();
-	void Draw();
+	CHpManager(const int*);		// コンストラクタ
+	~CHpManager();				// デストラクタ
+	void Update();				// 更新処理
+	void Draw();				// 描画処理
 private:
 	// ===メンバ変数宣言===
-	CHpUI* m_pUI[MAX_HP];
-	int m_playerHP;
-	int m_playerOldHP;
+	CHpUI* m_pUI[MAX_HP];		// HPのテクスチャ用ポインタ
+	const int* m_pnPlayerHp;	// プレイヤーのHP用ポインタ
 };
 
 #endif	// !__HP_MANAGER_H__

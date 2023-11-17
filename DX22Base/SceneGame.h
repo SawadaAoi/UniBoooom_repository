@@ -54,7 +54,7 @@ private:
 	CSlimeManager* m_pSlimeMng;
 	CCOLLISION* m_pCollision;
 	CExplosionManager* m_pExplosionMng;
-	ChpManager* m_pHpMng;
+	CHpManager* m_pHpMng;
 	DirectWrite* m_pDirectWrite;
 };
 

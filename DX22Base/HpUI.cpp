@@ -29,7 +29,7 @@
 CHpUI::CHpUI()
 {
 	m_pTexture = new Texture();
-	if (FAILED(m_pTexture->Create("Assets/Texture/Star.png")))
+	if (FAILED(m_pTexture->Create("Assets/Texture/HP_Full_1.png")))
 	{
 		MessageBox(NULL, "ItemUI Star.png", "Error", MB_OK);
 	}
@@ -46,11 +46,7 @@ CHpUI::CHpUI()
 =========================================== */
 CHpUI::~CHpUI()
 {
-	if (m_pTexture)
-	{
-		delete m_pTexture;
-		m_pTexture = nullptr;
-	}
+	SAFE_DELETE(m_pTexture);
 }
 
 /* ========================================

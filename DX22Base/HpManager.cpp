@@ -20,20 +20,19 @@
 	-------------------------------------
 	内容：生成時に行う処理
 	-------------------------------------
-	引数：なし
+	引数：プレイヤーのHPのアドレス
 	-------------------------------------
 	戻値：なし
 =========================================== */
-ChpManager::ChpManager()
+CHpManager::CHpManager(const int* nHp)
 {
+	m_pnPlayerHp = nHp;		// プレイヤーのHPのアドレスを格納
+
 	for (int i = 0; i < MAX_HP; ++i)
 	{
-		m_pUI[i] = new CHpUI();
-		m_pUI[i]->Update();
+		m_pUI[i] = new CHpUI();		// HpUIクラスをインスタンス
+		m_pUI[i]->Update();			// 表示フラグをON
 	}
-
-	m_playerHP = MAX_HP;
-	m_playerOldHP = MAX_HP;
 }
 
 /* ========================================
@@ -45,15 +44,11 @@ ChpManager::ChpManager()
 	-------------------------------------
 	戻値：なし
 =========================================== */
-ChpManager::~ChpManager()
+CHpManager::~CHpManager()
 {
 	for (int i = 0; i < MAX_HP; ++i)
 	{
-		if (m_pUI[i])
-		{
-			delete m_pUI[i];
-			m_pUI[i] = nullptr;
-		}
+		SAFE_DELETE(m_pUI[i]);
 	}
 }
 
@@ -66,13 +61,9 @@ ChpManager::~ChpManager()
 	-------------------------------------
 	戻値：なし
 =========================================== */
-void ChpManager::Update()
+void CHpManager::Update()
 {
-	if (!(m_playerHP <= 0))
-	{
-		m_playerHP -= 1;
-		m_pUI[m_playerHP]->Update();
-	}
+
 }
 
 /* ========================================
@@ -84,11 +75,11 @@ void ChpManager::Update()
 	-------------------------------------
 	戻値：なし
 =========================================== */
-void ChpManager::Draw()
+void CHpManager::Draw()
 {
-	for (int i = 0; i < m_playerHP; ++i)
+	for (int i = 0; i < *m_pnPlayerHp; ++i)
 	{
-		if (m_pUI[i])
+		if (m_pUI[i])	// HPのテクスチャを表示
 		{
 			m_pUI[i]->Draw(70.0f * (float)(i + 0.8), 50.0f, 80.0f, 80.0f);
 		}

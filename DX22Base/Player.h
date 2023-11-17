@@ -58,9 +58,11 @@ public:
 	TPos3d<float>* GetPosAddress();
 	CHammer* GetHammerPtr();
 	bool GetCollide();							//当たり判定があるかの確認
+	int* GetHp();
 	// セット関数
 	void SetCamera(const CCamera* pCamera);
 	bool GetAttackFlg();
+	
 
 private:
 	// ===メンバ変数宣言=====

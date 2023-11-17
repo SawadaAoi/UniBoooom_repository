@@ -73,7 +73,7 @@ SceneGame::SceneGame(DirectWrite* pDirectWrite)
 	m_pExplosionMng->SetCamera(m_pCamera);
 
 	// HPマネージャー生成
-	m_pHpMng = new ChpManager;
+	m_pHpMng = new CHpManager(m_pPlayer->GetHp());
 }
 
 /* ========================================
