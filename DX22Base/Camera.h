@@ -15,6 +15,8 @@
 	・2023/11/07 GetViewMatrix()関数にconst修飾子付与・コメント修正 takagi
 	・2023/11/08 TPos修正 takagi
 	・2023/11/10 パラメタ修正 takagi
+	・2023/11/17 2D表示/3D表示の切換をコンストラクタでなくGetProjectionMatrix()関数で行うように変更
+					・フラグから2D/3Dの概念を削除 takagi
 
 ========================================== */
 
@@ -41,7 +43,7 @@ public:
 	};	//表示形式
 	enum E_BIT_FLAG
 	{
-		E_BIT_FLAG_AS_2D = 0x01,		//2Dのように描画する(フラグが立っていないときは3Dとして描画)
+		E_BIT_FLAG_1 = 0x01,			//
 		E_BIT_FLAG_VIBRATION = 0x02,	//画面振動
 		E_BIT_FLAG_3 = 0x04,			//
 		E_BIT_FLAG_4 = 0x08,			//
@@ -62,14 +64,15 @@ protected:
 	float m_fRadius;		//距離
 public:
 	// ===プロトタイプ宣言===
-	CCamera(const E_DRAW_TYPE& eDraw = E_DRAW_TYPE_3D);	//コンストラクタ
-	virtual~CCamera();									//デストラクタ
-	virtual void Update() = 0;							//更新
-	void UpFlag(const unsigned char& ucBitFlag);		//OR	 00:0,01:1,10:1,11:1
-	void DownFlag(const unsigned char& ucBitFlag);		//A AND !B	00:0,01:0,10:1,11:0
-	void SetFlag(const unsigned char& ucBitFlag);		//XOR：上げ下げどっちもできる	00:0,01:1,10:1,11:0
-	virtual DirectX::XMFLOAT4X4 GetViewMatrix() const;	//ビュー行列変換
-	DirectX::XMFLOAT4X4 GetProjectionMatrix() const;	//プロジェクション行列変換
+	CCamera();												//コンストラクタ
+	virtual~CCamera();										//デストラクタ
+	virtual void Update() = 0;								//更新
+	void UpFlag(const unsigned char& ucBitFlag);			//OR	 00:0,01:1,10:1,11:1
+	void DownFlag(const unsigned char& ucBitFlag);			//A AND !B	00:0,01:0,10:1,11:0
+	void SetFlag(const unsigned char& ucBitFlag);			//XOR：上げ下げどっちもできる	00:0,01:1,10:1,11:0
+	virtual DirectX::XMFLOAT4X4 GetViewMatrix() const;		//ビュー行列変換
+	DirectX::XMFLOAT4X4 GetProjectionMatrix(
+		const E_DRAW_TYPE& eDraw = E_DRAW_TYPE_3D) const;	//プロジェクション行列変換
 protected:
 	void HandleFlag();	//フラグ別処理
 private:

@@ -16,6 +16,7 @@
 	・2023/11/09 カメラの様々動作チェック。 takagi
 	・2023/11/10 パラメタ修正 takagi
 	・2023/11/11 define用ヘッダ追加 suzumura
+	・2023/11/17 2D表示/3D表示の切換をコンストラクタでなくGetProjectionMatrix()関数で行うように変更 takagi
 ========================================== */
 
 // =============== インクルード ===================
@@ -41,11 +42,11 @@ const float INIT_RADIUS = 40.0f;									//カメラと注視点との距離(初期値)
 	-------------------------------------
 	内容：生成時に行う処理
 	-------------------------------------
-	引数1：const E_DRAW_TYPE& eDraw：2D表示か3D表示か
+	引数1：なし
 	-------------------------------------
 	戻値：なし
 =========================================== */
-CCamera::CCamera(const E_DRAW_TYPE& eDraw)
+CCamera::CCamera()
 	:m_fPos(INIT_POS)			//位置
 	,m_fLook(INIT_LOOK)			//注視点
 	,m_fUp(INIT_UP_VECTOR)		//上方ベクトル
@@ -54,18 +55,6 @@ CCamera::CCamera(const E_DRAW_TYPE& eDraw)
 	,m_fFar(INIT_FAR)			//画面奥
 	,m_fRadius(INIT_RADIUS)		//注視点とカメラの距離
 {
-	//＞分岐処理
-	switch (eDraw)	//投影選択
-	{
-		// =============== 2D表示 ===================
-	case E_DRAW_TYPE_2D:
-		UpFlag(E_BIT_FLAG_AS_2D);	//2Dフラグオン
-		break;	//分岐処理終了
-		// =============== 3D表示 ===================
-	case E_DRAW_TYPE_3D:
-		DownFlag(E_BIT_FLAG_AS_2D);	//2Dフラグオフ
-		break;	//分岐処理終了
-	}
 }
 
 /* ========================================
@@ -157,19 +146,31 @@ DirectX::XMFLOAT4X4 CCamera::GetViewMatrix() const
 	-------------------------------------
 	内容：カメラのプロジェクション行列を提供
 	-------------------------------------
-	引数1：なし
+	引数1：const E_DRAW_TYPE& eDraw：2D表示か3D表示か
 	-------------------------------------
 	戻値：作成した行列
 =========================================== */
-DirectX::XMFLOAT4X4 CCamera::GetProjectionMatrix() const
+DirectX::XMFLOAT4X4 CCamera::GetProjectionMatrix(const E_DRAW_TYPE& eDraw) const
 {
 	// =============== 変数宣言 ===================
 	DirectX::XMFLOAT4X4 mat;	//行列格納用
 
 	// =============== プロジェクション行列の計算 ===================
-	DirectX::XMStoreFloat4x4(&mat, DirectX::XMMatrixTranspose(
-		DirectX::XMMatrixPerspectiveFovLH(m_fAngle, ASPECT, m_fNear, m_fFar)));	//プロジェクション変換
-	
+	switch (eDraw)	//投影選択
+	{
+		// =============== 2D表示 ===================
+	case E_DRAW_TYPE_2D:	//2Dのプロジェクション座標作成
+		DirectX::XMStoreFloat4x4(&mat, DirectX::XMMatrixTranspose(
+			DirectX::XMMatrixOrthographicOffCenterLH(0.0f, SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f, m_fNear, m_fFar)));	//左下を原点(0,0)とした座標系
+		break;	//分岐処理終了
+
+		// =============== 3D表示 ===================
+	case E_DRAW_TYPE_3D:	//3Dのプロジェクション座標作成
+		DirectX::XMStoreFloat4x4(&mat, DirectX::XMMatrixTranspose(
+			DirectX::XMMatrixPerspectiveFovLH(m_fAngle, ASPECT, m_fNear, m_fFar)));	//3Dプロジェクション変換
+		break;	//分岐処理終了
+	}
+
 	// =============== 提供 ===================
 	return mat;	//行列提供
 }
