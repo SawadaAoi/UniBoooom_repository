@@ -209,7 +209,4 @@ void SceneGame::Draw()
 
 	//タイマー描画
 	m_pTimer->Draw();
-	
-	std::string str = "abc";
-	DirectWrite::DrawString(str,DirectX::XMFLOAT2(0.0f,0.0f));
 }
