@@ -16,7 +16,8 @@
 	・2023/11/09 カメラの様々動作チェック。 takagi
 	・2023/11/10 パラメタ修正 takagi
 	・2023/11/11 define用ヘッダ追加 suzumura
-	・2023/11/17 2D表示/3D表示の切換をコンストラクタでなくGetProjectionMatrix()関数で行うように変更 takagi
+	・2023/11/17 2D表示/3D表示の切換をコンストラクタでなくGetProjectionMatrix()関数で行うように変更・振動機能追加 takagi
+
 ========================================== */
 
 // =============== インクルード ===================
@@ -37,6 +38,21 @@ const float INIT_FAR = 150.0f;										//画面奥初期z値
 const float INIT_RADIUS = 40.0f;									//カメラと注視点との距離(初期値)
 #endif
 
+const float Pi = 3.141592f;
+constexpr float ANGLE_TO_RADIAN(float fAngle)
+{
+	return fAngle / 180.0f * Pi;	//角度→ラジアン角
+}
+
+const float RADIAN_VELOCITY_WEAK = ANGLE_TO_RADIAN(20.0f);		//角速度：弱
+const float RADIAN_VELOCITY_STRONG = ANGLE_TO_RADIAN(40.0f);	//角速度：強
+const TDiType<float> AMPLITUDE_WEAK(1.0f, 3.0f);				//振幅：弱
+const TDiType<float> AMPLITUDE_STRONG(10.0f, 50.0f);			//振幅：強
+const TDiType<float> VIRTUAL_FRICTION(0.5f);					//疑似摩擦力
+const TDiType<float> VIRTUAL_GRAVITY(0.5f);						//疑似重力
+const TDiType<float> DECREASE_RADIAN_WEAK(0.001f, 0.005f);		//角速度減少量：弱
+const TDiType<float> DECREASE_RADIAN_STRONG(0.005f, 0.008f);	//角速度減少量：強
+
 /* ========================================
 	コンストラクタ関数
 	-------------------------------------
@@ -47,13 +63,20 @@ const float INIT_RADIUS = 40.0f;									//カメラと注視点との距離(初期値)
 	戻値：なし
 =========================================== */
 CCamera::CCamera()
-	:m_fPos(INIT_POS)			//位置
-	,m_fLook(INIT_LOOK)			//注視点
-	,m_fUp(INIT_UP_VECTOR)		//上方ベクトル
-	,m_fAngle(INIT_ANGLE)		//角度
-	,m_fNear(INIT_NEAR)			//画面手前
-	,m_fFar(INIT_FAR)			//画面奥
-	,m_fRadius(INIT_RADIUS)		//注視点とカメラの距離
+	:m_ucFlag(0)								//フラグ
+	,m_fPos(INIT_POS)							//位置
+	,m_fLook(INIT_LOOK)							//注視点
+	,m_fUp(INIT_UP_VECTOR)						//上方ベクトル
+	,m_fAngle(INIT_ANGLE)						//角度
+	,m_fNear(INIT_NEAR)							//画面手前
+	,m_fFar(INIT_FAR)							//画面奥
+	,m_fRadius(INIT_RADIUS)						//注視点とカメラの距離
+	,m_fOffsetVibrateEye(0.0f)					//カメラ位置振動
+	,m_fOffsetVibrateLook(0.0f)					//注視点振動
+	,m_fRadianVelocityWeak(0.0f)				//蓄積角速度：弱
+	,m_fRadianVelocityStrong(0.0f)				//蓄積角速度：強
+	,m_fAddRadianWeak(RADIAN_VELOCITY_WEAK)		//角速度増加量：弱
+	,m_fAddRadianStrong(RADIAN_VELOCITY_STRONG)	//角速度増加量：強
 {
 }
 
@@ -187,22 +210,81 @@ DirectX::XMFLOAT4X4 CCamera::GetProjectionMatrix(const E_DRAW_TYPE& eDraw) const
 void CCamera::HandleFlag()
 {
 	// =============== 振動フラグ ===================
-	if (m_ucFlag & E_BIT_FLAG_VIBRATION)
+			//ー単振動の動きがそれっぽいかなと思ったので採用してみるー
+	if (m_ucFlag & E_BIT_FLAG_VIBRATION_SIDE_WEAK)
 	{
 		// =============== 振動 ===================
-		Vibration();	//画面揺れ
+		m_fAddRadianWeak.x -= DECREASE_RADIAN_WEAK.x;								//角速度増加量更新
+		if (m_fAddRadianWeak.x >= 0.0f)
+		{
+			m_fRadianVelocityWeak.x += m_fAddRadianWeak.x;							//角速度更新
+			m_fOffsetVibrateEye.x = AMPLITUDE_WEAK.x * sinf(m_fRadianVelocityWeak.x);	//単振動
+			m_fOffsetVibrateLook.x = m_fOffsetVibrateEye.x;	//注視点振動
+		}
+		else
+		{
+			DownFlag(E_BIT_FLAG_VIBRATION_SIDE_WEAK);		//フラグ下降
+			m_fAddRadianWeak.x = RADIAN_VELOCITY_WEAK;		//角速度増加量初期化
+			m_fRadianVelocityWeak.x = 0.0f;					//角速度初期化
+			m_fOffsetVibrateEye.x = 0.0f;					//初期化
+			m_fOffsetVibrateLook.x = 0.0f;					//初期化
+		}
 	}
-}
-
-/* ========================================
-	振動関数
-	-------------------------------------
-	内容：画面を振動させる
-	-------------------------------------
-	引数1：なし
-	-------------------------------------
-	戻値：なし
-=========================================== */
-void CCamera::Vibration()
-{
+	if (m_ucFlag & E_BIT_FLAG_VIBRATION_UP_DOWN_WEAK)
+	{
+		// =============== 振動 ===================
+		m_fAddRadianWeak.y -= DECREASE_RADIAN_WEAK.y;									//角速度増加量更新
+		if (m_fAddRadianWeak.y >= 0.0f)
+		{
+			m_fRadianVelocityWeak.y += m_fAddRadianWeak.y;								//角速度更新
+			m_fOffsetVibrateEye.y = AMPLITUDE_WEAK.y * sinf(m_fRadianVelocityWeak.y);	//単振動
+			m_fOffsetVibrateLook.y = m_fOffsetVibrateEye.y + m_fOffsetVibrateEye.y;		//注視点振動
+		}
+		else
+		{
+			DownFlag(E_BIT_FLAG_VIBRATION_UP_DOWN_WEAK);	//フラグ下降
+			m_fAddRadianWeak.y = RADIAN_VELOCITY_WEAK;		//角速度増加量初期化
+			m_fRadianVelocityWeak.y = 0.0f;					//角速度初期化
+			m_fOffsetVibrateEye.y = 0.0f;					//初期化
+			m_fOffsetVibrateLook.y = 0.0f;					//初期化
+		}
+	}	
+	if (m_ucFlag & E_BIT_FLAG_VIBRATION_SIDE_STRONG)
+	{
+		// =============== 振動 ===================
+		m_fAddRadianStrong.x -= DECREASE_RADIAN_STRONG.x;									//角速度増加量更新
+		if (m_fAddRadianStrong.x >= 0.0f)
+		{
+			m_fRadianVelocityStrong.x += m_fAddRadianStrong.x;								//角速度更新
+			m_fOffsetVibrateEye.x = AMPLITUDE_STRONG.x * sinf(m_fRadianVelocityStrong.x);	//単振動
+			m_fOffsetVibrateLook.x = m_fOffsetVibrateEye.x;			//注視点振動
+		}
+		else
+		{
+			DownFlag(E_BIT_FLAG_VIBRATION_SIDE_STRONG);			//フラグ下降
+			m_fAddRadianStrong.x = RADIAN_VELOCITY_STRONG;		//角速度増加量初期化
+			m_fRadianVelocityStrong.x = 0.0f;					//角速度初期化
+			m_fOffsetVibrateEye.x = 0.0f;						//初期化
+			m_fOffsetVibrateLook.x = 0.0f;						//初期化
+		}
+	}
+	if (m_ucFlag & E_BIT_FLAG_VIBRATION_UP_DOWN_STRONG)
+	{
+		// =============== 振動 ===================
+		m_fAddRadianStrong.y -= DECREASE_RADIAN_STRONG.y;								//角速度増加量更新
+		if (m_fAddRadianStrong.y >= 0.0f)
+		{
+			m_fRadianVelocityStrong.y += m_fAddRadianWeak.y;							//角速度更新
+			m_fOffsetVibrateEye.y = AMPLITUDE_WEAK.y * sinf(m_fRadianVelocityStrong.y);	//単振動
+			m_fOffsetVibrateLook.y = m_fOffsetVibrateEye.y + m_fOffsetVibrateEye.y;		//注視点振動
+		}
+		else
+		{
+			DownFlag(E_BIT_FLAG_VIBRATION_UP_DOWN_STRONG);		//フラグ下降
+			m_fAddRadianStrong.y = RADIAN_VELOCITY_STRONG;		//角速度増加量初期化
+			m_fRadianVelocityStrong.y = 0.0f;					//角速度初期化
+			m_fOffsetVibrateEye.y = 0.0f;						//初期化
+			m_fOffsetVibrateLook.y = 0.0f;						//初期化
+		}
+	}
 }
