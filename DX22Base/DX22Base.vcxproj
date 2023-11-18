@@ -183,6 +183,7 @@
     <ClCompile Include="EmitterManager.cpp" />
     <ClCompile Include="Explosion.cpp" />
     <ClCompile Include="ExplosionManager.cpp" />
+    <ClCompile Include="Fade.cpp" />
     <ClCompile Include="Floor.cpp" />
     <ClCompile Include="ModelParticle.cpp" />
     <ClCompile Include="Particle.cpp" />
@@ -235,6 +236,7 @@
     <ClInclude Include="Controller.h" />
     <ClInclude Include="Cylinder.h" />
     <ClInclude Include="DirectWrite.h" />
+    <ClInclude Include="Fade.h" />
     <ClInclude Include="Floor.h" />
     <ClInclude Include="GameParameter.h" />
     <ClInclude Include="Defines.h" />
@@ -286,6 +288,18 @@
     <ClInclude Include="TriType.h" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="PsFade.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="VsFade.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
     <FxCompile Include="VS_Model.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>

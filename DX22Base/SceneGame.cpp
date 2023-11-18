@@ -25,6 +25,9 @@
 #include "Line.h"
 #include "Defines.h"
 
+//Texture* pTex = new Texture;
+//PixelShader* pps = new PixelShader;
+//VertexShader* pvs = new VertexShader;
 
 // =============== デバッグモード =======================
 #define MODE_COORD_AXIS (true)	//座標軸映すかどうか
@@ -79,6 +82,15 @@ SceneGame::SceneGame(DirectWrite* pDirectWrite)
 	// タイマー生成
 	m_pTimer = new CTimer();
 	m_pTimer->TimeStart();
+
+	//m_pFade = new CFade(m_pCamera);
+	//pTex->Create("Assets/NoStar.png");
+	//m_pFade->SetTexture(pTex);
+	//pps->Load("PsFade.cso");
+	//m_pFade->SetPixelShader(pps);
+	//pvs->Load("VsFade.cso");
+	//m_pFade->SetVertexShader(pvs);
+	//m_pFade->SetTexture("Assets/NoStar.png");
 }
 
 /* ========================================
@@ -92,6 +104,8 @@ SceneGame::SceneGame(DirectWrite* pDirectWrite)
 =========================================== */
 SceneGame::~SceneGame()
 {
+	if(m_pFade)
+		SAFE_DELETE(m_pFade);
 	SAFE_DELETE(m_pTimer);
 	SAFE_DELETE(m_pExplosionMng);
 	SAFE_DELETE(m_pSlimeMng);	// スライムマネージャー削除
@@ -141,39 +155,39 @@ void SceneGame::Update(float tick)
 =========================================== */
 void SceneGame::Draw()
 {
-#if MODE_COORD_AXIS
-	// 軸線の表示
-	CLine::SetView(m_pCamera->GetViewMatrix());
-	CLine::SetProjection(m_pCamera->GetProjectionMatrix());
-	// グリッド
-	DirectX::XMFLOAT4 lineColor(0.5f, 0.5f, 0.5f, 1.0f);
-	float size = DEBUG_GRID_NUM * DEBUG_GRID_MARGIN;
-	for (int i = 1; i <= DEBUG_GRID_NUM; ++i)
-	{
-		float grid = i * DEBUG_GRID_MARGIN;
-		DirectX::XMFLOAT3 pos[2] = {
-			DirectX::XMFLOAT3(grid, 0.0f, size),
-			DirectX::XMFLOAT3(grid, 0.0f,-size),
-		};
-		CLine::Add(pos[0], pos[1], lineColor);
-		pos[0].x = pos[1].x = -grid;
-		CLine::Add(pos[0], pos[1], lineColor);
-		pos[0].x = size;
-		pos[1].x = -size;
-		pos[0].z = pos[1].z = grid;
-		CLine::Add(pos[0], pos[1], lineColor);
-		pos[0].z = pos[1].z = -grid;
-		CLine::Add(pos[0], pos[1], lineColor);
-	}
-	// 軸
-	CLine::Add(DirectX::XMFLOAT3(0, 0, 0), DirectX::XMFLOAT3(size, 0, 0), DirectX::XMFLOAT4(1, 0, 0, 1));
-	CLine::Add(DirectX::XMFLOAT3(0, 0, 0), DirectX::XMFLOAT3(0, size, 0), DirectX::XMFLOAT4(0, 1, 0, 1));
-	CLine::Add(DirectX::XMFLOAT3(0, 0, 0), DirectX::XMFLOAT3(0, 0, size), DirectX::XMFLOAT4(0, 0, 1, 1));
-	CLine::Add(DirectX::XMFLOAT3(0, 0, 0), DirectX::XMFLOAT3(-size, 0, 0), DirectX::XMFLOAT4(0, 0, 0, 1));
-	CLine::Add(DirectX::XMFLOAT3(0, 0, 0), DirectX::XMFLOAT3(0, 0, -size), DirectX::XMFLOAT4(0, 0, 0, 1));
-
-	CLine::Draw();
-#endif
+//#if MODE_COORD_AXIS
+//	// 軸線の表示
+//	CLine::SetView(m_pCamera->GetViewMatrix());
+//	CLine::SetProjection(m_pCamera->GetProjectionMatrix());
+//	// グリッド
+//	DirectX::XMFLOAT4 lineColor(0.5f, 0.5f, 0.5f, 1.0f);
+//	float size = DEBUG_GRID_NUM * DEBUG_GRID_MARGIN;
+//	for (int i = 1; i <= DEBUG_GRID_NUM; ++i)
+//	{
+//		float grid = i * DEBUG_GRID_MARGIN;
+//		DirectX::XMFLOAT3 pos[2] = {
+//			DirectX::XMFLOAT3(grid, 0.0f, size),
+//			DirectX::XMFLOAT3(grid, 0.0f,-size),
+//		};
+//		CLine::Add(pos[0], pos[1], lineColor);
+//		pos[0].x = pos[1].x = -grid;
+//		CLine::Add(pos[0], pos[1], lineColor);
+//		pos[0].x = size;
+//		pos[1].x = -size;
+//		pos[0].z = pos[1].z = grid;
+//		CLine::Add(pos[0], pos[1], lineColor);
+//		pos[0].z = pos[1].z = -grid;
+//		CLine::Add(pos[0], pos[1], lineColor);
+//	}
+//	// 軸
+//	CLine::Add(DirectX::XMFLOAT3(0, 0, 0), DirectX::XMFLOAT3(size, 0, 0), DirectX::XMFLOAT4(1, 0, 0, 1));
+//	CLine::Add(DirectX::XMFLOAT3(0, 0, 0), DirectX::XMFLOAT3(0, size, 0), DirectX::XMFLOAT4(0, 1, 0, 1));
+//	CLine::Add(DirectX::XMFLOAT3(0, 0, 0), DirectX::XMFLOAT3(0, 0, size), DirectX::XMFLOAT4(0, 0, 1, 1));
+//	CLine::Add(DirectX::XMFLOAT3(0, 0, 0), DirectX::XMFLOAT3(-size, 0, 0), DirectX::XMFLOAT4(0, 0, 0, 1));
+//	CLine::Add(DirectX::XMFLOAT3(0, 0, 0), DirectX::XMFLOAT3(0, 0, -size), DirectX::XMFLOAT4(0, 0, 0, 1));
+//
+//	CLine::Draw();
+//#endif
 
 #if MODE_GROUND
 	DirectX::XMFLOAT4X4 mat[3];
@@ -199,18 +213,27 @@ void SceneGame::Draw()
 	m_pBox->Draw();
 #endif
 	
-	//床の描画
-	m_pFloor->Draw();
-	// スライムマネージャー描画
-	m_pSlimeMng->Draw();
-	m_pPlayer->Draw();
-	
-	//爆発マネージャー描画
-	m_pExplosionMng->Draw();
+	////床の描画
+	//m_pFloor->Draw();
+	//// スライムマネージャー描画
+	//m_pSlimeMng->Draw();
+	//m_pPlayer->Draw();
+	//
+	////爆発マネージャー描画
+	//m_pExplosionMng->Draw();
 
-	//タイマー描画
-	m_pTimer->Draw();
+	////タイマー描画
+	//m_pTimer->Draw();
 	
+
+	//DirectX::XMFLOAT4X4 matrix;
+	//DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(100.0f, 220.0f, 10.0f);
+	//DirectX::XMStoreFloat4x4(&matrix, DirectX::XMMatrixTranspose(world));
+	//m_pFade->SetWorld(matrix);
+	//m_pFade->SetView(m_pCamera->GetViewMatrix());
+	//m_pFade->SetProjection(m_pCamera->GetProjectionMatrix(CCamera::E_DRAW_TYPE_2D));
+	//m_pFade->SetSize(DirectX::XMFLOAT2(300.0f, 300.0f));
+	//m_pFade->Draw();
 }
 
 
