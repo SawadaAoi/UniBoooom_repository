@@ -31,7 +31,7 @@
 	・2023/11/13 GetScale関数の追加 Suzumura
 	・2023/11/14 列挙にFLAMEを追加、NormalMoveを仮想関数に Suzumura
 	・2023/11/14 SphereInfoの変更に対応 Takagi
-
+	・2023/11/15 Objectクラスを継承したので修正　yamamoto
 ========================================== */
 #ifndef __SLIME_BASE_H__
 #define __SLIME_BASE_H__
@@ -44,7 +44,7 @@
 #include "Pos3d.h"
 #include "Camera.h"
 #include "GameParameter.h"		//定数定義用ヘッダー
-
+#include "Object.h"
 // =============== 列挙定義 =======================
 enum E_SLIME_LEVEL
 {
@@ -68,6 +68,7 @@ const float ENEMY_MOVE_SPEED = 0.01f;	//敵の移動速度
 // =============== クラス定義 =====================
 
 class CSlimeBase
+	: public CObject 
 {
 public:
 	// ===プロトタイプ宣言===
@@ -83,30 +84,22 @@ public:
 	void Reflect();									//スライムとぶつかって吹き飛ばした際に自分の移動量を減らす
 
 	// ゲット関数
-	TPos3d<float> GetPos();
-	tagTransform3d GetTransform() { return m_Transform; }	//仮：Angle関数用
-	tagSphereInfo GetSphere();	// スライムの座標と半径を取得
 	float GetSpeed();					// スライムの移動速度を取得
 	E_SLIME_LEVEL GetSlimeLevel();		// スライムのレベルを取得
-	TTriType<float> GetScale();			// スライムのサイズを取得
 
 	//セット関数
-	void SetSphere(tagSphereInfo Sphere);
-	void SetPos(TPos3d<float> pos);
 	virtual void SetNormalSpeed() = 0;
 	void SetCamera(const CCamera* pCamera);
 	bool GetHitMoveFlg();
 protected:
 	Model* m_pModel;				//3Dモデル
 	VertexShader* m_pVS;			//バーテックスシェーダーのポインタ
-	tagTransform3d m_Transform;		//ワールド座標系情報
 	TTriType<float> m_move;			//移動量
 
 	float m_fVecAngle;				//敵の吹き飛ぶ方向
 	float m_fSpeed;					//スライムの移動速度
 	bool m_bHitMove;				//吹っ飛び中かどうか
 
-	tagSphereInfo m_sphere;	// 当たり判定の座標および半径を保存する
 
 	E_SLIME_LEVEL m_eSlimeSize;		//スライムの大きさの列挙
 	const CCamera* m_pCamera;		//カメラのポインタ

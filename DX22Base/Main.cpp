@@ -70,7 +70,7 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
 #if USE_SCENE_MANAGER
 	g_pSceneMng = new CSceneManager();
 #else
-	g_pGame = new SceneGame(GetDirectWrite());
+	g_pGame = new SceneGame();
 #endif
 
 	return hr;

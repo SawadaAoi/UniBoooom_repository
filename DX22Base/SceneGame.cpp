@@ -11,11 +11,14 @@
 	・2023/11/08 コメント追加、無駄な箇所を削除　澤田蒼生
 	・2023/11/09 カメラの様々動作チェック。メインから軸線奪取。地面追加。 髙木駿輔
 	・2023/11/10 カメラをスライムと爆発にも渡すようにした・lineのメモリリーク対策 髙木駿輔
+	・2023/11/17 振動機能呼び出しデバッグモード追加 takagi
 
 ========================================== */
 
 // =============== 定数定義 =======================
 const float BGM_VOLUME = 0.05f;	//BGMのボリューム
+// =============== デバッグモード ===================
+#define USE_CAMERA_VIBRATION (false)
 
 // =============== インクルード ===================
 #include "SceneGame.h"
@@ -27,6 +30,10 @@ const float BGM_VOLUME = 0.05f;	//BGMのボリューム
 #include "Box.h"
 #include "Line.h"
 #include "Defines.h"
+
+#if USE_CAMERA_VIBRATION
+#include "Input.h"
+#endif
 
 
 // =============== デバッグモード =======================
@@ -42,7 +49,7 @@ const float BGM_VOLUME = 0.05f;	//BGMのボリューム
 	-------------------------------------
 	戻値：無し
 =========================================== */
-SceneGame::SceneGame(DirectWrite* pDirectWrite)
+SceneGame::SceneGame()
 {
 	// 頂点シェーダの読込
 	m_pVs = new VertexShader();
@@ -54,7 +61,6 @@ SceneGame::SceneGame(DirectWrite* pDirectWrite)
 	RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得
 	DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
 	SetRenderTargets(1, &pRTV, pDSV);		//DSVがnullだと2D表示になる
-	SetDirectWrite(pDirectWrite);
 
 #if MODE_COORD_AXIS
 	// 軸線の表示
@@ -132,6 +138,24 @@ SceneGame::~SceneGame()
 =========================================== */
 void SceneGame::Update(float tick)
 {
+#if USE_CAMERA_VIBRATION
+	if (IsKeyTrigger('1'))
+	{
+		m_pCamera->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_WEAK);
+	}
+	if (IsKeyTrigger('2'))
+	{
+		m_pCamera->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_STRONG);
+	}
+	if (IsKeyTrigger('3'))
+	{
+		m_pCamera->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_SIDE_WEAK);
+	}
+	if (IsKeyTrigger('4'))
+	{
+		m_pCamera->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_SIDE_STRONG);
+	}
+#endif
 	m_pCamera->Update();
 	m_pPlayer->Update();
 	m_pSlimeMng->SetPlayerPos(m_pPlayer->GetPos());
@@ -224,11 +248,4 @@ void SceneGame::Draw()
 
 	//タイマー描画
 	m_pTimer->Draw();
-	
-}
-
-
-void SceneGame::SetDirectWrite(DirectWrite* pDirectWrite)
-{
-	m_pDirectWrite = pDirectWrite;
 }

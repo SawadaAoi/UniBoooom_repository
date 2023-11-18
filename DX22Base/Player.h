@@ -19,7 +19,7 @@
 	・2023/11/11 プレイヤーの点滅処理追加 Tei
 	・2023/11/14 SphereInfoの変更に対応 Takagi
 	・2023/11/14 キーボードの入力移動処理内容を適切な形に変更 Sawada
-
+	・2023/11/15 Objectクラスを継承したので修正　yamamoto
 ========================================== */
 
 #ifndef __PLAYER_H__
@@ -33,8 +33,10 @@
 #include "Transform3d.h"
 #include "Pos3d.h"
 #include "Camera.h"
+#include "Object.h"
 // =============== クラス定義 =====================
 class CPlayer
+	: public CObject
 {
 public:
 	// ===プロトタイプ宣言===
@@ -51,10 +53,7 @@ public:
 
 
 	// ゲット関数
-	tagSphereInfo GetPlayerSphere();	//当たり判定を取るためゲッター
 	tagSphereInfo GetHammerSphere();	//当たり判定を取るためゲッター
-	TPos3d<float> GetPos();	//プレイヤーの座標を取得
-	tagTransform3d GetTransform() { return m_Transform; }
 	TPos3d<float>* GetPosAddress();
 	CHammer* GetHammerPtr();
 	bool GetCollide();							//当たり判定があるかの確認
@@ -64,10 +63,10 @@ public:
 
 private:
 	// ===メンバ変数宣言=====
-	tagTransform3d m_Transform;	//ワールド座標系情報
+	
 
 	TPos3d<float> m_fMove;				// 移動量
-	tagSphereInfo m_sphere;		//プレイヤーの当たり判定用の球体
+	
 	int m_nHp;							// プレイヤーの体力
 	bool m_bAttackFlg;					// 攻撃中かどうかのフラグ
 	int m_nNoDamageCnt;					// プレイヤーの無敵時間をカウント
