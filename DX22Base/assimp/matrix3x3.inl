@@ -194,7 +194,7 @@ aiMatrix3x3t<TReal>& aiMatrix3x3t<TReal>::Inverse() {
     TReal det = Determinant();
     if(det == static_cast<TReal>(0.0))
     {
-        // Matrix not invertible. pSetting all elements to nan is not really
+        // Matrix not invertible. Setting all elements to nan is not really
         // correct in a mathematical sense; but at least qnans are easy to
         // spot. XXX we might throw an exception instead, which would
         // be even much better to spot :/.
