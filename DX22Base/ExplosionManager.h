@@ -19,6 +19,7 @@
 #include "Explosion.h"			//爆発処理ヘッダー
 #include "GameParameter.h"		//定数定義用ヘッダー
 #include "SlimeBase.h"
+#include "Sound.h"
 
 // =============== 定数定義 =======================
 #if MODE_GAME_PARAMETER
@@ -54,6 +55,8 @@ protected:
 	CExplosion* m_pExplosion[MAX_EXPLOSION_NUM];	//爆発の配列
 	const CCamera* m_pCamera;
 private:
+	XAUDIO2_BUFFER* m_pSEExplode;
+	IXAudio2SourceVoice* m_pSEExplodeSpeaker;
 };
 
 #endif // __EXPLOSION_MANAGER_H__

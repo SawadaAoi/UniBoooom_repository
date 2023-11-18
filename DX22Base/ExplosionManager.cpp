@@ -35,12 +35,17 @@
 	戻値：なし
 =========================================== */
 CExplosionManager::CExplosionManager()
+	:m_pSEExplode(nullptr)
+	, m_pSEExplodeSpeaker(nullptr)
 {
 	// 爆発配列の初期化
 	for (int i = 0; i < MAX_EXPLOSION_NUM; i++)
 	{
 		m_pExplosion[i] = nullptr;
 	}
+
+	//サウンドファイルの読み込み
+	m_pSEExplode = CSound::LoadSound("Assets/Sound/Explode.mp3");
 }
 
 /* ========================================
@@ -114,8 +119,9 @@ void CExplosionManager::Create(TTriType<float> pos,float size, float time)
 
 		m_pExplosion[i] = new CExplosion(pos,size,time);	// 座標を指定して生成
 		m_pExplosion[i]->SetCamera(m_pCamera);
+		m_pSEExplodeSpeaker = CSound::PlaySound(m_pSEExplode);
 
-		break;
+		return;
 
 	}
 }

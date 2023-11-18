@@ -187,6 +187,7 @@
     <ClCompile Include="ModelParticle.cpp" />
     <ClCompile Include="Particle.cpp" />
     <ClCompile Include="SelectStage.cpp" />
+    <ClCompile Include="Sound.cpp" />
     <ClCompile Include="Stage1.cpp" />
     <ClCompile Include="Hammer.cpp" />
     <ClCompile Include="Input.cpp" />
@@ -249,6 +250,7 @@
     <ClInclude Include="ModelParticle.h" />
     <ClInclude Include="Particle.h" />
     <ClInclude Include="SelectStage.h" />
+    <ClInclude Include="Sound.h" />
     <ClInclude Include="Stage1.h" />
     <ClInclude Include="Hammer.h" />
     <ClInclude Include="Input.h" />
