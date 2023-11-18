@@ -12,9 +12,14 @@
 	・2023/11/05 現段階のコーディング規約適用 takagi
 	・2023/11/07 コメント修正 takagi
 	・2023/11/16 シーン遷移の流れを実装 takagi
-	・2023/11/17 過去シーンに戻る処理を追加 takagi
+	・2023/11/17 過去シーンに戻る処理を追加・キー入力でシーンを切り替えられるデバッグモード追加 takagi
 
 ========================================== */
+
+// =============== デバッグモード ===================
+#if _DEBUG
+#define KEY_CHANGE_SCENE (true)	//キー入力でシーンを変える
+#endif
 
 // =============== インクルード ===================
 #include "SceneManager.h"	//自身のヘッダ
@@ -28,6 +33,11 @@
 
 #if _DEBUG
 #include <Windows.h>		//メッセージボックス用
+#endif
+
+#if KEY_CHANGE_SCENE
+#include <string>			//文字列操作
+#include "Input.h"			//キー入力
 #endif
 
 
@@ -84,6 +94,23 @@ CSceneManager::~CSceneManager()
 =========================================== */
 void CSceneManager::Update()
 {
+#if KEY_CHANGE_SCENE
+	for (int nIdx = 0; nIdx < CScene::E_TYPE_MAX; nIdx++)
+	{
+		if (nIdx < 10)	//キー入力できる範囲
+		{
+			//Shift入力中に数字を押すとその数字のシーンに移る
+			if (IsKeyPress(VK_SHIFT) & IsKeyTrigger(*std::to_string(nIdx).c_str()))
+			{
+				m_eNextScene = static_cast<CScene::E_TYPE>(nIdx);	//移動先シーン登録
+				delete m_pScene;									//メモリ解放
+				m_pScene = nullptr;									//空アドレス代入
+				ChangeScene();										//シーン変更
+			}
+		}
+	}
+#endif
+
 	// =============== 更新 ===================
 	if (m_pScene)	//ヌルチェック
 	{
