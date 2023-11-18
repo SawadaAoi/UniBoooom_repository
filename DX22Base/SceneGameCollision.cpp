@@ -70,7 +70,7 @@ void SceneGame::PlayerSlimeCollision()
 		if (pSlimeNow == nullptr)				continue;	// 無効なスライムはスルー
 
 		// スライムとハンマーが衝突した場合
-		if (m_pCollision->CheckCollisionSphere(m_pPlayer->GetPlayerSphere(), pSlimeNow->GetSphere(), m_pPlayer->GetPos(), pSlimeNow->GetPos()))
+		if (m_pCollision->CheckCollisionSphere(m_pPlayer->GetSphere(), pSlimeNow->GetSphere(), m_pPlayer->GetPos(), pSlimeNow->GetPos()))
 		{
 			m_pPlayer->Damage();
 		}
