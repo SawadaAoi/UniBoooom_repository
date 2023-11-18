@@ -44,7 +44,7 @@ const float LEVEL3_SPEED = ENEMY_MOVE_SPEED * 0.90;
 CSlime_3::CSlime_3()
 {
 	m_Transform.fScale = { LEVEL3_SCALE,LEVEL3_SCALE ,LEVEL3_SCALE };
-	m_sphere.fRadius *= LEVEL3_SCALE;
+	m_Sphere.fRadius *= LEVEL3_SCALE;
 	m_eSlimeSize = E_SLIME_LEVEL::LEVEL_3;
 	SetNormalSpeed();
 
