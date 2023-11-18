@@ -14,6 +14,9 @@
 
 ========================================== */
 
+// =============== 定数定義 =======================
+const float BGM_VOLUME = 0.05f;	//BGMのボリューム
+
 // =============== インクルード ===================
 #include "SceneGame.h"
 #include "Geometry.h"
@@ -79,6 +82,11 @@ SceneGame::SceneGame(DirectWrite* pDirectWrite)
 	// タイマー生成
 	m_pTimer = new CTimer();
 	m_pTimer->TimeStart();
+
+	//BGMの再生
+	m_pBGM = CSound::LoadSound("Assets/Sound/BGM/BGM_maou.mp3", true);		//サウンドデータの読み込み
+	m_pSpeaker = CSound::PlaySound(m_pBGM);									//BGMの再生
+	m_pSpeaker->SetVolume(0.02f);											//音量の設定
 }
 
 /* ========================================
@@ -92,6 +100,12 @@ SceneGame::SceneGame(DirectWrite* pDirectWrite)
 =========================================== */
 SceneGame::~SceneGame()
 {
+	if (m_pSpeaker)
+	{
+		m_pSpeaker->Stop();
+		m_pSpeaker->DestroyVoice();
+	}
+
 	SAFE_DELETE(m_pTimer);
 	SAFE_DELETE(m_pExplosionMng);
 	SAFE_DELETE(m_pSlimeMng);	// スライムマネージャー削除
