@@ -37,6 +37,7 @@ public:
 	void TimeStart(float maxTime, float waitTime);	//タイマー開始(制限時間設定、待ち時間あり)
 	void TimeStop();
 	void TimeRestart();
+	void DrawNumber(TPos2d<float> pos, int number);	//数字描画関数
 
 private:
 	void WaitTimeCheck();

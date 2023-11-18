@@ -18,7 +18,17 @@
 #include "Sprite.h"
 
 // =============== 定数定義 =======================
+#if MODE_GAME_PARAMETER
+#else
+const int STAGE_TIME = 180 * 60;	//ステージ制限時間（秒*フレーム）
+const TPos2d<float> MINUTE_POS(565.0f, 25.0f);			//分の位置設定
+const TPos2d<float> SECOND_TENS_POS(640.0f, 25.0f);	//十の桁秒の位置設定
+const TPos2d<float> SECOND_ONE_POS(690.0f, 25.0f);		//一の桁秒の位置設定
+const TPos2d<float> TIME_BACKGROUND_POS(630.0f, 25.0f);	//バックグラウンド位置設定
+const TPos2d<float> TIME_COLON_POS(615.0f, 25.0f);		//コロンの位置設定
 
+
+#endif
 
 
 /* ========================================
@@ -127,12 +137,13 @@ void CTimer::Update()
 =========================================== */
 void CTimer::Draw()
 {
-	//---時間UIの描画---
-	//時間の裏部分(仮素材)
+	//-----時間UIの描画-----
+
+	//--時間の背景部分(仮素材)--
 	DirectX::XMFLOAT4X4 timebackground[3];
 
 	//ワールド行列はXとYのみを考慮して作成(Zは10ぐらいに配置
-	DirectX::XMMATRIX worldTimerBG = DirectX::XMMatrixTranslation(TIME_BACKGROUND_X, TIME_BACKGROUND_Y, TIME_BACKGROUND_Z);
+	DirectX::XMMATRIX worldTimerBG = DirectX::XMMatrixTranslation(TIME_BACKGROUND_POS.x,TIME_BACKGROUND_POS.y, 0.0f);
 	DirectX::XMStoreFloat4x4(&timebackground[0], DirectX::XMMatrixTranspose(worldTimerBG));
 
 	//ビュー行列は2Dだとカメラの位置があまり関係ないので、単位行列を設定する（単位行列は後日
@@ -151,11 +162,11 @@ void CTimer::Draw()
 	Sprite::SetTexture(m_pTimeBackground);
 	Sprite::Draw();
 
-	//コロンの描画
+	//--コロンの描画--
 	DirectX::XMFLOAT4X4 colon[3];
 
 	//ワールド行列はXとYのみを考慮して作成(Zは10ぐらいに配置
-	DirectX::XMMATRIX worldColon = DirectX::XMMatrixTranslation(TIME_COLON_X, TIME_COLON_Y, TIME_COLON_Z);
+	DirectX::XMMATRIX worldColon = DirectX::XMMatrixTranslation(TIME_COLON_POS.x, TIME_COLON_POS.y, 0.0f);
 	DirectX::XMStoreFloat4x4(&colon[0], DirectX::XMMatrixTranspose(worldColon));
 
 	//ビュー行列は2Dだとカメラの位置があまり関係ないので、単位行列を設定する（単位行列は後日
@@ -175,95 +186,37 @@ void CTimer::Draw()
 	Sprite::SetUVScale(DirectX::XMFLOAT2(1.0f, 1.0f));
 	Sprite::SetTexture(m_pShowColon);
 	Sprite::Draw();
-	//分の秒画
-	DirectX::XMFLOAT4X4 minute[3];
-	
-	//ワールド行列はXとYのみを考慮して作成(Zは10ぐらいに配置
-	DirectX::XMMATRIX worldMinute = DirectX::XMMatrixTranslation(MINUTEPOS_X, MINUTEPOS_Y, MINUTEPOS_Z);
-	DirectX::XMStoreFloat4x4(&minute[0], DirectX::XMMatrixTranspose(worldMinute));
-	
-	//ビュー行列は2Dだとカメラの位置があまり関係ないので、単位行列を設定する（単位行列は後日
-	DirectX::XMStoreFloat4x4(&minute[1], DirectX::XMMatrixIdentity());
-	
-	//プロジェクション行列には2Dとして表示するための行列を設定する
-	//この行列で2Dのスクリーンの多いさが決まる
-	DirectX::XMMATRIX projMinute = DirectX::XMMatrixOrthographicOffCenterLH(0.0f, 1280.0f, 720.0f, 0.0f, 0.1f, 10.0f);
-	DirectX::XMStoreFloat4x4(&minute[2], DirectX::XMMatrixTranspose(projMinute));
-	
-	//スプライトの設定
-	Sprite::SetWorld(minute[0]);
-	Sprite::SetView(minute[1]);
-	Sprite::SetProjection(minute[2]);
-	Sprite::SetSize(DirectX::XMFLOAT2(50.0f, -50.0f));
-	Sprite::SetUVPos(DirectX::XMFLOAT2(0.2f*GetMinite(), 0.0f));
-	Sprite::SetUVScale(DirectX::XMFLOAT2(0.2f, 0.5f));
-	Sprite::SetTexture(m_pShowTimer);
-	Sprite::Draw();
 
-	//十の桁秒の描画
-	DirectX::XMFLOAT4X4 secondTen[3];
+	//--時間（数字部分）の描画
+	DrawNumber(MINUTE_POS, GetMinite());	//分の秒画
 
-	//ワールド行列はXとYのみを考慮して作成(Zは10ぐらいに配置
-	DirectX::XMMATRIX worldSecondTen = DirectX::XMMatrixTranslation(SECOND_TENS_DIGIT_X, SECOND_TENS_DIGIT_Y, SECOND_TENS_DIGIT_Z);
-	DirectX::XMStoreFloat4x4(&secondTen[0], DirectX::XMMatrixTranspose(worldSecondTen));
-
-	//ビュー行列は2Dだとカメラの位置があまり関係ないので、単位行列を設定する（単位行列は後日
-	DirectX::XMStoreFloat4x4(&secondTen[1], DirectX::XMMatrixIdentity());
-
-	//プロジェクション行列には2Dとして表示するための行列を設定する
-	//この行列で2Dのスクリーンの多いさが決まる
-	DirectX::XMMATRIX projSecondTen = DirectX::XMMatrixOrthographicOffCenterLH(0.0f, 1280.0f, 720.0f, 0.0f, 0.1f, 10.0f);
-	DirectX::XMStoreFloat4x4(&secondTen[2], DirectX::XMMatrixTranspose(projSecondTen));
-
-	//スプライトの設定
-	Sprite::SetWorld(secondTen[0]);
-	Sprite::SetView(secondTen[1]);
-	Sprite::SetProjection(secondTen[2]);
-	Sprite::SetSize(DirectX::XMFLOAT2(50.0f, -50.0f));
+	//秒の十の桁の描画 (僕この方法しかできない、もっといい書き方があったら改良)
 	if (GetSecond() / 10 == 5)
 	{
-		Sprite::SetUVPos(DirectX::XMFLOAT2(0.0f*(GetSecond() / 10), 0.5f));
+		DrawNumber(SECOND_TENS_POS, 5);
+	}
+	else if (GetSecond() / 10 == 4)
+	{
+		DrawNumber(SECOND_TENS_POS, 4);
+	}
+	else if (GetSecond() / 10 == 3)
+	{
+		DrawNumber(SECOND_TENS_POS, 3);
+	}
+	else if (GetSecond() / 10 == 2)
+	{
+		DrawNumber(SECOND_TENS_POS, 2);
+	}
+	else if (GetSecond() / 10 == 1)
+	{
+		DrawNumber(SECOND_TENS_POS, 1);
 	}
 	else
 	{
-		Sprite::SetUVPos(DirectX::XMFLOAT2(0.2f*(GetSecond() / 10), 0.0f));
-
+		DrawNumber(SECOND_TENS_POS, 0);
 	}
-	Sprite::SetUVScale(DirectX::XMFLOAT2(0.2f, 0.5f));
-	Sprite::SetTexture(m_pShowTimer);
-	Sprite::Draw();
 
-	//一の桁秒の描画
-	DirectX::XMFLOAT4X4 second[3];
-
-	//ワールド行列はXとYのみを考慮して作成(Zは10ぐらいに配置
-	DirectX::XMMATRIX worldSecond = DirectX::XMMatrixTranslation(SECOND_UNITS_DIGIT_X, SECOND_UNITS_DIGIT_Y, SECOND_UNITS_DIGIT_Z);
-	DirectX::XMStoreFloat4x4(&second[0], DirectX::XMMatrixTranspose(worldSecond));
-
-	//ビュー行列は2Dだとカメラの位置があまり関係ないので、単位行列を設定する（単位行列は後日
-	DirectX::XMStoreFloat4x4(&second[1], DirectX::XMMatrixIdentity());
-
-	//プロジェクション行列には2Dとして表示するための行列を設定する
-	//この行列で2Dのスクリーンの多いさが決まる
-	DirectX::XMMATRIX projSecond = DirectX::XMMatrixOrthographicOffCenterLH(0.0f, 1280.0f, 720.0f, 0.0f, 0.1f, 10.0f);
-	DirectX::XMStoreFloat4x4(&second[2], DirectX::XMMatrixTranspose(projSecond));
-
-	//スプライトの設定
-	Sprite::SetWorld(second[0]);
-	Sprite::SetView(second[1]);
-	Sprite::SetProjection(second[2]);
-	Sprite::SetSize(DirectX::XMFLOAT2(50.0f, -50.0f));
-	if (GetSecond()-(GetSecond()/10*10) >= 5)
-	{
-		Sprite::SetUVPos(DirectX::XMFLOAT2(0.2f*(GetSecond() % 5), 0.5f));
-	}
-	else
-	{
-		Sprite::SetUVPos(DirectX::XMFLOAT2(0.2f*(GetSecond() % 5), 0.0f));
-	}
-	Sprite::SetUVScale(DirectX::XMFLOAT2(0.2f, 0.5f));
-	Sprite::SetTexture(m_pShowTimer);
-	Sprite::Draw();
+	DrawNumber(SECOND_ONE_POS, GetSecond());	//秒の一の桁の描画
 }
 
 /* ========================================
@@ -372,6 +325,52 @@ void CTimer::TimeStop()
 void CTimer::TimeRestart()
 {
 	m_bStopFlg = false;
+}
+/* ========================================
+	タイマー数字部分描画関数
+	----------------------------------------
+	内容：タイマーの描画部分描画する
+	----------------------------------------
+	引数1：位置、描画する数字
+	----------------------------------------
+	戻値：なし
+=========================================== */
+
+void CTimer::DrawNumber(TPos2d<float> pos, int number)
+{
+	DirectX::XMFLOAT4X4 time[3];
+
+	//ワールド行列はXとYのみを考慮して作成(Zは10ぐらいに配置
+	DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(pos.x, pos.y, 0.0f);
+	DirectX::XMStoreFloat4x4(&time[0], DirectX::XMMatrixTranspose(world));
+
+	//ビュー行列は2Dだとカメラの位置があまり関係ないので、単位行列を設定する（単位行列は後日
+	DirectX::XMStoreFloat4x4(&time[1], DirectX::XMMatrixIdentity());
+
+	//プロジェクション行列には2Dとして表示するための行列を設定する
+	//この行列で2Dのスクリーンの多いさが決まる
+	DirectX::XMMATRIX proj = DirectX::XMMatrixOrthographicOffCenterLH(0.0f, 1280.0f, 720.0f, 0.0f, 0.1f, 10.0f);
+	DirectX::XMStoreFloat4x4(&time[2], DirectX::XMMatrixTranspose(proj));
+
+	//スプライトの設定
+	Sprite::SetWorld(time[0]);
+	Sprite::SetView(time[1]);
+	Sprite::SetProjection(time[2]);
+	Sprite::SetSize(DirectX::XMFLOAT2(50.0f, -50.0f));
+	int nOnesNumber = number % 10;	//秒の時一の桁の数字
+	
+	if (nOnesNumber < 5)
+	{
+		Sprite::SetUVPos(DirectX::XMFLOAT2(0.2f * nOnesNumber, 0.0f));
+	}
+	else
+	{
+		Sprite::SetUVPos(DirectX::XMFLOAT2(0.2f * (nOnesNumber - 5), 0.5f));
+	}
+
+	Sprite::SetUVScale(DirectX::XMFLOAT2(0.2f, 0.5f));
+	Sprite::SetTexture(m_pShowTimer);
+	Sprite::Draw();
 }
 
 
