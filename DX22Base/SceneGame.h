@@ -56,6 +56,8 @@ private:
 	CExplosionManager* m_pExplosionMng;
 	CTimer* m_pTimer;
 	CFloor* m_pFloor;
+	XAUDIO2_BUFFER* m_pBGM;
+	IXAudio2SourceVoice* m_pSpeaker;
 };
 
 #endif // __SCENE_GAME_H__
