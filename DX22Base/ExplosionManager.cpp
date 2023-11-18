@@ -45,7 +45,7 @@ CExplosionManager::CExplosionManager()
 	}
 
 	//サウンドファイルの読み込み
-	m_pSEExplode = CSound::LoadSound("Assets/Sound/Explode.mp3");
+	m_pSEExplode = CSound::LoadSound("Assets/Sound/SE/Explode.mp3");
 }
 
 /* ========================================
