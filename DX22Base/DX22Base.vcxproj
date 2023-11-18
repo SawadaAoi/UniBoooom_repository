@@ -235,6 +235,7 @@
     <ClInclude Include="Controller.h" />
     <ClInclude Include="Cylinder.h" />
     <ClInclude Include="DirectWrite.h" />
+    <ClInclude Include="DiType.h" />
     <ClInclude Include="Floor.h" />
     <ClInclude Include="GameParameter.h" />
     <ClInclude Include="Defines.h" />

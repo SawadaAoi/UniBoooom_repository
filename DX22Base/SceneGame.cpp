@@ -11,8 +11,12 @@
 	・2023/11/08 コメント追加、無駄な箇所を削除　澤田蒼生
 	・2023/11/09 カメラの様々動作チェック。メインから軸線奪取。地面追加。 髙木駿輔
 	・2023/11/10 カメラをスライムと爆発にも渡すようにした・lineのメモリリーク対策 髙木駿輔
+	・2023/11/17 振動機能呼び出しデバッグモード追加 takagi
 
 ========================================== */
+
+// =============== デバッグモード ===================
+#define USE_CAMERA_VIBRATION (false)
 
 // =============== インクルード ===================
 #include "SceneGame.h"
@@ -24,6 +28,10 @@
 #include "Box.h"
 #include "Line.h"
 #include "Defines.h"
+
+#if USE_CAMERA_VIBRATION
+#include "Input.h"
+#endif
 
 
 // =============== デバッグモード =======================
@@ -118,6 +126,24 @@ SceneGame::~SceneGame()
 =========================================== */
 void SceneGame::Update(float tick)
 {
+#if USE_CAMERA_VIBRATION
+	if (IsKeyTrigger('1'))
+	{
+		m_pCamera->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_WEAK);
+	}
+	if (IsKeyTrigger('2'))
+	{
+		m_pCamera->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_STRONG);
+	}
+	if (IsKeyTrigger('3'))
+	{
+		m_pCamera->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_SIDE_WEAK);
+	}
+	if (IsKeyTrigger('4'))
+	{
+		m_pCamera->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_SIDE_STRONG);
+	}
+#endif
 	m_pCamera->Update();
 	m_pPlayer->Update();
 	m_pSlimeMng->SetPlayerPos(m_pPlayer->GetPos());
