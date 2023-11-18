@@ -96,7 +96,7 @@ const float LEVEL_2_EXPLODE_TIME = 1.0f * 60.0f;	// スライム_2の爆発総時間
 const float LEVEL_3_EXPLODE_TIME = 2.0f * 60.0f;	// スライム_3の爆発総時間
 const float LEVEL_4_EXPLODE_TIME = 3.0f * 60.0f;	// スライム_4の爆発総時間
 
-// カメラ =====================================================
+// カメラ C
 const TPos3d<float> INIT_POS(0.0f, 2.6f, -3.0f);					// 初期位置
 
 const float INIT_ANGLE	= DirectX::XMConvertToRadians(73.0f);       // カメラの角度
@@ -104,8 +104,22 @@ const float INIT_NEAR	= 1.0f;										// 画面手前初期z値
 const float INIT_FAR	= 150.0f;									// 画面奥初期z値
 const float INIT_RADIUS = 15.0f;									// カメラと注視点との距離(初期値)
 
+// UI =====================================================
+// 2D表示
+const float VIEW_LEFT = 0.0f;		// 画面左端の座標
+const float VIEW_RIGHT = 1280.0f;	// 画面右端の座標（画面横幅）
+const float VIEW_BOTTOM = 720.0f;	// 画面下端の座標（画面縦幅）
+const float VIEW_TOP = 0.0f;		// 画面上端の座標
+const float NEAR_Z = 0.1f;			// 画面に写り始める距離
+const float FAR_Z = 10.0f;			// 写せる限界距離
 
-
+// HP
+const float DRAW_POSX		= 80.0f;	// テクスチャを表示する位置のX座標
+const float DRAW_FIRSTPOSX	= 0.9f;		// 1つ目のテクスチャを表示する位置の調節用
+const float DRAW_GAP		= 1.15f;	// テクスチャ同士の間隔
+const float DRAW_POSY		= 60.0f;	// テクスチャを表示する位置のY座標
+const float DRAW_HEIGHT		= 90.0f;	// テクスチャの縦幅
+const float DRAW_WIDTH		= 90.0f;	// テクスチャの横幅
 
 
 #endif

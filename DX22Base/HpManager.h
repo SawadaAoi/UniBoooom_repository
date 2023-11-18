@@ -16,10 +16,7 @@
 #define __HP_MANAGER_H__
 
 // =============== インクルード ===================
-#include "HpUI.h"
-
-// =============== 定数定義 =======================
-#define MAX_HP	(5)		// HPの最大数
+#include "Texture.h"
 
 // =============== クラス定義 =====================
 class CHpManager
@@ -30,10 +27,12 @@ public:
 	~CHpManager();				// デストラクタ
 	void Update();				// 更新処理
 	void Draw();				// 描画処理
+	void Draw2d(float, float, float, float, Texture*);	// 描画処理
 private:
 	// ===メンバ変数宣言===
-	CHpUI* m_pUI[MAX_HP];		// HPのテクスチャ用ポインタ
+	Texture* m_pTexture[2];		// テクスチャ用ポインタ
 	const int* m_pnPlayerHp;	// プレイヤーのHP用ポインタ
+	bool m_bLost;				// HP増減による表示切替用フラグ
 };
 
 #endif	// !__HP_MANAGER_H__

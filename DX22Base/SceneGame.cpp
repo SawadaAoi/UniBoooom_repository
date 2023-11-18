@@ -121,6 +121,9 @@ void SceneGame::Update(float tick)
 	m_pExplosionMng->Update();
 	m_pCamera->Update();
 
+	// HPマネージャー更新
+	m_pHpMng->Update();
+
 	SceneGameCollision();
 }
 
