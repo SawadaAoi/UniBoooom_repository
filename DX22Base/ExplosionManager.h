@@ -12,6 +12,7 @@
 	・2023/11/09 爆発配列を返す処理の追加 sawada
 	・2023/11/10 他のオブジェクトと同一のカメラをセットするようにした yamashita
 	・2023/11/13 Create関数の引数にtimeを追加 Suzumura
+	・2023/11/18 サウンド用のメンバ変数を追加 yamashita
 ========================================== */
 #ifndef __EXPLOSION_MANAGER_H__	//ExplosionManager.hインクルードガード
 #define __EXPLOSION_MANAGER_H__
