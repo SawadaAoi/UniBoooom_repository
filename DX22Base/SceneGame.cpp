@@ -209,6 +209,8 @@ void SceneGame::Draw()
 	m_pExplosionMng->Draw();
 
 	//タイマー描画
+	RenderTarget* pRTV = GetDefaultRTV();
+	SetRenderTargets(1, &pRTV, nullptr);
 	m_pTimer->Draw();
 	
 }

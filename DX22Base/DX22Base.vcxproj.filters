@@ -288,6 +288,9 @@
     <ClCompile Include="DirectWrite.cpp">
       <Filter>ソース ファイル\System</Filter>
     </ClCompile>
+    <ClCompile Include="BossGauge.cpp">
+      <Filter>ソース ファイル\2dObject</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Defines.h">
@@ -460,6 +463,9 @@
     </ClInclude>
     <ClInclude Include="SelectStage.h">
       <Filter>ヘッダー ファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="BossGauge.h">
+      <Filter>ヘッダー ファイル\2dObject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

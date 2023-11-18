@@ -14,9 +14,10 @@
 ========================================== */
 #ifndef __TIMER_H__
 #define __TIMER_H__
-
+// =============== 定数定義 ===================
+#define NUM_OF_NUMBER (10)
 // =============== インクルード ===================
-
+#include <Texture.h>
 
 // =============== クラス定義 =====================
 class CTimer
@@ -44,6 +45,8 @@ private:
 	bool m_bStopFlg;	// タイマーストップフラグ(true = stop)
 	int m_nTimeCnt;		// 制限時間フレーム減算値
 	int m_dWaitCnt;		// カウントダウン開始フレーム減算値
+
+	Texture* m_pShowTimer[NUM_OF_NUMBER];	//タイマー表示用テクスチャポインタ
 
 };
 
