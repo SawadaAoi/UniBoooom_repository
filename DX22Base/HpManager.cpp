@@ -13,14 +13,11 @@
 ========================================== */
 
 // =============== インクルード ===================
-#include "HpManager.h"
-#include "DirectXTex/TextureLoad.h"
-#include "Sprite.h"
-#include "Pos3d.h"
-#include "GameParameter.h"
-
-// =============== 定数定義 =======================
-
+#include "HpManager.h"					
+#include "DirectXTex/TextureLoad.h"		
+#include "Sprite.h"						
+#include "Pos3d.h"						
+#include "GameParameter.h"				
 
 /* ========================================
 	コンストラクタ関数
@@ -36,13 +33,13 @@ CHpManager::CHpManager(const int* nHp)
 {
 	m_pnPlayerHp = nHp;		// プレイヤーのHPのアドレスを格納
 
-	m_pTexture[0] = new Texture();
+	m_pTexture[0] = new Texture();	// HPのテクスチャ読み込み
 	if (FAILED(m_pTexture[0]->Create("Assets/Texture/HP_Full_1.png")))
 	{
 		MessageBox(NULL, "HpUI HP_Full_1.png", "Error", MB_OK);
 	}
 
-	m_pTexture[1] = new Texture();
+	m_pTexture[1] = new Texture();	// 空のHPのテクスチャ読み込み
 	if (FAILED(m_pTexture[1]->Create("Assets/Texture/HP_Lost_1.png")))
 	{
 		MessageBox(NULL, "HpUI HP_Lost_1.png", "Error", MB_OK);
@@ -75,7 +72,7 @@ CHpManager::~CHpManager()
 =========================================== */
 void CHpManager::Update()
 {
-	for (int i = PLAYER_HP; i >= *m_pnPlayerHp; --i)
+	for (int i = PLAYER_HP; i >= *m_pnPlayerHp; --i)	// HPの量によって表示切替
 	{
 		m_bLost ^= 1;
 	}
@@ -101,7 +98,7 @@ void CHpManager::Draw()
 
 	for (int j = PLAYER_HP; j > *m_pnPlayerHp; --j)
 	{
-		// HPのテクスチャを表示
+		// 空のHPのテクスチャを表示
 		Draw2d(DRAW_POSX * (j + DRAW_FIRSTPOSX - 1) * DRAW_GAP, DRAW_POSY, DRAW_HEIGHT, DRAW_WIDTH, m_pTexture[1]);
 	}
 }

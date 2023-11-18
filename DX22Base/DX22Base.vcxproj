@@ -183,7 +183,6 @@
     <ClCompile Include="Explosion.cpp" />
     <ClCompile Include="ExplosionManager.cpp" />
     <ClCompile Include="HpManager.cpp" />
-    <ClCompile Include="HpUI.cpp" />
     <ClCompile Include="ModelParticle.cpp" />
     <ClCompile Include="Particle.cpp" />
     <ClCompile Include="Prot.cpp" />
@@ -238,7 +237,6 @@
     <ClInclude Include="Explosion.h" />
     <ClInclude Include="ExplosionManager.h" />
     <ClInclude Include="HpManager.h" />
-    <ClInclude Include="HpUI.h" />
     <ClInclude Include="Pos2d.h" />
     <ClInclude Include="Pos3d.h" />
     <ClInclude Include="ModelParticle.h" />

@@ -112,6 +112,12 @@
     <Filter Include="ソース ファイル\Info">
       <UniqueIdentifier>{8a28753d-f510-42e4-9844-46833e398878}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\2dObject\HP">
+      <UniqueIdentifier>{ff5c703f-b6ba-4904-9b6a-f167af010262}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\2dObject\HP">
+      <UniqueIdentifier>{1d9ea3bc-2c76-4a67-b406-e9d8e897e754}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -258,11 +264,8 @@
     <ClCompile Include="Slime_Flame.cpp">
       <Filter>ソース ファイル\3dObject</Filter>
     </ClCompile>
-    <ClCompile Include="HpUI.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="HpManager.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\2dObject\HP</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -419,11 +422,8 @@
     <ClInclude Include="Slime_Flame.h">
       <Filter>ヘッダー ファイル\3dObject</Filter>
     </ClInclude>
-    <ClInclude Include="HpUI.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="HpManager.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\2dObject\HP</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -16,7 +16,7 @@
 #define __HP_MANAGER_H__
 
 // =============== インクルード ===================
-#include "Texture.h"
+#include "Texture.h"	// テクスチャ用ヘッダ
 
 // =============== クラス定義 =====================
 class CHpManager
