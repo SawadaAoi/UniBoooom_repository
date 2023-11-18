@@ -84,7 +84,6 @@ public:
 	void Reflect();									//スライムとぶつかって吹き飛ばした際に自分の移動量を減らす
 
 	// ゲット関数
-	tagTransform3d GetTransform() { return m_Transform; }	//仮：Angle関数用
 	float GetSpeed();					// スライムの移動速度を取得
 	E_SLIME_LEVEL GetSlimeLevel();		// スライムのレベルを取得
 
