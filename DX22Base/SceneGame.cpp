@@ -11,8 +11,12 @@
 	・2023/11/08 コメント追加、無駄な箇所を削除　澤田蒼生
 	・2023/11/09 カメラの様々動作チェック。メインから軸線奪取。地面追加。 髙木駿輔
 	・2023/11/10 カメラをスライムと爆発にも渡すようにした・lineのメモリリーク対策 髙木駿輔
+	・2023/11/17 振動機能呼び出しデバッグモード追加 takagi
 
 ========================================== */
+
+// =============== デバッグモード ===================
+#define USE_CAMERA_VIBRATION (false)
 
 // =============== インクルード ===================
 #include "SceneGame.h"
@@ -24,6 +28,11 @@
 #include "Box.h"
 #include "Line.h"
 #include "Defines.h"
+
+#if USE_CAMERA_VIBRATION
+#include "Input.h"
+#endif
+
 
 // =============== デバッグモード =======================
 #define MODE_COORD_AXIS (true)	//座標軸映すかどうか
@@ -66,11 +75,18 @@ SceneGame::SceneGame(DirectWrite* pDirectWrite)
 	m_pBox = new CBox();
 #endif
 
+
+	m_pFloor = new CFloor();
+	m_pFloor->SetCamera(m_pCamera);
 	// スライムマネージャー生成
 	m_pSlimeMng = new CSlimeManager();
 	m_pSlimeMng->SetCamera(m_pCamera);
 	m_pExplosionMng = new CExplosionManager();
 	m_pExplosionMng->SetCamera(m_pCamera);
+
+	// タイマー生成
+	m_pTimer = new CTimer();
+	m_pTimer->TimeStart();
 }
 
 /* ========================================
@@ -84,8 +100,10 @@ SceneGame::SceneGame(DirectWrite* pDirectWrite)
 =========================================== */
 SceneGame::~SceneGame()
 {
+	SAFE_DELETE(m_pTimer);
 	SAFE_DELETE(m_pExplosionMng);
 	SAFE_DELETE(m_pSlimeMng);	// スライムマネージャー削除
+	SAFE_DELETE(m_pFloor);
 	SAFE_DELETE(m_pCamera);
 	SAFE_DELETE(m_pPlayer);
 	SAFE_DELETE(m_pCollision);
@@ -108,6 +126,24 @@ SceneGame::~SceneGame()
 =========================================== */
 void SceneGame::Update(float tick)
 {
+#if USE_CAMERA_VIBRATION
+	if (IsKeyTrigger('1'))
+	{
+		m_pCamera->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_WEAK);
+	}
+	if (IsKeyTrigger('2'))
+	{
+		m_pCamera->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_STRONG);
+	}
+	if (IsKeyTrigger('3'))
+	{
+		m_pCamera->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_SIDE_WEAK);
+	}
+	if (IsKeyTrigger('4'))
+	{
+		m_pCamera->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_SIDE_STRONG);
+	}
+#endif
 	m_pCamera->Update();
 	m_pPlayer->Update();
 	m_pSlimeMng->SetPlayerPos(m_pPlayer->GetPos());
@@ -115,8 +151,7 @@ void SceneGame::Update(float tick)
 	// スライムマネージャー更新
 	m_pSlimeMng->Update(m_pExplosionMng);
 	m_pExplosionMng->Update();
-	m_pCamera->Update();
-
+	m_pTimer->Update();
 
 	SceneGameCollision();
 }
@@ -190,13 +225,17 @@ void SceneGame::Draw()
 	m_pBox->Draw();
 #endif
 	
-
+	//床の描画
+	m_pFloor->Draw();
 	// スライムマネージャー描画
 	m_pSlimeMng->Draw();
 	m_pPlayer->Draw();
 	
 	//爆発マネージャー描画
 	m_pExplosionMng->Draw();
+
+	//タイマー描画
+	m_pTimer->Draw();
 	
 }
 

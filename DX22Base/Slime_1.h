@@ -10,6 +10,7 @@
 	変更履歴
 	・2023/11/08 作成 澤田蒼生
 	・2023/11/08 スライムの移動速度を設定する関数を継承 山下凌佑
+	・2023/11/16 引数付きコンストラクタの引数に頂点シェーダーとモデルのポインタを追加 山下凌佑
 
 ========================================== */
 #ifndef __SLIME_1__H__
@@ -25,7 +26,7 @@ class CSlime_1 :
 public:
 	// ===プロトタイプ宣言===
 	CSlime_1();
-	CSlime_1(TPos3d<float> pos);
+	CSlime_1(TPos3d<float> pos, VertexShader* pVS, Model* pModel);
 	~CSlime_1();
 
 	void SetNormalSpeed() override;

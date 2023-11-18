@@ -1,39 +1,36 @@
 /* ========================================
 	HEW/UniBoooom!!
 	---------------------------------------
-	タイトルシーン定義
+	ステージ3定義
 	---------------------------------------
-	Title.h
+	Stage3.h
 
 	作成者
 			takagi
 			nieda
 
 	変更履歴
-	・2023/10/26 仮制作 takagi
-	・2023/11/05 現段階のコーディング規約適用 takagi
-	・2023/11/07 コメント修正 takagi
-	・2023/11/16 オーバーライド関数追加 takagi
+	・2023/11/16 制作 takagi
 
 ========================================== */
 
-#ifndef __TITLE_H__	//Title.hインクルードガード
-#define __TITLE_H__
+#ifndef __STAGE3_H__	//Stage3.hインクルードガード
+#define __STAGE3_H__
 
 // =============== インクルード ===================
-#include "Scene.h"	//親のヘッダ
+#include "Stage.h"	//親のヘッダ
 
 // =============== クラス定義 =====================
-class CTitle :public CScene	//シーン
+class CStage3 :public CStage	//ステージ
 {
 public:
-	// =============== プロトタイプ宣言 ===============
-	CTitle();							//コンストラクタ
-	~CTitle();							//デストラクタ
+	// ===プロトタイプ宣言===
+	CStage3();							//コンストラクタ
+	~CStage3();							//デストラクタ
 	void Update();						//更新
 	void Draw() const;					//描画	
 	E_TYPE GetType() const override;	//自身の種類ゲッタ
 	E_TYPE GetNext() const override;	//次のシーンゲッタ
-};	//タイトル
+};	//ステージ3
 
-#endif	//!__TITLE_H__
+#endif	//!__STAGE3_H__

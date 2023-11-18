@@ -11,6 +11,7 @@
 	・2023/11/07 Triからコピペ→改修 takagi
 	・2023/11/08 一部関数にconst修飾子付与 takagi
 	・2023/11/09 コメント揃え takagi
+	・2023/11/17 １つの値だけのコンストラクタを実装 takagi
 
 ========================================== */
 
@@ -32,6 +33,7 @@ public:
 	// ===メンバ関数宣言===
 	TDiType();												//コンストラクタ
 	TDiType(const DiType& x, const DiType& y);				//引数付きコンストラクタ
+	TDiType(const DiType& Di);								//引数付きコンストラクタ
 	TDiType(const TDiType& Obj);							//コピーコンストラクタ
 	virtual ~TDiType();										//デストラクタ
 	virtual DiType Total() const;							//総計
@@ -81,6 +83,21 @@ TDiType<DiType>::TDiType(const DiType & x, const DiType & y)
 	// =============== 初期化 ===================
 	this->x = x;	//１つめ初期化
 	this->y = y;	//２つめ初期化
+}
+
+/* ========================================
+	コンストラクタ
+	-------------------------------------
+	内容：生成時に行う処理(１つの値を２つの変数に格納)
+	-------------------------------------
+	引数1：const DiType & Di：代入したい値の参照
+	-------------------------------------
+	戻値：なし
+=========================================== */
+template<class DiType>
+inline TDiType<DiType>::TDiType(const DiType & Di)
+	:TDiType(Di, Di)	//委譲
+{
 }
 
 /* ========================================

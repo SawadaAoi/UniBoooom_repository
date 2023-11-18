@@ -83,10 +83,6 @@ CSlimeBase::CSlimeBase()
 =========================================== */
 CSlimeBase::~CSlimeBase()
 {
-
-	SAFE_DELETE(m_pModel);
-	SAFE_DELETE(m_pVS);
-
 }
 
 /* ========================================
