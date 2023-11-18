@@ -104,7 +104,7 @@ void CExplosionManager::Update()
 	-------------------------------------
 	戻値：なし
 =========================================== */
-void CExplosionManager::Create(TTriType<float> pos,float size, float time)
+void CExplosionManager::Create(TTriType<float> pos,float size, float time,int score)
 {
 	// 爆発を検索
 	for (int i = 0; i < MAX_EXPLOSION_NUM; i++)
@@ -114,6 +114,8 @@ void CExplosionManager::Create(TTriType<float> pos,float size, float time)
 
 		m_pExplosion[i] = new CExplosion(pos,size,time);	// 座標を指定して生成
 		m_pExplosion[i]->SetCamera(m_pCamera);
+		m_pScoreMng->CreateScore(pos, time, score);
+
 
 		break;
 
@@ -157,6 +159,19 @@ void CExplosionManager::SetCamera(const CCamera * pCamera)
 {
 	m_pCamera = pCamera;
 }
+/* ========================================
+	スコア情報セット関数
+	----------------------------------------
+	内容：爆発生成時に必要なスコア情報セット
+	----------------------------------------
+	引数1：なし
+	----------------------------------------
+	戻値：なし
+======================================== */
+void CExplosionManager::SetScoreMng(CScoreManager * pScoreMng)
+{
+	m_pScoreMng = pScoreMng;
+}
 
 /* ========================================
 	爆発配列取得関数
@@ -191,22 +206,22 @@ void CExplosionManager::SwitchExplode(E_SLIME_LEVEL slimeLevel, TPos3d<float> po
 	switch (slimeLevel) {
 	case LEVEL_1:
 		//スライム爆発処理
-		Create(pos, ExplosionSize, LEVEL_1_EXPLODE_TIME);	//衝突されたスライムの位置でレベル１爆発
+		Create(pos, ExplosionSize, LEVEL_1_EXPLODE_TIME, LEVEL_1_SCORE);	//衝突されたスライムの位置でレベル１爆発
 		break;
 	case LEVEL_2:
 		//スライム爆発処理
-		Create(pos, ExplosionSize, LEVEL_2_EXPLODE_TIME);	//衝突されたスライムの位置でレベル２爆発
+		Create(pos, ExplosionSize, LEVEL_2_EXPLODE_TIME, LEVEL_2_SCORE);	//衝突されたスライムの位置でレベル２爆発
 		break;
 	case LEVEL_3:
 		//スライム爆発処理
-		Create(pos, ExplosionSize, LEVEL_3_EXPLODE_TIME);	//衝突されたスライムの位置でレベル３爆発
+		Create(pos, ExplosionSize, LEVEL_3_EXPLODE_TIME, LEVEL_3_SCORE);	//衝突されたスライムの位置でレベル３爆発
 		break;
 	case LEVEL_4:
 		//スライム爆発処理
-		Create(pos, ExplosionSize, LEVEL_4_EXPLODE_TIME);	//衝突されたスライムの位置でレベル４爆発
+		Create(pos, ExplosionSize, LEVEL_4_EXPLODE_TIME, LEVEL_4_SCORE);	//衝突されたスライムの位置でレベル４爆発
 		break;
 	case LEVEL_FLAME:
-		Create(pos, ExplosionSize, LEVEL_1_EXPLODE_TIME);	//衝突されたスライムの位置でレベル１爆発
+		Create(pos, ExplosionSize, LEVEL_1_EXPLODE_TIME, LEVEL_1_SCORE);	//衝突されたスライムの位置でレベル１爆発
 
 		break;
 	}

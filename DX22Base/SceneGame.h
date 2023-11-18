@@ -28,6 +28,7 @@
 #include "DirectWrite.h"
 #include "Timer.h"
 #include "Floor.h"
+#include "ScoreManager.h"
 
 // =============== クラス定義 =====================
 class SceneGame
@@ -58,6 +59,7 @@ private:
 	DirectWrite* m_pDirectWrite;
 	CTimer* m_pTimer;
 	CFloor* m_pFloor;
+	CScoreManager* m_pScoreMng;
 };
 
 #endif // __SCENE_GAME_H__

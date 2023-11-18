@@ -30,7 +30,7 @@
 #include "Camera.h"
 #include "ExplosionManager.h"
 #include "GameParameter.h"		//定数定義用ヘッダー
-
+#include "ScoreManager.h"
 
 // =============== 定数定義 =======================
 #if MODE_GAME_PARAMETER
@@ -66,6 +66,7 @@ private:
 	int GetRandom(int min, int max);
 
 	CSlimeBase* m_pSlime[MAX_SLIME_NUM];
+	//CScoreManager* 
 	CCamera* m_pCamera;
 
 	TPos3d<float> m_pPlayerPos;	// プレイヤーの座標

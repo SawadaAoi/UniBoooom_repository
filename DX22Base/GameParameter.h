@@ -11,6 +11,8 @@
 	・2023/11/11 ヘッダ作成 Suzumura
 	・2023/11/13 パラメーター追加(LEVEL_〇_EXPLODE_TIME) Suzumura
 	・2023/11/14 パラメーター追加(// フレイムスライム) Suzumura
+	・2023/11/15 パラメーター追加(// フレイムスライム) Suzumura
+	・2023/11/18 パラメーター追加(// スコア) yamamoto
 
 =========================================== */
 #ifndef __GAME_PARAMETER_H__
@@ -95,6 +97,13 @@ const float LEVEL_1_EXPLODE_TIME = 0.5f * 60.0f;	// スライム_1の爆発総時間
 const float LEVEL_2_EXPLODE_TIME = 1.0f * 60.0f;	// スライム_2の爆発総時間
 const float LEVEL_3_EXPLODE_TIME = 2.0f * 60.0f;	// スライム_3の爆発総時間
 const float LEVEL_4_EXPLODE_TIME = 3.0f * 60.0f;	// スライム_4の爆発総時間
+
+// スコア =====================================================
+const int FIRST_EXPLOSION_SCORE = 1000;		//赤同士の最初の爆発のスコア
+const int LEVEL_1_SCORE = 10;				// スライム_1のスコア
+const int LEVEL_2_SCORE = 30;				// スライム_2のスコア
+const int LEVEL_3_SCORE = 100;				// スライム_3のスコア
+const int LEVEL_4_SCORE = 500;				// スライム_4のスコア
 
 // カメラ =====================================================
 const TPos3d<float> INIT_POS(0.0f, 2.6f, -3.0f);					// 初期位置
