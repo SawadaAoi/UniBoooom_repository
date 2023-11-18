@@ -18,16 +18,8 @@
 #include "Sprite.h"
 
 // =============== 定数定義 =======================
-const int STAGE_TIME = 180 * 60;	//ステージ制限時間（秒*フレーム）
-const float MINUTEPOS_X = 565.0f;	//分の位置.X
-const float MINUTEPOS_Y = 25.0f;	//分の位置.Y
-const float MINUTEPOS_Z = 10.0f;	//分の位置.Z
-const float SECOND_TENS_DIGIT_X = 640.0f;	//十の桁秒の位置.X
-const float SECOND_TENS_DIGIT_Y = 25.0f;	//十の桁秒の位置.Y
-const float SECOND_TENS_DIGIT_Z = 10.0f;	//十の桁秒の位置.Z
-const float SECOND_UNITS_DIGIT_X = 690.0f;	//一の桁秒の位置.X
-const float SECOND_UNITS_DIGIT_Y = 25.0f;	//一の桁秒の位置.Y
-const float SECOND_UNITS_DIGIT_Z = 10.0f;	//一の桁秒の位置.Z
+
+
 
 /* ========================================
 	コンストラクタ
@@ -43,54 +35,31 @@ CTimer::CTimer()
 	, m_bStartFlg(false)
 	, m_dWaitCnt(0)
 	, m_bStopFlg(false)
+	, m_pTimeBackground(nullptr)
+	, m_pShowColon(nullptr)
+	, m_pShowTimer(nullptr)
 {
 	//数字のテクスチャ読む込み
-	for (int i = 0; i < NUM_OF_NUMBER; i++)
+	
+	m_pShowTimer = new Texture();
+	
+	if (FAILED(m_pShowTimer->Create("Assets/Texture/numbers_v1/number.png")))
 	{
-		m_pShowTimer[i] = new Texture();
+		MessageBox(NULL, "数字読む込み", "Error", MB_OK);
 	}
-	if (FAILED(m_pShowTimer[0]->Create("Assets/Texture/numbers_v1/num0_v1.png")))
+	
+
+	//タイマーの裏テクスチャ読み込む
+	m_pTimeBackground = new Texture;
+	if (FAILED(m_pTimeBackground->Create("Assets/Texture/time_background.png")))
 	{
-		MessageBox(NULL, "0読む込み", "Error", MB_OK);
+		MessageBox(NULL, "BG読む込み", "Error", MB_OK);
 	}
-	else if (FAILED(m_pShowTimer[1]->Create("Assets/Texture/numbers_v1/num1_v1.png")))
+	
+	m_pShowColon = new Texture;
+	if (FAILED(m_pShowColon->Create("Assets/Texture/colon.png")))
 	{
-		MessageBox(NULL, "1読む込み", "Error", MB_OK);
-	}
-	else if (FAILED(m_pShowTimer[2]->Create("Assets/Texture/numbers_v1/num2_v1.png")))
-	{
-		MessageBox(NULL, "2読む込み", "Error", MB_OK);
-	}
-	else if (FAILED(m_pShowTimer[3]->Create("Assets/Texture/numbers_v1/num3_v1.png")))
-	{
-		MessageBox(NULL, "3読む込み", "Error", MB_OK);
-	}
-	else if (FAILED(m_pShowTimer[4]->Create("Assets/Texture/numbers_v1/num4_v1.png")))
-	{
-		MessageBox(NULL, "4読む込み", "Error", MB_OK);
-	}
-	else if (FAILED(m_pShowTimer[5]->Create("Assets/Texture/numbers_v1/num5_v1.png")))
-	{
-		MessageBox(NULL, "5読む込み", "Error", MB_OK);
-	}
-	else if (FAILED(m_pShowTimer[6]->Create("Assets/Texture/numbers_v1/num6_v1.png")))
-	{
-		MessageBox(NULL, "6読む込み", "Error", MB_OK);
-	}
-	else if (FAILED(m_pShowTimer[7]->Create("Assets/Texture/numbers_v1/num7_v1.png")))
-	{
-		MessageBox(NULL, "7読む込み", "Error", MB_OK);
-	}
-	else if (FAILED(m_pShowTimer[8]->Create("Assets/Texture/numbers_v1/num8_v1.png")))
-	{
-		MessageBox(NULL, "8読む込み", "Error", MB_OK);
-	}
-	else if (FAILED(m_pShowTimer[9]->Create("Assets/Texture/numbers_v1/num9_v1.png")))
-	{
-		MessageBox(NULL, "9読む込み", "Error", MB_OK);
-	}
-	else
-	{
+		MessageBox(NULL, "colon読む込み", "Error", MB_OK);
 	}
 }
 
@@ -105,11 +74,10 @@ CTimer::CTimer()
 =========================================== */
 CTimer::~CTimer()
 {
-	for (int i = 0; i < NUM_OF_NUMBER; i++)
-	{
-		if(m_pShowTimer[i])
-		SAFE_DELETE(m_pShowTimer[i]);
-	}
+	
+	SAFE_DELETE(m_pShowTimer);
+	
+	SAFE_DELETE(m_pTimeBackground);
 }
 
 /* ========================================
@@ -160,7 +128,53 @@ void CTimer::Update()
 void CTimer::Draw()
 {
 	//---時間UIの描画---
-	
+	//時間の裏部分(仮素材)
+	DirectX::XMFLOAT4X4 timebackground[3];
+
+	//ワールド行列はXとYのみを考慮して作成(Zは10ぐらいに配置
+	DirectX::XMMATRIX worldTimerBG = DirectX::XMMatrixTranslation(TIME_BACKGROUND_X, TIME_BACKGROUND_Y, TIME_BACKGROUND_Z);
+	DirectX::XMStoreFloat4x4(&timebackground[0], DirectX::XMMatrixTranspose(worldTimerBG));
+
+	//ビュー行列は2Dだとカメラの位置があまり関係ないので、単位行列を設定する（単位行列は後日
+	DirectX::XMStoreFloat4x4(&timebackground[1], DirectX::XMMatrixIdentity());
+
+	//プロジェクション行列には2Dとして表示するための行列を設定する
+	//この行列で2Dのスクリーンの多いさが決まる
+	DirectX::XMMATRIX projTimerBG = DirectX::XMMatrixOrthographicOffCenterLH(0.0f, 1280.0f, 720.0f, 0.0f, 0.1f, 10.0f);
+	DirectX::XMStoreFloat4x4(&timebackground[2], DirectX::XMMatrixTranspose(projTimerBG));
+
+	//スプライトの設定
+	Sprite::SetWorld(timebackground[0]);
+	Sprite::SetView(timebackground[1]);
+	Sprite::SetProjection(timebackground[2]);
+	Sprite::SetSize(DirectX::XMFLOAT2(200.0f, -75.0f));
+	Sprite::SetTexture(m_pTimeBackground);
+	Sprite::Draw();
+
+	//コロンの描画
+	DirectX::XMFLOAT4X4 colon[3];
+
+	//ワールド行列はXとYのみを考慮して作成(Zは10ぐらいに配置
+	DirectX::XMMATRIX worldColon = DirectX::XMMatrixTranslation(TIME_COLON_X, TIME_COLON_Y, TIME_COLON_Z);
+	DirectX::XMStoreFloat4x4(&colon[0], DirectX::XMMatrixTranspose(worldColon));
+
+	//ビュー行列は2Dだとカメラの位置があまり関係ないので、単位行列を設定する（単位行列は後日
+	DirectX::XMStoreFloat4x4(&colon[1], DirectX::XMMatrixIdentity());
+
+	//プロジェクション行列には2Dとして表示するための行列を設定する
+	//この行列で2Dのスクリーンの多いさが決まる
+	DirectX::XMMATRIX projColon = DirectX::XMMatrixOrthographicOffCenterLH(0.0f, 1280.0f, 720.0f, 0.0f, 0.1f, 10.0f);
+	DirectX::XMStoreFloat4x4(&colon[2], DirectX::XMMatrixTranspose(projColon));
+
+	//スプライトの設定
+	Sprite::SetWorld(colon[0]);
+	Sprite::SetView(colon[1]);
+	Sprite::SetProjection(colon[2]);
+	Sprite::SetSize(DirectX::XMFLOAT2(25.0f, -25.0f));
+	Sprite::SetUVPos(DirectX::XMFLOAT2(0.0f, 0.0f));
+	Sprite::SetUVScale(DirectX::XMFLOAT2(1.0f, 1.0f));
+	Sprite::SetTexture(m_pShowColon);
+	Sprite::Draw();
 	//分の秒画
 	DirectX::XMFLOAT4X4 minute[3];
 	
@@ -181,7 +195,9 @@ void CTimer::Draw()
 	Sprite::SetView(minute[1]);
 	Sprite::SetProjection(minute[2]);
 	Sprite::SetSize(DirectX::XMFLOAT2(50.0f, -50.0f));
-	Sprite::SetTexture(m_pShowTimer[GetMinite()]);
+	Sprite::SetUVPos(DirectX::XMFLOAT2(0.2f*GetMinite(), 0.0f));
+	Sprite::SetUVScale(DirectX::XMFLOAT2(0.2f, 0.5f));
+	Sprite::SetTexture(m_pShowTimer);
 	Sprite::Draw();
 
 	//十の桁秒の描画
@@ -204,7 +220,17 @@ void CTimer::Draw()
 	Sprite::SetView(secondTen[1]);
 	Sprite::SetProjection(secondTen[2]);
 	Sprite::SetSize(DirectX::XMFLOAT2(50.0f, -50.0f));
-	Sprite::SetTexture(m_pShowTimer[GetSecond()/10]);
+	if (GetSecond() / 10 == 5)
+	{
+		Sprite::SetUVPos(DirectX::XMFLOAT2(0.0f*(GetSecond() / 10), 0.5f));
+	}
+	else
+	{
+		Sprite::SetUVPos(DirectX::XMFLOAT2(0.2f*(GetSecond() / 10), 0.0f));
+
+	}
+	Sprite::SetUVScale(DirectX::XMFLOAT2(0.2f, 0.5f));
+	Sprite::SetTexture(m_pShowTimer);
 	Sprite::Draw();
 
 	//一の桁秒の描画
@@ -227,7 +253,16 @@ void CTimer::Draw()
 	Sprite::SetView(second[1]);
 	Sprite::SetProjection(second[2]);
 	Sprite::SetSize(DirectX::XMFLOAT2(50.0f, -50.0f));
-	Sprite::SetTexture(m_pShowTimer[(GetSecond()%10)]);
+	if (GetSecond()-(GetSecond()/10*10) >= 5)
+	{
+		Sprite::SetUVPos(DirectX::XMFLOAT2(0.2f*(GetSecond() % 5), 0.5f));
+	}
+	else
+	{
+		Sprite::SetUVPos(DirectX::XMFLOAT2(0.2f*(GetSecond() % 5), 0.0f));
+	}
+	Sprite::SetUVScale(DirectX::XMFLOAT2(0.2f, 0.5f));
+	Sprite::SetTexture(m_pShowTimer);
 	Sprite::Draw();
 }
 

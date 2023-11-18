@@ -56,8 +56,7 @@ CBossgauge::~CBossgauge()
 {
 	if (m_pBossGauge)
 	{
-		delete m_pBossGauge;
-		m_pBossGauge = nullptr;
+		SAFE_DELETE(m_pBossGauge);
 	}
 }
 

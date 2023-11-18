@@ -105,8 +105,23 @@ const float INIT_FAR	= 150.0f;									// 画面奥初期z値
 const float INIT_RADIUS = 15.0f;									// カメラと注視点との距離(初期値)
 
 
-
-
+// タイマー =====================================================
+const int STAGE_TIME = 180 * 60;	//ステージ制限時間（秒*フレーム）
+const float MINUTEPOS_X = 565.0f;	//分の位置.X
+const float MINUTEPOS_Y = 25.0f;	//分の位置.Y
+const float MINUTEPOS_Z = 10.0f;	//分の位置.Z
+const float SECOND_TENS_DIGIT_X = 640.0f;	//十の桁秒の位置.X
+const float SECOND_TENS_DIGIT_Y = 25.0f;	//十の桁秒の位置.Y
+const float SECOND_TENS_DIGIT_Z = 10.0f;	//十の桁秒の位置.Z
+const float SECOND_UNITS_DIGIT_X = 690.0f;	//一の桁秒の位置.X
+const float SECOND_UNITS_DIGIT_Y = 25.0f;	//一の桁秒の位置.Y
+const float SECOND_UNITS_DIGIT_Z = 10.0f;	//一の桁秒の位置.Z
+const float TIME_BACKGROUND_X = 630.0f;	//一の桁秒の位置.X
+const float TIME_BACKGROUND_Y = 25.0f;	//一の桁秒の位置.Y
+const float TIME_BACKGROUND_Z = 10.0f;	//一の桁秒の位置.Z
+const float TIME_COLON_X = 615.0f;	//一の桁秒の位置.X
+const float TIME_COLON_Y = 25.0f;	//一の桁秒の位置.Y
+const float TIME_COLON_Z = 10.0f;	//一の桁秒の位置.Z
 
 #endif
 
