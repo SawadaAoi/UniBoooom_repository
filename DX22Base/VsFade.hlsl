@@ -24,13 +24,18 @@ VS_OUT main(VS_IN vin) {
 	VS_OUT vout;
 	vout.pos = float4(vin.pos, 1.0f);
 	vout.pos.xy *= size;
-	vout.pos.xy += offset;
+	//vout.pos.xy += offset;
 	vout.pos = mul(vout.pos, world);
 	vout.pos = mul(vout.pos, view);
 	vout.pos = mul(vout.pos, proj);
 	vout.uv = vin.uv;
+	vout.uv + 0.5f;
+	//vout.uv = vin.uv * 1.2f;
 	vout.uv *= uvScale;
-	vout.uv += uvPos;
-	vout.color = color;
+	vout.uv += float2(0.5f - uvScale.x / 2.0f, 0.5f - uvScale.y / 2.0f);
+	//vout.uv -= float2(-uvScale.x / 4.0f, -uvScale.y / 2.0f);
+	//vout.uv = (vout.uv - 0.5f) * 2.0f;
+	//vout.uv += uvPos;
+	vout.color = float4(0.0f, 0.0f, 0.0f, 1.0f);
 	return vout;
 }

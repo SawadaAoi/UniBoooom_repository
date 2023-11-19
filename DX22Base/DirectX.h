@@ -29,6 +29,7 @@ enum SamplerState
 {
 	SAMPLER_LINEAR,
 	SAMPLER_POINT,
+	SAMPLER_FADE,	//フェード用
 	SAMPLER_MAX
 };
 
