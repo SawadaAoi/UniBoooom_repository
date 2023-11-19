@@ -37,7 +37,6 @@ ID3D11DeviceContext* GetContext();
 IDXGISwapChain* GetSwapChain();
 RenderTarget* GetDefaultRTV();
 DepthStencil* GetDefaultDSV();
-DirectWrite* GetDirectWrite();
 
 HRESULT InitDirectX(HWND hWnd, UINT width, UINT height, bool fullscreen);
 void UninitDirectX();

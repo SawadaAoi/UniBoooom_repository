@@ -14,6 +14,7 @@
 	・2023/11/09 爆発配列を返す処理の追加 Sawada
 	・2023/11/10 他のオブジェクトと同一のカメラをセットするようにした Yamashita
 	・2023/11/13 Create関数の引数にtimeを追加 Suzumura
+	・2023/11/18 爆発時にSEを再生するように変更 Yamahsita
 
 ========================================== */
 
@@ -23,7 +24,7 @@
 #include "Sphere.h"				//球定義ヘッダー
 
 // =============== 定数定義 =======================
-
+const float EXPLODE_VOLUME = 0.5f;
 
 /* ========================================
 	関数：コンストラクタ
@@ -35,7 +36,9 @@
 	戻値：なし
 =========================================== */
 CExplosionManager::CExplosionManager()
-	: m_dComboCheckFrame(0)
+	:m_pSEExplode(nullptr)
+	, m_pSEExplodeSpeaker(nullptr)
+	, m_dComboCheckFrame(0)
 {
 	// 爆発配列の初期化
 	for (int i = 0; i < MAX_EXPLOSION_NUM; i++)
@@ -44,6 +47,9 @@ CExplosionManager::CExplosionManager()
 	}
 
 	for (int i = 0; i < 10; i++)m_dComboCnts[i] = 0;
+
+	//サウンドファイルの読み込み
+	m_pSEExplode = CSound::LoadSound("Assets/Sound/SE/Explode.mp3");
 }
 
 /* ========================================
@@ -164,8 +170,10 @@ void CExplosionManager::Create(TTriType<float> pos, float size, float time, int 
 
 		m_pExplosion[i] = new CExplosion(pos, size, time, comboNum);	// 座標を指定して生成
 		m_pExplosion[i]->SetCamera(m_pCamera);
+		m_pSEExplodeSpeaker = CSound::PlaySound(m_pSEExplode);	//爆発の再生
+		m_pSEExplodeSpeaker->SetVolume(EXPLODE_VOLUME);			//音量調整
 
-		break;
+		return;
 
 	}
 
@@ -220,7 +228,7 @@ void CExplosionManager::SetCamera(const CCamera * pCamera)
 ======================================== */
 CExplosion* CExplosionManager::GetExplosionPtr(int num)
 {
-	return m_pExplosion[num];;
+	return m_pExplosion[num];
 }
 
 /* ========================================

@@ -19,7 +19,10 @@
 	・2023/11/11 プレイヤーの点滅処理追加 Tei
 	・2023/11/14 SphereInfoの変更に対応 Takagi
 	・2023/11/14 キーボードの入力移動処理内容を適切な形に変更 Sawada
-
+	・2023/11/15 Objectクラスを継承したので修正　yamamoto
+	・2023/11/19 移動のSEを再生 yamashita
+	・2023/11/19 被ダメージ時とハンマーを振るSEを再生 yamashita
+	・2023/11/19 サウドファイル読み込み関数を作成 yamashita
 ======================================== */
 
 // =============== インクルード ===================
@@ -35,13 +38,14 @@ const float KEYBOARD_INPUT_SIZE = 1.0f;	// キーボードの入力値の大き�
 
 #if MODE_GAME_PARAMETER
 #else
-const float PLAYER_MOVE_SPEED	= 0.1f;		//プレイヤーの移動量
+const float PLAYER_MOVE_SPEED	= 0.1f;			//プレイヤーの移動量
 const int	PLAYER_HP			= 5;
-const float PLAYER_RADIUS		= 0.3f;		// プレイヤーの当たり判定の大きさ
-const float PLAYER_SIZE			= 1.0f;		// プレイヤーの大きさ
-const int	NO_DAMAGE_TIME		= 3 * 60;	//プレイヤーの無敵時間
-const int	DAMAGE_FLASH_FRAME	= 0.1 * 60;	// プレイヤーのダメージ点滅の切り替え間隔
-
+const float PLAYER_RADIUS		= 0.3f;			// プレイヤーの当たり判定の大きさ
+const float PLAYER_SIZE			= 1.0f;			// プレイヤーの大きさ
+const int	NO_DAMAGE_TIME		= 3 * 60;		//プレイヤーの無敵時間
+const int	DAMAGE_FLASH_FRAME	= 0.1f * 60;	// プレイヤーのダメージ点滅の切り替え間隔
+const int	SE_RUN_INTERVAL		= 0.4f * 60;	//プレイヤーの移動によるSE発生の間隔
+const float	SE_RUN_VOLUME = 0.3f;				//移動によるSEの音量
 #endif
 
 // =============== グローバル変数定義 =============
@@ -57,8 +61,7 @@ const int	DAMAGE_FLASH_FRAME	= 0.1 * 60;	// プレイヤーのダメージ点滅
    戻値：なし
 ======================================== */
 CPlayer::CPlayer()
-	: m_Transform({0.0f}, {PLAYER_SIZE}, {0.0f})
-	, m_pHammer(nullptr)
+	: m_pHammer(nullptr)
 	, m_pPlayerGeo(nullptr)
 	, m_pGameOver(nullptr)
 	, m_bAttackFlg(false)
@@ -68,12 +71,21 @@ CPlayer::CPlayer()
 	, m_bCollide(false)
 	, m_DrawFlg(true)
 	, m_FlashCnt(0)
+	, m_pSESwingHammer(nullptr)
+	, m_pSESwingHamSpeaker(nullptr)
+	, m_pSERun(nullptr)
+	, m_pSERunSpeaker(nullptr)
+	, m_pSEDamaged(nullptr)
+	, m_pSEDamagedSpeaker(nullptr)
+	, m_nMoveCnt(0)
 {
 	m_pHammer = new CHammer();								// Hammerクラスをインスタンス
 	m_pPlayerGeo = new CSphere();							// プレイヤーとして仮表示する球体オブジェクトのインスタンス
 	m_pGameOver = new CSphere();
 	m_nHp = PLAYER_HP;										// プレイヤーのHPを決定
-	m_sphere.fRadius = PLAYER_RADIUS;				// 当たり判定用の球体の半径
+	m_Sphere.fRadius = PLAYER_RADIUS;						// 当たり判定用の球体の半径
+	m_Transform.fScale = PLAYER_SIZE;
+	LoadSound();	//サウンドファイル読み込み
 }
 /* ========================================
    関数：デストラクタ
@@ -129,6 +141,7 @@ void CPlayer::Update()
 		{
 			m_pHammer->AttackStart(m_Transform.fPos, m_Transform.fRadian.y);	// ハンマー攻撃開始
 			m_bAttackFlg = true;	// 攻撃フラグを有効にする
+			m_pSESwingHamSpeaker = CSound::PlaySound(m_pSESwingHammer);	//ハンマーを振るSEの再生
 		}
 		
 	}
@@ -147,7 +160,8 @@ void CPlayer::Update()
 		}
 		
 	}
-	
+
+	SE_Move();	//移動によるSEの処理
 }
 
 /* ========================================
@@ -213,6 +227,7 @@ void CPlayer::Damage()
 	m_nHp -= 1;
 	m_bCollide = true;	//プレイヤーを一定時間、無敵にする
 	m_nNoDamageCnt = 0;	//プレイヤー無敵時間のカウントを0に戻す
+	m_pSEDamagedSpeaker = CSound::PlaySound(m_pSEDamaged);	//被ダメージ時のSE再生
 
 	if (m_nHp <= 0)
 	{
@@ -317,19 +332,7 @@ void CPlayer::MoveSizeInputSet(TPos3d<float> fInput)
 
 
 
-/* ========================================
-   プレイヤー当たり判定取得関数
-   ----------------------------------------
-   内容：プレイヤーの当たり判定用の球体を取得する関数
-   ----------------------------------------
-   引数：なし
-   ----------------------------------------
-   戻値：当たり判定(Sphere)
-======================================== */
-tagSphereInfo CPlayer::GetPlayerSphere()
-{
-	return m_sphere;
-}
+
 
 /* ========================================
    ハンマー当たり判定取得関数
@@ -346,20 +349,6 @@ tagSphereInfo CPlayer::GetHammerSphere()
 }
 
 /* ========================================
-   プレイヤー座標の取得関数
-   ----------------------------------------
-   内容：プレイヤーの座標を取得する関数
-   ----------------------------------------
-   引数：なし
-   ----------------------------------------
-   戻値：座標(x,y,z)
-======================================== */
-TPos3d<float> CPlayer::GetPos()
-{
-	return m_Transform.fPos;
-}
-
-/* ========================================
    プレイヤー座標ポインタ取得関数
    ----------------------------------------
    内容：プレイヤーの座標のポインタの取得する関数(カメラに使用する)
@@ -369,7 +358,7 @@ TPos3d<float> CPlayer::GetPos()
    戻値：座標ポインタアドレス
 ======================================== */
 TPos3d<float>* CPlayer::GetPosAddress()
-{ 
+{
 	return &m_Transform.fPos;
 }
 
@@ -457,4 +446,39 @@ void CPlayer::DamageAnimation()
 		m_FlashCnt = 0;
 	}
 
+}
+
+/* ========================================
+   プレイヤー点滅関数
+   ----------------------------------------
+   内容：プレイヤーがダメージを受けたら点滅する
+   ----------------------------------------
+   引数：無し
+   ----------------------------------------
+   戻値：無し
+======================================== */
+void CPlayer::SE_Move()
+{
+	m_nMoveCnt++;	//カウントを増やす
+
+	//移動量が縦横どちらも0の時はカウントをリセット
+	if (m_fMove.x == 0.0f && m_fMove.z == 0.0f)	
+	{
+		m_nMoveCnt = 0;
+	}
+
+	//カウントが一定以上になればSEを発生してカウントをリセット
+	if (SE_RUN_INTERVAL <= m_nMoveCnt)	
+	{
+		m_pSERunSpeaker = CSound::PlaySound(m_pSERun);
+		m_pSERunSpeaker->SetVolume(SE_RUN_VOLUME);
+		m_nMoveCnt = 0;
+	}
+}
+
+void CPlayer::LoadSound()
+{
+	m_pSEDamaged = CSound::LoadSound("Assets/Sound/SE/PlayerDamage.mp3");	//SEの読み込み
+	m_pSESwingHammer = CSound::LoadSound("Assets/Sound/SE/Swing.mp3");		//SEの読み込み
+	m_pSERun = CSound::LoadSound("Assets/Sound/SE/Run.mp3");				//SEの読み込み
 }

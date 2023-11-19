@@ -30,7 +30,7 @@
 #include "Camera.h"
 #include "ExplosionManager.h"
 #include "GameParameter.h"		//定数定義用ヘッダー
-
+#include "Sound.h"
 
 // =============== 定数定義 =======================
 #if MODE_GAME_PARAMETER
@@ -75,7 +75,11 @@ private:
 	Model* m_pYellowModel;
 	Model* m_pRedModel;
 	Model* m_pFlameModel;
-	
+
+	XAUDIO2_BUFFER* m_pSEHitSlime;					//ハンマーでスライムを打った時のSEのデータ
+	XAUDIO2_BUFFER* m_pSEUnion;					//ハンマーでスライムを打った時のSEのデータ
+	IXAudio2SourceVoice* m_pSEHitSlimeSpeaker;		//ハンマーでスライムを打った時のSEを聞き取る側
+	IXAudio2SourceVoice* m_pSEUnionSpeaker;		//ハンマーでスライムを打った時のSEを聞き取る側
 
 	int m_CreateCnt;	// 生成間隔用カウント
 

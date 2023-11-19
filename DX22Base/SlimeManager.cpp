@@ -72,6 +72,10 @@ CSlimeManager::CSlimeManager()
 	, m_pYellowModel(nullptr)
 	, m_pRedModel(nullptr)
 	, m_pFlameModel(nullptr)
+	, m_pSEHitSlime(nullptr)
+	, m_pSEUnion(nullptr)
+	, m_pSEHitSlimeSpeaker(nullptr)
+	, m_pSEUnionSpeaker(nullptr)
 {
 	//スライムのモデルと頂点シェーダーの読み込み
 	LoadModel();
@@ -88,7 +92,9 @@ CSlimeManager::CSlimeManager()
 		int ranLv = rand() % 3 + 1;		// 生成するスライムのレベルを乱数で指定
 		Create((E_SLIME_LEVEL)ranLv);	// 生成処理
 	}
-	
+	//サウンドファイルの読み込み
+	m_pSEHitSlime = CSound::LoadSound("Assets/Sound/SE/SlimeHitSlime.mp3");		//ハンマーを振った時のSEの読み込み
+	m_pSEUnion = CSound::LoadSound("Assets/Sound/SE/Union.mp3");		//スライムがくっついた時ののSEの読み込み
 }
 
 /* ========================================
@@ -260,17 +266,17 @@ void CSlimeManager::HitBranch(int HitSlimeNum, int StandSlimeNum, CExplosionMana
 	// 衝突するスライムが小さい場合(小→大)
 	if (hitSlimeLevel < standSlimeLevel)
 	{
-		m_pSlime[HitSlimeNum]->HitMoveStart(hitSlimeSpeed * COL_SUB_HIT_TO_BIG, reflectionAngle);			// 衝突するスライムに吹き飛び移動処理
-		m_pSlime[StandSlimeNum]->HitMoveStart(hitSlimeSpeed * COL_SUB_STAND_TO_SMALL, travelAngle);			// 衝突されたスライムに吹き飛び移動処理
-
+		m_pSlime[HitSlimeNum]->HitMoveStart(hitSlimeSpeed * COL_SUB_HIT_TO_BIG, reflectionAngle);	// 衝突するスライムに吹き飛び移動処理
+		m_pSlime[StandSlimeNum]->HitMoveStart(hitSlimeSpeed * COL_SUB_STAND_TO_SMALL, travelAngle);	// 衝突されたスライムに吹き飛び移動処理
+		m_pSEHitSlimeSpeaker = CSound::PlaySound(m_pSEHitSlime);									// SEの再生
 	}
 	
 	// 衝突するスライムが大きい場合(大→小)
 	else if (hitSlimeLevel > standSlimeLevel)
 	{
-		m_pSlime[HitSlimeNum]->HitMoveStart(hitSlimeSpeed * COL_SUB_HIT_TO_SMALL, travelAngle);	// 衝突するスライムに吹き飛び移動処理
-		m_pSlime[StandSlimeNum]->HitMoveStart(hitSlimeSpeed * COL_SUB_STAND_TO_BIG, travelAngle);			// 衝突されたスライムに吹き飛び移動処理
-
+		m_pSlime[HitSlimeNum]->HitMoveStart(hitSlimeSpeed * COL_SUB_HIT_TO_SMALL, travelAngle);		// 衝突するスライムに吹き飛び移動処理
+		m_pSlime[StandSlimeNum]->HitMoveStart(hitSlimeSpeed * COL_SUB_STAND_TO_BIG, travelAngle);	// 衝突されたスライムに吹き飛び移動処理
+		m_pSEHitSlimeSpeaker = CSound::PlaySound(m_pSEHitSlime);									// SEの再生
 	}
 	//スライムのサイズが同じだった場合
 	else
@@ -326,6 +332,7 @@ bool CSlimeManager::HitFlameBranch(int HitSlimeNum, int StandSlimeNum, CExplosio
 		// 『衝突するスライムが大きい場合(大→小)』と同じ動きをさせる
 		m_pSlime[HitSlimeNum]->HitMoveStart(hitSlimeSpeed * COL_SUB_HIT_TO_SMALL, travelAngle);		// 衝突するスライムに吹き飛び移動処理
 		m_pSlime[StandSlimeNum]->HitMoveStart(hitSlimeSpeed * COL_SUB_STAND_TO_BIG, travelAngle);	// 衝突されたスライムに吹き飛び移動処理
+		m_pSEHitSlimeSpeaker = CSound::PlaySound(m_pSEHitSlime);									//SEの再生
 
 		return true;
 	}
@@ -385,6 +392,7 @@ void CSlimeManager::UnionSlime(E_SLIME_LEVEL level ,TPos3d<float> pos)
 		}
 
 		m_pSlime[i]->SetCamera(m_pCamera);	//カメラをセット
+		m_pSEUnionSpeaker = CSound::PlaySound(m_pSEUnion);	//SEの再生
 
 		break;
 	}
@@ -460,15 +468,15 @@ void CSlimeManager::PreventOverlap(CSlimeBase * pMoveSlime, CSlimeBase * pStandS
 {
 	//↓のコメントアウトは理想的な処理のやりかけ
 	/*
-	tagSphereInfo::Sphere standSlimeSphere = pStandSlime->GetSphere();
-	tagSphereInfo::Sphere moveSlimeSphere = pMoveSlime->GetSphere();
-	float standSlimeToPlayerAngle = standSlimeSphere.Angle(m_pPlayer->GetPlayerSphere());
-	float standSlimeToMoveSlimeAngle = standSlimeSphere.Angle(moveSlimeSphere);
-	float Distance = standSlimeSphere.Distance(pMoveSlime->GetSphere());
-	float posX, posY, posZ;
+	tagSphereInfo::Sphere standSlimeSphere = pStandSlime->GetSphere();						//衝突されたスライムのSphereを取得
+	tagSphereInfo::Sphere moveSlimeSphere = pMoveSlime->GetSphere();						//衝突したスライムのSphereを取得
+	float standSlimeToPlayerAngle = standSlimeSphere.Angle(m_pPlayer->GetPlayerSphere());	//衝突されたスライムからPlayerへの角度を取得
+	float standSlimeToMoveSlimeAngle = standSlimeSphere.Angle(moveSlimeSphere);				//衝突されたスライムから衝突したスライムへの角度を取得
+	float Distance = standSlimeSphere.Distance(pMoveSlime->GetSphere());					//スライム同士の距離を取得
+	float posX, posY, posZ;																	//座標
 
-	if (standSlimeToMoveSlimeAngle < 0) { standSlimeToMoveSlimeAngle = (2 * PI) + standSlimeToMoveSlimeAngle; }
-	if (standSlimeToPlayerAngle < 0) { standSlimeToPlayerAngle = (2 * PI) + standSlimeToPlayerAngle; }
+	if (standSlimeToMoveSlimeAngle < 0) { standSlimeToMoveSlimeAngle = (2 * PI) + standSlimeToMoveSlimeAngle; }	//
+	if (standSlimeToPlayerAngle < 0) { standSlimeToPlayerAngle = (2 * PI) + standSlimeToPlayerAngle; }			
 	standSlimeToMoveSlimeAngle -= standSlimeToPlayerAngle;
 
 	if (PI < standSlimeToMoveSlimeAngle)

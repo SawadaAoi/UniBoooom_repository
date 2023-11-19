@@ -12,6 +12,7 @@
 	・2023/11/09 カメラの様々動作チェック。メインから軸線奪取。地面追加。 髙木駿輔
 	・2023/11/10 カメラをスライムと爆発にも渡すようにした・lineのメモリリーク対策 髙木駿輔
 	・2023/11/17 振動機能呼び出しデバッグモード追加 takagi
+	・2023/11/18 BGMの再生 yamashita
 
 ========================================== */
 
@@ -28,16 +29,23 @@
 #include "Box.h"
 #include "Line.h"
 #include "Defines.h"
+#include "GameParameter.h"
 
 #if USE_CAMERA_VIBRATION
 #include "Input.h"
 #endif
 
+// =============== 定数定義 =======================
+#if MODE_GAME_PARAMETER
+#else
+const float BGM_VOLUME = 0.02f;
+
+#endif
 
 // =============== デバッグモード =======================
-#define MODE_COORD_AXIS (true)	//座標軸映すかどうか
-#define MODE_GROUND (false)	//座標軸映すかどうか
-
+#define MODE_COORD_AXIS (true)			//座標軸映すかどうか
+#define MODE_GROUND (false)				//座標軸映すかどうか
+#define USE_CAMERA_VIBRATION (false)
 /* ========================================
 	コンストラクタ関数
 	-------------------------------------
@@ -47,7 +55,7 @@
 	-------------------------------------
 	戻値：無し
 =========================================== */
-SceneGame::SceneGame(DirectWrite* pDirectWrite)
+SceneGame::SceneGame()
 {
 	// 頂点シェーダの読込
 	m_pVs = new VertexShader();
@@ -59,7 +67,6 @@ SceneGame::SceneGame(DirectWrite* pDirectWrite)
 	RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得
 	DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
 	SetRenderTargets(1, &pRTV, pDSV);		//DSVがnullだと2D表示になる
-	SetDirectWrite(pDirectWrite);
 
 #if MODE_COORD_AXIS
 	// 軸線の表示
@@ -87,6 +94,11 @@ SceneGame::SceneGame(DirectWrite* pDirectWrite)
 	// タイマー生成
 	m_pTimer = new CTimer();
 	m_pTimer->TimeStart();
+
+	LoadSound();
+	//BGMの再生
+	m_pSpeaker = CSound::PlaySound(m_pBGM);		//BGMの再生
+	m_pSpeaker->SetVolume(BGM_VOLUME);			//音量の設定
 }
 
 /* ========================================
@@ -100,6 +112,12 @@ SceneGame::SceneGame(DirectWrite* pDirectWrite)
 =========================================== */
 SceneGame::~SceneGame()
 {
+	if (m_pSpeaker)
+	{
+		m_pSpeaker->Stop();
+		m_pSpeaker->DestroyVoice();
+	}
+
 	SAFE_DELETE(m_pTimer);
 	SAFE_DELETE(m_pExplosionMng);
 	SAFE_DELETE(m_pSlimeMng);	// スライムマネージャー削除
@@ -236,11 +254,19 @@ void SceneGame::Draw()
 
 	//タイマー描画
 	m_pTimer->Draw();
-	
 }
 
-
-void SceneGame::SetDirectWrite(DirectWrite* pDirectWrite)
+/* ========================================
+   サウンドファイル読み込み関数
+   -------------------------------------
+   内容：サウンドファイルの読み込み
+   -------------------------------------
+   引数1：無し
+   -------------------------------------
+   戻値：無し
+=========================================== */
+void SceneGame::LoadSound()
 {
-	m_pDirectWrite = pDirectWrite;
+	m_pBGM = CSound::LoadSound("Assets/Sound/BGM/BGM_maou.mp3", true);		//BGMの読み込み
+	m_pSEHitHammer = CSound::LoadSound("Assets/Sound/SE/Smash.mp3");		//SEの読み込み
 }
