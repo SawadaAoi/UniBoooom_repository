@@ -33,7 +33,7 @@ class CExplosion
 {
 public:
 	// ===メンバ関数宣言===
-	CExplosion(TPos3d<float> fPos, float fSize, float fTime);	//コンストラクタ
+	CExplosion(TPos3d<float> fPos, float fSize, float fTime, int comboNum);	//コンストラクタ
 	~CExplosion();												//デストラクタ
 	void Update();												//更新関数
 	void Draw();												//描画関数
@@ -46,6 +46,7 @@ public:
 	bool GetDelFlg();					//削除フラグ取得処理関数
 	void SetCamera(const CCamera* m_pCamera);	//他のオブジェクトと同一のカメラをセット
 
+	int m_dComboNum;			// コンボの対応番号
 
 private:
 	// ===メンバ変数宣言===
@@ -59,6 +60,7 @@ private:
 
 	CGeometry*		m_3dModel;		// 爆発仮3Dモデル
 	const CCamera*	m_pCamera;	//カメラのポインタ
+
 };
 
 #endif // __EXPLOSION_H__

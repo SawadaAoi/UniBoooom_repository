@@ -176,7 +176,7 @@ void SceneGame::ExplosionSlimeCollision()
 
 			if (m_pCollision->CheckCollisionSphere(pExplosion->GetSphere(), pSlimeTarget->GetSphere(), pExplosion->GetPos(), pSlimeTarget->GetPos()))
 			{
-				m_pSlimeMng->TouchExplosion(j, m_pExplosionMng);// スライムの爆発処理
+				m_pSlimeMng->TouchExplosion(j, m_pExplosionMng, pExplosion->m_dComboNum);// スライムの爆発処理
 				break;
 			}
 		}

@@ -35,12 +35,15 @@
 	戻値：なし
 =========================================== */
 CExplosionManager::CExplosionManager()
+	: m_dComboCheckFrame(0)
 {
 	// 爆発配列の初期化
 	for (int i = 0; i < MAX_EXPLOSION_NUM; i++)
 	{
 		m_pExplosion[i] = nullptr;
 	}
+
+	for (int i = 0; i < 10; i++)m_dComboCnts[i] = 0;
 }
 
 /* ========================================
@@ -87,6 +90,24 @@ void CExplosionManager::Update()
 	}
 
 	DeleteCheck();	// 削除チェック
+
+	for (int i = 0; i < 10; i++)
+	{
+		if (m_dComboCnts[i] == 0) continue;
+		bool bComboFlg = false;
+		for (int j = 0; j < MAX_EXPLOSION_NUM; j++)
+		{
+			// 未使用の爆発はスルー
+			if (m_pExplosion[j] == nullptr) continue;
+
+			if (m_pExplosion[j]->m_dComboNum == i)
+			{
+				bComboFlg = true;
+				break;
+			}
+		}
+		m_dComboCnts[i] = 0;
+	}
 }
 
 
@@ -106,18 +127,48 @@ void CExplosionManager::Update()
 =========================================== */
 void CExplosionManager::Create(TTriType<float> pos,float size, float time)
 {
+	int comboNum = 0;
+	for (int i = 0; i < 10; i++)
+	{
+		if (m_dComboCnts[i] != 0) continue;
+		m_dComboCnts[i] ++;
+		comboNum = i;
+		break;
+	}
+
 	// 爆発を検索
 	for (int i = 0; i < MAX_EXPLOSION_NUM; i++)
 	{
 		// 使用済みの爆発はスルー
 		if (m_pExplosion[i] != nullptr) continue;
 
-		m_pExplosion[i] = new CExplosion(pos,size,time);	// 座標を指定して生成
+		m_pExplosion[i] = new CExplosion(pos, size, time, comboNum);	// 座標を指定して生成
 		m_pExplosion[i]->SetCamera(m_pCamera);
 
 		break;
 
 	}
+
+	
+}
+
+void CExplosionManager::Create(TTriType<float> pos, float size, float time, int comboNum)
+{
+	m_dComboCnts[comboNum]++;
+
+	// 爆発を検索
+	for (int i = 0; i < MAX_EXPLOSION_NUM; i++)
+	{
+		// 使用済みの爆発はスルー
+		if (m_pExplosion[i] != nullptr) continue;
+
+		m_pExplosion[i] = new CExplosion(pos, size, time, comboNum);	// 座標を指定して生成
+		m_pExplosion[i]->SetCamera(m_pCamera);
+
+		break;
+
+	}
+
 }
 
 /* ========================================
@@ -183,6 +234,35 @@ CExplosion* CExplosionManager::GetExplosionPtr(int num)
 	----------------------------------------
 	戻値：なし
 ======================================== */
+void CExplosionManager::SwitchExplode(E_SLIME_LEVEL slimeLevel, TPos3d<float> pos, TTriType<float> slimeSize, int comboNum)
+{
+	float ExplosionSize = slimeSize.x * EXPLODE_BASE_RATIO;
+
+	// ぶつけられたスライムのレベルによって分岐
+	switch (slimeLevel) {
+	case LEVEL_1:
+		//スライム爆発処理
+		Create(pos, ExplosionSize, LEVEL_1_EXPLODE_TIME, comboNum);	//衝突されたスライムの位置でレベル１爆発
+		break;
+	case LEVEL_2:
+		//スライム爆発処理
+		Create(pos, ExplosionSize, LEVEL_2_EXPLODE_TIME, comboNum);	//衝突されたスライムの位置でレベル２爆発
+		break;
+	case LEVEL_3:
+		//スライム爆発処理
+		Create(pos, ExplosionSize, LEVEL_3_EXPLODE_TIME, comboNum);	//衝突されたスライムの位置でレベル３爆発
+		break;
+	case LEVEL_4:
+		//スライム爆発処理
+		Create(pos, ExplosionSize, LEVEL_4_EXPLODE_TIME, comboNum);	//衝突されたスライムの位置でレベル４爆発
+		break;
+	case LEVEL_FLAME:
+		Create(pos, ExplosionSize, LEVEL_1_EXPLODE_TIME, comboNum);	//衝突されたスライムの位置でレベル１爆発
+
+		break;
+	}
+}
+
 void CExplosionManager::SwitchExplode(E_SLIME_LEVEL slimeLevel, TPos3d<float> pos, TTriType<float> slimeSize)
 {
 	float ExplosionSize = slimeSize.x * EXPLODE_BASE_RATIO;

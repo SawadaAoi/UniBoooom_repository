@@ -16,7 +16,7 @@
 ========================================== */
 
 // =============== デバッグモード ===================
-#define USE_CAMERA_VIBRATION (false)
+#define USE_CAMERA_VIBRATION (true)
 
 // =============== インクルード ===================
 #include "SceneGame.h"

@@ -43,17 +43,23 @@ public:
 	void Draw();		 		//描画関数
 	
 	void Create(TTriType<float> pos,float size, float time);   	//爆発生成関数
+	void Create(TTriType<float> pos,float size, float time, int comboNum);   	//爆発生成関数
 	void DeleteCheck();							   				//時間より爆発を削除関数
 
 	CExplosion* GetExplosionPtr(int num);
 	void SwitchExplode(E_SLIME_LEVEL slimeLevel,TPos3d<float> pos, TTriType<float> slimeSize);					//スライムのレベルに応じて爆発を変更
+	void SwitchExplode(E_SLIME_LEVEL slimeLevel,TPos3d<float> pos, TTriType<float> slimeSize, int comboNum);					//スライムのレベルに応じて爆発を変更
 
 	void SetCamera(const CCamera* pCamera);	//他のオブジェクトと同一のカメラをセット
 protected:
+	
+private:
 	// ===メンバ変数宣言===
 	CExplosion* m_pExplosion[MAX_EXPLOSION_NUM];	//爆発の配列
 	const CCamera* m_pCamera;
-private:
+	int m_dComboCnts[10];
+	int m_dComboCntsOld[10];
+	int m_dComboCheckFrame;
 };
 
 #endif // __EXPLOSION_MANAGER_H__

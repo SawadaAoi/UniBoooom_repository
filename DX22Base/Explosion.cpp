@@ -45,13 +45,14 @@ const float EXPAND_QUICK_RATE = 0.2f;   // 膨張加速割合
 	-------------------------------------
 	戻値：無し
 =========================================== */
-CExplosion::CExplosion(TPos3d<float> fPos, float fSize,float fTime)
+CExplosion::CExplosion(TPos3d<float> fPos, float fSize,float fTime, int comboNum)
 	: m_Transform(fPos, { 0.0f, 0.0f, 0.0f }, 0.0f)
 	, m_fSizeAdd(0.0f)
 	, m_fDelFrame(0.0f)
 	, m_bDelFlg(false)
 	, m_fExplodeTime(0.0f)
 	, m_fMaxSize(0.0f)
+	, m_dComboNum(comboNum)
 {
 
 	//爆発オブジェクト初期化
