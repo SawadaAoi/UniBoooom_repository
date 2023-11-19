@@ -27,14 +27,15 @@ public:
 
 	void Update();		 		//更新関数
 	void Draw();		 		//描画関数
-	void CreateScore(TTriType<float> pos,float time, int score);			//スコアの生成
+	void CreateScore(TTriType<float> pos,int score);			//スコアの生成
 	void AddScore();			//スコア加算
 
 	
 protected:
 	// ===メンバ変数宣言===
 	CScore* m_pScore[MAX_EXPLOSION_NUM];	//スコアの配列
-	static int m_nTotalScore[5];	//トータルスコア//複数箇所対応
+	static int m_nTotalScore[5];	//トータルスコア//複数箇所対応	//倍率かける前
+
 private:
 	
 };

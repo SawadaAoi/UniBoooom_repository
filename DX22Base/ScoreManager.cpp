@@ -69,9 +69,16 @@ void CScoreManager::Draw()
 	}
 }
 
-void CScoreManager::CreateScore(TTriType<float> pos, float time, int score)
+void CScoreManager::CreateScore(TTriType<float> pos,int score)
 {
-	m_pScore[i] = new CScore(pos,time,score);
+	// 爆発を検索
+	for (int i = 0; i < MAX_EXPLOSION_NUM; i++)
+	{
+		// 使用済みの爆発はスルー
+		if (m_pScore[i] != nullptr) continue;
+
+		m_pScore[i] = new CScore(pos,score);
+	}
 }
 
 void CScoreManager::AddScore()

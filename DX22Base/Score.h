@@ -18,7 +18,7 @@
 class CScore
 {
 public:
-	CScore(TPos3d<float> fPos,float fTime,int nScore);
+	CScore(TPos3d<float> fPos,int nScore);
 	~CScore();
 
 	void Update();		 		//çXêVä÷êî
