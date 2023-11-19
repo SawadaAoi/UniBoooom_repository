@@ -9,6 +9,7 @@
 		鄭宇恩
 	変更履歴
 	・2023/11/17 cpp,作成 Tei
+	・2023/11/19 描画処理、ゲージ出現、消す処理追加 Tei
 
 ========================================== */
 
@@ -17,7 +18,12 @@
 #include "Timer.h"
 
 // =============== 定数定義 =======================
-const int MAX_GAUGE = 45;	//マックスゲージ量(何秒に出現)
+const int FIRST_FULL_BOSSGAUGE = 45 * 60;		//一体目のボスゲージMAXになる時間(何秒に出現) * 60フレーム
+const int SECOND_EMPTY_BOSSGAUGE = 75 * 60;		//二体目のボス空ゲージ表す時間 * 60フレーム
+const int SECOND_FULL_BOSSGAUGE = 120 * 60;		//二体目のボスゲージMAXになる時間(何秒に出現) * 60フレーム
+const TPos2d<float> BOSSGAUGE_EMPTY_POS(740.0f, 50.0f);	//ボスゲージ（空）の位置設定
+const TPos2d<float> BOSSGAUGE_FULL_POS(740.0f, 50.0f);	//ボスゲージ（満）の位置設定
+
 
 
 /* ========================================
@@ -30,17 +36,23 @@ const int MAX_GAUGE = 45;	//マックスゲージ量(何秒に出現)
 	戻値：なし
 =========================================== */
 CBossgauge::CBossgauge()
-	:m_pBossGauge(nullptr)
+	:m_pBossGaugeEmpty(nullptr)
+	,m_pBossGaugeFull(nullptr)
 	,m_nGaugeCnt(0)
 	,m_bGaugeFull(false)
+	,m_bShowBossGauge(true)
 {
 	//ボスゲージのテクスチャ読む込み
-	/*m_pBossGauge = new Texture();
-
-	if (FAILED(m_pBossGauge->Create("Assets/Texture/Star.png")))
+	m_pBossGaugeEmpty = new Texture();
+	m_pBossGaugeFull = new Texture();
+	if (FAILED(m_pBossGaugeEmpty->Create("Assets/Texture/bossbauge_empty.png")))
 	{
-		MessageBox(NULL, "ItemUI Star.png", "Error", MB_OK);
-	}*/
+		MessageBox(NULL, "bossgauge_empty.png", "Error", MB_OK);
+	}
+	if (FAILED(m_pBossGaugeFull->Create("Assets/Texture/bossbauge_full.png")))
+	{
+		MessageBox(NULL, "bossgauge_full.png", "Error", MB_OK);
+	}
 }
 
 /* ========================================
@@ -54,16 +66,20 @@ CBossgauge::CBossgauge()
 =========================================== */
 CBossgauge::~CBossgauge()
 {
-	if (m_pBossGauge)
+	if (m_pBossGaugeEmpty)
 	{
-		SAFE_DELETE(m_pBossGauge);
+		SAFE_DELETE(m_pBossGaugeEmpty);
+	}
+	if (m_pBossGaugeFull)
+	{
+		SAFE_DELETE(m_pBossGaugeFull);
 	}
 }
 
 /* ========================================
-	タイマー更新関数
+	更新関数
 	----------------------------------------
-	内容：タイマーのカウントダウン処理
+	内容：時間をカウントして、出現の時間になったら、ボス出る、ゲージ消す
 	----------------------------------------
 	引数1：なし
 	----------------------------------------
@@ -71,13 +87,33 @@ CBossgauge::~CBossgauge()
 =========================================== */
 void CBossgauge::Update()
 {
+	//ボス出現カウント
+	m_nGaugeCnt++;
+	if (m_nGaugeCnt == FIRST_FULL_BOSSGAUGE)
+	{
+		m_bGaugeFull = true;		//ゲージ満タン
+		m_bShowBossGauge = false;	//ボス出現、ゲージフラグをfalseに、ゲージを消す
 
+		//←TODOボス生成ボスの方に持っていくかここで呼ぶか
+	}
+	//二体目のボスのゲージ表示
+	if (m_nGaugeCnt == SECOND_EMPTY_BOSSGAUGE)
+	{
+		m_bShowBossGauge = true;
+	}
+	if (m_nGaugeCnt == SECOND_FULL_BOSSGAUGE)
+	{
+		m_bGaugeFull = true;		//ゲージ満タン
+		m_bShowBossGauge = false;	//二体目のボス出現、ゲージフラグをfalse、ゲージを消す
+
+		//←TODO二体目のボスの方に持っていくかここで呼ぶか
+	}
 }
 
 /* ========================================
 	描画関数
 	----------------------------------------
-	内容：タイマーの描画処理
+	内容：ボスゲージの描画処理
 	----------------------------------------
 	引数1：なし
 	----------------------------------------
@@ -85,25 +121,54 @@ void CBossgauge::Update()
 =========================================== */
 void CBossgauge::Draw()
 {
-	DirectX::XMFLOAT4X4 mat[3];
+	//ゲージ表示フラグfalseだったら return（表示しません）
+	if (m_bShowBossGauge == false) return;
+
+	//ボスゲージテクスチャ（空）
+	DirectX::XMFLOAT4X4 bossempty[3];
 
 	//ワールド行列はXとYのみを考慮して作成(Zは10ぐらいに配置
-	DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(1080.0f, 100.0f, 10.0f);;
-	DirectX::XMStoreFloat4x4(&mat[0], DirectX::XMMatrixTranspose(world));
+	DirectX::XMMATRIX worldBossempty = DirectX::XMMatrixTranslation(BOSSGAUGE_EMPTY_POS.x,BOSSGAUGE_EMPTY_POS.y, 10.0f);;
+	DirectX::XMStoreFloat4x4(&bossempty[0], DirectX::XMMatrixTranspose(worldBossempty));
 
 	//ビュー行列は2Dだとカメラの位置があまり関係ないので、単位行列を設定する（単位行列は後日
-	DirectX::XMStoreFloat4x4(&mat[1], DirectX::XMMatrixIdentity());
+	DirectX::XMStoreFloat4x4(&bossempty[1], DirectX::XMMatrixIdentity());
 
 	//プロジェクション行列には2Dとして表示するための行列を設定する
 	//この行列で2Dのスクリーンの多いさが決まる
-	DirectX::XMMATRIX proj = DirectX::XMMatrixOrthographicOffCenterLH(0.0f, 1280.0f, 720.0f, 0.0f, 0.1f, 10.0f);
-	DirectX::XMStoreFloat4x4(&mat[2], DirectX::XMMatrixTranspose(proj));
+	DirectX::XMMATRIX projBossempty = DirectX::XMMatrixOrthographicOffCenterLH(0.0f, 1280.0f, 720.0f, 0.0f, 0.1f, 10.0f);
+	DirectX::XMStoreFloat4x4(&bossempty[2], DirectX::XMMatrixTranspose(projBossempty));
 
 	//スプライトの設定
-	Sprite::SetWorld(mat[0]);
-	Sprite::SetView(mat[1]);
-	Sprite::SetProjection(mat[2]);
-	Sprite::SetSize(DirectX::XMFLOAT2(100.0f, -100.0f));
-	Sprite::SetTexture(m_pBossGauge);
+	Sprite::SetWorld(bossempty[0]);
+	Sprite::SetView(bossempty[1]);
+	Sprite::SetProjection(bossempty[2]);
+	Sprite::SetSize(DirectX::XMFLOAT2(50.0f, -50.0f));
+	Sprite::SetTexture(m_pBossGaugeEmpty);
+	Sprite::Draw();
+
+	//ボスゲージテクスチャ（満）
+	DirectX::XMFLOAT4X4 bossfull[3];
+
+	//ワールド行列はXとYのみを考慮して作成(Zは10ぐらいに配置
+	DirectX::XMMATRIX worldBossfull = DirectX::XMMatrixTranslation(BOSSGAUGE_FULL_POS.x, BOSSGAUGE_FULL_POS.y, 10.0f);;
+	DirectX::XMStoreFloat4x4(&bossfull[0], DirectX::XMMatrixTranspose(worldBossfull));
+
+	//ビュー行列は2Dだとカメラの位置があまり関係ないので、単位行列を設定する（単位行列は後日
+	DirectX::XMStoreFloat4x4(&bossfull[1], DirectX::XMMatrixIdentity());
+
+	//プロジェクション行列には2Dとして表示するための行列を設定する
+	//この行列で2Dのスクリーンの多いさが決まる
+	DirectX::XMMATRIX projBossfull = DirectX::XMMatrixOrthographicOffCenterLH(0.0f, 1280.0f, 720.0f, 0.0f, 0.1f, 10.0f);
+	DirectX::XMStoreFloat4x4(&bossfull[2], DirectX::XMMatrixTranspose(projBossfull));
+
+	//スプライトの設定
+	Sprite::SetWorld(bossfull[0]);
+	Sprite::SetView(bossfull[1]);
+	Sprite::SetProjection(bossfull[2]);
+	Sprite::SetSize(DirectX::XMFLOAT2(50.0f, -50.0f));
+	Sprite::SetUVPos(DirectX::XMFLOAT2(0.0f, 0.0f));
+	Sprite::SetUVScale(DirectX::XMFLOAT2(1.0f, (float)(m_nGaugeCnt/FIRST_FULL_BOSSGAUGE)));
+	Sprite::SetTexture(m_pBossGaugeFull);
 	Sprite::Draw();
 }

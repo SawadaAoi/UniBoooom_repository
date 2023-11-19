@@ -29,15 +29,17 @@ public:
 	void Update();
 	void Draw();
 
-	void GetBossPos();	//ボス現在の位置を取得(要る？) 画面外に行ったらアイコンで表示する
+	void GetBossPos();	//ボス現在の位置を取得(要る？) 画面外に行ったら矢印で表示する
 
 
 private:
 	// ===メンバ変数宣言===
-	Texture* m_pBossGauge;	
+	Texture* m_pBossGaugeEmpty;
+	Texture* m_pBossGaugeFull;
 	int m_nGaugeCnt;		//ボスゲージフレーム加算値
 	bool m_bGaugeFull;		//ゲージ満タンフラグ(満タン = true)
-	TPos3d<float> pos;
+	bool m_bShowBossGauge;	//ボスゲージ表示フラグ
+	
 
 };
 
