@@ -16,6 +16,11 @@
 #ifndef __GAME_PARAMETER_H__
 #define __GAME_PARAMETER_H__
 
+// =============== インクルード ===================
+#include "Pos2d.h"
+#include "Pos3d.h"
+#include <DirectXMath.h>
+
 // =============== パラメーター モード =======================
 #define MODE_GAME_PARAMETER	(true)
 
@@ -115,8 +120,13 @@ const float INIT_FAR	= 150.0f;									// 画面奥初期z値
 const float INIT_RADIUS = 15.0f;									// カメラと注視点との距離(初期値)
 
 
-
-
+// タイマー =====================================================
+const int STAGE_TIME = 180 * 60;	//ステージ制限時間（秒*フレーム）
+const TPos2d<float> MINUTE_POS(565.0f, 25.0f);			//分の位置設定
+const TPos2d<float> SECOND_TENS_POS (640.0f, 25.0f);	//十の桁秒の位置設定
+const TPos2d<float> SECOND_ONE_POS (690.0f, 25.0f);		//一の桁秒の位置設定
+const TPos2d<float> TIME_BACKGROUND_POS (630.0f, 25.0f);	//バックグラウンド位置設定
+const TPos2d<float> TIME_COLON_POS (615.0f, 25.0f);		//コロンの位置設定
 
 #endif
 

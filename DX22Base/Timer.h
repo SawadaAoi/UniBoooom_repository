@@ -14,9 +14,11 @@
 ========================================== */
 #ifndef __TIMER_H__
 #define __TIMER_H__
+// =============== 定数定義 ===================
 
 // =============== インクルード ===================
-
+#include <Texture.h>
+#include "GameParameter.h"
 
 // =============== クラス定義 =====================
 class CTimer
@@ -35,6 +37,7 @@ public:
 	void TimeStart(float maxTime, float waitTime);	//タイマー開始(制限時間設定、待ち時間あり)
 	void TimeStop();
 	void TimeRestart();
+	void DrawNumber(TPos2d<float> pos, int number);	//数字描画関数
 
 private:
 	void WaitTimeCheck();
@@ -45,6 +48,9 @@ private:
 	int m_nTimeCnt;		// 制限時間フレーム減算値
 	int m_dWaitCnt;		// カウントダウン開始フレーム減算値
 
+	Texture* m_pShowTimer;	//タイマー表示用テクスチャポインタ
+	Texture* m_pTimeBackground;
+	Texture* m_pShowColon;
 };
 
 

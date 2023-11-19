@@ -240,6 +240,9 @@ void SceneGame::Draw()
 	m_pBox->Draw();
 #endif
 	
+	RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得
+	DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
+	SetRenderTargets(1, &pRTV, pDSV);		//DSVがnullだと2D表示になる
 	//床の描画
 	m_pFloor->Draw();
 	// スライムマネージャー描画
@@ -250,6 +253,9 @@ void SceneGame::Draw()
 	m_pExplosionMng->Draw();
 
 	//タイマー描画
+
+	SetRenderTargets(1, &pRTV, nullptr);
+
 	m_pTimer->Draw();
 }
 
