@@ -72,10 +72,6 @@ CHpManager::~CHpManager()
 =========================================== */
 void CHpManager::Update()
 {
-	for (int i = PLAYER_HP; i >= *m_pnPlayerHp; --i)	// HPの量によって表示切替
-	{
-		m_bLost ^= 1;
-	}
 	//後々演出など記述
 }
 
