@@ -20,6 +20,9 @@
 	・2023/11/14 SphereInfoの変更に対応 Takagi
 	・2023/11/14 キーボードの入力移動処理内容を適切な形に変更 Sawada
 	・2023/11/15 Objectクラスを継承したので修正　yamamoto
+	・2023/11/19 移動のSEを再生 yamashita
+	・2023/11/19 被ダメージ時とハンマーを振るSEを再生 yamashita
+	・2023/11/19 サウドファイル読み込み関数を作成 yamashita
 ======================================== */
 
 // =============== インクルード ===================
@@ -42,7 +45,7 @@ const float PLAYER_SIZE			= 1.0f;			// プレイヤーの大きさ
 const int	NO_DAMAGE_TIME		= 3 * 60;		//プレイヤーの無敵時間
 const int	DAMAGE_FLASH_FRAME	= 0.1f * 60;	// プレイヤーのダメージ点滅の切り替え間隔
 const int	SE_RUN_INTERVAL		= 0.4f * 60;	//プレイヤーの移動によるSE発生の間隔
-const float	SE_RUN_VOLUME = 0.3f;			//移動によるSEの音量
+const float	SE_RUN_VOLUME = 0.3f;				//移動によるSEの音量
 #endif
 
 // =============== グローバル変数定義 =============
@@ -72,6 +75,8 @@ CPlayer::CPlayer()
 	, m_pSESwingHamSpeaker(nullptr)
 	, m_pSERun(nullptr)
 	, m_pSERunSpeaker(nullptr)
+	, m_pSEDamaged(nullptr)
+	, m_pSEDamagedSpeaker(nullptr)
 	, m_nMoveCnt(0)
 {
 	m_pHammer = new CHammer();								// Hammerクラスをインスタンス
@@ -80,8 +85,7 @@ CPlayer::CPlayer()
 	m_nHp = PLAYER_HP;										// プレイヤーのHPを決定
 	m_Sphere.fRadius = PLAYER_RADIUS;						// 当たり判定用の球体の半径
 	m_Transform.fScale = PLAYER_SIZE;
-	//m_pSESwingHammer = CSound::LoadSound("Assets/Sound/SE/Smash.mp3");
-	m_pSERun = CSound::LoadSound("Assets/Sound/SE/Run.mp3");	//SEの読み込み
+	LoadSound();	//サウンドファイル読み込み
 }
 /* ========================================
    関数：デストラクタ
@@ -137,6 +141,7 @@ void CPlayer::Update()
 		{
 			m_pHammer->AttackStart(m_Transform.fPos, m_Transform.fRadian.y);	// ハンマー攻撃開始
 			m_bAttackFlg = true;	// 攻撃フラグを有効にする
+			m_pSESwingHamSpeaker = CSound::PlaySound(m_pSESwingHammer);	//ハンマーを振るSEの再生
 		}
 		
 	}
@@ -222,6 +227,7 @@ void CPlayer::Damage()
 	m_nHp -= 1;
 	m_bCollide = true;	//プレイヤーを一定時間、無敵にする
 	m_nNoDamageCnt = 0;	//プレイヤー無敵時間のカウントを0に戻す
+	m_pSEDamagedSpeaker = CSound::PlaySound(m_pSEDamaged);	//被ダメージ時のSE再生
 
 	if (m_nHp <= 0)
 	{
@@ -468,4 +474,11 @@ void CPlayer::SE_Move()
 		m_pSERunSpeaker->SetVolume(SE_RUN_VOLUME);
 		m_nMoveCnt = 0;
 	}
+}
+
+void CPlayer::LoadSound()
+{
+	m_pSEDamaged = CSound::LoadSound("Assets/Sound/SE/PlayerDamage.mp3");	//SEの読み込み
+	m_pSESwingHammer = CSound::LoadSound("Assets/Sound/SE/Swing.mp3");		//SEの読み込み
+	m_pSERun = CSound::LoadSound("Assets/Sound/SE/Run.mp3");				//SEの読み込み
 }
