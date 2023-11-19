@@ -11,6 +11,8 @@
 	・2023/11/08 コメント追加と、無駄な箇所を削除
 	・2023/11/09 カメラの移動が分かるように地面追加した 髙木駿輔
 	・2023/11/11 スライム同士が重ならない処理を追加 yamashita
+	・2023/11/19 サウンドファイルの読み込み関数を追加 yamashita
+	・2023/11/19 サウンド用のメンバ変数を追加 yamashita
 
 ========================================== */
 #ifndef __SCENE_GAME_H__
@@ -58,9 +60,9 @@ private:
 	CTimer* m_pTimer;
 	CFloor* m_pFloor;
 	XAUDIO2_BUFFER* m_pBGM;							//BGMの音声データ
-	XAUDIO2_BUFFER* m_pSEHitHammer;							//BGMの音声データ
+	XAUDIO2_BUFFER* m_pSEHitHammer;					//SEの音声データ
 	IXAudio2SourceVoice* m_pSpeaker;				//BGMを聞き取る側
-	IXAudio2SourceVoice* m_pSEHitHammerSpeaker;				//BGMを聞き取る側
+	IXAudio2SourceVoice* m_pSEHitHammerSpeaker;		//SEを聞き取る側
 
 };
 
