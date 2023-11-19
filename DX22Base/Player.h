@@ -21,6 +21,8 @@
 	・2023/11/14 キーボードの入力移動処理内容を適切な形に変更 Sawada
 	・2023/11/15 Objectクラスを継承したので修正　yamamoto
 	・2023/11/19 移動のSEを再生 yamashita
+	・2023/11/19 被ダメージ時とハンマーを振るSEを再生 yamashita
+	・2023/11/19 サウドファイル読み込み関数を作成 yamashita
 ========================================== */
 
 #ifndef __PLAYER_H__
@@ -53,6 +55,7 @@ public:
 	void MoveSizeInputSet(TPos3d<float> fInput);
 	void DamageAnimation();
 	void SE_Move();
+	void LoadSound();	//サウンド読み込み関数
 
 	// ゲット関数
 	tagSphereInfo GetHammerSphere();	//当たり判定を取るためゲッター
@@ -83,8 +86,10 @@ private:
 
 	XAUDIO2_BUFFER* m_pSESwingHammer;
 	XAUDIO2_BUFFER* m_pSERun;
+	XAUDIO2_BUFFER* m_pSEDamaged;
 	IXAudio2SourceVoice* m_pSESwingHamSpeaker;
 	IXAudio2SourceVoice* m_pSERunSpeaker;
+	IXAudio2SourceVoice* m_pSEDamagedSpeaker;
 };
 
 
