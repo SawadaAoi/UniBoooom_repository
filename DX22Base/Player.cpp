@@ -67,6 +67,8 @@ CPlayer::CPlayer()
 	, m_bCollide(false)
 	, m_DrawFlg(true)
 	, m_FlashCnt(0)
+	, m_pSESwingHammer(nullptr)
+	, m_pSESwingHamSpeaker(nullptr)
 {
 	m_pHammer = new CHammer();								// Hammerクラスをインスタンス
 	m_pPlayerGeo = new CSphere();							// プレイヤーとして仮表示する球体オブジェクトのインスタンス
@@ -74,6 +76,7 @@ CPlayer::CPlayer()
 	m_nHp = PLAYER_HP;										// プレイヤーのHPを決定
 	m_Sphere.fRadius = PLAYER_RADIUS;						// 当たり判定用の球体の半径
 	m_Transform.fScale = PLAYER_SIZE;
+	//m_pSESwingHammer = CSound::LoadSound("Assets/Sound/SE/Smash.mp3");
 }
 /* ========================================
    関数：デストラクタ

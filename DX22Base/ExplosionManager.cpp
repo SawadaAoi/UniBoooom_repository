@@ -24,7 +24,7 @@
 #include "Sphere.h"				//球定義ヘッダー
 
 // =============== 定数定義 =======================
-
+const float EXPLODE_VOLUME = 0.5f;
 
 /* ========================================
 	関数：コンストラクタ
@@ -120,7 +120,8 @@ void CExplosionManager::Create(TTriType<float> pos,float size, float time)
 
 		m_pExplosion[i] = new CExplosion(pos,size,time);	// 座標を指定して生成
 		m_pExplosion[i]->SetCamera(m_pCamera);
-		m_pSEExplodeSpeaker = CSound::PlaySound(m_pSEExplode);
+		m_pSEExplodeSpeaker = CSound::PlaySound(m_pSEExplode);	//爆発の再生
+		m_pSEExplodeSpeaker->SetVolume(EXPLODE_VOLUME);			//音量調整
 
 		return;
 
@@ -176,7 +177,7 @@ void CExplosionManager::SetCamera(const CCamera * pCamera)
 ======================================== */
 CExplosion* CExplosionManager::GetExplosionPtr(int num)
 {
-	return m_pExplosion[num];;
+	return m_pExplosion[num];
 }
 
 /* ========================================

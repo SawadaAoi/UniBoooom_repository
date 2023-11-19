@@ -15,12 +15,6 @@
 
 ========================================== */
 
-// =============== 定数定義 =======================
-const float BGM_VOLUME = 0.05f;	//BGMのボリューム
-
-// =============== デバッグモード ===================
-#define USE_CAMERA_VIBRATION (false)
-
 // =============== インクルード ===================
 #include "SceneGame.h"
 #include "Geometry.h"
@@ -31,16 +25,23 @@ const float BGM_VOLUME = 0.05f;	//BGMのボリューム
 #include "Box.h"
 #include "Line.h"
 #include "Defines.h"
+#include "GameParameter.h"
 
 #if USE_CAMERA_VIBRATION
 #include "Input.h"
 #endif
 
+// =============== 定数定義 =======================
+#if MODE_GAME_PARAMETER
+#else
+const float BGM_VOLUME = 0.02f;
+
+#endif
 
 // =============== デバッグモード =======================
-#define MODE_COORD_AXIS (true)	//座標軸映すかどうか
-#define MODE_GROUND (false)	//座標軸映すかどうか
-
+#define MODE_COORD_AXIS (true)			//座標軸映すかどうか
+#define MODE_GROUND (false)				//座標軸映すかどうか
+#define USE_CAMERA_VIBRATION (false)
 /* ========================================
 	コンストラクタ関数
 	-------------------------------------
@@ -90,10 +91,10 @@ SceneGame::SceneGame()
 	m_pTimer = new CTimer();
 	m_pTimer->TimeStart();
 
+	LoadSound();
 	//BGMの再生
-	m_pBGM = CSound::LoadSound("Assets/Sound/BGM/BGM_maou.mp3", true);		//サウンドデータの読み込み
-	m_pSpeaker = CSound::PlaySound(m_pBGM);									//BGMの再生
-	m_pSpeaker->SetVolume(0.02f);											//音量の設定
+	m_pSpeaker = CSound::PlaySound(m_pBGM);		//BGMの再生
+	m_pSpeaker->SetVolume(BGM_VOLUME);			//音量の設定
 }
 
 /* ========================================
@@ -249,4 +250,10 @@ void SceneGame::Draw()
 
 	//タイマー描画
 	m_pTimer->Draw();
+}
+
+void SceneGame::LoadSound()
+{
+	m_pBGM = CSound::LoadSound("Assets/Sound/BGM/BGM_maou.mp3", true);		//BGMの読み込み
+	m_pSEHitHammer = CSound::LoadSound("Assets/Sound/SE/Smash.mp3");		//SEの読み込み
 }

@@ -34,6 +34,7 @@
 #include "Pos3d.h"
 #include "Camera.h"
 #include "Object.h"
+#include "Sound.h"
 // =============== クラス定義 =====================
 class CPlayer
 	: public CObject
@@ -78,6 +79,8 @@ private:
 	bool m_DrawFlg;						// プレイヤーがダメージを受けたら点滅するフラグ
 	int m_FlashCnt;						// 点滅の時間の長さ
 
+	XAUDIO2_BUFFER* m_pSESwingHammer;
+	IXAudio2SourceVoice* m_pSESwingHamSpeaker;
 };
 
 

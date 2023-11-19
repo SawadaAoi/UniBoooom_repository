@@ -107,6 +107,8 @@ void SceneGame::HammerSlimeCollision()
 				= m_pPlayer->GetTransform().Angle(pSlimeNow->GetTransform());	// スライムが飛ぶ角度を取得
 
 			pSlimeNow->HitMoveStart(HAMMER_HIT_MOVE_SPEED,fAngleSlime);	// スライムを飛ばす
+
+			m_pSEHitHammerSpeaker = CSound::PlaySound(m_pSEHitHammer);	//SEの再生
 		}
 	}
 }

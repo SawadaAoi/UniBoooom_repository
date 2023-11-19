@@ -46,6 +46,7 @@ public:
 	void ExplosionSlimeCollision();
 	void SlimeSlimeNormalMoveCollision();
 private:
+	void LoadSound();	//サウンドファイルの読み込み
 	// ===メンバ変数宣言===
 	VertexShader* m_pVs;
 	CCamera* m_pCamera;
@@ -56,8 +57,11 @@ private:
 	CExplosionManager* m_pExplosionMng;
 	CTimer* m_pTimer;
 	CFloor* m_pFloor;
-	XAUDIO2_BUFFER* m_pBGM;
-	IXAudio2SourceVoice* m_pSpeaker;
+	XAUDIO2_BUFFER* m_pBGM;							//BGMの音声データ
+	XAUDIO2_BUFFER* m_pSEHitHammer;							//BGMの音声データ
+	IXAudio2SourceVoice* m_pSpeaker;				//BGMを聞き取る側
+	IXAudio2SourceVoice* m_pSEHitHammerSpeaker;				//BGMを聞き取る側
+
 };
 
 #endif // __SCENE_GAME_H__
