@@ -83,7 +83,7 @@ public:
 	~CFade();					//デストラクタ
 	void Update();				//更新
 	void Draw();				//描画
-	void SetTexture(const std::string sTexPass);	//テクスチャ登録
+	void SetTexture();	//テクスチャ登録
 private:
 	// ===メンバ変数宣言=====
 	Texture* m_pTexture;			//テクスチャ情報

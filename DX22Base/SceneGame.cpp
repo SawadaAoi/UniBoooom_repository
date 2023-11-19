@@ -90,7 +90,7 @@ SceneGame::SceneGame(DirectWrite* pDirectWrite)
 	//m_pFade->SetPixelShader(pps);
 	//pvs->Load("Assets/Shader/VsFade.cso");
 	//m_pFade->SetVertexShader(pvs);
-	m_pFade->SetTexture("Assets/Fade.png");
+	m_pFade->SetTexture();
 }
 
 /* ========================================

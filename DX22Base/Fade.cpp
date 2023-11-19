@@ -1,10 +1,3 @@
-
-
-
-
-
-
-
 /* ========================================
 	HEW/UniBoooom!!
 	------------------------------------
@@ -19,43 +12,33 @@
 
 ========================================== */
 
+// =============== デバッグモード ===================
+#if _DEBUG
+#define USE_FADE (true)	//フェード試運転
+#endif
+
 // =============== インクルード ===================
-#include "Fade.h"		//自身のヘッダ
-#include "Input.h"
+#include "Fade.h"	//自身のヘッダ
+#if USE_FADE
+#include "Input.h"	//キー入力用
+#endif
 
 // =============== 定数定義 =====================
-//constexpr float A_3 = 1.0f;
-//const float B_3 = -6.0;
-//constexpr float c_3 = 10.0f;
-////constexpr float CheckC_3(void)
-////{
-////	if (c_3 < 12749.0f * A_3)
-////	{
-////		return 12748.0f;
-////	}
-////	else
-////	{
-////		return c_3;
-////	}
-////}
-////constexpr float C_3 = CheckC_3();
-//constexpr float D_3 = 0.0f;
+const std::string TEX_PASS = "Assets/Fade.png";	//テクスチャのパス名
+
 
 // =============== グローバル変数宣言 =====================
-
-int CFade::ms_nCntFade;			//自身の生成数
-VertexShader* CFade::ms_pVs;	//頂点シェーダー
-PixelShader* CFade::ms_pPs;		//ピクセルシェーダー
-
-const void* CFade::ms_pVtx;
-unsigned int CFade::ms_unVtxSize;
-unsigned int CFade::ms_unVtxCount;
-//static bool isWrite;
-const void* CFade::ms_pIdx;
-unsigned int CFade::ms_unIdxSize;
-unsigned int CFade::ms_unIdxCount;
-ID3D11Buffer* CFade::ms_pVtxBuffer;
-ID3D11Buffer* CFade::ms_pIdxBuffer;
+int CFade::ms_nCntFade;				//自身の生成数
+VertexShader* CFade::ms_pVs;		//頂点シェーダー
+PixelShader* CFade::ms_pPs;			//ピクセルシェーダー
+const void* CFade::ms_pVtx;			//頂点情報
+unsigned int CFade::ms_unVtxSize;	//頂点サイズ
+unsigned int CFade::ms_unVtxCount;	//頂点数
+const void* CFade::ms_pIdx;			//頂点のインデックス
+unsigned int CFade::ms_unIdxSize;	//インデックスサイズ
+unsigned int CFade::ms_unIdxCount;	//インデックス数
+ID3D11Buffer* CFade::ms_pVtxBuffer;	//頂点バッファ
+ID3D11Buffer* CFade::ms_pIdxBuffer;	//インデックスバッファ 
 
 /* ========================================
 	コンストラクタ関数
@@ -67,8 +50,8 @@ ID3D11Buffer* CFade::ms_pIdxBuffer;
 	戻値：なし
 =========================================== */
 CFade::CFade(const CCamera* pCamera)
-	:m_pTexture(nullptr)
-	, m_pCamera(pCamera)
+	:m_pTexture(nullptr)	//
+	, m_pCamera(pCamera)	//
 	, m_nFrame(0)
 	, m_bFadeOut(false)
 	, m_bFadeIn(false)
@@ -100,7 +83,6 @@ CFade::CFade(const CCamera* pCamera)
 =========================================== */
 CFade::CFade(const CFade & Obj)
 {
-	ms_nCntFade--;
 }
 
 /* ========================================
@@ -114,6 +96,8 @@ CFade::CFade(const CFade & Obj)
 =========================================== */
 CFade::~CFade()
 {
+	ms_nCntFade--;
+	SAFE_DELETE(ms_pPs);
 }
 
 void CFade::Update()
@@ -227,8 +211,6 @@ void CFade::Draw()
 		DirectX::XMMatrixScaling(80.0f, 80.0f, 0.0f) * DirectX::XMMatrixRotationZ(rad) * DirectX::XMMatrixTranslation(640.0f, 360.0f, 0.0f);
 
 	DirectX::XMStoreFloat4x4(&matrix[0], DirectX::XMMatrixTranspose(world));
-	//matrix[1] = m_pCamera->GetViewMatrix();
-	DirectX::XMStoreFloat4x4(&matrix[1], DirectX::XMMatrixIdentity());
 	matrix[2] = m_pCamera->GetProjectionMatrix(CCamera::E_DRAW_TYPE_2D);
 
 	//ms_pVs->WriteBuffer();
@@ -409,12 +391,12 @@ void CFade::CreateIdxBuffer()
 	-------------------------------------
 	戻値：なし
 =========================================== */
-void CFade::SetTexture(const std::string sTexPass)
+void CFade::SetTexture()
 {
 	if (m_pTexture)
 	{
 		SAFE_DELETE(m_pTexture);
 	}
 	m_pTexture = new Texture;
-	m_pTexture->Create(sTexPass.c_str());
+	m_pTexture->Create(TEX_PASS.c_str());
 }
