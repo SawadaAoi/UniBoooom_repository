@@ -56,7 +56,7 @@ CTimer::CTimer()
 	
 	if (FAILED(m_pShowTimer->Create("Assets/Texture/numbers_v1/number.png")))
 	{
-		MessageBox(NULL, "数字読む込み", "Error", MB_OK);
+		MessageBox(NULL, "number.png", "Error", MB_OK);
 	}
 	
 
@@ -64,13 +64,13 @@ CTimer::CTimer()
 	m_pTimeBackground = new Texture;
 	if (FAILED(m_pTimeBackground->Create("Assets/Texture/time_background.png")))
 	{
-		MessageBox(NULL, "BG読む込み", "Error", MB_OK);
+		MessageBox(NULL, "timebackground.png", "Error", MB_OK);
 	}
 	
 	m_pShowColon = new Texture;
 	if (FAILED(m_pShowColon->Create("Assets/Texture/colon.png")))
 	{
-		MessageBox(NULL, "colon読む込み", "Error", MB_OK);
+		MessageBox(NULL, "colon.png", "Error", MB_OK);
 	}
 }
 
@@ -306,7 +306,8 @@ void CTimer::TimeRestart()
 	----------------------------------------
 	内容：タイマーの描画部分描画する
 	----------------------------------------
-	引数1：位置、描画する数字
+	引数1：位置
+	引数2：描画する数字
 	----------------------------------------
 	戻値：なし
 =========================================== */
