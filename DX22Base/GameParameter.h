@@ -15,8 +15,12 @@
 =========================================== */
 #ifndef __GAME_PARAMETER_H__
 #define __GAME_PARAMETER_H__
+
+// =============== インクルード ===================
 #include "Pos2d.h"
 #include "Pos3d.h"
+#include <DirectXMath.h>
+
 // =============== パラメーター モード =======================
 #define MODE_GAME_PARAMETER	(true)
 

@@ -191,7 +191,7 @@ void CTimer::Draw()
 	//--ŠÔi”š•”•ªj‚Ì•`‰æ
 	DrawNumber(MINUTE_POS, GetMinite());				//•ª‚Ì•b‰æ
 	DrawNumber(SECOND_TENS_POS, (GetSecond() / 10));	//•b‚Ì\‚ÌŒ…‚Ì•`‰æ 
-	DrawNumber(SECOND_ONE_POS, (GetSecond() % 5));			//•b‚Ìˆê‚ÌŒ…‚Ì•`‰æ
+	DrawNumber(SECOND_ONE_POS, (GetSecond() % 10));		//•b‚Ìˆê‚ÌŒ…‚Ì•`‰æ
 }
 
 /* ========================================
