@@ -12,6 +12,7 @@
 	・2023/11/08 コメント修正	Nieda
 	・2023/11/12 スライム同士重複防止関数追加	Yamashita
 	・2023/11/14 SphereInfoの変更に対応 Takagi
+	・2023/11/19 スライムを打った時のSEの再生 yamashita
 
 ========================================== */
 
@@ -22,7 +23,8 @@
 // =============== 定数定義 =======================
 #if MODE_GAME_PARAMETER
 #else
-const float HAMMER_HIT_MOVE_SPEED = 1.0f;		// ハンマーに飛ばされた時のスピード
+const float HAMMER_HIT_MOVE_SPEED = 1.0f;	// ハンマーに飛ばされた時のスピード
+const float SE_HAMMER_HIT_VOLUME = 0.5f;	// スライムを打った時のSEの音量
 
 #endif 
 
@@ -70,9 +72,10 @@ void SceneGame::PlayerSlimeCollision()
 		if (pSlimeNow == nullptr)				continue;	// 無効なスライムはスルー
 
 		// スライムとハンマーが衝突した場合
-		if (m_pCollision->CheckCollisionSphere(m_pPlayer->GetPlayerSphere(), pSlimeNow->GetSphere(), m_pPlayer->GetPos(), pSlimeNow->GetPos()))
+		if (m_pCollision->CheckCollisionSphere(m_pPlayer->GetSphere(), pSlimeNow->GetSphere(), m_pPlayer->GetPos(), pSlimeNow->GetPos()))
 		{
 			m_pPlayer->Damage();
+			return;
 		}
 	}
 }
@@ -107,6 +110,9 @@ void SceneGame::HammerSlimeCollision()
 				= m_pPlayer->GetTransform().Angle(pSlimeNow->GetTransform());	// スライムが飛ぶ角度を取得
 
 			pSlimeNow->HitMoveStart(HAMMER_HIT_MOVE_SPEED,fAngleSlime);	// スライムを飛ばす
+
+			m_pSEHitHammerSpeaker = CSound::PlaySound(m_pSEHitHammer);	//SEの再生
+			m_pSEHitHammerSpeaker->SetVolume(SE_HAMMER_HIT_VOLUME);
 		}
 	}
 }

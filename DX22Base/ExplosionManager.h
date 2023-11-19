@@ -12,6 +12,7 @@
 	・2023/11/09 爆発配列を返す処理の追加 sawada
 	・2023/11/10 他のオブジェクトと同一のカメラをセットするようにした yamashita
 	・2023/11/13 Create関数の引数にtimeを追加 Suzumura
+	・2023/11/18 サウンド用のメンバ変数を追加 yamashita
 ========================================== */
 #ifndef __EXPLOSION_MANAGER_H__	//ExplosionManager.hインクルードガード
 #define __EXPLOSION_MANAGER_H__
@@ -19,6 +20,7 @@
 #include "Explosion.h"			//爆発処理ヘッダー
 #include "GameParameter.h"		//定数定義用ヘッダー
 #include "SlimeBase.h"
+#include "Sound.h"
 
 // =============== 定数定義 =======================
 #if MODE_GAME_PARAMETER
@@ -54,6 +56,8 @@ protected:
 	CExplosion* m_pExplosion[MAX_EXPLOSION_NUM];	//爆発の配列
 	const CCamera* m_pCamera;
 private:
+	XAUDIO2_BUFFER* m_pSEExplode;
+	IXAudio2SourceVoice* m_pSEExplodeSpeaker;
 };
 
 #endif // __EXPLOSION_MANAGER_H__

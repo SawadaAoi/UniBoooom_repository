@@ -12,9 +12,15 @@
 	・2023/11/14 変更内容：継承・修正：高木駿輔
 
 =========================================== */
-#include "SphereInfo.h"
 
+// =============== インクルード ===================
+#include "SphereInfo.h"	
 
+tagSphereInfo::tagSphereInfo(const float &Radius, const TPos3d<float> &Shift)
+	:fRadius(Radius)
+	,fShift(Shift)
+{
+}
 ///* ========================================
 //	関数：Distance
 //	----------------------------------------

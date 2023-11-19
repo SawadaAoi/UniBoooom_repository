@@ -62,37 +62,34 @@ struct FontData
 class DirectWrite
 {
 public:
-	DirectWrite() = delete;
-	//~DirectWrite();
-	DirectWrite(FontData* set);																	//引数付きコンストラクタ1
+	DirectWrite();																	//引数付きコンストラクタ1
 	DirectWrite(Font font,IDWriteFontCollection* fontCollection,DWRITE_FONT_WEIGHT fontWeight,	//引数付きコンストラクタ2
 		DWRITE_FONT_STYLE fontStyle,DWRITE_FONT_STRETCH fontStretch,FLOAT fontSize,
 		WCHAR const* localName,DWRITE_TEXT_ALIGNMENT textAlignment,D2D1_COLOR_F Color);
-	void SetFont(FontData* set);																//フォント設定1
-	void SetFont(Font font,IDWriteFontCollection* fontCollection,DWRITE_FONT_WEIGHT fontWeight,	//フォント設定2
+	static void SetFont(FontData* set);																//フォント設定1
+	static void SetFont(Font font,IDWriteFontCollection* fontCollection,DWRITE_FONT_WEIGHT fontWeight,	//フォント設定2
 		DWRITE_FONT_STYLE fontStyle,DWRITE_FONT_STRETCH fontStretch,FLOAT fontSize,
 		WCHAR const* localName,DWRITE_TEXT_ALIGNMENT textAlignment,D2D1_COLOR_F Color);
 
-	void DrawString(std::string str, DirectX::XMFLOAT2 pos, D2D1_DRAW_TEXT_OPTIONS options);	//文字表示(書きはじめを指定)
-	void DrawString(std::string str,D2D1_RECT_F rect,D2D1_DRAW_TEXT_OPTIONS options);			//文字表示(表示場所を四角形で範囲指定)
-	void Init();
-	void Release();
+	static void DrawString(std::string str, DirectX::XMFLOAT2 pos);	//文字表示(書きはじめを指定)
+	static void DrawString(std::string str,D2D1_RECT_F rect);			//文字表示(表示場所を四角形で範囲指定)
+	static void Init();
+	static void Release();
 
 private:
-	//すまん、メンバ変数はよくわからん
-	ID2D1Factory*			pID2D1Factory;
-	IDWriteFactory*			pIDWriteFactory;
-	IDWriteTextFormat*		pTextFormat;
-	IDWriteTextLayout*		pTextLayout;
-	ID2D1RenderTarget*		pRT;
-	ID2D1SolidColorBrush*	pSolidBrush;
-	IDXGISurface*			pBackBuffer;
+	static ID2D1Factory*			pID2D1Factory;		//2D表示の為のメソッド
+	static IDWriteFactory*			pIDWriteFactory;	//
+	static IDWriteTextFormat*		pTextFormat;		//テキストのファーマットを決める
+	static IDWriteTextLayout*		pTextLayout;		//テキストのレイアウトを決める
+	static ID2D1RenderTarget*		pRT;				//レンダーターゲットを作成する
+	static ID2D1SolidColorBrush*	pSolidBrush;		//ブラシを作成する
+	static IDXGISurface*			pBackBuffer;		
 
 	//フォントデータ
-	FontData* Setting;
+	static FontData* m_pSetting;
 
 	//string型をwstring型に変換
-	std::wstring StringToWString(std::string oString);
+	static std::wstring StringToWString(std::string oString);
 };
 
 

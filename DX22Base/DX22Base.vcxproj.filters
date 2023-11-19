@@ -207,6 +207,9 @@
     <ClCompile Include="ExplosionManager.cpp">
       <Filter>ソース ファイル\3dObject</Filter>
     </ClCompile>
+    <ClCompile Include="SphereInfo.cpp">
+      <Filter>ソース ファイル\3dObject</Filter>
+    </ClCompile>
     <ClCompile Include="Collision.cpp">
       <Filter>ソース ファイル\System</Filter>
     </ClCompile>
@@ -255,8 +258,8 @@
     <ClCompile Include="Timer.cpp">
       <Filter>ソース ファイル\2dObject</Filter>
     </ClCompile>
-    <ClCompile Include="SphereInfo.cpp">
-      <Filter>ソース ファイル\Info</Filter>
+    <ClCompile Include="Object.cpp">
+      <Filter>ソース ファイル\3dObject</Filter>
     </ClCompile>
     <ClCompile Include="Slime_Flame.cpp">
       <Filter>ソース ファイル\3dObject</Filter>
@@ -290,6 +293,9 @@
     </ClCompile>
     <ClCompile Include="BossGauge.cpp">
       <Filter>ソース ファイル\2dObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Sound.cpp">
+      <Filter>ソース ファイル\System</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -440,6 +446,9 @@
     <ClInclude Include="Timer.h">
       <Filter>ヘッダー ファイル\2dObject</Filter>
     </ClInclude>
+    <ClInclude Include="Object.h">
+      <Filter>ヘッダー ファイル\3dObject</Filter>
+    </ClInclude>
     <ClInclude Include="Slime_Flame.h">
       <Filter>ヘッダー ファイル\3dObject</Filter>
     </ClInclude>
@@ -466,6 +475,12 @@
     </ClInclude>
     <ClInclude Include="BossGauge.h">
       <Filter>ヘッダー ファイル\2dObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Sound.h">
+      <Filter>ヘッダー ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="DiType.h">
+      <Filter>ヘッダー ファイル\Info</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
