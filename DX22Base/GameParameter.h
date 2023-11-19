@@ -24,13 +24,20 @@
 // =============== インクルード ===================
 #include "Pos3d.h"
 
+//ゲームシーン================================================
+const float BGM_VOLUME = 0.02f;				//シーンゲームの音量
+const float SE_HAMMER_HIT_VOLUME = 0.5f;	// スライムを打った時のSEの音量
+
+
 // プレイヤー ================================================
-const float PLAYER_MOVE_SPEED	= 0.1f;		// プレイヤーの移動速度
-const int	PLAYER_HP			= 5;		// プレイヤーのHP
-const float PLAYER_RADIUS		= 0.1f;		// プレイヤーの当たり判定の大きさ
-const float PLAYER_SIZE			= 1.0f;		// プレイヤーの大きさ
-const int	NO_DAMAGE_TIME		= 3 * 60;	// プレイヤーの無敵時間
+const float PLAYER_MOVE_SPEED	= 0.1f;			// プレイヤーの移動速度
+const int	PLAYER_HP			= 5;			// プレイヤーのHP
+const float PLAYER_RADIUS		= 0.1f;			// プレイヤーの当たり判定の大きさ
+const float PLAYER_SIZE			= 1.0f;			// プレイヤーの大きさ
+const int	NO_DAMAGE_TIME		= 3 * 60;		// プレイヤーの無敵時間
 const int	DAMAGE_FLASH_FRAME	= 0.1f * 60;	// プレイヤーのダメージ点滅の切り替え間隔
+const int	SE_RUN_INTERVAL		= 0.4f * 60;	//プレイヤーの移動によるSE発生の間隔
+const float	SE_RUN_VOLUME		= 0.3f;			//移動によるSEの音量
 
 // ハンマー
 const float SWING_ANGLE			= DirectX::XMConvertToRadians(90.0f);	// ハンマーを振る範囲(扇形の角度の大きさ)

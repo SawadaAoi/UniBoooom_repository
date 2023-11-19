@@ -20,6 +20,7 @@
 	・2023/11/14 SphereInfoの変更に対応 Takagi
 	・2023/11/14 キーボードの入力移動処理内容を適切な形に変更 Sawada
 	・2023/11/15 Objectクラスを継承したので修正　yamamoto
+	・2023/11/19 移動のSEを再生 yamashita
 ========================================== */
 
 #ifndef __PLAYER_H__
@@ -34,6 +35,7 @@
 #include "Pos3d.h"
 #include "Camera.h"
 #include "Object.h"
+#include "Sound.h"
 // =============== クラス定義 =====================
 class CPlayer
 	: public CObject
@@ -50,7 +52,7 @@ public:
 	void MoveController();	// コントローラ用入力移動
 	void MoveSizeInputSet(TPos3d<float> fInput);
 	void DamageAnimation();
-
+	void SE_Move();
 
 	// ゲット関数
 	tagSphereInfo GetHammerSphere();	//当たり判定を取るためゲッター
@@ -77,7 +79,12 @@ private:
 	CGeometry* m_pGameOver;				// ゲームオーバーを仮表示するジオメトリー
 	bool m_DrawFlg;						// プレイヤーがダメージを受けたら点滅するフラグ
 	int m_FlashCnt;						// 点滅の時間の長さ
+	int m_nMoveCnt;						// プレイヤーの移動によるSEの間隔
 
+	XAUDIO2_BUFFER* m_pSESwingHammer;
+	XAUDIO2_BUFFER* m_pSERun;
+	IXAudio2SourceVoice* m_pSESwingHamSpeaker;
+	IXAudio2SourceVoice* m_pSERunSpeaker;
 };
 
 
