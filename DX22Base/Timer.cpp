@@ -189,35 +189,9 @@ void CTimer::Draw()
 	Sprite::Draw();
 
 	//--時間（数字部分）の描画
-	DrawNumber(MINUTE_POS, GetMinite());	//分の秒画
-
-	//秒の十の桁の描画 (僕この方法しかできない、もっといい書き方があったら改良)
-	if (GetSecond() / 10 == 5)
-	{
-		DrawNumber(SECOND_TENS_POS, 5);
-	}
-	else if (GetSecond() / 10 == 4)
-	{
-		DrawNumber(SECOND_TENS_POS, 4);
-	}
-	else if (GetSecond() / 10 == 3)
-	{
-		DrawNumber(SECOND_TENS_POS, 3);
-	}
-	else if (GetSecond() / 10 == 2)
-	{
-		DrawNumber(SECOND_TENS_POS, 2);
-	}
-	else if (GetSecond() / 10 == 1)
-	{
-		DrawNumber(SECOND_TENS_POS, 1);
-	}
-	else
-	{
-		DrawNumber(SECOND_TENS_POS, 0);
-	}
-
-	DrawNumber(SECOND_ONE_POS, GetSecond());	//秒の一の桁の描画
+	DrawNumber(MINUTE_POS, GetMinite());				//分の秒画
+	DrawNumber(SECOND_TENS_POS, (GetSecond() / 10));	//秒の十の桁の描画 
+	DrawNumber(SECOND_ONE_POS, (GetSecond() % 5));			//秒の一の桁の描画
 }
 
 /* ========================================
@@ -358,15 +332,16 @@ void CTimer::DrawNumber(TPos2d<float> pos, int number)
 	Sprite::SetView(time[1]);
 	Sprite::SetProjection(time[2]);
 	Sprite::SetSize(DirectX::XMFLOAT2(50.0f, -50.0f));
-	int nOnesNumber = number % 10;	//秒の時一の桁の数字
 	
-	if (nOnesNumber < 5)
+	//spriteシートの上部分表示（0~4）
+	if ((number % 10 ) < 5)
 	{
-		Sprite::SetUVPos(DirectX::XMFLOAT2(0.2f * nOnesNumber, 0.0f));
+		Sprite::SetUVPos(DirectX::XMFLOAT2(0.2f * number, 0.0f));
 	}
+	//spriteシートの下部分表示（5~9）
 	else
 	{
-		Sprite::SetUVPos(DirectX::XMFLOAT2(0.2f * (nOnesNumber - 5), 0.5f));
+		Sprite::SetUVPos(DirectX::XMFLOAT2(0.2f * number , 0.5f));
 	}
 
 	Sprite::SetUVScale(DirectX::XMFLOAT2(0.2f, 0.5f));
