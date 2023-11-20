@@ -11,6 +11,7 @@
 	・2023/11/18 制作 takagi
 	・2023/11/19 18の続き takagi
 	・2023/11/20 整理 takagi
+	・2023/11/21 更新・描画処理分割 takagi
 
 ========================================== */
 
@@ -42,7 +43,7 @@ const int FRAME_TURNING_1(50);							//拡縮反転１反転
 const int FRAME_TURNING_2(100);							//拡縮反転２反転
 const int FRAME_MAX(150);								//フェード時間の最大
 const float SCALE_MIN(0.0f);							//最小サイズ
-const float SCALE_TURNINIG_2(15.0f);					//サイズ反転２反転
+const float SCALE_TURNINIG_2(30.0f);					//サイズ反転２反転
 const float SCALE_TURNINIG_1(100.0f);					//サイズ反転１反転
 const float SCALE_MAX(1000.0f);							//最大サイズ
 const float ROTATE_ACCEL_RATE(4.0f);					//角速度増加割合
@@ -150,19 +151,6 @@ CFade::~CFade()
 =========================================== */
 void CFade::Update()
 {
-}
-
-/* ========================================
-	描画関数
-	-------------------------------------
-	内容：描画処理
-	-------------------------------------
-	引数1：なし
-	-------------------------------------
-	戻値：なし
-=========================================== */
-void CFade::Draw()
-{
 #if USE_FADE
 	if (IsKeyTrigger('7'))
 	{
@@ -234,7 +222,7 @@ void CFade::Draw()
 			{
 				if (nFrameTemp <= FRAME_TURNING_1)	//アウト時：第１ターニングポイントから終了まで
 				{
-					m_UvParam.fUvScale.x =(SCALE_TURNINIG_1 - SCALE_MIN) * (float)(nFrameTemp - FRAME_MIN) / (float)(FRAME_TURNING_1);	//拡縮セット
+					m_UvParam.fUvScale.x = (SCALE_TURNINIG_1 - SCALE_MIN) * (float)(nFrameTemp - FRAME_MIN) / (float)(FRAME_TURNING_1);	//拡縮セット
 				}
 				else
 				{
@@ -273,6 +261,24 @@ void CFade::Draw()
 	// =============== 行列更新 ===================
 	m_aMatrix[0] = m_Transform.GetWorldMatrixSRT();							//ワールド行列更新
 	m_aMatrix[2] = m_pCamera->GetProjectionMatrix(CCamera::E_DRAW_TYPE_2D);	//プロジェクション行列更新
+}
+
+/* ========================================
+	描画関数
+	-------------------------------------
+	内容：描画処理
+	-------------------------------------
+	引数1：なし
+	-------------------------------------
+	戻値：なし
+=========================================== */
+void CFade::Draw()
+{
+	// =============== 検査 ===================
+	if (!ms_pTexture || !(m_ucFlag & FLAG_FADE_ALL))	//描画できない時
+	{
+		return;	//処理中断
+	}
 
 	// =============== 変数宣言 ===================
 	float Param[4] = { m_UvParam.fUvScale.x, m_UvParam.fUvScale.y, m_UvParam.fDummy.x, m_UvParam.fDummy.y };	//定数バッファ書き込み用
