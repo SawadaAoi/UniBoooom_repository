@@ -33,6 +33,16 @@ public:
 	void Draw() const;					//描画	
 	E_TYPE GetType() const override;	//自身の種類ゲッタ
 	E_TYPE GetNext() const override;	//次のシーンゲッタ
+private:
+	// ===メンバ変数宣言===
+	VertexShader* m_pVs;
+	CCamera* m_pCamera;
+	CPlayer* m_pPlayer;
+	CSlimeManager* m_pSlimeMng;
+	CCOLLISION* m_pCollision;
+	CExplosionManager* m_pExplosionMng;
+	CTimer* m_pTimer;
+	CFloor* m_pFloor;
 };	//ステージ1
 
 #endif	//!__STAGE1_H__
