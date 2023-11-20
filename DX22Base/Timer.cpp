@@ -26,7 +26,7 @@ const TPos2d<float> MINUTE_POS(565.0f, 25.0f);			//分の位置設定
 const TPos2d<float> SECOND_TENS_POS(640.0f, 25.0f);	//十の桁秒の位置設定
 const TPos2d<float> SECOND_ONE_POS(690.0f, 25.0f);		//一の桁秒の位置設定
 const TPos2d<float> TIME_BACKGROUND_POS(630.0f, 25.0f);	//バックグラウンド位置設定
-const TPos2d<float> TIME_COLON_POS(615.0f, 25.0f);		//コロンの位置設定
+const TPos2d<float> TIME_COLON_POS(602.5f, 25.0f);		//コロンの位置設定
 
 
 #endif
@@ -68,7 +68,7 @@ CTimer::CTimer()
 	}
 	
 	m_pShowColon = new Texture;
-	if (FAILED(m_pShowColon->Create("Assets/Texture/colon.png")))
+	if (FAILED(m_pShowColon->Create("Assets/Texture/numbers_v1/colon.png")))
 	{
 		MessageBox(NULL, "colon.png", "Error", MB_OK);
 	}
@@ -140,6 +140,8 @@ void CTimer::Draw()
 {
 	//-----時間UIの描画-----
 
+	//タイマーが0になったら、return（表示しない）
+	if (m_nTimeCnt <= 0) return;
 	//--時間の背景部分(仮素材)--
 	DirectX::XMFLOAT4X4 timebackground[3];
 
@@ -182,7 +184,7 @@ void CTimer::Draw()
 	Sprite::SetWorld(colon[0]);
 	Sprite::SetView(colon[1]);
 	Sprite::SetProjection(colon[2]);
-	Sprite::SetSize(DirectX::XMFLOAT2(25.0f, -25.0f));
+	Sprite::SetSize(DirectX::XMFLOAT2(35.0f, -35.0f));
 	Sprite::SetUVPos(DirectX::XMFLOAT2(0.0f, 0.0f));
 	Sprite::SetUVScale(DirectX::XMFLOAT2(1.0f, 1.0f));
 	Sprite::SetTexture(m_pShowColon);

@@ -27,6 +27,7 @@
 #include "Line.h"
 #include "Defines.h"
 #include "GameParameter.h"
+#include "BossGauge.h"
 
 #if USE_CAMERA_VIBRATION
 #include "Input.h"
@@ -96,6 +97,9 @@ SceneGame::SceneGame()
 	//BGMの再生
 	m_pSpeaker = CSound::PlaySound(m_pBGM);		//BGMの再生
 	m_pSpeaker->SetVolume(BGM_VOLUME);			//音量の設定
+
+	//ボスゲージ
+	m_pBossgauge = new CBossgauge();
 }
 
 /* ========================================
@@ -114,7 +118,7 @@ SceneGame::~SceneGame()
 		m_pSpeaker->Stop();
 		m_pSpeaker->DestroyVoice();
 	}
-
+	SAFE_DELETE(m_pBossgauge);
 	SAFE_DELETE(m_pTimer);
 	SAFE_DELETE(m_pExplosionMng);
 	SAFE_DELETE(m_pSlimeMng);	// スライムマネージャー削除
@@ -167,7 +171,7 @@ void SceneGame::Update(float tick)
 	m_pSlimeMng->Update(m_pExplosionMng);
 	m_pExplosionMng->Update();
 	m_pTimer->Update();
-
+	m_pBossgauge->Update();
 	SceneGameCollision();
 }
 
@@ -257,6 +261,8 @@ void SceneGame::Draw()
 	SetRenderTargets(1, &pRTV, nullptr);
 
 	m_pTimer->Draw();
+	//ボスゲージ描画
+	m_pBossgauge->Draw();
 }
 
 /* ========================================

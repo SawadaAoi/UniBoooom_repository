@@ -43,12 +43,12 @@ private:
 	void WaitTimeCheck();
 
 	// ===メンバ変数宣言===
-	bool m_bStartFlg;	// カウントダウン開始フラグ(false = 待機中) 
-	bool m_bStopFlg;	// タイマーストップフラグ(true = stop)
-	int m_nTimeCnt;		// 制限時間フレーム減算値
-	int m_dWaitCnt;		// カウントダウン開始フレーム減算値
+	bool m_bStartFlg;			// カウントダウン開始フラグ(false = 待機中) 
+	bool m_bStopFlg;			// タイマーストップフラグ(true = stop)
+	int m_nTimeCnt;				// 制限時間フレーム減算値
+	int m_dWaitCnt;				// カウントダウン開始フレーム減算値
 
-	Texture* m_pShowTimer;	//タイマー表示用テクスチャポインタ
+	Texture* m_pShowTimer;		//タイマー表示用テクスチャポインタ
 	Texture* m_pTimeBackground;
 	Texture* m_pShowColon;
 };

@@ -30,6 +30,7 @@
 #include "DirectWrite.h"
 #include "Timer.h"
 #include "Floor.h"
+#include "BossGauge.h"
 
 // =============== クラス定義 =====================
 class SceneGame
@@ -58,6 +59,7 @@ private:
 	CCOLLISION* m_pCollision;
 	CExplosionManager* m_pExplosionMng;
 	CTimer* m_pTimer;
+	CBossgauge* m_pBossgauge;
 	CFloor* m_pFloor;
 	XAUDIO2_BUFFER* m_pBGM;							//BGMの音声データ
 	XAUDIO2_BUFFER* m_pSEHitHammer;					//SEの音声データ

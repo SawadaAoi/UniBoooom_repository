@@ -18,12 +18,15 @@
 #include "Timer.h"
 
 // =============== 定数定義 =======================
-const int FIRST_FULL_BOSSGAUGE = 45 * 60;		//一体目のボスゲージMAXになる時間(何秒に出現) * 60フレーム
-const int SECOND_EMPTY_BOSSGAUGE = 75 * 60;		//二体目のボス空ゲージ表す時間 * 60フレーム
-const int SECOND_FULL_BOSSGAUGE = 120 * 60;		//二体目のボスゲージMAXになる時間(何秒に出現) * 60フレーム
-const TPos2d<float> BOSSGAUGE_EMPTY_POS(740.0f, 50.0f);	//ボスゲージ（空）の位置設定
-const TPos2d<float> BOSSGAUGE_FULL_POS(740.0f, 50.0f);	//ボスゲージ（満）の位置設定
 
+#if MODE_GAME_PARAMETER
+#else
+const int BOSS_GAUGE_FULL_TIME = 45 * 60;		//ボスゲージMAXになる時間(何秒出現) * 60フレーム
+const int SECOND_EMPTY_BOSSGAUGE = 75 * 60;		//二体目のボス空ゲージ表す時間 * 60フレーム
+const TPos2d<float> BOSSGAUGE_EMPTY_POS(765.0f, 25.0f);	//ボスゲージ（空）の位置設定
+const TPos2d<float> BOSSGAUGE_FULL_POS(765.0f, 25.0f);	//ボスゲージ（満）の位置設定
+
+#endif
 
 
 /* ========================================
@@ -45,11 +48,11 @@ CBossgauge::CBossgauge()
 	//ボスゲージのテクスチャ読む込み
 	m_pBossGaugeEmpty = new Texture();
 	m_pBossGaugeFull = new Texture();
-	if (FAILED(m_pBossGaugeEmpty->Create("Assets/Texture/bossbauge_empty.png")))
+	if (FAILED(m_pBossGaugeEmpty->Create("Assets/Texture/bossgauge_empty.png")))
 	{
 		MessageBox(NULL, "bossgauge_empty.png", "Error", MB_OK);
 	}
-	if (FAILED(m_pBossGaugeFull->Create("Assets/Texture/bossbauge_full.png")))
+	if (FAILED(m_pBossGaugeFull->Create("Assets/Texture/bossgauge_full.png")))
 	{
 		MessageBox(NULL, "bossgauge_full.png", "Error", MB_OK);
 	}
@@ -89,7 +92,7 @@ void CBossgauge::Update()
 {
 	//ボス出現カウント
 	m_nGaugeCnt++;
-	if (m_nGaugeCnt == FIRST_FULL_BOSSGAUGE)
+	if (m_nGaugeCnt == BOSS_GAUGE_FULL_TIME)
 	{
 		m_bGaugeFull = true;		//ゲージ満タン
 		m_bShowBossGauge = false;	//ボス出現、ゲージフラグをfalseに、ゲージを消す
@@ -100,13 +103,7 @@ void CBossgauge::Update()
 	if (m_nGaugeCnt == SECOND_EMPTY_BOSSGAUGE)
 	{
 		m_bShowBossGauge = true;
-	}
-	if (m_nGaugeCnt == SECOND_FULL_BOSSGAUGE)
-	{
-		m_bGaugeFull = true;		//ゲージ満タン
-		m_bShowBossGauge = false;	//二体目のボス出現、ゲージフラグをfalse、ゲージを消す
-
-		//←TODO二体目のボスの方に持っていくかここで呼ぶか
+		m_nGaugeCnt = 0;
 	}
 }
 
@@ -143,15 +140,34 @@ void CBossgauge::Draw()
 	Sprite::SetWorld(bossempty[0]);
 	Sprite::SetView(bossempty[1]);
 	Sprite::SetProjection(bossempty[2]);
-	Sprite::SetSize(DirectX::XMFLOAT2(50.0f, -50.0f));
+	Sprite::SetSize(DirectX::XMFLOAT2(100.0f, -100.0f));
+	Sprite::SetUVPos(DirectX::XMFLOAT2(0.0f, 0.0f));
+	Sprite::SetUVScale(DirectX::XMFLOAT2(1.0f, 1.0f));
 	Sprite::SetTexture(m_pBossGaugeEmpty);
 	Sprite::Draw();
+
+	float fFillGauge = 0;
+	fFillGauge = (float)m_nGaugeCnt / (float)BOSS_GAUGE_FULL_TIME;
+	FillGauge(fFillGauge);
+}
+
+/* ========================================
+	ゲージュ増加関数
+	----------------------------------------
+	内容：ボスゲージ増加量の描画処理
+	----------------------------------------
+	引数1：ボスゲージ中の部分描く範囲
+	----------------------------------------
+	戻値：なし
+=========================================== */
+void CBossgauge::FillGauge(float textureRange)
+{
 
 	//ボスゲージテクスチャ（満）
 	DirectX::XMFLOAT4X4 bossfull[3];
 
 	//ワールド行列はXとYのみを考慮して作成(Zは10ぐらいに配置
-	DirectX::XMMATRIX worldBossfull = DirectX::XMMatrixTranslation(BOSSGAUGE_FULL_POS.x, BOSSGAUGE_FULL_POS.y, 10.0f);;
+	DirectX::XMMATRIX worldBossfull = DirectX::XMMatrixTranslation(BOSSGAUGE_FULL_POS.x, BOSSGAUGE_FULL_POS.y + (50.0f - 50 * textureRange ), 10.0f);;
 	DirectX::XMStoreFloat4x4(&bossfull[0], DirectX::XMMatrixTranspose(worldBossfull));
 
 	//ビュー行列は2Dだとカメラの位置があまり関係ないので、単位行列を設定する（単位行列は後日
@@ -166,9 +182,10 @@ void CBossgauge::Draw()
 	Sprite::SetWorld(bossfull[0]);
 	Sprite::SetView(bossfull[1]);
 	Sprite::SetProjection(bossfull[2]);
-	Sprite::SetSize(DirectX::XMFLOAT2(50.0f, -50.0f));
-	Sprite::SetUVPos(DirectX::XMFLOAT2(0.0f, 0.0f));
-	Sprite::SetUVScale(DirectX::XMFLOAT2(1.0f, (float)(m_nGaugeCnt/FIRST_FULL_BOSSGAUGE)));
+	Sprite::SetSize(DirectX::XMFLOAT2(100.0f, (-textureRange * 100) ));		//描画大きさ設定
+	Sprite::SetUVPos(DirectX::XMFLOAT2(0.0f, (1.0f - textureRange) ));		//描画のtextureの範囲設定
+	Sprite::SetUVScale(DirectX::XMFLOAT2(1.0f, textureRange));				//表示するtextureの大きさ設定
 	Sprite::SetTexture(m_pBossGaugeFull);
 	Sprite::Draw();
 }
+
