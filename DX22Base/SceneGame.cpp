@@ -76,10 +76,10 @@ SceneGame::SceneGame(DirectWrite* pDirectWrite)
 	m_pExplosionMng = new CExplosionManager();
 	m_pExplosionMng->SetCamera(m_pCamera);
 	//スコア生成
-	m_pScoreMng = new CScoreManager();
+	m_pScoreOHMng = new CScoreOHManager();
 	//m_pCamera->E_DRAW_TYPE_2D;	//ごめんなさいカメラの設定がわかんにゃい
 
-	m_pExplosionMng->SetScoreMng(m_pScoreMng);
+	m_pSlimeMng->SetScoreOHMng(m_pScoreOHMng);
 
 	// タイマー生成
 	m_pTimer = new CTimer();
@@ -104,7 +104,7 @@ SceneGame::~SceneGame()
 	SAFE_DELETE(m_pCamera);
 	SAFE_DELETE(m_pPlayer);
 	SAFE_DELETE(m_pCollision);
-	SAFE_DELETE(m_pScoreMng);
+	SAFE_DELETE(m_pScoreOHMng);
 #if MODE_COORD_AXIS
 	// 軸線の表示
 	CLine::Uninit();
@@ -132,7 +132,7 @@ void SceneGame::Update(float tick)
 	m_pSlimeMng->Update(m_pExplosionMng);
 	m_pExplosionMng->Update();
 	m_pTimer->Update();
-	m_pScoreMng->Update();	//スコアマネージャー更新
+	m_pScoreOHMng->Update();	//スコアマネージャー更新
 	SceneGameCollision();
 }
 
@@ -217,7 +217,7 @@ void SceneGame::Draw()
 	//タイマー描画
 	m_pTimer->Draw();
 
-	m_pScoreMng->Draw();//スコアマネージャー描画
+	m_pScoreOHMng->Draw();//スコアマネージャー描画
 	
 }
 

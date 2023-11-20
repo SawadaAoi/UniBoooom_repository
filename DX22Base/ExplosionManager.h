@@ -19,7 +19,6 @@
 #include "Explosion.h"			//爆発処理ヘッダー
 #include "GameParameter.h"		//定数定義用ヘッダー
 #include "SlimeBase.h"
-#include "ScoreManager.h"
 // =============== 定数定義 =======================
 #if MODE_GAME_PARAMETER
 #else
@@ -42,7 +41,7 @@ public:
 	void Update();		 		//更新関数
 	void Draw();		 		//描画関数
 	
-	void Create(TTriType<float> pos,float size, float time,int score,float posY);   	//爆発生成関数
+	void Create(TTriType<float> pos,float size, float time);   	//爆発生成関数
 	void DeleteCheck();							   				//時間より爆発を削除関数
 
 	CExplosion* GetExplosionPtr(int num);
@@ -50,12 +49,10 @@ public:
 
 	void SetCamera(const CCamera* pCamera);	//他のオブジェクトと同一のカメラをセット
 
-	void SetScoreMng(CScoreManager* pScoreMng);
 protected:
 	// ===メンバ変数宣言===
 	CExplosion* m_pExplosion[MAX_EXPLOSION_NUM];	//爆発の配列
 	const CCamera* m_pCamera;
-	CScoreManager* m_pScoreMng;
 private:
 };
 

@@ -13,7 +13,7 @@
 ========================================== */
 
 // =============== インクルード ===================
-#include "Score.h"
+#include "ScoreOverHead.h"
 #include "Sprite.h"
 /* ========================================
 	関数：コンストラクタ
@@ -24,7 +24,7 @@
 	-------------------------------------
 	戻値：なし
 =========================================== */
-CScore::CScore(TPos3d<float> fPos, int nScore, float posY)
+CScoreOverHead::CScoreOverHead(TPos3d<float> fPos, int nScore, float posY)
 	: m_pScoreTexture(nullptr)
 	, m_Transform(fPos, { 0.0f, 0.0f, 0.0f }, 0.0f)
 	, digits{}
@@ -46,17 +46,17 @@ CScore::CScore(TPos3d<float> fPos, int nScore, float posY)
 	ArraySize = digitArray.size();
 }
 
-CScore::~CScore()
+CScoreOverHead::~CScoreOverHead()
 {
 	digits.clear();
 	digitArray.clear();
 }
 
-void CScore::Update()	//
+void CScoreOverHead::Update()	//
 {
 }
 
-void CScore::Draw()
+void CScoreOverHead::Draw()
 {
 	DirectX::XMFLOAT4X4 mat[3];
 	DirectX::XMFLOAT4X4 inv;//逆行列の格納先
@@ -98,7 +98,7 @@ void CScore::Draw()
 
 }
 
-std::vector<int> CScore::digitsToArray(int score)
+std::vector<int> CScoreOverHead::digitsToArray(int score)
 {
 	while (score > 0) {
 		digits.push_back(score % 10);

@@ -20,11 +20,11 @@
 
 
 // =============== クラス定義 =====================
-class CScore
+class CScoreOverHead
 {
 public:
-	CScore(TPos3d<float> fPos,int nScore, float posY);
-	~CScore();
+	CScoreOverHead(TPos3d<float> fPos,int nScore, float posY);
+	~CScoreOverHead();
 
 	
 	void Update();		 		//更新関数

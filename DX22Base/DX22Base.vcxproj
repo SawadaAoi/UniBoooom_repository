@@ -186,8 +186,8 @@
     <ClCompile Include="Floor.cpp" />
     <ClCompile Include="ModelParticle.cpp" />
     <ClCompile Include="Particle.cpp" />
-    <ClCompile Include="Score.cpp" />
-    <ClCompile Include="ScoreManager.cpp" />
+    <ClCompile Include="ScoreOverHead.cpp" />
+    <ClCompile Include="ScoreOHManager.cpp" />
     <ClCompile Include="SelectStage.cpp" />
     <ClCompile Include="Stage1.cpp" />
     <ClCompile Include="Hammer.cpp" />
@@ -250,8 +250,8 @@
     <ClInclude Include="Pos3d.h" />
     <ClInclude Include="ModelParticle.h" />
     <ClInclude Include="Particle.h" />
-    <ClInclude Include="Score.h" />
-    <ClInclude Include="ScoreManager.h" />
+    <ClInclude Include="ScoreOverHead.h" />
+    <ClInclude Include="ScoreOHManager.h" />
     <ClInclude Include="SelectStage.h" />
     <ClInclude Include="Stage1.h" />
     <ClInclude Include="Hammer.h" />

@@ -30,7 +30,7 @@
 #include "Camera.h"
 #include "ExplosionManager.h"
 #include "GameParameter.h"		//定数定義用ヘッダー
-#include "ScoreManager.h"
+#include "ScoreOHManager.h"
 
 // =============== 定数定義 =======================
 #if MODE_GAME_PARAMETER
@@ -61,6 +61,8 @@ public:
 
 	void SetCamera(CCamera* pCamera);		//スライムを移すカメラのポインタをセット
 	void SetPlayerPos(TPos3d<float> pos);
+	void SetScoreOHMng(CScoreOHManager* pScoreMng);
+
 private:
 	// ===メンバ変数宣言=====
 	int GetRandom(int min, int max);
@@ -76,7 +78,8 @@ private:
 	Model* m_pYellowModel;
 	Model* m_pRedModel;
 	Model* m_pFlameModel;
-	
+	CScoreOHManager* m_pScoreOHMng;
+
 
 	int m_CreateCnt;	// 生成間隔用カウント
 

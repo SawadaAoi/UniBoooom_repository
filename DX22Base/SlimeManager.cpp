@@ -281,8 +281,8 @@ void CSlimeManager::HitBranch(int HitSlimeNum, int StandSlimeNum, CExplosionMana
 		if (hitSlimeLevel == MAX_LEVEL)	//スライムのサイズが最大の時
 		{
 			//スライム爆発処理
-			pExpMng->Create(pos, MAX_SIZE_EXPLODE * EXPLODE_BASE_RATIO, LEVEL_4_EXPLODE_TIME,FIRST_EXPLOSION_SCORE, LEVEL_4_HEIGHT);	//衝突されたスライムの位置でレベル４爆発
-
+			pExpMng->Create(pos, MAX_SIZE_EXPLODE * EXPLODE_BASE_RATIO, LEVEL_4_EXPLODE_TIME);	//衝突されたスライムの位置でレベル４爆発
+			m_pScoreOHMng->DisplayOverheadScore(pos, LEVEL_4_SCORE * 2, LEVEL_4_HEIGHT);
 		}
 		else	//最大サイズじゃない場合は1段階大きいスライムを生成する
 		{
@@ -407,6 +407,7 @@ void CSlimeManager::TouchExplosion(int DelSlime, CExplosionManager * pExpMng)
 	TTriType<float> size = m_pSlime[DelSlime]->GetScale();		// 衝突先のスライムサイズを確保
 
 	pExpMng->SwitchExplode(level,pos,size);
+	m_pScoreOHMng->DisplayOverheadScore(pos, level);
 
 	SAFE_DELETE(m_pSlime[DelSlime]);					//ぶつかりに来たスライムを削除
 
@@ -600,4 +601,18 @@ void CSlimeManager::SetPlayerPos(TPos3d<float> pos)
 int CSlimeManager::GetRandom(int min, int max)
 {
 	return min + (int)(rand() * (max - min + 1.0) / (1.0 + RAND_MAX));
+}
+
+/* ========================================
+	スコア情報セット関数
+	----------------------------------------
+	内容：爆発生成時に必要なスコア情報セット
+	----------------------------------------
+	引数1：なし
+	----------------------------------------
+	戻値：なし
+======================================== */
+void CSlimeManager::SetScoreOHMng(CScoreOHManager * pScoreMng)
+{
+	m_pScoreOHMng = pScoreMng;
 }

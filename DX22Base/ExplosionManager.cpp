@@ -104,7 +104,7 @@ void CExplosionManager::Update()
 	-------------------------------------
 	戻値：なし
 =========================================== */
-void CExplosionManager::Create(TTriType<float> pos, float size, float time, int score, float posY)
+void CExplosionManager::Create(TTriType<float> pos, float size, float time)
 {
 	// 爆発を検索
 	for (int i = 0; i < MAX_EXPLOSION_NUM; i++)
@@ -114,8 +114,6 @@ void CExplosionManager::Create(TTriType<float> pos, float size, float time, int 
 
 		m_pExplosion[i] = new CExplosion(pos,size,time);	// 座標を指定して生成
 		m_pExplosion[i]->SetCamera(m_pCamera);
-		m_pScoreMng->CreateScore(pos,score,posY);
-
 
 		break;
 
@@ -158,19 +156,6 @@ void CExplosionManager::DeleteCheck()
 void CExplosionManager::SetCamera(const CCamera * pCamera)
 {
 	m_pCamera = pCamera;
-}
-/* ========================================
-	スコア情報セット関数
-	----------------------------------------
-	内容：爆発生成時に必要なスコア情報セット
-	----------------------------------------
-	引数1：なし
-	----------------------------------------
-	戻値：なし
-======================================== */
-void CExplosionManager::SetScoreMng(CScoreManager * pScoreMng)
-{
-	m_pScoreMng = pScoreMng;
 }
 
 /* ========================================

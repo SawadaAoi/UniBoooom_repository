@@ -13,7 +13,7 @@
 ========================================== */
 
 // =============== インクルード ===================
-#include "ScoreManager.h"
+#include "ScoreOHManager.h"
 #include "GameParameter.h"
 #include "Sphere.h"				//球定義ヘッダー　なんでか分からんけど付けたらましになる
 
@@ -26,7 +26,7 @@
 	-------------------------------------
 	戻値：なし
 =========================================== */
-CScoreManager::CScoreManager()
+CScoreOHManager::CScoreOHManager()
 {
 	// スコア配列の初期化
 	for (int i = 0; i < MAX_EXPLOSION_NUM; i++)
@@ -44,7 +44,7 @@ CScoreManager::CScoreManager()
 	-------------------------------------
 	戻値：なし
 =========================================== */
-CScoreManager::~CScoreManager()
+CScoreOHManager::~CScoreOHManager()
 {
 	// メモリ削除
 	for (int i = 0; i < MAX_EXPLOSION_NUM; i++)
@@ -53,11 +53,11 @@ CScoreManager::~CScoreManager()
 	}
 }
 
-void CScoreManager::Update()
+void CScoreOHManager::Update()
 {
 }
 
-void CScoreManager::Draw()
+void CScoreOHManager::Draw()
 {
 	// slimeの上に表示するスコアの検索
 	for (int i = 0; i < MAX_EXPLOSION_NUM; i++)
@@ -72,7 +72,7 @@ void CScoreManager::Draw()
 
 }
 
-void CScoreManager::CreateScore(TTriType<float> pos,int score,float posY)
+void CScoreOHManager::DisplayOverheadScore(TTriType<float> pos,int score,float height)
 {
 	// 爆発を検索
 	for (int i = 0; i < MAX_EXPLOSION_NUM; i++)
@@ -80,11 +80,32 @@ void CScoreManager::CreateScore(TTriType<float> pos,int score,float posY)
 		// 使用済みの爆発はスルー
 		if (m_pScore[i] != nullptr) continue;
 
-		m_pScore[i] = new CScore(pos,score,posY);
+		m_pScore[i] = new CScoreOverHead(pos,score, height);
 	}
 }
 
-void CScoreManager::AddScore()
+void CScoreOHManager::DisplayOverheadScore(TTriType<float> pos, E_SLIME_LEVEL level)
+{
+	float height; int score;
+
+	switch (level) {
+	case LEVEL_1:		score = LEVEL_1_SCORE; height = LEVEL_1_HEIGHT; break;
+	case LEVEL_2:		score = LEVEL_2_SCORE; height = LEVEL_2_HEIGHT; break;
+	case LEVEL_3:		score = LEVEL_3_SCORE; height = LEVEL_3_HEIGHT; break;
+	case LEVEL_4:		score = LEVEL_4_SCORE; height = LEVEL_4_HEIGHT; break;
+	case LEVEL_FLAME:	score = LEVEL_1_SCORE; height = LEVEL_1_HEIGHT; break;
+	}
+	// 爆発を検索
+	for (int i = 0; i < MAX_EXPLOSION_NUM; i++)
+	{
+		// 使用済みの爆発はスルー
+		if (m_pScore[i] != nullptr) continue;
+
+		m_pScore[i] = new CScoreOverHead(pos, score, height);
+	}
+}
+
+void CScoreOHManager::AddScore()
 {
 
 }

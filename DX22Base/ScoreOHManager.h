@@ -14,26 +14,28 @@
 #define __SCORE_MANAGER_H__
 
 // =============== インクルード ===================
-#include "Score.h"
+#include "ScoreOverHead.h"
 #include "GameParameter.h"
+#include "SlimeBase.h"
 
 // =============== クラス定義 =====================
-class CScoreManager
+class CScoreOHManager
 {
 public:
 	// ===メンバ関数宣言===
-	CScoreManager();		//コンストラクタ
-	~CScoreManager();		//デストラクタ
+	CScoreOHManager();		//コンストラクタ
+	~CScoreOHManager();		//デストラクタ
 
 	void Update();		 		//更新関数
 	void Draw();		 		//描画関数
-	void CreateScore(TTriType<float> pos,int score, float posY);			//スコアの生成
+	void DisplayOverheadScore(TTriType<float> pos,int score, float height);			// スコアの生成
+	void DisplayOverheadScore(TTriType<float> pos, E_SLIME_LEVEL level);			// スコアの生成
 	void AddScore();			//スコア加算
 
 	
 protected:
 	// ===メンバ変数宣言===
-	CScore* m_pScore[MAX_EXPLOSION_NUM];	//スコアの配列
+	CScoreOverHead* m_pScore[MAX_EXPLOSION_NUM];	//スコアの配列
 	static int m_nTotalScore[5];	//トータルスコア//複数箇所対応	//倍率かける前
 
 private:

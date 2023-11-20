@@ -288,10 +288,10 @@
     <ClCompile Include="DirectWrite.cpp">
       <Filter>ソース ファイル\System</Filter>
     </ClCompile>
-    <ClCompile Include="ScoreManager.cpp">
+    <ClCompile Include="ScoreOverHead.cpp">
       <Filter>ソース ファイル\2dObject</Filter>
     </ClCompile>
-    <ClCompile Include="Score.cpp">
+    <ClCompile Include="ScoreOHManager.cpp">
       <Filter>ソース ファイル\2dObject</Filter>
     </ClCompile>
   </ItemGroup>
@@ -467,10 +467,10 @@
     <ClInclude Include="SelectStage.h">
       <Filter>ヘッダー ファイル\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="ScoreManager.h">
+    <ClInclude Include="ScoreOverHead.h">
       <Filter>ヘッダー ファイル\2dObject</Filter>
     </ClInclude>
-    <ClInclude Include="Score.h">
+    <ClInclude Include="ScoreOHManager.h">
       <Filter>ヘッダー ファイル\2dObject</Filter>
     </ClInclude>
   </ItemGroup>
