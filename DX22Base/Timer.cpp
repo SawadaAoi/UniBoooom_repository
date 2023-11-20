@@ -46,29 +46,28 @@ CTimer::CTimer()
 	, m_bStartFlg(false)
 	, m_dWaitCnt(0)
 	, m_bStopFlg(false)
-	, m_pTimeBackground(nullptr)
-	, m_pShowColon(nullptr)
-	, m_pShowTimer(nullptr)
+	, m_pTextureBG(nullptr)
+	, m_pTextureColon(nullptr)
+	, m_pTextureNum(nullptr)
 {
-	//数字のテクスチャ読む込み
-	
-	m_pShowTimer = new Texture();
-	
-	if (FAILED(m_pShowTimer->Create("Assets/Texture/numbers_v1/number.png")))
+	// 数字
+	m_pTextureNum = new Texture();
+	if (FAILED(m_pTextureNum->Create("Assets/Texture/numbers_v1/number.png")))
 	{
 		MessageBox(NULL, "number.png", "Error", MB_OK);
 	}
 	
 
-	//タイマーの裏テクスチャ読み込む
-	m_pTimeBackground = new Texture;
-	if (FAILED(m_pTimeBackground->Create("Assets/Texture/time_background.png")))
+	// タイマーの背景
+	m_pTextureBG = new Texture;
+	if (FAILED(m_pTextureBG->Create("Assets/Texture/time_background.png")))
 	{
 		MessageBox(NULL, "timebackground.png", "Error", MB_OK);
 	}
 	
-	m_pShowColon = new Texture;
-	if (FAILED(m_pShowColon->Create("Assets/Texture/colon.png")))
+	// コロン
+	m_pTextureColon = new Texture;
+	if (FAILED(m_pTextureColon->Create("Assets/Texture/colon.png")))
 	{
 		MessageBox(NULL, "colon.png", "Error", MB_OK);
 	}
@@ -85,10 +84,10 @@ CTimer::CTimer()
 =========================================== */
 CTimer::~CTimer()
 {
-	
-	SAFE_DELETE(m_pShowTimer);
-	
-	SAFE_DELETE(m_pTimeBackground);
+	SAFE_DELETE(m_pTextureColon);
+	SAFE_DELETE(m_pTextureBG);	
+	SAFE_DELETE(m_pTextureNum);
+
 }
 
 /* ========================================
@@ -160,7 +159,7 @@ void CTimer::Draw()
 	Sprite::SetView(timebackground[1]);
 	Sprite::SetProjection(timebackground[2]);
 	Sprite::SetSize(DirectX::XMFLOAT2(200.0f, -75.0f));
-	Sprite::SetTexture(m_pTimeBackground);
+	Sprite::SetTexture(m_pTextureBG);
 	Sprite::Draw();
 
 	//--コロンの描画--
@@ -185,7 +184,7 @@ void CTimer::Draw()
 	Sprite::SetSize(DirectX::XMFLOAT2(25.0f, -25.0f));
 	Sprite::SetUVPos(DirectX::XMFLOAT2(0.0f, 0.0f));
 	Sprite::SetUVScale(DirectX::XMFLOAT2(1.0f, 1.0f));
-	Sprite::SetTexture(m_pShowColon);
+	Sprite::SetTexture(m_pTextureColon);
 	Sprite::Draw();
 
 	//--時間（数字部分）の描画
@@ -346,7 +345,7 @@ void CTimer::DrawNumber(TPos2d<float> pos, int number)
 	}
 
 	Sprite::SetUVScale(DirectX::XMFLOAT2(0.2f, 0.5f));
-	Sprite::SetTexture(m_pShowTimer);
+	Sprite::SetTexture(m_pTextureNum);
 	Sprite::Draw();
 }
 

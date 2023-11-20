@@ -39,6 +39,7 @@ class CExplosion
 public:
 	// ===メンバ関数宣言===
 	CExplosion(TPos3d<float> fPos, float fSize, float fTime, int comboNum);	//コンストラクタ
+	CExplosion(TPos3d<float> fPos, float fSize, float fTime, int comboNum, bool m_bDelayFlg);	//コンストラクタ
 	~CExplosion();												// デストラクタ
 	void Update();												// 更新関数
 	void Draw();												// 描画関数
@@ -62,7 +63,8 @@ private:
 
 	int m_dComboNum;			// コンボ配列番号
 
-
+	bool m_bDelayFlg;		// 爆発遅延フラグ
+	int m_dDelayCnt;		// カウントダウン開始フレーム減算値
 };
 
 #endif // __EXPLOSION_H__
