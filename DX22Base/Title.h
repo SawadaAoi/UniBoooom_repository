@@ -22,6 +22,7 @@
 
 // =============== インクルード ===================
 #include "Scene.h"	//親のヘッダ
+#include "Texture.h"
 
 // =============== クラス定義 =====================
 class CTitle :public CScene	//シーン
@@ -31,9 +32,12 @@ public:
 	CTitle();							//コンストラクタ
 	~CTitle();							//デストラクタ
 	void Update();						//更新
-	void Draw() const;					//描画	
+	void Draw();					//描画	
 	E_TYPE GetType() const override;	//自身の種類ゲッタ
 	E_TYPE GetNext() const override;	//次のシーンゲッタ
+	void Draw2d(float, float, float, float, Texture*);
+private:
+	Texture* m_pTexture;
 };	//タイトル
 
 #endif	//!__TITLE_H__

@@ -20,6 +20,7 @@
 #include "Pos3d.h"
 #include "Sprite.h"
 #include "GameParameter.h"
+#include "Input.h"
 
 // 定数定義（承認まだなので一旦書きました）
 const float VIEW_LEFT = 0.0f;
@@ -71,6 +72,10 @@ CResult::~CResult()
 =========================================== */
 void CResult::Update()
 {
+	if (IsKeyTrigger(VK_SPACE))
+	{
+		m_bFinish = true;
+	}
 }
 
 /* ========================================

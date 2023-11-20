@@ -46,7 +46,7 @@ public:
 	CScene();							//コンストラクタ
 	virtual ~CScene();					//デストラクタ
 	virtual void Update();				//更新
-	virtual void Draw() const;			//描画
+	virtual void Draw();			//描画
 	bool IsFin() const;					//終了確認
 	virtual E_TYPE GetType() const = 0;	//自身の種類ゲッタ
 	virtual E_TYPE GetNext() const = 0;	//次のシーンゲッタ

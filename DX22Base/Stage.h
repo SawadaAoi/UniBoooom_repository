@@ -28,7 +28,7 @@
 #include "ExplosionManager.h"
 #include "Floor.h"
 #include "Timer.h"
-
+	
 // =============== クラス定義 =====================
 class CStage :public CScene	//シーン
 {
@@ -40,7 +40,7 @@ public:
 	//virtual void Draw() const;			//描画	
 	//virtual E_TYPE GetType() const = 0;	//自身の種類ゲッタ
 	void Collision();
-private:
+protected:
 	void PlayerSlimeCollision();
 	void HammerSlimeCollision();
 	void SlimeSlimeCollision();

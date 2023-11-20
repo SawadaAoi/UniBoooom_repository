@@ -25,8 +25,9 @@
 #include "SceneManager.h"
 #else
 //#include "SceneGame.h"
-#include "Stage1.h"
+//#include "Stage1.h"
 //#include "Result.h"
+#include "Title.h"
 #endif
 #include "Defines.h"
 #include <time.h>
@@ -37,8 +38,9 @@
 CSceneManager* g_pSceneMng;
 #else
 //SceneGame* g_pGame;
-CStage* g_pGame;
+//CStage* g_pGame;
 //CResult* g_pGame;
+CTitle* g_pGame;
 #endif
 
 /* ========================================
@@ -72,8 +74,9 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
 	g_pSceneMng = new CSceneManager();
 #else
 	//g_pGame = new SceneGame();
-	g_pGame = new CStage1();
+	//g_pGame = new CStage1();
 	//g_pGame = new CResult();
+	g_pGame = new CTitle();
 #endif
 
 	return hr;

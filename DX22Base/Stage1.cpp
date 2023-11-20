@@ -115,7 +115,7 @@ void CStage1::Update()
 	戻値：なし
 =========================================== */
 //!memo(見たら消してー)：constが邪魔になったら外してね(.hの方も)
-void CStage1::Draw() const
+void CStage1::Draw()
 {
 	//床の描画
 	m_pFloor->Draw();

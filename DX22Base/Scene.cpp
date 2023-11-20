@@ -72,7 +72,7 @@ void CScene::Update()
 	戻値：なし
 =========================================== */
 //!memo(見たら消してー)：constが邪魔になったら外してね(.hの方も)
-void CScene::Draw() const
+void CScene::Draw()
 {
 }
 
