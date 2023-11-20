@@ -14,21 +14,29 @@
 
 ========================================== */
 
-struct PS_IN {
-	float4 pos : SV_POSITION;
-	float2 uv : TEXCOORD0;
-	float4 color : COLOR0;
-};
-Texture2D tex : register(t0);
-SamplerState samp : register(s2);
+// =============== 構造体定義 =====================
+struct PS_IN
+{
+	float4 fPos : SV_POSITION;	//位置情報
+	float2 fUv : TEXCOORD0;		//テクスチャ情報
+	float4 fColor : COLOR0;		//色情報
+};	//受け取る情報
 
-//SamplerState samp : register(s1)
-//{
-//	AddressU = WRAP;
-//	AddressV = MIRROR;
-//};
-float4 main(PS_IN pin) : SV_TARGET{
-	//return tex.Sample(samp, pin.uv) * pin.color;
+// =============== バッファ =====================
+Texture2D Tex : register(t0);		//テクスチャ
+SamplerState Samp : register(s2);	//フェード用サンプラーステート
 
-	return float4(pin.color.x, pin.color.y, pin.color.z, (1.0f - tex.Sample(samp, pin.uv).w));
+/* ========================================
+	メイン関数
+	-------------------------------------
+	内容：ピクセル毎に描く色の情報を設定する
+	-------------------------------------
+	引数1：PS_IN PsIn：頂点シェーダーから受け取る情報
+	-------------------------------------
+	戻値：そのピクセルに表示する色情報(rgba)
+=========================================== */
+float4 main(PS_IN PsIn) : SV_TARGET
+{
+	// =============== 提供 =====================
+	return float4(PsIn.fColor.x, PsIn.fColor.y, PsIn.fColor.z, (1.0f - Tex.Sample(Samp, PsIn.fUv).w));	//テクスチャの透明度を反転し黒塗りしたもの
 }

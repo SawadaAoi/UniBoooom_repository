@@ -40,13 +40,9 @@ private:
 	}Vertex;	//頂点情報
 	typedef struct
 	{
-		//TDiType<float> fOffset;		//
-		//TDiType<float> fSize;		//
-		TDiType<float> fUvPos;		//
-		TDiType<float> fUvScale;	//
-		//TTriType<float> fColor;		//
-		//float fAlpha;				//
-	}UvParam;	//
+		TDiType<float> fUvScale;	//UV拡縮
+		TDiType<float> fDummy;		//ダミー
+	}UvParam;	//シェーダーに送る情報
 	// ===列挙定義===========
 	enum E_BIT_FLAG
 	{
@@ -76,15 +72,10 @@ private:
 	unsigned char m_ucFlag;				//フラグ
 	tagTransform3d m_Transform;			//ワールド座標
 	DirectX::XMFLOAT4X4 m_aMatrix[3];	//行列
-	DirectX::XMFLOAT4 param[3];			//
 	UvParam m_UvParam;					//UV情報
-	//FrameCnt
 	int m_nFrameOut;
 	int m_nFrameStop;
-	//int m_nFrameIn;
-	//bool m_bFadeOut;
-	//bool m_bFadeIn;
-	//bool m_bStop;
+	int m_nFrameIn;
 	static int ms_nCntFade;				//自身の生成数
 	static VertexShader* ms_pVs;		//頂点シェーダー
 	static PixelShader* ms_pPs;			//ピクセルシェーダー

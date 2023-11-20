@@ -31,6 +31,8 @@
 #endif
 
 // =============== 定数定義 =====================
+const std::string VS_PASS("Assets/Shader/VsFade.cso");	//テクスチャのパス名
+const std::string PS_PASS("Assets/Shader/PsFade.cso");	//テクスチャのパス名
 const std::string TEX_PASS("Assets/Fade.png");			//テクスチャのパス名
 const TPos3d<float> INIT_POS(640.0f, 360.0f, 0.0f);		//位置初期化
 const TTriType<float> INIT_SCALE(80.0f, 80.0f, 0.0f);	//初期拡縮
@@ -39,11 +41,11 @@ const int FRAME_MIN(0);									//フェード時間の最小
 const int FRAME_TURNING_1(50);							//拡縮反転１反転
 const int FRAME_TURNING_2(100);							//拡縮反転２反転
 const int FRAME_MAX(150);								//フェード時間の最大
-const float SCALE_MAX(1000.0f);							//最大サイズ
-const float SCALE_TURNINIG_2(100.0f);					//サイズ反転２反転
-const float SCALE_TURNINIG_1(15.0f);					//サイズ反転１反転
 const float SCALE_MIN(0.0f);							//最小サイズ
-const float ROTATE_ACCEL_RATE(3.0f);					//角速度増加割合
+const float SCALE_TURNINIG_2(15.0f);					//サイズ反転２反転
+const float SCALE_TURNINIG_1(100.0f);					//サイズ反転１反転
+const float SCALE_MAX(1000.0f);							//最大サイズ
+const float ROTATE_ACCEL_RATE(4.0f);					//角速度増加割合
 
 // =============== グローバル変数宣言 =====================
 int CFade::ms_nCntFade;							//自身の生成数
@@ -72,19 +74,19 @@ CFade::CFade(const CCamera* pCamera)
 	:m_ucFlag(0x00)									//フラグ
 	,m_pCamera(pCamera)								//カメラ
 	,m_Transform(INIT_POS, INIT_SCALE, INIT_RADIAN)	//ワールド座標
-	,m_UvParam{{ 0.0f, 0.0f }, { 1.0f, 1.0f }}		//シェーダー用UV座標		//TODO:DiTypeの情報が更新されたら反映する
+	,m_UvParam{{ 1.0f, 1.0f }, { 0.0f, 0.0f }}		//シェーダー用UV座標	//TODO:DiTypeの情報が更新されたら反映する
 	,m_nFrameOut(0)
 	,m_nFrameStop(0)
-	//,m_nFrameIn(0)
+	,m_nFrameIn(0)
 {
 	// =============== 静的作成 ===================
 	if (0 == ms_nCntFade)	//現在、他にこのクラスが作成されていない時
 	{
 		// =============== シェーダー作成 ===================
-		ms_pVs = new VertexShader();				//頂点シェーダ作成
-		ms_pVs->Load("Assets/Shader/VsFade.cso");	//頂点シェーダ読み込み
-		ms_pPs = new PixelShader();					//ピクセルシェーダ作成
-		ms_pPs->Load("Assets/Shader/PsFade.cso");	//ピクセルシェーダ読み込み
+		ms_pVs = new VertexShader();		//頂点シェーダ作成
+		ms_pVs->Load("Assets/Shader/VsFade.cso");		//頂点シェーダ読み込み
+		ms_pPs = new PixelShader();			//ピクセルシェーダ作成
+		ms_pPs->Load("Assets/Shader/PsFade.cso");		//ピクセルシェーダ読み込み
 
 	// =============== テクスチャ作成 ===================
 		SetTexture();	//テクスチャ登録
@@ -93,13 +95,10 @@ CFade::CFade(const CCamera* pCamera)
 		Make();	//平面ポリゴン作成
 	}
 
-	//m_Param = DirectX::XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f);
-	//param[2] = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
+	// =============== 行列作成 ===================
 	m_aMatrix[0] = m_Transform.GetWorldMatrixSRT();							//ワールド行列
 	DirectX::XMStoreFloat4x4(&m_aMatrix[1], DirectX::XMMatrixIdentity());	//ビュー行列：単位行列
 	m_aMatrix[2] = m_pCamera->GetProjectionMatrix(CCamera::E_DRAW_TYPE_2D);	//プロジェクション行列
-	//DirectX::XMStoreFloat4x4(&m_Matrix[0], DirectX::XMMatrixIdentity());
-	//DirectX::XMStoreFloat4x4(&m_Matrix[2], DirectX::XMMatrixIdentity());
 
 	// =============== カウンタ ===================
 	ms_nCntFade++;	//自身の数カウント
@@ -167,7 +166,7 @@ void CFade::Draw()
 #if USE_FADE
 	if (IsKeyTrigger('7'))
 	{
-		Start();
+		Start();	//フェード開始
 	}
 #endif
 
@@ -184,6 +183,7 @@ void CFade::Draw()
 		{
 			DownFlag(E_BIT_FLAG_FADE_STOP);	//ストップ終了
 			UpFlag(E_BIT_FLAG_FADE_IN);		//フェードイン開始
+			m_nFrameOut = FRAME_MAX;		//フェード時間再登録
 		}
 
 		// =============== カウンタ ===================
@@ -197,14 +197,28 @@ void CFade::Draw()
 		{
 #endif
 			// =============== 変数宣言 ===================
-			int nFrameTemp = m_nFrameOut;				//退避
+			int nFrameTemp;	//フレーム退避用
+
+			// =============== 分岐処理 ===================
+			if (m_ucFlag & E_BIT_FLAG_FADE_OUT)	//フェードアウト時
+			{
+				// =============== 初期化 ===================
+				nFrameTemp = FRAME_MAX - m_nFrameOut;	//退避
+
+				// =============== カウンタ ===================
+				m_nFrameOut--;	//フレームカウント
+			}
 			if (m_ucFlag & E_BIT_FLAG_FADE_IN)	//フェードイン時
 			{
-				nFrameTemp = FRAME_MAX - nFrameTemp;	//フレーム数反転
+				// =============== 初期化 ===================
+				nFrameTemp = m_nFrameIn;	//退避
+
+				// =============== カウンタ ===================
+				m_nFrameIn--;	//フレームカウント
 			}
 
 			// =============== 状態分岐 ===================
-			if (m_nFrameOut <= FRAME_MIN)	//フェードアウト・イン終了
+			if (m_nFrameIn <= FRAME_MIN && m_ucFlag & E_BIT_FLAG_FADE_IN || m_nFrameOut <= FRAME_MIN && m_ucFlag & E_BIT_FLAG_FADE_OUT)	//フェードアウト・イン終了
 			{
 				if (m_ucFlag & E_BIT_FLAG_FADE_OUT)	//フェードアウト時
 				{
@@ -220,19 +234,19 @@ void CFade::Draw()
 			{
 				if (nFrameTemp <= FRAME_TURNING_1)	//アウト時：第１ターニングポイントから終了まで
 				{
-					m_UvParam.fUvScale.x =(SCALE_MIN - SCALE_TURNINIG_1) * (float)(nFrameTemp - FRAME_TURNING_1) / (float)(FRAME_TURNING_1);	//拡縮セット
+					m_UvParam.fUvScale.x =(SCALE_TURNINIG_1 - SCALE_MIN) * (float)(nFrameTemp - FRAME_MIN) / (float)(FRAME_TURNING_1);	//拡縮セット
 				}
 				else
 				{
 					if (nFrameTemp <= FRAME_TURNING_2)	//アウト時：第２ターニングポイントから第１ターニングポイントまで
 					{
-						m_UvParam.fUvScale.x = SCALE_TURNINIG_1 + (SCALE_TURNINIG_2 - SCALE_TURNINIG_1) * (float)(nFrameTemp - FRAME_TURNING_2) / (float)(FRAME_TURNING_2 - FRAME_TURNING_1);	//拡縮セット
+						m_UvParam.fUvScale.x = SCALE_TURNINIG_1 + (SCALE_TURNINIG_2 - SCALE_TURNINIG_1) * (float)(nFrameTemp - FRAME_TURNING_1) / (float)(FRAME_TURNING_2 - FRAME_TURNING_1);	//拡縮セット
 					}
 					else
 					{
 						if (nFrameTemp <= FRAME_MAX)	//アウト時：開始から第１ターニングポイントまで
 						{
-							m_UvParam.fUvScale.x = SCALE_TURNINIG_2 + (SCALE_MAX - SCALE_TURNINIG_2) * (float)(nFrameTemp - FRAME_MAX) / (float)(FRAME_MAX - FRAME_TURNING_2);	//拡縮セット
+							m_UvParam.fUvScale.x = SCALE_TURNINIG_2 + (SCALE_MAX - SCALE_TURNINIG_2) * (float)(nFrameTemp - FRAME_TURNING_2) / (float)(FRAME_MAX - FRAME_TURNING_2);	//拡縮セット
 						}
 #if _DEBUG
 						else
@@ -247,9 +261,6 @@ void CFade::Draw()
 
 			// =============== 角更新 ===================
 			m_Transform.fRadian.z = DirectX::XMConvertToRadians(nFrameTemp * ROTATE_ACCEL_RATE);	//フレーム数で角更新
-
-			// =============== カウンタ ===================
-			m_nFrameOut--;	//フレームカウント
 #if _DEBUG
 		}
 		else
@@ -262,10 +273,13 @@ void CFade::Draw()
 	// =============== 行列更新 ===================
 	m_aMatrix[0] = m_Transform.GetWorldMatrixSRT();							//ワールド行列更新
 	m_aMatrix[2] = m_pCamera->GetProjectionMatrix(CCamera::E_DRAW_TYPE_2D);	//プロジェクション行列更新
-	
-	// =============== 行列更新 ===================
+
+	// =============== 変数宣言 ===================
+	float Param[4] = { m_UvParam.fUvScale.x, m_UvParam.fUvScale.y, m_UvParam.fDummy.x, m_UvParam.fDummy.y };	//定数バッファ書き込み用
+
+	// =============== シェーダー使用 ===================
 	ms_pVs->WriteBuffer(0, m_aMatrix);	//定数バッファに行列情報書き込み
-	ms_pVs->WriteBuffer(1, &m_UvParam);	//定数バッファにUV情報書き込み
+	ms_pVs->WriteBuffer(1, &Param);	//定数バッファにUV情報書き込み
 	ms_pVs->Bind();						//頂点シェーダー使用
 	ms_pPs->SetTexture(0, ms_pTexture);	//テクスチャ登録
 	ms_pPs->Bind();						//ピクセルシェーダー使用
@@ -318,7 +332,7 @@ void CFade::Start(TTriType<int> nFrame)
 	// =============== フレーム数登録 ===================
 	m_nFrameOut = nFrame.x;		//フェードアウトのフレーム数登録
 	m_nFrameStop = nFrame.y;	//フェードストップのフレーム数登録
-	//m_nFrameIn = nFrame.z;		//フェードインのフレーム数登録
+	m_nFrameIn = nFrame.z;		//フェードインのフレーム数登録
 
 	// =============== フラグ操作 ===================
 	UpFlag(E_BIT_FLAG_FADE_OUT);	//フェードアウト開始
