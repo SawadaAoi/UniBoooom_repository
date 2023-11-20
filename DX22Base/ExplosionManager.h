@@ -13,9 +13,12 @@
 	・2023/11/10 他のオブジェクトと同一のカメラをセットするようにした yamashita
 	・2023/11/13 Create関数の引数にtimeを追加 Suzumura
 	・2023/11/18 サウンド用のメンバ変数を追加 yamashita
+	・2023/11/20 コンボ数機能追加 Sawada
+
 ========================================== */
 #ifndef __EXPLOSION_MANAGER_H__	//ExplosionManager.hインクルードガード
 #define __EXPLOSION_MANAGER_H__
+
 // =============== インクルード ===================
 #include "Explosion.h"			//爆発処理ヘッダー
 #include "GameParameter.h"		//定数定義用ヘッダー
@@ -48,13 +51,21 @@ public:
 	void Create(TTriType<float> pos,float size, float time, int comboNum);   	//爆発生成関数
 	void DeleteCheck();							   				//時間より爆発を削除関数
 
-	CExplosion* GetExplosionPtr(int num);
-	void SwitchExplode(E_SLIME_LEVEL slimeLevel,TPos3d<float> pos, TTriType<float> slimeSize);					//スライムのレベルに応じて爆発を変更
-	void SwitchExplode(E_SLIME_LEVEL slimeLevel,TPos3d<float> pos, TTriType<float> slimeSize, int comboNum);					//スライムのレベルに応じて爆発を変更
+	int FirstComboSet();
+	void ResetCheckCombo();
 
-	void SetCamera(const CCamera* pCamera);	//他のオブジェクトと同一のカメラをセット
-protected:
+	void SwitchExplode(E_SLIME_LEVEL slimeLevel, TPos3d<float> pos, TTriType<float> slimeSize);					//スライムのレベルに応じて爆発を変更
+	void SwitchExplode(E_SLIME_LEVEL slimeLevel, TPos3d<float> pos, TTriType<float> slimeSize, int comboNum);					//スライムのレベルに応じて爆発を変更
+
+
+
+	CExplosion* GetExplosionPtr(int num);
+	int GetComboCnts(int num);
 	
+	void SetCamera(const CCamera* pCamera);	//他のオブジェクトと同一のカメラをセット
+	
+
+
 private:
 	// ===メンバ変数宣言===
 	CExplosion* m_pExplosion[MAX_EXPLOSION_NUM];	//爆発の配列
@@ -62,8 +73,7 @@ private:
 	XAUDIO2_BUFFER* m_pSEExplode;
 	IXAudio2SourceVoice* m_pSEExplodeSpeaker;
 	int m_dComboCnts[10];
-	int m_dComboCntsOld[10];
-	int m_dComboCheckFrame;
+
 };
 
 #endif // __EXPLOSION_MANAGER_H__

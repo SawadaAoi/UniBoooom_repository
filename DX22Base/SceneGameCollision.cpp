@@ -13,6 +13,7 @@
 	・2023/11/12 スライム同士重複防止関数追加	Yamashita
 	・2023/11/14 SphereInfoの変更に対応 Takagi
 	・2023/11/19 スライムを打った時のSEの再生 yamashita
+	・2023/11/20 爆発生成の引数を変更
 
 ========================================== */
 
@@ -182,7 +183,7 @@ void SceneGame::ExplosionSlimeCollision()
 
 			if (m_pCollision->CheckCollisionSphere(pExplosion->GetSphere(), pSlimeTarget->GetSphere(), pExplosion->GetPos(), pSlimeTarget->GetPos()))
 			{
-				m_pSlimeMng->TouchExplosion(j, m_pExplosionMng, pExplosion->m_dComboNum);// スライムの爆発処理
+				m_pSlimeMng->TouchExplosion(j, m_pExplosionMng, pExplosion->GetComboNum());// スライムの爆発処理
 				break;
 			}
 		}

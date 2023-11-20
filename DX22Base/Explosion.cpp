@@ -19,6 +19,8 @@
 	・2023/11/13 スライムレベルによって爆破の膨らみの速度の調整ができるように変更 Suzumura
 	・2023/11/14 SphereInfoの変更に対応 Takagi
 	・2023/11/15 Objectクラスを継承したので修正　yamamoto
+	・2023/11/20 コンボ数配列添え字の追加 Sawada
+
 ======================================== */
 
 // =============== インクルード ===================
@@ -42,10 +44,13 @@ const float EXPAND_QUICK_RATE = 0.2f;   // 膨張加速割合
 	内容：コンストラクタ
 	-------------------------------------
 	引数1：生成座標(x,y,z)
+	引数2：生成サイズ(x,y,z)
+	引数3：発生時間
+	引数4：コンボ配列の位置(添え字)
 	-------------------------------------
 	戻値：無し
 =========================================== */
-CExplosion::CExplosion(TPos3d<float> fPos, float fSize,float fTime)
+CExplosion::CExplosion(TPos3d<float> fPos, float fSize,float fTime, int comboNum)
 	: m_fSizeAdd(0.0f)
 	, m_fDelFrame(0.0f)
 	, m_bDelFlg(false)
@@ -55,7 +60,6 @@ CExplosion::CExplosion(TPos3d<float> fPos, float fSize,float fTime)
 {
 	//爆発オブジェクト初期化
 	m_Sphere.fRadius = fSize / 2;	// 当たり判定をセットする
-	//m_fSizeAdd = fSize / ONE_SECOND_FRAME;
 	m_3dModel = new CSphere();
 	m_fExplodeTime = fTime;		//爆発総時間をセットする
 	m_fMaxSize = fSize;	//最大サイズをセットする
@@ -165,6 +169,20 @@ void CExplosion::DisplayTimeAdd()
 bool CExplosion::GetDelFlg()
 {
 	return m_bDelFlg;
+}
+
+/* ========================================
+	コンボ配列番号取得処理関数
+	-------------------------------------
+	内容：コンボ配列番号を取得する
+	-------------------------------------
+	引数1：無し
+	-------------------------------------
+	戻値：コンボ配列番号(int)
+=========================================== */
+int CExplosion::GetComboNum()
+{
+	return m_dComboNum;
 }
 
 /* ========================================
