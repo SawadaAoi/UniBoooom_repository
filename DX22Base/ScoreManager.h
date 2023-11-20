@@ -27,7 +27,7 @@ public:
 
 	void Update();		 		//更新関数
 	void Draw();		 		//描画関数
-	void CreateScore(TTriType<float> pos,int score);			//スコアの生成
+	void CreateScore(TTriType<float> pos,int score, float posY);			//スコアの生成
 	void AddScore();			//スコア加算
 
 	

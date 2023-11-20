@@ -42,7 +42,7 @@ public:
 	void Update();		 		//XVŠÖ”
 	void Draw();		 		//•`‰æŠÖ”
 	
-	void Create(TTriType<float> pos,float size, float time,int score);   	//”š”­¶¬ŠÖ”
+	void Create(TTriType<float> pos,float size, float time,int score,float posY);   	//”š”­¶¬ŠÖ”
 	void DeleteCheck();							   				//ŠÔ‚æ‚è”š”­‚ğíœŠÖ”
 
 	CExplosion* GetExplosionPtr(int num);

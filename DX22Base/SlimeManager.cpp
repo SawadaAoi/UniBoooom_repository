@@ -281,7 +281,7 @@ void CSlimeManager::HitBranch(int HitSlimeNum, int StandSlimeNum, CExplosionMana
 		if (hitSlimeLevel == MAX_LEVEL)	//スライムのサイズが最大の時
 		{
 			//スライム爆発処理
-			pExpMng->Create(pos, MAX_SIZE_EXPLODE * EXPLODE_BASE_RATIO, LEVEL_4_EXPLODE_TIME,FIRST_EXPLOSION_SCORE);	//衝突されたスライムの位置でレベル４爆発
+			pExpMng->Create(pos, MAX_SIZE_EXPLODE * EXPLODE_BASE_RATIO, LEVEL_4_EXPLODE_TIME,FIRST_EXPLOSION_SCORE, LEVEL_4_HEIGHT);	//衝突されたスライムの位置でレベル４爆発
 
 		}
 		else	//最大サイズじゃない場合は1段階大きいスライムを生成する

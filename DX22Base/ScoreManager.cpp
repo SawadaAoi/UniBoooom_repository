@@ -59,17 +59,20 @@ void CScoreManager::Update()
 
 void CScoreManager::Draw()
 {
-	// 爆発の検索
+	// slimeの上に表示するスコアの検索
 	for (int i = 0; i < MAX_EXPLOSION_NUM; i++)
 	{
-		// 未使用の爆発はスルー
+		// 未使用のスコアはスルー
 		if (m_pScore[i] == nullptr) continue;
 	
 		m_pScore[i]->Draw(); // 爆発の描画
 	}
+
+	//トータルスコアの表示
+
 }
 
-void CScoreManager::CreateScore(TTriType<float> pos,int score)
+void CScoreManager::CreateScore(TTriType<float> pos,int score,float posY)
 {
 	// 爆発を検索
 	for (int i = 0; i < MAX_EXPLOSION_NUM; i++)
@@ -77,7 +80,7 @@ void CScoreManager::CreateScore(TTriType<float> pos,int score)
 		// 使用済みの爆発はスルー
 		if (m_pScore[i] != nullptr) continue;
 
-		m_pScore[i] = new CScore(pos,score);
+		m_pScore[i] = new CScore(pos,score,posY);
 	}
 }
 
