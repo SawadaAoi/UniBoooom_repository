@@ -35,11 +35,6 @@ DepthStencil* GetDefaultDSV()
 	return g_pDSV;
 }
 
-DirectWrite * GetDirectWrite()
-{
-	return g_pDirectWrite;
-}
-
 HRESULT InitDirectX(HWND hWnd, UINT width, UINT height, bool fullscreen)
 {
 	HRESULT	hr = E_FAIL;
@@ -186,8 +181,7 @@ HRESULT InitDirectX(HWND hWnd, UINT width, UINT height, bool fullscreen)
 	SetSamplerState(SAMPLER_LINEAR);
 
 	//画面内にテキストを表示するクラスの初期化
-	FontData fontData = FontData::FontData();
-	g_pDirectWrite = new DirectWrite(&fontData);
+	g_pDirectWrite = new DirectWrite();
 	g_pDirectWrite->Init();
 
 	return S_OK;

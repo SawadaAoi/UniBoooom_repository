@@ -44,6 +44,7 @@ public:
 		戻値：なし
 	======================================== */
 	tagSphereInfo() {}	//コンストラクタ
+	tagSphereInfo(const float &Radius, const TPos3d<float> &Shift);	//コンストラクタ
 
 	/* ========================================
 		デストラクタ

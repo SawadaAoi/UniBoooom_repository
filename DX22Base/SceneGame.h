@@ -11,6 +11,8 @@
 	・2023/11/08 コメント追加と、無駄な箇所を削除
 	・2023/11/09 カメラの移動が分かるように地面追加した 髙木駿輔
 	・2023/11/11 スライム同士が重ならない処理を追加 yamashita
+	・2023/11/19 サウンドファイルの読み込み関数を追加 yamashita
+	・2023/11/19 サウンド用のメンバ変数を追加 yamashita
 
 ========================================== */
 #ifndef __SCENE_GAME_H__
@@ -35,7 +37,7 @@ class SceneGame
 {
 public:
 	// ===メンバ関数宣言===
-	SceneGame(DirectWrite* pDirectWrite);
+	SceneGame();
 	~SceneGame();
 	void Update(float tick);
 	void Draw();
@@ -46,8 +48,8 @@ public:
 	void SlimeSlimeCollision();
 	void ExplosionSlimeCollision();
 	void SlimeSlimeNormalMoveCollision();
-	void SetDirectWrite(DirectWrite* pDirectWrite);
 private:
+	void LoadSound();	//サウンドファイルの読み込み
 	// ===メンバ変数宣言===
 	VertexShader* m_pVs;
 	CCamera* m_pCamera;
@@ -56,10 +58,14 @@ private:
 	CSlimeManager* m_pSlimeMng;
 	CCOLLISION* m_pCollision;
 	CExplosionManager* m_pExplosionMng;
-	DirectWrite* m_pDirectWrite;
 	CTimer* m_pTimer;
 	CFloor* m_pFloor;
 	CScoreOHManager* m_pScoreOHMng;
+	XAUDIO2_BUFFER* m_pBGM;							//BGMの音声データ
+	XAUDIO2_BUFFER* m_pSEHitHammer;					//SEの音声データ
+	IXAudio2SourceVoice* m_pSpeaker;				//BGMを聞き取る側
+	IXAudio2SourceVoice* m_pSEHitHammerSpeaker;		//SEを聞き取る側
+
 };
 
 #endif // __SCENE_GAME_H__
