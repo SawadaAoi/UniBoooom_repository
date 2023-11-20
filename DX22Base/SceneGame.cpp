@@ -94,6 +94,8 @@ SceneGame::SceneGame()
 	// タイマー生成
 	m_pTimer = new CTimer();
 	m_pTimer->TimeStart();
+	//ステージ終了のUI表示
+	m_pStageFin = new CStageFinish(m_pPlayer->GetHP(),m_pTimer->GetTimePtr());
 
 	LoadSound();
 	//BGMの再生
@@ -118,6 +120,7 @@ SceneGame::~SceneGame()
 		m_pSpeaker->DestroyVoice();
 	}
 
+	SAFE_DELETE(m_pStageFin);
 	SAFE_DELETE(m_pTimer);
 	SAFE_DELETE(m_pExplosionMng);
 	SAFE_DELETE(m_pSlimeMng);	// スライムマネージャー削除
@@ -170,6 +173,7 @@ void SceneGame::Update(float tick)
 	m_pSlimeMng->Update(m_pExplosionMng);
 	m_pExplosionMng->Update();
 	m_pTimer->Update();
+	m_pStageFin->Update();
 
 	SceneGameCollision();
 }
@@ -258,6 +262,7 @@ void SceneGame::Draw()
 	//タイマー描画
 
 	SetRenderTargets(1, &pRTV, nullptr);
+	m_pStageFin->Draw();
 
 	m_pTimer->Draw();
 }

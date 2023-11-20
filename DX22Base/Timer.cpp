@@ -60,7 +60,7 @@ CTimer::CTimer()
 	}
 	
 
-	//タイマーの裏テクスチャ読み込む
+	//タイマーの背景用テクスチャ読み込む
 	m_pTimeBackground = new Texture;
 	if (FAILED(m_pTimeBackground->Create("Assets/Texture/time_background.png")))
 	{
@@ -68,7 +68,7 @@ CTimer::CTimer()
 	}
 	
 	m_pShowColon = new Texture;
-	if (FAILED(m_pShowColon->Create("Assets/Texture/colon.png")))
+	if (FAILED(m_pShowColon->Create("Assets/Texture/numbers_v1/colon.png")))
 	{
 		MessageBox(NULL, "colon.png", "Error", MB_OK);
 	}
@@ -348,6 +348,20 @@ void CTimer::DrawNumber(TPos2d<float> pos, int number)
 	Sprite::SetUVScale(DirectX::XMFLOAT2(0.2f, 0.5f));
 	Sprite::SetTexture(m_pShowTimer);
 	Sprite::Draw();
+}
+
+/* ========================================
+   制限時間取得関数
+   ----------------------------------------
+   内容：制限時間のポインタを取得
+   ----------------------------------------
+   引数：無し
+   ----------------------------------------
+   戻値：制限時間のメンバ変数のポインタ
+======================================== */
+int * CTimer::GetTimePtr()
+{
+	return &m_nTimeCnt;
 }
 
 
