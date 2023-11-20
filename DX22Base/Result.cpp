@@ -85,7 +85,7 @@ void CResult::Update()
 	//!memo(Œ©‚½‚çÁ‚µ‚Ä[)Fconst‚ª×–‚‚É‚È‚Á‚½‚çŠO‚µ‚Ä‚Ë(.h‚Ì•û‚à)
 void CResult::Draw()
 {
-	Draw2d(500.0f, 60.0f, 30.0f, 30.0f, m_pTexture);
+	Draw2d(600.0f, 60.0f, 300.0f, 50.0f, m_pTexture);
 }
 
 /* ========================================

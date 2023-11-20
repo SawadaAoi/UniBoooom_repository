@@ -102,7 +102,7 @@ void CStage1::Update()
 	m_pExplosionMng->Update();
 	m_pTimer->Update();
 
-	CStage::Collision();
+	Collision();
 }
 
 /* ========================================

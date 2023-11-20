@@ -136,7 +136,6 @@ void CStage::SlimeSlimeCollision()
 				break;
 			}
 		}
-
 	}
 }
 
@@ -203,7 +202,6 @@ void CStage::SlimeSlimeNormalMoveCollision()
 			if (m_pCollision->CheckCollisionSphere(pMoveSlime->GetSphere(), pStandSlime->GetSphere(), pMoveSlime->GetPos(), pStandSlime->GetPos()))
 			{
 				m_pSlimeMng->PreventOverlap(pMoveSlime, pStandSlime);	//ƒXƒ‰ƒCƒ€‚ÌˆÊ’u‚ğ‰Ÿ‚µ–ß‚·ˆ—
-
 
 				break;
 			}
