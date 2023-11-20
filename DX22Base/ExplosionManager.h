@@ -29,12 +29,14 @@
 #if MODE_GAME_PARAMETER
 #else
 const int MAX_EXPLOSION_NUM = 20;	//最大爆発数
+const int	MAX_COMBO_NUM = 5;		// 最大同時コンボ数
 const float EXPLODE_BASE_RATIO = 1.5f;			// スライムの爆発接触での爆発の大きさのベース
 const float MAX_SIZE_EXPLODE = 5.0f;			// スライム4同士の爆発の大きさ
 const float LEVEL_1_EXPLODE_TIME = 0.5f * 60.0f;	// スライム_1の爆発総時間
 const float LEVEL_2_EXPLODE_TIME = 1.0f * 60.0f;	// スライム_2の爆発総時間
 const float LEVEL_3_EXPLODE_TIME = 2.0f * 60.0f;	// スライム_3の爆発総時間
 const float LEVEL_4_EXPLODE_TIME = 3.0f * 60.0f;	// スライム_4の爆発総時間
+
 #endif
 // =============== クラス定義 =====================
 class CExplosionManager
@@ -72,7 +74,7 @@ private:
 	const CCamera* m_pCamera;
 	XAUDIO2_BUFFER* m_pSEExplode;
 	IXAudio2SourceVoice* m_pSEExplodeSpeaker;
-	int m_dComboCnts[10];
+	int m_dComboCnts[MAX_COMBO_NUM];
 
 };
 
