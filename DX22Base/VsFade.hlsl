@@ -1,4 +1,21 @@
+/* ========================================
+	HEW/UniBoooom!!
+	------------------------------------
+	フェード用頂点シェーダー
+	------------------------------------
+	VsFade.hlsl
+	------------------------------------
+	作成者	takagi
 
+	変更履歴
+	・2023/11/18 制作 takagi
+	・2023/11/19 18の続き takagi
+	・2023/11/20 整理 takagi
+
+========================================== */
+
+
+// =============== 構造体定義 =====================
 struct VS_IN {
 	float3 pos : POSITION0;
 	float2 uv : TEXCOORD0;
@@ -13,17 +30,22 @@ cbuffer Matrix : register(b0) {
 	float4x4 view;
 	float4x4 proj;
 };
-cbuffer Param : register(b1) {
-	float2 offset;
-	float2 size;
+cbuffer Uv : register(b1) {
+	//float2 size;
 	float2 uvPos;
 	float2 uvScale;
-	float4 color;
 };
+//cbuffer Param : register(b1) {
+//	float2 offset;
+//	float2 size;
+//	float2 uvPos;
+//	float2 uvScale;
+//	float4 color;
+//};
 VS_OUT main(VS_IN vin) {
 	VS_OUT vout;
 	vout.pos = float4(vin.pos, 1.0f);
-	vout.pos.xy *= size;
+	//vout.pos.xy *= size;
 	//vout.pos.xy += offset;
 	vout.pos = mul(vout.pos, world);
 	vout.pos = mul(vout.pos, view);

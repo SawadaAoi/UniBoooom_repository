@@ -11,6 +11,7 @@
 	・2023/11/08 コメント追加、無駄な箇所を削除　澤田蒼生
 	・2023/11/09 カメラの様々動作チェック。メインから軸線奪取。地面追加。 髙木駿輔
 	・2023/11/10 カメラをスライムと爆発にも渡すようにした・lineのメモリリーク対策 髙木駿輔
+	・2023/11/18~20 フェード試した 髙木駿輔
 
 ========================================== */
 
@@ -32,6 +33,11 @@
 // =============== デバッグモード =======================
 #define MODE_COORD_AXIS (true)	//座標軸映すかどうか
 #define MODE_GROUND (false)	//座標軸映すかどうか
+#define USE_FADE_GAME (true)	//フェード試す
+
+#if USE_FADE_GAME
+#include "Fade.h"
+#endif
 
 /* ========================================
 	コンストラクタ関数
@@ -83,14 +89,15 @@ SceneGame::SceneGame(DirectWrite* pDirectWrite)
 	m_pTimer = new CTimer();
 	m_pTimer->TimeStart();
 
+#if USE_FADE_GAME
 	m_pFade = new CFade(m_pCamera);
+#endif
 	//pTex->Create("Assets/NoStar.png");
 	//m_pFade->SetTexture(pTex);
 	//pps->Load("Assets/Shader/PsFade.cso");
 	//m_pFade->SetPixelShader(pps);
 	//pvs->Load("Assets/Shader/VsFade.cso");
 	//m_pFade->SetVertexShader(pvs);
-	m_pFade->SetTexture();
 }
 
 /* ========================================
@@ -233,7 +240,10 @@ void SceneGame::Draw()
 	//m_pFade->SetView(m_pCamera->GetViewMatrix());
 	//m_pFade->SetProjection(m_pCamera->GetProjectionMatrix(CCamera::E_DRAW_TYPE_2D));
 	//m_pFade->SetSize(DirectX::XMFLOAT2(300.0f, 300.0f));
+
+#if USE_FADE_GAME
 	m_pFade->Draw();
+#endif
 }
 
 
