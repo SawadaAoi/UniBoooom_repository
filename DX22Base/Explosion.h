@@ -38,12 +38,13 @@ class CExplosion
 {
 public:
 	// ===メンバ関数宣言===
-	CExplosion(TPos3d<float> fPos, float fSize, float fTime, int comboNum);	//コンストラクタ
-	CExplosion(TPos3d<float> fPos, float fSize, float fTime, int comboNum, bool m_bDelayFlg);	//コンストラクタ
+	CExplosion(TPos3d<float> fPos, float fSize, float fTime, int comboNum, bool delayFlg);	//コンストラクタ
 	~CExplosion();												// デストラクタ
 	void Update();												// 更新関数
 	void Draw();												// 描画関数
 	void DisplayTimeAdd();										// 爆発表示カウント加算処理関数
+
+	void Delay();
 
 	bool GetDelFlg();							// 削除フラグ取得処理関数
 	int GetComboNum();							// コンボ配列番号取得
