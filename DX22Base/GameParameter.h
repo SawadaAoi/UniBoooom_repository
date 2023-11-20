@@ -105,11 +105,13 @@ const float LEVEL_FLAME_SPEED = ENEMY_MOVE_SPEED * 0.2f;	// 移動速度
 
 // 爆発 =====================================================
 const int	MAX_EXPLOSION_NUM		= 20;		// 最大爆発数
+const int	MAX_COMBO_NUM			= 5;		// 最大同時コンボ数
 const float EXPAND_QUICK_RATE		= 0.2f;		// 膨張加速割合 
 const float LEVEL_1_EXPLODE_TIME = 0.5f * 60.0f;	// スライム_1の爆発総時間
 const float LEVEL_2_EXPLODE_TIME = 1.0f * 60.0f;	// スライム_2の爆発総時間
 const float LEVEL_3_EXPLODE_TIME = 2.0f * 60.0f;	// スライム_3の爆発総時間
 const float LEVEL_4_EXPLODE_TIME = 3.0f * 60.0f;	// スライム_4の爆発総時間
+
 
 // カメラ =====================================================
 const TPos3d<float> INIT_POS(0.0f, 2.6f, -3.0f);					// 初期位置

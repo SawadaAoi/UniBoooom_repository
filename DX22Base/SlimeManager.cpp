@@ -408,13 +408,13 @@ void CSlimeManager::UnionSlime(E_SLIME_LEVEL level ,TPos3d<float> pos)
 	----------------------------------------
 	戻値：なし
 ======================================== */
-void CSlimeManager::TouchExplosion(int DelSlime, CExplosionManager * pExpMng)
+void CSlimeManager::TouchExplosion(int DelSlime, CExplosionManager * pExpMng, int comboNum)
 {
 	TPos3d<float> pos(m_pSlime[DelSlime]->GetPos());			// 衝突先のスライムの位置を確保
 	E_SLIME_LEVEL level = m_pSlime[DelSlime]->GetSlimeLevel();	// 衝突先のスライムのレベルを確保
 	TTriType<float> size = m_pSlime[DelSlime]->GetScale();		// 衝突先のスライムサイズを確保
 
-	pExpMng->SwitchExplode(level,pos,size);
+	pExpMng->SwitchExplode(level, pos, size, comboNum);
 
 	SAFE_DELETE(m_pSlime[DelSlime]);					//ぶつかりに来たスライムを削除
 

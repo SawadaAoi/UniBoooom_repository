@@ -45,7 +45,7 @@ constexpr float ANGLE_TO_RADIAN(float fAngle)
 	return fAngle / 180.0f * Pi;	//角度→ラジアン角
 }
 
-const float RADIAN_VELOCITY_WEAK = ANGLE_TO_RADIAN(20.0f);		//角速度：弱
+const float RADIAN_VELOCITY_WEAK = ANGLE_TO_RADIAN(10.0f);		//角速度：弱
 const float RADIAN_VELOCITY_STRONG = ANGLE_TO_RADIAN(40.0f);	//角速度：強
 const TDiType<float> AMPLITUDE_WEAK(1.0f, 3.0f);				//振幅：弱
 const TDiType<float> AMPLITUDE_STRONG(10.0f, 50.0f);			//振幅：強
