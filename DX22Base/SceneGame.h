@@ -13,6 +13,7 @@
 	・2023/11/11 スライム同士が重ならない処理を追加 yamashita
 	・2023/11/19 サウンドファイルの読み込み関数を追加 yamashita
 	・2023/11/19 サウンド用のメンバ変数を追加 yamashita
+	・2023/11/21 コンボ用のメンバ変数を追加 Sawada
 
 ========================================== */
 #ifndef __SCENE_GAME_H__
@@ -30,6 +31,7 @@
 #include "DirectWrite.h"
 #include "Timer.h"
 #include "Floor.h"
+#include "Combo.h"
 #include "Fade.h"
 
 // =============== クラス定義 =====================
@@ -59,6 +61,7 @@ private:
 	CCOLLISION* m_pCollision;
 	CExplosionManager* m_pExplosionMng;
 	CTimer* m_pTimer;
+	CCombo* m_pCombo;
 	CFloor* m_pFloor;
 	CFade* m_pFade;
 

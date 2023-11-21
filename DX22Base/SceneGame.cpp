@@ -15,33 +15,17 @@
 	・2023/11/18 BGMの再生 yamashita
   ・2023/11/18~20 フェード試した 髙木駿輔
 	・2023/11/21 フェード更新呼び出し 髙木駿輔
+  ・2023/11/21 コンボ用のメンバ変数を追加 Sawada
 
 ========================================== */
 
 // =============== デバッグモード ===================
 #define USE_CAMERA_VIBRATION (false)
-
+#define MODE_COORD_AXIS (true)			//座標軸映すかどうか
+#define MODE_GROUND (false)				//座標軸映すかどうか
 #if _DEBUG
 #define TRY_USE_HIT_STOP (true)
 #endif
-
-// =============== インクルード ===================
-#include "SceneGame.h"
-#include "Geometry.h"
-#include "Model.h"
-#include "CameraDebug.h"
-#include "CameraChase.h"
-#include "Pos3d.h"
-#include "Box.h"
-#include "Line.h"
-#include "Defines.h"
-#include "GameParameter.h"
-
-
-
-// =============== デバッグモード =======================
-#define MODE_COORD_AXIS (true)	//座標軸映すかどうか
-#define MODE_GROUND (false)	//座標軸映すかどうか
 #define USE_FADE_GAME (true)	//フェード試す
 
 #if USE_FADE_GAME
@@ -57,13 +41,26 @@
 #include "Input.h"
 #endif
 
+
+// =============== インクルード ===================
+#include "SceneGame.h"
+#include "Geometry.h"
+#include "Model.h"
+#include "CameraDebug.h"
+#include "CameraChase.h"
+#include "Pos3d.h"
+#include "Box.h"
+#include "Line.h"
+#include "Defines.h"
+#include "GameParameter.h"
+
+
+
 // =============== 定数定義 =======================
 #if MODE_GAME_PARAMETER
 #else
 const float BGM_VOLUME = 0.02f;
 #endif
-
-
 
 /* ========================================
 	コンストラクタ関数
@@ -107,8 +104,15 @@ SceneGame::SceneGame()
 	// スライムマネージャー生成
 	m_pSlimeMng = new CSlimeManager();
 	m_pSlimeMng->SetCamera(m_pCamera);
+
+
+	// コンボ数表示生成
+	m_pCombo = new CCombo();
+
+	// 爆発マネージャー生成
 	m_pExplosionMng = new CExplosionManager();
 	m_pExplosionMng->SetCamera(m_pCamera);
+	m_pExplosionMng->SetCombo(m_pCombo);
 
 	// タイマー生成
 	m_pTimer = new CTimer();
@@ -214,6 +218,7 @@ void SceneGame::Update(float tick)
 	m_pSlimeMng->Update(m_pExplosionMng);
 	m_pExplosionMng->Update();
 	m_pTimer->Update();
+	m_pCombo->Update();
 
 	SceneGameCollision();
 
@@ -308,6 +313,8 @@ void SceneGame::Draw()
 	SetRenderTargets(1, &pRTV, nullptr);
 
 	m_pTimer->Draw();
+	m_pCombo->Draw();
+
 
 #if USE_FADE_GAME
 	m_pFade->Draw();

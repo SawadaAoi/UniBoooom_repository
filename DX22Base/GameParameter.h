@@ -11,6 +11,7 @@
 	・2023/11/11 ヘッダ作成 Suzumura
 	・2023/11/13 パラメーター追加(LEVEL_〇_EXPLODE_TIME) Suzumura
 	・2023/11/14 パラメーター追加(// フレイムスライム) Suzumura
+	・2023/11/21 パラメーター追加(// コンボ数) Sawada
 
 =========================================== */
 #ifndef __GAME_PARAMETER_H__
@@ -105,12 +106,12 @@ const float LEVEL_FLAME_SPEED = ENEMY_MOVE_SPEED * 0.2f;	// 移動速度
 
 // 爆発 =====================================================
 const int	MAX_EXPLOSION_NUM		= 20;		// 最大爆発数
-const int	MAX_COMBO_NUM			= 5;		// 最大同時コンボ数
 const float EXPAND_QUICK_RATE		= 0.2f;		// 膨張加速割合 
 const float LEVEL_1_EXPLODE_TIME = 0.5f * 60.0f;	// スライム_1の爆発総時間
 const float LEVEL_2_EXPLODE_TIME = 1.0f * 60.0f;	// スライム_2の爆発総時間
 const float LEVEL_3_EXPLODE_TIME = 2.0f * 60.0f;	// スライム_3の爆発総時間
 const float LEVEL_4_EXPLODE_TIME = 3.0f * 60.0f;	// スライム_4の爆発総時間
+const int	DELAY_TIME			 = 0.2f * 60;		// 遅延秒数
 
 
 // カメラ =====================================================
@@ -129,6 +130,14 @@ const TPos2d<float> SECOND_TENS_POS (640.0f, 25.0f);	//十の桁秒の位置設定
 const TPos2d<float> SECOND_ONE_POS (690.0f, 25.0f);		//一の桁秒の位置設定
 const TPos2d<float> TIME_BACKGROUND_POS (630.0f, 25.0f);	//バックグラウンド位置設定
 const TPos2d<float> TIME_COLON_POS (615.0f, 25.0f);		//コロンの位置設定
+
+// コンボ =========================================================
+const int	MAX_COMBO_NUM				= 5;					// 最大同時コンボ数
+const TPos2d<float> COMBO_UI_POSITION	= { 1100.0f, 600.0f };	// コンボUIの描画位置
+const TPos2d<float> COMBO_UI_SIZE		= { 70.0f,   70.0f };	// コンボUIの大きさ
+const float COMBO_UI_NUM_SPACE			= 80.0f;				// 数字の間スペース
+const float COMBO_UI_MULTI_DISP_SPACE	= 100.0f;				// 同時コンボ描画時の上下の空白
+const int COMBO_UI_DISP_DILAY_TIME		= 2.0f * 60;			// 残コンボ数表示の秒数
 
 #endif
 

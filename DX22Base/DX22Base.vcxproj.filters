@@ -300,6 +300,9 @@
     <ClCompile Include="Sound.cpp">
       <Filter>ソース ファイル\System</Filter>
     </ClCompile>
+    <ClCompile Include="Combo.cpp">
+      <Filter>ソース ファイル\2dObject</Filter>
+    </ClCompile>
     <ClCompile Include="HitStop.cpp">
       <Filter>ソース ファイル\System</Filter>
     </ClCompile>
@@ -496,6 +499,9 @@
     </ClInclude>
     <ClInclude Include="DiType.h">
       <Filter>ヘッダー ファイル\Info</Filter>
+    </ClInclude>
+    <ClInclude Include="Combo.h">
+      <Filter>ヘッダー ファイル\2dObject</Filter>
     </ClInclude>
     <ClInclude Include="HitStop.h">
       <Filter>ヘッダー ファイル\System</Filter>
