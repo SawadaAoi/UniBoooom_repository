@@ -12,6 +12,7 @@
 	・2023/11/09 カメラの様々動作チェック。 takagi
 	・2023/11/17 シーン管理を実装 takagi
 	・2023/11/18 sound.hをインクルードしてsoundの初期化と終了を追加 yamashita
+	・2023/11/21 3dアニメーション用配布物適用
 
 ========================================== */
 
@@ -30,6 +31,7 @@
 #include "Defines.h"
 #include <time.h>
 #include "Sound.h"
+#include "ShaderList.h"	//モデルアニメーション用
 
 // =============== グローバル変数定義 =============
 #if USE_SCENE_MANAGER
@@ -65,6 +67,9 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
 
 	Sprite::Init();
 	InitInput();
+
+	ShaderList::Init();
+	ShaderList::Uninit();
 
 	// シーン作成
 #if USE_SCENE_MANAGER

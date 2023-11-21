@@ -32,7 +32,7 @@
 #include "Timer.h"
 #include "Floor.h"
 #include "Combo.h"
-
+#include "Fade.h"
 
 // =============== クラス定義 =====================
 class SceneGame
@@ -63,6 +63,8 @@ private:
 	CTimer* m_pTimer;
 	CCombo* m_pCombo;
 	CFloor* m_pFloor;
+	CFade* m_pFade;
+
 	XAUDIO2_BUFFER* m_pBGM;							//BGMの音声データ
 	XAUDIO2_BUFFER* m_pSEHitHammer;					//SEの音声データ
 	IXAudio2SourceVoice* m_pSpeaker;				//BGMを聞き取る側
