@@ -20,6 +20,7 @@
 	・2023/11/14 SphereInfoの変更に対応 Takagi
 	・2023/11/15 Objectクラスを継承したので修正　yamamoto
 	・2023/11/20 コンボ数配列添え字の追加 Sawada
+	・2023/11/21 初期値の設定と、遅延処理の追加 Sawada
 
 ======================================== */
 
@@ -34,9 +35,11 @@
 #else
 //const float MAX_DISPLAY_TIME = 3.0f * 60;	// 爆発持続秒数
 const float EXPAND_QUICK_RATE = 0.2f;   // 膨張加速割合 
+const int DELAY_TIME = 0.5f * 60;
 
 
 #endif
+
 
 /* ========================================
 	コンストラクタ関数
@@ -47,24 +50,25 @@ const float EXPAND_QUICK_RATE = 0.2f;   // 膨張加速割合
 	引数2：生成サイズ(x,y,z)
 	引数3：発生時間
 	引数4：コンボ配列の位置(添え字)
+	引数5：遅延フラグ
 	-------------------------------------
 	戻値：無し
 =========================================== */
-CExplosion::CExplosion(TPos3d<float> fPos, float fSize,float fTime, int comboNum)
+CExplosion::CExplosion(TPos3d<float> fPos, float fSize,float fTime, int comboNum, bool delayFlg)
 	: m_fSizeAdd(0.0f)
 	, m_fDelFrame(0.0f)
 	, m_bDelFlg(false)
-	, m_fExplodeTime(0.0f)
-	, m_fMaxSize(0.0f)
+	, m_fExplodeTime(fTime)	// 爆発総時間をセットする
+	, m_fMaxSize(fSize)		// 最大サイズをセットする
 	, m_dComboNum(comboNum)
+	, m_bDelayFlg(delayFlg)
+	, m_dDelayCnt(0)
 {
 	//爆発オブジェクト初期化
-	m_Sphere.fRadius = fSize / 2;	// 当たり判定をセットする
-	m_3dModel = new CSphere();
-	m_fExplodeTime = fTime;		//爆発総時間をセットする
-	m_fMaxSize = fSize;	//最大サイズをセットする
-	m_Transform.fPos = fPos;
+	m_3dModel		 = new CSphere();
+	m_Transform.fPos = fPos;		// スライムがいた場所に生成する
 }
+
 
 /* ========================================
 	デストラクタ関数
@@ -93,7 +97,12 @@ CExplosion::~CExplosion()
 =========================================== */
 void CExplosion::Update()
 {
-
+	// 爆発遅延処理が有効な場合
+	if (m_bDelayFlg)
+	{
+		Delay();	// 遅延処理
+		return;
+	}
 
 	DisplayTimeAdd();
 }
@@ -155,6 +164,26 @@ void CExplosion::DisplayTimeAdd()
 	
 	m_Sphere.fRadius = m_Transform.fScale.y / 2;	// 当たり判定をセットする
 
+}
+
+/* ========================================
+	遅延処理関数
+	-------------------------------------
+	内容：爆発の発生を遅らせる
+	-------------------------------------
+	引数1：無し
+	-------------------------------------
+	戻値：無し
+=========================================== */
+void CExplosion::Delay()
+{
+	m_dDelayCnt++;
+
+	// 遅延秒数が経ったら
+	if (m_dDelayCnt >= DELAY_TIME)
+	{
+		m_bDelayFlg = false;	// 遅延フラグをオフにする
+	}
 }
 
 /* ========================================
