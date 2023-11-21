@@ -169,6 +169,7 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\..\Downloads\1121_アニメーションFBX\1121_アニメーションFBX\ShaderList.cpp" />
     <ClCompile Include="BossGauge.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CameraChase.cpp" />
@@ -232,6 +233,7 @@
     <ClCompile Include="_model.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\..\Downloads\1121_アニメーションFBX\1121_アニメーションFBX\ShaderList.h" />
     <ClInclude Include="BossGauge.h" />
     <ClInclude Include="Box.h" />
     <ClInclude Include="Camera.h" />
