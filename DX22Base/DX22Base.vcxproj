@@ -227,6 +227,7 @@
     <ClCompile Include="SceneGame.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="Title.cpp" />
+    <ClCompile Include="TotalScore.cpp" />
     <ClCompile Include="Transform2d.cpp" />
     <ClCompile Include="Transform3d.cpp" />
     <ClCompile Include="_model.cpp" />
@@ -292,6 +293,7 @@
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="Title.h" />
+    <ClInclude Include="TotalScore.h" />
     <ClInclude Include="Transform2d.h" />
     <ClInclude Include="Transform3d.h" />
     <ClInclude Include="TriType.h" />

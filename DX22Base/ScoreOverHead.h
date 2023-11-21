@@ -30,6 +30,7 @@ public:
 	void Update();		 		//更新関数
 	void Draw();		 		//描画関数
 	std::vector<int> digitsToArray(int score);	//引数の数字を各桁1ずつ配列に入れる
+	void SetCamera(const CCamera * pCamera);
 private:
 	Texture* m_pScoreTexture;	//スコア表示用テクスチャポインタ
 	tagTransform3d m_Transform;	//ワールド座標系に必要な情報

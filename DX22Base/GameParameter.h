@@ -121,10 +121,10 @@ const int LEVEL_2_SCORE = 30;				// スライム_2のスコア
 const int LEVEL_3_SCORE = 100;				// スライム_3のスコア
 const int LEVEL_4_SCORE = 500;				// スライム_4のスコア
 
-const float LEVEL_1_HEIGHT = 2.0f;			//スライム1が爆発時スコアを爆破からどれだけ上に置くか
-const float LEVEL_2_HEIGHT = 4.0f;			//スライム1が爆発時スコアを爆破からどれだけ上に置くか
-const float LEVEL_3_HEIGHT = 5.0f;			//スライム1が爆発時スコアを爆破からどれだけ上に置くか
-const float LEVEL_4_HEIGHT = 6.0f;			//スライム1が爆発時スコアを爆破からどれだけ上に置くか
+const float LEVEL_1_HEIGHT = 4.0f;			//スライム1が爆発時スコアを爆破からどれだけ上に置くか
+const float LEVEL_2_HEIGHT = 4.0f;			//スライム2が爆発時スコアを爆破からどれだけ上に置くか
+const float LEVEL_3_HEIGHT = 4.0f;			//スライム3が爆発時スコアを爆破からどれだけ上に置くか
+const float LEVEL_4_HEIGHT = 4.0f;			//スライム4が爆発時スコアを爆破からどれだけ上に置くか
 // カメラ =====================================================
 const TPos3d<float> INIT_POS(0.0f, 2.6f, -3.0f);					// 初期位置
 

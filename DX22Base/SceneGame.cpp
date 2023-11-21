@@ -92,6 +92,7 @@ SceneGame::SceneGame()
 	m_pExplosionMng->SetCamera(m_pCamera);
 	//スコア生成
 	m_pScoreOHMng = new CScoreOHManager();
+	m_pScoreOHMng->SetCamera(m_pCamera);
 	//m_pCamera->E_DRAW_TYPE_2D;	//ごめんなさいカメラの設定がわかんにゃい
 
 	m_pSlimeMng->SetScoreOHMng(m_pScoreOHMng);

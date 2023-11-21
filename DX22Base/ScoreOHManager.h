@@ -31,12 +31,13 @@ public:
 	void DisplayOverheadScore(TTriType<float> pos,int score, float height);			// スコアの生成
 	void DisplayOverheadScore(TTriType<float> pos, E_SLIME_LEVEL level);			// スコアの生成
 	void AddScore();			//スコア加算
-
+	void SetCamera(const CCamera * pCamera);
 	
 protected:
 	// ===メンバ変数宣言===
 	CScoreOverHead* m_pScore[MAX_EXPLOSION_NUM];	//スコアの配列
 	static int m_nTotalScore[5];	//トータルスコア//複数箇所対応	//倍率かける前
+	const CCamera*	m_pCamera;	//カメラのポインタ
 
 private:
 	
