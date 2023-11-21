@@ -38,7 +38,7 @@ const int SCREEN_HEIGHT_ = 720;
 
 // プレイヤー ================================================
 const float PLAYER_MOVE_SPEED	= 0.1f;			// プレイヤーの移動速度
-const int	PLAYER_HP			= 1;			// プレイヤーのHP
+const int	PLAYER_HP			= 5;			// プレイヤーのHP
 const float PLAYER_RADIUS		= 0.1f;			// プレイヤーの当たり判定の大きさ
 const float PLAYER_SIZE			= 1.0f;			// プレイヤーの大きさ
 const int	NO_DAMAGE_TIME		= 3 * 60;		// プレイヤーの無敵時間
@@ -125,7 +125,7 @@ const float INIT_RADIUS = 15.0f;									// カメラと注視点との距離(初期値)
 
 
 // タイマー =====================================================
-const int STAGE_TIME = 5 * 60;	//ステージ制限時間（秒*フレーム）
+const int STAGE_TIME = 180 * 60;	//ステージ制限時間（秒*フレーム）
 const TPos2d<float> MINUTE_POS(565.0f, 25.0f);			//分の位置設定
 const TPos2d<float> SECOND_TENS_POS (640.0f, 25.0f);	//十の桁秒の位置設定
 const TPos2d<float> SECOND_ONE_POS (690.0f, 25.0f);		//一の桁秒の位置設定

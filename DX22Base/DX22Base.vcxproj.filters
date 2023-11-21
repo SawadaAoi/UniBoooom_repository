@@ -298,7 +298,7 @@
       <Filter>ソース ファイル\System</Filter>
     </ClCompile>
     <ClCompile Include="StageFinishUI.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\2dObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -486,7 +486,7 @@
       <Filter>ヘッダー ファイル\Info</Filter>
     </ClInclude>
     <ClInclude Include="StageFinishUI.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\2dObject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
