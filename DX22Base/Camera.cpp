@@ -188,7 +188,7 @@ DirectX::XMFLOAT4X4 CCamera::GetProjectionMatrix(const E_DRAW_TYPE& eDraw) const
 			DirectX::XMMatrixOrthographicOffCenterLH(0.0f, SCREEN_WIDTH, 0.0f, SCREEN_HEIGHT, m_fNear, m_fFar)));	//左下を原点(0,0)とした座標系
 		break;	//分岐処理終了
 
-		// =============== 3D表示 ===================
+    // =============== 3D表示 ===================
 	case E_DRAW_TYPE_3D:	//3Dのプロジェクション座標作成
 		DirectX::XMStoreFloat4x4(&mat, DirectX::XMMatrixTranspose(
 			DirectX::XMMatrixPerspectiveFovLH(m_fAngle, ASPECT, m_fNear, m_fFar)));	//3Dプロジェクション変換
