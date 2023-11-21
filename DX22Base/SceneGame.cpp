@@ -13,6 +13,8 @@
 	・2023/11/10 カメラをスライムと爆発にも渡すようにした・lineのメモリリーク対策 髙木駿輔
 	・2023/11/17 振動機能呼び出しデバッグモード追加 takagi
 	・2023/11/18 BGMの再生 yamashita
+  ・2023/11/18~20 フェード試した 髙木駿輔
+	・2023/11/21 フェード更新呼び出し 髙木駿輔
 
 ========================================== */
 
@@ -35,6 +37,17 @@
 #include "Defines.h"
 #include "GameParameter.h"
 
+
+
+// =============== デバッグモード =======================
+#define MODE_COORD_AXIS (true)	//座標軸映すかどうか
+#define MODE_GROUND (false)	//座標軸映すかどうか
+#define USE_FADE_GAME (true)	//フェード試す
+
+#if USE_FADE_GAME
+#include "Fade.h"
+#endif
+
 #if USE_CAMERA_VIBRATION
 #include "Input.h"
 #endif
@@ -50,9 +63,7 @@
 const float BGM_VOLUME = 0.02f;
 #endif
 
-// =============== デバッグモード =======================
-#define MODE_COORD_AXIS (true)			//座標軸映すかどうか
-#define MODE_GROUND (false)				//座標軸映すかどうか
+
 
 /* ========================================
 	コンストラクタ関数
@@ -103,6 +114,16 @@ SceneGame::SceneGame()
 	m_pTimer = new CTimer();
 	m_pTimer->TimeStart();
 
+#if USE_FADE_GAME
+	m_pFade = new CFade(m_pCamera);
+#endif
+	//pTex->Create("Assets/NoStar.png");
+	//m_pFade->SetTexture(pTex);
+	//pps->Load("Assets/Shader/PsFade.cso");
+	//m_pFade->SetPixelShader(pps);
+	//pvs->Load("Assets/Shader/VsFade.cso");
+	//m_pFade->SetVertexShader(pvs);
+
 	LoadSound();
 	//BGMの再生
 	m_pSpeaker = CSound::PlaySound(m_pBGM);		//BGMの再生
@@ -125,8 +146,8 @@ SceneGame::~SceneGame()
 		m_pSpeaker->Stop();
 		m_pSpeaker->DestroyVoice();
 	}
-
-	SAFE_DELETE(m_pTimer);
+	SAFE_DELETE(m_pFade);
+  SAFE_DELETE(m_pTimer);
 	SAFE_DELETE(m_pExplosionMng);
 	SAFE_DELETE(m_pSlimeMng);	// スライムマネージャー削除
 	SAFE_DELETE(m_pFloor);
@@ -195,6 +216,10 @@ void SceneGame::Update(float tick)
 	m_pTimer->Update();
 
 	SceneGameCollision();
+
+#if USE_FADE_GAME
+	m_pFade->Update();
+#endif
 }
 
 /* ========================================
@@ -283,6 +308,11 @@ void SceneGame::Draw()
 	SetRenderTargets(1, &pRTV, nullptr);
 
 	m_pTimer->Draw();
+
+#if USE_FADE_GAME
+	m_pFade->Draw();
+#endif
+  
 }
 
 /* ========================================
