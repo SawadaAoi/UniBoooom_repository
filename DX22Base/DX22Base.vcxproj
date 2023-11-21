@@ -169,6 +169,7 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BossGauge.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CameraChase.cpp" />
     <ClCompile Include="CameraDebug.cpp" />
@@ -185,9 +186,12 @@
     <ClCompile Include="ExplosionManager.cpp" />
     <ClCompile Include="Fade.cpp" />
     <ClCompile Include="Floor.cpp" />
+    <ClCompile Include="HitStop.cpp" />
     <ClCompile Include="ModelParticle.cpp" />
+    <ClCompile Include="Object.cpp" />
     <ClCompile Include="Particle.cpp" />
     <ClCompile Include="SelectStage.cpp" />
+    <ClCompile Include="Sound.cpp" />
     <ClCompile Include="Stage1.cpp" />
     <ClCompile Include="Hammer.cpp" />
     <ClCompile Include="Input.cpp" />
@@ -228,6 +232,7 @@
     <ClCompile Include="_model.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BossGauge.h" />
     <ClInclude Include="Box.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CameraChase.h" />
@@ -237,6 +242,7 @@
     <ClInclude Include="Cylinder.h" />
     <ClInclude Include="DirectWrite.h" />
     <ClInclude Include="Fade.h" />
+    <ClInclude Include="DiType.h" />
     <ClInclude Include="Floor.h" />
     <ClInclude Include="GameParameter.h" />
     <ClInclude Include="Defines.h" />
@@ -246,11 +252,14 @@
     <ClInclude Include="EmitterManager.h" />
     <ClInclude Include="Explosion.h" />
     <ClInclude Include="ExplosionManager.h" />
+    <ClInclude Include="HitStop.h" />
+    <ClInclude Include="Object.h" />
     <ClInclude Include="Pos2d.h" />
     <ClInclude Include="Pos3d.h" />
     <ClInclude Include="ModelParticle.h" />
     <ClInclude Include="Particle.h" />
     <ClInclude Include="SelectStage.h" />
+    <ClInclude Include="Sound.h" />
     <ClInclude Include="Stage1.h" />
     <ClInclude Include="Hammer.h" />
     <ClInclude Include="Input.h" />

@@ -1,26 +1,27 @@
 #include "DirectWrite.h"
 #include "DirectX.h"
 
+FontData*				DirectWrite::m_pSetting = nullptr;
+ID2D1Factory*			DirectWrite::pID2D1Factory = nullptr;
+IDWriteFactory*			DirectWrite::pIDWriteFactory = nullptr;
+IDWriteTextFormat*		DirectWrite::pTextFormat = nullptr;
+IDWriteTextLayout*		DirectWrite::pTextLayout = nullptr;
+ID2D1RenderTarget*		DirectWrite::pRT = nullptr;
+ID2D1SolidColorBrush*	DirectWrite::pSolidBrush = nullptr;
+IDXGISurface*			DirectWrite::pBackBuffer = nullptr;
+
 /* ========================================
 	引数付きコンストラクタ(簡易版)
 	-------------------------------------
 	フォントの設定
 	-------------------------------------
-	引数1：初期化したフォントデータ
+	引数1：なし
 	-------------------------------------
 	戻値：無し
 =========================================== */
-DirectWrite::DirectWrite(FontData* set) 
-	:Setting(set) 
-	, pID2D1Factory(nullptr)
-	, pIDWriteFactory(nullptr)
-	, pTextFormat(nullptr)
-	, pTextLayout(nullptr)
-	, pRT(nullptr)
-	, pSolidBrush(nullptr)
-	, pBackBuffer()
+DirectWrite::DirectWrite() 
 {
-	Setting = new FontData();
+	m_pSetting = new FontData();
 	pTextLayout;
 }
 
@@ -29,8 +30,8 @@ DirectWrite::DirectWrite(FontData* set)
 	-------------------------------------
 	フォントの設定
 	-------------------------------------
-	引数1：書体
-	引数2：よく分からんけどnullptrでいい					Font型
+	引数1：書体												Font型
+	引数2：よく分からんけどnullptrでいい					
 	引数3：文字の太さ										IDWriteFontCollection型
 	引数4：普通にするかイタリックとかにするか				DWRITE_FONT_WEIGHT型
 	引数5：縦横比を変更										DWRITE_FONT_STYLE型
@@ -45,14 +46,14 @@ DirectWrite::DirectWrite(Font font, IDWriteFontCollection * fontCollection, DWRI
 	DWRITE_FONT_STYLE fontStyle, DWRITE_FONT_STRETCH fontStretch, FLOAT fontSize, WCHAR const * localName, 
 	DWRITE_TEXT_ALIGNMENT textAlignment, D2D1_COLOR_F Color)
 {
-	DirectWrite::Setting->font = font;
-	DirectWrite::Setting->fontCollection = fontCollection;
-	DirectWrite::Setting->fontWeight = fontWeight;
-	DirectWrite::Setting->fontStretch = fontStretch;
-	DirectWrite::Setting->fontSize = fontSize;
-	DirectWrite::Setting->localName = localName;
-	DirectWrite::Setting->textAlignment = textAlignment;
-	DirectWrite::Setting->Color = Color;
+	DirectWrite::m_pSetting->font = font;
+	DirectWrite::m_pSetting->fontCollection = fontCollection;
+	DirectWrite::m_pSetting->fontWeight = fontWeight;
+	DirectWrite::m_pSetting->fontStretch = fontStretch;
+	DirectWrite::m_pSetting->fontSize = fontSize;
+	DirectWrite::m_pSetting->localName = localName;
+	DirectWrite::m_pSetting->textAlignment = textAlignment;
+	DirectWrite::m_pSetting->Color = Color;
 }
 
 /* ========================================
@@ -117,7 +118,7 @@ void DirectWrite::SetFont(Font font, IDWriteFontCollection * fontCollection, DWR
 	引数3：よくわからんから｢D2D1_DRAW_TEXT_OPTIONS_NONE｣これ書いて
 	戻値：無し
 =========================================== */
-void DirectWrite::DrawString(std::string str, DirectX::XMFLOAT2 pos, D2D1_DRAW_TEXT_OPTIONS options)
+void DirectWrite::DrawString(std::string str, DirectX::XMFLOAT2 pos)
 {
 	//文字列の変換
 	std::wstring wstr = StringToWString(str.c_str());
@@ -138,7 +139,7 @@ void DirectWrite::DrawString(std::string str, DirectX::XMFLOAT2 pos, D2D1_DRAW_T
 	pRT->BeginDraw();
 
 	//描画の処理
-	pRT->DrawTextLayout(points, pTextLayout, pSolidBrush, options);
+	pRT->DrawTextLayout(points, pTextLayout, pSolidBrush, D2D1_DRAW_TEXT_OPTIONS_NONE);
 
 	//描画の終了
 	pRT->EndDraw();
@@ -154,7 +155,7 @@ void DirectWrite::DrawString(std::string str, DirectX::XMFLOAT2 pos, D2D1_DRAW_T
 	引数3：よくわからんから｢D2D1_DRAW_TEXT_OPTIONS_NONE｣これ書いて
 	戻値：無し
 =========================================== */
-void DirectWrite::DrawString(std::string str, D2D1_RECT_F rect, D2D1_DRAW_TEXT_OPTIONS options)
+void DirectWrite::DrawString(std::string str, D2D1_RECT_F rect)
 {
 	//文字列の変換
 	std::wstring wstr = StringToWString(str.c_str());
@@ -163,7 +164,7 @@ void DirectWrite::DrawString(std::string str, D2D1_RECT_F rect, D2D1_DRAW_TEXT_O
 	pRT->BeginDraw();
 
 	//描画処理
-	pRT->DrawTextA(wstr.c_str(), wstr.size(), pTextFormat, rect, pSolidBrush, options);
+	pRT->DrawTextA(wstr.c_str(), wstr.size(), pTextFormat, rect, pSolidBrush, D2D1_DRAW_TEXT_OPTIONS_NONE);
 
 	//描画の終了
 	pRT->EndDraw();
@@ -204,11 +205,11 @@ void DirectWrite::Init()
 	DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), 
 		reinterpret_cast<IUnknown**>(&pIDWriteFactory));
 
-	pIDWriteFactory->CreateTextFormat(FontList[(int)Setting->font], Setting->fontCollection, 
-		Setting->fontWeight, Setting->fontStyle, Setting->fontStretch, 
-		Setting->fontSize, Setting->localName, &pTextFormat);
+	pIDWriteFactory->CreateTextFormat(FontList[(int)m_pSetting->font], m_pSetting->fontCollection, 
+		m_pSetting->fontWeight, m_pSetting->fontStyle, m_pSetting->fontStretch, 
+		m_pSetting->fontSize, m_pSetting->localName, &pTextFormat);
 
-	pRT->CreateSolidColorBrush(Setting->Color, &pSolidBrush);
+	pRT->CreateSolidColorBrush(m_pSetting->Color, &pSolidBrush);
 
 	pTextLayout;
 }
@@ -223,7 +224,7 @@ void DirectWrite::Init()
 =========================================== */
 void DirectWrite::Release()
 {
-	SAFE_DELETE(Setting);
+	SAFE_DELETE(m_pSetting);
 	//文字描画関連のアンロード
 	if (pBackBuffer)pBackBuffer->Release();
 	if (pSolidBrush)pSolidBrush->Release();
