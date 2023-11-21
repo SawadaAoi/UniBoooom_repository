@@ -185,6 +185,7 @@
     <ClCompile Include="Explosion.cpp" />
     <ClCompile Include="ExplosionManager.cpp" />
     <ClCompile Include="Floor.cpp" />
+    <ClCompile Include="HitStop.cpp" />
     <ClCompile Include="ModelParticle.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Particle.cpp" />
@@ -249,6 +250,7 @@
     <ClInclude Include="EmitterManager.h" />
     <ClInclude Include="Explosion.h" />
     <ClInclude Include="ExplosionManager.h" />
+    <ClInclude Include="HitStop.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="Pos2d.h" />
     <ClInclude Include="Pos3d.h" />

@@ -17,7 +17,11 @@
 ========================================== */
 
 // =============== デバッグモード ===================
-#define USE_CAMERA_VIBRATION (true)
+#define USE_CAMERA_VIBRATION (false)
+
+#if _DEBUG
+#define TRY_USE_HIT_STOP (true)
+#endif
 
 // =============== インクルード ===================
 #include "SceneGame.h"
@@ -35,17 +39,21 @@
 #include "Input.h"
 #endif
 
+#if TRY_USE_HIT_STOP
+#include "HitStop.h"
+#include "Input.h"
+#endif
+
 // =============== 定数定義 =======================
 #if MODE_GAME_PARAMETER
 #else
 const float BGM_VOLUME = 0.02f;
-
 #endif
 
 // =============== デバッグモード =======================
 #define MODE_COORD_AXIS (true)			//座標軸映すかどうか
 #define MODE_GROUND (false)				//座標軸映すかどうか
-#define USE_CAMERA_VIBRATION (false)
+
 /* ========================================
 	コンストラクタ関数
 	-------------------------------------
@@ -144,6 +152,15 @@ SceneGame::~SceneGame()
 =========================================== */
 void SceneGame::Update(float tick)
 {
+
+#if TRY_USE_HIT_STOP
+	CHitStop::Update();	//ヒットストップ更新
+	//Effect更新、その他必要なもの
+	if (CHitStop::IsStop())	//ストップ検査
+	{
+		return;	//処理中断
+	}
+#endif
 #if USE_CAMERA_VIBRATION
 	if (IsKeyTrigger('1'))
 	{
@@ -160,6 +177,12 @@ void SceneGame::Update(float tick)
 	if (IsKeyTrigger('4'))
 	{
 		m_pCamera->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_SIDE_STRONG);
+	}
+#endif
+#if TRY_USE_HIT_STOP
+	if (IsKeyTrigger('Z'))
+	{
+		CHitStop::UpFlag(CHitStop::E_BIT_FLAG_STOP_SOFT);	//フラグオン
 	}
 #endif
 	m_pCamera->Update();
