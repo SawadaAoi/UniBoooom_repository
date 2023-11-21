@@ -33,7 +33,9 @@
 //ゲームシーン================================================
 const float BGM_VOLUME = 0.02f;				//シーンゲームの音量
 const float SE_HAMMER_HIT_VOLUME = 0.5f;	// スライムを打った時のSEの音量
-
+// 画面サイズ
+const int SCREEN_WIDTH_ = 1280;
+const int SCREEN_HEIGHT_ = 720;
 
 // プレイヤー ================================================
 const float PLAYER_MOVE_SPEED	= 0.1f;			// プレイヤーの移動速度

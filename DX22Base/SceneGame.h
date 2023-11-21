@@ -31,6 +31,7 @@
 #include "DirectWrite.h"
 #include "Timer.h"
 #include "Floor.h"
+#include "StageFinishUI.h"
 #include "Combo.h"
 #include "Fade.h"
 
@@ -63,6 +64,7 @@ private:
 	CTimer* m_pTimer;
 	CCombo* m_pCombo;
 	CFloor* m_pFloor;
+	CStageFinish* m_pStageFin;
 	CFade* m_pFade;
 
 	XAUDIO2_BUFFER* m_pBGM;							//BGMの音声データ

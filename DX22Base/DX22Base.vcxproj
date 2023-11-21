@@ -224,6 +224,7 @@
     <ClCompile Include="Stage.cpp" />
     <ClCompile Include="Stage2.cpp" />
     <ClCompile Include="Stage3.cpp" />
+    <ClCompile Include="StageFinishUI.cpp" />
     <ClCompile Include="Startup.cpp" />
     <ClCompile Include="StripeParticle.cpp" />
     <ClCompile Include="Texture.cpp" />
@@ -294,6 +295,7 @@
     <ClInclude Include="Stage.h" />
     <ClInclude Include="Stage2.h" />
     <ClInclude Include="Stage3.h" />
+    <ClInclude Include="StageFinishUI.h" />
     <ClInclude Include="StripeParticle.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Timer.h" />

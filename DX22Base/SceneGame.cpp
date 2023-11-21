@@ -117,6 +117,8 @@ SceneGame::SceneGame()
 	// タイマー生成
 	m_pTimer = new CTimer();
 	m_pTimer->TimeStart();
+	//ステージ終了のUI表示
+	m_pStageFin = new CStageFinish(m_pPlayer->GetHP(),m_pTimer->GetTimePtr());
 
 #if USE_FADE_GAME
 	m_pFade = new CFade(m_pCamera);
@@ -150,6 +152,8 @@ SceneGame::~SceneGame()
 		m_pSpeaker->Stop();
 		m_pSpeaker->DestroyVoice();
 	}
+	SAFE_DELETE(m_pStageFin);
+	SAFE_DELETE(m_pTimer);
 	SAFE_DELETE(m_pFade);
   SAFE_DELETE(m_pTimer);
 	SAFE_DELETE(m_pExplosionMng);
@@ -218,6 +222,7 @@ void SceneGame::Update(float tick)
 	m_pSlimeMng->Update(m_pExplosionMng);
 	m_pExplosionMng->Update();
 	m_pTimer->Update();
+	m_pStageFin->Update();
 	m_pCombo->Update();
 
 	SceneGameCollision();
@@ -311,6 +316,7 @@ void SceneGame::Draw()
 	//タイマー描画
 
 	SetRenderTargets(1, &pRTV, nullptr);
+	m_pStageFin->Draw();
 
 	m_pTimer->Draw();
 	m_pCombo->Draw();

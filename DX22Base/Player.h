@@ -62,6 +62,7 @@ public:
 	TPos3d<float>* GetPosAddress();
 	CHammer* GetHammerPtr();
 	bool GetCollide();							//当たり判定があるかの確認
+	int* GetHP();
 	// セット関数
 	void SetCamera(const CCamera* pCamera);
 	bool GetAttackFlg();
