@@ -13,11 +13,14 @@
 	・2023/11/10 カメラをスライムと爆発にも渡すようにした・lineのメモリリーク対策 髙木駿輔
 	・2023/11/17 振動機能呼び出しデバッグモード追加 takagi
 	・2023/11/18 BGMの再生 yamashita
+	・2023/11/21 コンボ用のメンバ変数を追加 Sawada
 
 ========================================== */
 
 // =============== デバッグモード ===================
 #define USE_CAMERA_VIBRATION (true)
+#define MODE_COORD_AXIS (true)			//座標軸映すかどうか
+#define MODE_GROUND (false)				//座標軸映すかどうか
 
 // =============== インクルード ===================
 #include "SceneGame.h"
@@ -42,10 +45,6 @@ const float BGM_VOLUME = 0.02f;
 
 #endif
 
-// =============== デバッグモード =======================
-#define MODE_COORD_AXIS (true)			//座標軸映すかどうか
-#define MODE_GROUND (false)				//座標軸映すかどうか
-#define USE_CAMERA_VIBRATION (false)
 /* ========================================
 	コンストラクタ関数
 	-------------------------------------
@@ -88,12 +87,20 @@ SceneGame::SceneGame()
 	// スライムマネージャー生成
 	m_pSlimeMng = new CSlimeManager();
 	m_pSlimeMng->SetCamera(m_pCamera);
+
+
+	// コンボ数表示生成
+	m_pCombo = new CCombo();
+
+	// 爆発マネージャー生成
 	m_pExplosionMng = new CExplosionManager();
 	m_pExplosionMng->SetCamera(m_pCamera);
+	m_pExplosionMng->SetCombo(m_pCombo);
 
 	// タイマー生成
 	m_pTimer = new CTimer();
 	m_pTimer->TimeStart();
+
 
 	LoadSound();
 	//BGMの再生
@@ -170,6 +177,7 @@ void SceneGame::Update(float tick)
 	m_pSlimeMng->Update(m_pExplosionMng);
 	m_pExplosionMng->Update();
 	m_pTimer->Update();
+	m_pCombo->Update();
 
 	SceneGameCollision();
 }
@@ -260,6 +268,7 @@ void SceneGame::Draw()
 	SetRenderTargets(1, &pRTV, nullptr);
 
 	m_pTimer->Draw();
+	m_pCombo->Draw();
 }
 
 /* ========================================

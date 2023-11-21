@@ -16,6 +16,7 @@
 	・2023/11/13 Create関数の引数にtimeを追加 Suzumura
 	・2023/11/18 爆発時にSEを再生するように変更 Yamahsita
 	・2023/11/20 コンボ数機能追加 Sawada
+	・2023/11/21 コンボ数機能の一部をコンボクラスに移動 Sawada
 
 ========================================== */
 
@@ -47,11 +48,6 @@ CExplosionManager::CExplosionManager()
 		m_pExplosion[i] = nullptr;
 	}
 
-	// コンボの初期化
-	for (int i = 0; i < MAX_COMBO_NUM; i++)
-	{
-		m_dComboCnts[i] = 0;
-	}
 
 	//サウンドファイルの読み込み
 	m_pSEExplode = CSound::LoadSound("Assets/Sound/SE/Explode.mp3");
@@ -101,7 +97,7 @@ void CExplosionManager::Update()
 	}
 
 	DeleteCheck();	// 削除チェック
-	ResetCheckCombo();	// コンボの削除
+	ComboEndCheck();	// コンボの削除
 
 
 }
@@ -126,14 +122,6 @@ void CExplosionManager::Draw()
 		m_pExplosion[i]->Draw(); // 爆発の描画
 	}
 
-
-	// テスト用コンボ数表示
-	for (int i = 0; i < MAX_COMBO_NUM; i++)
-	{
-		int posX = i * 25;
-		DirectWrite::DrawString(std::to_string(m_dComboCnts[i]), DirectX::XMFLOAT2(posX, 650));
-
-	}
 }
 
 /* ========================================
@@ -149,7 +137,7 @@ void CExplosionManager::Draw()
 =========================================== */
 void CExplosionManager::Create(TTriType<float> pos,float size, float time)
 {
-	int comboNum = FirstComboSet();		// コンボ配列の添え字を取得
+	int comboNum = m_pCombo->FirstComboSet();		// コンボ配列の添え字を取得
 	
 
 	// 爆発を検索
@@ -164,9 +152,7 @@ void CExplosionManager::Create(TTriType<float> pos,float size, float time)
 		m_pSEExplodeSpeaker->SetVolume(EXPLODE_VOLUME);			//音量調整
 		break;
 
-	}
-
-	
+	}	
 }
 
 
@@ -184,7 +170,7 @@ void CExplosionManager::Create(TTriType<float> pos,float size, float time)
 =========================================== */
 void CExplosionManager::Create(TTriType<float> pos, float size, float time, int comboNum)
 {
-	m_dComboCnts[comboNum]++;	// 対応するコンボ配列の値を加算する
+	m_pCombo->AddCombo(comboNum);	// 対応するコンボ配列の値を加算する
 
 	// 爆発を検索
 	for (int i = 0; i < MAX_EXPLOSION_NUM; i++)
@@ -227,6 +213,7 @@ void CExplosionManager::DeleteCheck()
 	}
 }
 
+
 /* ========================================
 	爆発コンボリセット関数
 	----------------------------------------
@@ -236,13 +223,13 @@ void CExplosionManager::DeleteCheck()
 	----------------------------------------
 	戻値：なし
 ======================================== */
-void CExplosionManager::ResetCheckCombo()
+void CExplosionManager::ComboEndCheck()
 {
 	// コンボ数分確認
 	for (int i = 0; i < MAX_COMBO_NUM; i++)
 	{
 		// コンボ数が入ってない所はスルー
-		if (m_dComboCnts[i] == 0) continue;
+		if (m_pCombo->GetCombo(i) == 0) continue;
 		bool bComboFlg = false;	// 爆発連鎖有効フラグ
 
 		// 爆発数分チェック
@@ -259,34 +246,12 @@ void CExplosionManager::ResetCheckCombo()
 			}
 		}
 		// 画面外に対応添え字の爆発が全てなくなったら
-		if (bComboFlg == false)m_dComboCnts[i] = 0;	// コンボをリセット
-	}
-}
-
-/* ========================================
-	コンボ配列値セット関数
-	----------------------------------------
-	内容：爆発が発生した際にコンボ配列に値をセットする
-	----------------------------------------
-	引数：なし
-	----------------------------------------
-	戻値：配列の添え字
-======================================== */
-int CExplosionManager::FirstComboSet()
-{
-	int num;	// 返すコンボ配列の添え字
-
-	for (int i = 0; i < 10; i++)
-	{
-		// 既にコンボ数を数えている配列は飛ばす
-		if (m_dComboCnts[i] != 0) continue;
-
-		m_dComboCnts[i] ++;	// 1コンボ目をセット
-		num = i;			// 添え字を記録する
-		break;				// コンボを記録したので抜ける
+		if (bComboFlg == false)
+		{
+			m_pCombo->EndCombo(i); 	// コンボをリセット
+		}
 	}
 
-	return num;
 }
 
 
@@ -306,6 +271,20 @@ void CExplosionManager::SetCamera(const CCamera * pCamera)
 }
 
 /* ========================================
+	コンボ情報セット関数
+	----------------------------------------
+	内容：コンボ情報ポインタセット
+	----------------------------------------
+	引数1：コンボ情報ポインタ
+	----------------------------------------
+	戻値：なし
+======================================== */
+void CExplosionManager::SetCombo(CCombo * pCombo)
+{
+	m_pCombo = pCombo;
+}
+
+/* ========================================
 	爆発配列取得関数
 	----------------------------------------
 	内容：爆発配列の取得
@@ -317,21 +296,6 @@ void CExplosionManager::SetCamera(const CCamera * pCamera)
 CExplosion* CExplosionManager::GetExplosionPtr(int num)
 {
 	return m_pExplosion[num];
-}
-
-
-/* ========================================
-	コンボ数取得関数
-	----------------------------------------
-	内容：コンボ数を取得する
-	----------------------------------------
-	引数1：コンボ配列の添え字
-	----------------------------------------
-	戻値：コンボ数
-======================================== */
-int CExplosionManager::GetComboCnts(int num)
-{
-	return m_dComboCnts[num];
 }
 
 

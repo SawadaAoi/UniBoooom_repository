@@ -17,11 +17,27 @@
 // =============== インクルード ===================
 #include "Sprite.h"
 #include <Texture.h>
-#include "Pos3d.h"
+#include "Object.h"
+#include "GameParameter.h"
+
+// =============== 定数定義 =======================
+#if MODE_GAME_PARAMETER
+#else
+const int	MAX_COMBO_NUM = 5;		// 最大同時コンボ数
+#endif
 
 // =============== クラス定義 =====================
 class CCombo
 {
+public:
+	// ===構造体定義=========
+	typedef struct
+	{
+		int dCnt;		// コンボ数
+		int dDispFrame;	// 残描画用加算値
+		bool bEndFlg;	// コンボ終了フラグ
+	}ComboInfo;	// コンボ処理情報まとめ
+
 public:
 	// ===プロトタイプ宣言===
 	CCombo();
@@ -29,13 +45,16 @@ public:
 	void Update();
 	void Draw();
 
-
+	int FirstComboSet();
+	void AddCombo(int num);
+	int GetCombo(int num);
+	void EndCombo(int num);
+	void DisplayNumber(int cnt, float shiftPosY);
 
 private:
 	// ===メンバ変数宣言===
-	Texture* m_pTextureNum;
-
-
+	Texture* m_pTextureNum;		// 数字画像
+	ComboInfo m_dComboInfo[MAX_COMBO_NUM];	// コンボ用情報まとめ
 
 };
 

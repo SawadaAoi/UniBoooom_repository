@@ -20,6 +20,7 @@
 	・2023/11/14 SphereInfoの変更に対応 Takagi
 	・2023/11/15 Objectクラスを継承したので修正　yamamoto
 	・2023/11/20 コンボ数配列添え字の追加 Sawada
+	・2023/11/21 初期値の設定と、遅延処理の追加 Sawada
 
 ======================================== */
 
@@ -57,18 +58,15 @@ CExplosion::CExplosion(TPos3d<float> fPos, float fSize,float fTime, int comboNum
 	: m_fSizeAdd(0.0f)
 	, m_fDelFrame(0.0f)
 	, m_bDelFlg(false)
-	, m_fExplodeTime(0.0f)
-	, m_fMaxSize(0.0f)
+	, m_fExplodeTime(fTime)	// 爆発総時間をセットする
+	, m_fMaxSize(fSize)		// 最大サイズをセットする
 	, m_dComboNum(comboNum)
 	, m_bDelayFlg(delayFlg)
 	, m_dDelayCnt(0)
 {
 	//爆発オブジェクト初期化
-	m_Sphere.fRadius = fSize / 2;	// 当たり判定をセットする
-	m_3dModel = new CSphere();
-	m_fExplodeTime = fTime;		//爆発総時間をセットする
-	m_fMaxSize = fSize;	//最大サイズをセットする
-	m_Transform.fPos = fPos;
+	m_3dModel		 = new CSphere();
+	m_Transform.fPos = fPos;		// スライムがいた場所に生成する
 }
 
 

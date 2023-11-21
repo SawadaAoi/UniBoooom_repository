@@ -486,7 +486,7 @@
       <Filter>ヘッダー ファイル\Info</Filter>
     </ClInclude>
     <ClInclude Include="Combo.h">
-      <Filter>ソース ファイル\2dObject</Filter>
+      <Filter>ヘッダー ファイル\2dObject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
