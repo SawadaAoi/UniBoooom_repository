@@ -303,7 +303,10 @@
     <ClCompile Include="HitStop.cpp">
       <Filter>ソース ファイル\System</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Downloads\1121_アニメーションFBX\1121_アニメーションFBX\ShaderList.cpp">
+    <ClCompile Include="AnimeModel.cpp">
+      <Filter>ソース ファイル\System</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderList.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -497,7 +500,10 @@
     <ClInclude Include="HitStop.h">
       <Filter>ヘッダー ファイル\System</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\Downloads\1121_アニメーションFBX\1121_アニメーションFBX\ShaderList.h">
+    <ClInclude Include="AnimeModel.h">
+      <Filter>ヘッダー ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderList.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

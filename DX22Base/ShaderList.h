@@ -2,7 +2,7 @@
 #define __SHADER_LIST_H__
 
 #include "Shader.h"
-#include "Model.h"
+#include "AnimeModel.h"
 
 
 class ShaderList
@@ -39,7 +39,7 @@ public:
 	// 定数バッファへの設定
 	static void SetWVP(const DirectX::XMFLOAT4X4* wvp);
 	static void SetBones(const DirectX::XMFLOAT4X4* bones200);
-	static void SetMaterial(const Model::Material& material);
+	static void SetMaterial(const AnimeModel::Material& material);
 	static void SetLight(DirectX::XMFLOAT4 color, DirectX::XMFLOAT3 dir);
 	static void SetCameraPos(const DirectX::XMFLOAT3 pos);
 	static void SetFog(DirectX::XMFLOAT4 color, float start, float range);

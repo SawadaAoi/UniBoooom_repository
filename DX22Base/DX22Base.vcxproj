@@ -169,7 +169,7 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\Downloads\1121_アニメーションFBX\1121_アニメーションFBX\ShaderList.cpp" />
+    <ClCompile Include="AnimeModel.cpp" />
     <ClCompile Include="BossGauge.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CameraChase.cpp" />
@@ -192,6 +192,7 @@
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Particle.cpp" />
     <ClCompile Include="SelectStage.cpp" />
+    <ClCompile Include="ShaderList.cpp" />
     <ClCompile Include="Sound.cpp" />
     <ClCompile Include="Stage1.cpp" />
     <ClCompile Include="Hammer.cpp" />
@@ -233,7 +234,7 @@
     <ClCompile Include="_model.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\Downloads\1121_アニメーションFBX\1121_アニメーションFBX\ShaderList.h" />
+    <ClInclude Include="AnimeModel.h" />
     <ClInclude Include="BossGauge.h" />
     <ClInclude Include="Box.h" />
     <ClInclude Include="Camera.h" />
@@ -261,6 +262,7 @@
     <ClInclude Include="ModelParticle.h" />
     <ClInclude Include="Particle.h" />
     <ClInclude Include="SelectStage.h" />
+    <ClInclude Include="ShaderList.h" />
     <ClInclude Include="Sound.h" />
     <ClInclude Include="Stage1.h" />
     <ClInclude Include="Hammer.h" />

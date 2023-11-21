@@ -64,8 +64,6 @@ void Model::MakeMesh(const void* ptr, float scale, Flip flip)
 		desc.idxCount		= m_meshes[i].indices.size();		
 		desc.topology		= D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 		m_meshes[i].pMesh = new MeshBuffer(desc);
-
-		MakeWeight(pScene, i);
 	}
 }
 void Model::MakeMaterial(const void* ptr, std::string directory)

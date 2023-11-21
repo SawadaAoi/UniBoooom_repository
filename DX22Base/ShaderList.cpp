@@ -29,7 +29,7 @@ void ShaderList::Init()
 	SetWVP(mat);
 	SetBones(mat);
 
-	Model::Material material = {
+	AnimeModel::Material material = {
 		DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
 		DirectX::XMFLOAT4(0.3f, 0.3f, 0.3f, 1.0f),
 		DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
@@ -74,14 +74,14 @@ void ShaderList::SetWVP(const DirectX::XMFLOAT4X4* wvp)
 {
 	for (int i = 0; i < VS_KIND_MAX; ++i)
 	{
-		m_pVS[i]->WriteBuffer(0, wvp);
+		m_pVS[i]->WriteBuffer(0, &wvp);
 	}
 }
 void ShaderList::SetBones(const DirectX::XMFLOAT4X4* bones200)
 {
-	m_pVS[VS_ANIME]->WriteBuffer(1, bones200);
+	m_pVS[VS_ANIME]->WriteBuffer(1, &bones200);
 }
-void ShaderList::SetMaterial(const Model::Material& material)
+void ShaderList::SetMaterial(const AnimeModel::Material& material)
 {
 	DirectX::XMFLOAT4 param[3] = {
 		material.diffuse,
