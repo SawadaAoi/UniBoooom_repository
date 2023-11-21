@@ -24,10 +24,7 @@
 #if USE_SCENE_MANAGER
 #include "SceneManager.h"
 #else
-//#include "SceneGame.h"
-//#include "Stage1.h"
-//#include "Result.h"
-#include "Title.h"
+#include "SceneGame.h"
 #endif
 #include "Defines.h"
 #include <time.h>
@@ -37,10 +34,7 @@
 #if USE_SCENE_MANAGER
 CSceneManager* g_pSceneMng;
 #else
-//SceneGame* g_pGame;
-//CStage* g_pGame;
-//CResult* g_pGame;
-CTitle* g_pGame;
+SceneGame* g_pGame;
 #endif
 
 /* ========================================
@@ -73,10 +67,7 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
 #if USE_SCENE_MANAGER
 	g_pSceneMng = new CSceneManager();
 #else
-	//g_pGame = new SceneGame();
-	//g_pGame = new CStage1();
-	//g_pGame = new CResult();
-	g_pGame = new CTitle();
+	g_pGame = new SceneGame();
 #endif
 
 	return hr;
@@ -126,7 +117,7 @@ void Update(float tick)
 		g_pSceneMng->Update();
 	}
 #else
-	g_pGame->Update(/*tick*/);
+	g_pGame->Update(tick);
 #endif
 }
 
