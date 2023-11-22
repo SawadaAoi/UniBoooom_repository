@@ -10,6 +10,7 @@
 	変更履歴
 	・2023/11/17 h,作成 Tei
 	・2023/11/19 ボスゲージ増加する変数、関数を作成 Tei
+	・2023/11/22 ボスゲージフェード用変数追加 Tei
 
 ========================================== */
 #ifndef __BOSS_GAUGE_H__
@@ -26,14 +27,16 @@ class CBossgauge
 {
 public:
 	// ===プロトタイプ宣言===
-	CBossgauge();
+	CBossgauge(int* pTime);
 	~CBossgauge();
 	void Update();
 	void Draw();
 
 	void FillGaugeDraw(float textureRange);		//ボスゲージ増加量描画関数
-	void GetBossPos();	//ボス現在の位置を取得(要る？) 画面外に行ったら矢印で表示する
+	bool FirstBossGauge();
+	bool SecondBossGauge();
 
+	//void GetBossPos();	//ボス現在の位置を取得(要る？) 画面外に行ったら矢印で表示する
 
 private:
 	// ===メンバ変数宣言===
@@ -42,8 +45,10 @@ private:
 	int m_nGaugeCnt;		//ボスゲージフレーム加算値
 	bool m_bGaugeFull;		//ゲージ満タンフラグ(満タン = true)
 	bool m_bShowBossGauge;	//ボスゲージ表示フラグ
-	CTimer* m_pTimer;		//タイマーポインタ
-
+	int* m_pTime;			//残り時間のポインタ
+	int m_nAdjustTime;		//ボスゲージ表すタイム調整
+	float m_fFillGauge;		//ゲージの割合
+	int m_nFadeCnt;			//フェードアウト時間
 };
 
 

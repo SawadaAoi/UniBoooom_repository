@@ -10,6 +10,7 @@
 	変更履歴
 	・2023/11/17 cpp,作成 Tei
 	・2023/11/19 描画処理、ゲージ出現、消す処理追加 Tei
+	・2023/11/22 ボスゲージ表示のフェードアウト追加、パラメータ調整
 
 ========================================== */
 
@@ -29,6 +30,7 @@ const float BOSS_GAUGE_EMPTY_SIZE_Y = -100.0f;			//ボスゲージ（空）のYの長さ設定
 const float BOSS_GAUGE_FULL_SIZE_X = 100.0f;			//ボスゲージ（満）のXの長さ設定
 const float BOSS_GAUGE_FULL_POS_Y_ADJUST = 50.0f;		//ボスゲージ増加時、位置表示するための調整量
 const float BOSS_GAUGE_FULL_SIZE_Y_ADJUST = -100.0f;		//ボスゲージ増加時、サイズ計算用（計算して表示したい比率かける元々のサイズ(-100.0f)）
+const int FADE_TIME = 5 * 60;							//ボスゲージが溜まってから消える時間
 #endif
 
 
@@ -41,13 +43,16 @@ const float BOSS_GAUGE_FULL_SIZE_Y_ADJUST = -100.0f;		//ボスゲージ増加時、サイズ
 	----------------------------------------
 	戻値：なし
 =========================================== */
-CBossgauge::CBossgauge()
+CBossgauge::CBossgauge(int* pTime)
 	:m_pBossGaugeEmpty(nullptr)
-	,m_pBossGaugeFull(nullptr)
-	,m_nGaugeCnt(0)
-	,m_bGaugeFull(false)
-	,m_bShowBossGauge(true)
-	,m_pTimer(nullptr)
+	, m_pBossGaugeFull(nullptr)
+	, m_nGaugeCnt(0)
+	, m_bGaugeFull(false)
+	, m_bShowBossGauge(true)
+	, m_pTime(pTime)
+	, m_nAdjustTime(0)
+	, m_fFillGauge(0.0f)
+	, m_nFadeCnt(0)
 {
 	//ボスゲージのテクスチャ読む込み
 	m_pBossGaugeEmpty = new Texture();
@@ -60,7 +65,6 @@ CBossgauge::CBossgauge()
 	{
 		MessageBox(NULL, "bossgauge_full.png", "Error", MB_OK);
 	}
-	m_pTimer = new CTimer();
 }
 
 /* ========================================
@@ -74,7 +78,6 @@ CBossgauge::CBossgauge()
 =========================================== */
 CBossgauge::~CBossgauge()
 {
-	SAFE_DELETE(m_pTimer);
 	SAFE_DELETE(m_pBossGaugeEmpty);
 	SAFE_DELETE(m_pBossGaugeFull);
 }
@@ -91,20 +94,19 @@ CBossgauge::~CBossgauge()
 void CBossgauge::Update()
 {
 	//ボス出現カウント
-	m_nGaugeCnt++;	//ゲージ表示計算用の加算値
-	if (STAGE_TIME - m_pTimer->GetNowTime() == BOSS_GAUGE_FULL_TIME)
-	{
-		m_bGaugeFull = true;		//ゲージ満タン
-		m_bShowBossGauge = false;	//ボス出現、ゲージフラグをfalseに、ゲージを消す
+	m_nGaugeCnt = STAGE_TIME - *m_pTime;	//ゲージ表示計算用の加算値
 
-		//←TODOボス生成ボスの方に持っていくかここで呼ぶか
-	}
-	//二体目のボスのゲージ表示
-	if (STAGE_TIME - m_pTimer->GetNowTime() == SECOND_EMPTY_BOSS_GAUGE)
+
+	if (SecondBossGauge())
 	{
-		m_bShowBossGauge = true;
-		m_nGaugeCnt = 0;
+		return;
 	}
+
+	if (FirstBossGauge())
+	{
+		return;
+	}
+
 }
 
 /* ========================================
@@ -143,12 +145,11 @@ void CBossgauge::Draw()
 	Sprite::SetSize(DirectX::XMFLOAT2(BOSS_GAUGE_EMPTY_SIZE_X, BOSS_GAUGE_EMPTY_SIZE_Y));
 	Sprite::SetUVPos(DirectX::XMFLOAT2(0.0f, 0.0f));
 	Sprite::SetUVScale(DirectX::XMFLOAT2(1.0f, 1.0f));
+	Sprite::SetColor(DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f - ((float)m_nFadeCnt / (float)FADE_TIME)));
 	Sprite::SetTexture(m_pBossGaugeEmpty);
 	Sprite::Draw();
 
-	float fFillGauge = 0;
-	fFillGauge = (float)m_nGaugeCnt / (float)BOSS_GAUGE_FULL_TIME;
-	FillGaugeDraw(fFillGauge);
+	FillGaugeDraw(m_fFillGauge);
 }
 
 /* ========================================
@@ -187,5 +188,84 @@ void CBossgauge::FillGaugeDraw(float textureRange)
 	Sprite::SetUVScale(DirectX::XMFLOAT2(1.0f, textureRange));				//表示するtextureの大きさ設定
 	Sprite::SetTexture(m_pBossGaugeFull);
 	Sprite::Draw();
+	Sprite::SetColor(DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f ));
+
+}
+
+/* ========================================
+	一体目ボスゲージ関数
+	----------------------------------------
+	内容：一体目ボスのゲージ表示処理
+	----------------------------------------
+	引数1：なし
+	----------------------------------------
+	戻値：bool表示段階
+=========================================== */
+bool CBossgauge::FirstBossGauge()
+{
+	// 一体目ボスゲージの出現、上昇
+	if (m_nGaugeCnt <= BOSS_GAUGE_FULL_TIME)
+	{
+		m_fFillGauge = (float)(m_nGaugeCnt - m_nAdjustTime) / (float)BOSS_GAUGE_FULL_TIME;
+		return true;
+	}
+	// ゲージフェード処理
+	else if (m_nGaugeCnt <= BOSS_GAUGE_FULL_TIME + FADE_TIME)
+	{
+		m_nFadeCnt++;	//フェイドカウント
+		return true;
+	}
+	// フェイドで消える
+	if (m_nGaugeCnt >= BOSS_GAUGE_FULL_TIME + FADE_TIME)
+	{
+		m_bGaugeFull = true;		//ゲージ満タン
+		m_bShowBossGauge = false;	//ボス出現、ゲージフラグをfalseに、ゲージを消す
+
+		//←TODOボス生成ボスの方に持っていくかここで呼ぶか
+		return true;
+	}
+	return false;
+}
+
+/* ========================================
+	二体目ボスゲージ関数
+	----------------------------------------
+	内容：二体目ボスのゲージ表示処理
+	----------------------------------------
+	引数1：なし
+	----------------------------------------
+	戻値：bool表示段階
+=========================================== */
+bool CBossgauge::SecondBossGauge()
+{
+	// フェイドで消える
+	if (m_nGaugeCnt >= SECOND_EMPTY_BOSS_GAUGE + BOSS_GAUGE_FULL_TIME + FADE_TIME)
+	{
+		m_bShowBossGauge = false;
+		return true;
+	}
+	// ゲージフェード処理
+	else if (m_nGaugeCnt >= SECOND_EMPTY_BOSS_GAUGE + BOSS_GAUGE_FULL_TIME)
+	{
+		m_nFadeCnt++;
+		return true;
+	}
+	// 二体目のボスゲージ上昇
+	else if (m_nGaugeCnt >= SECOND_EMPTY_BOSS_GAUGE && m_bShowBossGauge == false)
+	{
+		m_bShowBossGauge = true;
+		m_nAdjustTime = m_nGaugeCnt;
+		m_nFadeCnt = 0;
+		return true;
+	}
+
+	// 二体目ゲージの上昇
+	else if (m_nGaugeCnt >= SECOND_EMPTY_BOSS_GAUGE && m_bShowBossGauge == true)
+	{
+		m_fFillGauge = (float)(m_nGaugeCnt - m_nAdjustTime) / (float)BOSS_GAUGE_FULL_TIME;
+
+		return true;
+	}
+	return false;
 }
 

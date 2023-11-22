@@ -11,6 +11,7 @@
 	・2023/11/14 cpp,作成 Tei
 	・2023/11/17 開始処理を複数種類追加、タイマーストップ実装 Sawada
 	・2023/11/18 タイマー描画処理、数字部分の描画関数追加 Tei
+	・2023/11/22 現時点のタイマーを取得関数追加 Tei
 
 ========================================== */
 
@@ -388,8 +389,7 @@ void CTimer::WaitTimeCheck()
 	----------------------------------------
 	戻値：現在の時間
 =========================================== */
-int CTimer::GetNowTime()
+int* CTimer::GetNowTime()
 {
-	int NowTime = STAGE_TIME - m_nTimeCnt;
-	return NowTime;
+	return &m_nTimeCnt;
 }

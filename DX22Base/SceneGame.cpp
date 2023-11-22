@@ -99,7 +99,7 @@ SceneGame::SceneGame()
 	m_pSpeaker->SetVolume(BGM_VOLUME);			//音量の設定
 
 	//ボスゲージ
-	m_pBossgauge = new CBossgauge();
+	m_pBossgauge = new CBossgauge(m_pTimer->GetNowTime());
 }
 
 /* ========================================
