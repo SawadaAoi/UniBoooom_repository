@@ -14,6 +14,7 @@
 	・2023/11/09 爆発配列を返す処理の追加 Sawada
 	・2023/11/10 他のオブジェクトと同一のカメラをセットするようにした Yamashita
 	・2023/11/13 Create関数の引数にtimeを追加 Suzumura
+	・2023/11/19 Create関数の引数にdamageを追加 Suzumura
 
 ========================================== */
 
@@ -35,6 +36,7 @@
 	戻値：なし
 =========================================== */
 CExplosionManager::CExplosionManager()
+		:m_pCamera(nullptr)
 {
 	// 爆発配列の初期化
 	for (int i = 0; i < MAX_EXPLOSION_NUM; i++)
@@ -104,7 +106,7 @@ void CExplosionManager::Update()
 	-------------------------------------
 	戻値：なし
 =========================================== */
-void CExplosionManager::Create(TTriType<float> pos,float size, float time)
+void CExplosionManager::Create(TTriType<float> pos,float size, float time,int damage)
 {
 	// 爆発を検索
 	for (int i = 0; i < MAX_EXPLOSION_NUM; i++)
@@ -112,7 +114,7 @@ void CExplosionManager::Create(TTriType<float> pos,float size, float time)
 		// 使用済みの爆発はスルー
 		if (m_pExplosion[i] != nullptr) continue;
 
-		m_pExplosion[i] = new CExplosion(pos,size,time);	// 座標を指定して生成
+		m_pExplosion[i] = new CExplosion(pos,size,time,damage);	// 座標を指定して生成
 		m_pExplosion[i]->SetCamera(m_pCamera);
 
 		break;
@@ -186,28 +188,34 @@ CExplosion* CExplosionManager::GetExplosionPtr(int num)
 void CExplosionManager::SwitchExplode(E_SLIME_LEVEL slimeLevel, TPos3d<float> pos, TTriType<float> slimeSize)
 {
 	float ExplosionSize = slimeSize.x * EXPLODE_BASE_RATIO;
+	int slimeDamage = (int)slimeLevel;							// ダメージはスライムレベルに依存
+	if (slimeLevel == LEVEL_FLAME) slimeDamage = (int)LEVEL_1;	// フレイムならレベル１相当のダメージに調整
+
 
 	// ぶつけられたスライムのレベルによって分岐
 	switch (slimeLevel) {
 	case LEVEL_1:
 		//スライム爆発処理
-		Create(pos, ExplosionSize, LEVEL_1_EXPLODE_TIME);	//衝突されたスライムの位置でレベル１爆発
+		Create(pos, ExplosionSize, LEVEL_1_EXPLODE_TIME, slimeDamage);	//衝突されたスライムの位置でレベル１爆発
 		break;
 	case LEVEL_2:
 		//スライム爆発処理
-		Create(pos, ExplosionSize, LEVEL_2_EXPLODE_TIME);	//衝突されたスライムの位置でレベル２爆発
+		Create(pos, ExplosionSize, LEVEL_2_EXPLODE_TIME, slimeDamage);	//衝突されたスライムの位置でレベル２爆発
 		break;
 	case LEVEL_3:
 		//スライム爆発処理
-		Create(pos, ExplosionSize, LEVEL_3_EXPLODE_TIME);	//衝突されたスライムの位置でレベル３爆発
+		Create(pos, ExplosionSize, LEVEL_3_EXPLODE_TIME, slimeDamage);	//衝突されたスライムの位置でレベル３爆発
 		break;
 	case LEVEL_4:
 		//スライム爆発処理
-		Create(pos, ExplosionSize, LEVEL_4_EXPLODE_TIME);	//衝突されたスライムの位置でレベル４爆発
+		Create(pos, ExplosionSize, LEVEL_4_EXPLODE_TIME, slimeDamage);	//衝突されたスライムの位置でレベル４爆発
 		break;
 	case LEVEL_FLAME:
-		Create(pos, ExplosionSize, LEVEL_1_EXPLODE_TIME);	//衝突されたスライムの位置でレベル１爆発
-
+		//スライム爆発処理
+		Create(pos, ExplosionSize, LEVEL_1_EXPLODE_TIME, slimeDamage);	//衝突されたスライムの位置でレベル１爆発
+	case LEVEL_BOSS:
+		//スライム爆発処理
+		Create(pos, ExplosionSize, LEVEL_BOSS_EXPLODE_TIME, slimeDamage);	//衝突されたスライムの位置でレベル:ボスの爆発
 		break;
 	}
 }

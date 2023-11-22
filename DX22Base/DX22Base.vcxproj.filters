@@ -288,6 +288,12 @@
     <ClCompile Include="DirectWrite.cpp">
       <Filter>ソース ファイル\System</Filter>
     </ClCompile>
+    <ClCompile Include="Slime_Boss_1.cpp">
+      <Filter>ソース ファイル\3dObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Slime_BossBase.cpp">
+      <Filter>ソース ファイル\3dObject</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Defines.h">
@@ -460,6 +466,12 @@
     </ClInclude>
     <ClInclude Include="SelectStage.h">
       <Filter>ヘッダー ファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Slime_Boss_1.h">
+      <Filter>ヘッダー ファイル\3dObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Slime_BossBase.h">
+      <Filter>ヘッダー ファイル\3dObject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

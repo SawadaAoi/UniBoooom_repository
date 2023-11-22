@@ -55,7 +55,8 @@ enum E_SLIME_LEVEL
 	LEVEL_3,		//3段階目
 	LEVEL_4,		//4段階目
 
-	LEVEL_FLAME,	// フレイムスライム
+	LEVEL_FLAME,			// フレイムスライム
+	LEVEL_BOSS = 999,		// ボススライム	(最強)
 
 	MAX_LEVEL = LEVEL_4	//最大レベルを設定	(スライムの段階が増えたら変更)
 };
@@ -73,7 +74,7 @@ public:
 	// ===プロトタイプ宣言===
 	CSlimeBase();
 	~CSlimeBase();
-	void Update(TPos3d<float> playerPos);
+	virtual void Update(TPos3d<float> playerPos);
 	void Draw(const CCamera* pCamera);
 
 	virtual void NormalMove(TPos3d<float> playerSphere);	// 通常時の移動処理

@@ -18,6 +18,7 @@
 	・2023/11/11 parameter用ヘッダ追加 Suzumura
 	・2023/11/13 スライムレベルによって爆破の膨らみの速度の調整ができるように変更 Suzumura
 	・2023/11/14 SphereInfoの変更に対応 Takagi
+	・2023/11/21 ボスに一度触ったかを判定用の関数実装 Suzumura
 
 ======================================== */
 
@@ -45,13 +46,16 @@ const float EXPAND_QUICK_RATE = 0.2f;   // 膨張加速割合
 	-------------------------------------
 	戻値：無し
 =========================================== */
-CExplosion::CExplosion(TPos3d<float> fPos, float fSize,float fTime)
+CExplosion::CExplosion(TPos3d<float> fPos, float fSize, float fTime, int nDamage)
 	: m_Transform(fPos, { 0.0f, 0.0f, 0.0f }, 0.0f)
 	, m_fSizeAdd(0.0f)
 	, m_fDelFrame(0.0f)
 	, m_bDelFlg(false)
 	, m_fExplodeTime(0.0f)
 	, m_fMaxSize(0.0f)
+	, m_fDamage(0)
+	, m_pCamera(nullptr)
+	, m_bBossTouched(false)
 {
 
 	//爆発オブジェクト初期化
@@ -59,9 +63,9 @@ CExplosion::CExplosion(TPos3d<float> fPos, float fSize,float fTime)
 	//m_fSizeAdd = fSize / ONE_SECOND_FRAME;
 	m_3dModel = new CSphere();
 
-	m_fExplodeTime = fTime;		//爆発総時間をセットする
-	m_fMaxSize = fSize;	//最大サイズをセットする
-	
+	m_fExplodeTime = fTime;		// 爆発総時間をセットする
+	m_fMaxSize = fSize;			// 最大サイズをセットする
+	m_fDamage = nDamage;		// 与えるダメージ量をセットする
 }
 
 /* ========================================
@@ -155,6 +159,21 @@ void CExplosion::DisplayTimeAdd()
 
 }
 
+
+/* ========================================
+	ボスにふれたことを知らせる関数
+	-------------------------------------
+	内容：ボスと接触時フラグをon
+	-------------------------------------
+	引数1：無し
+	-------------------------------------
+	戻値：無し
+=========================================== */
+void CExplosion::BossTouched()
+{
+	m_bBossTouched = true;
+}
+
 /* ========================================
 	座標設定処理関数
 	-------------------------------------
@@ -224,6 +243,34 @@ tagSphereInfo CExplosion::GetSphere()
 bool CExplosion::GetDelFlg()
 {
 	return m_bDelFlg;
+}
+
+/* ========================================
+	ダメージ量取得処理関数
+	-------------------------------------
+	内容：与えるダメージを取得する
+	-------------------------------------
+	引数1：無し
+	-------------------------------------
+	戻値：ダメージ量(int)
+=========================================== */
+int CExplosion::GetDamage()
+{
+	return m_fDamage;
+}
+
+/* ========================================
+	既に当たっているか取得処理関数
+	-------------------------------------
+	内容：既にボスとあたっているかどうかを取得する
+	-------------------------------------
+	引数1：無し
+	-------------------------------------
+	戻値：接触フラグ(bool)
+=========================================== */
+bool CExplosion::GetBossTouched()
+{
+	return m_bBossTouched;
 }
 
 /* ========================================

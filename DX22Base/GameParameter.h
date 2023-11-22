@@ -17,7 +17,7 @@
 #define __GAME_PARAMETER_H__
 
 // =============== パラメーター モード =======================
-#define MODE_GAME_PARAMETER	(true)
+#define MODE_GAME_PARAMETER	(false)
 
 #if MODE_GAME_PARAMETER
 

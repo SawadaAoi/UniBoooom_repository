@@ -12,6 +12,8 @@
 	・2023/11/09 爆発配列を返す処理の追加 sawada
 	・2023/11/10 他のオブジェクトと同一のカメラをセットするようにした yamashita
 	・2023/11/13 Create関数の引数にtimeを追加 Suzumura
+	・2023/11/19 Create関数の引数にdamageを追加 Suzumura
+
 ========================================== */
 #ifndef __EXPLOSION_MANAGER_H__	//ExplosionManager.hインクルードガード
 #define __EXPLOSION_MANAGER_H__
@@ -30,6 +32,7 @@ const float LEVEL_1_EXPLODE_TIME = 0.5f * 60.0f;	// スライム_1の爆発総時間
 const float LEVEL_2_EXPLODE_TIME = 1.0f * 60.0f;	// スライム_2の爆発総時間
 const float LEVEL_3_EXPLODE_TIME = 2.0f * 60.0f;	// スライム_3の爆発総時間
 const float LEVEL_4_EXPLODE_TIME = 3.0f * 60.0f;	// スライム_4の爆発総時間
+const float LEVEL_BOSS_EXPLODE_TIME = 4.0f * 60.0f;	// スライム_ボスの爆発総時間
 #endif
 // =============== クラス定義 =====================
 class CExplosionManager
@@ -42,8 +45,8 @@ public:
 	void Update();		 		//更新関数
 	void Draw();		 		//描画関数
 	
-	void Create(TTriType<float> pos,float size, float time);   	//爆発生成関数
-	void DeleteCheck();							   				//時間より爆発を削除関数
+	void Create(TTriType<float> pos,float size, float time, int damage);   	//爆発生成関数
+	void DeleteCheck();							   							//時間より爆発を削除関数
 
 	CExplosion* GetExplosionPtr(int num);
 	void SwitchExplode(E_SLIME_LEVEL slimeLevel,TPos3d<float> pos, TTriType<float> slimeSize);					//スライムのレベルに応じて爆発を変更
