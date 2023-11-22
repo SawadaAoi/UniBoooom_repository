@@ -18,7 +18,7 @@
 
 // =============== インクルード ===================
 #include "Stage1.h"	//自身のヘッダ
-
+#include "CameraChase.h"
 
 
 /* ========================================
@@ -31,7 +31,43 @@
 	戻値：なし
 =========================================== */
 CStage1::CStage1()
+	: m_nNum(0)
+	, m_fSize(100.0f)
+	, m_bStart(false)
 {
+	// 頂点シェーダの読込
+	m_pVs = new VertexShader();
+	if (FAILED(m_pVs->Load("Assets/shader/VS_Model.cso"))) {
+		MessageBox(nullptr, "VS_Model.cso", "Error", MB_OK);
+	}
+
+	m_pTexture = new Texture();
+	if (FAILED(m_pTexture->Create("Assets/Texture/text_start.png")))
+	{
+		MessageBox(NULL, "Stage1 text_start.png", "Error", MB_OK);
+	}
+
+	// レンダーターゲット、深度バッファの設定
+	RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得
+	DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
+	SetRenderTargets(1, &pRTV, pDSV);		//DSVがnullだと2D表示になる
+
+	m_pCollision = new CCOLLISION();
+	m_pPlayer = new CPlayer();
+	m_pCamera = new CCameraChase(m_pPlayer->GetPosAddress());
+	m_pPlayer->SetCamera(m_pCamera);
+
+	m_pFloor = new CFloor();
+	m_pFloor->SetCamera(m_pCamera);
+	// スライムマネージャー生成
+	m_pSlimeMng = new CSlimeManager();
+	m_pSlimeMng->SetCamera(m_pCamera);
+	m_pExplosionMng = new CExplosionManager();
+	m_pExplosionMng->SetCamera(m_pCamera);
+
+	// タイマー生成
+	m_pTimer = new CTimer();
+	m_pTimer->TimeStart();
 }
 
 /* ========================================
@@ -45,6 +81,14 @@ CStage1::CStage1()
 =========================================== */
 CStage1::~CStage1()
 {
+	SAFE_DELETE(m_pTimer);
+	SAFE_DELETE(m_pExplosionMng);
+	SAFE_DELETE(m_pSlimeMng);	// スライムマネージャー削除
+	SAFE_DELETE(m_pFloor);
+	SAFE_DELETE(m_pCamera);
+	SAFE_DELETE(m_pPlayer);
+	SAFE_DELETE(m_pCollision);
+	SAFE_DELETE(m_pVs);
 }
 
 /* ========================================
@@ -58,6 +102,32 @@ CStage1::~CStage1()
 =========================================== */
 void CStage1::Update()
 {
+	if (!m_bStart)
+	{
+		m_nNum++;
+		if (m_nNum > 10)
+		{
+			m_fSize += 10.0f;
+		}
+
+		if (m_nNum > 50)
+		{
+			m_bStart = true;
+		}
+	}
+	else
+	{
+		m_pCamera->Update();
+		m_pPlayer->Update();
+		m_pSlimeMng->SetPlayerPos(m_pPlayer->GetPos());
+
+		// スライムマネージャー更新
+		m_pSlimeMng->Update(m_pExplosionMng);
+		m_pExplosionMng->Update();
+		m_pTimer->Update();
+
+		Collision();
+	}
 }
 
 /* ========================================
@@ -70,8 +140,25 @@ void CStage1::Update()
 	戻値：なし
 =========================================== */
 //!memo(見たら消してー)：constが邪魔になったら外してね(.hの方も)
-void CStage1::Draw() const
+void CStage1::Draw()
 {
+	if (!m_bStart)
+	{
+		Draw2d(600.0f, 300.0f, m_fSize, m_fSize, m_pTexture);
+	}
+
+	//床の描画
+	m_pFloor->Draw();
+	// スライムマネージャー描画
+	m_pSlimeMng->Draw();
+	m_pPlayer->Draw();
+
+	//爆発マネージャー描画
+	m_pExplosionMng->Draw();
+
+	//タイマー描画
+	m_pTimer->Draw();
+	
 }
 
 /* ========================================
