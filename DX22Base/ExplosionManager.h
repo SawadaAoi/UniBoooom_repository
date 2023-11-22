@@ -13,6 +13,8 @@
 	・2023/11/10 他のオブジェクトと同一のカメラをセットするようにした yamashita
 	・2023/11/13 Create関数の引数にtimeを追加 Suzumura
 	・2023/11/18 サウンド用のメンバ変数を追加 yamashita
+	・2023/11/21 BoooomUI用のメンバ変数を追加 Tei
+
 ========================================== */
 #ifndef __EXPLOSION_MANAGER_H__	//ExplosionManager.hインクルードガード
 #define __EXPLOSION_MANAGER_H__
@@ -21,10 +23,12 @@
 #include "GameParameter.h"		//定数定義用ヘッダー
 #include "SlimeBase.h"
 #include "Sound.h"
+#include "BoooomUI.h"
 
 // =============== 定数定義 =======================
 #if MODE_GAME_PARAMETER
 #else
+const int MAX_BOOOOM_NUM = 10;		//最大boom数
 const int MAX_EXPLOSION_NUM = 20;	//最大爆発数
 const float EXPLODE_BASE_RATIO = 1.5f;			// スライムの爆発接触での爆発の大きさのベース
 const float MAX_SIZE_EXPLODE = 5.0f;			// スライム4同士の爆発の大きさ
@@ -46,16 +50,20 @@ public:
 	
 	void Create(TTriType<float> pos,float size, float time);   	//爆発生成関数
 	void DeleteCheck();							   				//時間より爆発を削除関数
+	void CreateUI(TPos3d<float> pos, float fTime);				//BoooomUI生成関数
 
 	CExplosion* GetExplosionPtr(int num);
-	void SwitchExplode(E_SLIME_LEVEL slimeLevel,TPos3d<float> pos, TTriType<float> slimeSize);					//スライムのレベルに応じて爆発を変更
+	void SwitchExplode(E_SLIME_LEVEL slimeLevel,TPos3d<float> pos, TTriType<float> slimeSize);		//スライムのレベルに応じて爆発を変更
 
 	void SetCamera(const CCamera* pCamera);	//他のオブジェクトと同一のカメラをセット
 protected:
 	// ===メンバ変数宣言===
 	CExplosion* m_pExplosion[MAX_EXPLOSION_NUM];	//爆発の配列
+	CBoooomUI* m_pBoooomUI[MAX_BOOOOM_NUM];			//Boooom表示用の配列
+	
 	const CCamera* m_pCamera;
 private:
+	Texture* m_pTexUI;	//Boooom用テクスチャ
 	XAUDIO2_BUFFER* m_pSEExplode;
 	IXAudio2SourceVoice* m_pSEExplodeSpeaker;
 };

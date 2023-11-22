@@ -104,6 +104,7 @@ const float LEVEL_FLAME_SCALE = 1.0f;						// ƒXƒ‰ƒCƒ€QƒtƒŒƒCƒ€‚Ì‘å‚«‚³(“–‚½‚è”
 const float LEVEL_FLAME_SPEED = ENEMY_MOVE_SPEED * 0.2f;	// ˆÚ“®‘¬“x
 
 // ”š”­ =====================================================
+const int MAX_BOOOOM_NUM = 10;					//Å‘åboom”
 const int	MAX_EXPLOSION_NUM		= 20;		// Å‘å”š”­”
 const float EXPAND_QUICK_RATE		= 0.2f;		// –c’£‰Á‘¬Š„‡ 
 const float LEVEL_1_EXPLODE_TIME = 0.5f * 60.0f;	// ƒXƒ‰ƒCƒ€_1‚Ì”š”­‘ŽžŠÔ
@@ -133,6 +134,13 @@ const int BOSS_GAUGE_FULL_TIME = 45 * 60;		//ƒ{ƒXƒQ[ƒWMAX‚É‚È‚éŽžŠÔ(‰½•boŒ») *
 const int SECOND_EMPTY_BOSSGAUGE = 75 * 60;		//“ñ‘Ì–Ú‚Ìƒ{ƒX‹óƒQ[ƒW•\‚·ŽžŠÔ * 60ƒtƒŒ[ƒ€
 const TPos2d<float> BOSSGAUGE_EMPTY_POS(765.0f, 25.0f);	//ƒ{ƒXƒQ[ƒWi‹ój‚ÌˆÊ’uÝ’è
 const TPos2d<float> BOSSGAUGE_FULL_POS(765.0f, 25.0f);	//ƒ{ƒXƒQ[ƒWi–žj‚ÌˆÊ’uÝ’è
+
+// BoooomUI =====================================================
+const float BOOOOM_UI_SIZE_X = 1.0f;		//BoooomUI‚ÌX‚Ì’·‚³itexture‚Ì”ä—¦‚Æ‡‚í‚¹‚éj
+const float BOOOOM_UI_SIZE_Y = 0.565f;		//BoooomUI‚ÌY‚Ì’·‚³itexture‚Ì”ä—¦‚Æ‡‚í‚¹‚éj
+const float BOOOOM_UI_SCALE_X = 6.0f;		//BoooomUIƒTƒCƒY‚ÌƒXƒP[ƒ‹
+const float BOOOOM_UI_SCALE_Y = 6.0f;		//BoooomUIƒTƒCƒY‚ÌƒXƒP[ƒ‹
+
 #endif
 
 #endif // !__GAME_PARAMETER_H__

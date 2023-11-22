@@ -69,14 +69,8 @@ CBossgauge::CBossgauge()
 =========================================== */
 CBossgauge::~CBossgauge()
 {
-	if (m_pBossGaugeEmpty)
-	{
-		SAFE_DELETE(m_pBossGaugeEmpty);
-	}
-	if (m_pBossGaugeFull)
-	{
-		SAFE_DELETE(m_pBossGaugeFull);
-	}
+	SAFE_DELETE(m_pBossGaugeEmpty);
+	SAFE_DELETE(m_pBossGaugeFull);
 }
 
 /* ========================================

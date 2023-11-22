@@ -13,6 +13,7 @@
 	・2023/11/10 カメラをスライムと爆発にも渡すようにした・lineのメモリリーク対策 髙木駿輔
 	・2023/11/17 振動機能呼び出しデバッグモード追加 takagi
 	・2023/11/18 BGMの再生 yamashita
+	・2023/11/21 爆発時BoooomUI表示するための処理を追加
 
 ========================================== */
 
@@ -93,13 +94,16 @@ SceneGame::SceneGame()
 	m_pTimer = new CTimer();
 	m_pTimer->TimeStart();
 
+	//ボスゲージ
+	m_pBossgauge = new CBossgauge();
+
+
 	LoadSound();
 	//BGMの再生
 	m_pSpeaker = CSound::PlaySound(m_pBGM);		//BGMの再生
 	m_pSpeaker->SetVolume(BGM_VOLUME);			//音量の設定
 
-	//ボスゲージ
-	m_pBossgauge = new CBossgauge();
+
 }
 
 /* ========================================
@@ -118,6 +122,7 @@ SceneGame::~SceneGame()
 		m_pSpeaker->Stop();
 		m_pSpeaker->DestroyVoice();
 	}
+
 	SAFE_DELETE(m_pBossgauge);
 	SAFE_DELETE(m_pTimer);
 	SAFE_DELETE(m_pExplosionMng);
@@ -253,6 +258,8 @@ void SceneGame::Draw()
 	m_pSlimeMng->Draw();
 	m_pPlayer->Draw();
 	
+	
+	
 	//爆発マネージャー描画
 	m_pExplosionMng->Draw();
 
@@ -263,6 +270,7 @@ void SceneGame::Draw()
 	m_pTimer->Draw();
 	//ボスゲージ描画
 	m_pBossgauge->Draw();
+
 }
 
 /* ========================================

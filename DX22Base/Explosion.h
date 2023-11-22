@@ -17,6 +17,7 @@
 	・2023/11/13 爆発総時間の変数を追加 Suzumura
 	・2023/11/14 SphereInfoの変更に対応 Takagi
 	・2023/11/15 Objectクラスを継承したので修正　yamamoto
+
 ======================================== */
 #ifndef __EXPLOSION_H__	//Explosion.hインクルードガード
 #define __EXPLOSION_H__
@@ -28,6 +29,8 @@
 #include "Sphere.h"			//球定義ヘッダー
 #include "Camera.h"			//カメラ定義ヘッダー
 #include "Object.h"			//
+#include "BoooomUI.h"
+
 //=============== クラス定義 =====================
 class CExplosion
 	:public CObject

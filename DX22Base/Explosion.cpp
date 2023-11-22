@@ -19,6 +19,8 @@
 	・2023/11/13 スライムレベルによって爆破の膨らみの速度の調整ができるように変更 Suzumura
 	・2023/11/14 SphereInfoの変更に対応 Takagi
 	・2023/11/15 Objectクラスを継承したので修正　yamamoto
+	・2023/11/21 DisplayAddTimeの中にBoooomUIの表示時間処理追加 Tei
+
 ======================================== */
 
 // =============== インクルード ===================
@@ -26,6 +28,7 @@
 #include "Geometry.h"			//空間における形状の抽象クラス定義のヘッダー
 #include "Sphere.h"				//球定義のヘッダー
 #include "GameParameter.h"		//定数定義用ヘッダー
+
 
 // =============== 定数定義 =======================
 #if MODE_GAME_PARAMETER
@@ -72,7 +75,6 @@ CExplosion::CExplosion(TPos3d<float> fPos, float fSize,float fTime)
 =========================================== */
 CExplosion::~CExplosion()
 {
-
 	SAFE_DELETE(m_3dModel);	// メモリ解放
 }
 
@@ -88,8 +90,6 @@ CExplosion::~CExplosion()
 =========================================== */
 void CExplosion::Update()
 {
-
-
 	DisplayTimeAdd();
 }
 
@@ -144,12 +144,10 @@ void CExplosion::DisplayTimeAdd()
 	// 一定秒数時間が経ったら
 	if (m_fExplodeTime <= m_fDelFrame)
 	{
-		m_bDelFlg = true;	// 削除フラグを立てる
+		m_bDelFlg = true;	// 削除フラグを立てるs
 	}
 
-	
 	m_Sphere.fRadius = m_Transform.fScale.y / 2;	// 当たり判定をセットする
-
 }
 
 /* ========================================

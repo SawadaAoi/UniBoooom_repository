@@ -15,6 +15,7 @@
 	・2023/11/10 他のオブジェクトと同一のカメラをセットするようにした Yamashita
 	・2023/11/13 Create関数の引数にtimeを追加 Suzumura
 	・2023/11/18 爆発時にSEを再生するように変更 Yamahsita
+	・2023/11/21 爆発時にBoooomUIの表示を追加 Tei
 
 ========================================== */
 
@@ -38,6 +39,7 @@ const float EXPLODE_VOLUME = 0.5f;
 CExplosionManager::CExplosionManager()
 	:m_pSEExplode(nullptr)
 	, m_pSEExplodeSpeaker(nullptr)
+	, m_pTexUI(nullptr)
 {
 	// 爆発配列の初期化
 	for (int i = 0; i < MAX_EXPLOSION_NUM; i++)
@@ -45,6 +47,16 @@ CExplosionManager::CExplosionManager()
 		m_pExplosion[i] = nullptr;
 	}
 
+	m_pTexUI = new Texture();
+	// boooomUI配列の初期化
+	for (int i = 0; i < MAX_BOOOOM_NUM; i++)
+	{
+		m_pBoooomUI[i] = nullptr;
+	}
+	if (FAILED(m_pTexUI->Create("Assets/Texture/boooom.png")))
+	{
+		MessageBox(NULL, "boooom.png", "Error", MB_OK);
+	}
 	//サウンドファイルの読み込み
 	m_pSEExplode = CSound::LoadSound("Assets/Sound/SE/Explode.mp3");
 }
@@ -65,6 +77,11 @@ CExplosionManager::~CExplosionManager()
 	{
 		SAFE_DELETE(m_pExplosion[i]);
 	}
+	for (int i = 0; i < MAX_BOOOOM_NUM; i++)
+	{
+		SAFE_DELETE(m_pBoooomUI[i]);
+	}
+	SAFE_DELETE(m_pTexUI);
 }
 
 
@@ -88,10 +105,15 @@ void CExplosionManager::Update()
 			continue;
 
 		}
-
 		m_pExplosion[i]->Update();
 	}
+	for (int i = 0; i < MAX_BOOOOM_NUM; i++)
+	{
+		//未使用のBoooomUIはスルー
+		if (m_pBoooomUI[i] == nullptr) continue;
 
+		m_pBoooomUI[i]->Update();
+	}
 	DeleteCheck();	// 削除チェック
 }
 
@@ -124,7 +146,6 @@ void CExplosionManager::Create(TTriType<float> pos,float size, float time)
 		m_pSEExplodeSpeaker->SetVolume(EXPLODE_VOLUME);			//音量調整
 
 		return;
-
 	}
 }
 
@@ -149,6 +170,40 @@ void CExplosionManager::DeleteCheck()
 
 		delete m_pExplosion[i]; m_pExplosion[i] = nullptr;	// 爆発を削除する
 
+	}
+
+	//BoooomUIを検索
+	for (int i = 0; i < MAX_BOOOOM_NUM; i++)
+	{
+		//未使用のBoooomUIはスルー
+		if (m_pBoooomUI[i] == nullptr) continue;
+		//削除フラグがたってないBoooomUIはスルー
+		if (m_pBoooomUI[i]->GetDelFlg() == false) continue;
+
+		delete m_pBoooomUI[i]; m_pBoooomUI[i] = nullptr;
+	}
+}
+
+/* ========================================
+	UI生成処理関数
+	-------------------------------------
+	内容：BoooomUIの生成
+	-------------------------------------
+	引数1：生成座標(x,y,z)
+	-------------------------------------
+	戻値：なし
+=========================================== */
+void CExplosionManager::CreateUI(TPos3d<float> pos, float fTime)
+{
+	for (int i = 0; i < MAX_BOOOOM_NUM; i++)
+	{
+		// 使用済みのBoooomUiはスルー
+		if (m_pBoooomUI[i] != nullptr) continue;
+
+		m_pBoooomUI[i] = new CBoooomUI(pos, m_pTexUI, m_pCamera, fTime);	// 座標を指定して生成
+		m_pBoooomUI[i]->SetCamera(m_pCamera);
+
+		return;
 	}
 }
 
@@ -212,6 +267,7 @@ void CExplosionManager::SwitchExplode(E_SLIME_LEVEL slimeLevel, TPos3d<float> po
 	case LEVEL_4:
 		//スライム爆発処理
 		Create(pos, ExplosionSize, LEVEL_4_EXPLODE_TIME);	//衝突されたスライムの位置でレベル４爆発
+		CreateUI(pos , LEVEL_4_EXPLODE_TIME);				//レベル４の爆発の位置でBoooom表示
 		break;
 	case LEVEL_FLAME:
 		Create(pos, ExplosionSize, LEVEL_1_EXPLODE_TIME);	//衝突されたスライムの位置でレベル１爆発
@@ -231,12 +287,22 @@ void CExplosionManager::SwitchExplode(E_SLIME_LEVEL slimeLevel, TPos3d<float> po
 ======================================== */
 void CExplosionManager::Draw()
 {
+
 	// 爆発の検索
-	for (int i = 0; i < MAX_EXPLOSION_NUM; i++)
+	for (int i = 0; i < MAX_EXPLOSION_NUM || i < MAX_BOOOOM_NUM; i++)
 	{
 		// 未使用の爆発はスルー
 		if (m_pExplosion[i] == nullptr) continue;
 
 		m_pExplosion[i]->Draw(); // 爆発の描画
+		
+	}
+	// boooomUIの検索
+	for (int i = 0; i < MAX_BOOOOM_NUM; i++)
+	{
+		//未使用のBoooomUIはスルー
+		if (m_pBoooomUI[i] == nullptr) continue;
+
+		m_pBoooomUI[i]->Draw();	// boooomUIの描画
 	}
 }

@@ -18,6 +18,7 @@
 	・2023/11/14 炎スライムの接触時処理を作成 Suzumura
 	・2023/11/15 各スライムのモデルのポインタと頂点シェーダーのポインタをbaseから移動 yamashita
 	・2023/11/15 各モデルの読み込みを関数化 yamashita
+	・2023/11/21 BoooomUI用変数追加 Tei
 
    ======================================== */
 #ifndef __SLIME_MANAGER_H__
@@ -61,6 +62,7 @@ public:
 
 	void SetCamera(CCamera* pCamera);		//スライムを移すカメラのポインタをセット
 	void SetPlayerPos(TPos3d<float> pos);
+	void SetBoooomUI(CExplosionManager* pExpMng);
 private:
 	// ===メンバ変数宣言=====
 	int GetRandom(int min, int max);
@@ -83,7 +85,7 @@ private:
 
 	int m_CreateCnt;	// 生成間隔用カウント
 
-
+	CExplosionManager* m_pExpMng;
 	
 };
 
