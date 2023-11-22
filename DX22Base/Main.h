@@ -15,7 +15,7 @@
 
 // =============== デバッグモード ===================
 #if _DEBUG
-#define USE_SCENE_MANAGER (false)
+#define USE_SCENE_MANAGER (true)
 #endif
 
 #ifndef __MAIN_H__

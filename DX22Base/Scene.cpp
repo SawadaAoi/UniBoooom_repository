@@ -20,15 +20,7 @@
 // =============== インクルード ===================
 #include "Scene.h"	//自身のヘッダ
 #include "Sprite.h"
-
-
-// 定数定義（承認まだなので一旦書きました）
-const float VIEW_LEFT = 0.0f;
-const float VIEW_RIGHT = 1280.0f;
-const float VIEW_BOTTOM = 720.0f;
-const float VIEW_TOP = 0.0f;
-const float NEAR_Z = 0.1f;
-const float FAR_Z = 10.0f;
+#include "GameParameter.h"
 
 
 /* ========================================
@@ -138,7 +130,22 @@ void CScene::Draw2d(float posX, float posY, float h, float w, Texture* pTexture)
 	Sprite::SetView(mat[1]);
 	Sprite::SetProjection(mat[2]);
 	Sprite::SetSize(DirectX::XMFLOAT2(h, -w));
+	Sprite::SetUVScale(DirectX::XMFLOAT2(1.0f, 1.0f));
 	Sprite::SetTexture(pTexture);
 	Sprite::Draw();
 }
 
+/* ========================================
+   サウンドファイル読み込み関数
+   -------------------------------------
+   内容：サウンドファイルの読み込み
+   -------------------------------------
+   引数1：無し
+   -------------------------------------
+   戻値：無し
+=========================================== */
+void CScene::LoadSound()
+{
+	m_pBGM = CSound::LoadSound("Assets/Sound/BGM/BGM_maou.mp3", true);		//BGMの読み込み
+	m_pSEHitHammer = CSound::LoadSound("Assets/Sound/SE/Smash.mp3");		//SEの読み込み
+}

@@ -41,6 +41,7 @@ CStage1::CStage1()
 		MessageBox(nullptr, "VS_Model.cso", "Error", MB_OK);
 	}
 
+	// テクスチャ読込
 	m_pTexture = new Texture();
 	if (FAILED(m_pTexture->Create("Assets/Texture/text_start.png")))
 	{
@@ -52,22 +53,46 @@ CStage1::CStage1()
 	DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
 	SetRenderTargets(1, &pRTV, pDSV);		//DSVがnullだと2D表示になる
 
+	// 当たり判定生成
 	m_pCollision = new CCOLLISION();
+
+	// プレイヤー生成
 	m_pPlayer = new CPlayer();
+
+	// カメラ生成
 	m_pCamera = new CCameraChase(m_pPlayer->GetPosAddress());
 	m_pPlayer->SetCamera(m_pCamera);
 
+	// 床生成
 	m_pFloor = new CFloor(m_pPlayer->GetPosAddress());
 	m_pFloor->SetCamera(m_pCamera);
+
 	// スライムマネージャー生成
 	m_pSlimeMng = new CSlimeManager();
 	m_pSlimeMng->SetCamera(m_pCamera);
+
+	// コンボ数表示生成
+	m_pCombo = new CCombo();
+
+	// 爆発マネージャー生成
 	m_pExplosionMng = new CExplosionManager();
 	m_pExplosionMng->SetCamera(m_pCamera);
+	m_pExplosionMng->SetCombo(m_pCombo);
 
 	// タイマー生成
 	m_pTimer = new CTimer();
 	m_pTimer->TimeStart();
+
+	//ステージ終了のUI表示
+	m_pStageFin = new CStageFinish(m_pPlayer->GetHP(), m_pTimer->GetTimePtr());
+
+	// フェード生成
+	m_pFade = new CFade(m_pCamera);
+
+	LoadSound();
+	//BGMの再生
+	m_pSpeaker = CSound::PlaySound(m_pBGM);		//BGMの再生
+	m_pSpeaker->SetVolume(BGM_VOLUME);			//音量の設定
 }
 
 /* ========================================
@@ -81,6 +106,14 @@ CStage1::CStage1()
 =========================================== */
 CStage1::~CStage1()
 {
+	/*if (m_pSpeaker)
+	{
+		m_pSpeaker->Stop();
+		m_pSpeaker->DestroyVoice();
+	}*/
+	SAFE_DELETE(m_pStageFin);
+	SAFE_DELETE(m_pTimer);
+	SAFE_DELETE(m_pFade);
 	SAFE_DELETE(m_pTimer);
 	SAFE_DELETE(m_pExplosionMng);
 	SAFE_DELETE(m_pSlimeMng);	// スライムマネージャー削除
@@ -102,6 +135,8 @@ CStage1::~CStage1()
 =========================================== */
 void CStage1::Update()
 {
+	m_pFade->Update();
+
 	if (!m_bStart)
 	{
 		m_nNum++;
@@ -125,6 +160,8 @@ void CStage1::Update()
 		m_pSlimeMng->Update(m_pExplosionMng);
 		m_pExplosionMng->Update();
 		m_pTimer->Update();
+		m_pStageFin->Update();
+		m_pCombo->Update();
 
 		Collision();
 	}
@@ -142,6 +179,10 @@ void CStage1::Update()
 //!memo(見たら消してー)：constが邪魔になったら外してね(.hの方も)
 void CStage1::Draw()
 {
+	RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得
+	DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
+	SetRenderTargets(1, &pRTV, pDSV);		//DSVがnullだと2D表示になる
+
 	if (!m_bStart)
 	{
 		Draw2d(600.0f, 300.0f, m_fSize, m_fSize, m_pTexture);
@@ -157,7 +198,11 @@ void CStage1::Draw()
 	m_pExplosionMng->Draw();
 
 	//タイマー描画
+	SetRenderTargets(1, &pRTV, nullptr);
+	m_pStageFin->Draw();
+
 	m_pTimer->Draw();
+	m_pCombo->Draw();
 	
 }
 

@@ -28,6 +28,9 @@
 #include "ExplosionManager.h"
 #include "Floor.h"
 #include "Timer.h"
+#include "StageFinishUI.h"
+#include "Combo.h"
+#include "Fade.h"
 	
 // =============== クラス定義 =====================
 class CStage :public CScene	//シーン
@@ -50,11 +53,15 @@ protected:
 	VertexShader* m_pVs;
 	CCamera* m_pCamera;
 	CPlayer* m_pPlayer;
+	CGeometry* m_pBox;
 	CSlimeManager* m_pSlimeMng;
 	CCOLLISION* m_pCollision;
 	CExplosionManager* m_pExplosionMng;
 	CTimer* m_pTimer;
+	CCombo* m_pCombo;
 	CFloor* m_pFloor;
+	CStageFinish* m_pStageFin;
+	CFade* m_pFade;
 	Texture* m_pTexture;
 };	//ステージ
 
