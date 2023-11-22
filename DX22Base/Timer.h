@@ -38,6 +38,7 @@ public:
 	void TimeStop();
 	void TimeRestart();
 	void DrawNumber(TPos2d<float> pos, int number);	//”š•`‰æŠÖ”
+	int GetNowTime();								//¡‚ÌŠÔ‚ğæ“¾ŠÖ”
 
 private:
 	void WaitTimeCheck();

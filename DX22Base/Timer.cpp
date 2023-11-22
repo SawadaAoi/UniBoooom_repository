@@ -27,7 +27,10 @@ const TPos2d<float> SECOND_TENS_POS(640.0f, 25.0f);	//十の桁秒の位置設定
 const TPos2d<float> SECOND_ONE_POS(690.0f, 25.0f);		//一の桁秒の位置設定
 const TPos2d<float> TIME_BACKGROUND_POS(630.0f, 25.0f);	//バックグラウンド位置設定
 const TPos2d<float> TIME_COLON_POS(602.5f, 25.0f);		//コロンの位置設定
-
+const float TIME_BACK_GROUND_SIZE_X = 200.0f;			//タイマーのバックグランドのXの長さ設定
+const float TIME_BACK_GROUND_SIZE_Y = -75.0f;			//タイマーのバックグランドのYの長さ設定
+const float TIME_COLON_SIZE_X = 35.0f;					//タイマーのコロンのXの長さ設定
+const float TIME_COLON_SIZE_Y = -35.0f;					//タイマーのコロンのYの長さ設定
 
 #endif
 
@@ -42,7 +45,7 @@ const TPos2d<float> TIME_COLON_POS(602.5f, 25.0f);		//コロンの位置設定
 	戻値：なし
 =========================================== */
 CTimer::CTimer()
-	: m_nTimeCnt(0)
+	: m_nTimeCnt(STAGE_TIME)
 	, m_bStartFlg(false)
 	, m_dWaitCnt(0)
 	, m_bStopFlg(false)
@@ -85,7 +88,8 @@ CTimer::CTimer()
 =========================================== */
 CTimer::~CTimer()
 {
-	
+	SAFE_DELETE(m_pShowColon);
+
 	SAFE_DELETE(m_pShowTimer);
 	
 	SAFE_DELETE(m_pTimeBackground);
@@ -154,14 +158,14 @@ void CTimer::Draw()
 
 	//プロジェクション行列には2Dとして表示するための行列を設定する
 	//この行列で2Dのスクリーンの多いさが決まる
-	DirectX::XMMATRIX projTimerBG = DirectX::XMMatrixOrthographicOffCenterLH(0.0f, 1280.0f, 720.0f, 0.0f, 0.1f, 10.0f);
+	DirectX::XMMATRIX projTimerBG = DirectX::XMMatrixOrthographicOffCenterLH(0.0f, 1280.0f, 720.0f, 0.0f, 0.1f, 0.0f);
 	DirectX::XMStoreFloat4x4(&timebackground[2], DirectX::XMMatrixTranspose(projTimerBG));
 
 	//スプライトの設定
 	Sprite::SetWorld(timebackground[0]);
 	Sprite::SetView(timebackground[1]);
 	Sprite::SetProjection(timebackground[2]);
-	Sprite::SetSize(DirectX::XMFLOAT2(200.0f, -75.0f));
+	Sprite::SetSize(DirectX::XMFLOAT2(TIME_BACK_GROUND_SIZE_X, TIME_BACK_GROUND_SIZE_Y));
 	Sprite::SetTexture(m_pTimeBackground);
 	Sprite::Draw();
 
@@ -177,14 +181,14 @@ void CTimer::Draw()
 
 	//プロジェクション行列には2Dとして表示するための行列を設定する
 	//この行列で2Dのスクリーンの多いさが決まる
-	DirectX::XMMATRIX projColon = DirectX::XMMatrixOrthographicOffCenterLH(0.0f, 1280.0f, 720.0f, 0.0f, 0.1f, 10.0f);
+	DirectX::XMMATRIX projColon = DirectX::XMMatrixOrthographicOffCenterLH(0.0f, 1280.0f, 720.0f, 0.0f, 0.1f, 0.0f);
 	DirectX::XMStoreFloat4x4(&colon[2], DirectX::XMMatrixTranspose(projColon));
 
 	//スプライトの設定
 	Sprite::SetWorld(colon[0]);
 	Sprite::SetView(colon[1]);
 	Sprite::SetProjection(colon[2]);
-	Sprite::SetSize(DirectX::XMFLOAT2(35.0f, -35.0f));
+	Sprite::SetSize(DirectX::XMFLOAT2(TIME_COLON_SIZE_X, TIME_COLON_SIZE_Y));
 	Sprite::SetUVPos(DirectX::XMFLOAT2(0.0f, 0.0f));
 	Sprite::SetUVScale(DirectX::XMFLOAT2(1.0f, 1.0f));
 	Sprite::SetTexture(m_pShowColon);
@@ -226,6 +230,8 @@ int CTimer::GetSecond()
 
 	return second;
 }
+
+
 
 /* ========================================
 	タイマー開始関数
@@ -327,7 +333,7 @@ void CTimer::DrawNumber(TPos2d<float> pos, int number)
 
 	//プロジェクション行列には2Dとして表示するための行列を設定する
 	//この行列で2Dのスクリーンの多いさが決まる
-	DirectX::XMMATRIX proj = DirectX::XMMatrixOrthographicOffCenterLH(0.0f, 1280.0f, 720.0f, 0.0f, 0.1f, 10.0f);
+	DirectX::XMMATRIX proj = DirectX::XMMatrixOrthographicOffCenterLH(0.0f, 1280.0f, 720.0f, 0.0f, 0.1f, 0.0f);
 	DirectX::XMStoreFloat4x4(&time[2], DirectX::XMMatrixTranspose(proj));
 
 	//スプライトの設定
@@ -371,4 +377,19 @@ void CTimer::WaitTimeCheck()
 		m_bStartFlg = true;
 	}
 
+}
+
+/* ========================================
+	タイマー取得関数
+	----------------------------------------
+	内容：現在のタイマーのトータル値を取得
+	----------------------------------------
+	引数1：なし
+	----------------------------------------
+	戻値：現在の時間
+=========================================== */
+int CTimer::GetNowTime()
+{
+	int NowTime = STAGE_TIME - m_nTimeCnt;
+	return NowTime;
 }
