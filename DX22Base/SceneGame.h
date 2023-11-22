@@ -25,7 +25,7 @@
 #include "Collision.h"
 #include "Player.h"
 #include "ExplosionManager.h"
-#include "HpManager.h"
+#include "HP_UI.h"
 #include "DirectWrite.h"
 
 // =============== ƒNƒ‰ƒX’è‹` =====================
@@ -54,7 +54,7 @@ private:
 	CSlimeManager* m_pSlimeMng;
 	CCOLLISION* m_pCollision;
 	CExplosionManager* m_pExplosionMng;
-	CHpManager* m_pHpMng;
+	CHP_UI* m_pHpMng;
 	DirectWrite* m_pDirectWrite;
 };
 

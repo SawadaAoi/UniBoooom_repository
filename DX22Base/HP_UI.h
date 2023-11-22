@@ -11,28 +11,40 @@
 	・2023/11/16 新規作成 仁枝潤哉
 
 ========================================== */
-
-#ifndef __HP_MANAGER_H__
-#define __HP_MANAGER_H__
+#ifndef __HP_UI_H__
+#define __HP_UI_H__
 
 // =============== インクルード ===================
 #include "Texture.h"	// テクスチャ用ヘッダ
+#include <vector>
 
 // =============== クラス定義 =====================
-class CHpManager
+class CHP_UI
 {
 public:
+	enum HEART_STATE
+	{
+		HEART_FULL,
+		HEART_NONE,
+		HEART_MAX,
+	};
+
+public:
 	// ===メンバ関数宣言===
-	CHpManager(const int*);		// コンストラクタ
-	~CHpManager();				// デストラクタ
+	CHP_UI(const int* pPlayerHp);		// コンストラクタ
+	~CHP_UI();				// デストラクタ
 	void Update();				// 更新処理
 	void Draw();				// 描画処理
 	void Draw2d(float, float, float, float, Texture*);	// 描画処理
+
+	void SetHpTexture();
+
 private:
 	// ===メンバ変数宣言===
-	Texture* m_pTexture[2];		// テクスチャ用ポインタ
-	const int* m_pnPlayerHp;	// プレイヤーのHP用ポインタ
-	bool m_bLost;				// HP増減による表示切替用フラグ
+	Texture*	m_pTexture[HEART_MAX];		// テクスチャ用ポインタ
+	std::vector<HEART_STATE>	m_HpState;
+	const int*	m_pPlayerHp;				// プレイヤーのHP用ポインタ
+
 };
 
-#endif	// !__HP_MANAGER_H__
+#endif	// !__HP_UI_H__
