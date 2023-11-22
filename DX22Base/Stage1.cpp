@@ -57,7 +57,7 @@ CStage1::CStage1()
 	m_pCamera = new CCameraChase(m_pPlayer->GetPosAddress());
 	m_pPlayer->SetCamera(m_pCamera);
 
-	m_pFloor = new CFloor();
+	m_pFloor = new CFloor(m_pPlayer->GetPosAddress());
 	m_pFloor->SetCamera(m_pCamera);
 	// スライムマネージャー生成
 	m_pSlimeMng = new CSlimeManager();
