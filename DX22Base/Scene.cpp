@@ -13,12 +13,22 @@
 	・2023/10/24 仮制作 takagi
 	・2023/11/05 現段階のコーディング規約適用 takagi
 	・2023/11/07 コメント修正 takagi
+	・2023/11/16 列挙追加・終了フラグ周り実装 takagi
 
 ========================================== */
 
 // =============== インクルード ===================
 #include "Scene.h"	//自身のヘッダ
+#include "Sprite.h"
 
+
+// 定数定義（承認まだなので一旦書きました）
+const float VIEW_LEFT = 0.0f;
+const float VIEW_RIGHT = 1280.0f;
+const float VIEW_BOTTOM = 720.0f;
+const float VIEW_TOP = 0.0f;
+const float NEAR_Z = 0.1f;
+const float FAR_Z = 10.0f;
 
 
 /* ========================================
@@ -31,6 +41,7 @@
 	戻値：なし
 =========================================== */
 CScene::CScene()
+	: m_bFinish(false)	//シーン開始
 {
 }
 
@@ -70,6 +81,64 @@ void CScene::Update()
 	戻値：なし
 =========================================== */
 //!memo(見たら消してー)：constが邪魔になったら外してね(.hの方も)
-void CScene::Draw() const
+void CScene::Draw()
 {
 }
+
+/* ========================================
+	終了確認関数
+	----------------------------------------
+	内容：シーンをやめるかどうかのフラグを返す
+	----------------------------------------
+	引数1：なし
+	----------------------------------------
+	戻値：true:シーンをやめたい / false:シーンを続けたい
+=========================================== */
+bool CScene::IsFin() const
+{
+	// =============== 提供 =====================
+	return m_bFinish;	//終了要求フラグ
+}
+
+/* ========================================
+	2D描画関数
+	-------------------------------------
+	内容：テクスチャの描画処理
+	-------------------------------------
+	引数1：表示位置のX座標
+	-------------------------------------
+	引数2：表示位置のY座標
+	-------------------------------------
+	引数3：表示するテクスチャの縦幅
+	-------------------------------------
+	引数4：表示するテクスチャの横幅
+	-------------------------------------
+	引数5：表示するテクスチャのポインタ
+	-------------------------------------
+	戻値：なし
+========================================== = */
+void CScene::Draw2d(float posX, float posY, float h, float w, Texture* pTexture)
+{
+	DirectX::XMFLOAT4X4 mat[3];
+
+	// ワールド行列はXとYのみを考慮して作成
+	DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(posX, posY, 0.0f);	// ワールド行列（必要に応じて変数を増やしたり、複数処理を記述したりする）
+	DirectX::XMStoreFloat4x4(&mat[0], DirectX::XMMatrixTranspose(world));
+
+	// ビュー行列は2Dだとカメラの位置があまり関係ないので、単位行列を設定する
+	DirectX::XMStoreFloat4x4(&mat[1], DirectX::XMMatrixIdentity());
+
+	// プロジェクション行列には2Dとして表示するための行列を設定する
+	// この行列で2Dのスクリーンの大きさが決まる
+	DirectX::XMMATRIX proj = DirectX::XMMatrixOrthographicOffCenterLH(VIEW_LEFT, VIEW_RIGHT, VIEW_BOTTOM, VIEW_TOP, NEAR_Z, FAR_Z);	// 平衡投影行列を設定
+	DirectX::XMStoreFloat4x4(&mat[2], DirectX::XMMatrixTranspose(proj));
+
+	// スプライトの設定
+	Sprite::SetWorld(mat[0]);
+	Sprite::SetView(mat[1]);
+	Sprite::SetProjection(mat[2]);
+	Sprite::SetSize(DirectX::XMFLOAT2(h, -w));
+	Sprite::SetTexture(pTexture);
+	Sprite::Draw();
+}
+

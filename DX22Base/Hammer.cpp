@@ -16,9 +16,9 @@
 	・2023/11/09 当たり判定用のSphereのゲット関数を追加 yamashita
 	・2023/11/11 parameter用ヘッダ追加 suzumura
 	・2023/11/14 SphereInfoの変更に対応 Takagi
-
 	・2023/11/14 全体的に処理の流れが分かりづらかったので修正 Sawada
-
+	・2023/11/15 Objectクラスを継承したので修正　yamamoto
+	
 ========================================== */
 
 // =============== インクルード ===================
@@ -52,16 +52,14 @@ const float ONE_FRAME_ADD_ANGLE = SWING_ANGLE / SWING_TIME_FRAME;			// 1フレーム
    戻値：なし
    ======================================== */
 CHammer::CHammer()
-	: m_Transform({ 0.0f }, { HAMMER_SIZE }, { 0.0f, 0.0f, 0.0f })
-	, m_pHammerGeo(nullptr)
+	: m_pHammerGeo(nullptr)
 	, m_tPlayerPos(0.0f,0.0f,0.0f)
 	, m_fAngleNow(0)
 	, m_dAddAngleCnt(0)
-
 {
 	m_pHammerGeo = new CSphere();							//ハンマーを仮表示するジオメトリー
-	m_sphere.fRadius = HAMMER_COL_SIZE;
-	m_sphere.fShift = { 0.0f,0.0f,0.0f };
+	m_Sphere.fRadius = HAMMER_COL_SIZE;
+	m_Transform.fScale = HAMMER_SIZE;
 }
 
 /* ========================================
@@ -119,11 +117,8 @@ void CHammer::Draw(const CCamera* pCamera)
 	m_pHammerGeo->SetWorld(m_Transform.GetWorldMatrixSRT());			//ワールド座標にセット
 	m_pHammerGeo->SetView(pCamera->GetViewMatrix());
 	m_pHammerGeo->SetProjection(pCamera->GetProjectionMatrix());
-
 	m_pHammerGeo->Draw();
 }
-
-
 
 /* ========================================
    ハンマー回転関数
@@ -145,21 +140,6 @@ void CHammer::Swing()
 	m_dAddAngleCnt++;	// 角度変更フレームカウント加算
 
 }
-
-/* ========================================
-   位置のゲット関数
-   ----------------------------------------
-   内容：ハンマーの位置を取得する
-   ----------------------------------------
-   引数：なし
-   ----------------------------------------
-   戻値：TPos3d<float> 
-   ======================================== */
-TPos3d<float> CHammer::GetPos()
-{
-	return m_Transform.fPos;
-}
-
 /* ========================================
    ハンマーの回転関数
    ----------------------------------------
@@ -186,18 +166,4 @@ void CHammer::AttackStart(TPos3d<float>pPos, float angle)
 	m_Transform.fPos.z = m_tPlayerPos.z + ROTATE_RADIUS * sinf(m_fAngleNow);
 
 
-}
-
-/* ========================================
-   Sphereのゲット関数
-   ----------------------------------------
-   内容：Sphereを返す処理
-   ----------------------------------------
-   引数1：なし
-   ----------------------------------------
-   戻値：当たり判定の球体
-   ======================================== */
-tagSphereInfo CHammer::GetSphere()
-{
-	return m_sphere;
 }

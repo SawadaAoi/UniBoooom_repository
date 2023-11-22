@@ -11,17 +11,34 @@
 	・2023/10/24 仮制作 takagi
 	・2023/11/05 現段階のコーディング規約適用 takagi
 	・2023/11/07 コメント修正 takagi
+	・2023/11/16 シーン遷移の流れを実装 takagi
+	・2023/11/17 過去シーンに戻る処理を追加・キー入力でシーンを切り替えられるデバッグモード追加 takagi
 
 ========================================== */
 
+// =============== デバッグモード ===================
+#if _DEBUG
+#define KEY_CHANGE_SCENE (true)	//キー入力でシーンを変える
+#endif
+
 // =============== インクルード ===================
 #include "SceneManager.h"	//自身のヘッダ
-#include "Prot.h"			//インスタンス候補
+//#include "Prot.h"			//インスタンス候補
+#include "Title.h"			//インスタンス候補
+#include "SelectStage.h"	//インスタンス候補
+#include "Stage1.h"			//インスタンス候補
+#include "Stage2.h"			//インスタンス候補
+#include "Stage3.h"			//インスタンス候補
+#include "Result.h"			//インスタンス候補
 
-// =============== 定数定義 ===================
-#define MODE_PROTTYPE (true)	//プロトタイプであるか
+#if _DEBUG
+#include <Windows.h>		//メッセージボックス用
+#endif
 
-
+#if KEY_CHANGE_SCENE
+#include <string>			//文字列操作
+#include "Input.h"			//キー入力
+#endif
 
 /* ========================================
 	コンストラクタ
@@ -33,15 +50,16 @@
 	戻値：なし
 =========================================== */
 CSceneManager::CSceneManager()
-	:m_pScene(nullptr)	//シーン
+	: m_pScene(nullptr)						//シーン
+	, m_ePastScene(CScene::E_TYPE_NONE)		//前のシーン
+	, m_eNextScene(CScene::E_TYPE_RESULT)	//シーン遷移先
+	, m_bFinish(false)						//シーン管理を開始
 {
-#if MODE_PROTTYPE
 	if (!m_pScene)	//ヌルチェック
 	{
 		// =============== 動的確保 ===================
-		m_pScene = new CProt();	//プロトタイプシーン作成
+		MakeNewScene();	//最初に始めるシーン作成
 	}
-#endif
 }
 
 /* ========================================
@@ -74,10 +92,31 @@ CSceneManager::~CSceneManager()
 =========================================== */
 void CSceneManager::Update()
 {
+#if KEY_CHANGE_SCENE
+	for (int nIdx = 0; nIdx < CScene::E_TYPE_MAX; nIdx++)
+	{
+		if (nIdx < 10)	//キー入力できる範囲
+		{
+			//Shift入力中に数字を押すとその数字のシーンに移る
+			if (IsKeyPress(VK_SHIFT) & IsKeyTrigger(*std::to_string(nIdx).c_str()))
+			{
+				m_eNextScene = static_cast<CScene::E_TYPE>(nIdx);	//移動先シーン登録
+				delete m_pScene;									//メモリ解放
+				m_pScene = nullptr;									//空アドレス代入
+				ChangeScene();										//シーン変更
+			}
+		}
+	}
+#endif
+
 	// =============== 更新 ===================
 	if (m_pScene)	//ヌルチェック
 	{
 		m_pScene->Update();	//シーン更新
+		if (m_pScene->IsFin())	//シーン終了検査
+		{
+			ChangeScene();	//シーン変更
+		}
 	}
 }
 
@@ -90,11 +129,129 @@ void CSceneManager::Update()
 	----------------------------------------
 	戻値：なし
 =========================================== */
-void CSceneManager::Draw() const
+void CSceneManager::Draw()
 {
 	// =============== 描画 ===================
 	if (m_pScene)	//ヌルチェック
 	{
 		m_pScene->Draw();	//シーン描画
 	}
+}
+
+/* ========================================
+	終了確認関数
+	----------------------------------------
+	内容：シーン管理をやめるかどうかのフラグを返す
+	----------------------------------------
+	引数1：なし
+	----------------------------------------
+	戻値：true:シーン管理をやめたい / false:シーン管理を続けたい
+=========================================== */
+bool CSceneManager::IsFin() const
+{
+	// =============== 提供 =====================
+	return m_bFinish;	//終了要求フラグ
+}
+
+/* ========================================
+	シーン変更関数
+	----------------------------------------
+	内容：現在シーン削除→次シーン推移
+	----------------------------------------
+	引数1：なし
+	----------------------------------------
+	戻値：なし
+=========================================== */
+void CSceneManager::ChangeScene()
+{
+	// =============== 事前準備 =====================
+	if (m_pScene)	//ヌルチェック
+	{
+		m_eNextScene = m_pScene->GetNext();	//遷移先取得
+	}
+
+	// =============== 遷移先検査 =====================
+	if (CScene::E_TYPE_NONE == m_eNextScene || CScene::E_TYPE_MAX == m_eNextScene)
+	{
+		return;	//処理中断
+	}
+
+	// =============== シーン削除 =====================
+	if (m_pScene)	//ヌルチェック
+	{
+		m_ePastScene = m_pScene->GetType();	//現在シーン種退避
+		delete m_pScene;					//メモリ解放
+		m_pScene = nullptr;					//空アドレス
+	}
+
+	// =============== シーン切換 =====================
+	MakeNewScene();	//新シーン作成
+}
+
+/* ========================================
+	新シーン作成関数
+	----------------------------------------
+	内容：次シーン情報を元に、シーンの動的確保分岐処理
+	----------------------------------------
+	引数1：なし
+	----------------------------------------
+	戻値：なし
+=========================================== */
+void CSceneManager::MakeNewScene()
+{
+	// =============== シーン検査 =====================
+	if (m_pScene)	//すでにシーンがあるか
+	{
+		return;	//処理中断
+	}
+
+	// =============== シーン作成 =====================
+	switch (m_eNextScene)	//分岐
+	{
+		// =============== タイトルシーン =====================
+	case CScene::E_TYPE_TITLE:		//遷移先：タイトル
+		m_pScene = new CTitle();	//動的確保
+		break;						//分岐処理終了
+
+		// =============== ステージセレクト =====================
+	case CScene::E_TYPE_SELECT_STAGE:	//遷移先：ステージセレクト
+		m_pScene = new CSelectStage();	//動的確保
+		break;							//分岐処理終了
+
+		// =============== ステージ1 =====================
+	case CScene::E_TYPE_STAGE1:		//遷移先：ステージ1
+		m_pScene = new CStage1();	//動的確保
+		break;						//分岐処理終了
+
+		// =============== ステージ2 =====================
+	case CScene::E_TYPE_STAGE2:		//遷移先：ステージ2
+		m_pScene = new CStage2();	//動的確保
+		break;						//分岐処理終了
+
+		// =============== ステージ3 =====================
+	case CScene::E_TYPE_STAGE3:		//遷移先：ステージ3
+		m_pScene = new CStage3();	//動的確保
+		break;						//分岐処理終了
+
+		// =============== リザルトシーン =====================
+	case CScene::E_TYPE_RESULT:		//遷移先：リザルト
+		m_pScene = new CResult();	//動的確保
+		break;						//分岐処理終了
+
+		// =============== 前のシーン =====================
+	case CScene::E_TYPE_PAST:			//遷移：戻る
+		m_eNextScene = m_ePastScene;	//過去シーンを次シーンに登録
+		MakeNewScene();					//処理をやり直す
+		break;							//分岐処理終了
+
+		// =============== その他 =====================
+	default:	//該当なし
+#if _DEBUG
+		MessageBox(nullptr, "存在しないシーンが呼び出されました", "SceneManager.cpp->Error", MB_OK);	//エラー通知
+#endif
+		break;	//分岐処理終了
+	}
+
+	// =============== 遷移先更新 =====================
+	m_eNextScene = CScene::E_TYPE_NONE;	//移動先クリア
 }

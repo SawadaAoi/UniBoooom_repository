@@ -1,22 +1,25 @@
 /* ========================================
 	HEW/UniBoooom!!
 	------------------------------------
-	ƒQ[ƒ€ƒV[ƒ“—pƒwƒbƒ_
+	ã‚²ãƒ¼ãƒ ã‚·ãƒ¼ãƒ³ç”¨ãƒ˜ãƒƒãƒ€
 	------------------------------------
 	SceneGame.h
 	------------------------------------
-	ì¬Ò àV“c
+	ä½œæˆè€… æ¾¤ç”°
 
-	•ÏX—š—ğ
-	E2023/11/08 ƒRƒƒ“ƒg’Ç‰Á‚ÆA–³‘Ê‚È‰ÓŠ‚ğíœ
-	E2023/11/09 ƒJƒƒ‰‚ÌˆÚ“®‚ª•ª‚©‚é‚æ‚¤‚É’n–Ê’Ç‰Á‚µ‚½ ûü–Øx•ã
-	E2023/11/11 ƒXƒ‰ƒCƒ€“¯m‚ªd‚È‚ç‚È‚¢ˆ—‚ğ’Ç‰Á yamashita
+	å¤‰æ›´å±¥æ­´
+	ãƒ»2023/11/08 ã‚³ãƒ¡ãƒ³ãƒˆè¿½åŠ ã¨ã€ç„¡é§„ãªç®‡æ‰€ã‚’å‰Šé™¤
+	ãƒ»2023/11/09 ã‚«ãƒ¡ãƒ©ã®ç§»å‹•ãŒåˆ†ã‹ã‚‹ã‚ˆã†ã«åœ°é¢è¿½åŠ ã—ãŸ é«™æœ¨é§¿è¼”
+	ãƒ»2023/11/11 ã‚¹ãƒ©ã‚¤ãƒ åŒå£«ãŒé‡ãªã‚‰ãªã„å‡¦ç†ã‚’è¿½åŠ  yamashita
+	ãƒ»2023/11/19 ã‚µã‚¦ãƒ³ãƒ‰ãƒ•ã‚¡ã‚¤ãƒ«ã®èª­ã¿è¾¼ã¿é–¢æ•°ã‚’è¿½åŠ  yamashita
+	ãƒ»2023/11/19 ã‚µã‚¦ãƒ³ãƒ‰ç”¨ã®ãƒ¡ãƒ³ãƒå¤‰æ•°ã‚’è¿½åŠ  yamashita
+	ãƒ»2023/11/21 ã‚³ãƒ³ãƒœç”¨ã®ãƒ¡ãƒ³ãƒå¤‰æ•°ã‚’è¿½åŠ  Sawada
 
 ========================================== */
 #ifndef __SCENE_GAME_H__
 #define __SCENE_GAME_H__
 
-// =============== ƒCƒ“ƒNƒ‹[ƒh ===================
+// =============== ã‚¤ãƒ³ã‚¯ãƒ«ãƒ¼ãƒ‰ ===================
 #include "Model.h"
 #include "Shader.h"
 #include "Camera.h"
@@ -27,13 +30,18 @@
 #include "ExplosionManager.h"
 #include "HP_UI.h"
 #include "DirectWrite.h"
+#include "Timer.h"
+#include "Floor.h"
+#include "StageFinishUI.h"
+#include "Combo.h"
+#include "Fade.h"
 
-// =============== ƒNƒ‰ƒX’è‹` =====================
+// =============== ã‚¯ãƒ©ã‚¹å®šç¾© =====================
 class SceneGame
 {
 public:
-	// ===ƒƒ“ƒoŠÖ”éŒ¾===
-	SceneGame(DirectWrite* pDirectWrite);
+	// ===ãƒ¡ãƒ³ãƒé–¢æ•°å®£è¨€===
+	SceneGame();
 	~SceneGame();
 	void Update(float tick);
 	void Draw();
@@ -44,9 +52,9 @@ public:
 	void SlimeSlimeCollision();
 	void ExplosionSlimeCollision();
 	void SlimeSlimeNormalMoveCollision();
-	void SetDirectWrite(DirectWrite* pDirectWrite);
 private:
-	// ===ƒƒ“ƒo•Ï”éŒ¾===
+	void LoadSound();	//ã‚µã‚¦ãƒ³ãƒ‰ãƒ•ã‚¡ã‚¤ãƒ«ã®èª­ã¿è¾¼ã¿
+	// ===ãƒ¡ãƒ³ãƒå¤‰æ•°å®£è¨€===
 	VertexShader* m_pVs;
 	CCamera* m_pCamera;
 	CPlayer* m_pPlayer;
@@ -56,6 +64,17 @@ private:
 	CExplosionManager* m_pExplosionMng;
 	CHP_UI* m_pHpMng;
 	DirectWrite* m_pDirectWrite;
+	CTimer* m_pTimer;
+	CCombo* m_pCombo;
+	CFloor* m_pFloor;
+	CStageFinish* m_pStageFin;
+	CFade* m_pFade;
+
+	XAUDIO2_BUFFER* m_pBGM;							//BGMã®éŸ³å£°ãƒ‡ãƒ¼ã‚¿
+	XAUDIO2_BUFFER* m_pSEHitHammer;					//SEã®éŸ³å£°ãƒ‡ãƒ¼ã‚¿
+	IXAudio2SourceVoice* m_pSpeaker;				//BGMã‚’èãå–ã‚‹å´
+	IXAudio2SourceVoice* m_pSEHitHammerSpeaker;		//SEã‚’èãå–ã‚‹å´
+
 };
 
 #endif // __SCENE_GAME_H__
