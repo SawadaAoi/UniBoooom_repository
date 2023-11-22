@@ -310,7 +310,7 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="2dPolygon.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\Geometry</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -510,7 +510,7 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="2dPolygon.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\Geometry</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
