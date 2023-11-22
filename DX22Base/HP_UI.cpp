@@ -89,7 +89,37 @@ void CHP_UI::Update()
 =========================================== */
 void CHP_UI::Draw()
 {
-	SetHpTexture();
+
+
+	for (int i = 0; i < m_HpState.size(); i++)
+	{
+		if (i > (*m_pPlayerHp - 1))
+		{
+			continue;
+		}
+
+		DirectX::XMFLOAT4X4 mat[3];
+
+		// ワールド行列はXとYのみを考慮して作成
+		DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(DRAW_POSX * (i + DRAW_FIRSTPOSX) * DRAW_GAP, DRAW_POSY, 0.0f);	// ワールド行列（必要に応じて変数を増やしたり、複数処理を記述したりする）
+		DirectX::XMStoreFloat4x4(&mat[0], DirectX::XMMatrixTranspose(world));
+
+		// ビュー行列は2Dだとカメラの位置があまり関係ないので、単位行列を設定する
+		DirectX::XMStoreFloat4x4(&mat[1], DirectX::XMMatrixIdentity());
+
+		// プロジェクション行列には2Dとして表示するための行列を設定する
+		// この行列で2Dのスクリーンの大きさが決まる
+		DirectX::XMMATRIX proj = DirectX::XMMatrixOrthographicOffCenterLH(VIEW_LEFT, VIEW_RIGHT, VIEW_BOTTOM, VIEW_TOP, NEAR_Z, FAR_Z);	// 平衡投影行列を設定
+		DirectX::XMStoreFloat4x4(&mat[2], DirectX::XMMatrixTranspose(proj));
+
+		// スプライトの設定
+		Sprite::SetWorld(mat[0]);
+		Sprite::SetView(mat[1]);
+		Sprite::SetProjection(mat[2]);
+		Sprite::SetSize(DirectX::XMFLOAT2(DRAW_HEIGHT, -DRAW_WIDTH));
+		Sprite::SetTexture(m_pTexture[HEART_FULL]);
+		Sprite::Draw();
+	}
 
 	for (int i = 0; i < m_HpState.size(); i++)
 	{
@@ -112,7 +142,7 @@ void CHP_UI::Draw()
 		Sprite::SetView(mat[1]);
 		Sprite::SetProjection(mat[2]);
 		Sprite::SetSize(DirectX::XMFLOAT2(DRAW_HEIGHT, -DRAW_WIDTH));
-		Sprite::SetTexture(m_pTexture[m_HpState[i]]);
+		Sprite::SetTexture(m_pTexture[HEART_NONE]);
 		Sprite::Draw();
 	}
 }
