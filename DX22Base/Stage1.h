@@ -33,6 +33,10 @@ public:
 	void Draw();						//描画	
 	E_TYPE GetType() const override;	//自身の種類ゲッタ
 	E_TYPE GetNext() const override;	//次のシーンゲッタ
+private:
+	int m_nNum;
+	float m_fSize;
+	bool m_bStart;
 };	//ステージ1
 
 #endif	//!__STAGE1_H__

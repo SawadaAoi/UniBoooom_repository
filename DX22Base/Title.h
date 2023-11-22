@@ -35,7 +35,6 @@ public:
 	void Draw();					//描画	
 	E_TYPE GetType() const override;	//自身の種類ゲッタ
 	E_TYPE GetNext() const override;	//次のシーンゲッタ
-	void Draw2d(float, float, float, float, Texture*);
 private:
 	Texture* m_pTexture;
 };	//タイトル

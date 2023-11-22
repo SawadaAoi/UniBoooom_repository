@@ -22,13 +22,6 @@
 #include "GameParameter.h"
 #include "Input.h"
 
-// 定数定義（承認まだなので一旦書きました）
-const float VIEW_LEFT = 0.0f;
-const float VIEW_RIGHT = 1280.0f;
-const float VIEW_BOTTOM = 720.0f;
-const float VIEW_TOP = 0.0f;
-const float NEAR_Z = 0.1f;
-const float FAR_Z = 10.0f;
 
 /* ========================================
 	コンストラクタ
@@ -121,47 +114,4 @@ CResult::E_TYPE CResult::GetNext() const
 {
 	// =============== 提供 ===================
 	return CResult::E_TYPE_TITLE;	//遷移先シーンの種類
-}
-
-// HpManagerがないので一旦書きました（後で消す）
-/* ========================================
-	2D描画関数
-	-------------------------------------
-	内容：テクスチャの描画処理
-	-------------------------------------
-	引数1：表示位置のX座標
-	-------------------------------------
-	引数2：表示位置のY座標
-	-------------------------------------
-	引数3：表示するテクスチャの縦幅
-	-------------------------------------
-	引数4：表示するテクスチャの横幅
-	-------------------------------------
-	引数5：表示するテクスチャのポインタ
-	-------------------------------------
-	戻値：なし
-========================================== = */
-void CResult::Draw2d(float posX, float posY, float h, float w, Texture *pTexture)
-{
-	DirectX::XMFLOAT4X4 mat[3];
-
-	// ワールド行列はXとYのみを考慮して作成
-	DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(posX, posY, 0.0f);	// ワールド行列（必要に応じて変数を増やしたり、複数処理を記述したりする）
-	DirectX::XMStoreFloat4x4(&mat[0], DirectX::XMMatrixTranspose(world));
-
-	// ビュー行列は2Dだとカメラの位置があまり関係ないので、単位行列を設定する
-	DirectX::XMStoreFloat4x4(&mat[1], DirectX::XMMatrixIdentity());
-
-	// プロジェクション行列には2Dとして表示するための行列を設定する
-	// この行列で2Dのスクリーンの大きさが決まる
-	DirectX::XMMATRIX proj = DirectX::XMMatrixOrthographicOffCenterLH(VIEW_LEFT, VIEW_RIGHT, VIEW_BOTTOM, VIEW_TOP, NEAR_Z, FAR_Z);	// 平衡投影行列を設定
-	DirectX::XMStoreFloat4x4(&mat[2], DirectX::XMMatrixTranspose(proj));
-
-	// スプライトの設定
-	Sprite::SetWorld(mat[0]);
-	Sprite::SetView(mat[1]);
-	Sprite::SetProjection(mat[2]);
-	Sprite::SetSize(DirectX::XMFLOAT2(h, -w));
-	Sprite::SetTexture(pTexture);
-	Sprite::Draw();
 }

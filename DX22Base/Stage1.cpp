@@ -31,11 +31,20 @@
 	戻値：なし
 =========================================== */
 CStage1::CStage1()
+	: m_nNum(0)
+	, m_fSize(100.0f)
+	, m_bStart(false)
 {
 	// 頂点シェーダの読込
 	m_pVs = new VertexShader();
 	if (FAILED(m_pVs->Load("Assets/shader/VS_Model.cso"))) {
 		MessageBox(nullptr, "VS_Model.cso", "Error", MB_OK);
+	}
+
+	m_pTexture = new Texture();
+	if (FAILED(m_pTexture->Create("Assets/Texture/text_start.png")))
+	{
+		MessageBox(NULL, "Stage1 text_start.png", "Error", MB_OK);
 	}
 
 	// レンダーターゲット、深度バッファの設定
@@ -93,16 +102,32 @@ CStage1::~CStage1()
 =========================================== */
 void CStage1::Update()
 {
-	m_pCamera->Update();
-	m_pPlayer->Update();
-	m_pSlimeMng->SetPlayerPos(m_pPlayer->GetPos());
+	if (!m_bStart)
+	{
+		m_nNum++;
+		if (m_nNum > 10)
+		{
+			m_fSize += 10.0f;
+		}
 
-	// スライムマネージャー更新
-	m_pSlimeMng->Update(m_pExplosionMng);
-	m_pExplosionMng->Update();
-	m_pTimer->Update();
+		if (m_nNum > 50)
+		{
+			m_bStart = true;
+		}
+	}
+	else
+	{
+		m_pCamera->Update();
+		m_pPlayer->Update();
+		m_pSlimeMng->SetPlayerPos(m_pPlayer->GetPos());
 
-	Collision();
+		// スライムマネージャー更新
+		m_pSlimeMng->Update(m_pExplosionMng);
+		m_pExplosionMng->Update();
+		m_pTimer->Update();
+
+		Collision();
+	}
 }
 
 /* ========================================
@@ -117,6 +142,11 @@ void CStage1::Update()
 //!memo(見たら消してー)：constが邪魔になったら外してね(.hの方も)
 void CStage1::Draw()
 {
+	if (!m_bStart)
+	{
+		Draw2d(600.0f, 300.0f, m_fSize, m_fSize, m_pTexture);
+	}
+
 	//床の描画
 	m_pFloor->Draw();
 	// スライムマネージャー描画
@@ -128,6 +158,7 @@ void CStage1::Draw()
 
 	//タイマー描画
 	m_pTimer->Draw();
+	
 }
 
 /* ========================================

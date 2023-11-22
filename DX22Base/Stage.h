@@ -55,6 +55,7 @@ protected:
 	CExplosionManager* m_pExplosionMng;
 	CTimer* m_pTimer;
 	CFloor* m_pFloor;
+	Texture* m_pTexture;
 };	//ステージ
 
 #endif	//!__STAGE_H__
