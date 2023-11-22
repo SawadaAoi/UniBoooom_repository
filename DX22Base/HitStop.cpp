@@ -10,6 +10,7 @@
 	変更履歴
 	・2023/11/17 作成 takagi
 	・2023/11/21 挙動修正・静的に変更 takagi
+	・2023/11/23 バグ修正 takagi
 
 ========================================== */
 
@@ -135,7 +136,7 @@ void CHitStop::UpFlag(const unsigned char & ucBitFlag)
 void CHitStop::DownFlag(const unsigned char & ucBitFlag)
 {
 	// =============== 代入 ===================
-	ms_ucFlag &= !ucBitFlag;	//フラグ操作
+	ms_ucFlag &= (ucBitFlag ^ 0xFF);	//フラグ操作
 }
 
 /* ========================================
@@ -188,7 +189,7 @@ void CHitStop::CallHitStop(int(*CallBack)(const int&))
 	ms_nFrame = CallBack(ms_nFrame);
 	if (ms_nFrame < 0)
 	{
-		DownFlag(0x88);	//フラグ初期化
+		DownFlag(0xFF);	//フラグ初期化
 	}
 	else
 	{

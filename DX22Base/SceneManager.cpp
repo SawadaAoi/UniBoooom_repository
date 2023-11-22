@@ -13,6 +13,7 @@
 	・2023/11/07 コメント修正 takagi
 	・2023/11/16 シーン遷移の流れを実装 takagi
 	・2023/11/17 過去シーンに戻る処理を追加・キー入力でシーンを切り替えられるデバッグモード追加 takagi
+	・2023/11/23 フェード・ヒットストップ機能追加 takagi
 
 ========================================== */
 
@@ -30,6 +31,7 @@
 #include "Stage2.h"			//インスタンス候補
 #include "Stage3.h"			//インスタンス候補
 #include "Result.h"			//インスタンス候補
+#include "HitStop.h"		//ヒットストップ
 
 #if _DEBUG
 #include <Windows.h>		//メッセージボックス用
@@ -50,14 +52,15 @@
 	戻値：なし
 =========================================== */
 CSceneManager::CSceneManager()
-	: m_pScene(nullptr)						//シーン
-	, m_ePastScene(CScene::E_TYPE_NONE)		//前のシーン
-	, m_eNextScene(CScene::E_TYPE_RESULT)	//シーン遷移先
-	, m_bFinish(false)						//シーン管理を開始
+	:m_pScene(nullptr)						//シーン
+	,m_ePastScene(CScene::E_TYPE_NONE)		//前のシーン
+	,m_eNextScene(CScene::E_TYPE_RESULT)	//シーン遷移先
+	,m_bFinish(false)						//シーン管理を開始
+	,m_pFade(nullptr)						//フェード
 {
+	// =============== 動的確保 ===================
 	if (!m_pScene)	//ヌルチェック
 	{
-		// =============== 動的確保 ===================
 		MakeNewScene();	//最初に始めるシーン作成
 	}
 }
@@ -76,8 +79,11 @@ CSceneManager::~CSceneManager()
 	// =============== 終了 ===================
 	if (m_pScene)	//ヌルチェック
 	{
-		delete m_pScene;	//メモリ開放
-		m_pScene = nullptr;	//空アドレス代入
+		SAFE_DELETE(m_pScene);	//解放
+	}
+	if (m_pFade)	//ヌルチェック
+	{
+		SAFE_DELETE(m_pFade);	//解放
 	}
 }
 
@@ -109,6 +115,23 @@ void CSceneManager::Update()
 	}
 #endif
 
+	// =============== ヒットストップ ===================
+	if (CHitStop::IsStop())	//ヒットストップ検査
+	{
+		CHitStop::Update();	//ヒットストップ更新
+		return;	//処理中断	
+	}
+
+	// =============== フェード系 ===================
+	if (m_pFade)	//ヌルチェック
+	{
+		if (m_pFade->IsFade())	//フェード検査
+		{
+			m_pFade->Update();	//フェード更新
+			return;	//処理中断
+		}
+	}
+
 	// =============== 更新 ===================
 	if (m_pScene)	//ヌルチェック
 	{
@@ -135,6 +158,12 @@ void CSceneManager::Draw()
 	if (m_pScene)	//ヌルチェック
 	{
 		m_pScene->Draw();	//シーン描画
+	}
+
+	// =============== フェード系 ===================
+	if (m_pFade)	//ヌルチェック
+	{
+		m_pFade->Draw();	//フェード更新
 	}
 }
 
@@ -250,6 +279,12 @@ void CSceneManager::MakeNewScene()
 		MessageBox(nullptr, "存在しないシーンが呼び出されました", "SceneManager.cpp->Error", MB_OK);	//エラー通知
 #endif
 		break;	//分岐処理終了
+	}
+
+	// =============== フェード系 ===================
+	if (m_pFade)	//ヌルチェック
+	{
+		m_pFade->Start();	//フェード開始
 	}
 
 	// =============== 遷移先更新 =====================

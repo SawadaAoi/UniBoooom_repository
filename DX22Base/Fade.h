@@ -11,6 +11,7 @@
 	・2023/11/18 制作 takagi
 	・2023/11/19 18の続き takagi
 	・2023/11/20 整理 takagi
+	・2023/11/23 IsFade()関数追加・細かい書き換え takagi
 
 ========================================== */
 
@@ -24,9 +25,6 @@
 #include "Transform3d.h"	//メンバのヘッダ
 #include "DiType.h"			//メンバのヘッダ
 #include "TriType.h"		//メンバのヘッダ
-
-// =============== 定数定義 ===================
-const TTriType<int> SUBSTITUTE_FRAME_FADE(150, 60, 150);	//フェードにかけるフレーム数の代替値
 
 // =============== クラス定義 =====================
 class CFade
@@ -57,16 +55,21 @@ private:
 
 		E_BIT_FLAG_MAX = 3,				//要素数(※直打ち)
 	};	//フラグ
-	// ===定数定義===========
+// =============== 定数定義 =====================
 	const unsigned char FLAG_FADE_ALL = E_BIT_FLAG_FADE_OUT | E_BIT_FLAG_FADE_STOP | E_BIT_FLAG_FADE_IN;	//フェード系フラグ全て
 public:
 	// ===プロトタイプ宣言===
-	CFade(const CCamera* pCamera);								//コンストラクタ
-	CFade(const CFade& Obj);									//コピーコンストラクタ
-	~CFade();													//デストラクタ
-	void Update();												//更新
-	void Draw();												//描画
-	void Start(TTriType<int> nFrame = SUBSTITUTE_FRAME_FADE);	//フェード開始
+	CFade(const CCamera* pCamera);	//コンストラクタ
+	CFade(const CFade& Obj);		//コピーコンストラクタ
+	~CFade();						//デストラクタ
+	void Update();					//更新
+	void Draw();					//描画
+	void Start();					//フェード開始
+	bool IsFade();					//フェード中かどうかを返す
+	bool IsFadeOut();				//フェードアウト中か
+	float GetOutFrameRate();		//フェードアウトの進行度ゲッタ
+	bool IsFadeIn();				//フェードイン中か
+	float GetInFrameRate();			//フェードインの進行度ゲッタ
 private:
 	// ===メンバ変数宣言=====
 	unsigned char m_ucFlag;				//フラグ
@@ -76,6 +79,7 @@ private:
 	int m_nFrameOut;
 	int m_nFrameStop;
 	int m_nFrameIn;
+	int m_nMaxFrame;					//フェードアウトフレーム数
 	static int ms_nCntFade;				//自身の生成数
 	static VertexShader* ms_pVs;		//頂点シェーダー
 	static PixelShader* ms_pPs;			//ピクセルシェーダー
