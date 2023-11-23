@@ -71,9 +71,9 @@ const float SLIME_BASE_RADIUS		= 0.5f;		// スライムの基準の大きさ
 const int ENEMY_CREATE_INTERVAL		= 2 * 60;													// 生成間隔
 const int RANDOM_POS				= 15;														// 生成座標範囲
 const int CREATE_DISTANCE			= 10;														// プレイヤーからどれくらい離れた距離に生成するか
-const int SLIME_LEVEL1_PER = 15;																// スライム_1の生成確立
-const int SLIME_LEVEL2_PER = 15;																// スライム_2の生成確立
-const int SLIME_LEVEL3_PER = 60;																// スライム_3の生成確立
+const int SLIME_LEVEL1_PER = 35;																// スライム_1の生成確立
+const int SLIME_LEVEL2_PER = 35;																// スライム_2の生成確立
+const int SLIME_LEVEL3_PER = 20;																// スライム_3の生成確立
 const int SLIME_LEVEL_FLAME_PER = 100 - SLIME_LEVEL1_PER - SLIME_LEVEL2_PER - SLIME_LEVEL3_PER;	// スライム_フレイムの生成確立
 const float MAX_SIZE_EXPLODE		= 5.0f;										// スライム4同士の爆発の大きさ
 const float EXPLODE_BASE_RATIO		= 1.5f;										// スライムの爆発接触での爆発の大きさのベース
@@ -115,6 +115,12 @@ const float LEVEL_3_EXPLODE_TIME = 2.0f * 60.0f;	// スライム_3の爆発総時間
 const float LEVEL_4_EXPLODE_TIME = 3.0f * 60.0f;	// スライム_4の爆発総時間
 const int	DELAY_TIME			 = 0.2f * 60;		// 遅延秒数
 
+// 回復アイテム =====================
+const float HEAL_ITEM_SCALE_X = 1.0f;		//アイテムのスケールX
+const float HEAL_ITEM_SCALE_Y = 1.0f;		//アイテムのスケールY
+const float HEAL_ITEM_SCALE_Z = 1.0f;		//アイテムのスケールZ
+const float	HEALITEM_ANGLE_X = 70.0f;	//アイテムが消えるまでの時間
+const int	HEALITEM_DELETE_TIME = 5 * 60;	//アイテムが消えるまでの時間
 
 // カメラ =====================================================
 const TPos3d<float> INIT_POS(0.0f, 2.6f, -3.0f);					// 初期位置

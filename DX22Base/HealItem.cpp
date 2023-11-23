@@ -17,12 +17,17 @@
 
 #include "HealItem.h"
 #include "DirectWrite.h"
+#include "GameParameter.h"
 
 // =============== 定数定義 =====================
+#if MODE_GAME_PARAMETER
+#else
 const float HEAL_ITEM_SCALE_X = 1.0f;		//アイテムのスケールX
 const float HEAL_ITEM_SCALE_Y = 1.0f;		//アイテムのスケールY
 const float HEAL_ITEM_SCALE_Z = 1.0f;		//アイテムのスケールZ
+const float	HEALITEM_ANGLE_X = 70.0f;	//アイテムが消えるまでの時間
 const int	HEALITEM_DELETE_TIME = 5 * 60;	//アイテムが消えるまでの時間
+#endif
 
 /* ========================================
    関数：コンストラクタ
