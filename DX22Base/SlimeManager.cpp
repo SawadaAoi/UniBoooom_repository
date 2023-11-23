@@ -53,6 +53,8 @@ const float COL_SUB_HIT_TO_BIG = 0.7f;				// ƒXƒ‰ƒCƒ€Õ“Ë(¬¨‘å)‚ÌÕ“Ë‘¤‚ÌŒ¸ŽZ’
 const float COL_SUB_STAND_TO_SMALL = 0.3f;			// ƒXƒ‰ƒCƒ€Õ“Ë(¬¨‘å)‚ÌÕ“Ë‚³‚ê‚é‘¤‚ÌŒ¸ŽZ’l(Õ“Ë‚³‚ê‚½•ûŒü)
 const float COL_SUB_HIT_TO_SMALL = 0.3f;			// ƒXƒ‰ƒCƒ€Õ“Ë(‘å¨¬)‚ÌÕ“Ë‘¤‚ÌŒ¸ŽZ’l(ˆÚ“®•ûŒü)
 const float COL_SUB_STAND_TO_BIG = 1.2f;			// ƒXƒ‰ƒCƒ€Õ“Ë(‘å¨¬)‚ÌÕ“Ë‚³‚ê‚é‘¤‚ÌŒ¸ŽZ’l(Õ“Ë‚³‚ê‚½•ûŒü)
+
+
 #endif
 
 /* ========================================
@@ -287,7 +289,7 @@ void CSlimeManager::HitBranch(int HitSlimeNum, int StandSlimeNum, CExplosionMana
 		if (hitSlimeLevel == MAX_LEVEL)	//ƒXƒ‰ƒCƒ€‚ÌƒTƒCƒY‚ªÅ‘å‚ÌŽž
 		{
 			//ƒXƒ‰ƒCƒ€”š”­ˆ—
-			pExpMng->Create(pos, MAX_SIZE_EXPLODE * EXPLODE_BASE_RATIO, LEVEL_4_EXPLODE_TIME);	//Õ“Ë‚³‚ê‚½ƒXƒ‰ƒCƒ€‚ÌˆÊ’u‚ÅƒŒƒxƒ‹‚S”š”­
+			pExpMng->Create(pos, MAX_SIZE_EXPLODE * EXPLODE_BASE_RATIO, LEVEL_4_EXPLODE_TIME, E_SLIME_LEVEL::LEVEL_4x4);	//Õ“Ë‚³‚ê‚½ƒXƒ‰ƒCƒ€‚ÌˆÊ’u‚ÅƒŒƒxƒ‹‚S”š”­
 			m_pScoreOHMng->DisplayOverheadScore(pos, LEVEL_4_SCORE * 2, LEVEL_4_HEIGHT);
 		}
 		else	//Å‘åƒTƒCƒY‚¶‚á‚È‚¢ê‡‚Í1’iŠK‘å‚«‚¢ƒXƒ‰ƒCƒ€‚ð¶¬‚·‚é
@@ -417,7 +419,7 @@ void CSlimeManager::TouchExplosion(int DelSlime, CExplosionManager * pExpMng, in
 
 	pExpMng->SwitchExplode(level, pos, size, comboNum);
 	m_pScoreOHMng->DisplayOverheadScore(pos, level);
-
+	//ƒg[ƒ^ƒ‹ƒXƒRƒAilevel,combo)
 	SAFE_DELETE(m_pSlime[DelSlime]);					//‚Ô‚Â‚©‚è‚É—ˆ‚½ƒXƒ‰ƒCƒ€‚ðíœ
 
 	//pExpMng->Create(pos, ExplosionSize);				//Õ“Ëæ‚ÌƒXƒ‰ƒCƒ€‚ÌˆÊ’u‚Å”š”­

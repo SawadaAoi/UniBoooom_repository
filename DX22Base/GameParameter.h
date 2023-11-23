@@ -108,6 +108,11 @@ const float LEVEL4_SPEED = ENEMY_MOVE_SPEED * 0.5f;	// 移動速度
 const float LEVEL_FLAME_SCALE = 1.0f;						// スライム＿フレイムの大きさ(当たり判定含む)
 const float LEVEL_FLAME_SPEED = ENEMY_MOVE_SPEED * 0.2f;	// 移動速度
 
+const int LEVEL_1_SCORE = 10;				// スライム_1のスコア
+const int LEVEL_2_SCORE = 30;				// スライム_2のスコア
+const int LEVEL_3_SCORE = 100;				// スライム_3のスコア
+const int LEVEL_4_SCORE = 500;				// スライム_4のスコア
+const int LEVEL_4x4_SCORE = 1000;			// 赤々の爆発のスコア
 // 爆発 =====================================================
 const int	MAX_EXPLOSION_NUM		= 20;		// 最大爆発数
 const float EXPAND_QUICK_RATE		= 0.2f;		// 膨張加速割合 
@@ -118,16 +123,16 @@ const float LEVEL_4_EXPLODE_TIME = 3.0f * 60.0f;	// スライム_4の爆発総時間
 const int	DELAY_TIME			 = 0.2f * 60;		// 遅延秒数
 
 // スコア =====================================================
-const int FIRST_EXPLOSION_SCORE = 1000;		//赤同士の最初の爆発のスコア
-const int LEVEL_1_SCORE = 10;				// スライム_1のスコア
-const int LEVEL_2_SCORE = 30;				// スライム_2のスコア
-const int LEVEL_3_SCORE = 100;				// スライム_3のスコア
-const int LEVEL_4_SCORE = 500;				// スライム_4のスコア
 
+//matomeru↓
 const float LEVEL_1_HEIGHT = 4.0f;			//スライム1が爆発時スコアを爆破からどれだけ上に置くか
 const float LEVEL_2_HEIGHT = 4.0f;			//スライム2が爆発時スコアを爆破からどれだけ上に置くか
 const float LEVEL_3_HEIGHT = 4.0f;			//スライム3が爆発時スコアを爆破からどれだけ上に置くか
 const float LEVEL_4_HEIGHT = 4.0f;			//スライム4が爆発時スコアを爆破からどれだけ上に置くか
+
+const int TOTALSCORE_DIGIT = 5;				//トータルスコアの桁数
+const int MAX_TOTALSCORE = 99999;			//↑一緒に変えてください//最大トータアルスコア
+const TPos2d<float> TOTALSCORE_POS(1100.0f, 25.0f);			//分の位置設定
 // カメラ =====================================================
 const TPos3d<float> INIT_POS(0.0f, 2.6f, -3.0f);					// 初期位置
 

@@ -31,6 +31,7 @@ public:
 	void DisplayOverheadScore(TTriType<float> pos,int score, float height);			// スコアの生成
 	void DisplayOverheadScore(TTriType<float> pos, E_SLIME_LEVEL level);			// スコアの生成
 	void AddScore();			//スコア加算
+	void DeleteCheck();
 	void SetCamera(const CCamera * pCamera);
 	
 protected:

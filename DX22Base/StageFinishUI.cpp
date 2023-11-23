@@ -91,7 +91,7 @@ void CStageFinish::Update()
 	//※ゲーム終了後にクリアとゲームオーバーが勝手に切り替わらないように「&&」で「GAME_PLAY」状態だったらを入れた
 	if		(0 >= *m_pPlayerHp && m_eGameState == GAME_PLAY)	
 	{	//タイマーが0になったらクリア状態に遷移
-		m_eGameState = GAME_OVER;
+		//m_eGameState = GAME_OVER;
 	}
 	else if (0 >= *m_pTimeCnt && m_eGameState == GAME_PLAY)		
 	{	//体力が0になったらゲームオーバー状態に遷移

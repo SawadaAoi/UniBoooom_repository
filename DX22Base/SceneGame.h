@@ -35,7 +35,7 @@
 #include "Combo.h"
 #include "Fade.h"
 #include "ScoreOHManager.h"
-
+#include "TotalScore.h"
 // =============== クラス定義 =====================
 class SceneGame
 {
@@ -67,6 +67,7 @@ private:
 	CFloor* m_pFloor;
 	CStageFinish* m_pStageFin;
 	CFade* m_pFade;
+	CTotalScore* m_pTotalScore;
 
 	CScoreOHManager* m_pScoreOHMng;
 	XAUDIO2_BUFFER* m_pBGM;							//BGMの音声データ

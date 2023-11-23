@@ -118,11 +118,11 @@
     <Filter Include="ヘッダー ファイル\Scene\Stage">
       <UniqueIdentifier>{2039f944-9e68-40cd-a6b6-c0497db649c4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\2dObject\Effect\Score">
-      <UniqueIdentifier>{eae8711d-a654-42a1-ae55-453fd38bb610}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ヘッダー ファイル\2dObject\Score">
       <UniqueIdentifier>{b494978e-34ae-4e90-89fa-26c0e26f02ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\2dObject\Score">
+      <UniqueIdentifier>{eae8711d-a654-42a1-ae55-453fd38bb610}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -322,13 +322,13 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="ScoreOHManager.cpp">
-      <Filter>ソース ファイル\2dObject\Effect\Score</Filter>
+      <Filter>ソース ファイル\2dObject\Score</Filter>
     </ClCompile>
     <ClCompile Include="ScoreOverHead.cpp">
-      <Filter>ソース ファイル\2dObject\Effect\Score</Filter>
+      <Filter>ソース ファイル\2dObject\Score</Filter>
     </ClCompile>
     <ClCompile Include="TotalScore.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\2dObject\Score</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

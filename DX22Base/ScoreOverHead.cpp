@@ -15,6 +15,8 @@
 // =============== インクルード ===================
 #include "ScoreOverHead.h"
 #include "Sprite.h"
+#include "GameParameter.h"		//定数定義用ヘッダー
+
 /* ========================================
 	関数：コンストラクタ
 	-------------------------------------
@@ -24,13 +26,17 @@
 	-------------------------------------
 	戻値：なし
 =========================================== */
-CScoreOverHead::CScoreOverHead(TPos3d<float> fPos, int nScore, float posY)
+CScoreOverHead::CScoreOverHead(TPos3d<float> fPos, int nScore, float posY,float fTime, bool delayFlg)
 	: m_pScoreTexture(nullptr)
 	, m_Transform(fPos, { 1.0f, 1.0f, 1.0f }, 0.0f)
 	, digits{}
 	, digitArray{}
-	, ArraySize(0)
-
+	, nArraySize(0)
+	, m_fDelFrame(0.0f)
+	, m_fExplodeTime(fTime)	
+	, m_bDelFlg(false)
+	, m_bDelayFlg(delayFlg)
+	, m_dDelayCnt(0)
 {
 	
 	m_pScoreTexture = new Texture();
@@ -46,7 +52,7 @@ CScoreOverHead::CScoreOverHead(TPos3d<float> fPos, int nScore, float posY)
 	// 数字を各桁ごとに配列に格納
 	digitArray = digitsToArray(nScore);
 	
-	ArraySize = digitArray.size();
+	nArraySize = digitArray.size();
 }
 
 CScoreOverHead::~CScoreOverHead()
@@ -57,6 +63,14 @@ CScoreOverHead::~CScoreOverHead()
 
 void CScoreOverHead::Update()	//
 {
+	// スコア表示遅延処理が有効な場合
+	if (m_bDelayFlg)
+	{
+		Delay();	// 遅延処理
+		return;
+	}
+
+	DisplayTimeAdd();
 }
 
 void CScoreOverHead::Draw()
@@ -75,7 +89,6 @@ void CScoreOverHead::Draw()
 	DirectX::XMMATRIX matInv = DirectX::XMLoadFloat4x4(&inv);
 	matInv = DirectX::XMMatrixTranspose(matInv);
 
-
 	//移動成分は逆行列で打ち消す必要が無いので0を設定して移動を無視する
 	DirectX::XMStoreFloat4x4(&inv, matInv);
 	inv._41 = inv._42 = inv._43 = 0.0f;
@@ -84,7 +97,7 @@ void CScoreOverHead::Draw()
 	matInv = DirectX::XMMatrixInverse(nullptr, matInv);
 
 	
-	for (int i = 0; i < ArraySize; i++)
+	for (int i = 0; i < nArraySize; i++)
 	{
 
 		float width = 0.5f*i;
@@ -108,16 +121,75 @@ void CScoreOverHead::Draw()
 
 
 }
+/* ========================================
+	遅延処理関数
+	-------------------------------------
+	内容：スコアの表示を遅らせる
+	-------------------------------------
+	引数1：無し
+	-------------------------------------
+	戻値：無し
+=========================================== */
+void CScoreOverHead::Delay()
+{
+	m_dDelayCnt++;
 
+	// 遅延秒数が経ったら
+	if (m_dDelayCnt >= DELAY_TIME)
+	{
+		m_bDelayFlg = false;	// 遅延フラグをオフにする
+	}
+}
+
+/* ========================================
+	スコア表示カウント加算処理関数
+	-------------------------------------
+	内容：スコア表示カウントを加算して一定秒数超えたら終了フラグをオンにする
+	-------------------------------------
+	引数1：無し
+	-------------------------------------
+	戻値：無し
+=========================================== */
+void CScoreOverHead::DisplayTimeAdd()
+{
+	m_fDelFrame++;	// フレーム加算
+	// 一定秒数時間が経ったら
+	if (m_fExplodeTime <= m_fDelFrame)
+	{
+		m_bDelFlg = true;	// 削除フラグを立てる
+	}
+}
+/* ========================================
+	配列収納処理関数
+	-------------------------------------
+	内容：表示したい数字を一桁ずつ配列に入れる
+	-------------------------------------
+	引数1：表示したいスコア
+	-------------------------------------
+	戻値：収納した配列
+=========================================== */
 std::vector<int> CScoreOverHead::digitsToArray(int score)
 {
+	//１の位から収納
 	while (score > 0) {
 		digits.push_back(score % 10);
 		score /= 10;
 	}
-	// １の位から入っているので反転する
-	//std::reverse(digits.begin(), digits.end());
+	
 	return digits;
+}
+/* ========================================
+	削除フラグ取得処理関数
+	-------------------------------------
+	内容：削除フラグを取得する
+	-------------------------------------
+	引数1：無し
+	-------------------------------------
+	戻値：削除フラグ(bool)
+=========================================== */
+bool CScoreOverHead::GetDelFlg()
+{
+	return m_bDelFlg;
 }
 /* ========================================
    カメラのセット関数
