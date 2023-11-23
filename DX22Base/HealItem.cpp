@@ -79,19 +79,29 @@ CHealItem::~CHealItem()
 ======================================== */
 void CHealItem::Update()
 {
-	for (auto i = m_healItem.begin(); i != m_healItem.end(); i++)
+	for (auto i = m_healItem.begin(); i != m_healItem.end();)
 	{
-		//カウント増加
-		i->m_Cnt++;
-		float radian = i->m_Cnt % 360;
-		i->m_Transform.fPos.y = sin(DirectX::XMConvertToRadians((float)radian)) * 0.5f;
-		i->m_Transform.fRadian.y = DirectX::XMConvertToRadians((float)radian);
+		if (i->m_bUse == true)
+		{
+			//カウント増加
+			i->m_Cnt++;
+			float radian = i->m_Cnt % 360;
+			i->m_Transform.fPos.y = sin(DirectX::XMConvertToRadians((float)radian)) * 0.5f;	//上下にゆらゆらする
+			i->m_Transform.fRadian.y = DirectX::XMConvertToRadians((float)radian);			//Y軸でくるくる回転する
 
-		//カウントが一定以上なら消去
-		if (i->m_Cnt >= HEALITEM_DELETE_TIME) { i->m_bUse = false; }
+			//カウントが一定以上なら消去
+			if (i->m_Cnt >= HEALITEM_DELETE_TIME) { i->m_bUse = false; }
 
-		if (i->m_bUse == true) { continue; }
-		i = m_healItem.erase(i - 1);
+			i++;	//次のコンテナに移動
+		}
+		else	//bUseがfalseなら消去
+		{
+			//消去して自動的に次のコンテナに移動
+			i = m_healItem.erase(i);
+		}
+
+
+		
 	}
 }
 
@@ -110,7 +120,18 @@ void CHealItem::Draw()
 
 	for (auto i = m_healItem.begin();i != m_healItem.end(); i++)
 	{
-		mat[0] = i->m_Transform.GetWorldMatrixSRT();
+		//Transformの関数を使うと角度の計算がX→Y→Zの順番だがY→X→Zの順番にしたいため手動で変換行列を書いた
+		DirectX::XMMATRIX worldMat;
+		worldMat = DirectX::XMMatrixScaling(i->m_Transform.fScale.x, i->m_Transform.fScale.y, i->m_Transform.fScale.z) *	//拡縮
+			DirectX::XMMatrixRotationY(i->m_Transform.fRadian.y) * DirectX::XMMatrixRotationX(i->m_Transform.fRadian.x) *	//Y回転→X回転
+			DirectX::XMMatrixTranslation(i->m_Transform.fPos.x, i->m_Transform.fPos.y, i->m_Transform.fPos.z);				//移動
+		worldMat = DirectX::XMMatrixTranspose(worldMat);	//転置
+		DirectX::XMFLOAT4X4 a;					//mat[0]に入れる変数
+		DirectX::XMStoreFloat4x4(&a, worldMat);	//Matrix型からfloat4x4に変換
+
+		
+		//mat[0] = i->m_Transform.GetWorldMatrixSRT();
+		mat[0] = a;
 		mat[1] = m_pCamera->GetViewMatrix();
 		mat[2] = m_pCamera->GetProjectionMatrix();
 
@@ -139,7 +160,7 @@ void CHealItem::Create(TPos3d<float> pos)
 	HEAL_ITEM healItem;
 	healItem.m_Transform.fPos = pos;
 	healItem.m_Transform.fScale = { HEAL_ITEM_SCALE_X ,HEAL_ITEM_SCALE_Y ,HEAL_ITEM_SCALE_Z };
-	healItem.m_Transform.fRadian = {0.0f,0.0f,0.0f};
+	healItem.m_Transform.fRadian = {DirectX::XMConvertToRadians(70.0f),0.0f,0.0f};
 	healItem.m_Cnt = 0;
 	healItem.m_bUse = true;
 
