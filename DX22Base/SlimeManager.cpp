@@ -42,6 +42,8 @@
 // =============== ’è”’è‹` =======================
 #if MODE_GAME_PARAMETER
 #else
+#define DEBUG_BOSS	(false)						// ƒfƒoƒbƒO—p‚ÉƒQ[ƒ€ŠJnƒ{ƒX‚ğ¶¬‚·‚é‚©‚Ç‚¤‚©
+
 const int ENEMY_CREATE_INTERVAL	= 3 * 60;		// ¶¬ŠÔŠu
 const int RANDOM_POS			= 15;			// ¶¬À•W”ÍˆÍ
 const int CREATE_DISTANCE		= 10;			// ¶¬‹——£Å¬’l
@@ -57,6 +59,8 @@ const float COL_SUB_HIT_TO_BIG = 0.7f;				// ƒXƒ‰ƒCƒ€Õ“Ë(¬¨‘å)‚ÌÕ“Ë‘¤‚ÌŒ¸Z’
 const float COL_SUB_STAND_TO_SMALL = 0.3f;			// ƒXƒ‰ƒCƒ€Õ“Ë(¬¨‘å)‚ÌÕ“Ë‚³‚ê‚é‘¤‚ÌŒ¸Z’l(Õ“Ë‚³‚ê‚½•ûŒü)
 const float COL_SUB_HIT_TO_SMALL = 0.3f;			// ƒXƒ‰ƒCƒ€Õ“Ë(‘å¨¬)‚ÌÕ“Ë‘¤‚ÌŒ¸Z’l(ˆÚ“®•ûŒü)
 const float COL_SUB_STAND_TO_BIG = 1.2f;			// ƒXƒ‰ƒCƒ€Õ“Ë(‘å¨¬)‚ÌÕ“Ë‚³‚ê‚é‘¤‚ÌŒ¸Z’l(Õ“Ë‚³‚ê‚½•ûŒü)
+
+
 #endif
 
 /* ========================================
@@ -99,16 +103,17 @@ CSlimeManager::CSlimeManager()
 		Create((E_SLIME_LEVEL)ranLv);	// ¶¬ˆ—
 	}
 
-	// ‰¼Fƒ{ƒX¶¬
+#if DEBUG_BOSS
+	// ŠJnƒ{ƒX¶¬
 	for (int i = 0; i < MAX_BOSS_SLIME_NUM; i++)
 	{
 		// ƒXƒ‰ƒCƒ€‚Ìuse‚ğŒŸõ
 		if (m_pBoss[i] != nullptr) continue;
-		m_pBoss[i] = new CSlime_Boss_1(TPos3d<float>(0.3f,0.0f,0.0f), m_pVS, m_pBossModel);	//“®“I¶¬
+		m_pBoss[i] = new CSlime_Boss_1(TPos3d<float>(5.0f,0.0f,3.0f), m_pVS, m_pBossModel);	//“®“I¶¬
 
 		break;
 	}
-
+#endif
 	
 }
 

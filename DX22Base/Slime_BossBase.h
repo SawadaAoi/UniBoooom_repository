@@ -23,8 +23,8 @@
 // =============== 定数定義 =======================
 #if MODE_GAME_PARAMETER
 #else
-const int DAMAGE_FLASH_FRAME = 0.1 * 60;		// ダメージ受けた際の点滅フレーム(無敵ではない)
-const int DAMAGE_FLASH_TOTAL_FRAME = 0.5 * 60;	// ダメージを受けた際の点滅を何フレーム行うか
+const int BOSS_DAMAGE_FLASH_FRAME = 0.1 * 60;		// ダメージ受けた際の点滅フレーム(無敵ではない)
+const int BOSS_DAMAGE_FLASH_TOTAL_FRAME = 0.5 * 60;	// ダメージを受けた際の点滅を何フレーム行うか
 #endif
 
 // =============== クラス定義 =====================

@@ -80,7 +80,7 @@ void CSlime_BossBase::Update(TPos3d<float> playerPos)
 	if (m_bFlash == false) return;
 	// 点滅処理
 	m_nInvFrame++;						//毎フレームでカウントを追加
-	if (0 == m_nInvFrame % DAMAGE_FLASH_FRAME)
+	if (0 == m_nInvFrame % BOSS_DAMAGE_FLASH_FRAME)
 	{
 		// 描画するかしない切り替え
 		if (m_bDrawFlg)
@@ -94,7 +94,7 @@ void CSlime_BossBase::Update(TPos3d<float> playerPos)
 
 	}
 	// 総点滅時間を過ぎたら終了
-	if (m_nInvFrame >= DAMAGE_FLASH_TOTAL_FRAME)
+	if (m_nInvFrame >= BOSS_DAMAGE_FLASH_TOTAL_FRAME)
 	{
 		m_bFlash = false;
 		m_nInvFrame = 0;

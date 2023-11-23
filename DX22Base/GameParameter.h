@@ -11,13 +11,14 @@
 	・2023/11/11 ヘッダ作成 Suzumura
 	・2023/11/13 パラメーター追加(LEVEL_〇_EXPLODE_TIME) Suzumura
 	・2023/11/14 パラメーター追加(// フレイムスライム) Suzumura
+	・2023/11/23 パラメーター追加(// ボス１スライム) Suzumura
 
 =========================================== */
 #ifndef __GAME_PARAMETER_H__
 #define __GAME_PARAMETER_H__
 
 // =============== パラメーター モード =======================
-#define MODE_GAME_PARAMETER	(false)
+#define MODE_GAME_PARAMETER	(true)
 
 #if MODE_GAME_PARAMETER
 
@@ -40,6 +41,7 @@ const float HAMMER_SIZE			= 1.5f;									//ハンマーの大きさ
 
 // 共通
 const int	MAX_SLIME_NUM			= 50;		// スライムの最大生成数
+const int	MAX_BOSS_SLIME_NUM		= 5;		// ボススライムの最大生成数
 const int	START_ENEMY_NUM			= 6;		// ゲーム開始時の敵キャラの数
 const float ENEMY_MOVE_SPEED		= 0.035f;	// 敵の通常移動速度
 const float HAMMER_HIT_MOVE_SPEED	= 1.0f;		// ハンマーに吹き飛ばされた時のスピード
@@ -88,6 +90,22 @@ const float LEVEL4_SPEED = ENEMY_MOVE_SPEED * 0.5;	// 移動速度
 const float LEVEL_FLAME_SCALE = 1.0f;						// スライム＿フレイムの大きさ(当たり判定含む)
 const float LEVEL_FLAME_SPEED = ENEMY_MOVE_SPEED * 0.2f;	// 移動速度
 
+// ボススライム
+#define DEBUG_BOSS	(false)	// デバッグ用にゲーム開始時ボスを生成するかどうか
+
+const float LEVEL_BOSS_1_SCALE	= 6.0f;								// ボス１の大きさ
+const float LEVEL_BOSS_1_SPEED	= ENEMY_MOVE_SPEED * 1.5f;			// ボス１のスピード
+const int	BOSS_1_MAX_HP		= 100;								// ボス１の最大HP
+
+const float ASSAULT_DISTANCE	= 0.2f;								// 突撃反応距離
+const int	ASSAULT_COOL_TIME	= 10 * 60;							// 突撃クルータイム
+const int	ASSAULT_CHARGE_TIME = 2 * 60;							// 突撃チャージ時間
+const int	ASSAULT_TIME		= 1.0f * 60;						// 突撃総時間
+const float ASSAULT_SPEED		= LEVEL_BOSS_1_SPEED * 15.0f;		// 突撃時のスピード
+
+const int BOSS_DAMAGE_FLASH_FRAME		= 0.1 * 60;					// ダメージ受けた際の点滅フレーム(無敵ではない)
+const int BOSS_DAMAGE_FLASH_TOTAL_FRAME = 0.5 * 60;					// ダメージを受けた際の点滅を何フレーム行うか
+
 // 爆発 =====================================================
 const int	MAX_EXPLOSION_NUM		= 20;		// 最大爆発数
 const float EXPAND_QUICK_RATE		= 0.2f;		// 膨張加速割合 
@@ -95,6 +113,7 @@ const float LEVEL_1_EXPLODE_TIME = 0.5f * 60.0f;	// スライム_1の爆発総時間
 const float LEVEL_2_EXPLODE_TIME = 1.0f * 60.0f;	// スライム_2の爆発総時間
 const float LEVEL_3_EXPLODE_TIME = 2.0f * 60.0f;	// スライム_3の爆発総時間
 const float LEVEL_4_EXPLODE_TIME = 3.0f * 60.0f;	// スライム_4の爆発総時間
+const float LEVEL_BOSS_EXPLODE_TIME = 4.0f * 60.0f;	// スライム_ボスの爆発総時間
 
 // カメラ =====================================================
 const TPos3d<float> INIT_POS(0.0f, 2.6f, -3.0f);					// 初期位置

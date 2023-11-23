@@ -20,7 +20,7 @@
 // =============== 定数定義 =======================
 #if MODE_GAME_PARAMETER
 #else
-const float LEVEL_BOSS_1_SCALE = 4.0f;						// ボス１の大きさ
+const float LEVEL_BOSS_1_SCALE = 6.0f;						// ボス１の大きさ
 const float LEVEL_BOSS_1_SPEED = ENEMY_MOVE_SPEED * 1.5f;	// ボス１のスピード
 const int BOSS_1_MAX_HP = 100;								// ボス１の最大HP
 
@@ -130,7 +130,7 @@ void CSlime_Boss_1::Update(TPos3d<float> playerPos)
 	if (m_bFlash == false) return;
 	// 点滅処理
 	m_nInvFrame++;						//毎フレームでカウントを追加
-	if (0 == m_nInvFrame % DAMAGE_FLASH_FRAME)
+	if (0 == m_nInvFrame % BOSS_DAMAGE_FLASH_FRAME)
 	{
 		// 描画するかしない切り替え
 		if (m_bDrawFlg)
@@ -144,7 +144,7 @@ void CSlime_Boss_1::Update(TPos3d<float> playerPos)
 
 	}
 	// 総点滅時間を過ぎたら終了
-	if (m_nInvFrame >= DAMAGE_FLASH_TOTAL_FRAME)
+	if (m_nInvFrame >= BOSS_DAMAGE_FLASH_TOTAL_FRAME)
 	{
 		m_bFlash = false;
 		m_nInvFrame = 0;
