@@ -75,7 +75,7 @@ public:
 	CSlimeBase();
 	~CSlimeBase();
 	virtual void Update(TPos3d<float> playerPos);
-	void Draw(const CCamera* pCamera);
+	virtual void Draw(const CCamera* pCamera);
 
 	virtual void NormalMove(TPos3d<float> playerSphere);	// 通常時の移動処理
 	void RandomMove();

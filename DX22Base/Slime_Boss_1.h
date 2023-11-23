@@ -46,7 +46,10 @@ public:
 	void Assault();	// 突撃関数
 
 private:
-	int m_nFrame;
+	void ResetAssault();
+	// ===メンバ変数===
+	int m_nFrame;		// Update内で扱うフレーム
+
 
 	float m_assaultDistancePlayer;	// 突撃時のプレイヤー間の距離を保存
 	TPos3d<float> m_assaultMovePos;	// 突撃時のMovePosを保存

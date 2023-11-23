@@ -22,7 +22,7 @@
 #else
 const float LEVEL_BOSS_1_SCALE = 4.0f;						// ボス１の大きさ
 const float LEVEL_BOSS_1_SPEED = ENEMY_MOVE_SPEED * 1.5f;	// ボス１のスピード
-const int BOSS_1_MAX_HP = 20;								// ボス１の最大HP
+const int BOSS_1_MAX_HP = 100;								// ボス１の最大HP
 
 const float ASSAULT_DISTANCE = 0.2f;						// 突撃反応距離
 const int ASSAULT_COOL_TIME = 10 * 60;						// 突撃クルータイム
@@ -50,6 +50,8 @@ CSlime_Boss_1::CSlime_Boss_1()
 	m_sphere.fRadius *= LEVEL_BOSS_1_SCALE;
 	m_eSlimeSize = E_SLIME_LEVEL::LEVEL_BOSS;
 	SetNormalSpeed();
+	SetMaxHp();
+	m_nHp = m_nMaxHp;
 }
 
 /* ========================================
@@ -98,10 +100,17 @@ void CSlime_Boss_1::Update(TPos3d<float> playerPos)
 
 	if (!m_bHitMove)	//敵が通常の移動状態の時
 	{
-		NormalMove(playerPos);
+		NormalMove(playerPos);	// 通常行動処理
 	}
 	else
 	{
+		// チャージ中にぶっ飛ばされたらクールタイム等をリセット
+		if (m_eState == CHARGE)
+		{
+			HitMove();		// 敵の吹き飛び移動
+			ResetAssault();	// 突撃リセット
+		}
+
 		// 突撃状態は"吹き飛び"を考慮しない
 		if (m_eState == ASSAULT)
 		{
@@ -109,8 +118,7 @@ void CSlime_Boss_1::Update(TPos3d<float> playerPos)
 		}
 		else
 		{
-			//敵の吹き飛び移動
-			HitMove();
+			HitMove(); //敵の吹き飛び移動
 		}
 	}
 
@@ -118,7 +126,30 @@ void CSlime_Boss_1::Update(TPos3d<float> playerPos)
 	m_Transform.fPos.x += m_move.x;
 	m_Transform.fPos.z += m_move.z;
 
+	// ダメージ発生中じゃないなら点滅処理を行わない
+	if (m_bFlash == false) return;
+	// 点滅処理
+	m_nInvFrame++;						//毎フレームでカウントを追加
+	if (0 == m_nInvFrame % DAMAGE_FLASH_FRAME)
+	{
+		// 描画するかしない切り替え
+		if (m_bDrawFlg)
+		{
+			m_bDrawFlg = false;	// true→false
+		}
+		else
+		{
+			m_bDrawFlg = true;	// false→true
+		}
 
+	}
+	// 総点滅時間を過ぎたら終了
+	if (m_nInvFrame >= DAMAGE_FLASH_TOTAL_FRAME)
+	{
+		m_bFlash = false;
+		m_nInvFrame = 0;
+		m_bDrawFlg = true;
+	}
 }
 
 /* ========================================
@@ -128,7 +159,7 @@ void CSlime_Boss_1::Update(TPos3d<float> playerPos)
 	----------------------------------------
 	引数1：プレイヤー座標(TPos3d)
 	----------------------------------------
-	戻値：なし
+	戻値：無し
 ======================================== */
 void CSlime_Boss_1::NormalMove(TPos3d<float> playerPos)
 {
@@ -199,7 +230,7 @@ void CSlime_Boss_1::NormalMove(TPos3d<float> playerPos)
 	引数1：プレイヤー座標(TPos3d)
 	引数2：プレイヤーの移動量(TPos3d)
 	-------------------------------------
-	戻値：なし
+	戻値：無し
 =========================================== */
 void CSlime_Boss_1::Charge(TPos3d<float> playerPos, TPos3d<float> movePos)
 {
@@ -245,9 +276,9 @@ void CSlime_Boss_1::Charge(TPos3d<float> playerPos, TPos3d<float> movePos)
 	-------------------------------------
 	内容：ボスが突撃攻撃を行う処理
 	-------------------------------------
-	引数1：なし
+	引数1：無し
 	-------------------------------------
-	戻値：なし
+	戻値：無し
 =========================================== */
 void CSlime_Boss_1::Assault()
 {
@@ -261,10 +292,24 @@ void CSlime_Boss_1::Assault()
 	// 突撃時間が終了
 	if (m_nFrame >= ASSAULT_TIME)
 	{
-		m_eState = NORMAL;	// "ノーマル"状態へ
-		SetNormalSpeed();	// スピードを通常状態に戻す
-		m_nFrame = 0;		//フレームリセット
+		ResetAssault();	// 突撃リセット
 	}
+}
+
+/* ========================================
+	"突撃"のリセットを行う関数
+	-------------------------------------
+	内容：突撃をリセットしたいときに一括で呼ぶ
+	-------------------------------------
+	引数1：無し
+	-------------------------------------
+	戻値：無し
+=========================================== */
+void CSlime_Boss_1::ResetAssault()
+{
+	m_eState = NORMAL;	// "ノーマル"状態へ
+	SetNormalSpeed();	// スピードを通常状態に戻す
+	m_nFrame = 0;		//フレームリセット
 }
 
 /* ========================================
@@ -286,9 +331,9 @@ void CSlime_Boss_1::SetNormalSpeed()
 	-------------------------------------
 	内容：スライムのMAXHPを設定
 	-------------------------------------
-	引数1：
+	引数1：無し
 	-------------------------------------
-	戻値：なし
+	戻値：無し
 =========================================== */
 void CSlime_Boss_1::SetMaxHp()
 {

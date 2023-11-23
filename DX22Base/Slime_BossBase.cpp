@@ -15,14 +15,7 @@
 
 // =============== インクルード ===================
 #include "Slime_BossBase.h"
-#include "GameParameter.h"		//定数定義用ヘッダー
 
-// =============== 定数定義 =======================
-#if MODE_GAME_PARAMETER
-#else
-
-
-#endif
 /* ========================================
 	コンストラクタ関数
 	-------------------------------------
@@ -33,11 +26,14 @@
 	戻値：無し
 =========================================== */
 CSlime_BossBase::CSlime_BossBase()
-	:m_nHp(0)
-	,m_nMaxHp(5)
-	,m_bDead(false)
+	: m_nHp(0)
+	, m_nMaxHp(0)
+	, m_bDead(false)
+	, m_nInvFrame(0)
+	, m_bDrawFlg(true)
+	, m_bFlash(false)
 {
-	m_nHp = m_nMaxHp;	//HP設定
+	
 }
 
 
@@ -53,6 +49,88 @@ CSlime_BossBase::CSlime_BossBase()
 CSlime_BossBase::~CSlime_BossBase()
 {
 }
+
+/* ========================================
+	更新処理関数
+	-------------------------------------
+	内容：更新処理
+	-------------------------------------
+	引数1：プレイヤー座標(TPos3d)
+	-------------------------------------
+	戻値：無し
+=========================================== */
+void CSlime_BossBase::Update(TPos3d<float> playerPos)
+{
+
+	if (!m_bHitMove)	//敵が通常の移動状態の時
+	{
+		NormalMove(playerPos);
+	}
+	else
+	{
+		//敵の吹き飛び移動
+		HitMove();
+	}
+
+	// -- 座標更新
+	m_Transform.fPos.x += m_move.x;
+	m_Transform.fPos.z += m_move.z;
+
+	// ダメージ発生中じゃないなら点滅処理を行わない
+	if (m_bFlash == false) return;
+	// 点滅処理
+	m_nInvFrame++;						//毎フレームでカウントを追加
+	if (0 == m_nInvFrame % DAMAGE_FLASH_FRAME)
+	{
+		// 描画するかしない切り替え
+		if (m_bDrawFlg)
+		{
+			m_bDrawFlg = false;	// true→false
+		}
+		else
+		{
+			m_bDrawFlg = true;	// false→true
+		}
+
+	}
+	// 総点滅時間を過ぎたら終了
+	if (m_nInvFrame >= DAMAGE_FLASH_TOTAL_FRAME)
+	{
+		m_bFlash = false;
+		m_nInvFrame = 0;
+		m_bDrawFlg = true;
+	}
+}
+
+/* ========================================
+	描画処理関数
+	-------------------------------------
+	内容：描画処理
+	-------------------------------------
+	引数1：カメラ
+	-------------------------------------
+	戻値：無し
+=========================================== */
+void CSlime_BossBase::Draw(const CCamera* pCamera)
+{
+	// DrawFlgがtrueなら描画処理を行う
+	if (m_bDrawFlg == false) return;
+
+	DirectX::XMFLOAT4X4 mat[3];
+
+	mat[0] = m_Transform.GetWorldMatrixSRT();
+	mat[1] = pCamera->GetViewMatrix();
+	mat[2] = pCamera->GetProjectionMatrix();
+
+	//-- 行列をシェーダーへ設定
+	m_pVS->WriteBuffer(0, mat);
+
+	//-- モデル表示
+	if (m_pModel) {
+		m_pModel->Draw();
+	}
+}
+
 
 /* ========================================
 	ワープ関数
@@ -79,7 +157,9 @@ void CSlime_BossBase::Warp(TPos3d<float> playerPos)
 =========================================== */
 void CSlime_BossBase::Damage(int num)
 {
-	m_nHp -= num;
+	m_nHp -= num;		// HP減少
+	m_bFlash = true;	// 点滅ON
+
 	if (m_nHp <= 0) m_bDead = true;	// HPが０以下なら死亡
 }
 
