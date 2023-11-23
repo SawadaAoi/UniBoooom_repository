@@ -47,7 +47,7 @@ CSlime_Boss_1::CSlime_Boss_1()
 	,m_assaultMovePos{0.0f,0.0f,0.0f}
 {
 	m_Transform.fScale = { LEVEL_BOSS_1_SCALE,LEVEL_BOSS_1_SCALE ,LEVEL_BOSS_1_SCALE };
-	m_sphere.fRadius *= LEVEL_BOSS_1_SCALE;
+	m_Sphere.fRadius *= LEVEL_BOSS_1_SCALE;
 	m_eSlimeSize = E_SLIME_LEVEL::LEVEL_BOSS;
 	SetNormalSpeed();
 	SetMaxHp();

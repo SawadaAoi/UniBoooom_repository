@@ -41,17 +41,17 @@ class CExplosion
 {
 public:
 	// ===メンバ関数宣言===
+	
+	CExplosion(TPos3d<float> fPos, float fSize, float fTime, int comboNum);	//コンストラクタ
 	CExplosion(TPos3d<float> fPos, float fSize, float fTime, int comboNum, bool delayFlg, int nDamage);	//コンストラクタ
 	~CExplosion();												// デストラクタ
 	void Update();												// 更新関数
 	void Draw();												// 描画関数
 	void DisplayTimeAdd();										// 爆発表示カウント加算処理関数
-
 	void Delay();
+	void BossTouched();											//ボスに触ったときに呼び出す関数
 
-	void BossTouched();							//ボスに触ったときに呼び出す関数
-	bool GetDelFlg();							// 削除フラグ取得処理関数
-	int GetComboNum();							// コンボ配列番号取得
+	// セット関数
 	void SetCamera(const CCamera* m_pCamera);	// 他のオブジェクトと同一のカメラをセット
 
 	// ゲット関数
@@ -60,6 +60,7 @@ public:
 	bool GetDelFlg();				// 削除フラグ取得処理関数
 	int GetDamage();				// ダメージ量取得関数
 	bool GetBossTouched();			// 既にボスと当たっているかどうか取得関数
+	int GetComboNum();				// コンボ配列番号取得
 
 private:
 	// ===メンバ変数宣言===

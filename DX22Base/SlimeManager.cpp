@@ -119,7 +119,6 @@ CSlimeManager::CSlimeManager()
 	}
 #endif
 	
-}
 
 	//サウンドファイルの読み込み
 	m_pSEHitSlime = CSound::LoadSound("Assets/Sound/SE/SlimeHitSlime.mp3");		//ハンマーを振った時のSEの読み込み
@@ -471,8 +470,6 @@ void CSlimeManager::TouchExplosion(int DelSlime, CExplosionManager * pExpMng, in
 	TTriType<float> size = m_pSlime[DelSlime]->GetScale();		// 衝突先のスライムサイズを確保
 
 	pExpMng->SwitchExplode(level, pos, size, comboNum);
-
-	SAFE_DELETE(m_pSlime[DelSlime]);					//ぶつかりに来たスライムを削除
 	pExpMng->SwitchExplode(level, pos, size);	// 爆発生成
 	SAFE_DELETE(m_pSlime[DelSlime]);			// 巻き込まれたスライムを削除
 }

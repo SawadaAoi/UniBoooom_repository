@@ -149,7 +149,7 @@ void CExplosionManager::Create(TTriType<float> pos,float size, float time)
 		// 使用済みの爆発はスルー
 		if (m_pExplosion[i] != nullptr) continue;
 
-		m_pExplosion[i] = new CExplosion(pos, size, time, comboNum, false);	// 座標を指定して生成
+		m_pExplosion[i] = new CExplosion(pos, size, time, comboNum);	// 座標を指定して生成
 		m_pExplosion[i]->SetCamera(m_pCamera);
 		m_pSEExplodeSpeaker = CSound::PlaySound(m_pSEExplode);	//爆発の再生
 		m_pSEExplodeSpeaker->SetVolume(EXPLODE_VOLUME);			//音量調整
@@ -347,7 +347,7 @@ void CExplosionManager::SwitchExplode(E_SLIME_LEVEL slimeLevel, TPos3d<float> po
 	----------------------------------------
 	戻値：なし
 ======================================== */
-void CExplosionManager::SwitchExplode(E_SLIME_LEVEL slimeLevel, TPos3d<float> pos, TTriType<float> slimeSize, int comboNum)
+void CExplosionManager::SwitchExplode(E_SLIME_LEVEL slimeLevel, TPos3d<float> pos, TTriType<float> slimeSize, int comboNum, int damage)
 {
 	float ExplosionSize = slimeSize.x * EXPLODE_BASE_RATIO;
 	float ExplodeTime;
@@ -361,7 +361,7 @@ void CExplosionManager::SwitchExplode(E_SLIME_LEVEL slimeLevel, TPos3d<float> po
 	case LEVEL_FLAME:	ExplodeTime = LEVEL_1_EXPLODE_TIME;	break;	// 炎スライムと爆発が接触した際は一番小さい爆発
 	}
 
-	Create(pos, ExplosionSize, ExplodeTime, comboNum);	// 爆発生成
+	Create(pos, ExplosionSize, ExplodeTime, comboNum ,damage);	// 爆発生成
 
 }
 

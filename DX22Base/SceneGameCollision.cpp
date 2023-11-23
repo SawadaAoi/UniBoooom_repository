@@ -114,7 +114,7 @@ void SceneGame::PlayerBossCollision()
 		if (pBossNow == nullptr)				continue;	// 無効なスライムはスルー
 
 		// ボスとハンマーが衝突した場合
-		if (m_pCollision->CheckCollisionSphere(m_pPlayer->GetPlayerSphere(), pBossNow->GetSphere(), m_pPlayer->GetPos(), pBossNow->GetPos()))
+		if (m_pCollision->CheckCollisionSphere(m_pPlayer->GetSphere(), pBossNow->GetSphere(), m_pPlayer->GetPos(), pBossNow->GetPos()))
 		{
 			m_pPlayer->Damage();
 		}
