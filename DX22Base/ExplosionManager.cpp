@@ -149,7 +149,7 @@ void CExplosionManager::Create(TTriType<float> pos,float size, float time)
 		// 使用済みの爆発はスルー
 		if (m_pExplosion[i] != nullptr) continue;
 
-		m_pExplosion[i] = new CExplosion(pos, size, time, comboNum);	// 座標を指定して生成
+		m_pExplosion[i] = new CExplosion(pos, size, time, comboNum,/*仮*/true,/*仮*/1);	// 座標を指定して生成
 		m_pExplosion[i]->SetCamera(m_pCamera);
 		m_pSEExplodeSpeaker = CSound::PlaySound(m_pSEExplode);	//爆発の再生
 		m_pSEExplodeSpeaker->SetVolume(EXPLODE_VOLUME);			//音量調整

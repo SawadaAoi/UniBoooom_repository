@@ -41,8 +41,6 @@ class CExplosion
 {
 public:
 	// ===メンバ関数宣言===
-	
-	CExplosion(TPos3d<float> fPos, float fSize, float fTime, int comboNum);	//コンストラクタ
 	CExplosion(TPos3d<float> fPos, float fSize, float fTime, int comboNum, bool delayFlg, int nDamage);	//コンストラクタ
 	~CExplosion();												// デストラクタ
 	void Update();												// 更新関数

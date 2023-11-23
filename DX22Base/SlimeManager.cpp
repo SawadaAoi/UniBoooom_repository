@@ -342,7 +342,7 @@ void CSlimeManager::HitBranch(int HitSlimeNum, int StandSlimeNum, CExplosionMana
 		if (hitSlimeLevel == MAX_LEVEL)	//スライムのサイズが最大の時
 		{
 			//スライム爆発処理
-			pExpMng->Create(pos, MAX_SIZE_EXPLODE * EXPLODE_BASE_RATIO, LEVEL_4_EXPLODE_TIME,(int)standSlimeLevel);	//衝突されたスライムの位置でレベル４爆発
+			pExpMng->Create(pos, MAX_SIZE_EXPLODE * EXPLODE_BASE_RATIO, LEVEL_4_EXPLODE_TIME,/*仮*/0,(int)standSlimeLevel);	//衝突されたスライムの位置でレベル４爆発
 
 		}
 		else	//最大サイズじゃない場合は1段階大きいスライムを生成する
@@ -470,7 +470,6 @@ void CSlimeManager::TouchExplosion(int DelSlime, CExplosionManager * pExpMng, in
 	TTriType<float> size = m_pSlime[DelSlime]->GetScale();		// 衝突先のスライムサイズを確保
 
 	pExpMng->SwitchExplode(level, pos, size, comboNum);
-	pExpMng->SwitchExplode(level, pos, size);	// 爆発生成
 	SAFE_DELETE(m_pSlime[DelSlime]);			// 巻き込まれたスライムを削除
 }
 
@@ -638,10 +637,10 @@ void CSlimeManager::HitBossBossBranch(int HitBossNum, int StandBossNum, CExplosi
 ======================================== */
 void CSlimeManager::TouchBossExplosion(int BossNum, CExplosionManager* pExpMng, int ExpNum)
 {
-	CExplosion* touchExplosion = pExpMng->GetExplosionPtr(ExpNum);	//接触した爆発を取得
+	CExplosion* touchExplosion = pExpMng->GetExplosionPtr(ExpNum);	// 接触した爆発を取得
 	TPos3d<float> pos(m_pBoss[BossNum]->GetPos());					// 衝突先のスライムの位置を確保
-	E_SLIME_LEVEL level = m_pBoss[BossNum]->GetSlimeLevel();	// 衝突先のスライムのレベルを確保
-	TTriType<float> size = m_pBoss[BossNum]->GetScale();		// 衝突先のスライムサイズを確保
+	E_SLIME_LEVEL level = m_pBoss[BossNum]->GetSlimeLevel();		// 衝突先のスライムのレベルを確保
+	TTriType<float> size = m_pBoss[BossNum]->GetScale();			// 衝突先のスライムサイズを確保
 
 	// 既に接触済みか検索
 	if (touchExplosion->GetBossTouched() == false)
