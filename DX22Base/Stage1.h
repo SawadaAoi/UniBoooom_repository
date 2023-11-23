@@ -27,8 +27,8 @@ class CStage1 :public CStage	//ステージ
 {
 public:
 	// ===プロトタイプ宣言===
-	CStage1();							//コンストラクタ
-	~CStage1();							//デストラクタ
+	CStage1();		//コンストラクタ
+	~CStage1();									//デストラクタ
 	void Update();						//更新
 	void Draw();						//描画	
 	E_TYPE GetType() const override;	//自身の種類ゲッタ
@@ -37,6 +37,8 @@ private:
 	int m_nNum;
 	float m_fSize;
 	bool m_bStart;
+	const int* m_pPlayerHp;
+	const int* m_pTimeCnt;
 };	//ステージ1
 
 #endif	//!__STAGE1_H__

@@ -34,10 +34,16 @@
 =========================================== */
 CResult::CResult()
 {
-	m_pTexture = new Texture();
-	if (FAILED(m_pTexture->Create("Assets/Texture/result.png")))
+	m_pTexture[0] = new Texture();
+	if (FAILED(m_pTexture[0]->Create("Assets/Texture/gamestart.png")))
 	{
-		MessageBox(NULL, "Result result.png", "Error", MB_OK);
+		MessageBox(NULL, "Result gamestart.png", "Error", MB_OK);
+	}
+
+	m_pTexture[1] = new Texture();
+	if (FAILED(m_pTexture[1]->Create("Assets/Texture/pre_result.png")))
+	{
+		MessageBox(NULL, "Result pre_result.png", "Error", MB_OK);
 	}
 }
 
@@ -52,6 +58,10 @@ CResult::CResult()
 =========================================== */
 CResult::~CResult()
 {
+	for (int i = 2; i < 0; ++i)
+	{
+		SAFE_DELETE(m_pTexture[i]);
+	}
 }
 
 /* ========================================
@@ -65,9 +75,10 @@ CResult::~CResult()
 =========================================== */
 void CResult::Update()
 {
-	if (IsKeyTrigger(VK_SPACE))
+	// スペースキーを押した時、またはコントローラのBボタンを押した時 
+	if (IsKeyTrigger(VK_SPACE) || IsKeyTriggerController(BUTTON_B))
 	{
-		m_bFinish = true;
+		m_bFinish = true;	// タイトルシーン終了フラグON
 	}
 }
 
@@ -83,7 +94,8 @@ void CResult::Update()
 	//!memo(見たら消してー)：constが邪魔になったら外してね(.hの方も)
 void CResult::Draw()
 {
-	Draw2d(600.0f, 60.0f, 300.0f, 50.0f, m_pTexture);
+	Draw2d(640.0f, 400.0f, 300.0f,  50.0f, m_pTexture[0]);
+	Draw2d(640.0f, 100.0f, 300.0f, 100.0f, m_pTexture[1]);
 }
 
 /* ========================================

@@ -34,7 +34,7 @@ public:
 	E_TYPE GetNext() const override;	//次のシーンゲッタ
 private:
 	// =============== メンバ変数定義 ===============
-	Texture* m_pTexture;
+	Texture* m_pTexture[2];
 };	//リザルト
 
 #endif	//!__RESULT_H__

@@ -38,10 +38,16 @@
 =========================================== */
 CTitle::CTitle()
 {
-	m_pTexture = new Texture();
-	if (FAILED(m_pTexture->Create("Assets/Texture/gamestart.png")))
+	m_pTexture[0] = new Texture();
+	if (FAILED(m_pTexture[0]->Create("Assets/Texture/gamestart.png")))
 	{
 		MessageBox(NULL, "Title gamstart.png", "Error", MB_OK);
+	}
+
+	m_pTexture[1] = new Texture();
+	if (FAILED(m_pTexture[1]->Create("Assets/Texture/pre_title.png")))
+	{
+		MessageBox(NULL, "Title pre_title.png", "Error", MB_OK);
 	}
 }
 
@@ -56,6 +62,10 @@ CTitle::CTitle()
 =========================================== */
 CTitle::~CTitle()
 {
+	for (int i = 2; i < 0; ++i)
+	{
+		SAFE_DELETE(m_pTexture[i]);
+	}
 }
 
 /* ========================================
@@ -69,9 +79,10 @@ CTitle::~CTitle()
 =========================================== */
 void CTitle::Update()
 {
-	if (IsKeyTrigger(VK_SPACE))
+	// スペースキーを押した時、またはコントローラのBボタンを押した時 
+	if (IsKeyTrigger(VK_SPACE) || IsKeyTriggerController(BUTTON_B))
 	{
-		m_bFinish = true;
+		m_bFinish = true;	// タイトルシーン終了フラグON
 	}
 }
 
@@ -87,7 +98,8 @@ void CTitle::Update()
 //!memo(見たら消してー)：constが邪魔になったら外してね(.hの方も)
 void CTitle::Draw()
 {
-	Draw2d(600.0f, 100.0f, 300.0f, 50.0f, m_pTexture);
+	Draw2d(640.0f, 400.0f, 300.0f,  50.0f, m_pTexture[0]);
+	Draw2d(640.0f, 100.0f, 300.0f, 100.0f, m_pTexture[1]);
 }
 
 /* ========================================

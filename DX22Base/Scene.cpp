@@ -133,6 +133,7 @@ void CScene::Draw2d(float posX, float posY, float h, float w, Texture* pTexture)
 	Sprite::SetProjection(mat[2]);
 	Sprite::SetSize(DirectX::XMFLOAT2(h, -w));
 	Sprite::SetUVScale(DirectX::XMFLOAT2(1.0f, 1.0f));
+	Sprite::SetUVPos(DirectX::XMFLOAT2(0.0f, 0.0f));
 	Sprite::SetTexture(pTexture);
 	Sprite::Draw();
 }

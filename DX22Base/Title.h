@@ -36,7 +36,7 @@ public:
 	E_TYPE GetType() const override;	//自身の種類ゲッタ
 	E_TYPE GetNext() const override;	//次のシーンゲッタ
 private:
-	Texture* m_pTexture;
+	Texture* m_pTexture[2];
 };	//タイトル
 
 #endif	//!__TITLE_H__

@@ -22,6 +22,7 @@
 // =============== インクルード ===================
 #include "Stage1.h"	//自身のヘッダ
 #include "CameraChase.h"
+#include "Input.h"
 
 
 /* ========================================
@@ -140,6 +141,7 @@ void CStage1::Update()
 {
 	m_pFade->Update();
 
+	// タイトルから遷移後すぐゲーム開始にならないようにする処理
 	if (!m_bStart)
 	{
 		m_nNum++;
@@ -155,18 +157,38 @@ void CStage1::Update()
 	}
 	else
 	{
+		// カメラ更新
 		m_pCamera->Update();
+
+		// プレイヤー更新
 		m_pPlayer->Update();
-		m_pSlimeMng->SetPlayerPos(m_pPlayer->GetPos());
 
 		// スライムマネージャー更新
+		m_pSlimeMng->SetPlayerPos(m_pPlayer->GetPos());
 		m_pSlimeMng->Update(m_pExplosionMng);
+
+		// 爆発マネージャー更新
 		m_pExplosionMng->Update();
+
+		// タイマー更新
 		m_pTimer->Update();
+
+		// ステージ終了更新
 		m_pStageFin->Update();
+
+		// コンボ更新
 		m_pCombo->Update();
 
+		// 当たり判定更新
 		Collision();
+	}
+
+	if (m_pStageFin->GetDispFlg())
+	{
+		if (IsKeyTrigger(VK_RETURN) || IsKeyTriggerController(BUTTON_A))
+		{
+			m_bFinish = true;	// タイトルシーン終了フラグON
+		}
 	}
 }
 
@@ -179,22 +201,25 @@ void CStage1::Update()
 	----------------------------------------
 	戻値：なし
 =========================================== */
-//!memo(見たら消してー)：constが邪魔になったら外してね(.hの方も)
 void CStage1::Draw()
 {
 	RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得
 	DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
 	SetRenderTargets(1, &pRTV, pDSV);		//DSVがnullだと2D表示になる
 
+	// スタート合図描画
 	if (!m_bStart)
 	{
-		Draw2d(600.0f, 300.0f, m_fSize, m_fSize, m_pTexture);
+		Draw2d(640.0f, 360.0f, m_fSize, m_fSize, m_pTexture);
 	}
 
 	//床の描画
 	m_pFloor->Draw();
+
 	// スライムマネージャー描画
 	m_pSlimeMng->Draw();
+
+	// プレイヤー描画
 	m_pPlayer->Draw();
 
 	//爆発マネージャー描画
@@ -204,7 +229,10 @@ void CStage1::Draw()
 	SetRenderTargets(1, &pRTV, nullptr);
 	m_pStageFin->Draw();
 
+	// タイマー描画
 	m_pTimer->Draw();
+
+	// コンボ描画
 	m_pCombo->Draw();
 	
 }
