@@ -27,7 +27,6 @@
 #include "Line.h"
 #include "Defines.h"
 #include "GameParameter.h"
-#include "BossGauge.h"
 
 #if USE_CAMERA_VIBRATION
 #include "Input.h"
