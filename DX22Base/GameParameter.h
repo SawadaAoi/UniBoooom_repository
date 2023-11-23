@@ -143,7 +143,7 @@ const int COMBO_UI_DISP_DILAY_TIME		= 2.0f * 60;			// 残コンボ数表示の秒数
 
 const TPos2d<float> COMBO_UI_BACK_POS	 = {1100.0f, 600.0f};	// コンボUIの背景の描画位置
 const TPos2d<float> COMBO_UI_BACK_SIZE	 = {370.0f, 280.0f};	// コンボUIの背景の大きさ
-const TPos2d<float> COMBO_UI_STRING_POS  = {1150.0f, 620.0f};	// コンボUIの文字の描画位置
+const TPos2d<float> COMBO_UI_STRING_POS  = {1150.0f, 615.5f};	// コンボUIの文字の描画位置
 const TPos2d<float> COMBO_UI_STRING_SIZE = {180.0f, 100.0f};		// コンボUIの文字の大きさ
 
 // 床 ====================================
