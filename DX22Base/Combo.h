@@ -50,10 +50,11 @@ public:
 	int GetCombo(int num);
 	void EndCombo(int num);
 	void DisplayNumber(int cnt, float shiftPosY);
+	void DrawTexture(float posX, float posY, float h, float w, Texture* pTexture);
 
 private:
 	// ===メンバ変数宣言===
-	Texture* m_pTextureNum;		// 数字画像
+	Texture* m_pTextureNum[3];		// 数字画像
 	ComboInfo m_dComboInfo[MAX_COMBO_NUM];	// コンボ用情報まとめ
 
 };

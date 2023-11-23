@@ -136,10 +136,19 @@ const TPos2d<float> TIME_COLON_POS (615.0f, 25.0f);		//コロンの位置設定
 // コンボ =========================================================
 const int	MAX_COMBO_NUM				= 5;					// 最大同時コンボ数
 const TPos2d<float> COMBO_UI_POSITION	= { 1100.0f, 600.0f };	// コンボUIの描画位置
-const TPos2d<float> COMBO_UI_SIZE		= { 70.0f,   70.0f };	// コンボUIの大きさ
+const TPos2d<float> COMBO_UI_SIZE		= {   70.0f, 130.0f };	// コンボUIの大きさ
 const float COMBO_UI_NUM_SPACE			= 80.0f;				// 数字の間スペース
 const float COMBO_UI_MULTI_DISP_SPACE	= 100.0f;				// 同時コンボ描画時の上下の空白
 const int COMBO_UI_DISP_DILAY_TIME		= 2.0f * 60;			// 残コンボ数表示の秒数
+
+const float COMBO_UI_BACK_POSX = 0.0f;
+const float COMBO_UI_BACK_POSY = 0.0f;
+const float COMBO_UI_BACK_SIZEX = 300.0f;
+const float COMBO_UI_BACK_SIZEY = 150.0f;
+const float COMBO_UI_STRING_POSX = 95.0f;
+const float COMBO_UI_STRING_POSY = 20.0f;
+const float COMBO_UI_STRING_SIZEX = 60.0f;
+const float COMBO_UI_STRING_SIZEY = -45.0f;
 
 // 床 ====================================
 const float FLOOR_SCALE_X = 1.1f;
