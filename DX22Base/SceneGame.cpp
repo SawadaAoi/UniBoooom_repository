@@ -11,8 +11,36 @@
 	・2023/11/08 コメント追加、無駄な箇所を削除　澤田蒼生
 	・2023/11/09 カメラの様々動作チェック。メインから軸線奪取。地面追加。 髙木駿輔
 	・2023/11/10 カメラをスライムと爆発にも渡すようにした・lineのメモリリーク対策 髙木駿輔
+	・2023/11/17 振動機能呼び出しデバッグモード追加 takagi
+	・2023/11/18 BGMの再生 yamashita
+  ・2023/11/18~20 フェード試した 髙木駿輔
+	・2023/11/21 フェード更新呼び出し 髙木駿輔
+  ・2023/11/21 コンボ用のメンバ変数を追加 Sawada
 
 ========================================== */
+
+// =============== デバッグモード ===================
+#define USE_CAMERA_VIBRATION (false)
+#define MODE_COORD_AXIS (true)			//座標軸映すかどうか
+#define MODE_GROUND (false)				//座標軸映すかどうか
+#if _DEBUG
+#define TRY_USE_HIT_STOP (true)
+#endif
+#define USE_FADE_GAME (true)	//フェード試す
+
+#if USE_FADE_GAME
+#include "Fade.h"
+#endif
+
+#if USE_CAMERA_VIBRATION
+#include "Input.h"
+#endif
+
+#if TRY_USE_HIT_STOP
+#include "HitStop.h"
+#include "Input.h"
+#endif
+
 
 // =============== インクルード ===================
 #include "SceneGame.h"
@@ -24,11 +52,15 @@
 #include "Box.h"
 #include "Line.h"
 #include "Defines.h"
+#include "GameParameter.h"
 
 
-// =============== デバッグモード =======================
-#define MODE_COORD_AXIS (true)	//座標軸映すかどうか
-#define MODE_GROUND (false)	//座標軸映すかどうか
+
+// =============== 定数定義 =======================
+#if MODE_GAME_PARAMETER
+#else
+const float BGM_VOLUME = 0.02f;
+#endif
 
 /* ========================================
 	コンストラクタ関数
@@ -39,7 +71,7 @@
 	-------------------------------------
 	戻値：無し
 =========================================== */
-SceneGame::SceneGame(DirectWrite* pDirectWrite)
+SceneGame::SceneGame()
 {
 	// 頂点シェーダの読込
 	m_pVs = new VertexShader();
@@ -51,7 +83,6 @@ SceneGame::SceneGame(DirectWrite* pDirectWrite)
 	RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得
 	DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
 	SetRenderTargets(1, &pRTV, pDSV);		//DSVがnullだと2D表示になる
-	SetDirectWrite(pDirectWrite);
 
 #if MODE_COORD_AXIS
 	// 軸線の表示
@@ -68,17 +99,41 @@ SceneGame::SceneGame(DirectWrite* pDirectWrite)
 #endif
 
 
-	m_pFloor = new CFloor();
+	m_pFloor = new CFloor(m_pPlayer->GetPosAddress());
 	m_pFloor->SetCamera(m_pCamera);
 	// スライムマネージャー生成
 	m_pSlimeMng = new CSlimeManager();
 	m_pSlimeMng->SetCamera(m_pCamera);
+
+
+	// コンボ数表示生成
+	m_pCombo = new CCombo();
+
+	// 爆発マネージャー生成
 	m_pExplosionMng = new CExplosionManager();
 	m_pExplosionMng->SetCamera(m_pCamera);
+	m_pExplosionMng->SetCombo(m_pCombo);
 
 	// タイマー生成
 	m_pTimer = new CTimer();
 	m_pTimer->TimeStart();
+	//ステージ終了のUI表示
+	m_pStageFin = new CStageFinish(m_pPlayer->GetHP(),m_pTimer->GetTimePtr());
+
+#if USE_FADE_GAME
+	m_pFade = new CFade(m_pCamera);
+#endif
+	//pTex->Create("Assets/NoStar.png");
+	//m_pFade->SetTexture(pTex);
+	//pps->Load("Assets/Shader/PsFade.cso");
+	//m_pFade->SetPixelShader(pps);
+	//pvs->Load("Assets/Shader/VsFade.cso");
+	//m_pFade->SetVertexShader(pvs);
+
+	LoadSound();
+	//BGMの再生
+	m_pSpeaker = CSound::PlaySound(m_pBGM);		//BGMの再生
+	m_pSpeaker->SetVolume(BGM_VOLUME);			//音量の設定
 }
 
 /* ========================================
@@ -92,7 +147,15 @@ SceneGame::SceneGame(DirectWrite* pDirectWrite)
 =========================================== */
 SceneGame::~SceneGame()
 {
+	if (m_pSpeaker)
+	{
+		m_pSpeaker->Stop();
+		m_pSpeaker->DestroyVoice();
+	}
+	SAFE_DELETE(m_pStageFin);
 	SAFE_DELETE(m_pTimer);
+	SAFE_DELETE(m_pFade);
+  SAFE_DELETE(m_pTimer);
 	SAFE_DELETE(m_pExplosionMng);
 	SAFE_DELETE(m_pSlimeMng);	// スライムマネージャー削除
 	SAFE_DELETE(m_pFloor);
@@ -118,16 +181,56 @@ SceneGame::~SceneGame()
 =========================================== */
 void SceneGame::Update(float tick)
 {
+
+#if TRY_USE_HIT_STOP
+	CHitStop::Update();	//ヒットストップ更新
+	//Effect更新、その他必要なもの
+	if (CHitStop::IsStop())	//ストップ検査
+	{
+		return;	//処理中断
+	}
+#endif
+#if USE_CAMERA_VIBRATION
+	if (IsKeyTrigger('1'))
+	{
+		m_pCamera->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_WEAK);
+	}
+	if (IsKeyTrigger('2'))
+	{
+		m_pCamera->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_STRONG);
+	}
+	if (IsKeyTrigger('3'))
+	{
+		m_pCamera->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_SIDE_WEAK);
+	}
+	if (IsKeyTrigger('4'))
+	{
+		m_pCamera->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_SIDE_STRONG);
+	}
+#endif
+#if TRY_USE_HIT_STOP
+	if (IsKeyTrigger('Z'))
+	{
+		CHitStop::UpFlag(CHitStop::E_BIT_FLAG_STOP_SOFT);	//フラグオン
+	}
+#endif
 	m_pCamera->Update();
 	m_pPlayer->Update();
 	m_pSlimeMng->SetPlayerPos(m_pPlayer->GetPos());
 
 	// スライムマネージャー更新
+	m_pFloor->Update();
 	m_pSlimeMng->Update(m_pExplosionMng);
 	m_pExplosionMng->Update();
 	m_pTimer->Update();
+	m_pStageFin->Update();
+	m_pCombo->Update();
 
 	SceneGameCollision();
+
+#if USE_FADE_GAME
+	m_pFade->Update();
+#endif
 }
 
 /* ========================================
@@ -199,6 +302,9 @@ void SceneGame::Draw()
 	m_pBox->Draw();
 #endif
 	
+	RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得
+	DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
+	SetRenderTargets(1, &pRTV, pDSV);		//DSVがnullだと2D表示になる
 	//床の描画
 	m_pFloor->Draw();
 	// スライムマネージャー描画
@@ -209,12 +315,31 @@ void SceneGame::Draw()
 	m_pExplosionMng->Draw();
 
 	//タイマー描画
+
+	SetRenderTargets(1, &pRTV, nullptr);
+	m_pStageFin->Draw();
+
 	m_pTimer->Draw();
-	
+	m_pCombo->Draw();
+
+
+#if USE_FADE_GAME
+	m_pFade->Draw();
+#endif
+  
 }
 
-
-void SceneGame::SetDirectWrite(DirectWrite* pDirectWrite)
+/* ========================================
+   サウンドファイル読み込み関数
+   -------------------------------------
+   内容：サウンドファイルの読み込み
+   -------------------------------------
+   引数1：無し
+   -------------------------------------
+   戻値：無し
+=========================================== */
+void SceneGame::LoadSound()
 {
-	m_pDirectWrite = pDirectWrite;
+	m_pBGM = CSound::LoadSound("Assets/Sound/BGM/BGM_maou.mp3", true);		//BGMの読み込み
+	m_pSEHitHammer = CSound::LoadSound("Assets/Sound/SE/Smash.mp3");		//SEの読み込み
 }

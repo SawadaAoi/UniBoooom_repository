@@ -11,6 +11,8 @@
    ・↓まで 学校の配布物(授業に沿い変形)・Geometryに合わせた改造
 	・2023/11/09 カメラの様々動作チェック。 takagi
 	・2023/11/17 シーン管理を実装 takagi
+	・2023/11/18 sound.hをインクルードしてsoundの初期化と終了を追加 yamashita
+	・2023/11/21 3dアニメーション用配布物適用
 
 ========================================== */
 
@@ -28,7 +30,8 @@
 #endif
 #include "Defines.h"
 #include <time.h>
-
+#include "Sound.h"
+#include "ShaderList.h"	//モデルアニメーション用
 
 // =============== グローバル変数定義 =============
 #if USE_SCENE_MANAGER
@@ -57,17 +60,22 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
 	hr = InitDirectX(hWnd, width, height, false);
 	if (FAILED(hr)) { return hr; }
 
+	CSound::InitSound();
+
 	CGeometry::MakeShader();			//シェーダ作成
 	srand((unsigned int)time(NULL));	// 乱数パターン設定
 
 	Sprite::Init();
 	InitInput();
 
+	ShaderList::Init();
+	ShaderList::Uninit();
+
 	// シーン作成
 #if USE_SCENE_MANAGER
 	g_pSceneMng = new CSceneManager();
 #else
-	g_pGame = new SceneGame(GetDirectWrite());
+	g_pGame = new SceneGame();
 #endif
 
 	return hr;
@@ -96,6 +104,7 @@ void Uninit()
 	CGeometry::Uninit();
 	UninitInput();
 	Sprite::Uninit();
+	CSound::UninitSound();
 	UninitDirectX();
 }
 

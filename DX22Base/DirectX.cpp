@@ -35,11 +35,6 @@ DepthStencil* GetDefaultDSV()
 	return g_pDSV;
 }
 
-DirectWrite * GetDirectWrite()
-{
-	return g_pDirectWrite;
-}
-
 HRESULT InitDirectX(HWND hWnd, UINT width, UINT height, bool fullscreen)
 {
 	HRESULT	hr = E_FAIL;
@@ -173,6 +168,7 @@ HRESULT InitDirectX(HWND hWnd, UINT width, UINT height, bool fullscreen)
 	D3D11_FILTER filter[] = {
 		D3D11_FILTER_MIN_MAG_MIP_LINEAR,
 		D3D11_FILTER_MIN_MAG_MIP_POINT,
+		D3D11_FILTER_MIN_MAG_MIP_LINEAR,
 	};
 	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
 	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
@@ -184,10 +180,17 @@ HRESULT InitDirectX(HWND hWnd, UINT width, UINT height, bool fullscreen)
 		if (FAILED(hr)) { return hr; }
 	}
 	SetSamplerState(SAMPLER_LINEAR);
+	//フェード用
+	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
+	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
+	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
+	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	hr = g_pDevice->CreateSamplerState(&samplerDesc, &g_pSamplerState[SAMPLER_FADE]);
+	if (FAILED(hr)) { return hr; }
+	SetSamplerState(SAMPLER_FADE);
 
 	//画面内にテキストを表示するクラスの初期化
-	FontData fontData = FontData::FontData();
-	g_pDirectWrite = new DirectWrite(&fontData);
+	g_pDirectWrite = new DirectWrite();
 	g_pDirectWrite->Init();
 
 	return S_OK;
@@ -267,5 +270,6 @@ void SetBlendMode(BlendMode blend)
 void SetSamplerState(SamplerState state)
 {
 	if (state < 0 || state >= SAMPLER_MAX) return;
-	g_pContext->PSSetSamplers(0, 1, &g_pSamplerState[state]);
+	//g_pContext->PSSetSamplers(0, 1, &g_pSamplerState[state]);
+	g_pContext->PSSetSamplers(state, 1, &g_pSamplerState[state]);
 }

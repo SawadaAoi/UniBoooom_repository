@@ -32,7 +32,7 @@
 #include "ExplosionManager.h"
 #include "Slime_BossBase.h"
 #include "GameParameter.h"		//定数定義用ヘッダー
-
+#include "Sound.h"
 
 // =============== 定数定義 =======================
 #if MODE_GAME_PARAMETER
@@ -58,7 +58,7 @@ public:
 	void HitBranch(int HitSlimeArrayNum,int standSlimeArrayNum,CExplosionManager* pExpMng);			// スライムの接触が起きた際の分岐処理
 	bool HitFlameBranch(int HitSlimeNum, int StandSlimeNum, CExplosionManager* pExpMng);			// フレイムスライムとの接触が起きた際の分岐処理
 	void UnionSlime(E_SLIME_LEVEL level, TPos3d<float> pos);										// スライムの結合処理
-	void TouchExplosion(int DelSlime, CExplosionManager* pExpMng);									// スライムの爆発処理
+	void TouchExplosion(int DelSlime, CExplosionManager* pExpMng, int comboNum);					// スライムの爆発処理
 
 	//-- ボス
 	void HitSlimeBossBranch(int HitSlimeNum, int StandBossNum, CExplosionManager* pExpMng);
@@ -98,6 +98,11 @@ private:
 	Model* m_pFlameModel;
 	Model* m_pBossModel;
 
+
+	XAUDIO2_BUFFER* m_pSEHitSlime;					//ハンマーでスライムを打った時のSEのデータ
+	XAUDIO2_BUFFER* m_pSEUnion;					//ハンマーでスライムを打った時のSEのデータ
+	IXAudio2SourceVoice* m_pSEHitSlimeSpeaker;		//ハンマーでスライムを打った時のSEを聞き取る側
+	IXAudio2SourceVoice* m_pSEUnionSpeaker;		//ハンマーでスライムを打った時のSEを聞き取る側
 
 	int m_CreateCnt;	// 生成間隔用カウント
 

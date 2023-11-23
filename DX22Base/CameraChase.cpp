@@ -14,6 +14,7 @@
 	・2023/11/08 TPos修正 takagi
 	・2023/11/09 微調整 takagi
 	・2023/11/10 パラメタ修正 takagi
+	・2023/11/18 振動フラグ処理 takagi
 
 ========================================== */
 
@@ -59,6 +60,8 @@ CCameraChase::~CCameraChase()
 =========================================== */
 void CCameraChase::Update()
 {
+	// =============== フラグ処理 ===================
+	HandleFlag();	//フラグ内容処理
 }
 
 /* ========================================
@@ -83,9 +86,11 @@ DirectX::XMFLOAT4X4 CCameraChase::GetViewMatrix() const
 	// =============== ビュー行列の計算 ===================
 	DirectX::XMStoreFloat4x4(&mat, DirectX::XMMatrixTranspose(
 		DirectX::XMMatrixLookAtLH(
-			DirectX::XMVectorSet(m_pTarget->x, m_pTarget->y + m_fRadius * sinf(m_fAngle), m_pTarget->z - m_fRadius * cosf(m_fAngle), 0.0f),	//カメラ位置
-			DirectX::XMVectorSet(m_pTarget->x, m_pTarget->y, m_pTarget->z, 0.0f),										//注視点
-			DirectX::XMVectorSet(m_fUp.x, m_fUp.y, m_fUp.z, 0.0f)														//アップベクトル
+			DirectX::XMVectorSet(m_pTarget->x + m_fOffsetVibrateEye.x, m_pTarget->y + m_fRadius * sinf(m_fAngle),
+				m_pTarget->z + m_fOffsetVibrateEye.y - m_fRadius * cosf(m_fAngle), 0.0f),							//カメラ位置
+			DirectX::XMVectorSet(m_pTarget->x + m_fOffsetVibrateLook.x, m_pTarget->y,
+				m_pTarget->z + m_fOffsetVibrateLook.y, 0.0f),														//注視点
+			DirectX::XMVectorSet(m_fUp.x, m_fUp.y, m_fUp.z, 0.0f)													//アップベクトル
 	)));	//ビュー変換
 
 	// =============== 提供 ===================

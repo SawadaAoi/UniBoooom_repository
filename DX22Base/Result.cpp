@@ -16,7 +16,11 @@
 
 // =============== インクルード ===================
 #include "Result.h"	//自身のヘッダ
-
+#include "DirectXTex/TextureLoad.h"
+#include "Pos3d.h"
+#include "Sprite.h"
+#include "GameParameter.h"
+#include "Input.h"
 
 
 /* ========================================
@@ -30,6 +34,11 @@
 =========================================== */
 CResult::CResult()
 {
+	m_pTexture = new Texture();
+	if (FAILED(m_pTexture->Create("Assets/Texture/result.png")))
+	{
+		MessageBox(NULL, "Result result.png", "Error", MB_OK);
+	}
 }
 
 /* ========================================
@@ -56,6 +65,10 @@ CResult::~CResult()
 =========================================== */
 void CResult::Update()
 {
+	if (IsKeyTrigger(VK_SPACE))
+	{
+		m_bFinish = true;
+	}
 }
 
 /* ========================================
@@ -68,8 +81,9 @@ void CResult::Update()
 	戻値：なし
 	======================================== */
 	//!memo(見たら消してー)：constが邪魔になったら外してね(.hの方も)
-void CResult::Draw() const
+void CResult::Draw()
 {
+	Draw2d(600.0f, 60.0f, 300.0f, 50.0f, m_pTexture);
 }
 
 /* ========================================

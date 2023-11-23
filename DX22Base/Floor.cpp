@@ -11,22 +11,35 @@
 	・2023/11/16 h,作成 yamashita
 	・2023/11/16 コンストラクタに頂点シェーダーとモデルの読み込みを追加 yamashita
 	・2023/11/16 カメラのセット関数を作成 yamashita
+	・2023/11/22 床の自動生成機能を追加 yamashita
 ========================================== */
 #include "Floor.h"
+#include "DirectWrite.h"
+
+// =============== 定数定義 =====================
+#if MODE_GAME_PARAMETER
+#else
+const float FLOOR_SCALE_X = 1.1f;
+const float FLOOR_SCALE_Z = 1.1f;
+const float FLOOR_OFFSET_X = 48.0f * FLOOR_SCALE_X;
+const float FLOOR_OFFSET_Z = 48.0f * FLOOR_SCALE_Z;
+#endif
 
 /* ========================================
    関数：コンストラクタ
    ----------------------------------------
    内容：生成時に行う処理
    ----------------------------------------
-   引数：なし
+   引数：プレイヤーの座標ポインタ
    ----------------------------------------
    戻値：なし
 ======================================== */
-CFloor::CFloor()
+CFloor::CFloor(TPos3d<float>* pPlayerPos)
 	:m_pModel(nullptr)
 	,m_pVS(nullptr)
 	,m_pCamera(nullptr)
+	,m_pPlayerFloor{0,0,0}
+	,m_pPlayePos(pPlayerPos)
 {
 	//頂点シェーダ読み込み
 	m_pVS = new VertexShader();
@@ -35,19 +48,41 @@ CFloor::CFloor()
 	}
 	//床のモデル読み込み
 	m_pModel = new Model;
-	if (!m_pModel->Load("Assets/Model/floor/floor_1.1.FBX", 1.0f, Model::XFlip)) {		//倍率と反転は省略可
+	if (!m_pModel->Load("Assets/Model/floor/floor_1.3.FBX", 1.0f, Model::XFlip)) {		//倍率と反転は省略可
 		MessageBox(NULL, "floor", "Error", MB_OK);	//ここでエラーメッセージ表示
 	}
 	m_pModel->SetVertexShader(m_pVS);
 
-	// レンダーターゲット、深度バッファの設定
-	RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得
-	DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
-	SetRenderTargets(1, &pRTV, pDSV);		//DSVがnullだと2D表示になる
+	//床の位置情報を入れる
+	TTriType<float> pos;
+	for (int i = 0; i < FLOOR_NUM; i++)
+	{
+		//X座標
+		switch (i % 3)
+		{
+		case(0):	pos.x = -(FLOOR_OFFSET_X);
+			break;
+		case(1):	pos.x = 0.0f;
+			break;
+		case(2):	pos.x = FLOOR_OFFSET_X;
+			break;
+		}
 
-	m_Transform.fPos = { 0.0f, 0.0f, 0.0f };	//ポジションの初期化
-	m_Transform.fScale = { 1.0f, 1.0f, 1.0f };	//スケールの初期化
-	m_Transform.fRadian = { 0.0f, 0.0f, 0.0f };	//回転角を初期化
+		//Z座標
+		switch (i / 3)
+		{
+		case(0):	pos.z = -(FLOOR_OFFSET_Z);
+			break;
+		case(1):	pos.z = 0.0f;
+			break;
+		case(2):	pos.z = FLOOR_OFFSET_Z;
+			break;
+		}
+
+		m_Transform[i].fPos		= { pos.x, 0.0f, pos.z };					//ポジションの初期化
+		m_Transform[i].fScale	= { FLOOR_SCALE_X, 1.0f, FLOOR_SCALE_Z };	//スケールの初期化
+		m_Transform[i].fRadian	= { 0.0f, 0.0f, 0.0f };						//回転角を初期化
+	}	
 }
 
 /* ========================================
@@ -76,6 +111,7 @@ CFloor::~CFloor()
 ======================================== */
 void CFloor::Update()
 {
+	calculationPosition();
 }
 
 /* ========================================
@@ -91,16 +127,73 @@ void CFloor::Draw()
 {
 	DirectX::XMFLOAT4X4 mat[3];
 
-	mat[0] = m_Transform.GetWorldMatrixSRT();
-	mat[1] = m_pCamera->GetViewMatrix();
-	mat[2] = m_pCamera->GetProjectionMatrix();
+	for (int i = 0; i < FLOOR_NUM; i++)
+	{
+		mat[0] = m_Transform[i].GetWorldMatrixSRT();
+		mat[1] = m_pCamera->GetViewMatrix();
+		mat[2] = m_pCamera->GetProjectionMatrix();
 
-	//-- 行列をシェーダーへ設定
-	m_pVS->WriteBuffer(0, mat);
+		//-- 行列をシェーダーへ設定
+		m_pVS->WriteBuffer(0, mat);
 
-	//-- モデル表示
-	if (m_pModel) {
-		m_pModel->Draw();
+		//-- モデル表示
+		if (m_pModel) {
+			m_pModel->Draw();
+		}
+	}
+}
+
+/* ========================================
+	ポジション算出関数
+   ----------------------------------------
+   内容：プレイヤーの座標から床の表示座標をわりだす
+   ----------------------------------------
+   引数：なし
+   ----------------------------------------
+   戻値：なし
+======================================== */
+void CFloor::calculationPosition()
+{
+	int offsetX = m_pPlayePos->x;	//プレイヤーの中心からのX座標のずれ
+	int offsetZ = m_pPlayePos->z;	//プレイヤーの中心からのZ座標のずれ
+	if (offsetX >= 0) { offsetX + (FLOOR_OFFSET_X / 2); }	//座標がプラスなら加算
+	else { offsetX - (FLOOR_OFFSET_X / 2); }					//座標がマイナスなら減算
+	if (offsetZ >= 0) { offsetZ + (FLOOR_OFFSET_X / 2); }	//座標がプラスなら加算
+	else { offsetZ - (FLOOR_OFFSET_X / 2); }				//座標がマイナスなら減算
+
+	//プレイヤーが床の大きさで何枚目分の所にいるか
+	m_pPlayerFloor.x = offsetX / FLOOR_OFFSET_X;
+	m_pPlayerFloor.z = offsetZ / FLOOR_OFFSET_Z;
+
+
+	//床を表示する座標を確定
+	TTriType<float> pos;
+	TTriType<float> centerPos = { m_pPlayerFloor.x * FLOOR_OFFSET_X,0.0f,m_pPlayerFloor.z * FLOOR_OFFSET_Z };
+	for (int i = 0; i < FLOOR_NUM; i++)
+	{
+		//X座標
+		switch (i % 3)
+		{
+		case(0):	pos.x = centerPos.x - (FLOOR_OFFSET_X);
+			break;
+		case(1):	pos.x = centerPos.x;
+			break;
+		case(2):	pos.x = centerPos.x + FLOOR_OFFSET_X;
+			break;
+		}
+
+		//Z座標
+		switch (i / 3)
+		{
+		case(0):	pos.z = centerPos.z - (FLOOR_OFFSET_Z);
+			break;
+		case(1):	pos.z = centerPos.z;
+			break;
+		case(2):	pos.z = centerPos.z + FLOOR_OFFSET_Z;
+			break;
+		}
+
+		m_Transform[i].fPos = { pos.x, 0.0f, pos.z };	//座標を確定
 	}
 }
 
@@ -109,7 +202,7 @@ void CFloor::Draw()
    ----------------------------------------
    内容：他のオブジェクトと同じカメラをセットする
    ----------------------------------------
-   引数：なし
+   引数：カメラのポインタ
    ----------------------------------------
    戻値：なし
 ======================================== */
