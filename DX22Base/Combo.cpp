@@ -121,17 +121,17 @@ void CCombo::Draw()
 		if (m_dComboInfo[i].dCnt == 0) continue;
 
 		// コンボ背景表示
-		DrawTexture(COMBO_UI_POSITION.x + COMBO_UI_BACK_POSX,
-					COMBO_UI_POSITION.y + COMBO_UI_BACK_POSY,
-					COMBO_UI_SIZE.x		+ COMBO_UI_BACK_SIZEX,
-					COMBO_UI_SIZE.y		+ COMBO_UI_BACK_SIZEY,
+		DrawTexture(COMBO_UI_BACK_POS.x,
+					COMBO_UI_BACK_POS.y,
+					COMBO_UI_BACK_SIZE.x,
+					COMBO_UI_BACK_SIZE.y,
 					m_pTextureNum[1]);
 
 		// コンボ文字表示
-		DrawTexture(COMBO_UI_POSITION.x + COMBO_UI_STRING_POSX,
-					COMBO_UI_POSITION.y + COMBO_UI_STRING_POSY,
-					COMBO_UI_SIZE.x		+ COMBO_UI_STRING_SIZEX,
-					COMBO_UI_SIZE.y		+ COMBO_UI_STRING_SIZEY,
+		DrawTexture(COMBO_UI_STRING_POS.x,
+					COMBO_UI_STRING_POS.y,
+					COMBO_UI_STRING_SIZE.x,
+					COMBO_UI_STRING_SIZE.y,
 					m_pTextureNum[2]);
 		
 		float shiftPosY = dispCnt * COMBO_UI_MULTI_DISP_SPACE;	// コンボ同時表示の際の上下の空白をセット

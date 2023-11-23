@@ -141,14 +141,10 @@ const float COMBO_UI_NUM_SPACE			= 80.0f;				// 数字の間スペース
 const float COMBO_UI_MULTI_DISP_SPACE	= 100.0f;				// 同時コンボ描画時の上下の空白
 const int COMBO_UI_DISP_DILAY_TIME		= 2.0f * 60;			// 残コンボ数表示の秒数
 
-const float COMBO_UI_BACK_POSX = 0.0f;
-const float COMBO_UI_BACK_POSY = 0.0f;
-const float COMBO_UI_BACK_SIZEX = 300.0f;
-const float COMBO_UI_BACK_SIZEY = 150.0f;
-const float COMBO_UI_STRING_POSX = 95.0f;
-const float COMBO_UI_STRING_POSY = 20.0f;
-const float COMBO_UI_STRING_SIZEX = 60.0f;
-const float COMBO_UI_STRING_SIZEY = -45.0f;
+const TPos2d<float> COMBO_UI_BACK_POS	 = {1100.0f, 600.0f};	// コンボUIの背景の描画位置
+const TPos2d<float> COMBO_UI_BACK_SIZE	 = {370.0f, 280.0f};	// コンボUIの背景の大きさ
+const TPos2d<float> COMBO_UI_STRING_POS  = {1200.0f, 620.0f};	// コンボUIの文字の描画位置
+const TPos2d<float> COMBO_UI_STRING_SIZE = {130.0f, 85.0f};		// コンボUIの文字の大きさ
 
 // 床 ====================================
 const float FLOOR_SCALE_X = 1.1f;
