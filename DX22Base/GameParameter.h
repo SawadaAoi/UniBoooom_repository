@@ -41,13 +41,15 @@ const int SCREEN_HEIGHT_ = 720;
 const float PLAYER_MOVE_SPEED	= 0.1f;			// プレイヤーの移動速度
 const int	PLAYER_HP			= 5;			// プレイヤーのHP
 const float PLAYER_RADIUS		= 0.1f;			// プレイヤーの当たり判定の大きさ
-const float PLAYER_SIZE			= 1.0f;			// プレイヤーの大きさ
+const float PLAYER_SIZE			= 0.2f;			// プレイヤーの大きさ
 const int	NO_DAMAGE_TIME		= 3 * 60;		// プレイヤーの無敵時間
 const int	DAMAGE_FLASH_FRAME	= 0.1f * 60;	// プレイヤーのダメージ点滅の切り替え間隔
 const int	SE_RUN_INTERVAL		= 0.4f * 60;	//プレイヤーの移動によるSE発生の間隔
 const float	SE_RUN_VOLUME		= 0.3f;			//移動によるSEの音量
 
 // ハンマー
+const float HAMMER_ANGLE_X		= 180.0f;								//ハンマーの表示角度
+const float HAMMER_ANGLE_Z		= 90.0f;								//ハンマーの表示角度
 const float SWING_ANGLE			= DirectX::XMConvertToRadians(90.0f);	// ハンマーを振る範囲(扇形の角度の大きさ)
 const float SWING_TIME_FRAME	= 0.15f * 60;							// ハンマーを振る時間(フレーム単位)
 const float ROTATE_RADIUS		= 1.0f;									// ハンマーが回転するプレイヤーからの距離

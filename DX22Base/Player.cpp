@@ -86,6 +86,18 @@ CPlayer::CPlayer()
 	m_Sphere.fRadius = PLAYER_RADIUS;						// 当たり判定用の球体の半径
 	m_Transform.fScale = PLAYER_SIZE;
 	LoadSound();	//サウンドファイル読み込み
+
+	//頂点シェーダ読み込み
+	m_pVS = new VertexShader();
+	if (FAILED(m_pVS->Load("Assets/Shader/VS_Model.cso"))) {
+		MessageBox(nullptr, "VS_Model.cso", "Error", MB_OK);
+	}
+	//レベル1スライムのモデル読み込み
+	m_pModel = new Model;
+	if (!m_pModel->Load("Assets/Model/player/player.FBX", 1.0f, Model::None)) {		//倍率と反転は省略可
+		MessageBox(NULL, "player", "Error", MB_OK);	//ここでエラーメッセージ表示
+	}
+	m_pModel->SetVertexShader(m_pVS);
 }
 /* ========================================
    関数：デストラクタ
@@ -98,6 +110,8 @@ CPlayer::CPlayer()
 ======================================== */
 CPlayer::~CPlayer()
 {
+	SAFE_DELETE(m_pModel);
+	SAFE_DELETE(m_pVS);
 	SAFE_DELETE(m_pGameOver);
 	SAFE_DELETE(m_pPlayerGeo);
 	SAFE_DELETE(m_pHammer);
@@ -192,6 +206,25 @@ void CPlayer::Draw()
 
 	
 	m_pPlayerGeo->Draw();		//プレイヤーを描画
+
+	DirectX::XMFLOAT4X4 mat[3];
+
+	mat[0] = m_Transform.GetWorldMatrixSRT();
+	mat[1] = m_pCamera->GetViewMatrix();
+	mat[2] = m_pCamera->GetProjectionMatrix();
+
+	//-- 行列をシェーダーへ設定
+	m_pVS->WriteBuffer(0, mat);
+
+	//-- モデル表示
+	if (m_pModel) {
+		// レンダーターゲット、深度バッファの設定
+		RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得
+		DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
+		SetRenderTargets(1, &pRTV, pDSV);		//DSVがnullだと2D表示になる
+
+		m_pModel->Draw();
+	}
 	
 	// 攻撃中の場合
 	if (m_bAttackFlg == true)

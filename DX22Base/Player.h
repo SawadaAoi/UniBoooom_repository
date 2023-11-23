@@ -38,6 +38,7 @@
 #include "Camera.h"
 #include "Object.h"
 #include "Sound.h"
+#include "Model.h"
 // =============== クラス定義 =====================
 class CPlayer
 	: public CObject
@@ -72,7 +73,8 @@ private:
 	
 
 	TPos3d<float> m_fMove;				// 移動量
-	
+	Model* m_pModel;					//プレイヤーのモデル
+	VertexShader* m_pVS;				//頂点シェーダーのポインタ
 	int m_nHp;							// プレイヤーの体力
 	bool m_bAttackFlg;					// 攻撃中かどうかのフラグ
 	int m_nNoDamageCnt;					// プレイヤーの無敵時間をカウント

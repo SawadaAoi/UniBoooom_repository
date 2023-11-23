@@ -29,6 +29,7 @@
 #include <DirectXMath.h>
 #include "Camera.h"
 #include "Object.h"
+#include "Model.h"
 // =============== クラス定義 =====================
 class CHammer
 	: public CObject
@@ -45,6 +46,8 @@ public:
 	void AttackStart(TPos3d<float>pPos, float angle);								// 攻撃開始処理
 private:
 	// ===メンバ変数宣言=====
+	Model* m_pModel;				//プレイヤーのモデル
+	VertexShader* m_pVS;			//頂点シェーダーのポインタ
 	CGeometry* m_pHammerGeo;		// ハンマーを仮表示する図形
 	TPos3d<float> m_tPlayerPos;		// 現在のプレイヤー座標
 	float m_fAngleNow;				// 今の角度

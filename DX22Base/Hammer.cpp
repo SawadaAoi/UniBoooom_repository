@@ -60,6 +60,20 @@ CHammer::CHammer()
 	m_pHammerGeo = new CSphere();							//ハンマーを仮表示するジオメトリー
 	m_Sphere.fRadius = HAMMER_COL_SIZE;
 	m_Transform.fScale = HAMMER_SIZE;
+	m_Transform.fRadian.x = HAMMER_ANGLE_X;
+	m_Transform.fRadian.z = HAMMER_ANGLE_Z;
+
+	//頂点シェーダ読み込み
+	m_pVS = new VertexShader();
+	if (FAILED(m_pVS->Load("Assets/Shader/VS_Model.cso"))) {
+		MessageBox(nullptr, "VS_Model.cso", "Error", MB_OK);
+	}
+	//レベル1スライムのモデル読み込み
+	m_pModel = new Model;
+	if (!m_pModel->Load("Assets/Model/hummer/hummer.FBX", 1.0f, Model::XFlip)) {		//倍率と反転は省略可
+		MessageBox(NULL, "hummer", "Error", MB_OK);	//ここでエラーメッセージ表示
+	}
+	m_pModel->SetVertexShader(m_pVS);
 }
 
 /* ========================================
@@ -73,6 +87,8 @@ CHammer::CHammer()
    ======================================== */
 CHammer::~CHammer()
 {
+	SAFE_DELETE(m_pModel);
+	SAFE_DELETE(m_pVS);
 	SAFE_DELETE(m_pHammerGeo);
 }
 
@@ -118,6 +134,25 @@ void CHammer::Draw(const CCamera* pCamera)
 	m_pHammerGeo->SetView(pCamera->GetViewMatrix());
 	m_pHammerGeo->SetProjection(pCamera->GetProjectionMatrix());
 	m_pHammerGeo->Draw();
+
+	//-- モデル表示
+	if (m_pModel) {
+		DirectX::XMFLOAT4X4 mat[3];
+
+		mat[0] = m_Transform.GetWorldMatrixSRT();
+		mat[1] = pCamera->GetViewMatrix();
+		mat[2] = pCamera->GetProjectionMatrix();
+
+		//-- 行列をシェーダーへ設定
+		m_pVS->WriteBuffer(0, mat);
+
+		// レンダーターゲット、深度バッファの設定
+		RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得
+		DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
+		SetRenderTargets(1, &pRTV, pDSV);		//DSVがnullだと2D表示になる
+
+		//m_pModel->Draw();
+	}
 }
 
 /* ========================================

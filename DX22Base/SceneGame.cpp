@@ -157,6 +157,7 @@ SceneGame::~SceneGame()
 	SAFE_DELETE(m_pFade);
   SAFE_DELETE(m_pTimer);
 	SAFE_DELETE(m_pExplosionMng);
+	SAFE_DELETE(m_pCombo);
 	SAFE_DELETE(m_pSlimeMng);	// スライムマネージャー削除
 	SAFE_DELETE(m_pFloor);
 	SAFE_DELETE(m_pCamera);
