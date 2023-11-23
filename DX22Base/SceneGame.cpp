@@ -105,7 +105,6 @@ SceneGame::SceneGame()
 	m_pSlimeMng = new CSlimeManager();
 	m_pSlimeMng->SetCamera(m_pCamera);
 
-
 	// コンボ数表示生成
 	m_pCombo = new CCombo();
 
@@ -117,6 +116,11 @@ SceneGame::SceneGame()
 	// タイマー生成
 	m_pTimer = new CTimer();
 	m_pTimer->TimeStart();
+
+	//回復アイテムの表示
+	m_pHealItem = new CHealItem();
+	m_pHealItem->SetCamera(m_pCamera);
+
 	//ステージ終了のUI表示
 	m_pStageFin = new CStageFinish(m_pPlayer->GetHP(),m_pTimer->GetTimePtr());
 
@@ -153,6 +157,7 @@ SceneGame::~SceneGame()
 		m_pSpeaker->DestroyVoice();
 	}
 	SAFE_DELETE(m_pStageFin);
+	SAFE_DELETE(m_pHealItem);
 	SAFE_DELETE(m_pTimer);
 	SAFE_DELETE(m_pFade);
   SAFE_DELETE(m_pTimer);
@@ -223,6 +228,7 @@ void SceneGame::Update(float tick)
 	m_pSlimeMng->Update(m_pExplosionMng);
 	m_pExplosionMng->Update();
 	m_pTimer->Update();
+	m_pHealItem->Update();
 	m_pStageFin->Update();
 	m_pCombo->Update();
 
@@ -320,6 +326,7 @@ void SceneGame::Draw()
 	m_pStageFin->Draw();
 
 	m_pTimer->Draw();
+	m_pHealItem->Draw();
 	m_pCombo->Draw();
 
 

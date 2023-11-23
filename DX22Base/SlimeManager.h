@@ -31,6 +31,7 @@
 #include "ExplosionManager.h"
 #include "GameParameter.h"		//定数定義用ヘッダー
 #include "Sound.h"
+#include "HealItem.h"
 
 // =============== 定数定義 =======================
 #if MODE_GAME_PARAMETER
@@ -52,7 +53,7 @@ public:
 	void HitBranch(int HitSlimeArrayNum,int standSlimeArrayNum,CExplosionManager* pExpMng);			// スライムの接触が起きた際の分岐処理
 	bool HitFlameBranch(int HitSlimeNum, int StandSlimeNum, CExplosionManager* pExpMng);				// フレイムスライムとの接触が起きた際の分岐処理
 	void UnionSlime(E_SLIME_LEVEL level, TPos3d<float> pos);										// スライムの結合処理
-	void TouchExplosion(int DelSlime, CExplosionManager* pExpMng, int comboNum);									// スライムの爆発処理
+	void TouchExplosion(int DelSlime, CExplosionManager* pExpMng, int comboNum,CHealItem* pHealItem);									// スライムの爆発処理
 	E_SLIME_LEVEL GetRandomLevel();																	// ランダムなスライムのレベルを返す(1～3レべル)
 	void PreventOverlap(CSlimeBase* pMoveSlime, CSlimeBase* pStandSlime);							// スライム同士が移動中に接触した時の処理
 	void LoadModel();

@@ -34,6 +34,7 @@
 #include "StageFinishUI.h"
 #include "Combo.h"
 #include "Fade.h"
+#include "HealItem.h"
 
 // =============== クラス定義 =====================
 class SceneGame
@@ -66,6 +67,7 @@ private:
 	CFloor* m_pFloor;
 	CStageFinish* m_pStageFin;
 	CFade* m_pFade;
+	CHealItem* m_pHealItem;
 
 	XAUDIO2_BUFFER* m_pBGM;							//BGMの音声データ
 	XAUDIO2_BUFFER* m_pSEHitHammer;					//SEの音声データ

@@ -16,9 +16,9 @@
 #ifndef __FLOOR_H__
 #define __FLOOR_H__
 
+// =============== インクルード部 =====================
 #include "Camera.h"
 #include "Transform3d.h"
-#include "Pos3d.h"
 #include "Shader.h"
 #include "Model.h"
 #include "GameParameter.h"		//定数定義用ヘッダー
