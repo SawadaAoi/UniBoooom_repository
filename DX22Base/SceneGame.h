@@ -28,6 +28,7 @@
 #include "Collision.h"
 #include "Player.h"
 #include "ExplosionManager.h"
+#include "HP_UI.h"
 #include "DirectWrite.h"
 #include "Timer.h"
 #include "Floor.h"
@@ -61,6 +62,8 @@ private:
 	CSlimeManager* m_pSlimeMng;
 	CCOLLISION* m_pCollision;
 	CExplosionManager* m_pExplosionMng;
+	CHP_UI* m_pHpMng;
+	DirectWrite* m_pDirectWrite;
 	CTimer* m_pTimer;
 	CCombo* m_pCombo;
 	CFloor* m_pFloor;

@@ -116,7 +116,7 @@ const float LEVEL_4_EXPLODE_TIME = 3.0f * 60.0f;	// スライム_4の爆発総時間
 const int	DELAY_TIME			 = 0.2f * 60;		// 遅延秒数
 
 
-// カメラ =====================================================
+// カメラ C
 const TPos3d<float> INIT_POS(0.0f, 2.6f, -3.0f);					// 初期位置
 
 const float INIT_ANGLE	= DirectX::XMConvertToRadians(73.0f);       // カメラの角度
@@ -124,6 +124,14 @@ const float INIT_NEAR	= 1.0f;										// 画面手前初期z値
 const float INIT_FAR	= 150.0f;									// 画面奥初期z値
 const float INIT_RADIUS = 15.0f;									// カメラと注視点との距離(初期値)
 
+// UI =====================================================
+// 2D表示
+const float VIEW_LEFT = 0.0f;		// 画面左端の座標
+const float VIEW_RIGHT = 1280.0f;	// 画面右端の座標（画面横幅）
+const float VIEW_BOTTOM = 720.0f;	// 画面下端の座標（画面縦幅）
+const float VIEW_TOP = 0.0f;		// 画面上端の座標
+const float NEAR_Z = 0.1f;			// 画面に写り始める距離
+const float FAR_Z = 10.0f;			// 写せる限界距離
 
 // タイマー =====================================================
 const int STAGE_TIME = 180 * 60;	//ステージ制限時間（秒*フレーム）
@@ -133,6 +141,13 @@ const TPos2d<float> SECOND_ONE_POS (690.0f, 25.0f);		//一の桁秒の位置設定
 const TPos2d<float> TIME_BACKGROUND_POS (630.0f, 25.0f);	//バックグラウンド位置設定
 const TPos2d<float> TIME_COLON_POS (615.0f, 25.0f);		//コロンの位置設定
 
+// HP
+const float DRAW_POSX		= 80.0f;	// テクスチャを表示する位置のX座標
+const float DRAW_FIRSTPOSX	= 0.9f;		// 1つ目のテクスチャを表示する位置の調節用
+const float DRAW_GAP		= 1.15f;	// テクスチャ同士の間隔
+const float DRAW_POSY		= 60.0f;	// テクスチャを表示する位置のY座標
+const float DRAW_HEIGHT		= 90.0f;	// テクスチャの縦幅
+const float DRAW_WIDTH		= 90.0f;	// テクスチャの横幅
 // コンボ =========================================================
 const int	MAX_COMBO_NUM				= 5;					// 最大同時コンボ数
 const TPos2d<float> COMBO_UI_POSITION	= { 1025.0f, 600.0f };	// コンボUIの描画位置

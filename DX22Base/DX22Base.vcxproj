@@ -190,6 +190,7 @@
     <ClCompile Include="Fade.cpp" />
     <ClCompile Include="Floor.cpp" />
     <ClCompile Include="HitStop.cpp" />
+    <ClCompile Include="HP_UI.cpp" />
     <ClCompile Include="ModelParticle.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Particle.cpp" />
@@ -262,6 +263,7 @@
     <ClInclude Include="ExplosionManager.h" />
     <ClInclude Include="HitStop.h" />
     <ClInclude Include="Object.h" />
+    <ClInclude Include="HP_UI.h" />
     <ClInclude Include="Pos2d.h" />
     <ClInclude Include="Pos3d.h" />
     <ClInclude Include="ModelParticle.h" />
