@@ -124,6 +124,8 @@ void CCombo::Draw()
 				m_dComboInfo[i].dCnt = 0;
 				m_dComboInfo[i].dDispFrame = 0;
 				m_dComboInfo[i].bEndFlg = false;
+				m_dComboInfo[i].dScore = 0;
+
 			}
 		}
 
@@ -273,7 +275,9 @@ int CCombo::GetCombo(int num)
 void CCombo::EndCombo(int num)
 {
 	m_dComboInfo[num].bEndFlg = true;	// コンボ終了フラグをオン
+	
 	m_pTotalScore->ComboCheck(m_dComboInfo[num], num);	//倍率を決める
+	//m_dComboInfo[num].dScore = 0;
 }
 /* ========================================
 	トータルスコア情報セット関数
