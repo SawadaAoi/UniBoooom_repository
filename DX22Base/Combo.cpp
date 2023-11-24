@@ -40,14 +40,26 @@ const int COMBO_UI_DISP_DILAY_TIME = 2.0f * 60;
 	戻値：なし
 =========================================== */
 CCombo::CCombo()
-	: m_pTextureNum(nullptr)
 {
-
 	// 数字画像を読み込む
-	m_pTextureNum = new Texture();
-	if (FAILED(m_pTextureNum->Create("Assets/Texture/numbers_v1/number.png")))
+	m_pTextureNum[0] = new Texture();
+	if (FAILED(m_pTextureNum[0]->Create("Assets/Texture/Combo/combo_numbers.png")))
 	{
-		MessageBox(NULL, "number.png", "Error", MB_OK);
+		MessageBox(NULL, "combo_numbers.png", "Error", MB_OK);
+	}
+
+	// コンボ背景画像読み込み
+	m_pTextureNum[1] = new Texture();
+	if (FAILED(m_pTextureNum[1]->Create("Assets/Texture/Combo/combo_back.png")))
+	{
+		MessageBox(NULL, "combo_back.png", "Error", MB_OK);
+	}
+
+	// コンボ文字画像読み込み
+	m_pTextureNum[2] = new Texture();
+	if (FAILED(m_pTextureNum[2]->Create("Assets/Texture/Combo/combo_combo.png")))
+	{
+		MessageBox(NULL, "combo_combo.png", "Error", MB_OK);
 	}
 
 	// コンボ情報の初期化
@@ -70,7 +82,10 @@ CCombo::CCombo()
 =========================================== */
 CCombo::~CCombo()
 {
-	SAFE_DELETE(m_pTextureNum);
+	for (int i = 0; i < 3; ++i)
+	{
+		SAFE_DELETE(m_pTextureNum[i]);
+	}
 }
 
 /* ========================================
@@ -99,11 +114,26 @@ void CCombo::Update()
 void CCombo::Draw()
 {
 	int dispCnt = 0;	// 描画コンボ数
+
 	for (int i = 0; i < MAX_COMBO_NUM; i++)
 	{
 		// 0コンボは表示しない
 		if (m_dComboInfo[i].dCnt == 0) continue;
 
+		// コンボ背景表示
+		DrawTexture(COMBO_UI_BACK_POS.x,
+					COMBO_UI_BACK_POS.y,
+					COMBO_UI_BACK_SIZE.x,
+					COMBO_UI_BACK_SIZE.y,
+					m_pTextureNum[1]);
+
+		// コンボ文字表示
+		DrawTexture(COMBO_UI_STRING_POS.x,
+					COMBO_UI_STRING_POS.y,
+					COMBO_UI_STRING_SIZE.x,
+					COMBO_UI_STRING_SIZE.y,
+					m_pTextureNum[2]);
+		
 		float shiftPosY = dispCnt * COMBO_UI_MULTI_DISP_SPACE;	// コンボ同時表示の際の上下の空白をセット
 		DisplayNumber(m_dComboInfo[i].dCnt, shiftPosY);			// 数字の表示
 
@@ -182,9 +212,53 @@ void CCombo::DisplayNumber(int cnt, float shiftPosY)
 			Sprite::SetUVPos(DirectX::XMFLOAT2(0.2f * (num[j] - 5), 0.5f));
 		}
 		Sprite::SetUVScale(DirectX::XMFLOAT2(0.2f, 0.5f));
-		Sprite::SetTexture(m_pTextureNum);
+		Sprite::SetTexture(m_pTextureNum[0]);
 		Sprite::Draw();
 	}
+}
+
+/* ========================================
+	テクスチャ描画関数
+	-------------------------------------
+	内容：数字以外のコンボ関係テクスチャの描画処理
+	-------------------------------------
+	引数1：表示位置のX座標
+	-------------------------------------
+	引数2：表示位置のY座標
+	-------------------------------------
+	引数3：表示するテクスチャの縦幅
+	-------------------------------------
+	引数4：表示するテクスチャの横幅
+	-------------------------------------
+	引数5：表示するテクスチャのポインタ
+	-------------------------------------
+	戻値：なし
+========================================== = */
+void CCombo::DrawTexture(float posX, float posY, float h, float w, Texture* pTexture)
+{
+	DirectX::XMFLOAT4X4 mat[3];
+
+	// ワールド行列はXとYのみを考慮して作成
+	DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(posX, posY, 0.0f);	// ワールド行列（必要に応じて変数を増やしたり、複数処理を記述したりする）
+	DirectX::XMStoreFloat4x4(&mat[0], DirectX::XMMatrixTranspose(world));
+
+	// ビュー行列は2Dだとカメラの位置があまり関係ないので、単位行列を設定する
+	DirectX::XMStoreFloat4x4(&mat[1], DirectX::XMMatrixIdentity());
+
+	// プロジェクション行列には2Dとして表示するための行列を設定する
+	// この行列で2Dのスクリーンの大きさが決まる
+	DirectX::XMMATRIX proj = DirectX::XMMatrixOrthographicOffCenterLH(0.0f, 1280.0f, 720.0f, 0.0f, 0.1f, 10.0f);	// 平衡投影行列を設定
+	DirectX::XMStoreFloat4x4(&mat[2], DirectX::XMMatrixTranspose(proj));
+
+	// スプライトの設定
+	Sprite::SetWorld(mat[0]);
+	Sprite::SetView(mat[1]);
+	Sprite::SetProjection(mat[2]);
+	Sprite::SetSize(DirectX::XMFLOAT2(h, -w));
+	Sprite::SetUVPos(DirectX::XMFLOAT2(0.0f, 0.0f));
+	Sprite::SetUVScale(DirectX::XMFLOAT2(1.0f, 1.0f));
+	Sprite::SetTexture(pTexture);
+	Sprite::Draw();
 }
 
 /* ========================================
