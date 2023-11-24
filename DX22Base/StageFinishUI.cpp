@@ -1,39 +1,39 @@
 /* ========================================
 	HEW/UniBoooom!!
 	------------------------------------
-	StageFinishUI—pƒwƒbƒ_
+	StageFinishUIï¿½pï¿½wï¿½bï¿½_
 	------------------------------------
 	StageFinishUI.h
 	------------------------------------
-	ì¬ŽÒ
+	ï¿½ì¬ï¿½ï¿½
 		yamashita
-	•ÏX—š—ð
-	E2023/11/20 cppì¬ Yamashita
-	E2023/11/20 ƒQ[ƒ€‚ÌƒvƒŒƒCó‘Ô‚É‚æ‚Á‚ÄUI‚ð•\Ž¦‚·‚é yamashita
-	E2023/11/20 UI‚ªŽ×–‚‚ÈŽž‚É”ñ•\Ž¦‚É‚Å‚«‚é‚æ‚¤‚É•ÏX yamashita
-	E2023/11/23 •\Ž¦ƒtƒ‰ƒOŽæ“¾ŠÖ”ì¬ nieda
+	ï¿½ÏXï¿½ï¿½ï¿½ï¿½
+	ï¿½E2023/11/20 cppï¿½ì¬ Yamashita
+	ï¿½E2023/11/20 ï¿½Qï¿½[ï¿½ï¿½ï¿½Ìƒvï¿½ï¿½ï¿½Cï¿½ï¿½Ô‚É‚ï¿½ï¿½ï¿½ï¿½UIï¿½ï¿½\ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ yamashita
+	ï¿½E2023/11/20 UIï¿½ï¿½ï¿½×–ï¿½ï¿½ÈŽï¿½ï¿½É”ï¿½\ï¿½ï¿½ï¿½É‚Å‚ï¿½ï¿½ï¿½æ‚¤ï¿½É•ÏX yamashita
+	ï¿½E2023/11/23 ï¿½\ï¿½ï¿½ï¿½tï¿½ï¿½ï¿½Oï¿½æ“¾ï¿½Öï¿½ï¿½ì¬ nieda
 
 ========================================== */
-
+#include "DirectXTex/TextureLoad.h"		
 #include "StageFinishUI.h"
 #include "DirectWrite.h"
 #include "Sprite.h"
 #include "GameParameter.h"
 #include "Input.h"
 
-// =============== ’è”’è‹` =======================
-const int SCALE_X = 500;	//UI‚Ì‰¡•
-const int SCALE_Y = 100;	//UI‚Ìc•
+// =============== ï¿½è”ï¿½ï¿½` =======================
+const int SCALE_X = 500;	//UIï¿½Ì‰ï¿½ï¿½ï¿½
+const int SCALE_Y = 100;	//UIï¿½Ìcï¿½ï¿½
 
 /* ========================================
-	ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	ï¿½Rï¿½ï¿½ï¿½Xï¿½gï¿½ï¿½ï¿½Nï¿½^
 	----------------------------------------
-	“à—eF¶¬Žž‚És‚¤ˆ—
+	ï¿½ï¿½ï¿½eï¿½Fï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ésï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	----------------------------------------
-	ˆø”1FƒvƒŒƒCƒ„[‚ÌHP‚Ìƒ|ƒCƒ“ƒ^
-	ˆø”1F§ŒÀŽžŠÔ‚Ìƒ|ƒCƒ“ƒ^
+	ï¿½ï¿½ï¿½ï¿½1ï¿½Fï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½ï¿½HPï¿½Ìƒ|ï¿½Cï¿½ï¿½ï¿½^
+	ï¿½ï¿½ï¿½ï¿½1ï¿½Fï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô‚Ìƒ|ï¿½Cï¿½ï¿½ï¿½^
 	----------------------------------------
-	–ß’lF‚È‚µ
+	ï¿½ß’lï¿½Fï¿½È‚ï¿½
 =========================================== */
 CStageFinish::CStageFinish(int* pPlayerHp, int* pTimeCnt)
 	:m_bDispFlg(false)
@@ -44,32 +44,33 @@ CStageFinish::CStageFinish(int* pPlayerHp, int* pTimeCnt)
 	, m_pTexGameClear(nullptr)
 	,m_pTexGameOver(nullptr)
 {
-	m_pPlayerHp = pPlayerHp;	//ƒvƒŒƒCƒ„[‚ÌHP‚Ìƒ|ƒCƒ“ƒ^‚ðŽæ“¾
-	m_pTimeCnt = pTimeCnt;		//§ŒÀŽžŠÔ‚Ìƒ|ƒCƒ“ƒ^‚ðŽæ“¾
+	m_pPlayerHp = pPlayerHp;	//ï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½ï¿½HPï¿½Ìƒ|ï¿½Cï¿½ï¿½ï¿½^ï¿½ï¿½ï¿½æ“¾
+	m_pTimeCnt = pTimeCnt;		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô‚Ìƒ|ï¿½Cï¿½ï¿½ï¿½^ï¿½ï¿½ï¿½æ“¾
 
-	//ƒQ[ƒ€ƒNƒŠƒA‚ÌƒeƒNƒXƒ`ƒƒ“Ç‚Ýž‚Þ
+	//ï¿½Qï¿½[ï¿½ï¿½ï¿½Nï¿½ï¿½ï¿½Aï¿½Ìƒeï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½Ç‚Ýï¿½ï¿½ï¿½
 	m_pTexGameClear = new Texture;
+
 	if (FAILED(m_pTexGameClear->Create("Assets/Texture/StageFinish/GameClear.png")))
 	{
-		MessageBox(NULL, "GameClear“Ç‚Ýž‚ÝŽ¸”s", "Error", MB_OK);
+		MessageBox(NULL, "GameClearï¿½Ç‚Ýï¿½ï¿½ÝŽï¿½ï¿½s", "Error", MB_OK);
 	}
 
-	//ƒQ[ƒ€ƒI[ƒo[‚ÌƒeƒNƒXƒ`ƒƒ“Ç‚Ýž‚Þ
+	//ï¿½Qï¿½[ï¿½ï¿½ï¿½Iï¿½[ï¿½oï¿½[ï¿½Ìƒeï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½Ç‚Ýï¿½ï¿½ï¿½
 	m_pTexGameOver = new Texture;
 	if (FAILED(m_pTexGameOver->Create("Assets/Texture/StageFinish/GameOver.png")))
 	{
-		MessageBox(NULL, "GameOver“Ç‚Ýž‚ÝŽ¸”s", "Error", MB_OK);
+		MessageBox(NULL, "GameOverï¿½Ç‚Ýï¿½ï¿½ÝŽï¿½ï¿½s", "Error", MB_OK);
 	}
 }
 
 /* ========================================
-	ƒfƒXƒgƒ‰ƒNƒ^
+	ï¿½fï¿½Xï¿½gï¿½ï¿½ï¿½Nï¿½^
 	----------------------------------------
-	“à—eFíœŽž‚Ìˆ—
+	ï¿½ï¿½ï¿½eï¿½Fï¿½íœï¿½ï¿½ï¿½Ìï¿½ï¿½ï¿½
 	----------------------------------------
-	ˆø”1F‚È‚µ
+	ï¿½ï¿½ï¿½ï¿½1ï¿½Fï¿½È‚ï¿½
 	----------------------------------------
-	–ß’lF‚È‚µ
+	ï¿½ß’lï¿½Fï¿½È‚ï¿½
 =========================================== */
 CStageFinish::~CStageFinish()
 {
@@ -78,31 +79,31 @@ CStageFinish::~CStageFinish()
 }
 
 /* ========================================
-	XVŠÖ”
+	ï¿½Xï¿½Vï¿½Öï¿½
 	----------------------------------------
-	“à—eF–ˆƒtƒŒ[ƒ€s‚¤XVˆ—
+	ï¿½ï¿½ï¿½eï¿½Fï¿½ï¿½ï¿½tï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½sï¿½ï¿½ï¿½Xï¿½Vï¿½ï¿½ï¿½ï¿½
 	----------------------------------------
-	ˆø”1F‚È‚µ
+	ï¿½ï¿½ï¿½ï¿½1ï¿½Fï¿½È‚ï¿½
 	----------------------------------------
-	–ß’lF‚È‚µ
+	ï¿½ß’lï¿½Fï¿½È‚ï¿½
 =========================================== */
 void CStageFinish::Update()
 {
-	//ƒQ[ƒ€ƒNƒŠƒA‚©ƒQ[ƒ€ƒI[ƒo[‚ð”»’f
-	//¦ƒQ[ƒ€I—¹Œã‚ÉƒNƒŠƒA‚ÆƒQ[ƒ€ƒI[ƒo[‚ªŸŽè‚ÉØ‚è‘Ö‚í‚ç‚È‚¢‚æ‚¤‚Éu&&v‚ÅuGAME_PLAYvó‘Ô‚¾‚Á‚½‚ç‚ð“ü‚ê‚½
+	//ï¿½Qï¿½[ï¿½ï¿½ï¿½Nï¿½ï¿½ï¿½Aï¿½ï¿½ï¿½Qï¿½[ï¿½ï¿½ï¿½Iï¿½[ï¿½oï¿½[ï¿½ð”»’f
+	//ï¿½ï¿½ï¿½Qï¿½[ï¿½ï¿½ï¿½Iï¿½ï¿½ï¿½ï¿½ÉƒNï¿½ï¿½ï¿½Aï¿½ÆƒQï¿½[ï¿½ï¿½ï¿½Iï¿½[ï¿½oï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÉØ‚ï¿½Ö‚ï¿½ï¿½È‚ï¿½ï¿½æ‚¤ï¿½Éu&&ï¿½vï¿½ÅuGAME_PLAYï¿½vï¿½ï¿½Ô‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‚½
 	if		(0 >= *m_pPlayerHp && m_eGameState == GAME_PLAY)	
-	{	//ƒ^ƒCƒ}[‚ª0‚É‚È‚Á‚½‚çƒNƒŠƒAó‘Ô‚É‘JˆÚ
+	{	//ï¿½^ï¿½Cï¿½}ï¿½[ï¿½ï¿½0ï¿½É‚È‚ï¿½ï¿½ï¿½ï¿½ï¿½Nï¿½ï¿½ï¿½Aï¿½ï¿½Ô‚É‘Jï¿½ï¿½
 
     m_bDispFlg = true;
 		m_eGameState = GAME_OVER;
 	}
 	else if (0 >= *m_pTimeCnt && m_eGameState == GAME_PLAY)		
-	{	//‘Ì—Í‚ª0‚É‚È‚Á‚½‚çƒQ[ƒ€ƒI[ƒo[ó‘Ô‚É‘JˆÚ
+	{	//ï¿½Ì—Í‚ï¿½0ï¿½É‚È‚ï¿½ï¿½ï¿½ï¿½ï¿½Qï¿½[ï¿½ï¿½ï¿½Iï¿½[ï¿½oï¿½[ï¿½ï¿½Ô‚É‘Jï¿½ï¿½
 		m_bDispFlg = true;
 		m_eGameState = GAME_CLEAR;
 	}
 
-	//•\Ž¦‚ªŽ×–‚‚ÈŽž‚ÉÁ‚¹‚é‚æ‚¤‚É‚·‚é	<=TODO@ÅŒã‚É‚ÍÁ‹Ž‚·‚é
+	//ï¿½\ï¿½ï¿½ï¿½ï¿½ï¿½×–ï¿½ï¿½ÈŽï¿½ï¿½Éï¿½ï¿½ï¿½ï¿½ï¿½æ‚¤ï¿½É‚ï¿½ï¿½ï¿½	<=TODOï¿½@ï¿½ÅŒï¿½É‚Íï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	if (IsKeyTrigger(VK_RSHIFT))
 	{
 		m_bDeleteDisp ^= true;
@@ -110,41 +111,41 @@ void CStageFinish::Update()
 }
 
 /* ========================================
-	•`‰æŠÖ”
+	ï¿½`ï¿½ï¿½Öï¿½
 	----------------------------------------
-	“à—eF•`‰æˆ—
+	ï¿½ï¿½ï¿½eï¿½Fï¿½`ï¿½æˆï¿½ï¿½
 	----------------------------------------
-	ˆø”1F‚È‚µ
+	ï¿½ï¿½ï¿½ï¿½1ï¿½Fï¿½È‚ï¿½
 	----------------------------------------
-	–ß’lF‚È‚µ
+	ï¿½ß’lï¿½Fï¿½È‚ï¿½
 =========================================== */
 void CStageFinish::Draw()
 {
-	//UI•\Ž¦Žž‚ÉˆÄ“à‚ð•\Ž¦
+	//UIï¿½\ï¿½ï¿½ï¿½ï¿½ï¿½ÉˆÄ“ï¿½ï¿½ï¿½\ï¿½ï¿½
 	if (m_eGameState != GAME_PLAY)
 	{ 
-		std::string txt = "‰ESHIFT‚Å ƒNƒŠƒA^ƒQ[ƒ€ƒI[ƒo[‚ÌUI•\Ž¦‚ðØ‚è‘Ö‚¦";
+		std::string txt = "ï¿½ESHIFTï¿½ï¿½ ï¿½Nï¿½ï¿½ï¿½Aï¿½^ï¿½Qï¿½[ï¿½ï¿½ï¿½Iï¿½[ï¿½oï¿½[ï¿½ï¿½UIï¿½\ï¿½ï¿½ï¿½ï¿½Ø‚ï¿½Ö‚ï¿½";
 		DirectWrite::DrawString(txt,DirectX::XMFLOAT2(0.0f,0.0f));
 	}
-	if (m_bDeleteDisp) { return; }	//Ž×–‚‚ÈŽž‚ÉUI‚ð•\Ž¦‚¹‚¸‚ÉI—¹
+	if (m_bDeleteDisp) { return; }	//ï¿½×–ï¿½ï¿½ÈŽï¿½ï¿½ï¿½UIï¿½ï¿½\ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÉIï¿½ï¿½
 
 
 	std::string txt;
-	switch (m_eGameState)	//ƒQ[ƒ€‚Ìó‘Ô‚É‚æ‚Á‚Ä•ªŠò
+	switch (m_eGameState)	//ï¿½Qï¿½[ï¿½ï¿½ï¿½Ìï¿½Ô‚É‚ï¿½ï¿½ï¿½Ä•ï¿½ï¿½ï¿½
 	{
-	case (GAME_PLAY):	//ƒQ[ƒ€‚ðƒvƒŒƒC’†‚Ì•`‰æ
+	case (GAME_PLAY):	//ï¿½Qï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½Ì•`ï¿½ï¿½
 
 		break;
-	case (GAME_CLEAR):	//ƒQ[ƒ€ƒNƒŠƒA‚Ì•`‰æ
+	case (GAME_CLEAR):	//ï¿½Qï¿½[ï¿½ï¿½ï¿½Nï¿½ï¿½ï¿½Aï¿½Ì•`ï¿½ï¿½
 
-		//s—ñ•ÏŠ·‚ðs‚Á‚Ä‚©‚çƒeƒNƒXƒ`ƒƒ‚ðƒZƒbƒg‚µ‚Ä•`‰æ
+		//ï¿½sï¿½ï¿½ÏŠï¿½ï¿½ï¿½ï¿½sï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½Zï¿½bï¿½gï¿½ï¿½ï¿½Ä•`ï¿½ï¿½
 		EditSprite();
 		Sprite::SetTexture(m_pTexGameClear);
 		Sprite::Draw();
 		break;
-	case (GAME_OVER):	//ƒQ[ƒ€ƒI[ƒo[‚Ì•`‰æ
+	case (GAME_OVER):	//ï¿½Qï¿½[ï¿½ï¿½ï¿½Iï¿½[ï¿½oï¿½[ï¿½Ì•`ï¿½ï¿½
 
-		//s—ñ•ÏŠ·‚ðs‚Á‚Ä‚©‚çƒeƒNƒXƒ`ƒƒ‚ðƒZƒbƒg‚µ‚Ä•`‰æ
+		//ï¿½sï¿½ï¿½ÏŠï¿½ï¿½ï¿½ï¿½sï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½Zï¿½bï¿½gï¿½ï¿½ï¿½Ä•`ï¿½ï¿½
 		EditSprite();
 		Sprite::SetTexture(m_pTexGameOver);
 		Sprite::Draw();
@@ -153,13 +154,13 @@ void CStageFinish::Draw()
 }
 
 /* ========================================
-	•\Ž¦ƒtƒ‰ƒOŽæ“¾ŠÖ”
+	ï¿½\ï¿½ï¿½ï¿½tï¿½ï¿½ï¿½Oï¿½æ“¾ï¿½Öï¿½
 	----------------------------------------
-	“à—eFUI‚Ì•\Ž¦ƒtƒ‰ƒO‚ÌŽæ“¾
+	ï¿½ï¿½ï¿½eï¿½FUIï¿½Ì•\ï¿½ï¿½ï¿½tï¿½ï¿½ï¿½Oï¿½ÌŽæ“¾
 	----------------------------------------
-	ˆø”1F‚È‚µ
+	ï¿½ï¿½ï¿½ï¿½1ï¿½Fï¿½È‚ï¿½
 	----------------------------------------
-	–ß’lF‚È‚µ
+	ï¿½ß’lï¿½Fï¿½È‚ï¿½
 =========================================== */
 bool CStageFinish::GetDispFlg()
 {
@@ -167,37 +168,37 @@ bool CStageFinish::GetDispFlg()
 }
 
 /* ========================================
-	ƒXƒvƒ‰ƒCƒgÝ’èŠÖ”
+	ï¿½Xï¿½vï¿½ï¿½ï¿½Cï¿½gï¿½Ý’ï¿½Öï¿½
 	----------------------------------------
-	“à—eFUI‚Ì•\Ž¦‚ÌÝ’è
+	ï¿½ï¿½ï¿½eï¿½FUIï¿½Ì•\ï¿½ï¿½ï¿½ÌÝ’ï¿½
 	----------------------------------------
-	ˆø”1F‚È‚µ
+	ï¿½ï¿½ï¿½ï¿½1ï¿½Fï¿½È‚ï¿½
 	----------------------------------------
-	–ß’lF‚È‚µ
+	ï¿½ß’lï¿½Fï¿½È‚ï¿½
 =========================================== */
 void CStageFinish::EditSprite()
 {
 	DirectX::XMFLOAT4X4 matrix[3];
 
-	//ƒ[ƒ‹ƒhs—ñ‚ÍX‚ÆY‚Ì‚Ý‚ðl—¶‚µ‚Äì¬
+	//ï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½hï¿½sï¿½ï¿½ï¿½Xï¿½ï¿½Yï¿½Ì‚Ý‚ï¿½ï¿½lï¿½ï¿½ï¿½ï¿½ï¿½Äì¬
 	DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(SCREEN_WIDTH_ / 2, SCREEN_HEIGHT_ / 2, 0.0f);
 	DirectX::XMStoreFloat4x4(&matrix[0], DirectX::XMMatrixTranspose(world));
 
-	//ƒrƒ…[s—ñ‚Í2D‚¾‚ÆƒJƒƒ‰‚ÌˆÊ’u‚ª‚ ‚Ü‚èŠÖŒW‚È‚¢‚Ì‚ÅA’PˆÊs—ñ‚ðÝ’è‚·‚éi’PˆÊs—ñ‚ÍŒã“ú
+	//ï¿½rï¿½ï¿½ï¿½[ï¿½sï¿½ï¿½ï¿½2Dï¿½ï¿½ï¿½ÆƒJï¿½ï¿½ï¿½ï¿½ï¿½ÌˆÊ’uï¿½ï¿½ï¿½ï¿½ï¿½Ü‚ï¿½ÖŒWï¿½È‚ï¿½ï¿½Ì‚ÅAï¿½Pï¿½Êsï¿½ï¿½ï¿½Ý’è‚·ï¿½ï¿½iï¿½Pï¿½Êsï¿½ï¿½ÍŒï¿½ï¿½
 	DirectX::XMStoreFloat4x4(&matrix[1], DirectX::XMMatrixIdentity());
 
-	//ƒvƒƒWƒFƒNƒVƒ‡ƒ“s—ñ‚É‚Í2D‚Æ‚µ‚Ä•\Ž¦‚·‚é‚½‚ß‚Ìs—ñ‚ðÝ’è‚·‚é
-	//‚±‚Ìs—ñ‚Å2D‚ÌƒXƒNƒŠ[ƒ“‚Ì‘½‚¢‚³‚ªŒˆ‚Ü‚é
+	//ï¿½vï¿½ï¿½ï¿½Wï¿½Fï¿½Nï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½sï¿½ï¿½É‚ï¿½2Dï¿½Æ‚ï¿½ï¿½Ä•\ï¿½ï¿½ï¿½ï¿½ï¿½é‚½ï¿½ß‚Ìsï¿½ï¿½ï¿½Ý’è‚·ï¿½ï¿½
+	//ï¿½ï¿½ï¿½Ìsï¿½ï¿½ï¿½2Dï¿½ÌƒXï¿½Nï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½Ì‘ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ü‚ï¿½
 	DirectX::XMMATRIX proj = DirectX::XMMatrixOrthographicOffCenterLH(0.0f, SCREEN_WIDTH_, SCREEN_HEIGHT_, 0.0f, 0.1f, 10.0f);
 	DirectX::XMStoreFloat4x4(&matrix[2], DirectX::XMMatrixTranspose(proj));
 
-	//ƒXƒvƒ‰ƒCƒg‚ÌÝ’è
+	//ï¿½Xï¿½vï¿½ï¿½ï¿½Cï¿½gï¿½ÌÝ’ï¿½
 	Sprite::SetWorld(matrix[0]);
 	Sprite::SetView(matrix[1]);
 	Sprite::SetProjection(matrix[2]);
 	Sprite::SetSize(DirectX::XMFLOAT2(SCALE_X, -SCALE_Y));
 
-	//•ÏX‚Í–³‚¢‚ªSprite‚ªÃ“I‚È‚½‚ß‘¼‚ÌŠ‚Å‚Ì•ÏX‚ð”½‰f‚³‚ê‚È‚¢‚½‚ß‚É–ß‚·
+	//ï¿½ÏXï¿½Í–ï¿½ï¿½ï¿½ï¿½ï¿½Spriteï¿½ï¿½ï¿½Ã“Iï¿½È‚ï¿½ï¿½ß‘ï¿½ï¿½Ìï¿½ï¿½Å‚Ì•ÏXï¿½ð”½‰fï¿½ï¿½ï¿½ï¿½È‚ï¿½ï¿½ï¿½ï¿½ß‚É–ß‚ï¿½
 	Sprite::SetUVPos(DirectX::XMFLOAT2(0.0f, 0.0f));
 	Sprite::SetUVScale(DirectX::XMFLOAT2(1.0f, 1.0f));
 }
