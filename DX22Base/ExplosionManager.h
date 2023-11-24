@@ -61,11 +61,9 @@ public:
 	void SwitchExplode(E_SLIME_LEVEL slimeLevel, TPos3d<float> pos, TTriType<float> slimeSize, int comboNum);					//スライムのレベルに応じて爆発を変更
 
 
-	void DeleteCheck();							   				//時間より爆発を削除関数
 	void CreateUI(TPos3d<float> pos, float fTime);				//BoooomUI生成関数
 
 	CExplosion* GetExplosionPtr(int num);
-	void SwitchExplode(E_SLIME_LEVEL slimeLevel,TPos3d<float> pos, TTriType<float> slimeSize);		//スライムのレベルに応じて爆発を変更
 
 	void SetCamera(const CCamera* pCamera);	//他のオブジェクトと同一のカメラをセット
 	void SetCombo(CCombo* pCombo);

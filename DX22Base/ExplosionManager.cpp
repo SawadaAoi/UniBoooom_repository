@@ -141,7 +141,14 @@ void CExplosionManager::Draw()
 
 		m_pExplosion[i]->Draw(); // 爆発の描画
 	}
+	// boooomUIの検索
+	for (int i = 0; i < MAX_BOOOOM_NUM; i++)
+	{
+		//未使用のBoooomUIはスルー
+		if (m_pBoooomUI[i] == nullptr) continue;
 
+		m_pBoooomUI[i]->Draw();	// boooomUIの描画
+	}
 }
 
 /* ========================================
@@ -373,9 +380,6 @@ void CExplosionManager::SwitchExplode(E_SLIME_LEVEL slimeLevel, TPos3d<float> po
 	}
 
 	Create(pos, ExplosionSize, ExplodeTime);	// 爆発生成
-
-		break;
-	}
 }
 
 /* ========================================
@@ -406,35 +410,4 @@ void CExplosionManager::SwitchExplode(E_SLIME_LEVEL slimeLevel, TPos3d<float> po
 
 	Create(pos, ExplosionSize, ExplodeTime, comboNum);	// 爆発生成
 
-}
-
-/* ========================================
-	関数：描画関数
-	----------------------------------------
-	内容：爆発マネージャーの描画処理
-	----------------------------------------
-	引数：なし
-	----------------------------------------
-	戻値：なし
-======================================== */
-void CExplosionManager::Draw()
-{
-
-	// 爆発の検索
-	for (int i = 0; i < MAX_EXPLOSION_NUM || i < MAX_BOOOOM_NUM; i++)
-	{
-		// 未使用の爆発はスルー
-		if (m_pExplosion[i] == nullptr) continue;
-
-		m_pExplosion[i]->Draw(); // 爆発の描画
-
-	}
-	// boooomUIの検索
-	for (int i = 0; i < MAX_BOOOOM_NUM; i++)
-	{
-		//未使用のBoooomUIはスルー
-		if (m_pBoooomUI[i] == nullptr) continue;
-
-		m_pBoooomUI[i]->Draw();	// boooomUIの描画
-	}
 }
