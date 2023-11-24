@@ -193,8 +193,8 @@ void CSlimeManager::Create(E_SLIME_LEVEL level)
 		while (true)
 		{
 			// 乱数をセットする
-			CreatePos.x = GetRandom(-RANDOM_POS, RANDOM_POS);	//乱数取得
-			CreatePos.z = GetRandom(-RANDOM_POS, RANDOM_POS);
+			CreatePos.x = GetRandom(m_pPlayerPos.x - RANDOM_POS, m_pPlayerPos.x + RANDOM_POS);	//乱数取得
+			CreatePos.z = GetRandom(m_pPlayerPos.z - RANDOM_POS, m_pPlayerPos.z + RANDOM_POS);	
 			CreatePos.y = 0;
 
 			float Distance = CreatePos.Distance(m_pPlayerPos);	// 生成座標のプレイヤーとの距離
