@@ -23,6 +23,9 @@
 #ifndef __SCENE_H__	//Scene.hインクルードガード
 #define __SCENE_H__
 
+// =============== インクルード ===================
+#include "Texture.h"
+
 // =============== クラス定義 =====================
 class CScene
 {
@@ -46,10 +49,11 @@ public:
 	CScene();							//コンストラクタ
 	virtual ~CScene();					//デストラクタ
 	virtual void Update();				//更新
-	virtual void Draw() const;			//描画
+	virtual void Draw();			//描画
 	bool IsFin() const;					//終了確認
 	virtual E_TYPE GetType() const = 0;	//自身の種類ゲッタ
 	virtual E_TYPE GetNext() const = 0;	//次のシーンゲッタ
+	void Draw2d(float, float, float, float, Texture*);
 protected:
 	// ===メンバ変数宣言=====
 	bool m_bFinish;	//終了予約用(trueで終了)

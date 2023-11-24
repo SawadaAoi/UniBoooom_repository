@@ -13,16 +13,21 @@
 	・2023/11/10 他のオブジェクトと同一のカメラをセットするようにした yamashita
 	・2023/11/13 Create関数の引数にtimeを追加 Suzumura
 	・2023/11/18 サウンド用のメンバ変数を追加 yamashita
+	・2023/11/20 コンボ数機能追加 Sawada
+	・2023/11/21 コンボ数機能の一部をコンボクラスに移動 Sawada
+
 	・2023/11/21 BoooomUI用のメンバ変数を追加 Tei
 
 ========================================== */
 #ifndef __EXPLOSION_MANAGER_H__	//ExplosionManager.hインクルードガード
 #define __EXPLOSION_MANAGER_H__
+
 // =============== インクルード ===================
 #include "Explosion.h"			//爆発処理ヘッダー
 #include "GameParameter.h"		//定数定義用ヘッダー
 #include "SlimeBase.h"
 #include "Sound.h"
+#include "Combo.h"
 #include "BoooomUI.h"
 
 // =============== 定数定義 =======================
@@ -49,6 +54,13 @@ public:
 	void Draw();		 		//描画関数
 	
 	void Create(TTriType<float> pos,float size, float time);   	//爆発生成関数
+	void Create(TTriType<float> pos,float size, float time, int comboNum);   	//爆発生成関数
+	void DeleteCheck();							   				// 時間より爆発を削除関数
+	void ComboEndCheck();										// 爆発の連鎖が途切れたかチェックする
+	void SwitchExplode(E_SLIME_LEVEL slimeLevel, TPos3d<float> pos, TTriType<float> slimeSize);					//スライムのレベルに応じて爆発を変更
+	void SwitchExplode(E_SLIME_LEVEL slimeLevel, TPos3d<float> pos, TTriType<float> slimeSize, int comboNum);					//スライムのレベルに応じて爆発を変更
+
+
 	void DeleteCheck();							   				//時間より爆発を削除関数
 	void CreateUI(TPos3d<float> pos, float fTime);				//BoooomUI生成関数
 
@@ -56,11 +68,14 @@ public:
 	void SwitchExplode(E_SLIME_LEVEL slimeLevel,TPos3d<float> pos, TTriType<float> slimeSize);		//スライムのレベルに応じて爆発を変更
 
 	void SetCamera(const CCamera* pCamera);	//他のオブジェクトと同一のカメラをセット
-protected:
+	void SetCombo(CCombo* pCombo);
+
+
+private:
 	// ===メンバ変数宣言===
 	CExplosion* m_pExplosion[MAX_EXPLOSION_NUM];	//爆発の配列
 	CBoooomUI* m_pBoooomUI[MAX_BOOOOM_NUM];			//Boooom表示用の配列
-	
+	CCombo* m_pCombo;								// コンボ処理用
 	const CCamera* m_pCamera;
 private:
 	Texture* m_pTexUI;	//Boooom用テクスチャ

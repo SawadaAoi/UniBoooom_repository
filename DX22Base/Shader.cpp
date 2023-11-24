@@ -85,6 +85,17 @@ void Shader::SetTexture(UINT slot, Texture* tex)
 	case Pixel:		GetContext()->PSSetShaderResources(slot, 1, &pTex); break;
 	}
 }
+//void Shader::SetSampler(UINT slot, D3D11_SAMPLER_DESC* pSampDsc)
+//{
+//	if (!pSampDsc || slot >= m_pTextures.size()) { return; }
+//	ID3D11ShaderResourceView* pTex = tex->GetResource();
+//	m_pTextures[slot] = pTex;
+//	switch (m_kind)
+//	{
+//	case Vertex:	GetContext()->VSSetShaderResources(slot, 1, &pTex); break;
+//	case Pixel:		GetContext()->PSSetSamplers(slot, 1, &pSampDsc); break;
+//	}
+//}
 
 HRESULT Shader::Make(void* pData, UINT size)
 {

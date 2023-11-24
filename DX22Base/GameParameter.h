@@ -11,6 +11,7 @@
 	・2023/11/11 ヘッダ作成 Suzumura
 	・2023/11/13 パラメーター追加(LEVEL_〇_EXPLODE_TIME) Suzumura
 	・2023/11/14 パラメーター追加(// フレイムスライム) Suzumura
+	・2023/11/21 パラメーター追加(// コンボ数) Sawada
 
 =========================================== */
 #ifndef __GAME_PARAMETER_H__
@@ -32,7 +33,9 @@
 //ゲームシーン================================================
 const float BGM_VOLUME = 0.02f;				//シーンゲームの音量
 const float SE_HAMMER_HIT_VOLUME = 0.5f;	// スライムを打った時のSEの音量
-
+// 画面サイズ
+const int SCREEN_WIDTH_ = 1280;
+const int SCREEN_HEIGHT_ = 720;
 
 // プレイヤー ================================================
 const float PLAYER_MOVE_SPEED	= 0.1f;			// プレイヤーの移動速度
@@ -111,6 +114,8 @@ const float LEVEL_1_EXPLODE_TIME = 0.5f * 60.0f;	// スライム_1の爆発総時間
 const float LEVEL_2_EXPLODE_TIME = 1.0f * 60.0f;	// スライム_2の爆発総時間
 const float LEVEL_3_EXPLODE_TIME = 2.0f * 60.0f;	// スライム_3の爆発総時間
 const float LEVEL_4_EXPLODE_TIME = 3.0f * 60.0f;	// スライム_4の爆発総時間
+const int	DELAY_TIME			 = 0.2f * 60;		// 遅延秒数
+
 
 // カメラ =====================================================
 const TPos3d<float> INIT_POS(0.0f, 2.6f, -3.0f);					// 初期位置
@@ -140,6 +145,20 @@ const float BOOOOM_UI_SIZE_X = 1.0f;		//BoooomUIのXの長さ（textureの比率と合わせ
 const float BOOOOM_UI_SIZE_Y = 0.565f;		//BoooomUIのYの長さ（textureの比率と合わせる）
 const float BOOOOM_UI_SCALE_X = 6.0f;		//BoooomUIサイズのスケール
 const float BOOOOM_UI_SCALE_Y = 6.0f;		//BoooomUIサイズのスケール
+
+// コンボ =========================================================
+const int	MAX_COMBO_NUM				= 5;					// 最大同時コンボ数
+const TPos2d<float> COMBO_UI_POSITION	= { 1100.0f, 600.0f };	// コンボUIの描画位置
+const TPos2d<float> COMBO_UI_SIZE		= { 70.0f,   70.0f };	// コンボUIの大きさ
+const float COMBO_UI_NUM_SPACE			= 80.0f;				// 数字の間スペース
+const float COMBO_UI_MULTI_DISP_SPACE	= 100.0f;				// 同時コンボ描画時の上下の空白
+const int COMBO_UI_DISP_DILAY_TIME		= 2.0f * 60;			// 残コンボ数表示の秒数
+
+// 床 ====================================
+const float FLOOR_SCALE_X = 1.1f;
+const float FLOOR_SCALE_Z = 1.1f;
+const float FLOOR_OFFSET_X = 48.0f * FLOOR_SCALE_X;
+const float FLOOR_OFFSET_Z = 48.0f * FLOOR_SCALE_Z;
 
 #endif
 

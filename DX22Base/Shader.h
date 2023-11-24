@@ -31,6 +31,7 @@ public:
 	void WriteBuffer(UINT slot, void* pData);
 	// テクスチャの設定
 	void SetTexture(UINT slot, Texture* tex);
+	void SetSampler(UINT slot, D3D11_SAMPLER_DESC* pSampDsc);
 	// シェーダーを描画に使用
 	virtual void Bind(void) = 0;
 
@@ -45,6 +46,7 @@ private:
 protected:
 	std::vector<ID3D11Buffer*> m_pBuffers;
 	std::vector<ID3D11ShaderResourceView*> m_pTextures;
+	std::vector<ID3D11SamplerState*> m_pSampler;
 };
 
 //----------
