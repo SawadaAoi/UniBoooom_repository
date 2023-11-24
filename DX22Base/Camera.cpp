@@ -18,41 +18,36 @@
 	・2023/11/11 define用ヘッダ追加 suzumura
 	・2023/11/17 2D表示/3D表示の切換をコンストラクタでなくGetProjectionMatrix()関数で行うように変更・振動機能追加 takagi
 	・2023/11/18 2D表示のミスを訂正 takagi
+	・2023/11/24 定数値修正・フラグバグ修正・一部コメント詳細化 takagi
 
 ========================================== */
 
 // =============== インクルード ===================
 #include "Camera.h"		//自身のヘッダ
 #include "Defines.h"	//画面情報
-#include "GameParameter.h"
 
 // =============== 定数定義 =====================
 const float ASPECT = (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT;	//画面比率(y / x)
 const TPos3d<float> INIT_LOOK(0.0f, 0.0f, 0.0f);					//初期注視地点
 const TTriType<float> INIT_UP_VECTOR(0.0f, 1.0f, 0.0f);				//カメラの上方向
-#if MODE_GAME_PARAMETER
-#else
 const TPos3d<float> INIT_POS(0.0f, 1.6f, -3.0f);					//初期位置
-const float INIT_ANGLE = DirectX::XMConvertToRadians(24.0f);        //カメラの角度
+const float INIT_ANGLE = DirectX::XMConvertToRadians(73.0f);        //カメラの角度
 const float INIT_NEAR = 1.0f;										//画面手前初期z値
 const float INIT_FAR = 150.0f;										//画面奥初期z値
-const float INIT_RADIUS = 40.0f;									//カメラと注視点との距離(初期値)
-#endif
-
+const float INIT_RADIUS = 15.0f;									//カメラと注視点との距離(初期値)
 const float Pi = 3.141592f;
 constexpr float ANGLE_TO_RADIAN(float fAngle)
 {
 	return fAngle / 180.0f * Pi;	//角度→ラジアン角
 }
-
-const float RADIAN_VELOCITY_WEAK = ANGLE_TO_RADIAN(10.0f);		//角速度：弱
-const float RADIAN_VELOCITY_STRONG = ANGLE_TO_RADIAN(40.0f);	//角速度：強
-const TDiType<float> AMPLITUDE_WEAK(1.0f, 3.0f);				//振幅：弱
-const TDiType<float> AMPLITUDE_STRONG(10.0f, 50.0f);			//振幅：強
+const float RADIAN_VELOCITY_WEAK = ANGLE_TO_RADIAN(1.5f);		//角速度：弱
+const float RADIAN_VELOCITY_STRONG = ANGLE_TO_RADIAN(1.0f);		//角速度：強
+const TDiType<float> AMPLITUDE_WEAK(3.0f, 0.7f);				//振幅：弱			x:縦, y:横
+const TDiType<float> AMPLITUDE_STRONG(10.0f, 50.0f);			//振幅：強			x:縦, y:横
 const TDiType<float> VIRTUAL_FRICTION(0.5f);					//疑似摩擦力
 const TDiType<float> VIRTUAL_GRAVITY(0.5f);						//疑似重力
-const TDiType<float> DECREASE_RADIAN_WEAK(0.001f, 0.005f);		//角速度減少量：弱
-const TDiType<float> DECREASE_RADIAN_STRONG(0.005f, 0.008f);	//角速度減少量：強
+const TDiType<float> DECREASE_RADIAN_WEAK(0.005f, 0.005f);		//角速度減少量：弱	x:縦, y:横
+const TDiType<float> DECREASE_RADIAN_STRONG(0.005f, 0.008f);	//角速度減少量：強	x:縦, y:横
 
 /* ========================================
 	コンストラクタ関数
@@ -121,7 +116,7 @@ void CCamera::UpFlag(const unsigned char & ucBitFlag)
 void CCamera::DownFlag(const unsigned char & ucBitFlag)
 {
 	// =============== 代入 ===================
-	m_ucFlag &= !ucBitFlag;	//フラグ操作
+	m_ucFlag &= (ucBitFlag ^ 0xFF);	//フラグ操作
 }
 
 /* ========================================
