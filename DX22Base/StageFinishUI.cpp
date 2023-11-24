@@ -1,17 +1,17 @@
 /* ========================================
 	HEW/UniBoooom!!
 	------------------------------------
-	StageFinishUI�p�w�b�_
+	StageFinishUI用ヘッダ
 	------------------------------------
 	StageFinishUI.h
 	------------------------------------
-	�쐬��
+	作成者
 		yamashita
-	�ύX����
-	�E2023/11/20 cpp�쐬 Yamashita
-	�E2023/11/20 �Q�[���̃v���C��Ԃɂ����UI��\������ yamashita
-	�E2023/11/20 UI���ז��Ȏ��ɔ�\���ɂł���悤�ɕύX yamashita
-	�E2023/11/23 �\���t���O�擾�֐��쐬 nieda
+	変更履歴
+	・2023/11/20 cpp作成 Yamashita
+	・2023/11/20 ゲームのプレイ状態によってUIを表示する yamashita
+	・2023/11/20 UIが邪魔な時に非表示にできるように変更 yamashita
+	・2023/11/23 表示フラグ取得関数作成 nieda
 
 ========================================== */
 
@@ -21,19 +21,19 @@
 #include "GameParameter.h"
 #include "Input.h"
 
-// =============== �萔��` =======================
-const int SCALE_X = 500;	//UI�̉���
-const int SCALE_Y = 100;	//UI�̏c��
+// =============== 定数定義 =======================
+const int SCALE_X = 500;	//UIの横幅
+const int SCALE_Y = 100;	//UIの縦幅
 
 /* ========================================
-	�R���X�g���N�^
+	コンストラクタ
 	----------------------------------------
-	���e�F�������ɍs������
+	内容：生成時に行う処理
 	----------------------------------------
-	����1�F�v���C���[��HP�̃|�C���^
-	����1�F�������Ԃ̃|�C���^
+	引数1：プレイヤーのHPのポインタ
+	引数1：制限時間のポインタ
 	----------------------------------------
-	�ߒl�F�Ȃ�
+	戻値：なし
 =========================================== */
 CStageFinish::CStageFinish(int* pPlayerHp, int* pTimeCnt)
 	:m_bDispFlg(false)
@@ -44,32 +44,32 @@ CStageFinish::CStageFinish(int* pPlayerHp, int* pTimeCnt)
 	, m_pTexGameClear(nullptr)
 	,m_pTexGameOver(nullptr)
 {
-	m_pPlayerHp = pPlayerHp;	//�v���C���[��HP�̃|�C���^���擾
-	m_pTimeCnt = pTimeCnt;		//�������Ԃ̃|�C���^���擾
+	m_pPlayerHp = pPlayerHp;	//プレイヤーのHPのポインタを取得
+	m_pTimeCnt = pTimeCnt;		//制限時間のポインタを取得
 
-	//�Q�[���N���A�̃e�N�X�`���ǂݍ���
+	//ゲームクリアのテクスチャ読み込む
 	m_pTexGameClear = new Texture;
 	if (FAILED(m_pTexGameClear->Create("Assets/Texture/StageFinish/GameClear.png")))
 	{
-		MessageBox(NULL, "GameClear�ǂݍ��ݎ��s", "Error", MB_OK);
+		MessageBox(NULL, "GameClear読み込み失敗", "Error", MB_OK);
 	}
 
-	//�Q�[���I�[�o�[�̃e�N�X�`���ǂݍ���
+	//ゲームオーバーのテクスチャ読み込む
 	m_pTexGameOver = new Texture;
 	if (FAILED(m_pTexGameOver->Create("Assets/Texture/StageFinish/GameOver.png")))
 	{
-		MessageBox(NULL, "GameOver�ǂݍ��ݎ��s", "Error", MB_OK);
+		MessageBox(NULL, "GameOver読み込み失敗", "Error", MB_OK);
 	}
 }
 
 /* ========================================
-	�f�X�g���N�^
+	デストラクタ
 	----------------------------------------
-	���e�F�폜���̏���
+	内容：削除時の処理
 	----------------------------------------
-	����1�F�Ȃ�
+	引数1：なし
 	----------------------------------------
-	�ߒl�F�Ȃ�
+	戻値：なし
 =========================================== */
 CStageFinish::~CStageFinish()
 {
@@ -78,30 +78,31 @@ CStageFinish::~CStageFinish()
 }
 
 /* ========================================
-	�X�V�֐�
+	更新関数
 	----------------------------------------
-	���e�F���t���[���s���X�V����
+	内容：毎フレーム行う更新処理
 	----------------------------------------
-	����1�F�Ȃ�
+	引数1：なし
 	----------------------------------------
-	�ߒl�F�Ȃ�
+	戻値：なし
 =========================================== */
 void CStageFinish::Update()
 {
-	//�Q�[���N���A���Q�[���I�[�o�[�𔻒f
-	//���Q�[���I����ɃN���A�ƃQ�[���I�[�o�[������ɐ؂�ւ��Ȃ��悤�Ɂu&&�v�ŁuGAME_PLAY�v��Ԃ����������ꂽ
+	//ゲームクリアかゲームオーバーを判断
+	//※ゲーム終了後にクリアとゲームオーバーが勝手に切り替わらないように「&&」で「GAME_PLAY」状態だったらを入れた
 	if		(0 >= *m_pPlayerHp && m_eGameState == GAME_PLAY)	
-	{	//�^�C�}�[��0�ɂȂ�����N���A��ԂɑJ��
-		m_bDispFlg = true;
+	{	//タイマーが0になったらクリア状態に遷移
+
+    m_bDispFlg = true;
 		m_eGameState = GAME_OVER;
 	}
 	else if (0 >= *m_pTimeCnt && m_eGameState == GAME_PLAY)		
-	{	//�̗͂�0�ɂȂ�����Q�[���I�[�o�[��ԂɑJ��
+	{	//体力が0になったらゲームオーバー状態に遷移
 		m_bDispFlg = true;
 		m_eGameState = GAME_CLEAR;
 	}
 
-	//�\�����ז��Ȏ��ɏ�����悤�ɂ���	<=TODO�@�Ō�ɂ͏�������
+	//表示が邪魔な時に消せるようにする	<=TODO　最後には消去する
 	if (IsKeyTrigger(VK_RSHIFT))
 	{
 		m_bDeleteDisp ^= true;
@@ -109,41 +110,41 @@ void CStageFinish::Update()
 }
 
 /* ========================================
-	�`��֐�
+	描画関数
 	----------------------------------------
-	���e�F�`�揈��
+	内容：描画処理
 	----------------------------------------
-	����1�F�Ȃ�
+	引数1：なし
 	----------------------------------------
-	�ߒl�F�Ȃ�
+	戻値：なし
 =========================================== */
 void CStageFinish::Draw()
 {
-	//UI�\�����Ɉē���\��
+	//UI表示時に案内を表示
 	if (m_eGameState != GAME_PLAY)
 	{ 
-		std::string txt = "�ESHIFT�� �N���A�^�Q�[���I�[�o�[��UI�\����؂�ւ�";
+		std::string txt = "右SHIFTで クリア／ゲームオーバーのUI表示を切り替え";
 		DirectWrite::DrawString(txt,DirectX::XMFLOAT2(0.0f,0.0f));
 	}
-	if (m_bDeleteDisp) { return; }	//�ז��Ȏ���UI��\�������ɏI��
+	if (m_bDeleteDisp) { return; }	//邪魔な時にUIを表示せずに終了
 
 
 	std::string txt;
-	switch (m_eGameState)	//�Q�[���̏�Ԃɂ���ĕ���
+	switch (m_eGameState)	//ゲームの状態によって分岐
 	{
-	case (GAME_PLAY):	//�Q�[�����v���C���̕`��
+	case (GAME_PLAY):	//ゲームをプレイ中の描画
 
 		break;
-	case (GAME_CLEAR):	//�Q�[���N���A�̕`��
+	case (GAME_CLEAR):	//ゲームクリアの描画
 
-		//�s��ϊ����s���Ă���e�N�X�`�����Z�b�g���ĕ`��
+		//行列変換を行ってからテクスチャをセットして描画
 		EditSprite();
 		Sprite::SetTexture(m_pTexGameClear);
 		Sprite::Draw();
 		break;
-	case (GAME_OVER):	//�Q�[���I�[�o�[�̕`��
+	case (GAME_OVER):	//ゲームオーバーの描画
 
-		//�s��ϊ����s���Ă���e�N�X�`�����Z�b�g���ĕ`��
+		//行列変換を行ってからテクスチャをセットして描画
 		EditSprite();
 		Sprite::SetTexture(m_pTexGameOver);
 		Sprite::Draw();
@@ -152,13 +153,13 @@ void CStageFinish::Draw()
 }
 
 /* ========================================
-	�\���t���O�擾�֐�
+	表示フラグ取得関数
 	----------------------------------------
-	���e�FUI�̕\���t���O�̎擾
+	内容：UIの表示フラグの取得
 	----------------------------------------
-	����1�F�Ȃ�
+	引数1：なし
 	----------------------------------------
-	�ߒl�F�Ȃ�
+	戻値：なし
 =========================================== */
 bool CStageFinish::GetDispFlg()
 {
@@ -166,37 +167,37 @@ bool CStageFinish::GetDispFlg()
 }
 
 /* ========================================
-	�X�v���C�g�ݒ�֐�
+	スプライト設定関数
 	----------------------------------------
-	���e�FUI�̕\���̐ݒ�
+	内容：UIの表示の設定
 	----------------------------------------
-	����1�F�Ȃ�
+	引数1：なし
 	----------------------------------------
-	�ߒl�F�Ȃ�
+	戻値：なし
 =========================================== */
 void CStageFinish::EditSprite()
 {
 	DirectX::XMFLOAT4X4 matrix[3];
 
-	//���[���h�s���X��Y�݂̂��l�����č쐬
+	//ワールド行列はXとYのみを考慮して作成
 	DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(SCREEN_WIDTH_ / 2, SCREEN_HEIGHT_ / 2, 0.0f);
 	DirectX::XMStoreFloat4x4(&matrix[0], DirectX::XMMatrixTranspose(world));
 
-	//�r���[�s���2D���ƃJ�����̈ʒu�����܂�֌W�Ȃ��̂ŁA�P�ʍs���ݒ肷��i�P�ʍs��͌��
+	//ビュー行列は2Dだとカメラの位置があまり関係ないので、単位行列を設定する（単位行列は後日
 	DirectX::XMStoreFloat4x4(&matrix[1], DirectX::XMMatrixIdentity());
 
-	//�v���W�F�N�V�����s��ɂ�2D�Ƃ��ĕ\�����邽�߂̍s���ݒ肷��
-	//���̍s���2D�̃X�N���[���̑����������܂�
+	//プロジェクション行列には2Dとして表示するための行列を設定する
+	//この行列で2Dのスクリーンの多いさが決まる
 	DirectX::XMMATRIX proj = DirectX::XMMatrixOrthographicOffCenterLH(0.0f, SCREEN_WIDTH_, SCREEN_HEIGHT_, 0.0f, 0.1f, 10.0f);
 	DirectX::XMStoreFloat4x4(&matrix[2], DirectX::XMMatrixTranspose(proj));
 
-	//�X�v���C�g�̐ݒ�
+	//スプライトの設定
 	Sprite::SetWorld(matrix[0]);
 	Sprite::SetView(matrix[1]);
 	Sprite::SetProjection(matrix[2]);
 	Sprite::SetSize(DirectX::XMFLOAT2(SCALE_X, -SCALE_Y));
 
-	//�ύX�͖�����Sprite���ÓI�Ȃ��ߑ��̏��ł̕ύX�𔽉f����Ȃ����߂ɖ߂�
+	//変更は無いがSpriteが静的なため他の所での変更を反映されないために戻す
 	Sprite::SetUVPos(DirectX::XMFLOAT2(0.0f, 0.0f));
 	Sprite::SetUVScale(DirectX::XMFLOAT2(1.0f, 1.0f));
 }
