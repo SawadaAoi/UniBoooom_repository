@@ -52,7 +52,7 @@
 CSceneManager::CSceneManager()
 	: m_pScene(nullptr)						//シーン
 	, m_ePastScene(CScene::E_TYPE_NONE)		//前のシーン
-	, m_eNextScene(CScene::E_TYPE_RESULT)	//シーン遷移先
+	, m_eNextScene(CScene::E_TYPE_TITLE)	//シーン遷移先
 	, m_bFinish(false)						//シーン管理を開始
 {
 	if (!m_pScene)	//ヌルチェック
