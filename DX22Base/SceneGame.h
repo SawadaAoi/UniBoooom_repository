@@ -35,6 +35,7 @@
 #include "StageFinishUI.h"
 #include "Combo.h"
 #include "Fade.h"
+#include "BossGauge.h"
 
 // =============== クラス定義 =====================
 class SceneGame
@@ -66,6 +67,7 @@ private:
 	DirectWrite* m_pDirectWrite;
 	CTimer* m_pTimer;
 	CCombo* m_pCombo;
+	CBossgauge* m_pBossgauge;
 	CFloor* m_pFloor;
 	CStageFinish* m_pStageFin;
 	CFade* m_pFade;

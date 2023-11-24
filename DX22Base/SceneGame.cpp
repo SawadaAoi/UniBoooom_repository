@@ -136,6 +136,9 @@ SceneGame::SceneGame()
 	//BGMの再生
 	m_pSpeaker = CSound::PlaySound(m_pBGM);		//BGMの再生
 	m_pSpeaker->SetVolume(BGM_VOLUME);			//音量の設定
+
+	//ボスゲージ
+	m_pBossgauge = new CBossgauge(m_pTimer->GetNowTime());
 }
 
 /* ========================================
@@ -157,6 +160,7 @@ SceneGame::~SceneGame()
 	SAFE_DELETE(m_pStageFin);
 	SAFE_DELETE(m_pTimer);
 	SAFE_DELETE(m_pFade);
+	SAFE_DELETE(m_pBossgauge);
 	SAFE_DELETE(m_pTimer);
 	SAFE_DELETE(m_pExplosionMng);
 	SAFE_DELETE(m_pSlimeMng);	// スライムマネージャー削除
@@ -232,6 +236,7 @@ void SceneGame::Update(float tick)
 	// HPマネージャー更新
 	m_pHpMng->Update();
 
+	m_pBossgauge->Update();
 	SceneGameCollision();
 
 #if USE_FADE_GAME
@@ -337,6 +342,8 @@ void SceneGame::Draw()
 	m_pFade->Draw();
 #endif
   
+	//ボスゲージ描画
+	m_pBossgauge->Draw();
 }
 
 /* ========================================

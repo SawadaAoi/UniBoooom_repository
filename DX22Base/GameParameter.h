@@ -139,7 +139,25 @@ const TPos2d<float> MINUTE_POS(565.0f, 25.0f);			//分の位置設定
 const TPos2d<float> SECOND_TENS_POS (640.0f, 25.0f);	//十の桁秒の位置設定
 const TPos2d<float> SECOND_ONE_POS (690.0f, 25.0f);		//一の桁秒の位置設定
 const TPos2d<float> TIME_BACKGROUND_POS (630.0f, 25.0f);	//バックグラウンド位置設定
-const TPos2d<float> TIME_COLON_POS (615.0f, 25.0f);		//コロンの位置設定
+const TPos2d<float> TIME_COLON_POS (602.5f, 25.0f);		//コロンの位置設定
+const float TIME_BACK_GROUND_SIZE_X = 200.0f;			//タイマーのバックグランドのXの長さ設定
+const float TIME_BACK_GROUND_SIZE_Y = -75.0f;			//タイマーのバックグランドのYの長さ設定
+const float TIME_COLON_SIZE_X = 35.0f;					//タイマーのコロンのXの長さ設定
+const float TIME_COLON_SIZE_Y = -35.0f;					//タイマーのコロンのYの長さ設定
+
+// ボスゲージ =====================================================
+const int BOSS_GAUGE_FULL_TIME = 45 * 60;		//ボスゲージMAXになる時間(何秒出現) * 60フレーム
+const int SECOND_EMPTY_BOSS_GAUGE = 75 * 60;		//二体目のボス空ゲージ表す時間 * 60フレーム
+const TPos2d<float> BOSS_GAUGE_EMPTY_POS(765.0f, 30.0f);	//ボスゲージ（空）の位置設定
+const TPos2d<float> BOSS_GAUGE_FULL_POS(765.0f, 31.5f);	//ボスゲージ（満）の位置設定
+const float BOSS_GAUGE_EMPTY_SIZE_X = 60.0f;			//ボスゲージ（空）のXの長さ設定
+const float BOSS_GAUGE_EMPTY_SIZE_Y = -60.0f;			//ボスゲージ（空）のYの長さ設定
+const float BOSS_GAUGE_FULL_SIZE_X = (6.0f / 7.0f) * BOSS_GAUGE_EMPTY_SIZE_X;			//ボスゲージ（満）のXの長さ設定
+const float BOSS_GAUGE_FULL_SIZE_Y = (6.0f / 7.0f) * BOSS_GAUGE_EMPTY_SIZE_Y;			//ボスゲージ（満）のYの長さ設定
+const float BOSS_GAUGE_FULL_POS_Y_ADJUST = BOSS_GAUGE_FULL_SIZE_X / 2;		//ボスゲージ増加時、位置表示するための調整量
+const float BOSS_GAUGE_FULL_SIZE_Y_ADJUST = BOSS_GAUGE_FULL_SIZE_Y;	//ボスゲージ増加時、サイズ計算用（計算して表示したい比率かける元々のサイズ(100.0f)）
+const int FADE_TIME = 5 * 60;							//ボスゲージが溜まってから消える時間
+
 
 // HP
 const float DRAW_POSX		= 80.0f;	// テクスチャを表示する位置のX座標
