@@ -20,7 +20,6 @@
 // =============== インクルード ===================
 #include "Scene.h"			//親のヘッダ
 #include "Shader.h"
-#include "Camera.h"
 #include "Collision.h"
 #include "Player.h"
 #include "SlimeManager.h"
@@ -49,7 +48,6 @@ protected:
 	void SlimeSlimeNormalMoveCollision();
 	// ===メンバ変数宣言===
 	VertexShader* m_pVs;
-	CCamera* m_pCamera;
 	CPlayer* m_pPlayer;
 	CGeometry* m_pBox;
 	CSlimeManager* m_pSlimeMng;
