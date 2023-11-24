@@ -53,8 +53,6 @@ public:
 	void SetCamera(const CCamera* m_pCamera);	// 他のオブジェクトと同一のカメラをセット
 
 	// ゲット関数
-	TPos3d<float> GetPos();			// 使ってない関数
-	tagSphereInfo GetSphere();		// Sphere情報取得処理関数
 	bool GetDelFlg();				// 削除フラグ取得処理関数
 	int GetDamage();				// ダメージ量取得関数
 	bool GetBossTouched();			// 既にボスと当たっているかどうか取得関数

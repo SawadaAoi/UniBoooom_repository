@@ -109,24 +109,24 @@ const float LEVEL_FLAME_SCALE = 1.0f;						// ƒXƒ‰ƒCƒ€QƒtƒŒƒCƒ€‚Ì‘å‚«‚³(“–‚½‚è”
 const float LEVEL_FLAME_SPEED = ENEMY_MOVE_SPEED * 0.2f;	// ˆÚ“®‘¬“x
 
 // ƒ{ƒXƒXƒ‰ƒCƒ€
-#define DEBUG_BOSS	(false)	// ƒfƒoƒbƒO—p‚ÉƒQ[ƒ€ŠJŽnŽžƒ{ƒX‚ð¶¬‚·‚é‚©‚Ç‚¤‚©
+#define DEBUG_BOSS	(true)	// ƒfƒoƒbƒO—p‚ÉƒQ[ƒ€ŠJŽnŽžƒ{ƒX‚ð¶¬‚·‚é‚©‚Ç‚¤‚©
 
 const float LEVEL_BOSS_1_SCALE	= 6.0f;								// ƒ{ƒX‚P‚Ì‘å‚«‚³
-const float LEVEL_BOSS_1_SPEED	= ENEMY_MOVE_SPEED * 1.5f;			// ƒ{ƒX‚P‚ÌƒXƒs[ƒh
-const int	BOSS_1_MAX_HP		= 100;								// ƒ{ƒX‚P‚ÌÅ‘åHP
+const float LEVEL_BOSS_1_SPEED	= ENEMY_MOVE_SPEED * 0.4f;			// ƒ{ƒX‚P‚ÌƒXƒs[ƒh
+const int	BOSS_1_MAX_HP		= 1;								// ƒ{ƒX‚P‚ÌÅ‘åHP
 
 const float ASSAULT_DISTANCE	= 0.2f;								// “ËŒ‚”½‰ž‹——£
 const int	ASSAULT_COOL_TIME	= 10 * 60;							// “ËŒ‚ƒNƒ‹[ƒ^ƒCƒ€
 const int	ASSAULT_CHARGE_TIME = 2 * 60;							// “ËŒ‚ƒ`ƒƒ[ƒWŽžŠÔ
 const int	ASSAULT_TIME		= 1.0f * 60;						// “ËŒ‚‘ŽžŠÔ
-const float ASSAULT_SPEED		= LEVEL_BOSS_1_SPEED * 15.0f;		// “ËŒ‚Žž‚ÌƒXƒs[ƒh
+const float ASSAULT_SPEED		= LEVEL_BOSS_1_SPEED * 20.0f;		// “ËŒ‚Žž‚ÌƒXƒs[ƒh
 
 const int BOSS_DAMAGE_FLASH_FRAME		= 0.1 * 60;					// ƒ_ƒ[ƒWŽó‚¯‚½Û‚Ì“_–ÅƒtƒŒ[ƒ€(–³“G‚Å‚Í‚È‚¢)
 const int BOSS_DAMAGE_FLASH_TOTAL_FRAME = 0.5 * 60;					// ƒ_ƒ[ƒW‚ðŽó‚¯‚½Û‚Ì“_–Å‚ð‰½ƒtƒŒ[ƒ€s‚¤‚©
 
 // ”š”­ =====================================================
-const int	MAX_EXPLOSION_NUM		= 20;		// Å‘å”š”­”
-const float EXPAND_QUICK_RATE		= 0.2f;		// –c’£‰Á‘¬Š„‡ 
+const int	MAX_EXPLOSION_NUM		= 20;			// Å‘å”š”­”
+const float EXPAND_QUICK_RATE		= 0.2f;			// –c’£‰Á‘¬Š„‡ 
 const float LEVEL_1_EXPLODE_TIME = 0.5f * 60.0f;	// ƒXƒ‰ƒCƒ€_1‚Ì”š”­‘ŽžŠÔ
 const float LEVEL_2_EXPLODE_TIME = 1.0f * 60.0f;	// ƒXƒ‰ƒCƒ€_2‚Ì”š”­‘ŽžŠÔ
 const float LEVEL_3_EXPLODE_TIME = 2.0f * 60.0f;	// ƒXƒ‰ƒCƒ€_3‚Ì”š”­‘ŽžŠÔ
