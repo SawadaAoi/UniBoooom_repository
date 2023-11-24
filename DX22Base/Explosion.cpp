@@ -159,7 +159,7 @@ void CExplosion::DisplayTimeAdd()
 	// 一定秒数時間が経ったら
 	if (m_fExplodeTime <= m_fDelFrame)
 	{
-		m_bDelFlg = true;	// 削除フラグを立てるs
+		m_bDelFlg = true;	// 削除フラグを立てる
 	}
 
 	
