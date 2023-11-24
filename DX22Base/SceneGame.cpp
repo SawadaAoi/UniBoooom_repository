@@ -54,7 +54,6 @@
 #include "Line.h"
 #include "Defines.h"
 #include "GameParameter.h"
-#include "BossGauge.h"
 
 
 
@@ -115,12 +114,22 @@ SceneGame::SceneGame()
 	m_pExplosionMng = new CExplosionManager();
 	m_pExplosionMng->SetCamera(m_pCamera);
 	m_pExplosionMng->SetCombo(m_pCombo);
+	//スコア生成
+	m_pScoreOHMng = new CScoreOHManager();
+	m_pScoreOHMng->SetCamera(m_pCamera);
+	m_pSlimeMng->SetScoreOHMng(m_pScoreOHMng);
 
+	//トータルスコア生成
+	m_pTotalScore = new CTotalScore();
+	m_pCombo->SetTotalScore(m_pTotalScore);
+	
 	// タイマー生成
 	m_pTimer = new CTimer();
 	m_pTimer->TimeStart();
 	//ステージ終了のUI表示
 	m_pStageFin = new CStageFinish(m_pPlayer->GetHP(),m_pTimer->GetTimePtr());
+
+	m_pHpMng = new CHP_UI(m_pPlayer->GetHP());
 
 #if USE_FADE_GAME
 	m_pFade = new CFade(m_pCamera);
@@ -132,8 +141,6 @@ SceneGame::SceneGame()
 	//pvs->Load("Assets/Shader/VsFade.cso");
 	//m_pFade->SetVertexShader(pvs);
 
-	//ボスゲージ
-	m_pBossgauge = new CBossgauge();
 
 
 	LoadSound();
@@ -141,7 +148,8 @@ SceneGame::SceneGame()
 	m_pSpeaker = CSound::PlaySound(m_pBGM);		//BGMの再生
 	m_pSpeaker->SetVolume(BGM_VOLUME);			//音量の設定
 
-
+	//ボスゲージ
+	m_pBossgauge = new CBossgauge(m_pTimer->GetNowTime());
 }
 
 /* ========================================
@@ -161,22 +169,29 @@ SceneGame::~SceneGame()
 		m_pSpeaker->DestroyVoice();
 	}
 	SAFE_DELETE(m_pStageFin);
+	SAFE_DELETE(m_pHpMng);
 	SAFE_DELETE(m_pTimer);
 	SAFE_DELETE(m_pFade);
-	SAFE_DELETE(m_pTimer);
 	SAFE_DELETE(m_pBossgauge);
 	SAFE_DELETE(m_pTimer);
+	SAFE_DELETE(m_pCombo);
 	SAFE_DELETE(m_pExplosionMng);
 	SAFE_DELETE(m_pSlimeMng);	// スライムマネージャー削除
 	SAFE_DELETE(m_pFloor);
 	SAFE_DELETE(m_pCamera);
 	SAFE_DELETE(m_pPlayer);
 	SAFE_DELETE(m_pCollision);
+	SAFE_DELETE(m_pScoreOHMng);
+	SAFE_DELETE(m_pTotalScore);
+
 #if MODE_COORD_AXIS
 	// 軸線の表示
 	CLine::Uninit();
 #endif
 	SAFE_DELETE(m_pVs);
+
+	//SAFE_DELETE(m_pDirectWrite);
+
 }
 
 
@@ -232,9 +247,14 @@ void SceneGame::Update(float tick)
 	m_pFloor->Update();
 	m_pSlimeMng->Update(m_pExplosionMng);
 	m_pExplosionMng->Update();
+	m_pScoreOHMng->Update();
 	m_pTimer->Update();
 	m_pStageFin->Update();
 	m_pCombo->Update();
+	m_pCamera->Update();
+
+	// HPマネージャー更新
+	m_pHpMng->Update();
 
 	m_pBossgauge->Update();
 	SceneGameCollision();
@@ -324,21 +344,31 @@ void SceneGame::Draw()
 	
 	//爆発マネージャー描画
 	m_pExplosionMng->Draw();
+	
+
 
 	//タイマー描画
-
 	SetRenderTargets(1, &pRTV, nullptr);
 	m_pStageFin->Draw();
 	m_pTimer->Draw();
 	m_pCombo->Draw();
 
+	// HPマネージャー描画
+	m_pHpMng->Draw();
+
+	m_pTimer->Draw();
+	m_pCombo->Draw();
+	m_pTotalScore->Draw();
+
+
 	//ボスゲージ描画
 	m_pBossgauge->Draw();
+
+	m_pScoreOHMng->Draw();//スコアマネージャー描画
 
 #if USE_FADE_GAME
 	m_pFade->Draw();
 #endif
-  
 }
 
 /* ========================================

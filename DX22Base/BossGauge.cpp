@@ -10,22 +10,27 @@
 	•ÏX—š—ğ
 	E2023/11/17 cpp,ì¬ Tei
 	E2023/11/19 •`‰æˆ—AƒQ[ƒWoŒ»AÁ‚·ˆ—’Ç‰Á Tei
+	E2023/11/22 ƒ{ƒXƒQ[ƒW•\¦‚ÌƒtƒF[ƒhƒAƒEƒg’Ç‰ÁAƒpƒ‰ƒ[ƒ^’²®
 
 ========================================== */
 
 // =============== ƒCƒ“ƒNƒ‹[ƒh ===================
 #include "BossGauge.h"
-#include "Timer.h"
 
 // =============== ’è”’è‹` =======================
 
 #if MODE_GAME_PARAMETER
 #else
 const int BOSS_GAUGE_FULL_TIME = 45 * 60;		//ƒ{ƒXƒQ[ƒWMAX‚É‚È‚éŠÔ(‰½•boŒ») * 60ƒtƒŒ[ƒ€
-const int SECOND_EMPTY_BOSSGAUGE = 75 * 60;		//“ñ‘Ì–Ú‚Ìƒ{ƒX‹óƒQ[ƒW•\‚·ŠÔ * 60ƒtƒŒ[ƒ€
-const TPos2d<float> BOSSGAUGE_EMPTY_POS(765.0f, 25.0f);	//ƒ{ƒXƒQ[ƒWi‹ój‚ÌˆÊ’uİ’è
-const TPos2d<float> BOSSGAUGE_FULL_POS(765.0f, 25.0f);	//ƒ{ƒXƒQ[ƒWi–j‚ÌˆÊ’uİ’è
-
+const int SECOND_EMPTY_BOSS_GAUGE = 75 * 60;		//“ñ‘Ì–Ú‚Ìƒ{ƒX‹óƒQ[ƒW•\‚·ŠÔ * 60ƒtƒŒ[ƒ€
+const TPos2d<float> BOSS_GAUGE_EMPTY_POS(765.0f, 25.0f);	//ƒ{ƒXƒQ[ƒWi‹ój‚ÌˆÊ’uİ’è
+const TPos2d<float> BOSS_GAUGE_FULL_POS(765.0f, 25.0f);	//ƒ{ƒXƒQ[ƒWi–j‚ÌˆÊ’uİ’è
+const float BOSS_GAUGE_EMPTY_SIZE_X = 100.0f;			//ƒ{ƒXƒQ[ƒWi‹ój‚ÌX‚Ì’·‚³İ’è
+const float BOSS_GAUGE_EMPTY_SIZE_Y = -100.0f;			//ƒ{ƒXƒQ[ƒWi‹ój‚ÌY‚Ì’·‚³İ’è
+const float BOSS_GAUGE_FULL_SIZE_X = 100.0f;			//ƒ{ƒXƒQ[ƒWi–j‚ÌX‚Ì’·‚³İ’è
+const float BOSS_GAUGE_FULL_POS_Y_ADJUST = 50.0f;		//ƒ{ƒXƒQ[ƒW‘‰ÁAˆÊ’u•\¦‚·‚é‚½‚ß‚Ì’²®—Ê
+const float BOSS_GAUGE_FULL_SIZE_Y_ADJUST = -100.0f;		//ƒ{ƒXƒQ[ƒW‘‰ÁAƒTƒCƒYŒvZ—piŒvZ‚µ‚Ä•\¦‚µ‚½‚¢”ä—¦‚©‚¯‚éŒ³X‚ÌƒTƒCƒY(-100.0f)j
+const int FADE_TIME = 5 * 60;							//ƒ{ƒXƒQ[ƒW‚ª—­‚Ü‚Á‚Ä‚©‚çÁ‚¦‚éŠÔ
 #endif
 
 
@@ -34,16 +39,20 @@ const TPos2d<float> BOSSGAUGE_FULL_POS(765.0f, 25.0f);	//ƒ{ƒXƒQ[ƒWi–j‚ÌˆÊ’u
 	----------------------------------------
 	“à—eF¶¬‚És‚¤ˆ—
 	----------------------------------------
-	ˆø”1F‚È‚µ
+	ˆø”1Fint Œ»İ‚ÌŠÔæ‚é
 	----------------------------------------
 	–ß’lF‚È‚µ
 =========================================== */
-CBossgauge::CBossgauge()
+CBossgauge::CBossgauge(int* pTime)
 	:m_pBossGaugeEmpty(nullptr)
-	,m_pBossGaugeFull(nullptr)
-	,m_nGaugeCnt(0)
-	,m_bGaugeFull(false)
-	,m_bShowBossGauge(true)
+	, m_pBossGaugeFull(nullptr)
+	, m_nGaugeCnt(0)
+	, m_bGaugeFull(false)
+	, m_bShowBossGauge(true)
+	, m_pTime(pTime)
+	, m_nAdjustTime(0)
+	, m_fFillGauge(0.0f)
+	, m_nFadeCnt(0)
 {
 	//ƒ{ƒXƒQ[ƒW‚ÌƒeƒNƒXƒ`ƒƒ“Ç‚Ş‚İ
 	m_pBossGaugeEmpty = new Texture();
@@ -85,20 +94,19 @@ CBossgauge::~CBossgauge()
 void CBossgauge::Update()
 {
 	//ƒ{ƒXoŒ»ƒJƒEƒ“ƒg
-	m_nGaugeCnt++;
-	if (m_nGaugeCnt == BOSS_GAUGE_FULL_TIME)
-	{
-		m_bGaugeFull = true;		//ƒQ[ƒW–ƒ^ƒ“
-		m_bShowBossGauge = false;	//ƒ{ƒXoŒ»AƒQ[ƒWƒtƒ‰ƒO‚ğfalse‚ÉAƒQ[ƒW‚ğÁ‚·
+	m_nGaugeCnt = STAGE_TIME - *m_pTime;	//ƒQ[ƒW•\¦ŒvZ—p‚Ì‰ÁZ’l
 
-		//©TODOƒ{ƒX¶¬ƒ{ƒX‚Ì•û‚É‚Á‚Ä‚¢‚­‚©‚±‚±‚ÅŒÄ‚Ô‚©
-	}
-	//“ñ‘Ì–Ú‚Ìƒ{ƒX‚ÌƒQ[ƒW•\¦
-	if (m_nGaugeCnt == SECOND_EMPTY_BOSSGAUGE)
+
+	if (SecondBossGauge())
 	{
-		m_bShowBossGauge = true;
-		m_nGaugeCnt = 0;
+		return;
 	}
+
+	if (FirstBossGauge())
+	{
+		return;
+	}
+
 }
 
 /* ========================================
@@ -119,7 +127,7 @@ void CBossgauge::Draw()
 	DirectX::XMFLOAT4X4 bossempty[3];
 
 	//ƒ[ƒ‹ƒhs—ñ‚ÍX‚ÆY‚Ì‚İ‚ğl—¶‚µ‚Äì¬(Z‚Í10‚®‚ç‚¢‚É”z’u
-	DirectX::XMMATRIX worldBossempty = DirectX::XMMatrixTranslation(BOSSGAUGE_EMPTY_POS.x,BOSSGAUGE_EMPTY_POS.y, 10.0f);;
+	DirectX::XMMATRIX worldBossempty = DirectX::XMMatrixTranslation(BOSS_GAUGE_EMPTY_POS.x,BOSS_GAUGE_EMPTY_POS.y, 0.0f);
 	DirectX::XMStoreFloat4x4(&bossempty[0], DirectX::XMMatrixTranspose(worldBossempty));
 
 	//ƒrƒ…[s—ñ‚Í2D‚¾‚ÆƒJƒƒ‰‚ÌˆÊ’u‚ª‚ ‚Ü‚èŠÖŒW‚È‚¢‚Ì‚ÅA’PˆÊs—ñ‚ğİ’è‚·‚éi’PˆÊs—ñ‚ÍŒã“ú
@@ -127,26 +135,25 @@ void CBossgauge::Draw()
 
 	//ƒvƒƒWƒFƒNƒVƒ‡ƒ“s—ñ‚É‚Í2D‚Æ‚µ‚Ä•\¦‚·‚é‚½‚ß‚Ìs—ñ‚ğİ’è‚·‚é
 	//‚±‚Ìs—ñ‚Å2D‚ÌƒXƒNƒŠ[ƒ“‚Ì‘½‚¢‚³‚ªŒˆ‚Ü‚é
-	DirectX::XMMATRIX projBossempty = DirectX::XMMatrixOrthographicOffCenterLH(0.0f, 1280.0f, 720.0f, 0.0f, 0.1f, 10.0f);
+	DirectX::XMMATRIX projBossempty = DirectX::XMMatrixOrthographicOffCenterLH(0.0f, 1280.0f, 720.0f, 0.0f, 0.1f, 0.0f);
 	DirectX::XMStoreFloat4x4(&bossempty[2], DirectX::XMMatrixTranspose(projBossempty));
 
 	//ƒXƒvƒ‰ƒCƒg‚Ìİ’è
 	Sprite::SetWorld(bossempty[0]);
 	Sprite::SetView(bossempty[1]);
 	Sprite::SetProjection(bossempty[2]);
-	Sprite::SetSize(DirectX::XMFLOAT2(100.0f, -100.0f));
+	Sprite::SetSize(DirectX::XMFLOAT2(BOSS_GAUGE_EMPTY_SIZE_X, BOSS_GAUGE_EMPTY_SIZE_Y));
 	Sprite::SetUVPos(DirectX::XMFLOAT2(0.0f, 0.0f));
 	Sprite::SetUVScale(DirectX::XMFLOAT2(1.0f, 1.0f));
+	Sprite::SetColor(DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f - ((float)m_nFadeCnt / (float)FADE_TIME)));
 	Sprite::SetTexture(m_pBossGaugeEmpty);
 	Sprite::Draw();
 
-	float fFillGauge = 0;
-	fFillGauge = (float)m_nGaugeCnt / (float)BOSS_GAUGE_FULL_TIME;
-	FillGauge(fFillGauge);
+	FillGaugeDraw(m_fFillGauge);
 }
 
 /* ========================================
-	ƒQ[ƒWƒ…‘‰ÁŠÖ”
+	ƒQ[ƒW‘‰ÁŠÖ”
 	----------------------------------------
 	“à—eFƒ{ƒXƒQ[ƒW‘‰Á—Ê‚Ì•`‰æˆ—
 	----------------------------------------
@@ -154,14 +161,14 @@ void CBossgauge::Draw()
 	----------------------------------------
 	–ß’lF‚È‚µ
 =========================================== */
-void CBossgauge::FillGauge(float textureRange)
+void CBossgauge::FillGaugeDraw(float textureRange)
 {
 
 	//ƒ{ƒXƒQ[ƒWƒeƒNƒXƒ`ƒƒi–j
 	DirectX::XMFLOAT4X4 bossfull[3];
 
 	//ƒ[ƒ‹ƒhs—ñ‚ÍX‚ÆY‚Ì‚İ‚ğl—¶‚µ‚Äì¬(Z‚Í10‚®‚ç‚¢‚É”z’u
-	DirectX::XMMATRIX worldBossfull = DirectX::XMMatrixTranslation(BOSSGAUGE_FULL_POS.x, BOSSGAUGE_FULL_POS.y + (50.0f - 50 * textureRange ), 10.0f);;
+	DirectX::XMMATRIX worldBossfull = DirectX::XMMatrixTranslation(BOSS_GAUGE_FULL_POS.x, BOSS_GAUGE_FULL_POS.y + (BOSS_GAUGE_FULL_POS_Y_ADJUST - BOSS_GAUGE_FULL_POS_Y_ADJUST * textureRange ), 0.0f);
 	DirectX::XMStoreFloat4x4(&bossfull[0], DirectX::XMMatrixTranspose(worldBossfull));
 
 	//ƒrƒ…[s—ñ‚Í2D‚¾‚ÆƒJƒƒ‰‚ÌˆÊ’u‚ª‚ ‚Ü‚èŠÖŒW‚È‚¢‚Ì‚ÅA’PˆÊs—ñ‚ğİ’è‚·‚éi’PˆÊs—ñ‚ÍŒã“ú
@@ -169,17 +176,96 @@ void CBossgauge::FillGauge(float textureRange)
 
 	//ƒvƒƒWƒFƒNƒVƒ‡ƒ“s—ñ‚É‚Í2D‚Æ‚µ‚Ä•\¦‚·‚é‚½‚ß‚Ìs—ñ‚ğİ’è‚·‚é
 	//‚±‚Ìs—ñ‚Å2D‚ÌƒXƒNƒŠ[ƒ“‚Ì‘½‚¢‚³‚ªŒˆ‚Ü‚é
-	DirectX::XMMATRIX projBossfull = DirectX::XMMatrixOrthographicOffCenterLH(0.0f, 1280.0f, 720.0f, 0.0f, 0.1f, 10.0f);
+	DirectX::XMMATRIX projBossfull = DirectX::XMMatrixOrthographicOffCenterLH(0.0f, 1280.0f, 720.0f, 0.0f, 0.1f, 0.0f);
 	DirectX::XMStoreFloat4x4(&bossfull[2], DirectX::XMMatrixTranspose(projBossfull));
 
 	//ƒXƒvƒ‰ƒCƒg‚Ìİ’è
 	Sprite::SetWorld(bossfull[0]);
 	Sprite::SetView(bossfull[1]);
 	Sprite::SetProjection(bossfull[2]);
-	Sprite::SetSize(DirectX::XMFLOAT2(100.0f, (-textureRange * 100) ));		//•`‰æ‘å‚«‚³İ’è
+	Sprite::SetSize(DirectX::XMFLOAT2(BOSS_GAUGE_FULL_SIZE_X, (textureRange * BOSS_GAUGE_FULL_SIZE_Y_ADJUST) ));		//•`‰æ‘å‚«‚³İ’è
 	Sprite::SetUVPos(DirectX::XMFLOAT2(0.0f, (1.0f - textureRange) ));		//•`‰æ‚Ìtexture‚Ì”ÍˆÍİ’è
 	Sprite::SetUVScale(DirectX::XMFLOAT2(1.0f, textureRange));				//•\¦‚·‚étexture‚Ì‘å‚«‚³İ’è
 	Sprite::SetTexture(m_pBossGaugeFull);
 	Sprite::Draw();
+	Sprite::SetColor(DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f ));
+
+}
+
+/* ========================================
+	ˆê‘Ì–Úƒ{ƒXƒQ[ƒWŠÖ”
+	----------------------------------------
+	“à—eFˆê‘Ì–Úƒ{ƒX‚ÌƒQ[ƒW•\¦ˆ—
+	----------------------------------------
+	ˆø”1F‚È‚µ
+	----------------------------------------
+	–ß’lFbool•\¦’iŠK
+=========================================== */
+bool CBossgauge::FirstBossGauge()
+{
+	// ˆê‘Ì–Úƒ{ƒXƒQ[ƒW‚ÌoŒ»Aã¸
+	if (m_nGaugeCnt <= BOSS_GAUGE_FULL_TIME)
+	{
+		m_fFillGauge = (float)(m_nGaugeCnt - m_nAdjustTime) / (float)BOSS_GAUGE_FULL_TIME;
+		return true;
+	}
+	// ƒQ[ƒWƒtƒF[ƒhˆ—
+	else if (m_nGaugeCnt <= BOSS_GAUGE_FULL_TIME + FADE_TIME)
+	{
+		m_nFadeCnt++;	//ƒtƒFƒCƒhƒJƒEƒ“ƒg
+		return true;
+	}
+	// ƒtƒFƒCƒh‚ÅÁ‚¦‚é
+	if (m_nGaugeCnt >= BOSS_GAUGE_FULL_TIME + FADE_TIME)
+	{
+		m_bGaugeFull = true;		//ƒQ[ƒW–ƒ^ƒ“
+		m_bShowBossGauge = false;	//ƒ{ƒXoŒ»AƒQ[ƒWƒtƒ‰ƒO‚ğfalse‚ÉAƒQ[ƒW‚ğÁ‚·
+
+		//©TODOƒ{ƒX¶¬ƒ{ƒX‚Ì•û‚É‚Á‚Ä‚¢‚­‚©‚±‚±‚ÅŒÄ‚Ô‚©
+		return true;
+	}
+	return false;
+}
+
+/* ========================================
+	“ñ‘Ì–Úƒ{ƒXƒQ[ƒWŠÖ”
+	----------------------------------------
+	“à—eF“ñ‘Ì–Úƒ{ƒX‚ÌƒQ[ƒW•\¦ˆ—
+	----------------------------------------
+	ˆø”1F‚È‚µ
+	----------------------------------------
+	–ß’lFbool•\¦’iŠK
+=========================================== */
+bool CBossgauge::SecondBossGauge()
+{
+	// ƒtƒFƒCƒh‚ÅÁ‚¦‚é
+	if (m_nGaugeCnt >= SECOND_EMPTY_BOSS_GAUGE + BOSS_GAUGE_FULL_TIME + FADE_TIME)
+	{
+		m_bShowBossGauge = false;
+		return true;
+	}
+	// ƒQ[ƒWƒtƒF[ƒhˆ—
+	else if (m_nGaugeCnt >= SECOND_EMPTY_BOSS_GAUGE + BOSS_GAUGE_FULL_TIME)
+	{
+		m_nFadeCnt++;
+		return true;
+	}
+	// “ñ‘Ì–Ú‚Ìƒ{ƒXƒQ[ƒWã¸
+	else if (m_nGaugeCnt >= SECOND_EMPTY_BOSS_GAUGE && m_bShowBossGauge == false)
+	{
+		m_bShowBossGauge = true;
+		m_nAdjustTime = m_nGaugeCnt;
+		m_nFadeCnt = 0;
+		return true;
+	}
+
+	// “ñ‘Ì–ÚƒQ[ƒW‚Ìã¸
+	else if (m_nGaugeCnt >= SECOND_EMPTY_BOSS_GAUGE && m_bShowBossGauge == true)
+	{
+		m_fFillGauge = (float)(m_nGaugeCnt - m_nAdjustTime) / (float)BOSS_GAUGE_FULL_TIME;
+
+		return true;
+	}
+	return false;
 }
 

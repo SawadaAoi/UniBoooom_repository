@@ -191,9 +191,12 @@
     <ClCompile Include="Fade.cpp" />
     <ClCompile Include="Floor.cpp" />
     <ClCompile Include="HitStop.cpp" />
+    <ClCompile Include="HP_UI.cpp" />
     <ClCompile Include="ModelParticle.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Particle.cpp" />
+    <ClCompile Include="ScoreOverHead.cpp" />
+    <ClCompile Include="ScoreOHManager.cpp" />
     <ClCompile Include="SelectStage.cpp" />
     <ClCompile Include="ShaderList.cpp" />
     <ClCompile Include="Sound.cpp" />
@@ -233,6 +236,7 @@
     <ClCompile Include="SceneGame.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="Title.cpp" />
+    <ClCompile Include="TotalScore.cpp" />
     <ClCompile Include="Transform2d.cpp" />
     <ClCompile Include="Transform3d.cpp" />
     <ClCompile Include="_model.cpp" />
@@ -264,10 +268,13 @@
     <ClInclude Include="ExplosionManager.h" />
     <ClInclude Include="HitStop.h" />
     <ClInclude Include="Object.h" />
+    <ClInclude Include="HP_UI.h" />
     <ClInclude Include="Pos2d.h" />
     <ClInclude Include="Pos3d.h" />
     <ClInclude Include="ModelParticle.h" />
     <ClInclude Include="Particle.h" />
+    <ClInclude Include="ScoreOverHead.h" />
+    <ClInclude Include="ScoreOHManager.h" />
     <ClInclude Include="SelectStage.h" />
     <ClInclude Include="ShaderList.h" />
     <ClInclude Include="Sound.h" />
@@ -304,6 +311,7 @@
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="Title.h" />
+    <ClInclude Include="TotalScore.h" />
     <ClInclude Include="Transform2d.h" />
     <ClInclude Include="Transform3d.h" />
     <ClInclude Include="TriType.h" />

@@ -11,13 +11,12 @@
 	・2023/11/14 cpp,作成 Tei
 	・2023/11/17 開始処理を複数種類追加、タイマーストップ実装 Sawada
 	・2023/11/18 タイマー描画処理、数字部分の描画関数追加 Tei
-
+	・2023/11/22 現時点のタイマーを取得関数追加 Tei
 ========================================== */
 
 // =============== インクルード ===================
 #include "Timer.h"
 #include "Sprite.h"
-
 // =============== 定数定義 =======================
 #if MODE_GAME_PARAMETER
 #else
@@ -26,11 +25,15 @@ const TPos2d<float> MINUTE_POS(565.0f, 25.0f);			//分の位置設定
 const TPos2d<float> SECOND_TENS_POS(640.0f, 25.0f);	//十の桁秒の位置設定
 const TPos2d<float> SECOND_ONE_POS(690.0f, 25.0f);		//一の桁秒の位置設定
 const TPos2d<float> TIME_BACKGROUND_POS(630.0f, 25.0f);	//バックグラウンド位置設定
-const TPos2d<float> TIME_COLON_POS(602.5f, 25.0f);		//コロンの位置設定
+const TPos2d<float> TIME_COLON_POS(615.0f, 25.0f);		//コロンの位置設定
 
+const TPos2d<float> TIME_COLON_POS(602.5f, 25.0f);		//コロンの位置設定
+const float TIME_BACK_GROUND_SIZE_X = 200.0f;			//タイマーのバックグランドのXの長さ設定
+const float TIME_BACK_GROUND_SIZE_Y = -75.0f;			//タイマーのバックグランドのYの長さ設定
+const float TIME_COLON_SIZE_X = 35.0f;					//タイマーのコロンのXの長さ設定
+const float TIME_COLON_SIZE_Y = -35.0f;					//タイマーのコロンのYの長さ設定
 
 #endif
-
 
 /* ========================================
 	コンストラクタ
@@ -42,7 +45,7 @@ const TPos2d<float> TIME_COLON_POS(602.5f, 25.0f);		//コロンの位置設定
 	戻値：なし
 =========================================== */
 CTimer::CTimer()
-	: m_nTimeCnt(0)
+	: m_nTimeCnt(STAGE_TIME)
 	, m_bStartFlg(false)
 	, m_dWaitCnt(0)
 	, m_bStopFlg(false)
@@ -50,29 +53,28 @@ CTimer::CTimer()
 	, m_pTextureColon(nullptr)
 	, m_pTextureNum(nullptr)
 {
-	// 数字
+	//数字のテクスチャ読む込み
+
 	m_pTextureNum = new Texture();
+
 	if (FAILED(m_pTextureNum->Create("Assets/Texture/numbers_v1/number.png")))
 	{
 		MessageBox(NULL, "number.png", "Error", MB_OK);
 	}
-	
 
-	// タイマーの背景
+	//タイマーの裏テクスチャ読み込む
 	m_pTextureBG = new Texture;
 	if (FAILED(m_pTextureBG->Create("Assets/Texture/time_background.png")))
 	{
 		MessageBox(NULL, "timebackground.png", "Error", MB_OK);
 	}
-	
-	// コロン
+
 	m_pTextureColon = new Texture;
 	if (FAILED(m_pTextureColon->Create("Assets/Texture/numbers_v1/colon.png")))
 	{
 		MessageBox(NULL, "colon.png", "Error", MB_OK);
 	}
 }
-
 /* ========================================
 	コンストラクタ
 	----------------------------------------
@@ -84,12 +86,13 @@ CTimer::CTimer()
 =========================================== */
 CTimer::~CTimer()
 {
+
 	SAFE_DELETE(m_pTextureColon);
-	SAFE_DELETE(m_pTextureBG);	
+
 	SAFE_DELETE(m_pTextureNum);
 
+	SAFE_DELETE(m_pTextureBG);
 }
-
 /* ========================================
 	タイマー更新関数
 	----------------------------------------
@@ -107,25 +110,21 @@ void CTimer::Update()
 		WaitTimeCheck();
 		return;
 	}
-	
+
 	// タイマーストップのチェック
 	if (m_bStopFlg == true)
 	{
 		return;
 	}
-
 	// タイマー減算
 	m_nTimeCnt--;
-
 	//時間が0になったら終了処理に
 	if (m_nTimeCnt <= 0)
 	{
 		// TODOゲーム終了処理
 	}
-	
 
 }
-
 /* ========================================
 	描画関数
 	----------------------------------------
@@ -145,9 +144,8 @@ void CTimer::Draw()
 	DirectX::XMFLOAT4X4 timebackground[3];
 
 	//ワールド行列はXとYのみを考慮して作成(Zは10ぐらいに配置
-	DirectX::XMMATRIX worldTimerBG = DirectX::XMMatrixTranslation(TIME_BACKGROUND_POS.x,TIME_BACKGROUND_POS.y, 0.0f);
+	DirectX::XMMATRIX worldTimerBG = DirectX::XMMatrixTranslation(TIME_BACKGROUND_POS.x, TIME_BACKGROUND_POS.y, 0.0f);
 	DirectX::XMStoreFloat4x4(&timebackground[0], DirectX::XMMatrixTranspose(worldTimerBG));
-
 	//ビュー行列は2Dだとカメラの位置があまり関係ないので、単位行列を設定する（単位行列は後日
 	DirectX::XMStoreFloat4x4(&timebackground[1], DirectX::XMMatrixIdentity());
 
@@ -161,16 +159,15 @@ void CTimer::Draw()
 	Sprite::SetView(timebackground[1]);
 	Sprite::SetProjection(timebackground[2]);
 	Sprite::SetSize(DirectX::XMFLOAT2(200.0f, -75.0f));
+	Sprite::SetSize(DirectX::XMFLOAT2(TIME_BACK_GROUND_SIZE_X, TIME_BACK_GROUND_SIZE_Y));
 	Sprite::SetTexture(m_pTextureBG);
 	Sprite::Draw();
 
 	//--コロンの描画--
 	DirectX::XMFLOAT4X4 colon[3];
-
 	//ワールド行列はXとYのみを考慮して作成(Zは10ぐらいに配置
 	DirectX::XMMATRIX worldColon = DirectX::XMMatrixTranslation(TIME_COLON_POS.x, TIME_COLON_POS.y, 0.0f);
 	DirectX::XMStoreFloat4x4(&colon[0], DirectX::XMMatrixTranspose(worldColon));
-
 	//ビュー行列は2Dだとカメラの位置があまり関係ないので、単位行列を設定する（単位行列は後日
 	DirectX::XMStoreFloat4x4(&colon[1], DirectX::XMMatrixIdentity());
 
@@ -183,18 +180,17 @@ void CTimer::Draw()
 	Sprite::SetWorld(colon[0]);
 	Sprite::SetView(colon[1]);
 	Sprite::SetProjection(colon[2]);
-	Sprite::SetSize(DirectX::XMFLOAT2(35.0f, -35.0f));
+	Sprite::SetSize(DirectX::XMFLOAT2(25.0f, -25.0f));
+	Sprite::SetSize(DirectX::XMFLOAT2(TIME_COLON_SIZE_X, TIME_COLON_SIZE_Y));
 	Sprite::SetUVPos(DirectX::XMFLOAT2(0.0f, 0.0f));
 	Sprite::SetUVScale(DirectX::XMFLOAT2(1.0f, 1.0f));
 	Sprite::SetTexture(m_pTextureColon);
 	Sprite::Draw();
-
 	//--時間（数字部分）の描画
 	DrawNumber(MINUTE_POS, GetMinite());				//分の秒画
 	DrawNumber(SECOND_TENS_POS, (GetSecond() / 10));	//秒の十の桁の描画 
 	DrawNumber(SECOND_ONE_POS, (GetSecond() % 10));		//秒の一の桁の描画
 }
-
 /* ========================================
 	タイマー取得関数
 	----------------------------------------
@@ -207,7 +203,6 @@ void CTimer::Draw()
 int CTimer::GetMinite()
 {
 	int	minute = m_nTimeCnt / 3600;			//分 = 総タイム割る（60秒 * 60フレーム）
-
 	return minute;
 }
 /* ========================================
@@ -221,10 +216,11 @@ int CTimer::GetMinite()
 =========================================== */
 int CTimer::GetSecond()
 {
-	int second = ( m_nTimeCnt / 60 ) % 60;	//秒 = 分の部分を抜くの残り
-
+	int second = (m_nTimeCnt / 60) % 60;	//秒 = 分の部分を抜くの残り
 	return second;
 }
+
+
 
 /* ========================================
 	タイマー開始関数
@@ -240,7 +236,6 @@ void CTimer::TimeStart()
 	m_nTimeCnt = STAGE_TIME;	// デフォルトの制限時間をセット
 	m_bStartFlg = true;			// 待ち時間なし
 }
-
 /* ========================================
 	タイマー開始関数
 	----------------------------------------
@@ -254,9 +249,7 @@ void CTimer::TimeStart(float maxTime)
 {
 	m_nTimeCnt = maxTime * 60;	// 制限時間をセット
 	m_bStartFlg = true;			// 待ち時間なし
-
 }
-
 /* ========================================
 	タイマー開始関数
 	----------------------------------------
@@ -273,8 +266,6 @@ void CTimer::TimeStart(float maxTime, float waitTime)
 	m_nTimeCnt = maxTime * 60;	// 制限時間
 	m_bStartFlg = false;		// 待ち時間あり
 }
-
-
 /* ========================================
 	タイマー停止関数
 	----------------------------------------
@@ -288,7 +279,6 @@ void CTimer::TimeStop()
 {
 	m_bStopFlg = true;
 }
-
 /* ========================================
 	タイマー再開関数
 	----------------------------------------
@@ -312,15 +302,12 @@ void CTimer::TimeRestart()
 	----------------------------------------
 	戻値：なし
 =========================================== */
-
 void CTimer::DrawNumber(TPos2d<float> pos, int number)
 {
 	DirectX::XMFLOAT4X4 time[3];
-
 	//ワールド行列はXとYのみを考慮して作成(Zは10ぐらいに配置
 	DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(pos.x, pos.y, 0.0f);
 	DirectX::XMStoreFloat4x4(&time[0], DirectX::XMMatrixTranspose(world));
-
 	//ビュー行列は2Dだとカメラの位置があまり関係ないので、単位行列を設定する（単位行列は後日
 	DirectX::XMStoreFloat4x4(&time[1], DirectX::XMMatrixIdentity());
 
@@ -334,38 +321,21 @@ void CTimer::DrawNumber(TPos2d<float> pos, int number)
 	Sprite::SetView(time[1]);
 	Sprite::SetProjection(time[2]);
 	Sprite::SetSize(DirectX::XMFLOAT2(50.0f, -50.0f));
-	
+
 	//spriteシートの上部分表示（0~4）
-	if ((number % 10 ) < 5)
+	if ((number % 10) < 5)
 	{
 		Sprite::SetUVPos(DirectX::XMFLOAT2(0.2f * number, 0.0f));
 	}
 	//spriteシートの下部分表示（5~9）
 	else
 	{
-		Sprite::SetUVPos(DirectX::XMFLOAT2(0.2f * number , 0.5f));
+		Sprite::SetUVPos(DirectX::XMFLOAT2(0.2f * number, 0.5f));
 	}
-
 	Sprite::SetUVScale(DirectX::XMFLOAT2(0.2f, 0.5f));
 	Sprite::SetTexture(m_pTextureNum);
 	Sprite::Draw();
 }
-
-/* ========================================
-   制限時間取得関数
-   ----------------------------------------
-   内容：制限時間のポインタを取得
-   ----------------------------------------
-   引数：無し
-   ----------------------------------------
-   戻値：制限時間のメンバ変数のポインタ
-======================================== */
-int * CTimer::GetTimePtr()
-{
-	return &m_nTimeCnt;
-}
-
-
 /* ========================================
 	タイマー待機時間チェック関数
 	----------------------------------------
@@ -384,4 +354,33 @@ void CTimer::WaitTimeCheck()
 		m_bStartFlg = true;
 	}
 
+}
+
+
+/* ========================================
+   制限時間取得関数
+   ----------------------------------------
+   内容：制限時間のポインタを取得
+   ----------------------------------------
+   引数：無し
+   ----------------------------------------
+   戻値：制限時間のメンバ変数のポインタ
+======================================== */
+int * CTimer::GetTimePtr()
+{
+	return &m_nTimeCnt;
+}
+
+/* ========================================
+	タイマー取得関数
+	----------------------------------------
+	内容：現在のタイマーのトータル値を取得
+	----------------------------------------
+	引数1：なし
+	----------------------------------------
+	戻値：int* 現在の時間のポインタ
+=========================================== */
+int* CTimer::GetNowTime()
+{
+	return &m_nTimeCnt;
 }

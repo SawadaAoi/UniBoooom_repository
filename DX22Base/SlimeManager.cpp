@@ -54,6 +54,8 @@ const float COL_SUB_HIT_TO_BIG = 0.7f;				// ƒXƒ‰ƒCƒ€Õ“Ë(¬¨‘å)‚ÌÕ“Ë‘¤‚ÌŒ¸Z’
 const float COL_SUB_STAND_TO_SMALL = 0.3f;			// ƒXƒ‰ƒCƒ€Õ“Ë(¬¨‘å)‚ÌÕ“Ë‚³‚ê‚é‘¤‚ÌŒ¸Z’l(Õ“Ë‚³‚ê‚½•ûŒü)
 const float COL_SUB_HIT_TO_SMALL = 0.3f;			// ƒXƒ‰ƒCƒ€Õ“Ë(‘å¨¬)‚ÌÕ“Ë‘¤‚ÌŒ¸Z’l(ˆÚ“®•ûŒü)
 const float COL_SUB_STAND_TO_BIG = 1.2f;			// ƒXƒ‰ƒCƒ€Õ“Ë(‘å¨¬)‚ÌÕ“Ë‚³‚ê‚é‘¤‚ÌŒ¸Z’l(Õ“Ë‚³‚ê‚½•ûŒü)
+
+
 #endif
 
 /* ========================================
@@ -292,7 +294,8 @@ void CSlimeManager::HitBranch(int HitSlimeNum, int StandSlimeNum, CExplosionMana
 		if (hitSlimeLevel == MAX_LEVEL)	//ƒXƒ‰ƒCƒ€‚ÌƒTƒCƒY‚ªÅ‘å‚Ì
 		{
 			//ƒXƒ‰ƒCƒ€”š”­ˆ—
-			pExpMng->Create(pos, MAX_SIZE_EXPLODE * EXPLODE_BASE_RATIO, LEVEL_4_EXPLODE_TIME);	//Õ“Ë‚³‚ê‚½ƒXƒ‰ƒCƒ€‚ÌˆÊ’u‚ÅƒŒƒxƒ‹‚S”š”­
+			pExpMng->Create(pos, MAX_SIZE_EXPLODE * EXPLODE_BASE_RATIO, LEVEL_4_EXPLODE_TIME, E_SLIME_LEVEL::LEVEL_4x4);	//Õ“Ë‚³‚ê‚½ƒXƒ‰ƒCƒ€‚ÌˆÊ’u‚ÅƒŒƒxƒ‹‚S”š”­
+			m_pScoreOHMng->DisplayOverheadScore(pos, LEVEL_4_SCORE * 2, LEVEL_4_HEIGHT);
 			pExpMng->CreateUI(pos, LEVEL_4_EXPLODE_TIME);		//ƒŒƒxƒ‹‚S”š”­‚µ‚½ˆÊ’uboooomUI•\¦
 		}
 		else	//Å‘åƒTƒCƒY‚¶‚á‚È‚¢ê‡‚Í1’iŠK‘å‚«‚¢ƒXƒ‰ƒCƒ€‚ğ¶¬‚·‚é
@@ -345,7 +348,7 @@ bool CSlimeManager::HitFlameBranch(int HitSlimeNum, int StandSlimeNum, CExplosio
 	else if (hitSlimeLevel == LEVEL_FLAME)
 	{
 		pExpMng->SwitchExplode(standSlimeLevel, standSlimeTransform.fPos,standSlimeSize);	//ƒXƒ‰ƒCƒ€‚ÌƒŒƒxƒ‹‚É‚æ‚Á‚Ä”š”­‚ÌŠÔ‚ÆƒTƒCƒY‚ğ•ªŠò
-
+		m_pScoreOHMng->DisplayOverheadScore(standSlimeTransform.fPos, standSlimeLevel);
 		SAFE_DELETE(m_pSlime[HitSlimeNum]);								// Õ“Ë‚·‚éƒXƒ‰ƒCƒ€‚ğíœ
 		SAFE_DELETE(m_pSlime[StandSlimeNum]);							// Õ“Ë‚³‚ê‚½ƒXƒ‰ƒCƒ€‚ğíœ
 
@@ -355,6 +358,7 @@ bool CSlimeManager::HitFlameBranch(int HitSlimeNum, int StandSlimeNum, CExplosio
 	else if (standSlimeLevel == LEVEL_FLAME)
 	{
 		pExpMng->SwitchExplode(hitSlimeLevel, hitSlimeTransform.fPos, hitSlimeSize);	//ƒXƒ‰ƒCƒ€‚ÌƒŒƒxƒ‹‚É‚æ‚Á‚Ä”š”­‚ÌŠÔ‚ÆƒTƒCƒY‚ğ•ªŠò
+		m_pScoreOHMng->DisplayOverheadScore(hitSlimeTransform.fPos, hitSlimeLevel);
 
 		SAFE_DELETE(m_pSlime[HitSlimeNum]);								// Õ“Ë‚·‚éƒXƒ‰ƒCƒ€‚ğíœ
 		SAFE_DELETE(m_pSlime[StandSlimeNum]);							// Õ“Ë‚³‚ê‚½ƒXƒ‰ƒCƒ€‚ğíœ
@@ -420,7 +424,8 @@ void CSlimeManager::TouchExplosion(int DelSlime, CExplosionManager * pExpMng, in
 	TTriType<float> size = m_pSlime[DelSlime]->GetScale();		// Õ“Ëæ‚ÌƒXƒ‰ƒCƒ€ƒTƒCƒY‚ğŠm•Û
 
 	pExpMng->SwitchExplode(level, pos, size, comboNum);
-
+	m_pScoreOHMng->DisplayOverheadScore(pos, level);
+	//ƒg[ƒ^ƒ‹ƒXƒRƒAilevel,combo)
 	SAFE_DELETE(m_pSlime[DelSlime]);					//‚Ô‚Â‚©‚è‚É—ˆ‚½ƒXƒ‰ƒCƒ€‚ğíœ
 
 	//pExpMng->Create(pos, ExplosionSize);				//Õ“Ëæ‚ÌƒXƒ‰ƒCƒ€‚ÌˆÊ’u‚Å”š”­
@@ -627,4 +632,18 @@ void CSlimeManager::SetBoooomUI(CExplosionManager* pExpMng)
 int CSlimeManager::GetRandom(int min, int max)
 {
 	return min + (int)(rand() * (max - min + 1.0) / (1.0 + RAND_MAX));
+}
+
+/* ========================================
+	ƒXƒRƒAî•ñƒZƒbƒgŠÖ”
+	----------------------------------------
+	“à—eF”š”­¶¬‚É•K—v‚ÈƒXƒRƒAî•ñƒZƒbƒg
+	----------------------------------------
+	ˆø”1F‚È‚µ
+	----------------------------------------
+	–ß’lF‚È‚µ
+======================================== */
+void CSlimeManager::SetScoreOHMng(CScoreOHManager * pScoreMng)
+{
+	m_pScoreOHMng = pScoreMng;
 }

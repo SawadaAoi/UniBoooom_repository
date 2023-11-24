@@ -39,6 +39,7 @@ public:
 	void TimeRestart();
 	void DrawNumber(TPos2d<float> pos, int number);	//”š•`‰æŠÖ”
 	int* GetTimePtr();
+	int* GetNowTime();								//¡‚ÌŠÔ‚ğæ“¾ŠÖ”
 
 private:
 	void WaitTimeCheck();
