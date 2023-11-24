@@ -22,11 +22,11 @@
 
 
 // =============== 定数定義 =======================
-const bool HALF_FLAG = false;
+//const bool HALF_FLAG = false;
 
 // =============== グローバル変数定義 =============
-int g_addLife = 2;
-int g_HpAdjust = 2;
+//int g_addLife = 2;
+//int g_HpAdjust = 2;
 
 /* ========================================
 	コンストラクタ関数
@@ -61,12 +61,12 @@ CHP_UI::CHP_UI(const int* pPlayerHp)
 
 	m_pPlayerHp = pPlayerHp;
 
-
+/*
 	if (HALF_FLAG)
 	{
 		g_addLife = 1;
 		g_HpAdjust = 1;
-	}
+	}*/
 
 
 	
@@ -114,20 +114,13 @@ void CHP_UI::Update()
 void CHP_UI::Draw()
 {
 
-	for (int i = 0,viewNum = 0; i <= (PLAYER_HP * g_HpAdjust); i+= g_addLife)
+	for (int i = 0; i < PLAYER_HP; i++)
 	{
-		if (i % 2 != 0)
-		{
-			if (i != PLAYER_HP)
-			{
-				continue;
-			}
-		}
 
 		DirectX::XMFLOAT4X4 mat[3];
 
 		// ワールド行列はXとYのみを考慮して作成
-		DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(DRAW_POSX + (viewNum * DRAW_WIDTH), DRAW_POSY, 0.0f);	// ワールド行列（必要に応じて変数を増やしたり、複数処理を記述したりする）
+		DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(DRAW_POSX + (i * DRAW_WIDTH), DRAW_POSY, 0.0f);	// ワールド行列（必要に応じて変数を増やしたり、複数処理を記述したりする）
 		DirectX::XMStoreFloat4x4(&mat[0], DirectX::XMMatrixTranspose(world));
 
 		// ビュー行列は2Dだとカメラの位置があまり関係ないので、単位行列を設定する
@@ -148,18 +141,16 @@ void CHP_UI::Draw()
 		Sprite::SetTexture(m_pTexture[HEART_NONE]);
 		Sprite::Draw();
 
-		viewNum ++;
 	}
 
-	Texture* pTexture;
 
-	for (int i = 1,viewPosX=0; i <= *m_pPlayerHp; i++)
+	for (int i = 0; i < *m_pPlayerHp; i++)
 	{
 	
 		DirectX::XMFLOAT4X4 mat_Full[3];
 
 		// ワールド行列はXとYのみを考慮して作成
-		DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(DRAW_POSX + (viewPosX * DRAW_WIDTH), DRAW_POSY, 0.0f);	// ワールド行列（必要に応じて変数を増やしたり、複数処理を記述したりする）
+		DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(DRAW_POSX + (i * DRAW_WIDTH), DRAW_POSY, 0.0f);	// ワールド行列（必要に応じて変数を増やしたり、複数処理を記述したりする）
 		DirectX::XMStoreFloat4x4(&mat_Full[0], DirectX::XMMatrixTranspose(world));
 
 		// ビュー行列は2Dだとカメラの位置があまり関係ないので、単位行列を設定する
@@ -171,16 +162,6 @@ void CHP_UI::Draw()
 		DirectX::XMStoreFloat4x4(&mat_Full[2], DirectX::XMMatrixTranspose(proj));
 
 
-		if (i % 2 == 0)
-		{
-			pTexture = m_pTexture[HEART_FULL];
-			viewPosX++;
-		}
-		else
-		{
-			pTexture = m_pTexture[HEART_HALF];
-		}
-
 		// スプライトの設定
 		Sprite::SetWorld(mat_Full[0]);
 		Sprite::SetView(mat_Full[1]);
@@ -188,7 +169,7 @@ void CHP_UI::Draw()
 		Sprite::SetSize(DirectX::XMFLOAT2(DRAW_HEIGHT, -DRAW_WIDTH));
 		Sprite::SetUVPos(DirectX::XMFLOAT2(0.0f, 0.0f));
 		Sprite::SetUVScale(DirectX::XMFLOAT2(1.0f, 1.0f));
-		Sprite::SetTexture(pTexture);
+		Sprite::SetTexture(m_pTexture[HEART_FULL]);
 		Sprite::Draw();
 
 
