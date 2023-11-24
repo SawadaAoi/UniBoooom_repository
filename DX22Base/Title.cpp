@@ -20,7 +20,11 @@
 
 // =============== インクルード ===================
 #include "Title.h"	//自身のヘッダ
-
+#include "DirectXTex/TextureLoad.h"
+#include "Pos3d.h"
+#include "Sprite.h"
+#include "GameParameter.h"
+#include "Input.h"
 
 
 /* ========================================
@@ -34,6 +38,11 @@
 =========================================== */
 CTitle::CTitle()
 {
+	m_pTexture = new Texture();
+	if (FAILED(m_pTexture->Create("Assets/Texture/gamestart.png")))
+	{
+		MessageBox(NULL, "Title gamstart.png", "Error", MB_OK);
+	}
 }
 
 /* ========================================
@@ -60,6 +69,10 @@ CTitle::~CTitle()
 =========================================== */
 void CTitle::Update()
 {
+	if (IsKeyTrigger(VK_SPACE))
+	{
+		m_bFinish = true;
+	}
 }
 
 /* ========================================
@@ -72,8 +85,9 @@ void CTitle::Update()
 	戻値：なし
 	======================================== */
 //!memo(見たら消してー)：constが邪魔になったら外してね(.hの方も)
-void CTitle::Draw() const
+void CTitle::Draw()
 {
+	Draw2d(600.0f, 100.0f, 300.0f, 50.0f, m_pTexture);
 }
 
 /* ========================================
@@ -103,5 +117,5 @@ CTitle::E_TYPE CTitle::GetType() const
 CTitle::E_TYPE CTitle::GetNext() const
 {
 	// =============== 提供 ===================
-	return CTitle::E_TYPE_SELECT_STAGE;	//遷移先シーンの種類
+	return CTitle::E_TYPE_STAGE1;	//遷移先シーンの種類
 }

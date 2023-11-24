@@ -11,6 +11,7 @@
 	・2023/11/11 ヘッダ作成 Suzumura
 	・2023/11/13 パラメーター追加(LEVEL_〇_EXPLODE_TIME) Suzumura
 	・2023/11/14 パラメーター追加(// フレイムスライム) Suzumura
+	・2023/11/21 パラメーター追加(// コンボ数) Sawada
 
 =========================================== */
 #ifndef __GAME_PARAMETER_H__
@@ -32,7 +33,9 @@
 //ゲームシーン================================================
 const float BGM_VOLUME = 0.02f;				//シーンゲームの音量
 const float SE_HAMMER_HIT_VOLUME = 0.5f;	// スライムを打った時のSEの音量
-
+// 画面サイズ
+const int SCREEN_WIDTH_ = 1280;
+const int SCREEN_HEIGHT_ = 720;
 
 // プレイヤー ================================================
 const float PLAYER_MOVE_SPEED	= 0.1f;			// プレイヤーの移動速度
@@ -110,6 +113,8 @@ const float LEVEL_1_EXPLODE_TIME = 0.5f * 60.0f;	// スライム_1の爆発総時間
 const float LEVEL_2_EXPLODE_TIME = 1.0f * 60.0f;	// スライム_2の爆発総時間
 const float LEVEL_3_EXPLODE_TIME = 2.0f * 60.0f;	// スライム_3の爆発総時間
 const float LEVEL_4_EXPLODE_TIME = 3.0f * 60.0f;	// スライム_4の爆発総時間
+const int	DELAY_TIME			 = 0.2f * 60;		// 遅延秒数
+
 
 // カメラ =====================================================
 const TPos3d<float> INIT_POS(0.0f, 2.6f, -3.0f);					// 初期位置
@@ -145,6 +150,25 @@ const float BOSS_GAUGE_FULL_POS_Y_ADJUST = BOSS_GAUGE_FULL_SIZE_X / 2;		//ボスゲ
 const float BOSS_GAUGE_FULL_SIZE_Y_ADJUST = BOSS_GAUGE_FULL_SIZE_Y;	//ボスゲージ増加時、サイズ計算用（計算して表示したい比率かける元々のサイズ(100.0f)）
 const int FADE_TIME = 5 * 60;							//ボスゲージが溜まってから消える時間
 
+
+// コンボ =========================================================
+const int	MAX_COMBO_NUM				= 5;					// 最大同時コンボ数
+const TPos2d<float> COMBO_UI_POSITION	= { 1025.0f, 600.0f };	// コンボUIの描画位置
+const TPos2d<float> COMBO_UI_SIZE		= {   70.0f, 130.0f };	// コンボUIの大きさ
+const float COMBO_UI_NUM_SPACE			= 80.0f;				// 数字の間スペース
+const float COMBO_UI_MULTI_DISP_SPACE	= 100.0f;				// 同時コンボ描画時の上下の空白
+const int COMBO_UI_DISP_DILAY_TIME		= 2.0f * 60;			// 残コンボ数表示の秒数
+
+const TPos2d<float> COMBO_UI_BACK_POS	 = {1100.0f, 600.0f};	// コンボUIの背景の描画位置
+const TPos2d<float> COMBO_UI_BACK_SIZE	 = {370.0f, 280.0f};	// コンボUIの背景の大きさ
+const TPos2d<float> COMBO_UI_STRING_POS  = {1150.0f, 615.5f};	// コンボUIの文字の描画位置
+const TPos2d<float> COMBO_UI_STRING_SIZE = {180.0f, 100.0f};		// コンボUIの文字の大きさ
+
+// 床 ====================================
+const float FLOOR_SCALE_X = 1.1f;
+const float FLOOR_SCALE_Z = 1.1f;
+const float FLOOR_OFFSET_X = 48.0f * FLOOR_SCALE_X;
+const float FLOOR_OFFSET_Z = 48.0f * FLOOR_SCALE_Z;
 
 #endif
 

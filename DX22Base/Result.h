@@ -19,6 +19,7 @@
 
 // =============== インクルード ===================
 #include "Scene.h"	//親のヘッダ
+#include "Texture.h"
 
 // =============== クラス定義 =====================
 class CResult :public CScene	//シーン
@@ -28,9 +29,12 @@ public:
 	CResult();							//コンストラクタ
 	~CResult();							//デストラクタ
 	void Update();						//更新
-	void Draw() const;					//描画	
+	void Draw();					//描画	
 	E_TYPE GetType() const override;	//自身の種類ゲッタ
 	E_TYPE GetNext() const override;	//次のシーンゲッタ
+private:
+	// =============== メンバ変数定義 ===============
+	Texture* m_pTexture;
 };	//リザルト
 
 #endif	//!__RESULT_H__

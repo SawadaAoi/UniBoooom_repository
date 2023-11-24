@@ -13,8 +13,34 @@
 	・2023/11/10 カメラをスライムと爆発にも渡すようにした・lineのメモリリーク対策 髙木駿輔
 	・2023/11/17 振動機能呼び出しデバッグモード追加 takagi
 	・2023/11/18 BGMの再生 yamashita
+  ・2023/11/18~20 フェード試した 髙木駿輔
+	・2023/11/21 フェード更新呼び出し 髙木駿輔
+  ・2023/11/21 コンボ用のメンバ変数を追加 Sawada
 
 ========================================== */
+
+// =============== デバッグモード ===================
+#define USE_CAMERA_VIBRATION (false)
+#define MODE_COORD_AXIS (true)			//座標軸映すかどうか
+#define MODE_GROUND (false)				//座標軸映すかどうか
+#if _DEBUG
+#define TRY_USE_HIT_STOP (true)
+#endif
+#define USE_FADE_GAME (true)	//フェード試す
+
+#if USE_FADE_GAME
+#include "Fade.h"
+#endif
+
+#if USE_CAMERA_VIBRATION
+#include "Input.h"
+#endif
+
+#if TRY_USE_HIT_STOP
+#include "HitStop.h"
+#include "Input.h"
+#endif
+
 
 // =============== インクルード ===================
 #include "SceneGame.h"
@@ -28,21 +54,14 @@
 #include "Defines.h"
 #include "GameParameter.h"
 
-#if USE_CAMERA_VIBRATION
-#include "Input.h"
-#endif
+
 
 // =============== 定数定義 =======================
 #if MODE_GAME_PARAMETER
 #else
 const float BGM_VOLUME = 0.02f;
-
 #endif
 
-// =============== デバッグモード =======================
-#define MODE_COORD_AXIS (true)			//座標軸映すかどうか
-#define MODE_GROUND (false)				//座標軸映すかどうか
-#define USE_CAMERA_VIBRATION (false)
 /* ========================================
 	コンストラクタ関数
 	-------------------------------------
@@ -80,17 +99,36 @@ SceneGame::SceneGame()
 #endif
 
 
-	m_pFloor = new CFloor();
+	m_pFloor = new CFloor(m_pPlayer->GetPosAddress());
 	m_pFloor->SetCamera(m_pCamera);
 	// スライムマネージャー生成
 	m_pSlimeMng = new CSlimeManager();
 	m_pSlimeMng->SetCamera(m_pCamera);
+
+
+	// コンボ数表示生成
+	m_pCombo = new CCombo();
+
+	// 爆発マネージャー生成
 	m_pExplosionMng = new CExplosionManager();
 	m_pExplosionMng->SetCamera(m_pCamera);
+	m_pExplosionMng->SetCombo(m_pCombo);
 
 	// タイマー生成
 	m_pTimer = new CTimer();
 	m_pTimer->TimeStart();
+	//ステージ終了のUI表示
+	m_pStageFin = new CStageFinish(m_pPlayer->GetHP(),m_pTimer->GetTimePtr());
+
+#if USE_FADE_GAME
+	m_pFade = new CFade(m_pCamera);
+#endif
+	//pTex->Create("Assets/NoStar.png");
+	//m_pFade->SetTexture(pTex);
+	//pps->Load("Assets/Shader/PsFade.cso");
+	//m_pFade->SetPixelShader(pps);
+	//pvs->Load("Assets/Shader/VsFade.cso");
+	//m_pFade->SetVertexShader(pvs);
 
 	LoadSound();
 	//BGMの再生
@@ -117,6 +155,10 @@ SceneGame::~SceneGame()
 		m_pSpeaker->Stop();
 		m_pSpeaker->DestroyVoice();
 	}
+	SAFE_DELETE(m_pStageFin);
+	SAFE_DELETE(m_pTimer);
+	SAFE_DELETE(m_pFade);
+  SAFE_DELETE(m_pTimer);
 	SAFE_DELETE(m_pBossgauge);
 	SAFE_DELETE(m_pTimer);
 	SAFE_DELETE(m_pExplosionMng);
@@ -144,6 +186,15 @@ SceneGame::~SceneGame()
 =========================================== */
 void SceneGame::Update(float tick)
 {
+
+#if TRY_USE_HIT_STOP
+	CHitStop::Update();	//ヒットストップ更新
+	//Effect更新、その他必要なもの
+	if (CHitStop::IsStop())	//ストップ検査
+	{
+		return;	//処理中断
+	}
+#endif
 #if USE_CAMERA_VIBRATION
 	if (IsKeyTrigger('1'))
 	{
@@ -162,16 +213,30 @@ void SceneGame::Update(float tick)
 		m_pCamera->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_SIDE_STRONG);
 	}
 #endif
+#if TRY_USE_HIT_STOP
+	if (IsKeyTrigger('Z'))
+	{
+		CHitStop::UpFlag(CHitStop::E_BIT_FLAG_STOP_SOFT);	//フラグオン
+	}
+#endif
 	m_pCamera->Update();
 	m_pPlayer->Update();
 	m_pSlimeMng->SetPlayerPos(m_pPlayer->GetPos());
 
 	// スライムマネージャー更新
+	m_pFloor->Update();
 	m_pSlimeMng->Update(m_pExplosionMng);
 	m_pExplosionMng->Update();
 	m_pTimer->Update();
+	m_pStageFin->Update();
+	m_pCombo->Update();
+
 	m_pBossgauge->Update();
 	SceneGameCollision();
+
+#if USE_FADE_GAME
+	m_pFade->Update();
+#endif
 }
 
 /* ========================================
@@ -258,8 +323,16 @@ void SceneGame::Draw()
 	//タイマー描画
 
 	SetRenderTargets(1, &pRTV, nullptr);
+	m_pStageFin->Draw();
 
 	m_pTimer->Draw();
+	m_pCombo->Draw();
+
+
+#if USE_FADE_GAME
+	m_pFade->Draw();
+#endif
+  
 	//ボスゲージ描画
 	m_pBossgauge->Draw();
 }

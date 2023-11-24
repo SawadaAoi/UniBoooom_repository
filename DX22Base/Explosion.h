@@ -17,9 +17,13 @@
 	・2023/11/13 爆発総時間の変数を追加 Suzumura
 	・2023/11/14 SphereInfoの変更に対応 Takagi
 	・2023/11/15 Objectクラスを継承したので修正　yamamoto
+	・2023/11/20 コンボ数配列添え字の追加 Sawada
+	・2023/11/21 初期値の設定と、遅延処理の追加 Sawada
+
 ======================================== */
 #ifndef __EXPLOSION_H__	//Explosion.hインクルードガード
 #define __EXPLOSION_H__
+
 // =============== インクルード ===================
 #include "Model.h"			//modelクラス定義ヘッダ―
 #include "Shader.h"			//シェーダークラス定義ヘッダー
@@ -28,20 +32,24 @@
 #include "Sphere.h"			//球定義ヘッダー
 #include "Camera.h"			//カメラ定義ヘッダー
 #include "Object.h"			//
+
 //=============== クラス定義 =====================
 class CExplosion
 	:public CObject
 {
 public:
 	// ===メンバ関数宣言===
-	CExplosion(TPos3d<float> fPos, float fSize, float fTime);	//コンストラクタ
-	~CExplosion();												//デストラクタ
-	void Update();												//更新関数
-	void Draw();												//描画関数
-	void DisplayTimeAdd();										//爆発表示カウント加算処理関数
+	CExplosion(TPos3d<float> fPos, float fSize, float fTime, int comboNum, bool delayFlg);	//コンストラクタ
+	~CExplosion();												// デストラクタ
+	void Update();												// 更新関数
+	void Draw();												// 描画関数
+	void DisplayTimeAdd();										// 爆発表示カウント加算処理関数
 
-	bool GetDelFlg();					//削除フラグ取得処理関数
-	void SetCamera(const CCamera* m_pCamera);	//他のオブジェクトと同一のカメラをセット
+	void Delay();
+
+	bool GetDelFlg();							// 削除フラグ取得処理関数
+	int GetComboNum();							// コンボ配列番号取得
+	void SetCamera(const CCamera* m_pCamera);	// 他のオブジェクトと同一のカメラをセット
 
 
 private:
@@ -54,6 +62,11 @@ private:
 
 	CGeometry*		m_3dModel;		// 爆発仮3Dモデル
 	const CCamera*	m_pCamera;	//カメラのポインタ
+
+	int m_dComboNum;			// コンボ配列番号
+
+	bool m_bDelayFlg;		// 爆発遅延フラグ
+	int m_dDelayCnt;		// カウントダウン開始フレーム減算値
 };
 
 #endif // __EXPLOSION_H__
