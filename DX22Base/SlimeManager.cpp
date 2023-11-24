@@ -53,6 +53,7 @@ const float COL_SUB_HIT_TO_BIG = 0.7f;				// ƒXƒ‰ƒCƒ€Õ“Ë(¬¨‘å)‚ÌÕ“Ë‘¤‚ÌŒ¸Z’
 const float COL_SUB_STAND_TO_SMALL = 0.3f;			// ƒXƒ‰ƒCƒ€Õ“Ë(¬¨‘å)‚ÌÕ“Ë‚³‚ê‚é‘¤‚ÌŒ¸Z’l(Õ“Ë‚³‚ê‚½•ûŒü)
 const float COL_SUB_HIT_TO_SMALL = 0.3f;			// ƒXƒ‰ƒCƒ€Õ“Ë(‘å¨¬)‚ÌÕ“Ë‘¤‚ÌŒ¸Z’l(ˆÚ“®•ûŒü)
 const float COL_SUB_STAND_TO_BIG = 1.2f;			// ƒXƒ‰ƒCƒ€Õ“Ë(‘å¨¬)‚ÌÕ“Ë‚³‚ê‚é‘¤‚ÌŒ¸Z’l(Õ“Ë‚³‚ê‚½•ûŒü)
+const float LEAVE_DISTANCE = 20.0f;					// ‚±‚êˆÈã—£‚ê‚½‚ç‘ÎŠpüã‚ÉˆÚ“®‚·‚é
 #endif
 
 /* ========================================
@@ -76,6 +77,7 @@ CSlimeManager::CSlimeManager()
 	, m_pSEUnion(nullptr)
 	, m_pSEHitSlimeSpeaker(nullptr)
 	, m_pSEUnionSpeaker(nullptr)
+	, m_oldCreatePos{ 0.0f,0.0f,0.0f }
 {
 	//ƒXƒ‰ƒCƒ€‚Ìƒ‚ƒfƒ‹‚Æ’¸“_ƒVƒF[ƒ_[‚Ì“Ç‚İ‚İ
 	LoadModel();
@@ -142,6 +144,8 @@ void CSlimeManager::Update(CExplosionManager* pExpMng)
 
 	}
 
+	OutOfRange();	//ƒXƒ‰ƒCƒ€‚ªƒvƒŒƒCƒ„[‚©‚çˆê’è‹——£—£‚ê‚½‚ç‘ÎŠpü‚ÉˆÚ“®
+
 	m_CreateCnt++;
 	if(ENEMY_CREATE_INTERVAL<= m_CreateCnt)
 	{
@@ -197,10 +201,14 @@ void CSlimeManager::Create(E_SLIME_LEVEL level)
 			CreatePos.z = GetRandom(m_pPlayerPos.z - RANDOM_POS, m_pPlayerPos.z + RANDOM_POS);	
 			CreatePos.y = 0;
 
-			float Distance = CreatePos.Distance(m_pPlayerPos);	// ¶¬À•W‚ÌƒvƒŒƒCƒ„[‚Æ‚Ì‹——£
+			float PlayerCreateDistance = CreatePos.Distance(m_pPlayerPos);	// ¶¬À•W‚ÌƒvƒŒƒCƒ„[‚Æ‚Ì‹——£
+			float oldCreateDistance = CreatePos.Distance(m_oldCreatePos);	// ¶¬À•W‚ÌƒvƒŒƒCƒ„[‚Æ‚Ì‹——£
 
-			if (Distance >= CREATE_DISTANCE) break;	// ƒvƒŒƒCƒ„[‚©‚çˆê’è‚Ì‹——£—£‚ê‚Ä‚¢‚ê‚Î”²‚¯‚é
+			// ƒvƒŒƒCƒ„[‚©‚çˆê’è‚Ì‹——£—£‚ê‚Ä‚¢‚ê‚Î”²‚¯‚é
+			if (PlayerCreateDistance >= CREATE_DISTANCE && oldCreateDistance >= CREATE_DISTANCE) break;	
 		}
+
+		m_oldCreatePos = CreatePos;	//¶¬À•W‚ğ•Û
 		
 		switch (level)
 		{
@@ -552,6 +560,43 @@ void CSlimeManager::LoadModel()
 		MessageBox(NULL, "Flame_Slime", "Error", MB_OK);	//‚±‚±‚ÅƒGƒ‰[ƒƒbƒZ[ƒW•\¦
 	}
 	m_pFlameModel->SetVertexShader(m_pVS);
+}
+
+/* ========================================
+	”ÍˆÍŠOƒXƒ‰ƒCƒ€ˆÚ“®ŠÖ”
+	----------------------------------------
+	“à—eFƒvƒŒƒCƒ„[‚©‚ç—£‚ê‚·‚¬‚½ƒXƒ‰ƒCƒ€‚ğƒvƒŒƒCƒ„[‚©‚çŒ©‚½‘ÎŠpü‚ÌˆÊ’u‚ÉˆÚ“®
+	----------------------------------------
+	ˆø”FƒQƒbƒg‚µ‚½‚¢ƒXƒ‰ƒCƒ€‚Ì—v‘f”Ô†
+	----------------------------------------
+	–ß’lFƒXƒ‰ƒCƒ€‚Ì”z—ñ
+======================================== */
+void CSlimeManager::OutOfRange()
+{
+	for (int i = 0; i < MAX_SLIME_NUM; i++)
+	{
+		if (!m_pSlime[i]) { continue; }	//null‚È‚çƒXƒLƒbƒv
+
+		TPos3d<float> slimePos = m_pSlime[i]->GetPos();
+		float distance = slimePos.Distance(m_pPlayerPos);
+
+		if (distance >= LEAVE_DISTANCE)	//‹——£‚ª—£‚ê‚·‚¬‚Ä‚¢‚½‚ç
+		{
+			//‘Š‘Î‹——£‚ğŒvZ
+			float disX = m_pPlayerPos.x - slimePos.x;	
+			float disZ = m_pPlayerPos.z - slimePos.z;
+
+			//­‚µ‹ß‚Ã‚¯‚Ä‚©‚ç‘ÎŠpü‚ÉˆÚ“®‚³‚¹‚é
+			if (disX > 0.0f) { disX -= 1.0f; }
+			else { disX += 1.0f; }
+			if (disZ > 0.0f) { disZ -= 1.0f; }
+			else { disZ += 1.0f; }
+			//
+			TPos3d<float> setPos = {m_pPlayerPos.x + disX,0.0f,m_pPlayerPos.z + disZ};
+
+			m_pSlime[i]->SetPos(setPos);
+		}
+	}
 }
 
 /* ========================================

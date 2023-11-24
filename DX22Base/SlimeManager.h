@@ -56,6 +56,7 @@ public:
 	E_SLIME_LEVEL GetRandomLevel();																	// ランダムなスライムのレベルを返す(1～3レべル)
 	void PreventOverlap(CSlimeBase* pMoveSlime, CSlimeBase* pStandSlime);							// スライム同士が移動中に接触した時の処理
 	void LoadModel();
+	void OutOfRange();
 	//ゲット関数
 	CSlimeBase* GetSlimePtr(int num);
 
@@ -81,8 +82,8 @@ private:
 	IXAudio2SourceVoice* m_pSEHitSlimeSpeaker;		//ハンマーでスライムを打った時のSEを聞き取る側
 	IXAudio2SourceVoice* m_pSEUnionSpeaker;		//ハンマーでスライムを打った時のSEを聞き取る側
 
-	int m_CreateCnt;	// 生成間隔用カウント
-
+	int m_CreateCnt;				// 生成間隔用カウント
+	TPos3d<float> m_oldCreatePos;	//1つ前のスライムの生成場所
 
 	
 };

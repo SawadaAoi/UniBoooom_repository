@@ -85,6 +85,7 @@ const float COL_SUB_HIT_TO_BIG		= 0.1f;			// ƒXƒ‰ƒCƒ€Õ“Ë(¬¨‘å)‚ÌÕ“Ë‘¤‚ÌŒ¸ŽZ’
 const float COL_SUB_STAND_TO_SMALL	= 0.8f;			// ƒXƒ‰ƒCƒ€Õ“Ë(¬¨‘å)‚ÌÕ“Ë‚³‚ê‚é‘¤‚ÌŒ¸ŽZ’l(Õ“Ë‚³‚ê‚½•ûŒü)
 const float COL_SUB_HIT_TO_SMALL	= 0.3f;			// ƒXƒ‰ƒCƒ€Õ“Ë(‘å¨¬)‚ÌÕ“Ë‘¤‚ÌŒ¸ŽZ’l(ˆÚ“®•ûŒü)
 const float COL_SUB_STAND_TO_BIG	= 1.2f;			// ƒXƒ‰ƒCƒ€Õ“Ë(‘å¨¬)‚ÌÕ“Ë‚³‚ê‚é‘¤‚ÌŒ¸ŽZ’l(Õ“Ë‚³‚ê‚½•ûŒü)
+const float LEAVE_DISTANCE = 40.0f;					// ‚±‚êˆÈã—£‚ê‚½‚ç‘ÎŠpüã‚ÉˆÚ“®‚·‚é
 
 // ƒTƒCƒY1
 const float LEVEL1_SCALE = 1.0f;					// ƒXƒ‰ƒCƒ€QƒŒƒxƒ‹‚P‚Ì‘å‚«‚³(“–‚½‚è”»’èŠÜ‚Þ)
