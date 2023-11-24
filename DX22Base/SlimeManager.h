@@ -31,6 +31,7 @@
 #include "ExplosionManager.h"
 #include "GameParameter.h"		//定数定義用ヘッダー
 #include "Sound.h"
+#include "ScoreOHManager.h"
 
 // =============== 定数定義 =======================
 #if MODE_GAME_PARAMETER
@@ -61,6 +62,8 @@ public:
 
 	void SetCamera(CCamera* pCamera);		//スライムを移すカメラのポインタをセット
 	void SetPlayerPos(TPos3d<float> pos);
+	void SetScoreOHMng(CScoreOHManager* pScoreMng);
+
 private:
 	// ===メンバ変数宣言=====
 	int GetRandom(int min, int max);
@@ -75,6 +78,8 @@ private:
 	Model* m_pYellowModel;
 	Model* m_pRedModel;
 	Model* m_pFlameModel;
+	CScoreOHManager* m_pScoreOHMng;
+
 
 	XAUDIO2_BUFFER* m_pSEHitSlime;					//ハンマーでスライムを打った時のSEのデータ
 	XAUDIO2_BUFFER* m_pSEUnion;					//ハンマーでスライムを打った時のSEのデータ

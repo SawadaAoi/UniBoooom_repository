@@ -37,6 +37,8 @@
 #include "Fade.h"
 #include "BossGauge.h"
 
+#include "ScoreOHManager.h"
+#include "TotalScore.h"
 // =============== クラス定義 =====================
 class SceneGame
 {
@@ -71,7 +73,9 @@ private:
 	CFloor* m_pFloor;
 	CStageFinish* m_pStageFin;
 	CFade* m_pFade;
+	CTotalScore* m_pTotalScore;
 
+	CScoreOHManager* m_pScoreOHMng;
 	XAUDIO2_BUFFER* m_pBGM;							//BGMの音声データ
 	XAUDIO2_BUFFER* m_pSEHitHammer;					//SEの音声データ
 	IXAudio2SourceVoice* m_pSpeaker;				//BGMを聞き取る側

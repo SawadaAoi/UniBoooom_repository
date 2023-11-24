@@ -113,7 +113,15 @@ SceneGame::SceneGame()
 	m_pExplosionMng = new CExplosionManager();
 	m_pExplosionMng->SetCamera(m_pCamera);
 	m_pExplosionMng->SetCombo(m_pCombo);
+	//スコア生成
+	m_pScoreOHMng = new CScoreOHManager();
+	m_pScoreOHMng->SetCamera(m_pCamera);
+	m_pSlimeMng->SetScoreOHMng(m_pScoreOHMng);
 
+	//トータルスコア生成
+	m_pTotalScore = new CTotalScore();
+	m_pCombo->SetTotalScore(m_pTotalScore);
+	
 	// タイマー生成
 	m_pTimer = new CTimer();
 	m_pTimer->TimeStart();
@@ -168,6 +176,9 @@ SceneGame::~SceneGame()
 	SAFE_DELETE(m_pCamera);
 	SAFE_DELETE(m_pPlayer);
 	SAFE_DELETE(m_pCollision);
+	SAFE_DELETE(m_pScoreOHMng);
+	SAFE_DELETE(m_pTotalScore);
+
 #if MODE_COORD_AXIS
 	// 軸線の表示
 	CLine::Uninit();
@@ -228,6 +239,7 @@ void SceneGame::Update(float tick)
 	m_pFloor->Update();
 	m_pSlimeMng->Update(m_pExplosionMng);
 	m_pExplosionMng->Update();
+	m_pScoreOHMng->Update();
 	m_pTimer->Update();
 	m_pStageFin->Update();
 	m_pCombo->Update();
@@ -336,7 +348,7 @@ void SceneGame::Draw()
 
 	m_pTimer->Draw();
 	m_pCombo->Draw();
-
+	m_pTotalScore->Draw();
 
 #if USE_FADE_GAME
 	m_pFade->Draw();
@@ -344,6 +356,9 @@ void SceneGame::Draw()
   
 	//ボスゲージ描画
 	m_pBossgauge->Draw();
+
+	m_pScoreOHMng->Draw();//スコアマネージャー描画
+	
 }
 
 /* ========================================

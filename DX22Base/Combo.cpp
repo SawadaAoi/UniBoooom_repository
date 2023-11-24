@@ -17,7 +17,7 @@
 #include "ExplosionManager.h"
 #include "GameParameter.h"
 #include "Pos2d.h"
-
+#include "TotalScore.h"
 // =============== 定数定義 =======================
 #if MODE_GAME_PARAMETER
 #else
@@ -68,6 +68,7 @@ CCombo::CCombo()
 		m_dComboInfo[i].dCnt = 0;
 		m_dComboInfo[i].dDispFrame = 0;
 		m_dComboInfo[i].bEndFlg = false;
+		m_dComboInfo[i].dScore = 0;
 	}
 }
 
@@ -99,7 +100,11 @@ CCombo::~CCombo()
 =========================================== */
 void CCombo::Update()
 {
-
+	for (int i = 0; i < MAX_COMBO_NUM; i++)
+	{
+		if (m_dComboInfo[i].dCnt == 0) continue;
+		m_pTotalScore->AddScore(m_dComboInfo[i],i);
+	}
 }
 
 /* ========================================
@@ -138,16 +143,18 @@ void CCombo::Draw()
 		DisplayNumber(m_dComboInfo[i].dCnt, shiftPosY);			// 数字の表示
 
 		// コンボが途切れた場合
-		if (m_dComboInfo[0].bEndFlg == true)
+		if (m_dComboInfo[i].bEndFlg == true)
 		{	
 			// 暫くコンボ数を表示する
-			m_dComboInfo[0].dDispFrame++;
+			m_dComboInfo[i].dDispFrame++;
 			// 指定時間表示したらコンボ数の表示を消す
-			if (m_dComboInfo[0].dDispFrame >= COMBO_UI_DISP_DILAY_TIME)
+			if (m_dComboInfo[i].dDispFrame >= COMBO_UI_DISP_DILAY_TIME)
 			{
-				m_dComboInfo[0].dCnt = 0;
-				m_dComboInfo[0].dDispFrame = 0;
-				m_dComboInfo[0].bEndFlg = false;
+				m_dComboInfo[i].dCnt = 0;
+				m_dComboInfo[i].dDispFrame = 0;
+				m_dComboInfo[i].bEndFlg = false;
+				m_dComboInfo[i].dScore = 0;
+
 			}
 		}
 
@@ -299,6 +306,19 @@ int CCombo::FirstComboSet()
 void CCombo::AddCombo(int num)
 {
 	m_dComboInfo[num].dCnt++;
+
+}
+
+void CCombo::AddScore(int num, int combo)
+{
+	switch (num) {
+	case LEVEL_1:		m_dComboInfo[combo].dScore += LEVEL_1_SCORE;	break;
+	case LEVEL_2:		m_dComboInfo[combo].dScore += LEVEL_2_SCORE;	break;
+	case LEVEL_3:		m_dComboInfo[combo].dScore += LEVEL_3_SCORE;	break;
+	case LEVEL_4:		m_dComboInfo[combo].dScore += LEVEL_4_SCORE;	break;
+	case LEVEL_4x4:		m_dComboInfo[combo].dScore += LEVEL_4x4_SCORE;	break;
+	case LEVEL_FLAME:	m_dComboInfo[combo].dScore += LEVEL_1_SCORE;	break;	// 炎スライムと爆発が接触した際は一番小さい爆発
+	}
 }
 
 /* ========================================
@@ -315,6 +335,7 @@ int CCombo::GetCombo(int num)
 	return m_dComboInfo[num].dCnt;
 }
 
+
 /* ========================================
 	コンボ終了関数
 	----------------------------------------
@@ -327,6 +348,22 @@ int CCombo::GetCombo(int num)
 void CCombo::EndCombo(int num)
 {
 	m_dComboInfo[num].bEndFlg = true;	// コンボ終了フラグをオン
+	
+	m_pTotalScore->ComboCheck(m_dComboInfo[num], num);	//倍率を決める
+	//m_dComboInfo[num].dScore = 0;
+}
+/* ========================================
+	トータルスコア情報セット関数
+	----------------------------------------
+	内容：トータルスコア情報セット
+	----------------------------------------
+	引数1：トータルスコア
+	----------------------------------------
+	戻値：なし
+======================================== */
+void CCombo::SetTotalScore(CTotalScore* pTotalScore)
+{
+	m_pTotalScore = pTotalScore;
 }
 
 
