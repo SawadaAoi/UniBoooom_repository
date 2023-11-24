@@ -22,6 +22,8 @@
 	・2023/11/20 コンボ数配列添え字の追加 Sawada
 	・2023/11/21 初期値の設定と、遅延処理の追加 Sawada
 
+	・2023/11/21 DisplayAddTimeの中にBoooomUIの表示時間処理追加 Tei
+
 ======================================== */
 
 // =============== インクルード ===================
@@ -39,7 +41,6 @@ const int DELAY_TIME = 0.5f * 60;
 
 
 #endif
-
 
 /* ========================================
 	コンストラクタ関数
@@ -65,10 +66,10 @@ CExplosion::CExplosion(TPos3d<float> fPos, float fSize,float fTime, int comboNum
 	, m_dDelayCnt(0)
 {
 	//爆発オブジェクト初期化
+	m_Sphere.fRadius = fSize / 2;	// 当たり判定をセットする
 	m_3dModel		 = new CSphere();
 	m_Transform.fPos = fPos;		// スライムがいた場所に生成する
 }
-
 
 /* ========================================
 	デストラクタ関数
@@ -163,7 +164,6 @@ void CExplosion::DisplayTimeAdd()
 
 	
 	m_Sphere.fRadius = m_Transform.fScale.y / 2;	// 当たり判定をセットする
-
 }
 
 /* ========================================
