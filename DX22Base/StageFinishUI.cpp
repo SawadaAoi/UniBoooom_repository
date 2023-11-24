@@ -14,7 +14,7 @@
 	・2023/11/23 表示フラグ取得関数作成 nieda
 
 ========================================== */
-
+#include "DirectXTex/TextureLoad.h"		
 #include "StageFinishUI.h"
 #include "DirectWrite.h"
 #include "Sprite.h"
@@ -49,16 +49,18 @@ CStageFinish::CStageFinish(int* pPlayerHp, int* pTimeCnt)
 
 	//ゲームクリアのテクスチャ読み込む
 	m_pTexGameClear = new Texture;
+
 	if (FAILED(m_pTexGameClear->Create("Assets/Texture/StageFinish/GameClear.png")))
 	{
-		MessageBox(NULL, "GameClear読み込み失敗", "Error", MB_OK);
+		MessageBox(NULL, "GameClear.png", "Error", MB_OK);
 	}
+
 
 	//ゲームオーバーのテクスチャ読み込む
 	m_pTexGameOver = new Texture;
 	if (FAILED(m_pTexGameOver->Create("Assets/Texture/StageFinish/GameOver.png")))
 	{
-		MessageBox(NULL, "GameOver読み込み失敗", "Error", MB_OK);
+		MessageBox(NULL, "GameOver.png", "Error", MB_OK);
 	}
 }
 
@@ -123,7 +125,7 @@ void CStageFinish::Draw()
 	//UI表示時に案内を表示
 	if (m_eGameState != GAME_PLAY)
 	{ 
-		std::string txt = "右SHIFTで クリア／ゲームオーバーのUI表示を切り替え";
+		std::string txt = /*"右SHIFTでクリア／ゲームオーバーのUI表示を切り替え"*/"test";	// TODO	謎のエラーが発生したためコメント内容を変更
 		DirectWrite::DrawString(txt,DirectX::XMFLOAT2(0.0f,0.0f));
 	}
 	if (m_bDeleteDisp) { return; }	//邪魔な時にUIを表示せずに終了
