@@ -114,6 +114,7 @@ const int LEVEL_3_SCORE = 100;				// スライム_3のスコア
 const int LEVEL_4_SCORE = 500;				// スライム_4のスコア
 const int LEVEL_4x4_SCORE = 1000;			// 赤々の爆発のスコア
 // 爆発 =====================================================
+const int MAX_BOOOOM_NUM = 10;					//最大boom数
 const int	MAX_EXPLOSION_NUM		= 20;		// 最大爆発数
 const float EXPAND_QUICK_RATE		= 0.2f;		// 膨張加速割合 
 const float LEVEL_1_EXPLODE_TIME = 0.5f * 60.0f;	// スライム_1の爆発総時間
@@ -183,6 +184,13 @@ const float DRAW_GAP		= 1.15f;	// テクスチャ同士の間隔
 const float DRAW_POSY		= 60.0f;	// テクスチャを表示する位置のY座標
 const float DRAW_HEIGHT		= 90.0f;	// テクスチャの縦幅
 const float DRAW_WIDTH		= 90.0f;	// テクスチャの横幅
+
+// BoooomUI =====================================================
+const float BOOOOM_UI_SIZE_X = 1.0f;		//BoooomUIのXの長さ（textureの比率と合わせる）
+const float BOOOOM_UI_SIZE_Y = 0.565f;		//BoooomUIのYの長さ（textureの比率と合わせる）
+const float BOOOOM_UI_SCALE_X = 6.0f;		//BoooomUIサイズのスケール
+const float BOOOOM_UI_SCALE_Y = 6.0f;		//BoooomUIサイズのスケール
+
 // コンボ =========================================================
 const int	MAX_COMBO_NUM				= 5;					// 最大同時コンボ数
 const TPos2d<float> COMBO_UI_POSITION	= { 1025.0f, 600.0f };	// コンボUIの描画位置

@@ -17,6 +17,7 @@
 	・2023/11/18 爆発時にSEを再生するように変更 Yamahsita
 	・2023/11/20 コンボ数機能追加 Sawada
 	・2023/11/21 コンボ数機能の一部をコンボクラスに移動 Sawada
+	・2023/11/21 爆発時にBoooomUIの表示を追加 Tei
 
 ========================================== */
 
@@ -41,6 +42,7 @@ const float EXPLODE_VOLUME = 0.5f;
 CExplosionManager::CExplosionManager()
 	:m_pSEExplode(nullptr)
 	, m_pSEExplodeSpeaker(nullptr)
+	, m_pTexUI(nullptr)
 {
 	// 爆発配列の初期化
 	for (int i = 0; i < MAX_EXPLOSION_NUM; i++)
@@ -48,7 +50,16 @@ CExplosionManager::CExplosionManager()
 		m_pExplosion[i] = nullptr;
 	}
 
-
+	m_pTexUI = new Texture();
+	// boooomUI配列の初期化
+	for (int i = 0; i < MAX_BOOOOM_NUM; i++)
+	{
+		m_pBoooomUI[i] = nullptr;
+	}
+	if (FAILED(m_pTexUI->Create("Assets/Texture/boooom.png")))
+	{
+		MessageBox(NULL, "boooom.png", "Error", MB_OK);
+	}
 	//サウンドファイルの読み込み
 	m_pSEExplode = CSound::LoadSound("Assets/Sound/SE/Explode.mp3");
 }
@@ -69,6 +80,11 @@ CExplosionManager::~CExplosionManager()
 	{
 		SAFE_DELETE(m_pExplosion[i]);
 	}
+	for (int i = 0; i < MAX_BOOOOM_NUM; i++)
+	{
+		SAFE_DELETE(m_pBoooomUI[i]);
+	}
+	SAFE_DELETE(m_pTexUI);
 }
 
 
@@ -95,11 +111,15 @@ void CExplosionManager::Update()
 
 		m_pExplosion[i]->Update();
 	}
+	for (int i = 0; i < MAX_BOOOOM_NUM; i++)
+	{
+		//未使用のBoooomUIはスルー
+		if (m_pBoooomUI[i] == nullptr) continue;
 
+		m_pBoooomUI[i]->Update();
+	}
 	DeleteCheck();	// 削除チェック
 	ComboEndCheck();	// コンボの削除
-
-
 }
 
 /* ========================================
@@ -121,7 +141,14 @@ void CExplosionManager::Draw()
 
 		m_pExplosion[i]->Draw(); // 爆発の描画
 	}
+	// boooomUIの検索
+	for (int i = 0; i < MAX_BOOOOM_NUM; i++)
+	{
+		//未使用のBoooomUIはスルー
+		if (m_pBoooomUI[i] == nullptr) continue;
 
+		m_pBoooomUI[i]->Draw();	// boooomUIの描画
+	}
 }
 
 /* ========================================
@@ -184,9 +211,7 @@ void CExplosionManager::Create(TTriType<float> pos, float size, float time, int 
 		m_pSEExplodeSpeaker->SetVolume(EXPLODE_VOLUME);			//音量調整
 
 		return;
-
 	}
-
 }
 
 /* ========================================
@@ -210,6 +235,40 @@ void CExplosionManager::DeleteCheck()
 
 		delete m_pExplosion[i]; m_pExplosion[i] = nullptr;	// 爆発を削除する
 
+	}
+
+	//BoooomUIを検索
+	for (int i = 0; i < MAX_BOOOOM_NUM; i++)
+	{
+		//未使用のBoooomUIはスルー
+		if (m_pBoooomUI[i] == nullptr) continue;
+		//削除フラグがたってないBoooomUIはスルー
+		if (m_pBoooomUI[i]->GetDelFlg() == false) continue;
+
+		delete m_pBoooomUI[i]; m_pBoooomUI[i] = nullptr;
+	}
+}
+
+/* ========================================
+	UI生成処理関数
+	-------------------------------------
+	内容：BoooomUIの生成
+	-------------------------------------
+	引数1：生成座標(x,y,z)
+	-------------------------------------
+	戻値：なし
+=========================================== */
+void CExplosionManager::CreateUI(TPos3d<float> pos, float fTime)
+{
+	for (int i = 0; i < MAX_BOOOOM_NUM; i++)
+	{
+		// 使用済みのBoooomUiはスルー
+		if (m_pBoooomUI[i] != nullptr) continue;
+
+		m_pBoooomUI[i] = new CBoooomUI(pos, m_pTexUI, m_pCamera, fTime);	// 座標を指定して生成
+		m_pBoooomUI[i]->SetCamera(m_pCamera);
+
+		return;
 	}
 }
 
@@ -253,9 +312,6 @@ void CExplosionManager::ComboEndCheck()
 	}
 
 }
-
-
-
 /* ========================================
 	カメラ情報セット関数
 	----------------------------------------
@@ -297,7 +353,6 @@ CExplosion* CExplosionManager::GetExplosionPtr(int num)
 {
 	return m_pExplosion[num];
 }
-
 
 /* ========================================
 	関数：爆発分岐関数

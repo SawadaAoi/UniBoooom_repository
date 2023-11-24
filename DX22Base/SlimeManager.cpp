@@ -20,6 +20,7 @@
 	・2023/11/14 SphereInfoの変更に対応 Takagi
 	・2023/11/15 各モデルの読み込みをbaseから移動 yamashita
 	・2023/11/15 各モデルの読み込みを関数化 yamashita
+	・2023/11/21 BoooomUi表示する関数を呼び出す Tei
 
 =========================================== */
 
@@ -78,6 +79,7 @@ CSlimeManager::CSlimeManager()
 	, m_pSEUnion(nullptr)
 	, m_pSEHitSlimeSpeaker(nullptr)
 	, m_pSEUnionSpeaker(nullptr)
+	//, m_pBoooomMng(nullptr)
 {
 	//スライムのモデルと頂点シェーダーの読み込み
 	LoadModel();
@@ -97,6 +99,8 @@ CSlimeManager::CSlimeManager()
 	//サウンドファイルの読み込み
 	m_pSEHitSlime = CSound::LoadSound("Assets/Sound/SE/SlimeHitSlime.mp3");		//ハンマーを振った時のSEの読み込み
 	m_pSEUnion = CSound::LoadSound("Assets/Sound/SE/Union.mp3");		//スライムがくっついた時ののSEの読み込み
+
+
 }
 
 /* ========================================
@@ -110,6 +114,7 @@ CSlimeManager::CSlimeManager()
 =========================================== */
 CSlimeManager::~CSlimeManager()
 {
+
 	SAFE_DELETE(m_pVS);
 	SAFE_DELETE(m_pFlameModel);
 	SAFE_DELETE(m_pRedModel);
@@ -291,6 +296,7 @@ void CSlimeManager::HitBranch(int HitSlimeNum, int StandSlimeNum, CExplosionMana
 			//スライム爆発処理
 			pExpMng->Create(pos, MAX_SIZE_EXPLODE * EXPLODE_BASE_RATIO, LEVEL_4_EXPLODE_TIME, E_SLIME_LEVEL::LEVEL_4x4);	//衝突されたスライムの位置でレベル４爆発
 			m_pScoreOHMng->DisplayOverheadScore(pos, LEVEL_4_SCORE * 2, LEVEL_4_HEIGHT);
+			pExpMng->CreateUI(pos, LEVEL_4_EXPLODE_TIME);		//レベル４爆発した位置boooomUI表示
 		}
 		else	//最大サイズじゃない場合は1段階大きいスライムを生成する
 		{
@@ -598,6 +604,20 @@ void CSlimeManager::SetCamera(CCamera * pCamera)
 void CSlimeManager::SetPlayerPos(TPos3d<float> pos)
 {
 	m_pPlayerPos = pos;
+}
+
+/* ========================================
+	BoooomUIセット関数
+	----------------------------------------
+	内容：SceneGameのポインタをセットする
+	----------------------------------------
+	引数1：BoooomUIポインタ
+	----------------------------------------
+	戻値：無し
+======================================== */
+void CSlimeManager::SetBoooomUI(CExplosionManager* pExpMng)
+{
+	m_pExpMng = pExpMng;
 }
 
 /* ========================================

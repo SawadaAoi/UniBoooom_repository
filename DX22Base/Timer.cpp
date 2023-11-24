@@ -1,48 +1,48 @@
 /* ========================================
 	HEW/UniBoooom!!
 	------------------------------------
-	�Q�[���^�C�}�[
+	ゲームタイマー
 	------------------------------------
 	Timer.cpp
 	------------------------------------
-	�쐬��
-		�A�F��
-	�ύX����
-	�E2023/11/14 cpp,�쐬 Tei
-	�E2023/11/17 �J�n�����𕡐���ޒǉ��A�^�C�}�[�X�g�b�v���� Sawada
-	�E2023/11/18 �^�C�}�[�`�揈���A���������̕`��֐��ǉ� Tei
-	�E2023/11/22 �����_�̃^�C�}�[���擾�֐��ǉ� Tei
+	作成者
+		鄭宇恩
+	変更履歴
+	・2023/11/14 cpp,作成 Tei
+	・2023/11/17 開始処理を複数種類追加、タイマーストップ実装 Sawada
+	・2023/11/18 タイマー描画処理、数字部分の描画関数追加 Tei
+	・2023/11/22 現時点のタイマーを取得関数追加 Tei
 ========================================== */
 
-// =============== �C���N���[�h ===================
+// =============== インクルード ===================
 #include "Timer.h"
 #include "Sprite.h"
-// =============== �萔��` =======================
+// =============== 定数定義 =======================
 #if MODE_GAME_PARAMETER
 #else
-const int STAGE_TIME = 180 * 60;	//�X�e�[�W�������ԁi�b*�t���[���j
-const TPos2d<float> MINUTE_POS(565.0f, 25.0f);			//���̈ʒu�ݒ�
-const TPos2d<float> SECOND_TENS_POS(640.0f, 25.0f);	//�\�̌��b�̈ʒu�ݒ�
-const TPos2d<float> SECOND_ONE_POS(690.0f, 25.0f);		//��̌��b�̈ʒu�ݒ�
-const TPos2d<float> TIME_BACKGROUND_POS(630.0f, 25.0f);	//�o�b�N�O���E���h�ʒu�ݒ�
-const TPos2d<float> TIME_COLON_POS(615.0f, 25.0f);		//�R�����̈ʒu�ݒ�
+const int STAGE_TIME = 180 * 60;	//ステージ制限時間（秒*フレーム）
+const TPos2d<float> MINUTE_POS(565.0f, 25.0f);			//分の位置設定
+const TPos2d<float> SECOND_TENS_POS(640.0f, 25.0f);	//十の桁秒の位置設定
+const TPos2d<float> SECOND_ONE_POS(690.0f, 25.0f);		//一の桁秒の位置設定
+const TPos2d<float> TIME_BACKGROUND_POS(630.0f, 25.0f);	//バックグラウンド位置設定
+const TPos2d<float> TIME_COLON_POS(615.0f, 25.0f);		//コロンの位置設定
 
-const TPos2d<float> TIME_COLON_POS(602.5f, 25.0f);		//�R�����̈ʒu�ݒ�
-const float TIME_BACK_GROUND_SIZE_X = 200.0f;			//�^�C�}�[�̃o�b�N�O�����h��X�̒����ݒ�
-const float TIME_BACK_GROUND_SIZE_Y = -75.0f;			//�^�C�}�[�̃o�b�N�O�����h��Y�̒����ݒ�
-const float TIME_COLON_SIZE_X = 35.0f;					//�^�C�}�[�̃R������X�̒����ݒ�
-const float TIME_COLON_SIZE_Y = -35.0f;					//�^�C�}�[�̃R������Y�̒����ݒ�
+const TPos2d<float> TIME_COLON_POS(602.5f, 25.0f);		//コロンの位置設定
+const float TIME_BACK_GROUND_SIZE_X = 200.0f;			//タイマーのバックグランドのXの長さ設定
+const float TIME_BACK_GROUND_SIZE_Y = -75.0f;			//タイマーのバックグランドのYの長さ設定
+const float TIME_COLON_SIZE_X = 35.0f;					//タイマーのコロンのXの長さ設定
+const float TIME_COLON_SIZE_Y = -35.0f;					//タイマーのコロンのYの長さ設定
 
 #endif
 
 /* ========================================
-	�R���X�g���N�^
+	コンストラクタ
 	----------------------------------------
-	���e�F�������ɍs������
+	内容：生成時に行う処理
 	----------------------------------------
-	����1�F�Ȃ�
+	引数1：なし
 	----------------------------------------
-	�ߒl�F�Ȃ�
+	戻値：なし
 =========================================== */
 CTimer::CTimer()
 	: m_nTimeCnt(STAGE_TIME)
@@ -53,7 +53,7 @@ CTimer::CTimer()
 	, m_pTextureColon(nullptr)
 	, m_pTextureNum(nullptr)
 {
-	//�����̃e�N�X�`���ǂލ���
+	//数字のテクスチャ読む込み
 
 	m_pTextureNum = new Texture();
 
@@ -62,7 +62,7 @@ CTimer::CTimer()
 		MessageBox(NULL, "number.png", "Error", MB_OK);
 	}
 
-	//�^�C�}�[�̗��e�N�X�`���ǂݍ���
+	//タイマーの裏テクスチャ読み込む
 	m_pTextureBG = new Texture;
 	if (FAILED(m_pTextureBG->Create("Assets/Texture/time_background.png")))
 	{
@@ -76,13 +76,13 @@ CTimer::CTimer()
 	}
 }
 /* ========================================
-	�R���X�g���N�^
+	コンストラクタ
 	----------------------------------------
-	���e�F�j�����ɍs������
+	内容：破棄時に行う処理
 	----------------------------------------
-	����1�F�Ȃ�
+	引数1：なし
 	----------------------------------------
-	�ߒl�F�Ȃ�
+	戻値：なし
 =========================================== */
 CTimer::~CTimer()
 {
@@ -94,67 +94,67 @@ CTimer::~CTimer()
 	SAFE_DELETE(m_pTextureBG);
 }
 /* ========================================
-	�^�C�}�[�X�V�֐�
+	タイマー更新関数
 	----------------------------------------
-	���e�F�^�C�}�[�̃J�E���g�_�E������
+	内容：タイマーのカウントダウン処理
 	----------------------------------------
-	����1�F�Ȃ�
+	引数1：なし
 	----------------------------------------
-	�ߒl�F�Ȃ�
+	戻値：なし
 =========================================== */
 void CTimer::Update()
 {
-	// �ҋ@���Ԃ̃`�F�b�N
+	// 待機時間のチェック
 	if (m_bStartFlg == false)
 	{
 		WaitTimeCheck();
 		return;
 	}
 
-	// �^�C�}�[�X�g�b�v�̃`�F�b�N
+	// タイマーストップのチェック
 	if (m_bStopFlg == true)
 	{
 		return;
 	}
-	// �^�C�}�[���Z
+	// タイマー減算
 	m_nTimeCnt--;
-	//���Ԃ�0�ɂȂ�����I��������
+	//時間が0になったら終了処理に
 	if (m_nTimeCnt <= 0)
 	{
-		// TODO�Q�[���I������
+		// TODOゲーム終了処理
 	}
 
 }
 /* ========================================
-	�`��֐�
+	描画関数
 	----------------------------------------
-	���e�F�^�C�}�[�̕`�揈��
+	内容：タイマーの描画処理
 	----------------------------------------
-	����1�F�Ȃ�
+	引数1：なし
 	----------------------------------------
-	�ߒl�F�Ȃ�
+	戻値：なし
 =========================================== */
 void CTimer::Draw()
 {
-	//-----����UI�̕`��-----
+	//-----時間UIの描画-----
 
-	//�^�C�}�[��0�ɂȂ�����Areturn�i�\�����Ȃ��j
+	//タイマーが0になったら、return（表示しない）
 	if (m_nTimeCnt <= 0) return;
-	//--���Ԃ̔w�i����(���f��)--
+	//--時間の背景部分(仮素材)--
 	DirectX::XMFLOAT4X4 timebackground[3];
 
-	//���[���h�s���X��Y�݂̂��l�����č쐬(Z��10���炢�ɔz�u
+	//ワールド行列はXとYのみを考慮して作成(Zは10ぐらいに配置
 	DirectX::XMMATRIX worldTimerBG = DirectX::XMMatrixTranslation(TIME_BACKGROUND_POS.x, TIME_BACKGROUND_POS.y, 0.0f);
 	DirectX::XMStoreFloat4x4(&timebackground[0], DirectX::XMMatrixTranspose(worldTimerBG));
-	//�r���[�s���2D���ƃJ�����̈ʒu�����܂�֌W�Ȃ��̂ŁA�P�ʍs���ݒ肷��i�P�ʍs��͌��
+	//ビュー行列は2Dだとカメラの位置があまり関係ないので、単位行列を設定する（単位行列は後日
 	DirectX::XMStoreFloat4x4(&timebackground[1], DirectX::XMMatrixIdentity());
 
-	//�v���W�F�N�V�����s��ɂ�2D�Ƃ��ĕ\�����邽�߂̍s���ݒ肷��
-	//���̍s���2D�̃X�N���[���̑����������܂�
+	//プロジェクション行列には2Dとして表示するための行列を設定する
+	//この行列で2Dのスクリーンの多いさが決まる
 	DirectX::XMMATRIX projTimerBG = DirectX::XMMatrixOrthographicOffCenterLH(0.0f, 1280.0f, 720.0f, 0.0f, 0.1f, 10.0f);
 	DirectX::XMStoreFloat4x4(&timebackground[2], DirectX::XMMatrixTranspose(projTimerBG));
 
-	//�X�v���C�g�̐ݒ�
+	//スプライトの設定
 	Sprite::SetWorld(timebackground[0]);
 	Sprite::SetView(timebackground[1]);
 	Sprite::SetProjection(timebackground[2]);
@@ -163,20 +163,20 @@ void CTimer::Draw()
 	Sprite::SetTexture(m_pTextureBG);
 	Sprite::Draw();
 
-	//--�R�����̕`��--
+	//--コロンの描画--
 	DirectX::XMFLOAT4X4 colon[3];
-	//���[���h�s���X��Y�݂̂��l�����č쐬(Z��10���炢�ɔz�u
+	//ワールド行列はXとYのみを考慮して作成(Zは10ぐらいに配置
 	DirectX::XMMATRIX worldColon = DirectX::XMMatrixTranslation(TIME_COLON_POS.x, TIME_COLON_POS.y, 0.0f);
 	DirectX::XMStoreFloat4x4(&colon[0], DirectX::XMMatrixTranspose(worldColon));
-	//�r���[�s���2D���ƃJ�����̈ʒu�����܂�֌W�Ȃ��̂ŁA�P�ʍs���ݒ肷��i�P�ʍs��͌��
+	//ビュー行列は2Dだとカメラの位置があまり関係ないので、単位行列を設定する（単位行列は後日
 	DirectX::XMStoreFloat4x4(&colon[1], DirectX::XMMatrixIdentity());
 
-	//�v���W�F�N�V�����s��ɂ�2D�Ƃ��ĕ\�����邽�߂̍s���ݒ肷��
-	//���̍s���2D�̃X�N���[���̑����������܂�
+	//プロジェクション行列には2Dとして表示するための行列を設定する
+	//この行列で2Dのスクリーンの多いさが決まる
 	DirectX::XMMATRIX projColon = DirectX::XMMatrixOrthographicOffCenterLH(0.0f, 1280.0f, 720.0f, 0.0f, 0.1f, 10.0f);
 	DirectX::XMStoreFloat4x4(&colon[2], DirectX::XMMatrixTranspose(projColon));
 
-	//�X�v���C�g�̐ݒ�
+	//スプライトの設定
 	Sprite::SetWorld(colon[0]);
 	Sprite::SetView(colon[1]);
 	Sprite::SetProjection(colon[2]);
@@ -186,148 +186,148 @@ void CTimer::Draw()
 	Sprite::SetUVScale(DirectX::XMFLOAT2(1.0f, 1.0f));
 	Sprite::SetTexture(m_pTextureColon);
 	Sprite::Draw();
-	//--���ԁi���������j�̕`��
-	DrawNumber(MINUTE_POS, GetMinite());				//���̕b��
-	DrawNumber(SECOND_TENS_POS, (GetSecond() / 10));	//�b�̏\�̌��̕`�� 
-	DrawNumber(SECOND_ONE_POS, (GetSecond() % 10));		//�b�̈�̌��̕`��
+	//--時間（数字部分）の描画
+	DrawNumber(MINUTE_POS, GetMinite());				//分の秒画
+	DrawNumber(SECOND_TENS_POS, (GetSecond() / 10));	//秒の十の桁の描画 
+	DrawNumber(SECOND_ONE_POS, (GetSecond() % 10));		//秒の一の桁の描画
 }
 /* ========================================
-	�^�C�}�[�擾�֐�
+	タイマー取得関数
 	----------------------------------------
-	���e�F�^�C�}�[�̕��v�Z
+	内容：タイマーの分計算
 	----------------------------------------
-	����1�F�Ȃ�
+	引数1：なし
 	----------------------------------------
-	�ߒl�F���Ԃ̕�
+	戻値：時間の分
 =========================================== */
 int CTimer::GetMinite()
 {
-	int	minute = m_nTimeCnt / 3600;			//�� = ���^�C������i60�b * 60�t���[���j
+	int	minute = m_nTimeCnt / 3600;			//分 = 総タイム割る（60秒 * 60フレーム）
 	return minute;
 }
 /* ========================================
-	�^�C�}�[�擾�֐�
+	タイマー取得関数
 	----------------------------------------
-	���e�F�^�C�}�[�̕b���v�Z
+	内容：タイマーの秒数計算
 	----------------------------------------
-	����1�F�Ȃ�
+	引数1：なし
 	----------------------------------------
-	�ߒl�F���Ԃ̕b
+	戻値：時間の秒
 =========================================== */
 int CTimer::GetSecond()
 {
-	int second = (m_nTimeCnt / 60) % 60;	//�b = ���̕����𔲂��̎c��
+	int second = (m_nTimeCnt / 60) % 60;	//秒 = 分の部分を抜くの残り
 	return second;
 }
 
 
 
 /* ========================================
-	�^�C�}�[�J�n�֐�
+	タイマー開始関数
 	----------------------------------------
-	���e�F�^�C�}�[���J�n����
+	内容：タイマーを開始する
 	----------------------------------------
-	����1�F�Ȃ�
+	引数1：なし
 	----------------------------------------
-	�ߒl�F�Ȃ�
+	戻値：なし
 =========================================== */
 void CTimer::TimeStart()
 {
-	m_nTimeCnt = STAGE_TIME;	// �f�t�H���g�̐������Ԃ��Z�b�g
-	m_bStartFlg = true;			// �҂����ԂȂ�
+	m_nTimeCnt = STAGE_TIME;	// デフォルトの制限時間をセット
+	m_bStartFlg = true;			// 待ち時間なし
 }
 /* ========================================
-	�^�C�}�[�J�n�֐�
+	タイマー開始関数
 	----------------------------------------
-	���e�F�^�C�}�[���J�n����
+	内容：タイマーを開始する
 	----------------------------------------
-	����1�F��������(�b)
+	引数1：制限時間(秒)
 	----------------------------------------
-	�ߒl�F�Ȃ�
+	戻値：なし
 =========================================== */
 void CTimer::TimeStart(float maxTime)
 {
-	m_nTimeCnt = maxTime * 60;	// �������Ԃ��Z�b�g
-	m_bStartFlg = true;			// �҂����ԂȂ�
+	m_nTimeCnt = maxTime * 60;	// 制限時間をセット
+	m_bStartFlg = true;			// 待ち時間なし
 }
 /* ========================================
-	�^�C�}�[�J�n�֐�
+	タイマー開始関数
 	----------------------------------------
-	���e�F�^�C�}�[���J�n����
+	内容：タイマーを開始する
 	----------------------------------------
-	����1�F��������(�b)
-	����2�F�J�n�ҋ@����(�b)
+	引数1：制限時間(秒)
+	引数2：開始待機時間(秒)
 	----------------------------------------
-	�ߒl�F�Ȃ�
+	戻値：なし
 =========================================== */
 void CTimer::TimeStart(float maxTime, float waitTime)
 {
-	m_dWaitCnt = waitTime * 60;	// �҂�����
-	m_nTimeCnt = maxTime * 60;	// ��������
-	m_bStartFlg = false;		// �҂����Ԃ���
+	m_dWaitCnt = waitTime * 60;	// 待ち時間
+	m_nTimeCnt = maxTime * 60;	// 制限時間
+	m_bStartFlg = false;		// 待ち時間あり
 }
 /* ========================================
-	�^�C�}�[��~�֐�
+	タイマー停止関数
 	----------------------------------------
-	���e�F�^�C�}�[���X�g�b�v����
+	内容：タイマーをストップする
 	----------------------------------------
-	����1�F�Ȃ�
+	引数1：なし
 	----------------------------------------
-	�ߒl�F�Ȃ�
+	戻値：なし
 =========================================== */
 void CTimer::TimeStop()
 {
 	m_bStopFlg = true;
 }
 /* ========================================
-	�^�C�}�[�ĊJ�֐�
+	タイマー再開関数
 	----------------------------------------
-	���e�F�X�g�b�v�����^�C�}�[���Ăѓ�����
+	内容：ストップしたタイマーを再び動かす
 	----------------------------------------
-	����1�F�Ȃ�
+	引数1：なし
 	----------------------------------------
-	�ߒl�F�Ȃ�
+	戻値：なし
 =========================================== */
 void CTimer::TimeRestart()
 {
 	m_bStopFlg = false;
 }
 /* ========================================
-	�^�C�}�[���������`��֐�
+	タイマー数字部分描画関数
 	----------------------------------------
-	���e�F�^�C�}�[�̕`�敔���`�悷��
+	内容：タイマーの描画部分描画する
 	----------------------------------------
-	����1�F�ʒu
-	����2�F�`�悷�鐔��
+	引数1：位置
+	引数2：描画する数字
 	----------------------------------------
-	�ߒl�F�Ȃ�
+	戻値：なし
 =========================================== */
 void CTimer::DrawNumber(TPos2d<float> pos, int number)
 {
 	DirectX::XMFLOAT4X4 time[3];
-	//���[���h�s���X��Y�݂̂��l�����č쐬(Z��10���炢�ɔz�u
+	//ワールド行列はXとYのみを考慮して作成(Zは10ぐらいに配置
 	DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(pos.x, pos.y, 0.0f);
 	DirectX::XMStoreFloat4x4(&time[0], DirectX::XMMatrixTranspose(world));
-	//�r���[�s���2D���ƃJ�����̈ʒu�����܂�֌W�Ȃ��̂ŁA�P�ʍs���ݒ肷��i�P�ʍs��͌��
+	//ビュー行列は2Dだとカメラの位置があまり関係ないので、単位行列を設定する（単位行列は後日
 	DirectX::XMStoreFloat4x4(&time[1], DirectX::XMMatrixIdentity());
 
-	//�v���W�F�N�V�����s��ɂ�2D�Ƃ��ĕ\�����邽�߂̍s���ݒ肷��
-	//���̍s���2D�̃X�N���[���̑����������܂�
+	//プロジェクション行列には2Dとして表示するための行列を設定する
+	//この行列で2Dのスクリーンの多いさが決まる
 	DirectX::XMMATRIX proj = DirectX::XMMatrixOrthographicOffCenterLH(0.0f, 1280.0f, 720.0f, 0.0f, 0.1f, 10.0f);
 	DirectX::XMStoreFloat4x4(&time[2], DirectX::XMMatrixTranspose(proj));
 
-	//�X�v���C�g�̐ݒ�
+	//スプライトの設定
 	Sprite::SetWorld(time[0]);
 	Sprite::SetView(time[1]);
 	Sprite::SetProjection(time[2]);
 	Sprite::SetSize(DirectX::XMFLOAT2(50.0f, -50.0f));
 
-	//sprite�V�[�g�̏㕔���\���i0~4�j
+	//spriteシートの上部分表示（0~4）
 	if ((number % 10) < 5)
 	{
 		Sprite::SetUVPos(DirectX::XMFLOAT2(0.2f * number, 0.0f));
 	}
-	//sprite�V�[�g�̉������\���i5~9�j
+	//spriteシートの下部分表示（5~9）
 	else
 	{
 		Sprite::SetUVPos(DirectX::XMFLOAT2(0.2f * number, 0.5f));
@@ -337,18 +337,18 @@ void CTimer::DrawNumber(TPos2d<float> pos, int number)
 	Sprite::Draw();
 }
 /* ========================================
-	�^�C�}�[�ҋ@���ԃ`�F�b�N�֐�
+	タイマー待機時間チェック関数
 	----------------------------------------
-	���e�F�ݒ肵���ҋ@���Ԃ��o�߂��Ă��邩�m�F����
+	内容：設定した待機時間が経過しているか確認する
 	----------------------------------------
-	����1�F�Ȃ�
+	引数1：なし
 	----------------------------------------
-	�ߒl�F�Ȃ�
+	戻値：なし
 =========================================== */
 void CTimer::WaitTimeCheck()
 {
-	m_dWaitCnt--;	// �҂����Ԃ����Z
-	// 0�ɂȂ�����^�C���J�E���g�J�n
+	m_dWaitCnt--;	// 待ち時間を減算
+	// 0になったらタイムカウント開始
 	if (m_dWaitCnt <= 0)
 	{
 		m_bStartFlg = true;
@@ -358,13 +358,13 @@ void CTimer::WaitTimeCheck()
 
 
 /* ========================================
-   �������Ԏ擾�֐�
+   制限時間取得関数
    ----------------------------------------
-   ���e�F�������Ԃ̃|�C���^���擾
+   内容：制限時間のポインタを取得
    ----------------------------------------
-   �����F����
+   引数：無し
    ----------------------------------------
-   �ߒl�F�������Ԃ̃����o�ϐ��̃|�C���^
+   戻値：制限時間のメンバ変数のポインタ
 ======================================== */
 int * CTimer::GetTimePtr()
 {
@@ -372,13 +372,13 @@ int * CTimer::GetTimePtr()
 }
 
 /* ========================================
-	�^�C�}�[�擾�֐�
+	タイマー取得関数
 	----------------------------------------
-	���e�F���݂̃^�C�}�[�̃g�[�^���l���擾
+	内容：現在のタイマーのトータル値を取得
 	----------------------------------------
-	����1�F�Ȃ�
+	引数1：なし
 	----------------------------------------
-	�ߒl�Fint* ���݂̎��Ԃ̃|�C���^
+	戻値：int* 現在の時間のポインタ
 =========================================== */
 int* CTimer::GetNowTime()
 {

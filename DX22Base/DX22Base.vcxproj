@@ -171,6 +171,7 @@
   <ItemGroup>
     <ClCompile Include="2dPolygon.cpp" />
     <ClCompile Include="AnimeModel.cpp" />
+    <ClCompile Include="BoooomUI.cpp" />
     <ClCompile Include="BossGauge.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CameraChase.cpp" />
@@ -243,6 +244,7 @@
   <ItemGroup>
     <ClInclude Include="2dPolygon.h" />
     <ClInclude Include="AnimeModel.h" />
+    <ClInclude Include="BoooomUI.h" />
     <ClInclude Include="BossGauge.h" />
     <ClInclude Include="Box.h" />
     <ClInclude Include="Camera.h" />

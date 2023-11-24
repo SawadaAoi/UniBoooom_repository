@@ -336,6 +336,9 @@
     <ClCompile Include="HP_UI.cpp">
       <Filter>ソース ファイル\2dObject</Filter>
     </ClCompile>
+    <ClCompile Include="BoooomUI.cpp">
+      <Filter>ソース ファイル\2dObject</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Defines.h">
@@ -552,6 +555,9 @@
       <Filter>ヘッダー ファイル\Geometry</Filter>
     </ClInclude>
     <ClInclude Include="HP_UI.h">
+      <Filter>ヘッダー ファイル\2dObject</Filter>
+    </ClInclude>
+    <ClInclude Include="BoooomUI.h">
       <Filter>ヘッダー ファイル\2dObject</Filter>
     </ClInclude>
   </ItemGroup>

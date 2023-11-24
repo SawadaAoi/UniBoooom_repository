@@ -13,9 +13,10 @@
 	・2023/11/10 カメラをスライムと爆発にも渡すようにした・lineのメモリリーク対策 髙木駿輔
 	・2023/11/17 振動機能呼び出しデバッグモード追加 takagi
 	・2023/11/18 BGMの再生 yamashita
-  ・2023/11/18~20 フェード試した 髙木駿輔
+	・2023/11/18~20 フェード試した 髙木駿輔
 	・2023/11/21 フェード更新呼び出し 髙木駿輔
-  ・2023/11/21 コンボ用のメンバ変数を追加 Sawada
+	・2023/11/21 コンボ用のメンバ変数を追加 Sawada
+	・2023/11/21 爆発時BoooomUI表示するための処理を追加
 
 ========================================== */
 
@@ -140,6 +141,8 @@ SceneGame::SceneGame()
 	//pvs->Load("Assets/Shader/VsFade.cso");
 	//m_pFade->SetVertexShader(pvs);
 
+
+
 	LoadSound();
 	//BGMの再生
 	m_pSpeaker = CSound::PlaySound(m_pBGM);		//BGMの再生
@@ -166,10 +169,12 @@ SceneGame::~SceneGame()
 		m_pSpeaker->DestroyVoice();
 	}
 	SAFE_DELETE(m_pStageFin);
+	SAFE_DELETE(m_pHpMng);
 	SAFE_DELETE(m_pTimer);
 	SAFE_DELETE(m_pFade);
 	SAFE_DELETE(m_pBossgauge);
 	SAFE_DELETE(m_pTimer);
+	SAFE_DELETE(m_pCombo);
 	SAFE_DELETE(m_pExplosionMng);
 	SAFE_DELETE(m_pSlimeMng);	// スライムマネージャー削除
 	SAFE_DELETE(m_pFloor);
@@ -184,6 +189,9 @@ SceneGame::~SceneGame()
 	CLine::Uninit();
 #endif
 	SAFE_DELETE(m_pVs);
+
+	//SAFE_DELETE(m_pDirectWrite);
+
 }
 
 
@@ -342,6 +350,8 @@ void SceneGame::Draw()
 	//タイマー描画
 	SetRenderTargets(1, &pRTV, nullptr);
 	m_pStageFin->Draw();
+	m_pTimer->Draw();
+	m_pCombo->Draw();
 
 	// HPマネージャー描画
 	m_pHpMng->Draw();
@@ -350,15 +360,15 @@ void SceneGame::Draw()
 	m_pCombo->Draw();
 	m_pTotalScore->Draw();
 
-#if USE_FADE_GAME
-	m_pFade->Draw();
-#endif
-  
+
 	//ボスゲージ描画
 	m_pBossgauge->Draw();
 
 	m_pScoreOHMng->Draw();//スコアマネージャー描画
-	
+
+#if USE_FADE_GAME
+	m_pFade->Draw();
+#endif
 }
 
 /* ========================================
