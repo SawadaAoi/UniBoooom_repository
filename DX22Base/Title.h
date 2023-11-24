@@ -28,6 +28,14 @@
 class CTitle :public CScene	//シーン
 {
 public:
+	// ===列挙定義===========
+	enum E_TITLE
+	{
+		E_TITLE_TITLE,			//タイトル画像
+		E_TITLE_BUTTON,			//ボタン押下指示
+		E_TITLE_MAX,			//要素数
+	};	//タイトルシーンのテクスチャの種類
+public:
 	// =============== プロトタイプ宣言 ===============
 	CTitle();							//コンストラクタ
 	~CTitle();							//デストラクタ
@@ -36,7 +44,7 @@ public:
 	E_TYPE GetType() const override;	//自身の種類ゲッタ
 	E_TYPE GetNext() const override;	//次のシーンゲッタ
 private:
-	Texture* m_pTexture[2];
+	Texture* m_pTexture[E_TITLE_MAX];
 };	//タイトル
 
 #endif	//!__TITLE_H__

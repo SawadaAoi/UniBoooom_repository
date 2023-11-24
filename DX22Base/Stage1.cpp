@@ -90,9 +90,6 @@ CStage1::CStage1()
 	//ステージ終了のUI表示
 	m_pStageFin = new CStageFinish(m_pPlayer->GetHP(), m_pTimer->GetTimePtr());
 
-	// フェード生成
-	m_pFade = new CFade(m_pCamera);
-
 	LoadSound();
 	//BGMの再生
 	m_pSpeaker = CSound::PlaySound(m_pBGM);		//BGMの再生
@@ -117,7 +114,6 @@ CStage1::~CStage1()
 	}*/
 	SAFE_DELETE(m_pStageFin);
 	SAFE_DELETE(m_pTimer);
-	SAFE_DELETE(m_pFade);
 	SAFE_DELETE(m_pTimer);
 	SAFE_DELETE(m_pExplosionMng);
 	SAFE_DELETE(m_pSlimeMng);	// スライムマネージャー削除
@@ -139,9 +135,8 @@ CStage1::~CStage1()
 =========================================== */
 void CStage1::Update()
 {
-	m_pFade->Update();
-
 	// タイトルから遷移後すぐゲーム開始にならないようにする処理
+	// あまりにも適当に作ったので本実装時にちゃんと書きます
 	if (!m_bStart)
 	{
 		m_nNum++;
@@ -210,6 +205,7 @@ void CStage1::Draw()
 	// スタート合図描画
 	if (!m_bStart)
 	{
+		// あまりにも適当に作ったので実装するならちゃんと書きます
 		Draw2d(640.0f, 360.0f, m_fSize, m_fSize, m_pTexture);
 	}
 

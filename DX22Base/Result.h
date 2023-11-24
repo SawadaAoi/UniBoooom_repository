@@ -25,6 +25,14 @@
 class CResult :public CScene	//シーン
 {
 public:
+	// ===列挙定義===========
+	enum E_RESULT
+	{
+		E_RESULT_RESULT,		//リザルト画像
+		E_RESULT_BUTTON,		//ボタン押下指示
+		E_RESULT_MAX,			//要素数
+	};	//タイトルシーンのテクスチャの種類
+public:
 	// =============== プロトタイプ宣言 ===============
 	CResult();							//コンストラクタ
 	~CResult();							//デストラクタ
@@ -34,7 +42,7 @@ public:
 	E_TYPE GetNext() const override;	//次のシーンゲッタ
 private:
 	// =============== メンバ変数定義 ===============
-	Texture* m_pTexture[2];
+	Texture* m_pTexture[E_RESULT_MAX];
 };	//リザルト
 
 #endif	//!__RESULT_H__

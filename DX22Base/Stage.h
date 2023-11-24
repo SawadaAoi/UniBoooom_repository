@@ -29,7 +29,6 @@
 #include "Timer.h"
 #include "StageFinishUI.h"
 #include "Combo.h"
-#include "Fade.h"
 	
 // =============== クラス定義 =====================
 class CStage :public CScene	//シーン
@@ -60,7 +59,6 @@ protected:
 	CCombo* m_pCombo;
 	CFloor* m_pFloor;
 	CStageFinish* m_pStageFin;
-	CFade* m_pFade;
 	Texture* m_pTexture;
 };	//ステージ
 

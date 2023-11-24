@@ -156,6 +156,16 @@ const float VIEW_TOP	= 0.0f;		// 画面上端の座標
 const float NEAR_Z		= 0.1f;		// 画面に写り始める距離
 const float FAR_Z		= 10.0f;	// 写せる限界距離
 
+// タイトル画面 =========================================================
+const float TEXTURE_TITLE_TITLE_POSX = SCREEN_WIDTH_ / 2;	// タイトル画像表示位置のX座標
+const float TEXTURE_TITLE_TITLE_POSY = 400.0f;				// タイトル画像表示位置のY座標
+const float TEXTURE_TITLE_TITLE_WIDTH = 300.0f;				// タイトル画像の横幅
+const float TEXTURE_TITLE_TITLE_HEIGHT = 50.0f;				// タイトル画像の縦幅
+const float TEXTURE_TITLE_BUTTON_POSX = SCREEN_WIDTH_ / 2;	// タイトル画像表示位置のX座標
+const float TEXTURE_TITLE_BUTTON_POSY = 100.0f;				// タイトル画面ボタン押下指示画像表示位置のY座標
+const float TEXTURE_TITLE_BUTTON_WIDTH = 300.0f;			// タイトル画面ボタン押下指示画像の横幅
+const float TEXTURE_TITLE_BUTTON_HEIGHT = 100.0f;			// タイトル画面ボタン押下指示画像の縦幅
+
 #endif
 
 #endif // !__GAME_PARAMETER_H__
