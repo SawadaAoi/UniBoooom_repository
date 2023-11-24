@@ -11,8 +11,7 @@
 
 	変更履歴
 	・2023/11/16 制作 takagi
-
-	!memo(見たら消してー)：Collision関係のコメントよろしく
+	・2023/11/22 メンバ変数大量追加 nieda
 ========================================== */
 
 #ifndef __STAGE_H__	//Stage.hインクルードガード
@@ -21,13 +20,14 @@
 // =============== インクルード ===================
 #include "Scene.h"			//親のヘッダ
 #include "Shader.h"
-#include "Camera.h"
 #include "Collision.h"
 #include "Player.h"
 #include "SlimeManager.h"
 #include "ExplosionManager.h"
 #include "Floor.h"
 #include "Timer.h"
+#include "StageFinishUI.h"
+#include "Combo.h"
 	
 // =============== クラス定義 =====================
 class CStage :public CScene	//シーン
@@ -48,13 +48,15 @@ protected:
 	void SlimeSlimeNormalMoveCollision();
 	// ===メンバ変数宣言===
 	VertexShader* m_pVs;
-	CCamera* m_pCamera;
 	CPlayer* m_pPlayer;
+	CGeometry* m_pBox;
 	CSlimeManager* m_pSlimeMng;
 	CCOLLISION* m_pCollision;
 	CExplosionManager* m_pExplosionMng;
 	CTimer* m_pTimer;
+	CCombo* m_pCombo;
 	CFloor* m_pFloor;
+	CStageFinish* m_pStageFin;
 	Texture* m_pTexture;
 };	//ステージ
 
