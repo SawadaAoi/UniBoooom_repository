@@ -99,7 +99,7 @@ SceneGame::SceneGame()
 #endif
 
 
-	m_pFloor = new CFloor();
+	m_pFloor = new CFloor(m_pPlayer->GetPosAddress());
 	m_pFloor->SetCamera(m_pCamera);
 	// スライムマネージャー生成
 	m_pSlimeMng = new CSlimeManager();
@@ -230,6 +230,7 @@ void SceneGame::Update(float tick)
 	m_pSlimeMng->SetPlayerPos(m_pPlayer->GetPos());
 
 	// スライムマネージャー更新
+	m_pFloor->Update();
 	m_pSlimeMng->Update(m_pExplosionMng);
 	m_pExplosionMng->Update();
 	m_pScoreOHMng->Update();

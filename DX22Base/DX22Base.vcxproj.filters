@@ -330,6 +330,9 @@
     <ClCompile Include="TotalScore.cpp">
       <Filter>ソース ファイル\2dObject\Score</Filter>
     </ClCompile>
+    <ClCompile Include="2dPolygon.cpp">
+      <Filter>ソース ファイル\Geometry</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Defines.h">
@@ -541,6 +544,9 @@
     </ClInclude>
     <ClInclude Include="TotalScore.h">
       <Filter>ヘッダー ファイル\2dObject\Score</Filter>
+    </ClInclude>
+    <ClInclude Include="2dPolygon.h">
+      <Filter>ヘッダー ファイル\Geometry</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

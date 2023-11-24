@@ -169,6 +169,7 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="2dPolygon.cpp" />
     <ClCompile Include="AnimeModel.cpp" />
     <ClCompile Include="BossGauge.cpp" />
     <ClCompile Include="Camera.cpp" />
@@ -239,6 +240,7 @@
     <ClCompile Include="_model.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="2dPolygon.h" />
     <ClInclude Include="AnimeModel.h" />
     <ClInclude Include="BossGauge.h" />
     <ClInclude Include="Box.h" />

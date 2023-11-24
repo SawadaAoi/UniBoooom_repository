@@ -158,6 +158,12 @@ const float COMBO_UI_NUM_SPACE			= 80.0f;				// 数字の間スペース
 const float COMBO_UI_MULTI_DISP_SPACE	= 100.0f;				// 同時コンボ描画時の上下の空白
 const int COMBO_UI_DISP_DILAY_TIME		= 2.0f * 60;			// 残コンボ数表示の秒数
 
+// 床 ====================================
+const float FLOOR_SCALE_X = 1.1f;
+const float FLOOR_SCALE_Z = 1.1f;
+const float FLOOR_OFFSET_X = 48.0f * FLOOR_SCALE_X;
+const float FLOOR_OFFSET_Z = 48.0f * FLOOR_SCALE_Z;
+
 #endif
 
 #endif // !__GAME_PARAMETER_H__
