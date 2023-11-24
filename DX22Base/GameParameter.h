@@ -212,14 +212,6 @@ const float FLOOR_SCALE_Z = 1.1f;
 const float FLOOR_OFFSET_X = 48.0f * FLOOR_SCALE_X;
 const float FLOOR_OFFSET_Z = 48.0f * FLOOR_SCALE_Z;
 
-// 2D表示 =========================================================
-const float VIEW_LEFT	= 0.0f;		// 画面左端の座標
-const float VIEW_RIGHT	= 1280.0f;	// 画面右端の座標
-const float VIEW_BOTTOM	= 720.0f;	// 画面下端の座標
-const float VIEW_TOP	= 0.0f;		// 画面上端の座標
-const float NEAR_Z		= 0.1f;		// 画面に写り始める距離
-const float FAR_Z		= 10.0f;	// 写せる限界距離
-
 // タイトル画面 =========================================================
 const float TEXTURE_TITLE_TITLE_POSX = SCREEN_WIDTH_ / 2;	// タイトル画像表示位置のX座標
 const float TEXTURE_TITLE_TITLE_POSY = 400.0f;				// タイトル画像表示位置のY座標
