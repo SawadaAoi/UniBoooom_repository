@@ -39,15 +39,16 @@ public:
 	void TimeRestart();
 	void DrawNumber(TPos2d<float> pos, int number);	//数字描画関数
 	int* GetTimePtr();
+	int* GetNowTime();								//今の時間を取得関数
 
 private:
 	void WaitTimeCheck();
 
 	// ===メンバ変数宣言===
-	bool m_bStartFlg;	// カウントダウン開始フラグ(false = 待機中) 
-	bool m_bStopFlg;	// タイマーストップフラグ(true = stop)
-	int m_nTimeCnt;		// 制限時間フレーム減算値
-	int m_dWaitCnt;		// カウントダウン開始フレーム減算値
+	bool m_bStartFlg;			// カウントダウン開始フラグ(false = 待機中) 
+	bool m_bStopFlg;			// タイマーストップフラグ(true = stop)
+	int m_nTimeCnt;				// 制限時間フレーム減算値
+	int m_dWaitCnt;				// カウントダウン開始フレーム減算値
 
 	Texture* m_pTextureNum;	//タイマー表示用テクスチャポインタ
 	Texture* m_pTextureBG;

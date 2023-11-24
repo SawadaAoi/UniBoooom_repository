@@ -28,12 +28,15 @@
 #include "Collision.h"
 #include "Player.h"
 #include "ExplosionManager.h"
+#include "HP_UI.h"
 #include "DirectWrite.h"
 #include "Timer.h"
 #include "Floor.h"
 #include "StageFinishUI.h"
 #include "Combo.h"
 #include "Fade.h"
+#include "BossGauge.h"
+
 #include "ScoreOHManager.h"
 #include "TotalScore.h"
 // =============== クラス定義 =====================
@@ -62,8 +65,11 @@ private:
 	CSlimeManager* m_pSlimeMng;
 	CCOLLISION* m_pCollision;
 	CExplosionManager* m_pExplosionMng;
+	CHP_UI* m_pHpMng;
+	DirectWrite* m_pDirectWrite;
 	CTimer* m_pTimer;
 	CCombo* m_pCombo;
+	CBossgauge* m_pBossgauge;
 	CFloor* m_pFloor;
 	CStageFinish* m_pStageFin;
 	CFade* m_pFade;

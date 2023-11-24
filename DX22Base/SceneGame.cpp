@@ -128,6 +128,8 @@ SceneGame::SceneGame()
 	//ステージ終了のUI表示
 	m_pStageFin = new CStageFinish(m_pPlayer->GetHP(),m_pTimer->GetTimePtr());
 
+	m_pHpMng = new CHP_UI(m_pPlayer->GetHP());
+
 #if USE_FADE_GAME
 	m_pFade = new CFade(m_pCamera);
 #endif
@@ -142,6 +144,9 @@ SceneGame::SceneGame()
 	//BGMの再生
 	m_pSpeaker = CSound::PlaySound(m_pBGM);		//BGMの再生
 	m_pSpeaker->SetVolume(BGM_VOLUME);			//音量の設定
+
+	//ボスゲージ
+	m_pBossgauge = new CBossgauge(m_pTimer->GetNowTime());
 }
 
 /* ========================================
@@ -163,7 +168,8 @@ SceneGame::~SceneGame()
 	SAFE_DELETE(m_pStageFin);
 	SAFE_DELETE(m_pTimer);
 	SAFE_DELETE(m_pFade);
-  SAFE_DELETE(m_pTimer);
+	SAFE_DELETE(m_pBossgauge);
+	SAFE_DELETE(m_pTimer);
 	SAFE_DELETE(m_pExplosionMng);
 	SAFE_DELETE(m_pSlimeMng);	// スライムマネージャー削除
 	SAFE_DELETE(m_pFloor);
@@ -237,7 +243,12 @@ void SceneGame::Update(float tick)
 	m_pTimer->Update();
 	m_pStageFin->Update();
 	m_pCombo->Update();
+	m_pCamera->Update();
 
+	// HPマネージャー更新
+	m_pHpMng->Update();
+
+	m_pBossgauge->Update();
 	SceneGameCollision();
 
 #if USE_FADE_GAME
@@ -325,11 +336,15 @@ void SceneGame::Draw()
 	
 	//爆発マネージャー描画
 	m_pExplosionMng->Draw();
+	
+
 
 	//タイマー描画
-
 	SetRenderTargets(1, &pRTV, nullptr);
 	m_pStageFin->Draw();
+
+	// HPマネージャー描画
+	m_pHpMng->Draw();
 
 	m_pTimer->Draw();
 	m_pCombo->Draw();
@@ -339,6 +354,8 @@ void SceneGame::Draw()
 	m_pFade->Draw();
 #endif
   
+	//ボスゲージ描画
+	m_pBossgauge->Draw();
 
 	m_pScoreOHMng->Draw();//スコアマネージャー描画
 	
