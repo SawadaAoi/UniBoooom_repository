@@ -25,6 +25,7 @@ public:
 	enum HEART_STATE
 	{
 		HEART_FULL,
+		HEART_HALF,
 		HEART_NONE,
 		HEART_MAX,
 	};

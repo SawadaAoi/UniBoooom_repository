@@ -318,6 +318,9 @@
     <ClCompile Include="2dPolygon.cpp">
       <Filter>ソース ファイル\Geometry</Filter>
     </ClCompile>
+    <ClCompile Include="HP_UI.cpp">
+      <Filter>ソース ファイル\2dObject</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Defines.h">
@@ -523,6 +526,9 @@
     </ClInclude>
     <ClInclude Include="2dPolygon.h">
       <Filter>ヘッダー ファイル\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="HP_UI.h">
+      <Filter>ヘッダー ファイル\2dObject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
