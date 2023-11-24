@@ -16,6 +16,7 @@
 	・2023/11/21 パラメーター追加(// コンボ数) Sawada
 	・2023/11/23 パラメーター追加(// 2D描画) nieda
 	・2023/11/24 パラメーター削除(// カメラ) Takagi
+	・2023/11/25 パラメーター追加(// スコア) yamamoto
 
 =========================================== */
 #ifndef __GAME_PARAMETER_H__
@@ -126,16 +127,21 @@ const float LEVEL_4_EXPLODE_TIME = 3.0f * 60.0f;	// スライム_4の爆発総�
 const int	DELAY_TIME			 = 0.2f * 60;		// 遅延秒数
 
 // スコア =====================================================
-
-//matomeru↓
-const float LEVEL_1_HEIGHT = 4.0f;			//スライム1が爆発時スコアを爆破からどれだけ上に置くか
-const float LEVEL_2_HEIGHT = 4.0f;			//スライム2が爆発時スコアを爆破からどれだけ上に置くか
-const float LEVEL_3_HEIGHT = 4.0f;			//スライム3が爆発時スコアを爆破からどれだけ上に置くか
-const float LEVEL_4_HEIGHT = 4.0f;			//スライム4が爆発時スコアを爆破からどれだけ上に置くか
+const float SLIME_SCORE_HEIGHT = 4.0f;			//爆発時頭上スコアの表示位置
 
 const int TOTALSCORE_DIGIT = 5;				//トータルスコアの桁数
-const int MAX_TOTALSCORE = 99999;			//↑一緒に変えてください//最大トータアルスコア
-const TPos2d<float> TOTALSCORE_POS(1100.0f, 25.0f);			//分の位置設定
+const int MAX_TOTALSCORE = 99999;			//↑一緒に変えてください（桁数分9を追加）//最大トータアルスコア
+const TPos2d<float> TOTALSCORE_POS(1100.0f, 25.0f);			//トータルスコアの位置設定
+
+const DirectX::XMFLOAT2 TOTALSCORE_SIZE(50.0f, -50.0f);		//トータルスコアの表示の大きさ
+const DirectX::XMFLOAT2 PLUSSCORE_SIZE(30.0f, -30.0f);		//プラススコアの表示の大きさ
+const int ROW_HIGHT = 40;			//スコアを複数個表示時一番上からどのくらい下げるか（PLUSSCORE_SIZE.yの絶対値より大きい数字で）
+
+const DirectX::XMFLOAT2 SMALLDECIMAL_SIZE(15.0f, -15.0f);	//小数点の大きさ
+const int MAGNIFICATION = 40;		//倍率表示時の間隔。一番右の数字からどれだけ左にずらすか（小数点を入れるのでそこもケアする）
+const TPos2d<float> SMALLDECIMAL_POS(2.0f, -3.0f);//この値で小数点の位置の微調節
+
+
 // カメラ =====================================================
 const TPos3d<float> INIT_POS(0.0f, 2.6f, -3.0f);					// 初期位置
 

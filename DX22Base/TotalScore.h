@@ -5,10 +5,12 @@
    ---------------------------------------
    TotalScore.h
 
-   作成者 山本　凱翔
+   作成者 山本凱翔
 
    変更履歴
-	・2023/11/22　作成
+	・2023/11/22　作成 yamamoto
+	・2023/11/23　score構造体、comboの構造体の情報取得処理追加 yamamoto
+
 ========================================== */
 #ifndef __TOTALSCORE_H__
 #define __TOTALSCORE_H__
@@ -30,6 +32,7 @@ public:
 		bool  bEndComboFlg;			// コンボ表示終了フラグ
 		bool  bDispTotalScoreFlg;	// スコア表示終了フラグ
 		int   nDispFrame;				// 残描画用加算値
+		bool  bDispFlg;				
 	}PlusScore;	// スコア処理情報まとめ
 public:
 	CTotalScore();
@@ -42,13 +45,13 @@ public:
 	void AddTotalScore();
 	int GetTotalScore();
 	std::vector<int> digitsToArray(int score);	//引数の数字を各桁1ずつ配列に入れる
-	//CCombo* m_pCombo;せっt
 private:
 	int m_nTotalScore;
 	
 	PlusScore m_PlusScore[MAX_COMBO_NUM];
 	CCombo::ComboInfo* m_pComboInfo;
 	Texture* m_pToScoreTexture;
+	Texture* m_pPlusScoreTexture;
 	CCombo* m_pCombo;
 	int nArraySize;
 	std::vector<int> TotalScoreArray;	//各桁1ずつ入れるための配列

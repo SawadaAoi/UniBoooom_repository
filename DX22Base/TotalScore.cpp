@@ -8,7 +8,9 @@
 	作成者	山本凱翔
 
 	変更履歴
-	・2023/11/22　作成
+	・2023/11/22　作成 yamamoto
+	・2023/11/23　描画処理追加 yamamoto
+	・2023/11/24　テクスチャの張替,コメント訂正 yamamoto
 
 ========================================== */
 
@@ -28,6 +30,7 @@
 CTotalScore::CTotalScore()
 	: m_nTotalScore(0)
 	, m_pToScoreTexture(nullptr)
+	, m_pPlusScoreTexture(nullptr)
 	, TotalScoreArray{}
 	, digitArray{}
 	, nArraySize(0)
@@ -38,6 +41,12 @@ CTotalScore::CTotalScore()
 	{
 		MessageBox(NULL, "ToScore数字読み込み", "Error", MB_OK);
 	}
+	m_pPlusScoreTexture = new Texture();
+	if (FAILED(m_pPlusScoreTexture->Create("Assets/Texture/numbers_v1/plus_score_numbers.png")))
+	{
+		MessageBox(NULL, "PlusScore数字読み込み", "Error", MB_OK);
+	}
+	
 	for (int i = 0; i < TOTALSCORE_DIGIT; i++)//トータルスコアの桁を作る
 	{
 		TotalScoreArray.push_back(0);
@@ -46,9 +55,10 @@ CTotalScore::CTotalScore()
 	{
 		m_PlusScore[i].nAddScore = 0;
 		m_PlusScore[i].fComboMagnification = 0;
-		m_PlusScore[i].bEndComboFlg = false;
+		m_PlusScore[i].bEndComboFlg = true;
 		m_PlusScore[i].bDispTotalScoreFlg = true;
 		m_PlusScore[i].nDispFrame = 0;
+		m_PlusScore[i].bDispFlg = false;
 	}
 }
 /* ========================================
@@ -63,6 +73,7 @@ CTotalScore::CTotalScore()
 CTotalScore::~CTotalScore()
 {
 	SAFE_DELETE(m_pToScoreTexture);
+	SAFE_DELETE(m_pPlusScoreTexture);
 	TotalScoreArray.clear();
 }
 void CTotalScore::Update()
@@ -72,7 +83,7 @@ void CTotalScore::Update()
 /* ========================================
 	関数：描画関数
 	----------------------------------------
-	内容：爆発マネージャーの描画処理
+	内容：スコアの描画処理
 	----------------------------------------
 	引数：なし
 	----------------------------------------
@@ -93,13 +104,13 @@ void CTotalScore::Draw()
 	//スプライトの設定
 	Sprite::SetView(time[1]);
 	Sprite::SetProjection(time[2]);
-	Sprite::SetSize(DirectX::XMFLOAT2(50.0f, -50.0f));
+	Sprite::SetSize(DirectX::XMFLOAT2(TOTALSCORE_SIZE.x, TOTALSCORE_SIZE.y));
 	Sprite::SetUVScale(DirectX::XMFLOAT2(0.2f, 0.5f));
 	Sprite::SetTexture(m_pToScoreTexture);
 
 	for (int i = 0; i < TOTALSCORE_DIGIT; i++)
 	{
-		int width = 50 * i;
+		int width = TOTALSCORE_SIZE.x * i;
 		//ワールド行列はXとYのみを考慮して作成(Zは10ぐらいに配置
 		DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(TOTALSCORE_POS.x - width, TOTALSCORE_POS.y, 0.0f);
 		DirectX::XMStoreFloat4x4(&time[0], DirectX::XMMatrixTranspose(world));
@@ -107,27 +118,31 @@ void CTotalScore::Draw()
 		//スプライトの設定
 		Sprite::SetWorld(time[0]);
 		
-		int y = TotalScoreArray[i] % 5;	//ここ名前募集します
-		int x = TotalScoreArray[i] / 5;	//配列に入ってる数字の場所を計算してます
-		Sprite::SetUVPos(DirectX::XMFLOAT2(0.2f*y, 0.5f*x));
+		int x = TotalScoreArray[i] % 5;	//ここ名前募集します
+		int y = TotalScoreArray[i] / 5;	//配列に入ってる数字の場所を計算してます
+		
+		Sprite::SetUVPos(DirectX::XMFLOAT2(0.2f*x, 0.5f*y));
 		Sprite::Draw();
 	}
 	//加算予定のスコア（トータルの下）の描画設定サイズ以外は同じなので省略
-	Sprite::SetSize(DirectX::XMFLOAT2(30.0f, -30.0f));
-
+	Sprite::SetSize(DirectX::XMFLOAT2(PLUSSCORE_SIZE.x, PLUSSCORE_SIZE.y));
+	Sprite::SetUVScale(DirectX::XMFLOAT2(0.2f, 0.333f));
+	Sprite::SetTexture(m_pPlusScoreTexture);
 	for (int i = 0, lineNum=1; i < MAX_COMBO_NUM; i++)
 	{
+		
 		if (m_PlusScore[i].nAddScore == 0)continue;//何もなければスルー
 
+		
 		if (m_PlusScore[i].bDispTotalScoreFlg == true) 
 		{
-
+			
  			digitArray = digitsToArray(m_PlusScore[i].nAddScore);	
 			nArraySize = digitArray.size();				//何桁か確認
 			for (int i = 0; i < nArraySize; i++)
 			{
-				int width = 30 * i;
-				int hight = 40 * lineNum;
+				int width = PLUSSCORE_SIZE.x * i;
+				int hight = ROW_HIGHT * lineNum;
 				//ワールド行列はXとYのみを考慮して作成(Zは10ぐらいに配置
 				DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(TOTALSCORE_POS.x - width, TOTALSCORE_POS.y + hight, 0.0f);
 				DirectX::XMStoreFloat4x4(&time[0], DirectX::XMMatrixTranspose(world));
@@ -137,10 +152,22 @@ void CTotalScore::Draw()
 
 				int y = digitArray[i] % 5;	//ここ名前募集します
 				int x = digitArray[i] / 5;	//配列に入ってる数字の場所を計算してます
-				Sprite::SetUVPos(DirectX::XMFLOAT2(0.2f*y, 0.5f*x));
+				Sprite::SetUVPos(DirectX::XMFLOAT2(0.2f*y, 0.333f*x));
 
 				Sprite::Draw();
 			}
+			//+の表示
+			int width = PLUSSCORE_SIZE.x * nArraySize;
+			int hight = ROW_HIGHT * lineNum;
+			//ワールド行列はXとYのみを考慮して作成(Zは10ぐらいに配置
+			DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(TOTALSCORE_POS.x - width, TOTALSCORE_POS.y + hight, 0.0f);
+			DirectX::XMStoreFloat4x4(&time[0], DirectX::XMMatrixTranspose(world));
+
+			//スプライトの設定
+			Sprite::SetWorld(time[0]);
+			Sprite::SetUVPos(DirectX::XMFLOAT2(0.0f, 0.666f));
+
+			Sprite::Draw();
 			lineNum++;
 		}
 		else
@@ -150,24 +177,27 @@ void CTotalScore::Draw()
 			m_PlusScore[i].nAddScore = 0;
 			m_PlusScore[i].bEndComboFlg = true;
 			m_PlusScore[i].nDispFrame = 0;
+			m_PlusScore[i].bDispFlg = false;
 		}
-		//if (m_PlusScore[i].bEndComboFlg
-		//	&&!m_PlusScore[i].bDispTotalScoreFlg)//コンボ終了時
+	
 		m_PlusScore[i].nDispFrame++;
 		if (!m_PlusScore[i].bEndComboFlg)
 		{
-			// 暫くコンボ数を表示する
+			// 暫くコンボ倍率を表示する
 			
-			if (m_PlusScore[i].nDispFrame >= 5 * 60)
+			if (m_PlusScore[i].nDispFrame >= 1 * 60)
 			{
 				m_PlusScore[i].bEndComboFlg = true;
+				m_PlusScore[i].bDispFlg = true;
+				m_PlusScore[i].nAddScore *= m_PlusScore[i].fComboMagnification;
+				m_PlusScore[i].nDispFrame = 0;
 			}
 			digitArray = digitsToArray(m_PlusScore[i].fComboMagnification*10);
 			nArraySize = digitArray.size();				//何桁か確認
 			for (int i = 0; i < nArraySize; i++)
 			{
-				int width = 30 * i;
-				int hight = 40 * lineNum;
+				int width = MAGNIFICATION * i;
+				int hight = ROW_HIGHT * lineNum;
 				//ワールド行列はXとYのみを考慮して作成(Zは10ぐらいに配置
 				DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(TOTALSCORE_POS.x - width, TOTALSCORE_POS.y + hight, 0.0f);
 				DirectX::XMStoreFloat4x4(&time[0], DirectX::XMMatrixTranspose(world));
@@ -177,20 +207,43 @@ void CTotalScore::Draw()
 
 				int y = digitArray[i] % 5;	//ここ名前募集します
 				int x = digitArray[i] / 5;	//配列に入ってる数字の場所を計算してます
-				Sprite::SetUVPos(DirectX::XMFLOAT2(0.2f*y, 0.5f*x));
+				Sprite::SetUVPos(DirectX::XMFLOAT2(0.2f*y, 0.333f*x));
 
 				Sprite::Draw();
 			}
+			//×表示
+			int width = PLUSSCORE_SIZE.x*2+ SMALLDECIMAL_SIZE.x;
+			int hight = ROW_HIGHT * lineNum;
+			//ワールド行列はXとYのみを考慮して作成(Zは10ぐらいに配置
+			DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(TOTALSCORE_POS.x - width, TOTALSCORE_POS.y + hight, 0.0f);
+			DirectX::XMStoreFloat4x4(&time[0], DirectX::XMMatrixTranspose(world));
+			
+			//スプライトの設定
+			Sprite::SetWorld(time[0]);
+			Sprite::SetUVPos(DirectX::XMFLOAT2(0.2f, 0.666f));
+			
+			Sprite::Draw();
+			
+			Sprite::SetSize(DirectX::XMFLOAT2(SMALLDECIMAL_SIZE.x, SMALLDECIMAL_SIZE.y));
+			//小数点表示
+			width = PLUSSCORE_SIZE.x- SMALLDECIMAL_POS.x;
+			hight -= SMALLDECIMAL_POS.y;
+			//ワールド行列はXとYのみを考慮して作成(Zは10ぐらいに配置
+			 world = DirectX::XMMatrixTranslation(TOTALSCORE_POS.x - width, TOTALSCORE_POS.y + hight, 0.0f);
+			DirectX::XMStoreFloat4x4(&time[0], DirectX::XMMatrixTranspose(world));
+			
+			//スプライトの設定
+			Sprite::SetWorld(time[0]);
+			Sprite::SetUVPos(DirectX::XMFLOAT2(0.4f, 0.666f));
+			
+			Sprite::Draw();
 			lineNum++;
-
 		}
-		
-		if (m_PlusScore[i].nDispFrame >= 8 * 60)
+		if (m_PlusScore[i].nDispFrame >= 2 * 60&& m_PlusScore[i].bDispFlg)
 		{
 			m_PlusScore[i].bDispTotalScoreFlg = false;
 		}
 	}
-
 }
 /* ========================================
 	プラススコア加算関数
@@ -228,6 +281,7 @@ void CTotalScore::ComboCheck(CCombo::ComboInfo comboInfo, int num)
 	else if (comboInfo.dCnt >= 10) m_PlusScore[num].fComboMagnification = 1.5f;
 
 	m_PlusScore[num].bEndComboFlg = false;
+	m_PlusScore[num].nDispFrame = 0;
 	
 }
 

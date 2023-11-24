@@ -9,6 +9,7 @@
 		澤田蒼生
 	変更履歴
 	・2023/11/21 作成 Sawada
+	・2023/11/23 スコアを加算する処理の追加　yamamoto
 
 ========================================== */
 
@@ -350,7 +351,6 @@ void CCombo::EndCombo(int num)
 	m_dComboInfo[num].bEndFlg = true;	// コンボ終了フラグをオン
 	
 	m_pTotalScore->ComboCheck(m_dComboInfo[num], num);	//倍率を決める
-	//m_dComboInfo[num].dScore = 0;
 }
 /* ========================================
 	トータルスコア情報セット関数

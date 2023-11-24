@@ -295,7 +295,7 @@ void CSlimeManager::HitBranch(int HitSlimeNum, int StandSlimeNum, CExplosionMana
 		{
 			//スライム爆発処理
 			pExpMng->Create(pos, MAX_SIZE_EXPLODE * EXPLODE_BASE_RATIO, LEVEL_4_EXPLODE_TIME, E_SLIME_LEVEL::LEVEL_4x4);	//衝突されたスライムの位置でレベル４爆発
-			m_pScoreOHMng->DisplayOverheadScore(pos, LEVEL_4_SCORE * 2, LEVEL_4_HEIGHT);
+			m_pScoreOHMng->DisplayOverheadScore(pos, LEVEL_4_SCORE * 2, SLIME_SCORE_HEIGHT);
 			pExpMng->CreateUI(pos, LEVEL_4_EXPLODE_TIME);		//レベル４爆発した位置boooomUI表示
 		}
 		else	//最大サイズじゃない場合は1段階大きいスライムを生成する
