@@ -48,13 +48,14 @@ const int	SE_RUN_INTERVAL		= 0.4f * 60;	//プレイヤーの移動によるSE発生の間隔
 const float	SE_RUN_VOLUME		= 0.3f;			//移動によるSEの音量
 
 // ハンマー
-const float HAMMER_ANGLE_X		= 180.0f;								//ハンマーの表示角度
-const float HAMMER_ANGLE_Z		= 90.0f;								//ハンマーの表示角度
+const float HAMMER_ANGLE_X		= DirectX::XMConvertToRadians(180.0f);								//ハンマーの表示角度
+const float HAMMER_ANGLE_Y		= DirectX::XMConvertToRadians(0.0f);								//ハンマーの表示角度
+const float HAMMER_ANGLE_Z		= DirectX::XMConvertToRadians(0.0f);								//ハンマーの表示角度
 const float SWING_ANGLE			= DirectX::XMConvertToRadians(90.0f);	// ハンマーを振る範囲(扇形の角度の大きさ)
 const float SWING_TIME_FRAME	= 0.15f * 60;							// ハンマーを振る時間(フレーム単位)
 const float ROTATE_RADIUS		= 1.0f;									// ハンマーが回転するプレイヤーからの距離
 const float HAMMER_COL_SIZE		= 0.75f;								//ハンマーの当たり判定の大きさ
-const float HAMMER_SIZE			= 1.5f;									//ハンマーの大きさ
+const float HAMMER_SIZE			= 0.2f;									//ハンマーの大きさ
 
 // 敵キャラ ==================================================
 

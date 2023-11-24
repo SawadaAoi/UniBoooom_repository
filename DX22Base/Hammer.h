@@ -41,17 +41,18 @@ public:
 	~CHammer();	//デストラクタ
 
 	bool Update();	// 更新関数
-	void Draw(const CCamera* pCamera);				// 描画関数
+	void Draw();				// 描画関数
 	void Swing();									// 移動による回転移動
 	void AttackStart(TPos3d<float>pPos, float angle);								// 攻撃開始処理
+	void SetCamera(const CCamera* pCamera);
 private:
 	// ===メンバ変数宣言=====
 	Model* m_pModel;				//プレイヤーのモデル
 	VertexShader* m_pVS;			//頂点シェーダーのポインタ
-	CGeometry* m_pHammerGeo;		// ハンマーを仮表示する図形
 	TPos3d<float> m_tPlayerPos;		// 現在のプレイヤー座標
 	float m_fAngleNow;				// 今の角度
 	int m_dAddAngleCnt;				// 角度加算フレーム値
+	const CCamera* m_pCamera;		//	
 };
 
 #endif // !__HAMMER_H__

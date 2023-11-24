@@ -80,9 +80,7 @@ private:
 	int m_nNoDamageCnt;					// プレイヤーの無敵時間をカウント
 	bool m_bCollide;					// プレイヤーの無敵状態のフラグ(当たり判定をOFF)
 	CHammer* m_pHammer;					// ハンマークラスのポインタ(プレイヤーが管理する)
-	CGeometry* m_pPlayerGeo;			// プレイヤーを仮表示するジオメトリー
 	const CCamera* m_pCamera;			// プレイヤーを追従するカメラ
-	CGeometry* m_pGameOver;				// ゲームオーバーを仮表示するジオメトリー
 	bool m_DrawFlg;						// プレイヤーがダメージを受けたら点滅するフラグ
 	int m_FlashCnt;						// 点滅の時間の長さ
 	int m_nMoveCnt;						// プレイヤーの移動によるSEの間隔
