@@ -90,7 +90,7 @@ CPlayer::CPlayer()
 	if (FAILED(m_pVS->Load("Assets/Shader/VS_Model.cso"))) {
 		MessageBox(nullptr, "VS_Model.cso", "Error", MB_OK);
 	}
-	//レベル1スライムのモデル読み込み
+	//プレイヤーのモデル読み込み
 	m_pModel = new Model;
 	if (!m_pModel->Load("Assets/Model/player/player.FBX", 1.0f, Model::None)) {		//倍率と反転は省略可
 		MessageBox(NULL, "player", "Error", MB_OK);	//ここでエラーメッセージ表示

@@ -69,7 +69,7 @@ CHammer::CHammer()
 	if (FAILED(m_pVS->Load("Assets/Shader/VS_Model.cso"))) {
 		MessageBox(nullptr, "VS_Model.cso", "Error", MB_OK);
 	}
-	//レベル1スライムのモデル読み込み
+	//ハンマーのモデル読み込み
 	m_pModel = new Model;
 	if (!m_pModel->Load("Assets/Model/hammer/hammer3.FBX", 1.0f, Model::XFlip)) {		//倍率と反転は省略可
 		MessageBox(NULL, "hammer", "Error", MB_OK);	//ここでエラーメッセージ表示
