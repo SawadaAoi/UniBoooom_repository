@@ -23,6 +23,7 @@
 	・2023/11/20 ボス用の配列を追加
 	・2023/11/21 ボス用の当たり判定時の処理(HitSlimeBossBranch...etc)を追加
 	・2023/11/21 ボス用の通常時の処理(PreventSlimeBossOverlap...etc)を追加
+	・2023/11/21 BoooomUi表示する関数を呼び出す Tei
 
 =========================================== */
 
@@ -85,6 +86,7 @@ CSlimeManager::CSlimeManager()
 	, m_pSEUnion(nullptr)
 	, m_pSEHitSlimeSpeaker(nullptr)
 	, m_pSEUnionSpeaker(nullptr)
+	//, m_pBoooomMng(nullptr)
 {
 	//スライムのモデルと頂点シェーダーの読み込み
 	LoadModel();
@@ -123,6 +125,8 @@ CSlimeManager::CSlimeManager()
 	//サウンドファイルの読み込み
 	m_pSEHitSlime = CSound::LoadSound("Assets/Sound/SE/SlimeHitSlime.mp3");		//ハンマーを振った時のSEの読み込み
 	m_pSEUnion = CSound::LoadSound("Assets/Sound/SE/Union.mp3");		//スライムがくっついた時ののSEの読み込み
+
+
 }
 
 /* ========================================
@@ -136,6 +140,7 @@ CSlimeManager::CSlimeManager()
 =========================================== */
 CSlimeManager::~CSlimeManager()
 {
+
 	SAFE_DELETE(m_pVS);
 	SAFE_DELETE(m_pFlameModel);
 	SAFE_DELETE(m_pRedModel);
@@ -342,8 +347,9 @@ void CSlimeManager::HitBranch(int HitSlimeNum, int StandSlimeNum, CExplosionMana
 		if (hitSlimeLevel == MAX_LEVEL)	//スライムのサイズが最大の時
 		{
 			//スライム爆発処理
-			pExpMng->Create(pos, MAX_SIZE_EXPLODE * EXPLODE_BASE_RATIO, LEVEL_4_EXPLODE_TIME,/*仮*/0,(int)standSlimeLevel);	//衝突されたスライムの位置でレベル４爆発
-
+			pExpMng->Create(pos, MAX_SIZE_EXPLODE * EXPLODE_BASE_RATIO, LEVEL_4_EXPLODE_TIME, E_SLIME_LEVEL::LEVEL_4x4);	//衝突されたスライムの位置でレベル４爆発
+			m_pScoreOHMng->DisplayOverheadScore(pos, LEVEL_4_SCORE * 2, LEVEL_4_HEIGHT);
+			pExpMng->CreateUI(pos, LEVEL_4_EXPLODE_TIME);		//レベル４爆発した位置boooomUI表示
 		}
 		else	//最大サイズじゃない場合は1段階大きいスライムを生成する
 		{
@@ -395,7 +401,7 @@ bool CSlimeManager::HitFlameBranch(int HitSlimeNum, int StandSlimeNum, CExplosio
 	else if (hitSlimeLevel == LEVEL_FLAME)
 	{
 		pExpMng->SwitchExplode(standSlimeLevel, standSlimeTransform.fPos,standSlimeSize);	//スライムのレベルによって爆発の時間とサイズを分岐
-
+		m_pScoreOHMng->DisplayOverheadScore(standSlimeTransform.fPos, standSlimeLevel);
 		SAFE_DELETE(m_pSlime[HitSlimeNum]);								// 衝突するスライムを削除
 		SAFE_DELETE(m_pSlime[StandSlimeNum]);							// 衝突されたスライムを削除
 
@@ -405,6 +411,7 @@ bool CSlimeManager::HitFlameBranch(int HitSlimeNum, int StandSlimeNum, CExplosio
 	else if (standSlimeLevel == LEVEL_FLAME)
 	{
 		pExpMng->SwitchExplode(hitSlimeLevel, hitSlimeTransform.fPos, hitSlimeSize);	//スライムのレベルによって爆発の時間とサイズを分岐
+		m_pScoreOHMng->DisplayOverheadScore(hitSlimeTransform.fPos, hitSlimeLevel);
 
 		SAFE_DELETE(m_pSlime[HitSlimeNum]);								// 衝突するスライムを削除
 		SAFE_DELETE(m_pSlime[StandSlimeNum]);							// 衝突されたスライムを削除
@@ -470,7 +477,10 @@ void CSlimeManager::TouchExplosion(int DelSlime, CExplosionManager * pExpMng, in
 	TTriType<float> size = m_pSlime[DelSlime]->GetScale();		// 衝突先のスライムサイズを確保
 
 	pExpMng->SwitchExplode(level, pos, size, comboNum);
-	SAFE_DELETE(m_pSlime[DelSlime]);			// 巻き込まれたスライムを削除
+	m_pScoreOHMng->DisplayOverheadScore(pos, level);
+	//トータルスコア（level,combo)
+	SAFE_DELETE(m_pSlime[DelSlime]);					//ぶつかりに来たスライムを削除
+
 }
 
 /* ========================================
@@ -925,6 +935,20 @@ void CSlimeManager::SetPlayerPos(TPos3d<float> pos)
 }
 
 /* ========================================
+	BoooomUIセット関数
+	----------------------------------------
+	内容：SceneGameのポインタをセットする
+	----------------------------------------
+	引数1：BoooomUIポインタ
+	----------------------------------------
+	戻値：無し
+======================================== */
+void CSlimeManager::SetBoooomUI(CExplosionManager* pExpMng)
+{
+	m_pExpMng = pExpMng;
+}
+
+/* ========================================
 	乱数関数
 	----------------------------------------
 	内容：毎回異なる乱数関数
@@ -936,4 +960,18 @@ void CSlimeManager::SetPlayerPos(TPos3d<float> pos)
 int CSlimeManager::GetRandom(int min, int max)
 {
 	return min + (int)(rand() * (max - min + 1.0) / (1.0 + RAND_MAX));
+}
+
+/* ========================================
+	スコア情報セット関数
+	----------------------------------------
+	内容：爆発生成時に必要なスコア情報セット
+	----------------------------------------
+	引数1：なし
+	----------------------------------------
+	戻値：なし
+======================================== */
+void CSlimeManager::SetScoreOHMng(CScoreOHManager * pScoreMng)
+{
+	m_pScoreOHMng = pScoreMng;
 }

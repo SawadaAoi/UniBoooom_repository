@@ -19,6 +19,7 @@
 	・2023/11/15 各スライムのモデルのポインタと頂点シェーダーのポインタをbaseから移動 yamashita
 	・2023/11/15 各モデルの読み込みを関数化 yamashita
 	・2023/11/19 ボススライム用の配列を追加 Suzumura
+	・2023/11/21 BoooomUI用変数追加 Tei
 
    ======================================== */
 #ifndef __SLIME_MANAGER_H__
@@ -33,6 +34,7 @@
 #include "Slime_BossBase.h"
 #include "GameParameter.h"		//定数定義用ヘッダー
 #include "Sound.h"
+#include "ScoreOHManager.h"
 
 // =============== 定数定義 =======================
 #if MODE_GAME_PARAMETER
@@ -81,6 +83,9 @@ public:
 	// セット関数
 	void SetCamera(CCamera* pCamera);		//スライムを移すカメラのポインタをセット
 	void SetPlayerPos(TPos3d<float> pos);
+	void SetScoreOHMng(CScoreOHManager* pScoreMng);
+
+	void SetBoooomUI(CExplosionManager* pExpMng);
 private:
 	// ===メンバ変数宣言=====
 	int GetRandom(int min, int max);
@@ -98,6 +103,8 @@ private:
 	Model* m_pFlameModel;
 	Model* m_pBossModel;
 
+	CScoreOHManager* m_pScoreOHMng;
+
 
 	XAUDIO2_BUFFER* m_pSEHitSlime;					//ハンマーでスライムを打った時のSEのデータ
 	XAUDIO2_BUFFER* m_pSEUnion;					//ハンマーでスライムを打った時のSEのデータ
@@ -106,6 +113,7 @@ private:
 
 	int m_CreateCnt;	// 生成間隔用カウント
 
+	CExplosionManager* m_pExpMng;
 	
 };
 

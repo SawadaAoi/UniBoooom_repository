@@ -34,6 +34,7 @@
 #include "Sphere.h"			//球定義ヘッダー
 #include "Camera.h"			//カメラ定義ヘッダー
 #include "Object.h"			//
+#include "BoooomUI.h"
 
 //=============== クラス定義 =====================
 class CExplosion

@@ -17,6 +17,8 @@
 	・2023/11/07 コメント修正 takagi
 	・2023/11/16 列挙追加・GetNext()関数追加・終了フラグ周り実装・コメント修正 takagi
 	・2023/11/17 列挙中身追加 takagi
+	・2023/11/22 2D描画関数宣言 nieda
+	・2023/11/23 サウンドファイル読み込み関数用変数追加 nieda
 
 ========================================== */
 
@@ -25,6 +27,8 @@
 
 // =============== インクルード ===================
 #include "Texture.h"
+#include "Sound.h"
+#include "Camera.h"
 
 // =============== クラス定義 =====================
 class CScene
@@ -49,14 +53,21 @@ public:
 	CScene();							//コンストラクタ
 	virtual ~CScene();					//デストラクタ
 	virtual void Update();				//更新
-	virtual void Draw();			//描画
+	virtual void Draw();				//描画
 	bool IsFin() const;					//終了確認
 	virtual E_TYPE GetType() const = 0;	//自身の種類ゲッタ
 	virtual E_TYPE GetNext() const = 0;	//次のシーンゲッタ
-	void Draw2d(float, float, float, float, Texture*);
+	void Draw2d(float, float, float, float, Texture*);	// 分割なしの2Dテクスチャ表示
+	CCamera* GetCamera();
+	void LoadSound();	//サウンドファイルの読み込み
 protected:
 	// ===メンバ変数宣言=====
 	bool m_bFinish;	//終了予約用(trueで終了)
+	CCamera* m_pCamera;
+	XAUDIO2_BUFFER* m_pBGM;							//BGMの音声データ
+	XAUDIO2_BUFFER* m_pSEHitHammer;					//SEの音声データ
+	IXAudio2SourceVoice* m_pSpeaker;				//BGMを聞き取る側
+	IXAudio2SourceVoice* m_pSEHitHammerSpeaker;		//SEを聞き取る側
 };	//シーン
 
 #endif	//!__SCENE_H__
