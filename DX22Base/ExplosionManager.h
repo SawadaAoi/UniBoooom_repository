@@ -39,6 +39,11 @@ const float LEVEL_2_EXPLODE_TIME	= 1.0f * 60.0f;	// スライム_2の爆発総時間
 const float LEVEL_3_EXPLODE_TIME	= 2.0f * 60.0f;	// スライム_3の爆発総時間
 const float LEVEL_4_EXPLODE_TIME	= 3.0f * 60.0f;	// スライム_4の爆発総時間
 const float LEVEL_BOSS_EXPLODE_TIME = 4.0f * 60.0f;	// スライム_ボスの爆発総時間
+
+const int	LEVEL_1_EXPLODE_DAMAGE = 1;
+const int	LEVEL_2_EXPLODE_DAMAGE = 2;
+const int	LEVEL_3_EXPLODE_DAMAGE = 3;
+const int	LEVEL_4_EXPLODE_DAMAGE = 4;
 #endif
 // =============== クラス定義 =====================
 class CExplosionManager
@@ -51,15 +56,13 @@ public:
 	void Update();		 		//更新関数
 	void Draw();		 		//描画関数
 	
-	void Create(TTriType<float> pos,float size, float time);   	//爆発生成関数
-	void Create(TTriType<float> pos,float size, float time, int comboNum);   	//爆発生成関数
-	void Create(TTriType<float> pos, float size, float time, int comboNum, int damage);   	//爆発生成関数
+	void Create(TTriType<float> pos,float size, float time,int damage);   	//爆発生成関数
+	void Create(TTriType<float> pos,float size, float time, int comboNum, int damage);   	//爆発生成関数
 
 	void DeleteCheck();							   				// 時間より爆発を削除関数
 	void ComboEndCheck();										// 爆発の連鎖が途切れたかチェックする
 	void SwitchExplode(E_SLIME_LEVEL slimeLevel, TPos3d<float> pos, TTriType<float> slimeSize);					//スライムのレベルに応じて爆発を変更
 	void SwitchExplode(E_SLIME_LEVEL slimeLevel, TPos3d<float> pos, TTriType<float> slimeSize, int comboNum);					//スライムのレベルに応じて爆発を変更
-	void SwitchExplode(E_SLIME_LEVEL slimeLevel, TPos3d<float> pos, TTriType<float> slimeSize, int comboNum, int damage);					//スライムのレベルに応じて爆発を変更
 
 
 
