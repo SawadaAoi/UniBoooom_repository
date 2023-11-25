@@ -11,6 +11,7 @@
 	・2023/11/22　作成 yamamoto
 	・2023/11/23　描画処理追加 yamamoto
 	・2023/11/24　テクスチャの張替,コメント訂正 yamamoto
+	・2023/11/26　コンボ倍率の表示の変更 yamamoto
 
 ========================================== */
 
@@ -192,11 +193,30 @@ void CTotalScore::Draw()
 				m_PlusScore[i].nAddScore *= m_PlusScore[i].fComboMagnification;
 				m_PlusScore[i].nDispFrame = 0;
 			}
-			digitArray = digitsToArray(m_PlusScore[i].fComboMagnification*10);
-			nArraySize = digitArray.size();				//何桁か確認
-			for (int i = 0; i < nArraySize; i++)
+			if (m_PlusScore[i].fComboMagnification != 1.0f)
 			{
-				int width = MAGNIFICATION * i;
+				digitArray = digitsToArray(m_PlusScore[i].fComboMagnification * 10);
+				nArraySize = digitArray.size();				//何桁か確認
+				for (int i = 0; i < nArraySize; i++)
+				{
+					int width = MAGNIFICATION * i;
+					int hight = ROW_HIGHT * lineNum;
+					//ワールド行列はXとYのみを考慮して作成(Zは10ぐらいに配置
+					DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(TOTALSCORE_POS.x - width, TOTALSCORE_POS.y + hight, 0.0f);
+					DirectX::XMStoreFloat4x4(&time[0], DirectX::XMMatrixTranspose(world));
+
+					//スプライトの設定
+					Sprite::SetWorld(time[0]);
+
+					int y = digitArray[i] % 5;	//ここ名前募集します
+					int x = digitArray[i] / 5;	//配列に入ってる数字の場所を計算してます
+					Sprite::SetUVPos(DirectX::XMFLOAT2(0.2f*y, 0.333f*x));
+
+					Sprite::Draw();
+				}
+
+				//×表示
+				int width = PLUSSCORE_SIZE.x * 2 + SMALLDECIMAL_SIZE.x;
 				int hight = ROW_HIGHT * lineNum;
 				//ワールド行列はXとYのみを考慮して作成(Zは10ぐらいに配置
 				DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(TOTALSCORE_POS.x - width, TOTALSCORE_POS.y + hight, 0.0f);
@@ -204,39 +224,24 @@ void CTotalScore::Draw()
 
 				//スプライトの設定
 				Sprite::SetWorld(time[0]);
+				Sprite::SetUVPos(DirectX::XMFLOAT2(0.2f, 0.666f));
 
-				int y = digitArray[i] % 5;	//ここ名前募集します
-				int x = digitArray[i] / 5;	//配列に入ってる数字の場所を計算してます
-				Sprite::SetUVPos(DirectX::XMFLOAT2(0.2f*y, 0.333f*x));
+				Sprite::Draw();
+
+				Sprite::SetSize(DirectX::XMFLOAT2(SMALLDECIMAL_SIZE.x, SMALLDECIMAL_SIZE.y));
+				//小数点表示
+				width = PLUSSCORE_SIZE.x - SMALLDECIMAL_POS.x;
+				hight -= SMALLDECIMAL_POS.y;
+				//ワールド行列はXとYのみを考慮して作成(Zは10ぐらいに配置
+				world = DirectX::XMMatrixTranslation(TOTALSCORE_POS.x - width, TOTALSCORE_POS.y + hight, 0.0f);
+				DirectX::XMStoreFloat4x4(&time[0], DirectX::XMMatrixTranspose(world));
+
+				//スプライトの設定
+				Sprite::SetWorld(time[0]);
+				Sprite::SetUVPos(DirectX::XMFLOAT2(0.4f, 0.666f));
 
 				Sprite::Draw();
 			}
-			//×表示
-			int width = PLUSSCORE_SIZE.x*2+ SMALLDECIMAL_SIZE.x;
-			int hight = ROW_HIGHT * lineNum;
-			//ワールド行列はXとYのみを考慮して作成(Zは10ぐらいに配置
-			DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(TOTALSCORE_POS.x - width, TOTALSCORE_POS.y + hight, 0.0f);
-			DirectX::XMStoreFloat4x4(&time[0], DirectX::XMMatrixTranspose(world));
-			
-			//スプライトの設定
-			Sprite::SetWorld(time[0]);
-			Sprite::SetUVPos(DirectX::XMFLOAT2(0.2f, 0.666f));
-			
-			Sprite::Draw();
-			
-			Sprite::SetSize(DirectX::XMFLOAT2(SMALLDECIMAL_SIZE.x, SMALLDECIMAL_SIZE.y));
-			//小数点表示
-			width = PLUSSCORE_SIZE.x- SMALLDECIMAL_POS.x;
-			hight -= SMALLDECIMAL_POS.y;
-			//ワールド行列はXとYのみを考慮して作成(Zは10ぐらいに配置
-			 world = DirectX::XMMatrixTranslation(TOTALSCORE_POS.x - width, TOTALSCORE_POS.y + hight, 0.0f);
-			DirectX::XMStoreFloat4x4(&time[0], DirectX::XMMatrixTranspose(world));
-			
-			//スプライトの設定
-			Sprite::SetWorld(time[0]);
-			Sprite::SetUVPos(DirectX::XMFLOAT2(0.4f, 0.666f));
-			
-			Sprite::Draw();
 			lineNum++;
 		}
 		if (m_PlusScore[i].nDispFrame >= 2 * 60&& m_PlusScore[i].bDispFlg)
