@@ -20,6 +20,9 @@
 	・2023/11/14 SphereInfoの変更に対応 Takagi
 	・2023/11/15 各モデルの読み込みをbaseから移動 yamashita
 	・2023/11/15 各モデルの読み込みを関数化 yamashita
+	・2023/11/23 スライムの生成位置をプレイヤー中心に変更 yamashita
+	・2023/11/23 スライムの生成位置が前回の生成位置から一定以上離れるように変更	yamashita
+	・2023/11/23 スライムがプレイヤーから一定以上離れると対角線上に移動するように変更 yamashita
 
 =========================================== */
 
@@ -591,9 +594,8 @@ void CSlimeManager::OutOfRange()
 			else { disX += 1.0f; }
 			if (disZ > 0.0f) { disZ -= 1.0f; }
 			else { disZ += 1.0f; }
-			//
+			//対角線の座標をセット
 			TPos3d<float> setPos = {m_pPlayerPos.x + disX,0.0f,m_pPlayerPos.z + disZ};
-
 			m_pSlime[i]->SetPos(setPos);
 		}
 	}
