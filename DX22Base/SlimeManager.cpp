@@ -347,7 +347,7 @@ void CSlimeManager::HitBranch(int HitSlimeNum, int StandSlimeNum, CExplosionMana
 		if (hitSlimeLevel == MAX_LEVEL)	//スライムのサイズが最大の時
 		{
 			//スライム爆発処理
-			pExpMng->Create(pos, MAX_SIZE_EXPLODE * EXPLODE_BASE_RATIO, LEVEL_4_EXPLODE_TIME, E_SLIME_LEVEL::LEVEL_4x4);	//衝突されたスライムの位置でレベル４爆発
+			pExpMng->Create(pos, MAX_SIZE_EXPLODE * EXPLODE_BASE_RATIO, LEVEL_4_EXPLODE_TIME, LEVEL_4_EXPLODE_DAMAGE, E_SLIME_LEVEL::LEVEL_4x4);	//衝突されたスライムの位置でレベル４爆発
 			m_pScoreOHMng->DisplayOverheadScore(pos, LEVEL_4_SCORE * 2, LEVEL_4_HEIGHT);
 			pExpMng->CreateUI(pos, LEVEL_4_EXPLODE_TIME);		//レベル４爆発した位置boooomUI表示
 		}
@@ -665,7 +665,9 @@ void CSlimeManager::TouchBossExplosion(int BossNum, CExplosionManager* pExpMng, 
 	{
 		SAFE_DELETE(m_pBoss[BossNum]);	//ぶつかりに来たスライム(ボス)を削除
 		
-		pExpMng->SwitchExplode(level, pos, size);	// 爆発生成
+		pExpMng->SwitchExplode(level, pos, size, pExpMng->GetExplosionPtr(ExpNum)->GetComboNum());	// 爆発生成
+		m_pScoreOHMng->DisplayOverheadScore(pos, LEVEL_4_SCORE * 2, LEVEL_4_HEIGHT);
+
 	}
 
 }

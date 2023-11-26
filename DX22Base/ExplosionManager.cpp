@@ -165,7 +165,7 @@ void CExplosionManager::Draw()
 	-------------------------------------
 	戻値：なし
 =========================================== */
-void CExplosionManager::Create(TTriType<float> pos,float size, float time, int damage, SLIME_LEVEL level)
+void CExplosionManager::Create(TTriType<float> pos,float size, float time, int damage, E_SLIME_LEVEL level)
 {
 	int comboNum = m_pCombo->FirstComboSet();		// コンボ配列の添え字を取得
 	m_pCombo->AddScore(level, comboNum);
@@ -198,9 +198,10 @@ void CExplosionManager::Create(TTriType<float> pos,float size, float time, int d
 	-------------------------------------
 	戻値：なし
 =========================================== */
-void CExplosionManager::Create(TTriType<float> pos, float size, float time, int comboNum, int damage)
+void CExplosionManager::Create(TTriType<float> pos, float size, float time, int comboNum, int damage, E_SLIME_LEVEL level)
 {
 	m_pCombo->AddCombo(comboNum);	// 対応するコンボ配列の値を加算する
+	m_pCombo->AddScore(level, comboNum);
 
 	// 爆発を検索
 	for (int i = 0; i < MAX_EXPLOSION_NUM; i++)
@@ -414,6 +415,8 @@ void CExplosionManager::SwitchExplode(E_SLIME_LEVEL slimeLevel, TPos3d<float> po
 	case LEVEL_3:		ExplodeTime = LEVEL_3_EXPLODE_TIME;		ExplodeDamage = LEVEL_3_EXPLODE_DAMAGE; break;
 	case LEVEL_4:		ExplodeTime = LEVEL_4_EXPLODE_TIME;		ExplodeDamage = LEVEL_4_EXPLODE_DAMAGE; break;
 	case LEVEL_FLAME:	ExplodeTime = LEVEL_1_EXPLODE_TIME;		ExplodeDamage = LEVEL_1_EXPLODE_DAMAGE; break;	// 炎スライムと爆発が接触した際は一番小さい爆発
+	case LEVEL_BOSS:	ExplodeTime = LEVEL_BOSS_EXPLODE_TIME;	ExplodeDamage = LEVEL_4_EXPLODE_DAMAGE; break;
+
 	}
 
 	Create(pos, ExplosionSize, ExplodeTime, comboNum, ExplodeDamage, slimeLevel);	// 爆発生成

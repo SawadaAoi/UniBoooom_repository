@@ -118,6 +118,8 @@ void CCombo::Update()
 =========================================== */
 void CCombo::Draw()
 {
+
+
 	int dispCnt = 0;	// •`‰æƒRƒ“ƒ{”
 
 	for (int i = 0; i < MAX_COMBO_NUM; i++)
