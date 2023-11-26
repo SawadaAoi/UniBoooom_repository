@@ -11,6 +11,7 @@
 	・2023/11/17 cpp,作成 Tei
 	・2023/11/19 描画処理、ゲージ出現、消す処理追加 Tei
 	・2023/11/22 ボスゲージ表示のフェードアウト追加、パラメータ調整
+	・2023/11/27 ボス出現処理追加	Sawada
 
 ========================================== */
 
@@ -127,7 +128,7 @@ void CBossgauge::Draw()
 	DirectX::XMFLOAT4X4 bossempty[3];
 
 	//ワールド行列はXとYのみを考慮して作成(Zは10ぐらいに配置
-	DirectX::XMMATRIX worldBossempty = DirectX::XMMatrixTranslation(BOSS_GAUGE_EMPTY_POS.x,BOSS_GAUGE_EMPTY_POS.y, 0.0f);
+	DirectX::XMMATRIX worldBossempty = DirectX::XMMatrixTranslation(BOSS_GAUGE_EMPTY_POS.x, BOSS_GAUGE_EMPTY_POS.y, 0.0f);
 	DirectX::XMStoreFloat4x4(&bossempty[0], DirectX::XMMatrixTranspose(worldBossempty));
 
 	//ビュー行列は2Dだとカメラの位置があまり関係ないので、単位行列を設定する（単位行列は後日
@@ -168,7 +169,7 @@ void CBossgauge::FillGaugeDraw(float textureRange)
 	DirectX::XMFLOAT4X4 bossfull[3];
 
 	//ワールド行列はXとYのみを考慮して作成(Zは10ぐらいに配置
-	DirectX::XMMATRIX worldBossfull = DirectX::XMMatrixTranslation(BOSS_GAUGE_FULL_POS.x, BOSS_GAUGE_FULL_POS.y + (BOSS_GAUGE_FULL_POS_Y_ADJUST - BOSS_GAUGE_FULL_POS_Y_ADJUST * textureRange ), 0.0f);
+	DirectX::XMMATRIX worldBossfull = DirectX::XMMatrixTranslation(BOSS_GAUGE_FULL_POS.x, BOSS_GAUGE_FULL_POS.y + (BOSS_GAUGE_FULL_POS_Y_ADJUST - BOSS_GAUGE_FULL_POS_Y_ADJUST * textureRange), 0.0f);
 	DirectX::XMStoreFloat4x4(&bossfull[0], DirectX::XMMatrixTranspose(worldBossfull));
 
 	//ビュー行列は2Dだとカメラの位置があまり関係ないので、単位行列を設定する（単位行列は後日
@@ -183,12 +184,12 @@ void CBossgauge::FillGaugeDraw(float textureRange)
 	Sprite::SetWorld(bossfull[0]);
 	Sprite::SetView(bossfull[1]);
 	Sprite::SetProjection(bossfull[2]);
-	Sprite::SetSize(DirectX::XMFLOAT2(BOSS_GAUGE_FULL_SIZE_X, (textureRange * BOSS_GAUGE_FULL_SIZE_Y_ADJUST) ));		//描画大きさ設定
-	Sprite::SetUVPos(DirectX::XMFLOAT2(0.0f, (1.0f - textureRange) ));		//描画のtextureの範囲設定
+	Sprite::SetSize(DirectX::XMFLOAT2(BOSS_GAUGE_FULL_SIZE_X, (textureRange * BOSS_GAUGE_FULL_SIZE_Y_ADJUST)));		//描画大きさ設定
+	Sprite::SetUVPos(DirectX::XMFLOAT2(0.0f, (1.0f - textureRange)));		//描画のtextureの範囲設定
 	Sprite::SetUVScale(DirectX::XMFLOAT2(1.0f, textureRange));				//表示するtextureの大きさ設定
 	Sprite::SetTexture(m_pBossGaugeFull);
 	Sprite::Draw();
-	Sprite::SetColor(DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f ));
+	Sprite::SetColor(DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f));
 
 }
 
@@ -212,16 +213,23 @@ bool CBossgauge::FirstBossGauge()
 	// ゲージフェード処理
 	else if (m_nGaugeCnt <= BOSS_GAUGE_FULL_TIME + FADE_TIME)
 	{
+		if (m_bGaugeFull == false)
+		{
+			m_bGaugeFull = true;		//ゲージ満タン
+
+			//←TODOボス生成ボスの方に持っていくかここで呼ぶか
+			m_pSlimeMng->CreateBoss();
+		}
 		m_nFadeCnt++;	//フェイドカウント
 		return true;
 	}
+
+
+
 	// フェイドで消える
 	if (m_nGaugeCnt >= BOSS_GAUGE_FULL_TIME + FADE_TIME)
 	{
-		m_bGaugeFull = true;		//ゲージ満タン
 		m_bShowBossGauge = false;	//ボス出現、ゲージフラグをfalseに、ゲージを消す
-
-		//←TODOボス生成ボスの方に持っていくかここで呼ぶか
 		return true;
 	}
 	return false;
@@ -247,6 +255,13 @@ bool CBossgauge::SecondBossGauge()
 	// ゲージフェード処理
 	else if (m_nGaugeCnt >= SECOND_EMPTY_BOSS_GAUGE + BOSS_GAUGE_FULL_TIME)
 	{
+		if (m_bGaugeFull == false)
+		{
+			m_bGaugeFull = true;		//ゲージ満タン
+
+			//←TODOボス生成ボスの方に持っていくかここで呼ぶか
+			m_pSlimeMng->CreateBoss();
+		}
 		m_nFadeCnt++;
 		return true;
 	}
@@ -256,6 +271,8 @@ bool CBossgauge::SecondBossGauge()
 		m_bShowBossGauge = true;
 		m_nAdjustTime = m_nGaugeCnt;
 		m_nFadeCnt = 0;
+		m_bGaugeFull = false;
+
 		return true;
 	}
 
@@ -267,5 +284,20 @@ bool CBossgauge::SecondBossGauge()
 		return true;
 	}
 	return false;
+}
+
+
+/* ========================================
+	スライム管理ポインタセット関数
+	----------------------------------------
+	内容：スライム管理のポインタをセットする
+	----------------------------------------
+	引数1：スライム管理ポインタ
+	----------------------------------------
+	戻値：なし
+=========================================== */
+void CBossgauge::SetSlimeManager(CSlimeManager * pSlimeMng)
+{
+	m_pSlimeMng = pSlimeMng;
 }
 

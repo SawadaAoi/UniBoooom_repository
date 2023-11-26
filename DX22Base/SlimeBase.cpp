@@ -90,16 +90,16 @@ CSlimeBase::~CSlimeBase()
 	-------------------------------------
 	内容：更新処理
 	-------------------------------------
-	引数1：プレイヤー当たり判定(Sphere)
+	引数1：プレイヤー座標(TPos3d)
 	-------------------------------------
 	戻値：無し
 =========================================== */
-void CSlimeBase::Update(TPos3d<float> playerSphere)
+void CSlimeBase::Update(TPos3d<float> playerPos)
 {
 
 	if (!m_bHitMove)	//敵が通常の移動状態の時
 	{
-		NormalMove(playerSphere);
+		NormalMove(playerPos);
 	}
 	else
 	{
@@ -269,6 +269,7 @@ void CSlimeBase::Reflect()
 {
 	m_fSpeed *= REFLECT_RATIO;
 }
+
 
 /* ========================================
 	カメラ情報セット関数

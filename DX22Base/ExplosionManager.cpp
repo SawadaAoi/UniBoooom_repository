@@ -15,9 +15,11 @@
 	・2023/11/10 他のオブジェクトと同一のカメラをセットするようにした Yamashita
 	・2023/11/13 Create関数の引数にtimeを追加 Suzumura
 	・2023/11/18 爆発時にSEを再生するように変更 Yamahsita
+	・2023/11/19 Create関数の引数にdamageを追加 Suzumura
 	・2023/11/20 コンボ数機能追加 Sawada
 	・2023/11/21 コンボ数機能の一部をコンボクラスに移動 Sawada
 	・2023/11/21 爆発時にBoooomUIの表示を追加 Tei
+
 
 ========================================== */
 
@@ -159,10 +161,11 @@ void CExplosionManager::Draw()
 	引数1：生成座標(x,y,z)
 	引数2：爆発の大きさ
 	引数3：爆発総時間
+	引数4：爆発のダメージ
 	-------------------------------------
 	戻値：なし
 =========================================== */
-void CExplosionManager::Create(TTriType<float> pos,float size, float time,E_SLIME_LEVEL level)
+void CExplosionManager::Create(TTriType<float> pos,float size, float time, int damage, E_SLIME_LEVEL level)
 {
 	int comboNum = m_pCombo->FirstComboSet();		// コンボ配列の添え字を取得
 	m_pCombo->AddScore(level, comboNum);
@@ -173,7 +176,7 @@ void CExplosionManager::Create(TTriType<float> pos,float size, float time,E_SLIM
 		// 使用済みの爆発はスルー
 		if (m_pExplosion[i] != nullptr) continue;
 
-		m_pExplosion[i] = new CExplosion(pos, size, time, comboNum, false);	// 座標を指定して生成
+		m_pExplosion[i] = new CExplosion(pos, size, time, comboNum, true, damage);	// 座標を指定して生成
 		m_pExplosion[i]->SetCamera(m_pCamera);
 		m_pSEExplodeSpeaker = CSound::PlaySound(m_pSEExplode);	//爆発の再生
 		m_pSEExplodeSpeaker->SetVolume(EXPLODE_VOLUME);			//音量調整
@@ -181,7 +184,6 @@ void CExplosionManager::Create(TTriType<float> pos,float size, float time,E_SLIM
 
 	}	
 }
-
 
 /* ========================================
 	生成処理関数
@@ -192,12 +194,14 @@ void CExplosionManager::Create(TTriType<float> pos,float size, float time,E_SLIM
 	引数2：爆発の大きさ
 	引数3：爆発総時間
 	引数4：コンボ配列添え字
+	引数5：爆発のダメージ
 	-------------------------------------
 	戻値：なし
 =========================================== */
-void CExplosionManager::Create(TTriType<float> pos, float size, float time, int comboNum,E_SLIME_LEVEL level)
+void CExplosionManager::Create(TTriType<float> pos, float size, float time, int comboNum, int damage, E_SLIME_LEVEL level)
 {
 	m_pCombo->AddCombo(comboNum);	// 対応するコンボ配列の値を加算する
+	m_pCombo->AddScore(level, comboNum);
 
 	// 爆発を検索
 	for (int i = 0; i < MAX_EXPLOSION_NUM; i++)
@@ -205,7 +209,7 @@ void CExplosionManager::Create(TTriType<float> pos, float size, float time, int 
 		// 使用済みの爆発はスルー
 		if (m_pExplosion[i] != nullptr) continue;
 
-		m_pExplosion[i] = new CExplosion(pos, size, time, comboNum, true);	// 座標を指定して生成
+		m_pExplosion[i] = new CExplosion(pos, size, time, comboNum, true, damage);	// 座標を指定して生成
 		m_pExplosion[i]->SetCamera(m_pCamera);
 		m_pSEExplodeSpeaker = CSound::PlaySound(m_pSEExplode);	//爆発の再生
 		m_pSEExplodeSpeaker->SetVolume(EXPLODE_VOLUME);			//音量調整
@@ -213,6 +217,8 @@ void CExplosionManager::Create(TTriType<float> pos, float size, float time, int 
 		return;
 	}
 }
+
+
 
 /* ========================================
 	爆発削除関数
@@ -369,20 +375,21 @@ void CExplosionManager::SwitchExplode(E_SLIME_LEVEL slimeLevel, TPos3d<float> po
 {
 	float ExplosionSize = slimeSize.x * EXPLODE_BASE_RATIO;
 	float ExplodeTime;
+	int ExplodeDamage;
 
 	// ぶつけられたスライムのレベルによって分岐
 	switch (slimeLevel) {
-	case LEVEL_1:		ExplodeTime = LEVEL_1_EXPLODE_TIME; break;
-	case LEVEL_2:		ExplodeTime = LEVEL_2_EXPLODE_TIME;	break;
-	case LEVEL_3:		ExplodeTime = LEVEL_3_EXPLODE_TIME;	break;
-	case LEVEL_4:		ExplodeTime = LEVEL_4_EXPLODE_TIME;	break;
-	case LEVEL_FLAME:	ExplodeTime = LEVEL_1_EXPLODE_TIME;	break;	// 炎スライムと爆発が接触した際は一番小さい爆発
+	case LEVEL_1:		ExplodeTime = LEVEL_1_EXPLODE_TIME;		ExplodeDamage = LEVEL_1_EXPLODE_DAMAGE; break;
+	case LEVEL_2:		ExplodeTime = LEVEL_2_EXPLODE_TIME;		ExplodeDamage = LEVEL_2_EXPLODE_DAMAGE; break;
+	case LEVEL_3:		ExplodeTime = LEVEL_3_EXPLODE_TIME;		ExplodeDamage = LEVEL_3_EXPLODE_DAMAGE; break;
+	case LEVEL_4:		ExplodeTime = LEVEL_4_EXPLODE_TIME;		ExplodeDamage = LEVEL_4_EXPLODE_DAMAGE; break;
+	case LEVEL_FLAME:	ExplodeTime = LEVEL_1_EXPLODE_TIME;		ExplodeDamage = LEVEL_1_EXPLODE_DAMAGE; break;	// 炎スライムと爆発が接触した際は一番小さい爆発
+	case LEVEL_BOSS:	ExplodeTime = LEVEL_BOSS_EXPLODE_TIME;	ExplodeDamage = LEVEL_4_EXPLODE_DAMAGE; break;
 	}
 
-	Create(pos, ExplosionSize, ExplodeTime, slimeLevel);	// 爆発生成
+	Create(pos, ExplosionSize, ExplodeTime, ExplodeDamage, slimeLevel);	// 爆発生成
 
 }
-
 /* ========================================
 	関数：爆発分岐関数
 	----------------------------------------
@@ -399,17 +406,22 @@ void CExplosionManager::SwitchExplode(E_SLIME_LEVEL slimeLevel, TPos3d<float> po
 {
 	float ExplosionSize = slimeSize.x * EXPLODE_BASE_RATIO;
 	float ExplodeTime;
+	int ExplodeDamage;
 
 	// ぶつけられたスライムのレベルによって分岐
 	switch (slimeLevel) {
-	case LEVEL_1:		ExplodeTime = LEVEL_1_EXPLODE_TIME; break;
-	case LEVEL_2:		ExplodeTime = LEVEL_2_EXPLODE_TIME;	break;
-	case LEVEL_3:		ExplodeTime = LEVEL_3_EXPLODE_TIME;	break;
-	case LEVEL_4:		ExplodeTime = LEVEL_4_EXPLODE_TIME;	break;
-	case LEVEL_FLAME:	ExplodeTime = LEVEL_1_EXPLODE_TIME;	break;	// 炎スライムと爆発が接触した際は一番小さい爆発
+	case LEVEL_1:		ExplodeTime = LEVEL_1_EXPLODE_TIME;		ExplodeDamage = LEVEL_1_EXPLODE_DAMAGE; break;
+	case LEVEL_2:		ExplodeTime = LEVEL_2_EXPLODE_TIME;		ExplodeDamage = LEVEL_2_EXPLODE_DAMAGE; break;
+	case LEVEL_3:		ExplodeTime = LEVEL_3_EXPLODE_TIME;		ExplodeDamage = LEVEL_3_EXPLODE_DAMAGE; break;
+	case LEVEL_4:		ExplodeTime = LEVEL_4_EXPLODE_TIME;		ExplodeDamage = LEVEL_4_EXPLODE_DAMAGE; break;
+	case LEVEL_FLAME:	ExplodeTime = LEVEL_1_EXPLODE_TIME;		ExplodeDamage = LEVEL_1_EXPLODE_DAMAGE; break;	// 炎スライムと爆発が接触した際は一番小さい爆発
+	case LEVEL_BOSS:	ExplodeTime = LEVEL_BOSS_EXPLODE_TIME;	ExplodeDamage = LEVEL_4_EXPLODE_DAMAGE; break;
+
 	}
 
-	Create(pos, ExplosionSize, ExplodeTime, comboNum, slimeLevel);	// 爆発生成
+	Create(pos, ExplosionSize, ExplodeTime, comboNum, ExplodeDamage, slimeLevel);	// 爆発生成
 	m_pCombo->AddScore(slimeLevel, comboNum);
+
 }
+
 
