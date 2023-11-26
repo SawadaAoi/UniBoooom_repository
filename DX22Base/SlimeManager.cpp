@@ -21,6 +21,7 @@
 	・2023/11/15 各モデルの読み込みをbaseから移動 yamashita
 	・2023/11/15 各モデルの読み込みを関数化 yamashita
 	・2023/11/21 BoooomUi表示する関数を呼び出す Tei
+	・2023/11/26 スライムと爆発の距離を調べ逃げるか判定する関数を作成 yamashita
 
 =========================================== */
 
@@ -79,7 +80,7 @@ CSlimeManager::CSlimeManager()
 	, m_pSEUnion(nullptr)
 	, m_pSEHitSlimeSpeaker(nullptr)
 	, m_pSEUnionSpeaker(nullptr)
-	//, m_pBoooomMng(nullptr)
+	, m_pExpMng(nullptr)
 {
 	//スライムのモデルと頂点シェーダーの読み込み
 	LoadModel();
@@ -140,7 +141,8 @@ CSlimeManager::~CSlimeManager()
 =========================================== */
 void CSlimeManager::Update(CExplosionManager* pExpMng)
 {
-	
+	CheckEscape();	//Updateの前に近くに爆発があるか確認する
+
 	// スライム更新
 	for (int i = 0; i < MAX_SLIME_NUM; i++)
 	{
@@ -564,6 +566,42 @@ void CSlimeManager::LoadModel()
 	m_pFlameModel->SetVertexShader(m_pVS);
 }
 
+
+/* ========================================
+	逃走判定関数
+	----------------------------------------
+	内容：スライムと爆発の位置関係を確認して逃げるかどうか判定する
+	----------------------------------------
+	引数1：なし
+	----------------------------------------
+	戻値：なし
+======================================== */
+void CSlimeManager::CheckEscape()
+{
+	for (int j = 0; j < MAX_SLIME_NUM; j++)
+	{
+		if (!m_pSlime[j]) { continue; }						//nullptrならスキップ
+		if (m_pSlime[j]->GetEscapeFlag()) { continue; }		//すでに逃げているならスキップ
+
+		TPos3d<float> slimePos = m_pSlime[j]->GetPos();	//スライムの座標をゲット
+		float distance = ESCAPE_DISTANCE;				//逃げる状態になる最大距離をセット
+		//範囲内に爆発があれば逃げるためのフラグと座標をセット
+		for (int i = 0; i < MAX_EXPLOSION_NUM; i++)
+		{
+			CExplosion* pExp = m_pExpMng->GetExplosionPtr(i);	//爆発のポインタを取得
+			if (!pExp) { continue; }							//nullptrならスキップ
+			TPos3d<float> expPos = pExp->GetPos();				//爆発の座標をゲット
+			float slimeExpDistance = slimePos.Distance(expPos);
+			if (distance > slimeExpDistance)	//より近い爆発が見つかった場合
+			{
+				distance = slimeExpDistance;
+				m_pSlime[j]->SetExplosionPos(expPos);	//爆発の座標をスライムにセット
+				m_pSlime[j]->SetEscapeFlag(true);		//逃げるフラグをONにする
+			}
+		}
+	}
+}
+
 /* ========================================
 	スライム配列取得関数
 	----------------------------------------
@@ -607,15 +645,15 @@ void CSlimeManager::SetPlayerPos(TPos3d<float> pos)
 }
 
 /* ========================================
-	BoooomUIセット関数
+	爆発マネージャーのポインタセット関数
 	----------------------------------------
-	内容：SceneGameのポインタをセットする
+	内容：爆発マネージャーのポインタをセットする
 	----------------------------------------
-	引数1：BoooomUIポインタ
+	引数1：爆発マネージャーのポインタ
 	----------------------------------------
 	戻値：無し
 ======================================== */
-void CSlimeManager::SetBoooomUI(CExplosionManager* pExpMng)
+void CSlimeManager::SetExplosionMng(CExplosionManager* pExpMng)
 {
 	m_pExpMng = pExpMng;
 }

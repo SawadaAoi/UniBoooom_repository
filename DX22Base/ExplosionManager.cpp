@@ -351,6 +351,7 @@ void CExplosionManager::SetCombo(CCombo * pCombo)
 ======================================== */
 CExplosion* CExplosionManager::GetExplosionPtr(int num)
 {
+	if (!m_pExplosion[num]) { return nullptr; }
 	return m_pExplosion[num];
 }
 

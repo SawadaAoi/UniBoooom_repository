@@ -19,6 +19,7 @@
 	・2023/11/15 各スライムのモデルのポインタと頂点シェーダーのポインタをbaseから移動 yamashita
 	・2023/11/15 各モデルの読み込みを関数化 yamashita
 	・2023/11/21 BoooomUI用変数追加 Tei
+	・2023/11/26 スライムと爆発の距離を調べ逃げるか判定する関数を作成 yamashita
 
    ======================================== */
 #ifndef __SLIME_MANAGER_H__
@@ -58,6 +59,8 @@ public:
 	E_SLIME_LEVEL GetRandomLevel();																	// ランダムなスライムのレベルを返す(1～3レべル)
 	void PreventOverlap(CSlimeBase* pMoveSlime, CSlimeBase* pStandSlime);							// スライム同士が移動中に接触した時の処理
 	void LoadModel();
+	void CheckEscape();
+
 	//ゲット関数
 	CSlimeBase* GetSlimePtr(int num);
 
@@ -65,7 +68,7 @@ public:
 	void SetPlayerPos(TPos3d<float> pos);
 	void SetScoreOHMng(CScoreOHManager* pScoreMng);
 
-	void SetBoooomUI(CExplosionManager* pExpMng);
+	void SetExplosionMng(CExplosionManager* pExpMng);
 private:
 	// ===メンバ変数宣言=====
 	int GetRandom(int min, int max);
@@ -81,6 +84,7 @@ private:
 	Model* m_pRedModel;
 	Model* m_pFlameModel;
 	CScoreOHManager* m_pScoreOHMng;
+	
 
 
 	XAUDIO2_BUFFER* m_pSEHitSlime;					//ハンマーでスライムを打った時のSEのデータ

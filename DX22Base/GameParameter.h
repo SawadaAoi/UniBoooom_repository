@@ -81,6 +81,8 @@ const int SLIME_LEVEL3_PER = 10;																// スライム_3の生成確立
 const int SLIME_LEVEL_FLAME_PER = 100 - SLIME_LEVEL1_PER - SLIME_LEVEL2_PER - SLIME_LEVEL3_PER;	// スライム_フレイムの生成確立
 const float MAX_SIZE_EXPLODE		= 5.0f;										// スライム4同士の爆発の大きさ
 const float EXPLODE_BASE_RATIO		= 1.5f;										// スライムの爆発接触での爆発の大きさのベース
+const float ESCAPE_DISTANCE			= 15.0f;									// 爆発がこの距離より近かったら逃げる範囲
+const int ESCAPE_TIME				= int(60 * 1.0f);							// この間隔で逃げる処理が終了する
 
 
 // スライム同士の反射の減算値
@@ -119,10 +121,10 @@ const int LEVEL_4x4_SCORE = 1000;			// 赤々の爆発のスコア
 const int MAX_BOOOOM_NUM = 10;					//最大boom数
 const int	MAX_EXPLOSION_NUM		= 20;		// 最大爆発数
 const float EXPAND_QUICK_RATE		= 0.2f;		// 膨張加速割合 
-const float LEVEL_1_EXPLODE_TIME = 0.5f * 60.0f;	// スライム_1の爆発総時間
-const float LEVEL_2_EXPLODE_TIME = 1.0f * 60.0f;	// スライム_2の爆発総時間
-const float LEVEL_3_EXPLODE_TIME = 2.0f * 60.0f;	// スライム_3の爆発総時間
-const float LEVEL_4_EXPLODE_TIME = 3.0f * 60.0f;	// スライム_4の爆発総時間
+const float LEVEL_1_EXPLODE_TIME = 10.5f * 60.0f;	// スライム_1の爆発総時間
+const float LEVEL_2_EXPLODE_TIME = 11.0f * 60.0f;	// スライム_2の爆発総時間
+const float LEVEL_3_EXPLODE_TIME = 12.0f * 60.0f;	// スライム_3の爆発総時間
+const float LEVEL_4_EXPLODE_TIME = 13.0f * 60.0f;	// スライム_4の爆発総時間
 const int	DELAY_TIME			 = 0.2f * 60;		// 遅延秒数
 
 // スコア =====================================================
