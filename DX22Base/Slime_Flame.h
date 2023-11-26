@@ -8,13 +8,13 @@
 	作成者	鈴村朋也
 
 	変更履歴
-	・2023/11/14 クラス作成
-	・2023/11/14 NormalMoveをオーバーライドして作成
+	・2023/11/14 クラス作成 Suzumura
+	・2023/11/14 NormalMoveをオーバーライドして作成 Suzumura
 	・2023/11/15 スライムのモデルと頂点シェーダーをmanagerから受け取るように変更 yamashita
 
 ========================================== */
-#ifndef __SLIME_FRAME__H__
-#define __SLIME_FRAME__H__
+#ifndef __SLIME_FLAME__H__
+#define __SLIME_FLAME__H__
 
 // =============== インクルード ===================
 #include "SlimeBase.h"
@@ -36,4 +36,4 @@ private:
 };
 
 
-#endif __SLIME_FRAME__H__
+#endif __SLIME_FLAME__H__

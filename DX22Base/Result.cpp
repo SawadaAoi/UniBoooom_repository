@@ -11,6 +11,9 @@
 
 	変更履歴
 	・2023/11/16 制作 takagi
+	・2023/11/20 仮テクスチャ表示、画面遷移 nieda
+	・2023/11/23 コントローラーに対応 nieda
+	・2023/11/24 コメント、定数定義、列挙追加 nieda
 
 ========================================== */
 
@@ -34,10 +37,18 @@
 =========================================== */
 CResult::CResult()
 {
-	m_pTexture = new Texture();
-	if (FAILED(m_pTexture->Create("Assets/Texture/result.png")))
+	// リザルト画像読込
+	m_pTexture[E_RESULT_RESULT] = new Texture();
+	if (FAILED(m_pTexture[E_RESULT_RESULT]->Create("Assets/Texture/gamestart.png")))
 	{
-		MessageBox(NULL, "Result result.png", "Error", MB_OK);
+		MessageBox(NULL, "Result gamestart.png", "Error", MB_OK);
+	}
+
+	// リザルト画面押下ボタン指示画像読込
+	m_pTexture[E_RESULT_BUTTON] = new Texture();
+	if (FAILED(m_pTexture[E_RESULT_BUTTON]->Create("Assets/Texture/pre_result.png")))
+	{
+		MessageBox(NULL, "Result pre_result.png", "Error", MB_OK);
 	}
 }
 
@@ -52,6 +63,11 @@ CResult::CResult()
 =========================================== */
 CResult::~CResult()
 {
+	// 破棄処理
+	for (int i = 0; i >= E_RESULT_MAX; ++i)
+	{
+		SAFE_DELETE(m_pTexture[i]);
+	}
 }
 
 /* ========================================
@@ -65,9 +81,10 @@ CResult::~CResult()
 =========================================== */
 void CResult::Update()
 {
-	if (IsKeyTrigger(VK_SPACE))
+	// スペースキーを押した時、またはコントローラのBボタンを押した時 
+	if (IsKeyTrigger(VK_SPACE) || IsKeyTriggerController(BUTTON_B))
 	{
-		m_bFinish = true;
+		m_bFinish = true;	// タイトルシーン終了フラグON
 	}
 }
 
@@ -80,10 +97,21 @@ void CResult::Update()
 	----------------------------------------
 	戻値：なし
 	======================================== */
-	//!memo(見たら消してー)：constが邪魔になったら外してね(.hの方も)
 void CResult::Draw()
 {
-	Draw2d(600.0f, 60.0f, 300.0f, 50.0f, m_pTexture);
+	// タイトル画像表示
+	Draw2d(TEXTURE_TITLE_TITLE_POSX
+		, TEXTURE_TITLE_TITLE_POSY
+		, TEXTURE_TITLE_TITLE_WIDTH
+		, TEXTURE_TITLE_TITLE_HEIGHT
+		, m_pTexture[E_RESULT_RESULT]);
+
+	// タイトル画面押下ボタン指示画像表示
+	Draw2d(TEXTURE_TITLE_BUTTON_POSX
+		, TEXTURE_TITLE_BUTTON_POSY
+		, TEXTURE_TITLE_BUTTON_WIDTH
+		, TEXTURE_TITLE_BUTTON_HEIGHT
+		, m_pTexture[E_RESULT_BUTTON]);
 }
 
 /* ========================================

@@ -201,7 +201,7 @@ void CStage::SlimeSlimeNormalMoveCollision()
 			// スライム同士が衝突した場合
 			if (m_pCollision->CheckCollisionSphere(pMoveSlime->GetSphere(), pStandSlime->GetSphere(), pMoveSlime->GetPos(), pStandSlime->GetPos()))
 			{
-				m_pSlimeMng->PreventOverlap(pMoveSlime, pStandSlime);	//スライムの位置を押し戻す処理
+				m_pSlimeMng->PreventSlimeSlimeOverlap(pMoveSlime, pStandSlime);	//スライムの位置を押し戻す処理
 
 				break;
 			}
