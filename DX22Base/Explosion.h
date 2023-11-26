@@ -17,8 +17,10 @@
 	・2023/11/13 爆発総時間の変数を追加 Suzumura
 	・2023/11/14 SphereInfoの変更に対応 Takagi
 	・2023/11/15 Objectクラスを継承したので修正　yamamoto
+	・2023/11/19 ボスに与えるダメージ変数を追加 Suzumura
 	・2023/11/20 コンボ数配列添え字の追加 Sawada
 	・2023/11/21 初期値の設定と、遅延処理の追加 Sawada
+	・2023/11/21 ボスに一度触ったかを判定用の関数、変数追加 Suzumura
 
 ======================================== */
 #ifndef __EXPLOSION_H__	//Explosion.hインクルードガード
@@ -32,6 +34,7 @@
 #include "Sphere.h"			//球定義ヘッダー
 #include "Camera.h"			//カメラ定義ヘッダー
 #include "Object.h"			//
+#include "BoooomUI.h"
 
 //=============== クラス定義 =====================
 class CExplosion
@@ -39,18 +42,22 @@ class CExplosion
 {
 public:
 	// ===メンバ関数宣言===
-	CExplosion(TPos3d<float> fPos, float fSize, float fTime, int comboNum, bool delayFlg);	//コンストラクタ
+	CExplosion(TPos3d<float> fPos, float fSize, float fTime, int comboNum, bool delayFlg, int nDamage);	//コンストラクタ
 	~CExplosion();												// デストラクタ
 	void Update();												// 更新関数
 	void Draw();												// 描画関数
 	void DisplayTimeAdd();										// 爆発表示カウント加算処理関数
-
 	void Delay();
+	void BossTouched();											//ボスに触ったときに呼び出す関数
 
-	bool GetDelFlg();							// 削除フラグ取得処理関数
-	int GetComboNum();							// コンボ配列番号取得
+	// セット関数
 	void SetCamera(const CCamera* m_pCamera);	// 他のオブジェクトと同一のカメラをセット
 
+	// ゲット関数
+	bool GetDelFlg();				// 削除フラグ取得処理関数
+	int GetDamage();				// ダメージ量取得関数
+	bool GetBossTouched();			// 既にボスと当たっているかどうか取得関数
+	int GetComboNum();				// コンボ配列番号取得
 
 private:
 	// ===メンバ変数宣言===
@@ -59,6 +66,8 @@ private:
 	int				m_fDelFrame;		// 爆発表示カウント
 	bool			m_bDelFlg;			// 爆発終了フラグ
 	float			m_fExplodeTime;		// 爆発総時間
+	float			m_fDamage;			// ボスに与えるダメージ量
+	bool			m_bBossTouched;		// 既にボスと接触いるかどうか
 
 	CGeometry*		m_3dModel;		// 爆発仮3Dモデル
 	const CCamera*	m_pCamera;	//カメラのポインタ

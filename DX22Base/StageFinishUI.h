@@ -36,7 +36,7 @@ public:
 	~CStageFinish();
 	void Update();
 	void Draw();
-
+	bool GetDispFlg();
 
 private:
 	void EditSprite();

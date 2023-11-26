@@ -11,9 +11,10 @@
 	・2023/11/20 cpp作成 Yamashita
 	・2023/11/20 ゲームのプレイ状態によってUIを表示する yamashita
 	・2023/11/20 UIが邪魔な時に非表示にできるように変更 yamashita
+	・2023/11/23 表示フラグ取得関数作成 nieda
 
 ========================================== */
-
+#include "DirectXTex/TextureLoad.h"		
 #include "StageFinishUI.h"
 #include "DirectWrite.h"
 #include "Sprite.h"
@@ -36,28 +37,30 @@ const int SCALE_Y = 100;	//UIの縦幅
 =========================================== */
 CStageFinish::CStageFinish(int* pPlayerHp, int* pTimeCnt)
 	:m_bDispFlg(false)
-	,m_eGameState(GAME_PLAY)
-	,m_pPlayerHp(nullptr)
+	, m_eGameState(GAME_PLAY)
+	, m_pPlayerHp(nullptr)
 	, m_pTimeCnt(nullptr)
-	,m_bDeleteDisp(false)
+	, m_bDeleteDisp(false)
 	, m_pTexGameClear(nullptr)
-	,m_pTexGameOver(nullptr)
+	, m_pTexGameOver(nullptr)
 {
 	m_pPlayerHp = pPlayerHp;	//プレイヤーのHPのポインタを取得
 	m_pTimeCnt = pTimeCnt;		//制限時間のポインタを取得
 
 	//ゲームクリアのテクスチャ読み込む
 	m_pTexGameClear = new Texture;
+
 	if (FAILED(m_pTexGameClear->Create("Assets/Texture/StageFinish/GameClear.png")))
 	{
-		MessageBox(NULL, "GameClear読み込み失敗", "Error", MB_OK);
+		MessageBox(NULL, "GameClear.png", "Error", MB_OK);
 	}
+
 
 	//ゲームオーバーのテクスチャ読み込む
 	m_pTexGameOver = new Texture;
 	if (FAILED(m_pTexGameOver->Create("Assets/Texture/StageFinish/GameOver.png")))
 	{
-		MessageBox(NULL, "GameOver読み込み失敗", "Error", MB_OK);
+		MessageBox(NULL, "GameOver.png", "Error", MB_OK);
 	}
 }
 
@@ -89,12 +92,15 @@ void CStageFinish::Update()
 {
 	//ゲームクリアかゲームオーバーを判断
 	//※ゲーム終了後にクリアとゲームオーバーが勝手に切り替わらないように「&&」で「GAME_PLAY」状態だったらを入れた
-	if		(0 >= *m_pPlayerHp && m_eGameState == GAME_PLAY)	
+	if (0 >= *m_pPlayerHp && m_eGameState == GAME_PLAY)
 	{	//タイマーが0になったらクリア状態に遷移
+
+		m_bDispFlg = true;
 		m_eGameState = GAME_OVER;
 	}
-	else if (0 >= *m_pTimeCnt && m_eGameState == GAME_PLAY)		
+	else if (0 >= *m_pTimeCnt && m_eGameState == GAME_PLAY)
 	{	//体力が0になったらゲームオーバー状態に遷移
+		m_bDispFlg = true;
 		m_eGameState = GAME_CLEAR;
 	}
 
@@ -118,9 +124,9 @@ void CStageFinish::Draw()
 {
 	//UI表示時に案内を表示
 	if (m_eGameState != GAME_PLAY)
-	{ 
-		std::string txt = "右SHIFTで クリア／ゲームオーバーのUI表示を切り替え";
-		DirectWrite::DrawString(txt,DirectX::XMFLOAT2(0.0f,0.0f));
+	{
+		std::string txt = "右SHIFTで クリア／ゲームオーバーのUI表示を切り替え";	// TODO	謎のエラーが発生したためコメント内容を変更
+		DirectWrite::DrawString(txt, DirectX::XMFLOAT2(0.0f, 0.0f));
 	}
 	if (m_bDeleteDisp) { return; }	//邪魔な時にUIを表示せずに終了
 
@@ -146,6 +152,20 @@ void CStageFinish::Draw()
 		Sprite::Draw();
 		break;
 	}
+}
+
+/* ========================================
+	表示フラグ取得関数
+	----------------------------------------
+	内容：UIの表示フラグの取得
+	----------------------------------------
+	引数1：なし
+	----------------------------------------
+	戻値：なし
+=========================================== */
+bool CStageFinish::GetDispFlg()
+{
+	return m_bDispFlg;
 }
 
 /* ========================================

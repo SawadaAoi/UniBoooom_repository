@@ -14,7 +14,9 @@
 	・2023/11/05 現段階のコーディング規約適用 takagi
 	・2023/11/07 コメント修正 takagi
 	・2023/11/16 オーバーライド関数追加 takagi
-	!memo(見たら消してー)：コピペしやすいように形だけ作っただけなので実装しなくていいです(プロトタイプの間は使うことはありません。)
+	・2023/11/22 仮テクスチャ表示、画面遷移 nieda
+	・2023/11/23 コントローラーに対応 nieda
+	・2023/11/24 コメント、定数定義、列挙追加 nieda
 
 ========================================== */
 
@@ -38,10 +40,18 @@
 =========================================== */
 CTitle::CTitle()
 {
-	m_pTexture = new Texture();
-	if (FAILED(m_pTexture->Create("Assets/Texture/gamestart.png")))
+	// タイトル画像読込
+	m_pTexture[E_TITLE_TITLE] = new Texture();
+	if (FAILED(m_pTexture[E_TITLE_TITLE]->Create("Assets/Texture/gamestart.png")))
 	{
 		MessageBox(NULL, "Title gamstart.png", "Error", MB_OK);
+	}
+
+	// タイトル画面押下ボタン指示画像読込
+	m_pTexture[E_TITLE_BUTTON] = new Texture();
+	if (FAILED(m_pTexture[E_TITLE_BUTTON]->Create("Assets/Texture/pre_title.png")))
+	{
+		MessageBox(NULL, "Title pre_title.png", "Error", MB_OK);
 	}
 }
 
@@ -56,6 +66,11 @@ CTitle::CTitle()
 =========================================== */
 CTitle::~CTitle()
 {
+	// 破棄処理
+	for (int i = 0; i >= E_TITLE_MAX; ++i)
+	{
+		SAFE_DELETE(m_pTexture[i]);
+	}
 }
 
 /* ========================================
@@ -69,9 +84,10 @@ CTitle::~CTitle()
 =========================================== */
 void CTitle::Update()
 {
-	if (IsKeyTrigger(VK_SPACE))
+	// スペースキーを押した時、またはコントローラのBボタンを押した時 
+	if (IsKeyTrigger(VK_SPACE) || IsKeyTriggerController(BUTTON_B))
 	{
-		m_bFinish = true;
+		m_bFinish = true;	// タイトルシーン終了フラグON
 	}
 }
 
@@ -84,10 +100,21 @@ void CTitle::Update()
 	----------------------------------------
 	戻値：なし
 	======================================== */
-//!memo(見たら消してー)：constが邪魔になったら外してね(.hの方も)
 void CTitle::Draw()
 {
-	Draw2d(600.0f, 100.0f, 300.0f, 50.0f, m_pTexture);
+	// タイトル画像表示
+	Draw2d(TEXTURE_TITLE_TITLE_POSX
+		, TEXTURE_TITLE_TITLE_POSY
+		, TEXTURE_TITLE_TITLE_WIDTH
+		, TEXTURE_TITLE_TITLE_HEIGHT
+		, m_pTexture[E_TITLE_TITLE]);
+
+	// タイトル画面押下ボタン指示画像表示
+	Draw2d(TEXTURE_TITLE_BUTTON_POSX
+		, TEXTURE_TITLE_BUTTON_POSY
+		, TEXTURE_TITLE_BUTTON_WIDTH
+		, TEXTURE_TITLE_BUTTON_HEIGHT
+		, m_pTexture[E_TITLE_BUTTON]);
 }
 
 /* ========================================

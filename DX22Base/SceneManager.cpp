@@ -52,11 +52,12 @@
 	戻値：なし
 =========================================== */
 CSceneManager::CSceneManager()
-	:m_pScene(nullptr)						//シーン
-	,m_ePastScene(CScene::E_TYPE_NONE)		//前のシーン
-	,m_eNextScene(CScene::E_TYPE_RESULT)	//シーン遷移先
-	,m_bFinish(false)						//シーン管理を開始
-	,m_pFade(nullptr)						//フェード
+
+	: m_pScene(nullptr)						//シーン
+	, m_ePastScene(CScene::E_TYPE_NONE)		//前のシーン
+	, m_eNextScene(CScene::E_TYPE_TITLE)	//シーン遷移先
+	, m_bFinish(false)						//シーン管理を開始
+  ,m_pFade(nullptr)						//フェード
 {
 	// =============== 動的確保 ===================
 	if (!m_pScene)	//ヌルチェック

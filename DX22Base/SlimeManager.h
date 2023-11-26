@@ -1,89 +1,122 @@
 /* ========================================
    HEW/UniBoooom!!
    ---------------------------------------
-   ƒXƒ‰ƒCƒ€ƒx[ƒX ƒNƒ‰ƒX’è‹`
+   ã‚¹ãƒ©ã‚¤ãƒ ãƒ™ãƒ¼ã‚¹ ã‚¯ãƒ©ã‚¹å®šç¾©
    ---------------------------------------
    SlimeManager.h
 
-   ì¬Ò —é‘º •ü–ç
+   ä½œæˆè€… éˆ´æ‘ æœ‹ä¹Ÿ
 
-   •ÏX—š—ğ
-	E2023/11/05 ƒXƒ‰ƒCƒ€ƒ}ƒl[ƒWƒƒ[ƒNƒ‰ƒXì¬ Suzumura
-	E2023/11/08 ƒXƒ‰ƒCƒ€“¯m‚ªÚG‚µ‚½Û‚Ì•ªŠòˆ—‚ğì¬(•ªŠò‚µ‚½Œã‚És‚¤ˆ—‚Í–¢À‘•@¦TODO‚ğ‚Â‚¯‚Ä‚¨‚¢‚½)‚Ì Yamashita
-	E2023/11/08 Œ‹‡ˆ—‚ğì¬(Œ‹‡Œã‚Ì¶¬ˆ—‚Í–¢À‘• Slime_2`Slime_4‚ª‚Ü‚¾–³‚¢‚©‚ç) Yamashita
-	E2023/11/09 ƒXƒ‰ƒCƒ€¶¬ŠÖ”‚Ì–¼‘O•ÏX Sawada
-	E2023/11/09 ƒXƒ‰ƒCƒ€‚Ì‚Ì¶¬‚ğƒ‰ƒ“ƒ_ƒ€‚É•ÏX Yamashita
-	E2023/11/09 ƒvƒŒƒCƒ„[À•Wæ“¾‚ÌŒ^‚ğTPos3d<float>‚É•ÏX Sawada
-	E2023/11/11 ƒXƒ‰ƒCƒ€“¯m‚ªd‚È‚ç‚È‚¢‚æ‚¤‚É‚·‚éŠÖ”‚ğì¬ Yamashita
-	E2023/11/14 ‰ŠƒXƒ‰ƒCƒ€‚ÌÚGˆ—‚ğì¬ Suzumura
-	E2023/11/15 ŠeƒXƒ‰ƒCƒ€‚Ìƒ‚ƒfƒ‹‚Ìƒ|ƒCƒ“ƒ^‚Æ’¸“_ƒVƒF[ƒ_[‚Ìƒ|ƒCƒ“ƒ^‚ğbase‚©‚çˆÚ“® yamashita
-	E2023/11/15 Šeƒ‚ƒfƒ‹‚Ì“Ç‚İ‚İ‚ğŠÖ”‰» yamashita
+   å¤‰æ›´å±¥æ­´
+	ãƒ»2023/11/05 ã‚¹ãƒ©ã‚¤ãƒ ãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼ã‚¯ãƒ©ã‚¹ä½œæˆ Suzumura
+	ãƒ»2023/11/08 ã‚¹ãƒ©ã‚¤ãƒ åŒå£«ãŒæ¥è§¦ã—ãŸéš›ã®åˆ†å²å‡¦ç†ã‚’ä½œæˆ(åˆ†å²ã—ãŸå¾Œã«è¡Œã†å‡¦ç†ã¯æœªå®Ÿè£…ã€€â€»TODOã‚’ã¤ã‘ã¦ãŠã„ãŸ)ã® Yamashita
+	ãƒ»2023/11/08 çµåˆå‡¦ç†ã‚’ä½œæˆ(çµåˆå¾Œã®ç”Ÿæˆå‡¦ç†ã¯æœªå®Ÿè£… Slime_2ï½Slime_4ãŒã¾ã ç„¡ã„ã‹ã‚‰) Yamashita
+	ãƒ»2023/11/09 ã‚¹ãƒ©ã‚¤ãƒ ç”Ÿæˆé–¢æ•°ã®åå‰å¤‰æ›´ Sawada
+	ãƒ»2023/11/09 ã‚¹ãƒ©ã‚¤ãƒ ã®ã®ç”Ÿæˆã‚’ãƒ©ãƒ³ãƒ€ãƒ ã«å¤‰æ›´ Yamashita
+	ãƒ»2023/11/09 ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼åº§æ¨™å–å¾—ã®å‹ã‚’TPos3d<float>ã«å¤‰æ›´ Sawada
+	ãƒ»2023/11/11 ã‚¹ãƒ©ã‚¤ãƒ åŒå£«ãŒé‡ãªã‚‰ãªã„ã‚ˆã†ã«ã™ã‚‹é–¢æ•°ã‚’ä½œæˆ Yamashita
+	ãƒ»2023/11/14 ç‚ã‚¹ãƒ©ã‚¤ãƒ ã®æ¥è§¦æ™‚å‡¦ç†ã‚’ä½œæˆ Suzumura
+	ãƒ»2023/11/15 å„ã‚¹ãƒ©ã‚¤ãƒ ã®ãƒ¢ãƒ‡ãƒ«ã®ãƒã‚¤ãƒ³ã‚¿ã¨é ‚ç‚¹ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼ã®ãƒã‚¤ãƒ³ã‚¿ã‚’baseã‹ã‚‰ç§»å‹• yamashita
+	ãƒ»2023/11/15 å„ãƒ¢ãƒ‡ãƒ«ã®èª­ã¿è¾¼ã¿ã‚’é–¢æ•°åŒ– yamashita
+	ãƒ»2023/11/19 ãƒœã‚¹ã‚¹ãƒ©ã‚¤ãƒ ç”¨ã®é…åˆ—ã‚’è¿½åŠ  Suzumura
+	ãƒ»2023/11/21 BoooomUIç”¨å¤‰æ•°è¿½åŠ  Tei
+	ãƒ»2023/11/26 ãƒœã‚¹ç”Ÿæˆç”¨é–¢æ•°è¿½åŠ 	Sawada
 
    ======================================== */
 #ifndef __SLIME_MANAGER_H__
 #define __SLIME_MANAGER_H__
 
-// =============== ƒCƒ“ƒNƒ‹[ƒh ===================
+// =============== ã‚¤ãƒ³ã‚¯ãƒ«ãƒ¼ãƒ‰ ===================
 #include "TriType.h"
-#include "SlimeBase.h"
+//#include "SlimeBase.h"
 #include "ExplosionManager.h"
 #include "Camera.h"
 #include "ExplosionManager.h"
-#include "GameParameter.h"		//’è”’è‹`—pƒwƒbƒ_[
+#include "Slime_BossBase.h"
+#include "GameParameter.h"		//å®šæ•°å®šç¾©ç”¨ãƒ˜ãƒƒãƒ€ãƒ¼
 #include "Sound.h"
+#include "ScoreOHManager.h"
 
-// =============== ’è”’è‹` =======================
+// =============== å®šæ•°å®šç¾© =======================
 #if MODE_GAME_PARAMETER
 
 #else
-const int MAX_SLIME_NUM = 30;	//ƒXƒ‰ƒCƒ€‚ÌÅ‘å¶¬”
+const int MAX_SLIME_NUM = 30;			// ã‚¹ãƒ©ã‚¤ãƒ ã®æœ€å¤§ç”Ÿæˆæ•°
+const int MAX_BOSS_SLIME_NUM = 5;		// ãƒœã‚¹ã‚¹ãƒ©ã‚¤ãƒ ã®æœ€å¤§ç”Ÿæˆæ•°
+
 #endif
-// =============== ƒNƒ‰ƒX’è‹` =====================
+// =============== ã‚¯ãƒ©ã‚¹å®šç¾© =====================
 class CSlimeManager
 {
 public:
-	// ===ƒvƒƒgƒ^ƒCƒvéŒ¾===
+	// ===ãƒ—ãƒ­ãƒˆã‚¿ã‚¤ãƒ—å®£è¨€===
 	CSlimeManager();
 	~CSlimeManager();
 
 	void Update(CExplosionManager* pExpMng);
 	void Draw();
 	void Create(E_SLIME_LEVEL level);
-	void HitBranch(int HitSlimeArrayNum,int standSlimeArrayNum,CExplosionManager* pExpMng);			// ƒXƒ‰ƒCƒ€‚ÌÚG‚ª‹N‚«‚½Û‚Ì•ªŠòˆ—
-	bool HitFlameBranch(int HitSlimeNum, int StandSlimeNum, CExplosionManager* pExpMng);				// ƒtƒŒƒCƒ€ƒXƒ‰ƒCƒ€‚Æ‚ÌÚG‚ª‹N‚«‚½Û‚Ì•ªŠòˆ—
-	void UnionSlime(E_SLIME_LEVEL level, TPos3d<float> pos);										// ƒXƒ‰ƒCƒ€‚ÌŒ‹‡ˆ—
-	void TouchExplosion(int DelSlime, CExplosionManager* pExpMng, int comboNum);									// ƒXƒ‰ƒCƒ€‚Ì”š”­ˆ—
-	E_SLIME_LEVEL GetRandomLevel();																	// ƒ‰ƒ“ƒ_ƒ€‚ÈƒXƒ‰ƒCƒ€‚ÌƒŒƒxƒ‹‚ğ•Ô‚·(1`3ƒŒ‚×ƒ‹)
-	void PreventOverlap(CSlimeBase* pMoveSlime, CSlimeBase* pStandSlime);							// ƒXƒ‰ƒCƒ€“¯m‚ªˆÚ“®’†‚ÉÚG‚µ‚½‚Ìˆ—
-	void LoadModel();
-	//ƒQƒbƒgŠÖ”
-	CSlimeBase* GetSlimePtr(int num);
+	void CreateBoss();
 
-	void SetCamera(CCamera* pCamera);		//ƒXƒ‰ƒCƒ€‚ğˆÚ‚·ƒJƒƒ‰‚Ìƒ|ƒCƒ“ƒ^‚ğƒZƒbƒg
+	//-- ãƒãƒ¼ãƒãƒ«ã€ãã®ä»–
+	void HitBranch(int HitSlimeArrayNum,int standSlimeArrayNum,CExplosionManager* pExpMng);			// ã‚¹ãƒ©ã‚¤ãƒ ã®æ¥è§¦ãŒèµ·ããŸéš›ã®åˆ†å²å‡¦ç†
+	bool HitFlameBranch(int HitSlimeNum, int StandSlimeNum, CExplosionManager* pExpMng);			// ãƒ•ãƒ¬ã‚¤ãƒ ã‚¹ãƒ©ã‚¤ãƒ ã¨ã®æ¥è§¦ãŒèµ·ããŸéš›ã®åˆ†å²å‡¦ç†
+	void UnionSlime(E_SLIME_LEVEL level, TPos3d<float> pos);										// ã‚¹ãƒ©ã‚¤ãƒ ã®çµåˆå‡¦ç†
+	void TouchExplosion(int DelSlime, CExplosionManager* pExpMng, int comboNum);					// ã‚¹ãƒ©ã‚¤ãƒ ã®çˆ†ç™ºå‡¦ç†
+
+	//-- ãƒœã‚¹
+	void HitSlimeBossBranch(int HitSlimeNum, int StandBossNum, CExplosionManager* pExpMng);
+	void HitBossSlimeBranch(int HitBossNum, int StandSlimeNum, CExplosionManager* pExpMng);
+	void HitBossBossBranch(int HitBossNum, int StandBossNum, CExplosionManager* pExpMng);
+	void TouchBossExplosion(int BossSlime, CExplosionManager* pExpMng, int ExpNum);
+
+
+	E_SLIME_LEVEL GetRandomLevel();																	// ãƒ©ãƒ³ãƒ€ãƒ ãªã‚¹ãƒ©ã‚¤ãƒ ã®ãƒ¬ãƒ™ãƒ«ã‚’è¿”ã™(1ï½3ãƒ¬ã¹ãƒ«)
+	void PreventSlimeSlimeOverlap(CSlimeBase* pMoveSlime, CSlimeBase* pStandSlime);							// ã‚¹ãƒ©ã‚¤ãƒ åŒå£«ãŒç§»å‹•ä¸­ã«æ¥è§¦ã—ãŸæ™‚ã®å‡¦ç†
+	void PreventSlimeBossOverlap(CSlimeBase* pMoveSlime, CSlime_BossBase* pStandBoss);							// ã‚¹ãƒ©ã‚¤ãƒ åŒå£«ãŒç§»å‹•ä¸­ã«æ¥è§¦ã—ãŸæ™‚ã®å‡¦ç†
+	void PreventBossSlimeOverlap(CSlime_BossBase* pMoveBoss, CSlimeBase* pStandSlime);							// ã‚¹ãƒ©ã‚¤ãƒ åŒå£«ãŒç§»å‹•ä¸­ã«æ¥è§¦ã—ãŸæ™‚ã®å‡¦ç†
+	void PreventBossBossOverlap(CSlime_BossBase* pMoveBoss, CSlime_BossBase* pStandBoss);							// ã‚¹ãƒ©ã‚¤ãƒ åŒå£«ãŒç§»å‹•ä¸­ã«æ¥è§¦ã—ãŸæ™‚ã®å‡¦ç†
+	void LoadModel();
+	void OutOfRange();
+  
+	// ã‚²ãƒƒãƒˆé–¢æ•°
+	CSlimeBase* GetSlimePtr(int num);
+	CSlime_BossBase* GetBossSlimePtr(int num);
+
+	// ã‚»ãƒƒãƒˆé–¢æ•°
+	void SetCamera(CCamera* pCamera);		//ã‚¹ãƒ©ã‚¤ãƒ ã‚’ç§»ã™ã‚«ãƒ¡ãƒ©ã®ãƒã‚¤ãƒ³ã‚¿ã‚’ã‚»ãƒƒãƒˆ
 	void SetPlayerPos(TPos3d<float> pos);
+	void SetScoreOHMng(CScoreOHManager* pScoreMng);
+
+	void SetBoooomUI(CExplosionManager* pExpMng);
 private:
-	// ===ƒƒ“ƒo•Ï”éŒ¾=====
+	// ===ãƒ¡ãƒ³ãƒå¤‰æ•°å®£è¨€=====
 	int GetRandom(int min, int max);
 
 	CSlimeBase* m_pSlime[MAX_SLIME_NUM];
+	CSlime_BossBase* m_pBoss[MAX_BOSS_SLIME_NUM];
 	CCamera* m_pCamera;
 
-	TPos3d<float> m_pPlayerPos;	// ƒvƒŒƒCƒ„[‚ÌÀ•W
+	TPos3d<float> m_pPlayerPos;	// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®åº§æ¨™
 	VertexShader* m_pVS;
 	Model* m_pBlueModel;
 	Model* m_pGreenModel;
 	Model* m_pYellowModel;
 	Model* m_pRedModel;
 	Model* m_pFlameModel;
+	Model* m_pBossModel;
 
-	XAUDIO2_BUFFER* m_pSEHitSlime;					//ƒnƒ“ƒ}[‚ÅƒXƒ‰ƒCƒ€‚ğ‘Å‚Á‚½‚ÌSE‚Ìƒf[ƒ^
-	XAUDIO2_BUFFER* m_pSEUnion;					//ƒnƒ“ƒ}[‚ÅƒXƒ‰ƒCƒ€‚ğ‘Å‚Á‚½‚ÌSE‚Ìƒf[ƒ^
-	IXAudio2SourceVoice* m_pSEHitSlimeSpeaker;		//ƒnƒ“ƒ}[‚ÅƒXƒ‰ƒCƒ€‚ğ‘Å‚Á‚½‚ÌSE‚ğ•·‚«æ‚é‘¤
-	IXAudio2SourceVoice* m_pSEUnionSpeaker;		//ƒnƒ“ƒ}[‚ÅƒXƒ‰ƒCƒ€‚ğ‘Å‚Á‚½‚ÌSE‚ğ•·‚«æ‚é‘¤
-
-	int m_CreateCnt;	// ¶¬ŠÔŠu—pƒJƒEƒ“ƒg
+	CScoreOHManager* m_pScoreOHMng;
 
 
+	XAUDIO2_BUFFER* m_pSEHitSlime;					//ãƒãƒ³ãƒãƒ¼ã§ã‚¹ãƒ©ã‚¤ãƒ ã‚’æ‰“ã£ãŸæ™‚ã®SEã®ãƒ‡ãƒ¼ã‚¿
+	XAUDIO2_BUFFER* m_pSEUnion;					//ãƒãƒ³ãƒãƒ¼ã§ã‚¹ãƒ©ã‚¤ãƒ ã‚’æ‰“ã£ãŸæ™‚ã®SEã®ãƒ‡ãƒ¼ã‚¿
+	IXAudio2SourceVoice* m_pSEHitSlimeSpeaker;		//ãƒãƒ³ãƒãƒ¼ã§ã‚¹ãƒ©ã‚¤ãƒ ã‚’æ‰“ã£ãŸæ™‚ã®SEã‚’èãå–ã‚‹å´
+	IXAudio2SourceVoice* m_pSEUnionSpeaker;		//ãƒãƒ³ãƒãƒ¼ã§ã‚¹ãƒ©ã‚¤ãƒ ã‚’æ‰“ã£ãŸæ™‚ã®SEã‚’èãå–ã‚‹å´
+
+	int m_CreateCnt;	// ç”Ÿæˆé–“éš”ç”¨ã‚«ã‚¦ãƒ³ãƒˆ
+	TPos3d<float> m_oldCreatePos;	//1ã¤å‰ã®ã‚¹ãƒ©ã‚¤ãƒ ã®ç”Ÿæˆå ´æ‰€
+	CExplosionManager* m_pExpMng;
 	
 };
 
