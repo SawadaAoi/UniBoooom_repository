@@ -125,7 +125,7 @@ void CStageFinish::Draw()
 	//UI表示時に案内を表示
 	if (m_eGameState != GAME_PLAY)
 	{
-		std::string txt = /*"右SHIFTでクリア／ゲームオーバーのUI表示を切り替え"*/"test";	// TODO	謎のエラーが発生したためコメント内容を変更
+		std::string txt = "右SHIFTで クリア／ゲームオーバーのUI表示を切り替え";	// TODO	謎のエラーが発生したためコメント内容を変更
 		DirectWrite::DrawString(txt, DirectX::XMFLOAT2(0.0f, 0.0f));
 	}
 	if (m_bDeleteDisp) { return; }	//邪魔な時にUIを表示せずに終了
