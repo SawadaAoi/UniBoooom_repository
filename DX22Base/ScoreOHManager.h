@@ -8,7 +8,8 @@
    作成者 山本　凱翔
 
    変更履歴
-	・2023/11/17　作成
+	・2023/11/17　作成 yamamoto
+	・2023/11/25　使っていない関数を削除 yamamoto
 ========================================== */
 #ifndef __SCORE_MANAGER_H__
 #define __SCORE_MANAGER_H__
@@ -30,7 +31,6 @@ public:
 	void Draw();		 		//描画関数
 	void DisplayOverheadScore(TTriType<float> pos,int score, float height);			// スコアの生成
 	void DisplayOverheadScore(TTriType<float> pos, E_SLIME_LEVEL level);			// スコアの生成
-	void AddScore();			//スコア加算
 	void DeleteCheck();
 	void SetCamera(const CCamera * pCamera);
 	

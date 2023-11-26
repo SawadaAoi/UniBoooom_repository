@@ -8,7 +8,8 @@
 	作成者	山本凱翔
 
 	変更履歴
-	・2023/11/18　作成
+	・2023/11/18　作成 yamamoto
+	・2023/11/25　コメント訂正、使っていない関数削除 yamamoto
 
 ========================================== */
 
@@ -57,7 +58,15 @@ CScoreOHManager::~CScoreOHManager()
 		SAFE_DELETE(m_pScore[i]);
 	}
 }
-
+/* ========================================
+	更新処理関数
+	-------------------------------------
+	内容：更新処理
+	-------------------------------------
+	引数1：なし
+	-------------------------------------
+	戻値：なし
+=========================================== */
 void CScoreOHManager::Update()
 {
 	// 爆発を検索
@@ -75,7 +84,15 @@ void CScoreOHManager::Update()
 
 	DeleteCheck();	// 削除チェック
 }
-
+/* ========================================
+	描画処理関数
+	-------------------------------------
+	内容：描画処理
+	-------------------------------------
+	引数1：なし
+	-------------------------------------
+	戻値：無し
+=========================================== */
 void CScoreOHManager::Draw()
 {
 	// slimeの上に表示するスコアの検索
@@ -84,10 +101,8 @@ void CScoreOHManager::Draw()
 		// 未使用のスコアはスルー
 		if (m_pScore[i] == nullptr) continue;
 	
-		m_pScore[i]->Draw(); // 爆発の描画
+		m_pScore[i]->Draw(); // スコアの描画
 	}
-
-	//トータルスコアの表示
 
 }
 /* ========================================
@@ -127,31 +142,27 @@ void CScoreOHManager::DisplayOverheadScore(TTriType<float> pos,int score,float h
 =========================================== */
 void CScoreOHManager::DisplayOverheadScore(TTriType<float> pos, E_SLIME_LEVEL level)
 {
-	float height; int score;
+	 int score;
 	float ScoreTime;
 	switch (level) {
-	case LEVEL_1:		score = LEVEL_1_SCORE; height = LEVEL_1_HEIGHT; ScoreTime = LEVEL_1_EXPLODE_TIME; break;
-	case LEVEL_2:		score = LEVEL_2_SCORE; height = LEVEL_2_HEIGHT; ScoreTime = LEVEL_2_EXPLODE_TIME; break;
-	case LEVEL_3:		score = LEVEL_3_SCORE; height = LEVEL_3_HEIGHT; ScoreTime = LEVEL_3_EXPLODE_TIME; break;
-	case LEVEL_4:		score = LEVEL_4_SCORE; height = LEVEL_4_HEIGHT; ScoreTime = LEVEL_4_EXPLODE_TIME; break;
-	case LEVEL_FLAME:	score = LEVEL_1_SCORE; height = LEVEL_1_HEIGHT; ScoreTime = LEVEL_1_EXPLODE_TIME; break;
+	case LEVEL_1:		score = LEVEL_1_SCORE;  ScoreTime = LEVEL_1_EXPLODE_TIME; break;
+	case LEVEL_2:		score = LEVEL_2_SCORE;  ScoreTime = LEVEL_2_EXPLODE_TIME; break;
+	case LEVEL_3:		score = LEVEL_3_SCORE;  ScoreTime = LEVEL_3_EXPLODE_TIME; break;
+	case LEVEL_4:		score = LEVEL_4_SCORE;  ScoreTime = LEVEL_4_EXPLODE_TIME; break;
+	case LEVEL_FLAME:	score = LEVEL_1_SCORE;  ScoreTime = LEVEL_1_EXPLODE_TIME; break;
 	}
-	// 爆発を検索
+	// スコアを検索
 	for (int i = 0; i < MAX_EXPLOSION_NUM; i++)
 	{
-		// 使用済みの爆発はスルー
+		// 使用済みのスコアはスルー
 		if (m_pScore[i] != nullptr) continue;
 
-		m_pScore[i] = new CScoreOverHead(pos, score, height, ScoreTime,true);
+		m_pScore[i] = new CScoreOverHead(pos, score, SLIME_SCORE_HEIGHT, ScoreTime,true);
 		m_pScore[i]->SetCamera(m_pCamera);
 		break;
 	}
 }
 
-void CScoreOHManager::AddScore()
-{
-
-}
 /* ========================================
 	スコア削除関数
 	----------------------------------------
