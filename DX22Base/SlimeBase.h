@@ -54,8 +54,10 @@ enum E_SLIME_LEVEL
 	LEVEL_2,		//2段階目
 	LEVEL_3,		//3段階目
 	LEVEL_4,		//4段階目
+	LEVEL_4x4,		//赤アか
 
-	LEVEL_FLAME,	// フレイムスライム
+	LEVEL_FLAME,			// フレイムスライム
+	LEVEL_BOSS = 999,		// ボススライム	(最強)
 
 	MAX_LEVEL = LEVEL_4	//最大レベルを設定	(スライムの段階が増えたら変更)
 };
@@ -64,6 +66,12 @@ enum E_SLIME_LEVEL
 #if MODE_GAME_PARAMETER
 #else
 const float ENEMY_MOVE_SPEED = 0.01f;	//敵の移動速度
+const int FIRST_EXPLOSION_SCORE = 1000;		//赤同士の最初の爆発のスコア
+const int LEVEL_1_SCORE = 10;				// スライム_1のスコア
+const int LEVEL_2_SCORE = 30;				// スライム_2のスコア
+const int LEVEL_3_SCORE = 100;				// スライム_3のスコア
+const int LEVEL_4_SCORE = 500;				// スライム_4のスコア
+const int LEVEL_4x4_SCORE = 500;				// スライム_4のスコア
 #endif
 // =============== クラス定義 =====================
 
@@ -74,8 +82,8 @@ public:
 	// ===プロトタイプ宣言===
 	CSlimeBase();
 	~CSlimeBase();
-	void Update(TPos3d<float> playerPos);
-	void Draw(const CCamera* pCamera);
+	virtual void Update(TPos3d<float> playerPos);
+	virtual void Draw(const CCamera* pCamera);
 
 	virtual void NormalMove(TPos3d<float> playerSphere);	// 通常時の移動処理
 	void RandomMove();

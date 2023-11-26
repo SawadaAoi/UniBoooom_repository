@@ -67,6 +67,7 @@ public:
 	// セット関数
 	void SetCamera(const CCamera* pCamera);
 	bool GetAttackFlg();
+	
 
 private:
 	// ===メンバ変数宣言=====

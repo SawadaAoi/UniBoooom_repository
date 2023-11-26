@@ -12,6 +12,7 @@
 	・2023/11/19 18の続き takagi
 	・2023/11/20 整理 takagi
 	・2023/11/21 更新・描画処理分割 takagi
+	・2023/11/23 IsFade()関数追加・細かい書き換え takagi
 
 ========================================== */
 
@@ -34,19 +35,21 @@
 // =============== 定数定義 =====================
 const std::string VS_PASS("Assets/Shader/VsFade.cso");	//テクスチャのパス名
 const std::string PS_PASS("Assets/Shader/PsFade.cso");	//テクスチャのパス名
-const std::string TEX_PASS("Assets/Fade.png");			//テクスチャのパス名
+const std::string TEX_PASS("Assets/Texture/Fade.png");	//テクスチャのパス名
 const TPos3d<float> INIT_POS(640.0f, 360.0f, 0.0f);		//位置初期化
 const TTriType<float> INIT_SCALE(80.0f, 80.0f, 0.0f);	//初期拡縮
 const TTriType<float> INIT_RADIAN(0.0f);				//初期回転
 const int FRAME_MIN(0);									//フェード時間の最小
-const int FRAME_TURNING_1(50);							//拡縮反転１反転
-const int FRAME_TURNING_2(100);							//拡縮反転２反転
-const int FRAME_MAX(150);								//フェード時間の最大
+const int FRAME_TURNING_1(50);							//拡縮反転１フレーム数	//極小
+const int FRAME_TURNING_2(100);							//拡縮反転２フレーム数	//極大
 const float SCALE_MIN(0.0f);							//最小サイズ
-const float SCALE_TURNINIG_2(30.0f);					//サイズ反転２反転
-const float SCALE_TURNINIG_1(100.0f);					//サイズ反転１反転
+const float SCALE_TURNINIG_2(30.0f);					//サイズ反転２反転	//極大
+const float SCALE_TURNINIG_1(100.0f);					//サイズ反転１反転	//極小
 const float SCALE_MAX(1000.0f);							//最大サイズ
 const float ROTATE_ACCEL_RATE(4.0f);					//角速度増加割合
+const TDiType<int> SUBSTITUTE_FRAME_FADE(150, 60);		//フェードにかけるフレーム数の代替値	//アウト / ストップ / イン
+const int FRAME_MAX(SUBSTITUTE_FRAME_FADE.x);			//フェード時間の最大
+
 
 // =============== グローバル変数宣言 =====================
 int CFade::ms_nCntFade;							//自身の生成数
@@ -79,15 +82,16 @@ CFade::CFade(const CCamera* pCamera)
 	,m_nFrameOut(0)
 	,m_nFrameStop(0)
 	,m_nFrameIn(0)
+	,m_nMaxFrame(0)									//最大フレーム数
 {
 	// =============== 静的作成 ===================
 	if (0 == ms_nCntFade)	//現在、他にこのクラスが作成されていない時
 	{
 		// =============== シェーダー作成 ===================
 		ms_pVs = new VertexShader();		//頂点シェーダ作成
-		ms_pVs->Load("Assets/Shader/VsFade.cso");		//頂点シェーダ読み込み
+		ms_pVs->Load(VS_PASS.c_str());		//頂点シェーダ読み込み
 		ms_pPs = new PixelShader();			//ピクセルシェーダ作成
-		ms_pPs->Load("Assets/Shader/PsFade.cso");		//ピクセルシェーダ読み込み
+		ms_pPs->Load(PS_PASS.c_str());		//ピクセルシェーダ読み込み
 
 	// =============== テクスチャ作成 ===================
 		SetTexture();	//テクスチャ登録
@@ -131,13 +135,16 @@ CFade::~CFade()
 {
 	// =============== 解放 ===================
 	ms_nCntFade--;				//自身の数カウント
-	SAFE_DELETE(ms_pVs);		//頂点シェーダー解放
-	SAFE_DELETE(ms_pPs);		//ピクセルシェーダー解放
-	SAFE_DELETE(ms_pTexture);	//テクスチャ解放
-	//SAFE_DELETE(ms_pVtx);		//頂点情報解放
-	//SAFE_DELETE(ms_pIdx);		//頂点インデックス解放
-	//SAFE_DELETE(ms_pVtxBuffer);	//頂点バッファ解放
-	//SAFE_DELETE(ms_pIdxBuffer);	//インデックスバッファ解放
+	if (ms_nCntFade == 0)
+	{
+		SAFE_DELETE(ms_pVs);		//頂点シェーダー解放
+		SAFE_DELETE(ms_pPs);		//ピクセルシェーダー解放
+		SAFE_DELETE(ms_pTexture);	//テクスチャ解放
+		//SAFE_DELETE(ms_pVtx);		//頂点情報解放
+		//SAFE_DELETE(ms_pIdx);		//頂点インデックス解放
+		//SAFE_DELETE(ms_pVtxBuffer);	//頂点バッファ解放
+		//SAFE_DELETE(ms_pIdxBuffer);	//インデックスバッファ解放
+	}
 }
 
 /* ========================================
@@ -220,19 +227,19 @@ void CFade::Update()
 			}
 			else
 			{
-				if (nFrameTemp <= FRAME_TURNING_1)	//アウト時：第１ターニングポイントから終了まで
+				if (nFrameTemp <= FRAME_TURNING_1)	//アウト時：開始から第１ターニングポイントまで
 				{
 					m_UvParam.fUvScale.x = (SCALE_TURNINIG_1 - SCALE_MIN) * (float)(nFrameTemp - FRAME_MIN) / (float)(FRAME_TURNING_1);	//拡縮セット
 				}
 				else
 				{
-					if (nFrameTemp <= FRAME_TURNING_2)	//アウト時：第２ターニングポイントから第１ターニングポイントまで
+					if (nFrameTemp <= FRAME_TURNING_2)	//アウト時：第１ターニングポイントから第２ターニングポイントまで
 					{
 						m_UvParam.fUvScale.x = SCALE_TURNINIG_1 + (SCALE_TURNINIG_2 - SCALE_TURNINIG_1) * (float)(nFrameTemp - FRAME_TURNING_1) / (float)(FRAME_TURNING_2 - FRAME_TURNING_1);	//拡縮セット
 					}
 					else
 					{
-						if (nFrameTemp <= FRAME_MAX)	//アウト時：開始から第１ターニングポイントまで
+						if (nFrameTemp <= FRAME_MAX)	//アウト時：第２ターニングポイントから終了まで
 						{
 							m_UvParam.fUvScale.x = SCALE_TURNINIG_2 + (SCALE_MAX - SCALE_TURNINIG_2) * (float)(nFrameTemp - FRAME_TURNING_2) / (float)(FRAME_MAX - FRAME_TURNING_2);	//拡縮セット
 						}
@@ -329,21 +336,116 @@ void CFade::Draw()
 	-------------------------------------
 	内容：形状生成・情報登録
 	-------------------------------------
-	引数1：TTriType<int> nFrame：フレーム数(x：フェードアウト, y：フェードストップ, z：フェードイン)
+	引数1：TDiType<int> nFrame：フレーム数(x：フェードアウト・イン, y：フェードストップ)
 	-------------------------------------
 	戻値：なし
 =========================================== */
-void CFade::Start(TTriType<int> nFrame)
+void CFade::Start()
 {
 	// =============== フレーム数登録 ===================
-	m_nFrameOut = nFrame.x;		//フェードアウトのフレーム数登録
-	m_nFrameStop = nFrame.y;	//フェードストップのフレーム数登録
-	m_nFrameIn = nFrame.z;		//フェードインのフレーム数登録
+	m_nFrameOut = SUBSTITUTE_FRAME_FADE.x;		//フェードアウトのフレーム数登録
+	m_nFrameStop = SUBSTITUTE_FRAME_FADE.y;	//フェードストップのフレーム数登録
+	m_nFrameIn = SUBSTITUTE_FRAME_FADE.x;		//フェードインのフレーム数登録
 
 	// =============== フラグ操作 ===================
 	UpFlag(E_BIT_FLAG_FADE_OUT);	//フェードアウト開始
 }
 
+/* ========================================
+	フェード確認関数
+	-------------------------------------
+	内容：フェード中か確認する
+	-------------------------------------
+	引数1：なし
+	-------------------------------------
+	戻値：フェード中でtrue, それ以外はfalse
+=========================================== */
+bool CFade::IsFade()
+{	
+	// =============== 提供 ===================
+	if (m_ucFlag & FLAG_FADE_ALL)	//フェード中
+	{
+		return true;	//フェードしている
+	}
+	else
+	{
+		return false;	//フェードしていない
+	}
+}
+
+/* ========================================
+	フェードアウト確認関数
+	-------------------------------------
+	内容：フェードアウト中か確認する
+	-------------------------------------
+	引数1：なし
+	-------------------------------------
+	戻値：フェードアウト中でtrue, それ以外はfalse
+=========================================== */
+bool CFade::IsFadeOut()
+{
+	// =============== 提供 ===================
+	if (m_ucFlag & E_BIT_FLAG_FADE_OUT)	//フェードアウト中
+	{
+		return true;	//フェードしている
+	}
+	else
+	{
+		return false;	//フェードしていない
+	}
+}
+
+/* ========================================
+	フェードアウト進捗ゲッタ関数
+	-------------------------------------
+	内容：フェードアウトの進行割合を提供する
+	-------------------------------------
+	引数1：なし
+	-------------------------------------
+	戻値：フェードアウト進捗時間 / フェードアウト最大時間 の結果
+=========================================== */
+float CFade::GetOutFrameRate()
+{
+	// =============== 提供 ===================
+	return static_cast<float>(m_nFrameOut) / static_cast<float>(FRAME_MAX);	//進行割合
+}
+
+/* ========================================
+	フェードイン確認関数
+	-------------------------------------
+	内容：フェードイン中か確認する
+	-------------------------------------
+	引数1：なし
+	-------------------------------------
+	戻値：なし
+=========================================== */
+bool CFade::IsFadeIn()
+{
+	// =============== 提供 ===================
+	if (m_ucFlag & E_BIT_FLAG_FADE_IN)	//フェードイン中
+	{
+		return true;	//フェードしている
+	}
+	else
+	{
+		return false;	//フェードしていない
+	}
+}
+
+/* ========================================
+	フェードイン進捗ゲッタ関数
+	-------------------------------------
+	内容：フェードインの進行割合を提供する
+	-------------------------------------
+	引数1：なし
+	-------------------------------------
+	戻値：フェードイン進捗時間 / フェードイン最大時間 の結果
+=========================================== */
+float CFade::GetInFrameRate()
+{
+	// =============== 提供 ===================
+	return m_nFrameIn / FRAME_MAX;	//進行割合
+}
 
 /* ========================================
 	形状生成関数
@@ -358,10 +460,10 @@ void CFade::Make()
 {
 	// =============== 変数宣言 ===================
 	Vertex aVtx[] = {
-		{{-10.5f, 10.5f, -0.0f}, {0.0f, 0.0f}},	//平面ポリゴン左上
-		{{ 10.5f, 10.5f, -0.0f}, {1.0f, 0.0f}},	//平面ポリゴン右上
-		{{-10.5f,-10.5f, -0.0f}, {0.0f, 1.0f}},	//平面ポリゴン左下
-		{{ 10.5f,-10.5f, -0.0f}, {1.0f, 1.0f}},	//平面ポリゴン右下
+		{{-0.5f, 0.5f, -0.0f}, {0.0f, 0.0f}},	//平面ポリゴン左上
+		{{ 0.5f, 0.5f, -0.0f}, {1.0f, 0.0f}},	//平面ポリゴン右上
+		{{-0.5f,-0.5f, -0.0f}, {0.0f, 1.0f}},	//平面ポリゴン左下
+		{{ 0.5f,-0.5f, -0.0f}, {1.0f, 1.0f}},	//平面ポリゴン右下
 	};	//頂点情報
 	int aIdx[] = {
 		0, 1, 2, 2, 1, 3	//平面ポリゴン
@@ -505,7 +607,7 @@ void CFade::UpFlag(const unsigned char & ucBitFlag)
 void CFade::DownFlag(const unsigned char & ucBitFlag)
 {
 	// =============== 代入 ===================
-	m_ucFlag &= !ucBitFlag;	//フラグ操作
+	m_ucFlag &= (ucBitFlag ^ 0xFF);	//フラグ操作
 }
 
 /* ========================================
