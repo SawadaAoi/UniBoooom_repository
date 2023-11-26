@@ -11,6 +11,7 @@
 	・2023/11/18 制作 takagi
 	・2023/11/19 18の続き takagi
 	・2023/11/20 整理 takagi
+	・2023/11/24 テクスチャが見えないときをつくるため定数バッファにUvOffset追加 takagi
 
 ========================================== */
 
@@ -38,7 +39,7 @@ cbuffer Matrix : register(b0)
 cbuffer Uv : register(b1)
 {
 	float2 fUvScale;	//UV拡縮
-	float2 fDummy;		//ダミー
+	float2 fUvOffset;	//UV移動
 };	//UV調整
 
 /* ========================================
@@ -64,6 +65,7 @@ VS_OUT main(VS_IN VsIn)
 	VsOut.fUv + 0.5f;															//UV座標系の原点を中央に移動
 	VsOut.fUv *= fUvScale;														//指定された倍率で拡縮する
 	VsOut.fUv += float2(0.5f - fUvScale.x / 2.0f, 0.5f - fUvScale.y / 2.0f);	//拡縮で右に延びた分、位置を補正する
+	VsOut.fUv += fUvOffset;														//移動値がある場合はその分UV座標をずらす
 	VsOut.fColor = float4(0.0f, 0.0f, 0.0f, 1.0f);								//色設定
 
 	// =============== 提供 =====================
