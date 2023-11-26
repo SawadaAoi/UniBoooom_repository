@@ -20,6 +20,7 @@
 	・2023/11/15 各モデルの読み込みを関数化 yamashita
 	・2023/11/19 ボススライム用の配列を追加 Suzumura
 	・2023/11/21 BoooomUI用変数追加 Tei
+	・2023/11/26 ボス生成用関数追加	Sawada
 
    ======================================== */
 #ifndef __SLIME_MANAGER_H__
@@ -55,6 +56,7 @@ public:
 	void Update(CExplosionManager* pExpMng);
 	void Draw();
 	void Create(E_SLIME_LEVEL level);
+	void CreateBoss();
 
 	//-- ノーマル、その他
 	void HitBranch(int HitSlimeArrayNum,int standSlimeArrayNum,CExplosionManager* pExpMng);			// スライムの接触が起きた際の分岐処理

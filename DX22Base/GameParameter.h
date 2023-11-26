@@ -118,7 +118,7 @@ const int LEVEL_3_SCORE = 100;				// スライム_3のスコア
 const int LEVEL_4_SCORE = 500;				// スライム_4のスコア
 const int LEVEL_4x4_SCORE = 1000;			// 赤々の爆発のスコア
 // ボススライム
-#define DEBUG_BOSS	(true)	// デバッグ用にゲーム開始時ボスを生成するかどうか
+#define DEBUG_BOSS	(false)	// デバッグ用にゲーム開始時ボスを生成するかどうか
 
 const float LEVEL_BOSS_1_SCALE = 6.0f;								// ボス１の大きさ
 const float LEVEL_BOSS_1_SPEED = ENEMY_MOVE_SPEED * 0.4f;			// ボス１のスピード

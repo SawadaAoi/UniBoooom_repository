@@ -24,6 +24,7 @@
 	・2023/11/21 ボス用の当たり判定時の処理(HitSlimeBossBranch...etc)を追加
 	・2023/11/21 ボス用の通常時の処理(PreventSlimeBossOverlap...etc)を追加
 	・2023/11/21 BoooomUi表示する関数を呼び出す Tei
+	・2023/11/26 ボス生成用関数追加	Sawada
 
 =========================================== */
 
@@ -278,11 +279,33 @@ void CSlimeManager::Create(E_SLIME_LEVEL level)
 		case LEVEL_FLAME:
 			m_pSlime[i] = new CSlime_Flame(CreatePos,m_pVS,m_pFlameModel);	// 動的生成
 			break;
+
 		}
 
 		m_pSlime[i]->SetCamera(m_pCamera);	//カメラをセット
 		break;						// 生成したら終了
 		
+	}
+}
+
+/* ========================================
+	ボススライム生成関数
+	-------------------------------------
+	内容：ボススライムの生成
+	-------------------------------------
+	引数1：無し
+	-------------------------------------
+	戻値：無し
+=========================================== */
+void CSlimeManager::CreateBoss()
+{
+	for (int i = 0; i < MAX_BOSS_SLIME_NUM; i++)
+	{
+		// スライムのuseを検索
+		if (m_pBoss[i] != nullptr) continue;
+		m_pBoss[i] = new CSlime_Boss_1(TPos3d<float>(0.0f, 0.0f, 0.0f), m_pVS, m_pBossModel);	//動的生成(取り合えず位置は仮)
+
+		break;
 	}
 }
 

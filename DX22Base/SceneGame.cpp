@@ -150,6 +150,7 @@ SceneGame::SceneGame()
 
 	//ボスゲージ
 	m_pBossgauge = new CBossgauge(m_pTimer->GetNowTime());
+	m_pBossgauge->SetSlimeManager(m_pSlimeMng);
 }
 
 /* ========================================
