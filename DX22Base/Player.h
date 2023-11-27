@@ -23,6 +23,8 @@
 	・2023/11/19 移動のSEを再生 yamashita
 	・2023/11/19 被ダメージ時とハンマーを振るSEを再生 yamashita
 	・2023/11/19 サウドファイル読み込み関数を作成 yamashita
+	・2023/11/27 ハンマー振り間隔用カウント追加 Tei
+
 ========================================== */
 
 #ifndef __PLAYER_H__
@@ -85,6 +87,8 @@ private:
 	bool m_DrawFlg;						// プレイヤーがダメージを受けたら点滅するフラグ
 	int m_FlashCnt;						// 点滅の時間の長さ
 	int m_nMoveCnt;						// プレイヤーの移動によるSEの間隔
+	bool m_bIntFlg;						// ハンマー間隔時間フラグ
+	float m_fIntCnt;					// ハンマー間隔時間カウント
 
 	XAUDIO2_BUFFER* m_pSESwingHammer;
 	XAUDIO2_BUFFER* m_pSERun;

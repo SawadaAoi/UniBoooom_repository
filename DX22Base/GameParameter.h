@@ -52,6 +52,8 @@ const int	NO_DAMAGE_TIME		= 3 * 60;		// プレイヤーの無敵時間
 const int	DAMAGE_FLASH_FRAME	= 0.1f * 60;	// プレイヤーのダメージ点滅の切り替え間隔
 const int	SE_RUN_INTERVAL		= 0.4f * 60;	//プレイヤーの移動によるSE発生の間隔
 const float	SE_RUN_VOLUME		= 0.3f;			//移動によるSEの音量
+const float HAMMER_INTERVAL_TIME	= 0.7f * 60;	// ハンマー振り間隔
+
 
 // ハンマー
 const float HAMMER_ANGLE_X		= DirectX::XMConvertToRadians(180.0f);								//ハンマーの表示角度
