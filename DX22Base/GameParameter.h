@@ -173,12 +173,27 @@ const TPos2d<float> SMALLDECIMAL_POS(2.0f, -3.0f);//この値で小数点の位置の微調節
 
 
 // カメラ =====================================================
-const TPos3d<float> INIT_POS(0.0f, 2.6f, -3.0f);					// 初期位置
+const TPos3d<float> INIT_POS(0.0f, 1.6f, -3.0f);					//初期位置
 
-const float INIT_ANGLE = DirectX::XMConvertToRadians(73.0f);       // カメラの角度
-const float INIT_NEAR = 1.0f;										// 画面手前初期z値
-const float INIT_FAR = 150.0f;									// 画面奥初期z値
-const float INIT_RADIUS = 15.0f;									// カメラと注視点との距離(初期値)
+const float Pi = 3.141592f;
+constexpr float ANGLE_TO_RADIAN(float fAngle)
+{
+	return fAngle / 180.0f * Pi;	//角度→ラジアン角
+}
+
+const float INIT_ANGLE = DirectX::XMConvertToRadians(73.0f);        //カメラの角度
+const float INIT_NEAR = 1.0f;										//画面手前初期z値
+const float INIT_FAR = 150.0f;										//画面奥初期z値
+const float INIT_RADIUS = 15.0f;									//カメラと注視点との距離(初期値)
+
+const float RADIAN_VELOCITY_WEAK = ANGLE_TO_RADIAN(1.5f);		//角速度：弱
+const float RADIAN_VELOCITY_STRONG = ANGLE_TO_RADIAN(1.0f);		//角速度：強
+const TDiType<float> AMPLITUDE_WEAK(3.0f, 0.7f);				//振幅：弱			x:縦, y:横
+const TDiType<float> AMPLITUDE_STRONG(10.0f, 50.0f);			//振幅：強			x:縦, y:横
+const TDiType<float> VIRTUAL_FRICTION(0.5f);					//疑似摩擦力
+const TDiType<float> VIRTUAL_GRAVITY(0.5f);						//疑似重力
+const TDiType<float> DECREASE_RADIAN_WEAK(0.005f, 0.005f);		//角速度減少量：弱	x:縦, y:横
+const TDiType<float> DECREASE_RADIAN_STRONG(0.005f, 0.008f);	//角速度減少量：強	x:縦, y:横
 
 // UI =====================================================
 // 2D表示
@@ -257,6 +272,15 @@ const float TEXTURE_TITLE_BUTTON_POSX = SCREEN_WIDTH_ / 2;	// タイトル画像表示位
 const float TEXTURE_TITLE_BUTTON_POSY = 100.0f;				// タイトル画面ボタン押下指示画像表示位置のY座標
 const float TEXTURE_TITLE_BUTTON_WIDTH = 300.0f;			// タイトル画面ボタン押下指示画像の横幅
 const float TEXTURE_TITLE_BUTTON_HEIGHT = 100.0f;			// タイトル画面ボタン押下指示画像の縦幅
+
+// ヒットストップ =========================================================
+const int FRAME_STOP_SOFT = 30;		//ストップ：軽　のフレーム数	// 現在使用している物
+const int FRAME_STOP_NORMAL = 60;	//ストップ：中　のフレーム数
+const int FRAME_STOP_HEAVY = 120;	//ストップ：重　のフレーム数
+const int FRAME_STOP_DEATH = 999;	//ストップ：死　のフレーム数
+
+
+
 
 #endif
 

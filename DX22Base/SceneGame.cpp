@@ -256,7 +256,6 @@ void SceneGame::Update(float tick)
 	m_pTimer->Update();
 	m_pStageFin->Update();
 	m_pCombo->Update();
-	m_pCamera->Update();
 
 	// HPマネージャー更新
 	m_pHpMng->Update();
