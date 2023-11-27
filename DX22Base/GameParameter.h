@@ -14,8 +14,10 @@
 	E2023/11/15 ƒpƒ‰ƒ[ƒ^[’Ç‰Á(// ƒtƒŒƒCƒ€ƒXƒ‰ƒCƒ€) Suzumura
 	E2023/11/18 ƒpƒ‰ƒ[ƒ^[’Ç‰Á(// ƒXƒRƒA) yamamoto
 	E2023/11/21 ƒpƒ‰ƒ[ƒ^[’Ç‰Á(// ƒRƒ“ƒ{”) Sawada
+	E2023/11/23 ƒpƒ‰ƒ[ƒ^[’Ç‰Á(// ƒ{ƒX‚PƒXƒ‰ƒCƒ€) Suzumura
 	E2023/11/23 ƒpƒ‰ƒ[ƒ^[’Ç‰Á(// 2D•`‰æ) nieda
 	E2023/11/24 ƒpƒ‰ƒ[ƒ^[íœ(// ƒJƒƒ‰) Takagi
+	E2023/11/25 ƒpƒ‰ƒ[ƒ^[’Ç‰Á(// ƒXƒRƒA) yamamoto
 
 =========================================== */
 #ifndef __GAME_PARAMETER_H__
@@ -45,7 +47,7 @@ const int SCREEN_HEIGHT_ = 720;
 const float PLAYER_MOVE_SPEED	= 0.1f;			// ƒvƒŒƒCƒ„[‚ÌˆÚ“®‘¬“x
 const int	PLAYER_HP			= 5;			// ƒvƒŒƒCƒ„[‚ÌHP
 const float PLAYER_RADIUS		= 0.1f;			// ƒvƒŒƒCƒ„[‚Ì“–‚½‚è”»’è‚Ì‘å‚«‚³
-const float PLAYER_SIZE			= 1.0f;			// ƒvƒŒƒCƒ„[‚Ì‘å‚«‚³
+const float PLAYER_SIZE			= 0.2f;			// ƒvƒŒƒCƒ„[‚Ì‘å‚«‚³
 const int	NO_DAMAGE_TIME		= 3 * 60;		// ƒvƒŒƒCƒ„[‚Ì–³“GŽžŠÔ
 const int	DAMAGE_FLASH_FRAME	= 0.1f * 60;	// ƒvƒŒƒCƒ„[‚Ìƒ_ƒ[ƒW“_–Å‚ÌØ‚è‘Ö‚¦ŠÔŠu
 const int	SE_RUN_INTERVAL		= 0.4f * 60;	//ƒvƒŒƒCƒ„[‚ÌˆÚ“®‚É‚æ‚éSE”­¶‚ÌŠÔŠu
@@ -54,36 +56,42 @@ const float HAMMER_INTERVAL_TIME	= 0.7f * 60;	// ƒnƒ“ƒ}[U‚èŠÔŠu
 
 
 // ƒnƒ“ƒ}[
+const float HAMMER_ANGLE_X		= DirectX::XMConvertToRadians(180.0f);								//ƒnƒ“ƒ}[‚Ì•\Ž¦Šp“x
+const float HAMMER_ANGLE_Y		= DirectX::XMConvertToRadians(0.0f);								//ƒnƒ“ƒ}[‚Ì•\Ž¦Šp“x
+const float HAMMER_ANGLE_Z		= DirectX::XMConvertToRadians(0.0f);								//ƒnƒ“ƒ}[‚Ì•\Ž¦Šp“x
 const float SWING_ANGLE			= DirectX::XMConvertToRadians(90.0f);	// ƒnƒ“ƒ}[‚ðU‚é”ÍˆÍ(îŒ`‚ÌŠp“x‚Ì‘å‚«‚³)
 const float SWING_TIME_FRAME	= 0.15f * 60;							// ƒnƒ“ƒ}[‚ðU‚éŽžŠÔ(ƒtƒŒ[ƒ€’PˆÊ)
 const float ROTATE_RADIUS		= 1.0f;									// ƒnƒ“ƒ}[‚ª‰ñ“]‚·‚éƒvƒŒƒCƒ„[‚©‚ç‚Ì‹——£
-const float HAMMER_COL_SIZE		= 0.75f;								// ƒnƒ“ƒ}[‚Ì“–‚½‚è”»’è‚Ì‘å‚«‚³
-const float HAMMER_SIZE			= 1.5f;									// ƒnƒ“ƒ}[‚Ì‘å‚«‚³
+const float HAMMER_COL_SIZE		= 0.75f;								//ƒnƒ“ƒ}[‚Ì“–‚½‚è”»’è‚Ì‘å‚«‚³
+const float HAMMER_SIZE			= 0.2f;									//ƒnƒ“ƒ}[‚Ì‘å‚«‚³
 
 
 // “GƒLƒƒƒ‰ ==================================================
 
 // ‹¤’Ê
-const int	MAX_SLIME_NUM			= 50;		// ƒXƒ‰ƒCƒ€‚ÌÅ‘å¶¬”
-const int	START_ENEMY_NUM			= 6;		// ƒQ[ƒ€ŠJŽnŽž‚Ì“GƒLƒƒƒ‰‚Ì”
-const float ENEMY_MOVE_SPEED		= 0.035f;	// “G‚Ì’ÊíˆÚ“®‘¬“x
-const float HAMMER_HIT_MOVE_SPEED	= 1.0f;		// ƒnƒ“ƒ}[‚É‚«”ò‚Î‚³‚ê‚½Žž‚ÌƒXƒs[ƒh
+const int	MAX_SLIME_NUM = 50;		// ƒXƒ‰ƒCƒ€‚ÌÅ‘å¶¬”
+const int	MAX_BOSS_SLIME_NUM = 5;		// ƒ{ƒXƒXƒ‰ƒCƒ€‚ÌÅ‘å¶¬”
+const int	START_ENEMY_NUM = 6;		// ƒQ[ƒ€ŠJŽnŽž‚Ì“GƒLƒƒƒ‰‚Ì”
+const float ENEMY_MOVE_SPEED = 0.035f;	// “G‚Ì’ÊíˆÚ“®‘¬“x
+const float HAMMER_HIT_MOVE_SPEED = 1.0f;		// ƒnƒ“ƒ}[‚É‚«”ò‚Î‚³‚ê‚½Žž‚ÌƒXƒs[ƒh
 const int	RANDOM_MOVE_SWITCH_TIME = 3 * 60;	// ƒ‰ƒ“ƒ_ƒ€ˆÚ“®‚Ì•ûŒüØ‚è‘Ö‚¦
 
-const float SPEED_DOWN_RATIO		= 0.6f;		// ‚«”ò‚ÔÛ‚É‚©‚©‚éˆÚ“®‘¬“x‚Ì•Ï‰»‚ÌŠ„‡    RATIO=>Š„‡
-const float MOVE_RESIST				= 0.05f;	// ‚«”ò‚ÑˆÚ“®’†‚ÌƒXƒ‰ƒCƒ€‚ÌˆÚ“®‘¬“x‚É–ˆƒtƒŒ[ƒ€‚©‚©‚éŒ¸ŽZ”’l
-const float MOVE_DISTANCE_PLAYER	= 13.0f;	// ƒvƒŒƒCƒ„[’ÇÕˆÚ“®‚ÉØ‚è‘Ö‚¦‚é‹——£
-const float SLIME_BASE_RADIUS		= 0.5f;		// ƒXƒ‰ƒCƒ€‚ÌŠî€‚Ì‘å‚«‚³
+const float SPEED_DOWN_RATIO = 0.6f;		// ‚«”ò‚ÔÛ‚É‚©‚©‚éˆÚ“®‘¬“x‚Ì•Ï‰»‚ÌŠ„‡    RATIO=>Š„‡
+const float MOVE_RESIST = 0.05f;	// ‚«”ò‚ÑˆÚ“®’†‚ÌƒXƒ‰ƒCƒ€‚ÌˆÚ“®‘¬“x‚É–ˆƒtƒŒ[ƒ€‚©‚©‚éŒ¸ŽZ”’l
+const float MOVE_DISTANCE_PLAYER = 13.0f;	// ƒvƒŒƒCƒ„[’ÇÕˆÚ“®‚ÉØ‚è‘Ö‚¦‚é‹——£
+const float SLIME_BASE_RADIUS = 0.5f;		// ƒXƒ‰ƒCƒ€‚ÌŠî€‚Ì‘å‚«‚³
 
-const int ENEMY_CREATE_INTERVAL		= 2 * 60;													// ¶¬ŠÔŠu
-const int RANDOM_POS				= 15;														// ¶¬À•W”ÍˆÍ
-const int CREATE_DISTANCE			= 10;														// ƒvƒŒƒCƒ„[‚©‚ç‚Ç‚ê‚­‚ç‚¢—£‚ê‚½‹——£‚É¶¬‚·‚é‚©
+const int ENEMY_CREATE_INTERVAL = 2 * 60;													// ¶¬ŠÔŠu
+const int RANDOM_POS = 15;														// ¶¬À•W”ÍˆÍ
+const int CREATE_DISTANCE = 10;														// ƒvƒŒƒCƒ„[‚©‚ç‚Ç‚ê‚­‚ç‚¢—£‚ê‚½‹——£‚É¶¬‚·‚é‚©
 const int SLIME_LEVEL1_PER = 45;																// ƒXƒ‰ƒCƒ€_1‚Ì¶¬Šm—§
 const int SLIME_LEVEL2_PER = 35;																// ƒXƒ‰ƒCƒ€_2‚Ì¶¬Šm—§
 const int SLIME_LEVEL3_PER = 10;																// ƒXƒ‰ƒCƒ€_3‚Ì¶¬Šm—§
 const int SLIME_LEVEL_FLAME_PER = 100 - SLIME_LEVEL1_PER - SLIME_LEVEL2_PER - SLIME_LEVEL3_PER;	// ƒXƒ‰ƒCƒ€_ƒtƒŒƒCƒ€‚Ì¶¬Šm—§
 const float MAX_SIZE_EXPLODE		= 5.0f;										// ƒXƒ‰ƒCƒ€4“¯Žm‚Ì”š”­‚Ì‘å‚«‚³
 const float EXPLODE_BASE_RATIO		= 1.5f;										// ƒXƒ‰ƒCƒ€‚Ì”š”­ÚG‚Å‚Ì”š”­‚Ì‘å‚«‚³‚Ìƒx[ƒX
+const float ESCAPE_DISTANCE			= 15.0f;									// ”š”­‚ª‚±‚Ì‹——£‚æ‚è‹ß‚©‚Á‚½‚ç“¦‚°‚é”ÍˆÍ
+const int ESCAPE_TIME				= int(60 * 1.0f);							// ‚±‚ÌŠÔŠu‚Å“¦‚°‚éˆ—‚ªI—¹‚·‚é
 
 
 // ƒXƒ‰ƒCƒ€“¯Žm‚Ì”½ŽË‚ÌŒ¸ŽZ’l
@@ -92,6 +100,7 @@ const float COL_SUB_HIT_TO_BIG		= 0.1f;			// ƒXƒ‰ƒCƒ€Õ“Ë(¬¨‘å)‚ÌÕ“Ë‘¤‚ÌŒ¸ŽZ’
 const float COL_SUB_STAND_TO_SMALL	= 0.8f;			// ƒXƒ‰ƒCƒ€Õ“Ë(¬¨‘å)‚ÌÕ“Ë‚³‚ê‚é‘¤‚ÌŒ¸ŽZ’l(Õ“Ë‚³‚ê‚½•ûŒü)
 const float COL_SUB_HIT_TO_SMALL	= 0.3f;			// ƒXƒ‰ƒCƒ€Õ“Ë(‘å¨¬)‚ÌÕ“Ë‘¤‚ÌŒ¸ŽZ’l(ˆÚ“®•ûŒü)
 const float COL_SUB_STAND_TO_BIG	= 1.2f;			// ƒXƒ‰ƒCƒ€Õ“Ë(‘å¨¬)‚ÌÕ“Ë‚³‚ê‚é‘¤‚ÌŒ¸ŽZ’l(Õ“Ë‚³‚ê‚½•ûŒü)
+const float LEAVE_DISTANCE = 40.0f;					// ‚±‚êˆÈã—£‚ê‚½‚ç‘ÎŠpüã‚ÉˆÚ“®‚·‚é
 
 // ƒTƒCƒY1
 const float LEVEL1_SCALE = 1.0f;					// ƒXƒ‰ƒCƒ€QƒŒƒxƒ‹‚P‚Ì‘å‚«‚³(“–‚½‚è”»’èŠÜ‚Þ)
@@ -118,33 +127,59 @@ const int LEVEL_2_SCORE = 30;				// ƒXƒ‰ƒCƒ€_2‚ÌƒXƒRƒA
 const int LEVEL_3_SCORE = 100;				// ƒXƒ‰ƒCƒ€_3‚ÌƒXƒRƒA
 const int LEVEL_4_SCORE = 500;				// ƒXƒ‰ƒCƒ€_4‚ÌƒXƒRƒA
 const int LEVEL_4x4_SCORE = 1000;			// ÔX‚Ì”š”­‚ÌƒXƒRƒA
+// ƒ{ƒXƒXƒ‰ƒCƒ€
+#define DEBUG_BOSS	(false)	// ƒfƒoƒbƒO—p‚ÉƒQ[ƒ€ŠJŽnŽžƒ{ƒX‚ð¶¬‚·‚é‚©‚Ç‚¤‚©
+
+const float LEVEL_BOSS_1_SCALE = 6.0f;								// ƒ{ƒX‚P‚Ì‘å‚«‚³
+const float LEVEL_BOSS_1_SPEED = ENEMY_MOVE_SPEED * 0.4f;			// ƒ{ƒX‚P‚ÌƒXƒs[ƒh
+const int	BOSS_1_MAX_HP = 10;								// ƒ{ƒX‚P‚ÌÅ‘åHP
+
+const float ASSAULT_DISTANCE = 0.2f;								// “ËŒ‚”½‰ž‹——£
+const int	ASSAULT_COOL_TIME = 10 * 60;							// “ËŒ‚ƒNƒ‹[ƒ^ƒCƒ€
+const int	ASSAULT_CHARGE_TIME = 2 * 60;							// “ËŒ‚ƒ`ƒƒ[ƒWŽžŠÔ
+const int	ASSAULT_TIME = 1.0f * 60;						// “ËŒ‚‘ŽžŠÔ
+const float ASSAULT_SPEED = LEVEL_BOSS_1_SPEED * 20.0f;		// “ËŒ‚Žž‚ÌƒXƒs[ƒh
+
+const int BOSS_DAMAGE_FLASH_FRAME = 0.1 * 60;					// ƒ_ƒ[ƒWŽó‚¯‚½Û‚Ì“_–ÅƒtƒŒ[ƒ€(–³“G‚Å‚Í‚È‚¢)
+const int BOSS_DAMAGE_FLASH_TOTAL_FRAME = 0.5 * 60;					// ƒ_ƒ[ƒW‚ðŽó‚¯‚½Û‚Ì“_–Å‚ð‰½ƒtƒŒ[ƒ€s‚¤‚©
+
 // ”š”­ =====================================================
+const int	MAX_EXPLOSION_NUM = 20;			// Å‘å”š”­”
+const float EXPAND_QUICK_RATE = 0.2f;			// –c’£‰Á‘¬Š„‡ 
 const int MAX_BOOOOM_NUM = 10;					//Å‘åboom”
-const int	MAX_EXPLOSION_NUM		= 20;		// Å‘å”š”­”
-const float EXPAND_QUICK_RATE		= 0.2f;		// –c’£‰Á‘¬Š„‡ 
 const float LEVEL_1_EXPLODE_TIME = 0.5f * 60.0f;	// ƒXƒ‰ƒCƒ€_1‚Ì”š”­‘ŽžŠÔ
 const float LEVEL_2_EXPLODE_TIME = 1.0f * 60.0f;	// ƒXƒ‰ƒCƒ€_2‚Ì”š”­‘ŽžŠÔ
 const float LEVEL_3_EXPLODE_TIME = 2.0f * 60.0f;	// ƒXƒ‰ƒCƒ€_3‚Ì”š”­‘ŽžŠÔ
 const float LEVEL_4_EXPLODE_TIME = 3.0f * 60.0f;	// ƒXƒ‰ƒCƒ€_4‚Ì”š”­‘ŽžŠÔ
-const int	DELAY_TIME			 = 0.2f * 60;		// ’x‰„•b”
+const float LEVEL_BOSS_EXPLODE_TIME = 4.0f * 60.0f;	// ƒXƒ‰ƒCƒ€_ƒ{ƒX‚Ì”š”­‘ŽžŠÔ
+const int	DELAY_TIME = 0.2f * 60;		// ’x‰„•b”
 
+const int	LEVEL_1_EXPLODE_DAMAGE = 1;
+const int	LEVEL_2_EXPLODE_DAMAGE = 2;
+const int	LEVEL_3_EXPLODE_DAMAGE = 3;
+const int	LEVEL_4_EXPLODE_DAMAGE = 4;
 // ƒXƒRƒA =====================================================
-
-//matomeru«
-const float LEVEL_1_HEIGHT = 4.0f;			//ƒXƒ‰ƒCƒ€1‚ª”š”­ŽžƒXƒRƒA‚ð”š”j‚©‚ç‚Ç‚ê‚¾‚¯ã‚É’u‚­‚©
-const float LEVEL_2_HEIGHT = 4.0f;			//ƒXƒ‰ƒCƒ€2‚ª”š”­ŽžƒXƒRƒA‚ð”š”j‚©‚ç‚Ç‚ê‚¾‚¯ã‚É’u‚­‚©
-const float LEVEL_3_HEIGHT = 4.0f;			//ƒXƒ‰ƒCƒ€3‚ª”š”­ŽžƒXƒRƒA‚ð”š”j‚©‚ç‚Ç‚ê‚¾‚¯ã‚É’u‚­‚©
-const float LEVEL_4_HEIGHT = 4.0f;			//ƒXƒ‰ƒCƒ€4‚ª”š”­ŽžƒXƒRƒA‚ð”š”j‚©‚ç‚Ç‚ê‚¾‚¯ã‚É’u‚­‚©
+const float SLIME_SCORE_HEIGHT = 4.0f;			//”š”­Žž“ªãƒXƒRƒA‚Ì•\Ž¦ˆÊ’u
 
 const int TOTALSCORE_DIGIT = 5;				//ƒg[ƒ^ƒ‹ƒXƒRƒA‚ÌŒ…”
-const int MAX_TOTALSCORE = 99999;			//ªˆê‚É•Ï‚¦‚Ä‚­‚¾‚³‚¢//Å‘åƒg[ƒ^ƒAƒ‹ƒXƒRƒA
-const TPos2d<float> TOTALSCORE_POS(1100.0f, 25.0f);			//•ª‚ÌˆÊ’uÝ’è
+const int MAX_TOTALSCORE = 99999;			//ªˆê‚É•Ï‚¦‚Ä‚­‚¾‚³‚¢iŒ…”•ª9‚ð’Ç‰Áj//Å‘åƒg[ƒ^ƒAƒ‹ƒXƒRƒA
+const TPos2d<float> TOTALSCORE_POS(1100.0f, 25.0f);			//ƒg[ƒ^ƒ‹ƒXƒRƒA‚ÌˆÊ’uÝ’è
+
+const DirectX::XMFLOAT2 TOTALSCORE_SIZE(50.0f, -50.0f);		//ƒg[ƒ^ƒ‹ƒXƒRƒA‚Ì•\Ž¦‚Ì‘å‚«‚³
+const DirectX::XMFLOAT2 PLUSSCORE_SIZE(30.0f, -30.0f);		//ƒvƒ‰ƒXƒXƒRƒA‚Ì•\Ž¦‚Ì‘å‚«‚³
+const int ROW_HIGHT = 40;			//ƒXƒRƒA‚ð•¡”ŒÂ•\Ž¦Žžˆê”Ôã‚©‚ç‚Ç‚Ì‚­‚ç‚¢‰º‚°‚é‚©iPLUSSCORE_SIZE.y‚Ìâ‘Î’l‚æ‚è‘å‚«‚¢”Žš‚Åj
+
+const DirectX::XMFLOAT2 SMALLDECIMAL_SIZE(15.0f, -15.0f);	//¬”“_‚Ì‘å‚«‚³
+const int MAGNIFICATION = 40;		//”{—¦•\Ž¦Žž‚ÌŠÔŠuBˆê”Ô‰E‚Ì”Žš‚©‚ç‚Ç‚ê‚¾‚¯¶‚É‚¸‚ç‚·‚©i¬”“_‚ð“ü‚ê‚é‚Ì‚Å‚»‚±‚àƒPƒA‚·‚éj
+const TPos2d<float> SMALLDECIMAL_POS(2.0f, -3.0f);//‚±‚Ì’l‚Å¬”“_‚ÌˆÊ’u‚Ì”÷’²ß
+
+
 // ƒJƒƒ‰ =====================================================
 const TPos3d<float> INIT_POS(0.0f, 2.6f, -3.0f);					// ‰ŠúˆÊ’u
 
-const float INIT_ANGLE	= DirectX::XMConvertToRadians(73.0f);       // ƒJƒƒ‰‚ÌŠp“x
-const float INIT_NEAR	= 1.0f;										// ‰æ–ÊŽè‘O‰Šúz’l
-const float INIT_FAR	= 150.0f;									// ‰æ–Ê‰œ‰Šúz’l
+const float INIT_ANGLE = DirectX::XMConvertToRadians(73.0f);       // ƒJƒƒ‰‚ÌŠp“x
+const float INIT_NEAR = 1.0f;										// ‰æ–ÊŽè‘O‰Šúz’l
+const float INIT_FAR = 150.0f;									// ‰æ–Ê‰œ‰Šúz’l
 const float INIT_RADIUS = 15.0f;									// ƒJƒƒ‰‚Æ’Ž‹“_‚Æ‚Ì‹——£(‰Šú’l)
 
 // UI =====================================================
@@ -159,10 +194,10 @@ const float FAR_Z = 10.0f;			// ŽÊ‚¹‚éŒÀŠE‹——£
 // ƒ^ƒCƒ}[ =====================================================
 const int STAGE_TIME = 180 * 60;	//ƒXƒe[ƒW§ŒÀŽžŠÔi•b*ƒtƒŒ[ƒ€j
 const TPos2d<float> MINUTE_POS(565.0f, 25.0f);			//•ª‚ÌˆÊ’uÝ’è
-const TPos2d<float> SECOND_TENS_POS (640.0f, 25.0f);	//\‚ÌŒ…•b‚ÌˆÊ’uÝ’è
-const TPos2d<float> SECOND_ONE_POS (690.0f, 25.0f);		//ˆê‚ÌŒ…•b‚ÌˆÊ’uÝ’è
-const TPos2d<float> TIME_BACKGROUND_POS (630.0f, 25.0f);	//ƒoƒbƒNƒOƒ‰ƒEƒ“ƒhˆÊ’uÝ’è
-const TPos2d<float> TIME_COLON_POS (602.5f, 25.0f);		//ƒRƒƒ“‚ÌˆÊ’uÝ’è
+const TPos2d<float> SECOND_TENS_POS(640.0f, 25.0f);	//\‚ÌŒ…•b‚ÌˆÊ’uÝ’è
+const TPos2d<float> SECOND_ONE_POS(690.0f, 25.0f);		//ˆê‚ÌŒ…•b‚ÌˆÊ’uÝ’è
+const TPos2d<float> TIME_BACKGROUND_POS(630.0f, 25.0f);	//ƒoƒbƒNƒOƒ‰ƒEƒ“ƒhˆÊ’uÝ’è
+const TPos2d<float> TIME_COLON_POS(602.5f, 25.0f);		//ƒRƒƒ“‚ÌˆÊ’uÝ’è
 const float TIME_BACK_GROUND_SIZE_X = 200.0f;			//ƒ^ƒCƒ}[‚ÌƒoƒbƒNƒOƒ‰ƒ“ƒh‚ÌX‚Ì’·‚³Ý’è
 const float TIME_BACK_GROUND_SIZE_Y = -75.0f;			//ƒ^ƒCƒ}[‚ÌƒoƒbƒNƒOƒ‰ƒ“ƒh‚ÌY‚Ì’·‚³Ý’è
 const float TIME_COLON_SIZE_X = 35.0f;					//ƒ^ƒCƒ}[‚ÌƒRƒƒ“‚ÌX‚Ì’·‚³Ý’è
@@ -183,12 +218,12 @@ const int FADE_TIME = 5 * 60;							//ƒ{ƒXƒQ[ƒW‚ª—­‚Ü‚Á‚Ä‚©‚çÁ‚¦‚éŽžŠÔ
 
 
 // HP
-const float DRAW_POSX		= 80.0f;	// ƒeƒNƒXƒ`ƒƒ‚ð•\Ž¦‚·‚éˆÊ’u‚ÌXÀ•W
-const float DRAW_FIRSTPOSX	= 0.9f;		// 1‚Â–Ú‚ÌƒeƒNƒXƒ`ƒƒ‚ð•\Ž¦‚·‚éˆÊ’u‚Ì’²ß—p
-const float DRAW_GAP		= 1.15f;	// ƒeƒNƒXƒ`ƒƒ“¯Žm‚ÌŠÔŠu
-const float DRAW_POSY		= 60.0f;	// ƒeƒNƒXƒ`ƒƒ‚ð•\Ž¦‚·‚éˆÊ’u‚ÌYÀ•W
-const float DRAW_HEIGHT		= 90.0f;	// ƒeƒNƒXƒ`ƒƒ‚Ìc•
-const float DRAW_WIDTH		= 90.0f;	// ƒeƒNƒXƒ`ƒƒ‚Ì‰¡•
+const float DRAW_POSX = 80.0f;	// ƒeƒNƒXƒ`ƒƒ‚ð•\Ž¦‚·‚éˆÊ’u‚ÌXÀ•W
+const float DRAW_FIRSTPOSX = 0.9f;		// 1‚Â–Ú‚ÌƒeƒNƒXƒ`ƒƒ‚ð•\Ž¦‚·‚éˆÊ’u‚Ì’²ß—p
+const float DRAW_GAP = 1.15f;	// ƒeƒNƒXƒ`ƒƒ“¯Žm‚ÌŠÔŠu
+const float DRAW_POSY = 60.0f;	// ƒeƒNƒXƒ`ƒƒ‚ð•\Ž¦‚·‚éˆÊ’u‚ÌYÀ•W
+const float DRAW_HEIGHT = 90.0f;	// ƒeƒNƒXƒ`ƒƒ‚Ìc•
+const float DRAW_WIDTH = 90.0f;	// ƒeƒNƒXƒ`ƒƒ‚Ì‰¡•
 
 // BoooomUI =====================================================
 const float BOOOOM_UI_SIZE_X = 1.0f;		//BoooomUI‚ÌX‚Ì’·‚³itexture‚Ì”ä—¦‚Æ‡‚í‚¹‚éj
@@ -197,17 +232,17 @@ const float BOOOOM_UI_SCALE_X = 6.0f;		//BoooomUIƒTƒCƒY‚ÌƒXƒP[ƒ‹
 const float BOOOOM_UI_SCALE_Y = 6.0f;		//BoooomUIƒTƒCƒY‚ÌƒXƒP[ƒ‹
 
 // ƒRƒ“ƒ{ =========================================================
-const int	MAX_COMBO_NUM				= 5;					// Å‘å“¯ŽžƒRƒ“ƒ{”
-const TPos2d<float> COMBO_UI_POSITION	= { 1025.0f, 600.0f };	// ƒRƒ“ƒ{UI‚Ì•`‰æˆÊ’u
-const TPos2d<float> COMBO_UI_SIZE		= {   70.0f, 130.0f };	// ƒRƒ“ƒ{UI‚Ì‘å‚«‚³
-const float COMBO_UI_NUM_SPACE			= 80.0f;				// ”Žš‚ÌŠÔƒXƒy[ƒX
-const float COMBO_UI_MULTI_DISP_SPACE	= 100.0f;				// “¯ŽžƒRƒ“ƒ{•`‰æŽž‚Ìã‰º‚Ì‹ó”’
-const int COMBO_UI_DISP_DILAY_TIME		= 2.0f * 60;			// ŽcƒRƒ“ƒ{”•\Ž¦‚Ì•b”
+const int	MAX_COMBO_NUM = 5;					// Å‘å“¯ŽžƒRƒ“ƒ{”
+const TPos2d<float> COMBO_UI_POSITION = { 1025.0f, 600.0f };	// ƒRƒ“ƒ{UI‚Ì•`‰æˆÊ’u
+const TPos2d<float> COMBO_UI_SIZE = { 70.0f, 130.0f };	// ƒRƒ“ƒ{UI‚Ì‘å‚«‚³
+const float COMBO_UI_NUM_SPACE = 80.0f;				// ”Žš‚ÌŠÔƒXƒy[ƒX
+const float COMBO_UI_MULTI_DISP_SPACE = 100.0f;				// “¯ŽžƒRƒ“ƒ{•`‰æŽž‚Ìã‰º‚Ì‹ó”’
+const int COMBO_UI_DISP_DILAY_TIME = 2.0f * 60;			// ŽcƒRƒ“ƒ{”•\Ž¦‚Ì•b”
 
-const TPos2d<float> COMBO_UI_BACK_POS	 = {1100.0f, 600.0f};	// ƒRƒ“ƒ{UI‚Ì”wŒi‚Ì•`‰æˆÊ’u
-const TPos2d<float> COMBO_UI_BACK_SIZE	 = {370.0f, 280.0f};	// ƒRƒ“ƒ{UI‚Ì”wŒi‚Ì‘å‚«‚³
-const TPos2d<float> COMBO_UI_STRING_POS  = {1150.0f, 615.5f};	// ƒRƒ“ƒ{UI‚Ì•¶Žš‚Ì•`‰æˆÊ’u
-const TPos2d<float> COMBO_UI_STRING_SIZE = {180.0f, 100.0f};		// ƒRƒ“ƒ{UI‚Ì•¶Žš‚Ì‘å‚«‚³
+const TPos2d<float> COMBO_UI_BACK_POS = { 1100.0f, 600.0f };	// ƒRƒ“ƒ{UI‚Ì”wŒi‚Ì•`‰æˆÊ’u
+const TPos2d<float> COMBO_UI_BACK_SIZE = { 370.0f, 280.0f };	// ƒRƒ“ƒ{UI‚Ì”wŒi‚Ì‘å‚«‚³
+const TPos2d<float> COMBO_UI_STRING_POS = { 1150.0f, 615.5f };	// ƒRƒ“ƒ{UI‚Ì•¶Žš‚Ì•`‰æˆÊ’u
+const TPos2d<float> COMBO_UI_STRING_SIZE = { 180.0f, 100.0f };		// ƒRƒ“ƒ{UI‚Ì•¶Žš‚Ì‘å‚«‚³
 
 // ° ====================================
 const float FLOOR_SCALE_X = 1.1f;

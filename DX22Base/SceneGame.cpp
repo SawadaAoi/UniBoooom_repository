@@ -1,33 +1,35 @@
 /* ========================================
 	HEW/UniBoooom!!
 	------------------------------------
-	ã‚²ãƒ¼ãƒ ã‚·ãƒ¼ãƒ³ç”¨cpp
+	ƒQ[ƒ€ƒV[ƒ“—pcpp
 	------------------------------------
 	GameScene.cpp
 	------------------------------------
-	ä½œæˆè€… æ¾¤ç”°è’¼ç”Ÿ
+	ì¬Ò àV“c‘“¶
 
-	å¤‰æ›´å±¥æ­´
-	ãƒ»2023/11/08 ã‚³ãƒ¡ãƒ³ãƒˆè¿½åŠ ã€ç„¡é§„ãªç®‡æ‰€ã‚’å‰Šé™¤ã€€æ¾¤ç”°è’¼ç”Ÿ
-	ãƒ»2023/11/09 ã‚«ãƒ¡ãƒ©ã®æ§˜ã€…å‹•ä½œãƒã‚§ãƒƒã‚¯ã€‚ãƒ¡ã‚¤ãƒ³ã‹ã‚‰è»¸ç·šå¥ªå–ã€‚åœ°é¢è¿½åŠ ã€‚ é«™æœ¨é§¿è¼”
-	ãƒ»2023/11/10 ã‚«ãƒ¡ãƒ©ã‚’ã‚¹ãƒ©ã‚¤ãƒ ã¨çˆ†ç™ºã«ã‚‚æ¸¡ã™ã‚ˆã†ã«ã—ãŸãƒ»lineã®ãƒ¡ãƒ¢ãƒªãƒªãƒ¼ã‚¯å¯¾ç­– é«™æœ¨é§¿è¼”
-	ãƒ»2023/11/17 æŒ¯å‹•æ©Ÿèƒ½å‘¼ã³å‡ºã—ãƒ‡ãƒãƒƒã‚°ãƒ¢ãƒ¼ãƒ‰è¿½åŠ  takagi
-	ãƒ»2023/11/18 BGMã®å†ç”Ÿ yamashita
-	ãƒ»2023/11/18~20 ãƒ•ã‚§ãƒ¼ãƒ‰è©¦ã—ãŸ é«™æœ¨é§¿è¼”
-	ãƒ»2023/11/21 ãƒ•ã‚§ãƒ¼ãƒ‰æ›´æ–°å‘¼ã³å‡ºã— é«™æœ¨é§¿è¼”
-	ãƒ»2023/11/21 ã‚³ãƒ³ãƒœç”¨ã®ãƒ¡ãƒ³ãƒå¤‰æ•°ã‚’è¿½åŠ  Sawada
-	ãƒ»2023/11/21 çˆ†ç™ºæ™‚BoooomUIè¡¨ç¤ºã™ã‚‹ãŸã‚ã®å‡¦ç†ã‚’è¿½åŠ 
+	•ÏX—š—ğ
+	E2023/11/08 ƒRƒƒ“ƒg’Ç‰ÁA–³‘Ê‚È‰ÓŠ‚ğíœ@àV“c‘“¶
+	E2023/11/09 ƒJƒƒ‰‚Ì—lX“®ìƒ`ƒFƒbƒNBƒƒCƒ“‚©‚ç²ü’DæB’n–Ê’Ç‰ÁB ûü–Øx•ã
+	E2023/11/10 ƒJƒƒ‰‚ğƒXƒ‰ƒCƒ€‚Æ”š”­‚É‚à“n‚·‚æ‚¤‚É‚µ‚½Eline‚Ìƒƒ‚ƒŠƒŠ[ƒN‘Îô ûü–Øx•ã
+	E2023/11/17 U“®‹@”\ŒÄ‚Ño‚µƒfƒoƒbƒOƒ‚[ƒh’Ç‰Á takagi
+	E2023/11/18 BGM‚ÌÄ¶ yamashita
+	E2023/11/18 ”š”­ƒXƒ‰ƒCƒ€‚Ì“ªã‚É•\¦‚·‚éƒXƒRƒA’Ç‰Á@yamamoto
+	E2023/11/18~20 ƒtƒF[ƒh‚µ‚½ ûü–Øx•ã
+	E2023/11/21 ƒtƒF[ƒhXVŒÄ‚Ño‚µ ûü–Øx•ã
+	E2023/11/21 ƒRƒ“ƒ{—p‚Ìƒƒ“ƒo•Ï”‚ğ’Ç‰Á Sawada
+	E2023/11/21 ”š”­BoooomUI•\¦‚·‚é‚½‚ß‚Ìˆ—‚ğ’Ç‰Á
+	E2023/11/23 ƒg[ƒ^ƒ‹ƒXƒRƒA•\¦’Ç‰Á@yamamoto
 
 ========================================== */
 
-// =============== ãƒ‡ãƒãƒƒã‚°ãƒ¢ãƒ¼ãƒ‰ ===================
+// =============== ƒfƒoƒbƒOƒ‚[ƒh ===================
 #define USE_CAMERA_VIBRATION (false)
-#define MODE_COORD_AXIS (true)			//åº§æ¨™è»¸æ˜ ã™ã‹ã©ã†ã‹
-#define MODE_GROUND (false)				//åº§æ¨™è»¸æ˜ ã™ã‹ã©ã†ã‹
+#define MODE_COORD_AXIS (true)			//À•W²‰f‚·‚©‚Ç‚¤‚©
+#define MODE_GROUND (false)				//À•W²‰f‚·‚©‚Ç‚¤‚©
 #if _DEBUG
 #define TRY_USE_HIT_STOP (true)
 #endif
-#define USE_FADE_GAME (true)	//ãƒ•ã‚§ãƒ¼ãƒ‰è©¦ã™
+#define USE_FADE_GAME (true)	//ƒtƒF[ƒh‚·
 
 #if USE_FADE_GAME
 #include "Fade.h"
@@ -43,7 +45,7 @@
 #endif
 
 
-// =============== ã‚¤ãƒ³ã‚¯ãƒ«ãƒ¼ãƒ‰ ===================
+// =============== ƒCƒ“ƒNƒ‹[ƒh ===================
 #include "SceneGame.h"
 #include "Geometry.h"
 #include "Model.h"
@@ -57,36 +59,36 @@
 
 
 
-// =============== å®šæ•°å®šç¾© =======================
+// =============== ’è”’è‹` =======================
 #if MODE_GAME_PARAMETER
 #else
 const float BGM_VOLUME = 0.02f;
 #endif
 
 /* ========================================
-	ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿é–¢æ•°
+	ƒRƒ“ƒXƒgƒ‰ƒNƒ^ŠÖ”
 	-------------------------------------
-	å†…å®¹ï¼šã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	“à—eFƒRƒ“ƒXƒgƒ‰ƒNƒ^
 	-------------------------------------
-	å¼•æ•°1ï¼šç„¡ã—
+	ˆø”1F–³‚µ
 	-------------------------------------
-	æˆ»å€¤ï¼šç„¡ã—
+	–ß’lF–³‚µ
 =========================================== */
 SceneGame::SceneGame()
 {
-	// é ‚ç‚¹ã‚·ã‚§ãƒ¼ãƒ€ã®èª­è¾¼
+	// ’¸“_ƒVƒF[ƒ_‚Ì“Ç
 	m_pVs = new VertexShader();
 	if (FAILED(m_pVs->Load("Assets/shader/VS_Model.cso"))) {
 		MessageBox(nullptr, "VS_Model.cso", "Error", MB_OK);
 	}
 
-	// ãƒ¬ãƒ³ãƒ€ãƒ¼ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã€æ·±åº¦ãƒãƒƒãƒ•ã‚¡ã®è¨­å®š
-	RenderTarget* pRTV = GetDefaultRTV();	//ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã§ä½¿ç”¨ã—ã¦ã„ã‚‹RenderTargetViewã®å–å¾—
-	DepthStencil* pDSV = GetDefaultDSV();	//ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã§ä½¿ç”¨ã—ã¦ã„ã‚‹DepthStencilViewã®å–å¾—
-	SetRenderTargets(1, &pRTV, pDSV);		//DSVãŒnullã ã¨2Dè¡¨ç¤ºã«ãªã‚‹
+	// ƒŒƒ“ƒ_[ƒ^[ƒQƒbƒgA[“xƒoƒbƒtƒ@‚Ìİ’è
+	RenderTarget* pRTV = GetDefaultRTV();	//ƒfƒtƒHƒ‹ƒg‚Åg—p‚µ‚Ä‚¢‚éRenderTargetView‚Ìæ“¾
+	DepthStencil* pDSV = GetDefaultDSV();	//ƒfƒtƒHƒ‹ƒg‚Åg—p‚µ‚Ä‚¢‚éDepthStencilView‚Ìæ“¾
+	SetRenderTargets(1, &pRTV, pDSV);		//DSV‚ªnull‚¾‚Æ2D•\¦‚É‚È‚é
 
 #if MODE_COORD_AXIS
-	// è»¸ç·šã®è¡¨ç¤º
+	// ²ü‚Ì•\¦
 	CLine::Init();
 #endif
 
@@ -102,31 +104,32 @@ SceneGame::SceneGame()
 
 	m_pFloor = new CFloor(m_pPlayer->GetPosAddress());
 	m_pFloor->SetCamera(m_pCamera);
-	// ã‚¹ãƒ©ã‚¤ãƒ ãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼ç”Ÿæˆ
+	// ƒXƒ‰ƒCƒ€ƒ}ƒl[ƒWƒƒ[¶¬
 	m_pSlimeMng = new CSlimeManager();
 	m_pSlimeMng->SetCamera(m_pCamera);
 
 
-	// ã‚³ãƒ³ãƒœæ•°è¡¨ç¤ºç”Ÿæˆ
+	// ƒRƒ“ƒ{”•\¦¶¬
 	m_pCombo = new CCombo();
 
-	// çˆ†ç™ºãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼ç”Ÿæˆ
+	// ”š”­ƒ}ƒl[ƒWƒƒ[¶¬
 	m_pExplosionMng = new CExplosionManager();
 	m_pExplosionMng->SetCamera(m_pCamera);
 	m_pExplosionMng->SetCombo(m_pCombo);
-	//ã‚¹ã‚³ã‚¢ç”Ÿæˆ
+	m_pSlimeMng->SetExplosionMng(m_pExplosionMng);
+	//ƒXƒRƒA¶¬
 	m_pScoreOHMng = new CScoreOHManager();
 	m_pScoreOHMng->SetCamera(m_pCamera);
 	m_pSlimeMng->SetScoreOHMng(m_pScoreOHMng);
 
-	//ãƒˆãƒ¼ã‚¿ãƒ«ã‚¹ã‚³ã‚¢ç”Ÿæˆ
+	//ƒg[ƒ^ƒ‹ƒXƒRƒA¶¬
 	m_pTotalScore = new CTotalScore();
 	m_pCombo->SetTotalScore(m_pTotalScore);
 	
-	// ã‚¿ã‚¤ãƒãƒ¼ç”Ÿæˆ
+	// ƒ^ƒCƒ}[¶¬
 	m_pTimer = new CTimer();
 	m_pTimer->TimeStart();
-	//ã‚¹ãƒ†ãƒ¼ã‚¸çµ‚äº†ã®UIè¡¨ç¤º
+	//ƒXƒe[ƒWI—¹‚ÌUI•\¦
 	m_pStageFin = new CStageFinish(m_pPlayer->GetHP(),m_pTimer->GetTimePtr());
 
 	m_pHpMng = new CHP_UI(m_pPlayer->GetHP());
@@ -144,22 +147,23 @@ SceneGame::SceneGame()
 
 
 	LoadSound();
-	//BGMã®å†ç”Ÿ
-	m_pSpeaker = CSound::PlaySound(m_pBGM);		//BGMã®å†ç”Ÿ
-	m_pSpeaker->SetVolume(BGM_VOLUME);			//éŸ³é‡ã®è¨­å®š
+	//BGM‚ÌÄ¶
+	m_pSpeaker = CSound::PlaySound(m_pBGM);		//BGM‚ÌÄ¶
+	m_pSpeaker->SetVolume(BGM_VOLUME);			//‰¹—Ê‚Ìİ’è
 
-	//ãƒœã‚¹ã‚²ãƒ¼ã‚¸
+	//ƒ{ƒXƒQ[ƒW
 	m_pBossgauge = new CBossgauge(m_pTimer->GetNowTime());
+	m_pBossgauge->SetSlimeManager(m_pSlimeMng);
 }
 
 /* ========================================
-	ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿é–¢æ•°
+	ƒfƒXƒgƒ‰ƒNƒ^ŠÖ”
 	-------------------------------------
-	å†…å®¹ï¼šãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	“à—eFƒfƒXƒgƒ‰ƒNƒ^
 	-------------------------------------
-	å¼•æ•°1ï¼šç„¡ã—
+	ˆø”1F–³‚µ
 	-------------------------------------
-	æˆ»å€¤ï¼šç„¡ã—
+	–ß’lF–³‚µ
 =========================================== */
 SceneGame::~SceneGame()
 {
@@ -176,7 +180,8 @@ SceneGame::~SceneGame()
 	SAFE_DELETE(m_pTimer);
 	SAFE_DELETE(m_pCombo);
 	SAFE_DELETE(m_pExplosionMng);
-	SAFE_DELETE(m_pSlimeMng);	// ã‚¹ãƒ©ã‚¤ãƒ ãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼å‰Šé™¤
+	SAFE_DELETE(m_pCombo);
+	SAFE_DELETE(m_pSlimeMng);	// ƒXƒ‰ƒCƒ€ƒ}ƒl[ƒWƒƒ[íœ
 	SAFE_DELETE(m_pFloor);
 	SAFE_DELETE(m_pCamera);
 	SAFE_DELETE(m_pPlayer);
@@ -185,7 +190,7 @@ SceneGame::~SceneGame()
 	SAFE_DELETE(m_pTotalScore);
 
 #if MODE_COORD_AXIS
-	// è»¸ç·šã®è¡¨ç¤º
+	// ²ü‚Ì•\¦
 	CLine::Uninit();
 #endif
 	SAFE_DELETE(m_pVs);
@@ -196,23 +201,23 @@ SceneGame::~SceneGame()
 
 
 /* ========================================
-   æ›´æ–°å‡¦ç†é–¢æ•°
+   XVˆ—ŠÖ”
    -------------------------------------
-   å†…å®¹ï¼šæ›´æ–°å‡¦ç†
+   “à—eFXVˆ—
    -------------------------------------
-   å¼•æ•°1ï¼šãƒ†ã‚£ãƒƒã‚¯æ•°?(æœªä½¿ç”¨)
+   ˆø”1FƒeƒBƒbƒN”?(–¢g—p)
    -------------------------------------
-   æˆ»å€¤ï¼šç„¡ã—
+   –ß’lF–³‚µ
 =========================================== */
 void SceneGame::Update(float tick)
 {
 
 #if TRY_USE_HIT_STOP
-	CHitStop::Update();	//ãƒ’ãƒƒãƒˆã‚¹ãƒˆãƒƒãƒ—æ›´æ–°
-	//Effectæ›´æ–°ã€ãã®ä»–å¿…è¦ãªã‚‚ã®
-	if (CHitStop::IsStop())	//ã‚¹ãƒˆãƒƒãƒ—æ¤œæŸ»
+	CHitStop::Update();	//ƒqƒbƒgƒXƒgƒbƒvXV
+	//EffectXVA‚»‚Ì‘¼•K—v‚È‚à‚Ì
+	if (CHitStop::IsStop())	//ƒXƒgƒbƒvŒŸ¸
 	{
-		return;	//å‡¦ç†ä¸­æ–­
+		return;	//ˆ—’†’f
 	}
 #endif
 #if USE_CAMERA_VIBRATION
@@ -236,14 +241,14 @@ void SceneGame::Update(float tick)
 #if TRY_USE_HIT_STOP
 	if (IsKeyTrigger('Z'))
 	{
-		CHitStop::UpFlag(CHitStop::E_BIT_FLAG_STOP_SOFT);	//ãƒ•ãƒ©ã‚°ã‚ªãƒ³
+		CHitStop::UpFlag(CHitStop::E_BIT_FLAG_STOP_SOFT);	//ƒtƒ‰ƒOƒIƒ“
 	}
 #endif
 	m_pCamera->Update();
 	m_pPlayer->Update();
 	m_pSlimeMng->SetPlayerPos(m_pPlayer->GetPos());
 
-	// ã‚¹ãƒ©ã‚¤ãƒ ãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼æ›´æ–°
+	// ƒXƒ‰ƒCƒ€ƒ}ƒl[ƒWƒƒ[XV
 	m_pFloor->Update();
 	m_pSlimeMng->Update(m_pExplosionMng);
 	m_pExplosionMng->Update();
@@ -253,7 +258,7 @@ void SceneGame::Update(float tick)
 	m_pCombo->Update();
 	m_pCamera->Update();
 
-	// HPãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼æ›´æ–°
+	// HPƒ}ƒl[ƒWƒƒ[XV
 	m_pHpMng->Update();
 
 	m_pBossgauge->Update();
@@ -265,21 +270,21 @@ void SceneGame::Update(float tick)
 }
 
 /* ========================================
-   æç”»å‡¦ç†é–¢æ•°
+   •`‰æˆ—ŠÖ”
    -------------------------------------
-   å†…å®¹ï¼šæç”»å‡¦ç†
+   “à—eF•`‰æˆ—
    -------------------------------------
-   å¼•æ•°1ï¼šç„¡ã—
+   ˆø”1F–³‚µ
    -------------------------------------
-   æˆ»å€¤ï¼šç„¡ã—
+   –ß’lF–³‚µ
 =========================================== */
 void SceneGame::Draw()
 {
 #if MODE_COORD_AXIS
-	// è»¸ç·šã®è¡¨ç¤º
+	// ²ü‚Ì•\¦
 	CLine::SetView(m_pCamera->GetViewMatrix());
 	CLine::SetProjection(m_pCamera->GetProjectionMatrix());
-	// ã‚°ãƒªãƒƒãƒ‰
+	// ƒOƒŠƒbƒh
 	DirectX::XMFLOAT4 lineColor(0.5f, 0.5f, 0.5f, 1.0f);
 	float size = DEBUG_GRID_NUM * DEBUG_GRID_MARGIN;
 	for (int i = 1; i <= DEBUG_GRID_NUM; ++i)
@@ -299,7 +304,7 @@ void SceneGame::Draw()
 		pos[0].z = pos[1].z = -grid;
 		CLine::Add(pos[0], pos[1], lineColor);
 	}
-	// è»¸
+	// ²
 	CLine::Add(DirectX::XMFLOAT3(0, 0, 0), DirectX::XMFLOAT3(size, 0, 0), DirectX::XMFLOAT4(1, 0, 0, 1));
 	CLine::Add(DirectX::XMFLOAT3(0, 0, 0), DirectX::XMFLOAT3(0, size, 0), DirectX::XMFLOAT4(0, 1, 0, 1));
 	CLine::Add(DirectX::XMFLOAT3(0, 0, 0), DirectX::XMFLOAT3(0, 0, size), DirectX::XMFLOAT4(0, 0, 1, 1));
@@ -312,48 +317,48 @@ void SceneGame::Draw()
 #if MODE_GROUND
 	DirectX::XMFLOAT4X4 mat[3];
 
-	//Geometoryç”¨ã®å¤‰æ›è¡Œåˆ—ã‚’è¨­å®š
-	DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(0.0f, -0.5f * 0.1f, 0.0f);	//ã‚°ãƒªãƒƒãƒ‰ã‚ˆã‚Šã‚‚ä¸‹ã«æ¥ã‚‹ã‚ˆã†ã«ç§»å‹•
-	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(100.0f, 0.1f, 100.0f);		//åœ°é¢ã¨ãªã‚‹ã‚ˆã†ã«ã€å‰å¾Œå·¦å³ã«åºƒãä¸Šä¸‹ã«ç‹­ã„
-	DirectX::XMMATRIX world = S * T;											//å…¨ã¦ã®è¡Œåˆ—ã‚’ä¸€ã¤ã«ã¾ã¨ã‚ã‚‹
+	//Geometory—p‚Ì•ÏŠ·s—ñ‚ğİ’è
+	DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(0.0f, -0.5f * 0.1f, 0.0f);	//ƒOƒŠƒbƒh‚æ‚è‚à‰º‚É—ˆ‚é‚æ‚¤‚ÉˆÚ“®
+	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(100.0f, 0.1f, 100.0f);		//’n–Ê‚Æ‚È‚é‚æ‚¤‚ÉA‘OŒã¶‰E‚ÉL‚­ã‰º‚É‹·‚¢
+	DirectX::XMMATRIX world = S * T;											//‘S‚Ä‚Ìs—ñ‚ğˆê‚Â‚É‚Ü‚Æ‚ß‚é
 	world = DirectX::XMMatrixTranspose(world);
-	DirectX::XMStoreFloat4x4(&mat[0], world);	//matã‚’fMatã«æ ¼ç´
-	m_pBox->SetWorld(mat[0]);	//ãƒœãƒƒã‚¯ã‚¹ã«å¤‰æ›è¡Œåˆ—ã‚’è¨­å®š
+	DirectX::XMStoreFloat4x4(&mat[0], world);	//mat‚ğfMat‚ÉŠi”[
+	m_pBox->SetWorld(mat[0]);	//ƒ{ƒbƒNƒX‚É•ÏŠ·s—ñ‚ğİ’è
 
-	//Geometoryç”¨ã®å¤‰æ›è¡Œåˆ—ã‚’è¨­å®š
+	//Geometory—p‚Ì•ÏŠ·s—ñ‚ğİ’è
 	mat[1] = m_pCamera->GetViewMatrix();
 	mat[2] = m_pCamera->GetProjectionMatrix();
 
-	m_pBox->SetView(mat[1]);		//ãƒœãƒƒã‚¯ã‚¹ã«å¤‰æ›è¡Œåˆ—ã‚’è¨­å®š
-	m_pBox->SetProjection(mat[2]);	//ãƒœãƒƒã‚¯ã‚¹ã«å¤‰æ›è¡Œåˆ—ã‚’è¨­å®š
+	m_pBox->SetView(mat[1]);		//ƒ{ƒbƒNƒX‚É•ÏŠ·s—ñ‚ğİ’è
+	m_pBox->SetProjection(mat[2]);	//ƒ{ƒbƒNƒX‚É•ÏŠ·s—ñ‚ğİ’è
 
-	//// è¡Œåˆ—ã‚’ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼ã¸ 
+	//// s—ñ‚ğƒVƒF[ƒ_[‚Ö 
 	//m_pVs->WriteBuffer(0, mat);
 
 	m_pBox->Draw();
 #endif
 	
-	RenderTarget* pRTV = GetDefaultRTV();	//ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã§ä½¿ç”¨ã—ã¦ã„ã‚‹RenderTargetViewã®å–å¾—
-	DepthStencil* pDSV = GetDefaultDSV();	//ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã§ä½¿ç”¨ã—ã¦ã„ã‚‹DepthStencilViewã®å–å¾—
-	SetRenderTargets(1, &pRTV, pDSV);		//DSVãŒnullã ã¨2Dè¡¨ç¤ºã«ãªã‚‹
-	//åºŠã®æç”»
+	RenderTarget* pRTV = GetDefaultRTV();	//ƒfƒtƒHƒ‹ƒg‚Åg—p‚µ‚Ä‚¢‚éRenderTargetView‚Ìæ“¾
+	DepthStencil* pDSV = GetDefaultDSV();	//ƒfƒtƒHƒ‹ƒg‚Åg—p‚µ‚Ä‚¢‚éDepthStencilView‚Ìæ“¾
+	SetRenderTargets(1, &pRTV, pDSV);		//DSV‚ªnull‚¾‚Æ2D•\¦‚É‚È‚é
+	//°‚Ì•`‰æ
 	m_pFloor->Draw();
-	// ã‚¹ãƒ©ã‚¤ãƒ ãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼æç”»
+	// ƒXƒ‰ƒCƒ€ƒ}ƒl[ƒWƒƒ[•`‰æ
 	m_pSlimeMng->Draw();
 	m_pPlayer->Draw();
 	
-	//çˆ†ç™ºãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼æç”»
+	//”š”­ƒ}ƒl[ƒWƒƒ[•`‰æ
 	m_pExplosionMng->Draw();
 	
 
 
-	//ã‚¿ã‚¤ãƒãƒ¼æç”»
+	//ƒ^ƒCƒ}[•`‰æ
 	SetRenderTargets(1, &pRTV, nullptr);
 	m_pStageFin->Draw();
 	m_pTimer->Draw();
 	m_pCombo->Draw();
 
-	// HPãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼æç”»
+	// HPƒ}ƒl[ƒWƒƒ[•`‰æ
 	m_pHpMng->Draw();
 
 	m_pTimer->Draw();
@@ -361,10 +366,10 @@ void SceneGame::Draw()
 	m_pTotalScore->Draw();
 
 
-	//ãƒœã‚¹ã‚²ãƒ¼ã‚¸æç”»
+	//ƒ{ƒXƒQ[ƒW•`‰æ
 	m_pBossgauge->Draw();
 
-	m_pScoreOHMng->Draw();//ã‚¹ã‚³ã‚¢ãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼æç”»
+	m_pScoreOHMng->Draw();//ƒXƒRƒAƒ}ƒl[ƒWƒƒ[•`‰æ
 
 #if USE_FADE_GAME
 	m_pFade->Draw();
@@ -372,16 +377,16 @@ void SceneGame::Draw()
 }
 
 /* ========================================
-   ã‚µã‚¦ãƒ³ãƒ‰ãƒ•ã‚¡ã‚¤ãƒ«èª­ã¿è¾¼ã¿é–¢æ•°
+   ƒTƒEƒ“ƒhƒtƒ@ƒCƒ‹“Ç‚İ‚İŠÖ”
    -------------------------------------
-   å†…å®¹ï¼šã‚µã‚¦ãƒ³ãƒ‰ãƒ•ã‚¡ã‚¤ãƒ«ã®èª­ã¿è¾¼ã¿
+   “à—eFƒTƒEƒ“ƒhƒtƒ@ƒCƒ‹‚Ì“Ç‚İ‚İ
    -------------------------------------
-   å¼•æ•°1ï¼šç„¡ã—
+   ˆø”1F–³‚µ
    -------------------------------------
-   æˆ»å€¤ï¼šç„¡ã—
+   –ß’lF–³‚µ
 =========================================== */
 void SceneGame::LoadSound()
 {
-	m_pBGM = CSound::LoadSound("Assets/Sound/BGM/BGM_maou.mp3", true);		//BGMã®èª­ã¿è¾¼ã¿
-	m_pSEHitHammer = CSound::LoadSound("Assets/Sound/SE/Smash.mp3");		//SEã®èª­ã¿è¾¼ã¿
+	m_pBGM = CSound::LoadSound("Assets/Sound/BGM/BGM_maou.mp3", true);		//BGM‚Ì“Ç‚İ‚İ
+	m_pSEHitHammer = CSound::LoadSound("Assets/Sound/SE/Smash.mp3");		//SE‚Ì“Ç‚İ‚İ
 }

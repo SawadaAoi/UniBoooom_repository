@@ -339,6 +339,12 @@
     <ClCompile Include="BoooomUI.cpp">
       <Filter>ソース ファイル\2dObject</Filter>
     </ClCompile>
+    <ClCompile Include="Slime_Boss_1.cpp">
+      <Filter>ソース ファイル\3dObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Slime_BossBase.cpp">
+      <Filter>ソース ファイル\3dObject</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Defines.h">
@@ -559,6 +565,15 @@
     </ClInclude>
     <ClInclude Include="BoooomUI.h">
       <Filter>ヘッダー ファイル\2dObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Slime_Boss_1.h">
+      <Filter>ヘッダー ファイル\3dObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Slime_BossBase.h">
+      <Filter>ヘッダー ファイル\3dObject</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraFade.h">
+      <Filter>ヘッダー ファイル\System\Camera</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

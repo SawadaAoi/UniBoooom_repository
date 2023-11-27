@@ -396,9 +396,5 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
-/DX22Base/CollisionOfStage.cpp
-/DX22Base/CollisionOfStage.h
-/DX22Base/SceneGameStage1.cpp
-/DX22Base/SceneGameStage1.h
-/DX22Base/SceneResult.cpp
-/DX22Base/SceneResult.h
+
+*.cso

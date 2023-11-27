@@ -18,6 +18,7 @@
 	・2023/11/14 SphereInfoの変更に対応 Takagi
 	・2023/11/14 全体的に処理の流れが分かりづらかったので修正 Sawada
 	・2023/11/15 Objectクラスを継承したので修正　yamamoto
+	・2023/11/23 ジオメトリーからモデルに差し替え　yamashita
 	
 ========================================== */
 
@@ -53,14 +54,28 @@ const float ONE_FRAME_ADD_ANGLE = SWING_ANGLE / SWING_TIME_FRAME;			// 1フレーム
    戻値：なし
    ======================================== */
 CHammer::CHammer()
-	: m_pHammerGeo(nullptr)
-	, m_tPlayerPos(0.0f,0.0f,0.0f)
+	: m_tPlayerPos(0.0f,0.0f,0.0f)
 	, m_fAngleNow(0)
 	, m_dAddAngleCnt(0)
+	, m_pCamera(nullptr)
 {
-	m_pHammerGeo = new CSphere();							//ハンマーを仮表示するジオメトリー
 	m_Sphere.fRadius = HAMMER_COL_SIZE;
 	m_Transform.fScale = HAMMER_SIZE;
+	m_Transform.fRadian.x = HAMMER_ANGLE_X;
+	m_Transform.fRadian.y = HAMMER_ANGLE_Y;
+	m_Transform.fRadian.z = HAMMER_ANGLE_Z;
+
+	//頂点シェーダ読み込み
+	m_pVS = new VertexShader();
+	if (FAILED(m_pVS->Load("Assets/Shader/VS_Model.cso"))) {
+		MessageBox(nullptr, "VS_Model.cso", "Error", MB_OK);
+	}
+	//ハンマーのモデル読み込み
+	m_pModel = new Model;
+	if (!m_pModel->Load("Assets/Model/hammer/hammer3.FBX", 1.0f, Model::XFlip)) {		//倍率と反転は省略可
+		MessageBox(NULL, "hammer", "Error", MB_OK);	//ここでエラーメッセージ表示
+	}
+	m_pModel->SetVertexShader(m_pVS);
 }
 
 /* ========================================
@@ -74,7 +89,8 @@ CHammer::CHammer()
    ======================================== */
 CHammer::~CHammer()
 {
-	SAFE_DELETE(m_pHammerGeo);
+	SAFE_DELETE(m_pModel);
+	SAFE_DELETE(m_pVS);
 }
 
 /* ========================================
@@ -114,12 +130,28 @@ bool CHammer::Update()
    ----------------------------------------
    戻値：なし
    ======================================== */
-void CHammer::Draw(const CCamera* pCamera)
+void CHammer::Draw()
 {
-	m_pHammerGeo->SetWorld(m_Transform.GetWorldMatrixSRT());			//ワールド座標にセット
-	m_pHammerGeo->SetView(pCamera->GetViewMatrix());
-	m_pHammerGeo->SetProjection(pCamera->GetProjectionMatrix());
-	m_pHammerGeo->Draw();
+	if (!m_pCamera) { return; }
+
+	//-- モデル表示
+	if (m_pModel) {
+		DirectX::XMFLOAT4X4 mat[3];
+
+		mat[0] = m_Transform.GetWorldMatrixSRT();
+		mat[1] = m_pCamera->GetViewMatrix();
+		mat[2] = m_pCamera->GetProjectionMatrix();
+
+		//-- 行列をシェーダーへ設定
+		m_pVS->WriteBuffer(0, mat);
+
+		// レンダーターゲット、深度バッファの設定
+		RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得
+		DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
+		SetRenderTargets(1, &pRTV, pDSV);		//DSVがnullだと2D表示になる
+
+		m_pModel->Draw();
+	}
 }
 
 /* ========================================
@@ -138,6 +170,8 @@ void CHammer::Swing()
 	// 角度から座標を取得(プレイヤーの位置＋距離＋プレイヤーの周りの円状の位置)
 	m_Transform.fPos.x = m_tPlayerPos.x + ROTATE_RADIUS * -cosf(m_fAngleNow);	// 三角関数(反時計回り)とDirectX(時計回り)の角度の向きが逆なので反転する
 	m_Transform.fPos.z = m_tPlayerPos.z + ROTATE_RADIUS * sinf(m_fAngleNow);
+
+	m_Transform.fRadian.y = m_fAngleNow - DirectX::XMConvertToRadians(90.0f);
 
 	m_dAddAngleCnt++;	// 角度変更フレームカウント加算
 
@@ -170,3 +204,16 @@ void CHammer::AttackStart(TPos3d<float>pPos, float angle)
 }
 
 
+/* ========================================
+   カメラセット関数
+   ----------------------------------------
+   内容：カメラのポインタをセット
+   ----------------------------------------
+   引数1：カメラポインタ
+   ----------------------------------------
+   戻値：なし
+   ======================================== */
+void CHammer::SetCamera(const CCamera * pCamera)
+{
+	m_pCamera = pCamera;
+}

@@ -20,7 +20,15 @@
 	E2023/11/14 SphereInfo‚Ì•ÏX‚É‘Î‰ Takagi
 	E2023/11/15 Šeƒ‚ƒfƒ‹‚Ì“Ç‚İ‚İ‚ğbase‚©‚çˆÚ“® yamashita
 	E2023/11/15 Šeƒ‚ƒfƒ‹‚Ì“Ç‚İ‚İ‚ğŠÖ”‰» yamashita
+	E2023/11/20 ƒ{ƒX—p‚Ì”z—ñ‚ğ’Ç‰Á
+	E2023/11/21 ƒ{ƒX—p‚Ì“–‚½‚è”»’è‚Ìˆ—(HitSlimeBossBranch...etc)‚ğ’Ç‰Á
+	E2023/11/21 ƒ{ƒX—p‚Ì’Êí‚Ìˆ—(PreventSlimeBossOverlap...etc)‚ğ’Ç‰Á
 	E2023/11/21 BoooomUi•\¦‚·‚éŠÖ”‚ğŒÄ‚Ño‚· Tei
+	E2023/11/23 ƒXƒ‰ƒCƒ€‚Ì¶¬ˆÊ’u‚ğƒvƒŒƒCƒ„[’†S‚É•ÏX yamashita
+	E2023/11/23 ƒXƒ‰ƒCƒ€‚Ì¶¬ˆÊ’u‚ª‘O‰ñ‚Ì¶¬ˆÊ’u‚©‚çˆê’èˆÈã—£‚ê‚é‚æ‚¤‚É•ÏX	yamashita
+	E2023/11/23 ƒXƒ‰ƒCƒ€‚ªƒvƒŒƒCƒ„[‚©‚çˆê’èˆÈã—£‚ê‚é‚Æ‘ÎŠpüã‚ÉˆÚ“®‚·‚é‚æ‚¤‚É•ÏX yamashita
+	E2023/11/26 ƒ{ƒX¶¬—pŠÖ”’Ç‰Á	Sawada
+	E2023/11/26 ƒXƒ‰ƒCƒ€‚Æ”š”­‚Ì‹——£‚ğ’²‚×“¦‚°‚é‚©”»’è‚·‚éŠÖ”‚ğì¬ yamashita
 
 =========================================== */
 
@@ -31,6 +39,7 @@
 #include "Slime_3.h"
 #include "Slime_4.h"
 #include "Slime_Flame.h"
+#include "Slime_Boss_1.h"
 #include "Input.h"		//Œã‚ÅÁ‚·
 #include "GameParameter.h"		//’è”’è‹`—pƒwƒbƒ_[
 
@@ -39,11 +48,13 @@
 // =============== ’è”’è‹` =======================
 #if MODE_GAME_PARAMETER
 #else
+#define DEBUG_BOSS	(false)						// ƒfƒoƒbƒO—p‚ÉƒQ[ƒ€ŠJnƒ{ƒX‚ğ¶¬‚·‚é‚©‚Ç‚¤‚©
+
 const int ENEMY_CREATE_INTERVAL	= 3 * 60;		// ¶¬ŠÔŠu
 const int RANDOM_POS			= 15;			// ¶¬À•W”ÍˆÍ
 const int CREATE_DISTANCE		= 10;			// ¶¬‹——£Å¬’l
-const int SLIME_LEVEL1_PER		= 50;			// ƒXƒ‰ƒCƒ€_1‚Ì¶¬Šm—§
-const int SLIME_LEVEL2_PER		= 35;			// ƒXƒ‰ƒCƒ€_2‚Ì¶¬Šm—§
+const int SLIME_LEVEL1_PER		= 10;			// ƒXƒ‰ƒCƒ€_1‚Ì¶¬Šm—§
+const int SLIME_LEVEL2_PER		= 15;			// ƒXƒ‰ƒCƒ€_2‚Ì¶¬Šm—§
 const int SLIME_LEVEL3_PER		= 10;			// ƒXƒ‰ƒCƒ€_3‚Ì¶¬Šm—§
 const int SLIME_LEVEL_FLAME_PER	= 100 - SLIME_LEVEL1_PER - SLIME_LEVEL2_PER - SLIME_LEVEL3_PER;	// ƒXƒ‰ƒCƒ€_ƒtƒŒƒCƒ€‚Ì¶¬Šm—§
 
@@ -54,7 +65,7 @@ const float COL_SUB_HIT_TO_BIG = 0.7f;				// ƒXƒ‰ƒCƒ€Õ“Ë(¬¨‘å)‚ÌÕ“Ë‘¤‚ÌŒ¸Z’
 const float COL_SUB_STAND_TO_SMALL = 0.3f;			// ƒXƒ‰ƒCƒ€Õ“Ë(¬¨‘å)‚ÌÕ“Ë‚³‚ê‚é‘¤‚ÌŒ¸Z’l(Õ“Ë‚³‚ê‚½•ûŒü)
 const float COL_SUB_HIT_TO_SMALL = 0.3f;			// ƒXƒ‰ƒCƒ€Õ“Ë(‘å¨¬)‚ÌÕ“Ë‘¤‚ÌŒ¸Z’l(ˆÚ“®•ûŒü)
 const float COL_SUB_STAND_TO_BIG = 1.2f;			// ƒXƒ‰ƒCƒ€Õ“Ë(‘å¨¬)‚ÌÕ“Ë‚³‚ê‚é‘¤‚ÌŒ¸Z’l(Õ“Ë‚³‚ê‚½•ûŒü)
-
+const float LEAVE_DISTANCE = 20.0f;					// ‚±‚êˆÈã—£‚ê‚½‚ç‘ÎŠpüã‚ÉˆÚ“®‚·‚é
 
 #endif
 
@@ -75,11 +86,14 @@ CSlimeManager::CSlimeManager()
 	, m_pYellowModel(nullptr)
 	, m_pRedModel(nullptr)
 	, m_pFlameModel(nullptr)
+	, m_pBossModel(nullptr)
 	, m_pSEHitSlime(nullptr)
 	, m_pSEUnion(nullptr)
 	, m_pSEHitSlimeSpeaker(nullptr)
 	, m_pSEUnionSpeaker(nullptr)
-	//, m_pBoooomMng(nullptr)
+	, m_oldCreatePos{ 0.0f,0.0f,0.0f }
+
+	, m_pExpMng(nullptr)
 {
 	//ƒXƒ‰ƒCƒ€‚Ìƒ‚ƒfƒ‹‚Æ’¸“_ƒVƒF[ƒ_[‚Ì“Ç‚İ‚İ
 	LoadModel();
@@ -89,6 +103,11 @@ CSlimeManager::CSlimeManager()
 	{
 		m_pSlime[i] = nullptr;
 	}
+	// ƒ{ƒXƒXƒ‰ƒCƒ€‰Šú‰»
+	for (int i = 0; i < MAX_BOSS_SLIME_NUM; i++)
+	{
+		m_pBoss[i] = nullptr;
+	}
 
 	// ƒQ[ƒ€ŠJn‚É“GƒLƒƒƒ‰‚ğ¶¬‚·‚é
 	for (int i = 0; i < START_ENEMY_NUM; i++)
@@ -96,6 +115,20 @@ CSlimeManager::CSlimeManager()
 		int ranLv = rand() % 3 + 1;		// ¶¬‚·‚éƒXƒ‰ƒCƒ€‚ÌƒŒƒxƒ‹‚ğ—”‚Åw’è
 		Create((E_SLIME_LEVEL)ranLv);	// ¶¬ˆ—
 	}
+
+#if DEBUG_BOSS
+	// ŠJnƒ{ƒX¶¬
+	for (int i = 0; i < MAX_BOSS_SLIME_NUM; i++)
+	{
+		// ƒXƒ‰ƒCƒ€‚Ìuse‚ğŒŸõ
+		if (m_pBoss[i] != nullptr) continue;
+		m_pBoss[i] = new CSlime_Boss_1(TPos3d<float>(5.0f,0.0f,3.0f), m_pVS, m_pBossModel);	//“®“I¶¬
+
+		break;
+	}
+#endif
+	
+
 	//ƒTƒEƒ“ƒhƒtƒ@ƒCƒ‹‚Ì“Ç‚İ‚İ
 	m_pSEHitSlime = CSound::LoadSound("Assets/Sound/SE/SlimeHitSlime.mp3");		//ƒnƒ“ƒ}[‚ğU‚Á‚½‚ÌSE‚Ì“Ç‚İ‚İ
 	m_pSEUnion = CSound::LoadSound("Assets/Sound/SE/Union.mp3");		//ƒXƒ‰ƒCƒ€‚ª‚­‚Á‚Â‚¢‚½‚Ì‚ÌSE‚Ì“Ç‚İ‚İ
@@ -121,12 +154,20 @@ CSlimeManager::~CSlimeManager()
 	SAFE_DELETE(m_pYellowModel);
 	SAFE_DELETE(m_pGreenModel);
 	SAFE_DELETE(m_pBlueModel);
+	SAFE_DELETE(m_pBossModel);
 
 	// ƒXƒ‰ƒCƒ€íœ
 	for (int i = 0; i < MAX_SLIME_NUM; i++)
 	{
 		SAFE_DELETE(m_pSlime[i]);
 	}
+
+	// ƒ{ƒXƒXƒ‰ƒCƒ€íœ
+	for (int i = 0; i < MAX_BOSS_SLIME_NUM; i++)
+	{
+		SAFE_DELETE(m_pBoss[i]);
+	}
+
 }
 
 /* ========================================
@@ -140,7 +181,8 @@ CSlimeManager::~CSlimeManager()
 =========================================== */
 void CSlimeManager::Update(CExplosionManager* pExpMng)
 {
-	
+	CheckEscape();	//Update‚Ì‘O‚É‹ß‚­‚É”š”­‚ª‚ ‚é‚©Šm”F‚·‚é
+
 	// ƒXƒ‰ƒCƒ€XV
 	for (int i = 0; i < MAX_SLIME_NUM; i++)
 	{
@@ -148,6 +190,17 @@ void CSlimeManager::Update(CExplosionManager* pExpMng)
 		m_pSlime[i]->Update(m_pPlayerPos);
 
 	}
+
+	OutOfRange();	//ƒXƒ‰ƒCƒ€‚ªƒvƒŒƒCƒ„[‚©‚çˆê’è‹——£—£‚ê‚½‚ç‘ÎŠpü‚ÉˆÚ“®
+
+	// ƒ{ƒXƒXƒ‰ƒCƒ€XV
+	for (int i = 0; i < MAX_BOSS_SLIME_NUM; i++)
+	{
+		if (m_pBoss[i] == nullptr) continue;
+		m_pBoss[i]->Update(m_pPlayerPos);
+
+	}
+
 
 	m_CreateCnt++;
 	if(ENEMY_CREATE_INTERVAL<= m_CreateCnt)
@@ -169,12 +222,21 @@ void CSlimeManager::Update(CExplosionManager* pExpMng)
 =========================================== */
 void CSlimeManager::Draw()
 {
-	//"ƒXƒ‰ƒCƒ€1"•`‰æ
+	//"ƒXƒ‰ƒCƒ€"•`‰æ
 	for (int i = 0; i < MAX_SLIME_NUM; i++)
 	{
 		if (m_pSlime[i] == nullptr) continue;
 		m_pSlime[i]->Draw(m_pCamera);
 	}
+
+	// ƒ{ƒXƒXƒ‰ƒCƒ€XV
+	for (int i = 0; i < MAX_BOSS_SLIME_NUM; i++)
+	{
+		if (m_pBoss[i] == nullptr) continue;
+		m_pBoss[i]->Draw(m_pCamera);
+
+	}
+
 }
 
 
@@ -200,14 +262,18 @@ void CSlimeManager::Create(E_SLIME_LEVEL level)
 		while (true)
 		{
 			// —”‚ğƒZƒbƒg‚·‚é
-			CreatePos.x = GetRandom(-RANDOM_POS, RANDOM_POS);	//—”æ“¾
-			CreatePos.z = GetRandom(-RANDOM_POS, RANDOM_POS);
+			CreatePos.x = GetRandom(m_pPlayerPos.x - RANDOM_POS, m_pPlayerPos.x + RANDOM_POS);	//—”æ“¾
+			CreatePos.z = GetRandom(m_pPlayerPos.z - RANDOM_POS, m_pPlayerPos.z + RANDOM_POS);	
 			CreatePos.y = 0;
 
-			float Distance = CreatePos.Distance(m_pPlayerPos);	// ¶¬À•W‚ÌƒvƒŒƒCƒ„[‚Æ‚Ì‹——£
+			float PlayerCreateDistance = CreatePos.Distance(m_pPlayerPos);	// ¶¬À•W‚ÌƒvƒŒƒCƒ„[‚Æ‚Ì‹——£
+			float oldCreateDistance = CreatePos.Distance(m_oldCreatePos);	// ¶¬À•W‚ÌƒvƒŒƒCƒ„[‚Æ‚Ì‹——£
 
-			if (Distance >= CREATE_DISTANCE) break;	// ƒvƒŒƒCƒ„[‚©‚çˆê’è‚Ì‹——£—£‚ê‚Ä‚¢‚ê‚Î”²‚¯‚é
+			// ƒvƒŒƒCƒ„[‚©‚çˆê’è‚Ì‹——£—£‚ê‚Ä‚¢‚ê‚Î”²‚¯‚é
+			if (PlayerCreateDistance >= CREATE_DISTANCE && oldCreateDistance >= CREATE_DISTANCE) break;	
 		}
+
+		m_oldCreatePos = CreatePos;	//¶¬À•W‚ğ•Û
 		
 		switch (level)
 		{
@@ -226,11 +292,33 @@ void CSlimeManager::Create(E_SLIME_LEVEL level)
 		case LEVEL_FLAME:
 			m_pSlime[i] = new CSlime_Flame(CreatePos,m_pVS,m_pFlameModel);	// “®“I¶¬
 			break;
+
 		}
 
 		m_pSlime[i]->SetCamera(m_pCamera);	//ƒJƒƒ‰‚ğƒZƒbƒg
 		break;						// ¶¬‚µ‚½‚çI—¹
 		
+	}
+}
+
+/* ========================================
+	ƒ{ƒXƒXƒ‰ƒCƒ€¶¬ŠÖ”
+	-------------------------------------
+	“à—eFƒ{ƒXƒXƒ‰ƒCƒ€‚Ì¶¬
+	-------------------------------------
+	ˆø”1F–³‚µ
+	-------------------------------------
+	–ß’lF–³‚µ
+=========================================== */
+void CSlimeManager::CreateBoss()
+{
+	for (int i = 0; i < MAX_BOSS_SLIME_NUM; i++)
+	{
+		// ƒXƒ‰ƒCƒ€‚Ìuse‚ğŒŸõ
+		if (m_pBoss[i] != nullptr) continue;
+		m_pBoss[i] = new CSlime_Boss_1(TPos3d<float>(0.0f, 0.0f, 0.0f), m_pVS, m_pBossModel);	//“®“I¶¬(æ‚è‡‚¦‚¸ˆÊ’u‚Í‰¼)
+
+		break;
 	}
 }
 
@@ -288,14 +376,15 @@ void CSlimeManager::HitBranch(int HitSlimeNum, int StandSlimeNum, CExplosionMana
 	//ƒXƒ‰ƒCƒ€‚ÌƒTƒCƒY‚ª“¯‚¶‚¾‚Á‚½ê‡
 	else
 	{
+
 		SAFE_DELETE(m_pSlime[HitSlimeNum]);								// Õ“Ë‚·‚éƒXƒ‰ƒCƒ€‚ğíœ
 		SAFE_DELETE(m_pSlime[StandSlimeNum]);							// Õ“Ë‚³‚ê‚½ƒXƒ‰ƒCƒ€‚ğíœ
 
 		if (hitSlimeLevel == MAX_LEVEL)	//ƒXƒ‰ƒCƒ€‚ÌƒTƒCƒY‚ªÅ‘å‚Ì
 		{
 			//ƒXƒ‰ƒCƒ€”š”­ˆ—
-			pExpMng->Create(pos, MAX_SIZE_EXPLODE * EXPLODE_BASE_RATIO, LEVEL_4_EXPLODE_TIME, E_SLIME_LEVEL::LEVEL_4x4);	//Õ“Ë‚³‚ê‚½ƒXƒ‰ƒCƒ€‚ÌˆÊ’u‚ÅƒŒƒxƒ‹‚S”š”­
-			m_pScoreOHMng->DisplayOverheadScore(pos, LEVEL_4_SCORE * 2, LEVEL_4_HEIGHT);
+			pExpMng->Create(pos, MAX_SIZE_EXPLODE * EXPLODE_BASE_RATIO, LEVEL_4_EXPLODE_TIME, LEVEL_4_EXPLODE_DAMAGE, E_SLIME_LEVEL::LEVEL_4x4);	//Õ“Ë‚³‚ê‚½ƒXƒ‰ƒCƒ€‚ÌˆÊ’u‚ÅƒŒƒxƒ‹‚S”š”­
+			m_pScoreOHMng->DisplayOverheadScore(pos, LEVEL_4_SCORE * 2, SLIME_SCORE_HEIGHT);
 			pExpMng->CreateUI(pos, LEVEL_4_EXPLODE_TIME);		//ƒŒƒxƒ‹‚S”š”­‚µ‚½ˆÊ’uboooomUI•\¦
 		}
 		else	//Å‘åƒTƒCƒY‚¶‚á‚È‚¢ê‡‚Í1’iŠK‘å‚«‚¢ƒXƒ‰ƒCƒ€‚ğ¶¬‚·‚é
@@ -428,7 +517,195 @@ void CSlimeManager::TouchExplosion(int DelSlime, CExplosionManager * pExpMng, in
 	//ƒg[ƒ^ƒ‹ƒXƒRƒAilevel,combo)
 	SAFE_DELETE(m_pSlime[DelSlime]);					//‚Ô‚Â‚©‚è‚É—ˆ‚½ƒXƒ‰ƒCƒ€‚ğíœ
 
-	//pExpMng->Create(pos, ExplosionSize);				//Õ“Ëæ‚ÌƒXƒ‰ƒCƒ€‚ÌˆÊ’u‚Å”š”­
+}
+
+/* ========================================
+	ƒXƒ‰ƒCƒ€¨ƒ{ƒXÚG•ªŠòŠÖ”
+	----------------------------------------
+	“à—eFƒXƒ‰ƒCƒ€‚©‚çƒ{ƒX‚Æ‚ÌÚG‚ğ³‚µ‚¢ˆ—‚É•ªŠò‚³‚¹‚é
+	----------------------------------------
+	ˆø”1FÕ“Ë‚·‚éƒXƒ‰ƒCƒ€‚Ì”z—ñ”Ô†
+	ˆø”2FÕ“Ë‚³‚ê‚½ƒXƒ‰ƒCƒ€‚Ì”z—ñ”Ô†
+	ˆø”3F”š”­ƒ}ƒl[ƒWƒƒ[
+	----------------------------------------
+	–ß’lF‚È‚µ
+======================================== */
+void CSlimeManager::HitSlimeBossBranch(int HitSlimeNum, int StandBossNum, CExplosionManager* pExpMng)
+{
+	E_SLIME_LEVEL hitSlimeLevel;								// ƒŒƒxƒ‹
+	E_SLIME_LEVEL standBossLevel;								// ƒŒƒxƒ‹(ƒ{ƒX)
+	tagTransform3d hitSlimeTransform;							// ƒ[ƒ‹ƒhÀ•WŒn
+	tagTransform3d standBossTransform;							// ƒ[ƒ‹ƒhÀ•WŒn(ƒ{ƒX)
+	TTriType<float> hitSlimeSize;								// ƒTƒCƒY‚ğŠm•Û						
+	float hitSlimeSpeed;										// ˆÚ“®ƒXƒs[ƒh
+	float travelAngle, reflectionAngle;							// ˆÚ“®•ûŒü
+
+	// --QÆ
+	// ƒm[ƒ}ƒ‹
+	hitSlimeLevel = m_pSlime[HitSlimeNum]->GetSlimeLevel();			// Õ“Ë‚·‚éƒXƒ‰ƒCƒ€‚ÌƒTƒCƒY‚ğæ“¾
+	hitSlimeTransform = m_pSlime[HitSlimeNum]->GetTransform();		// Õ“Ë‚·‚éƒXƒ‰ƒCƒ€‚Ìƒ[ƒ‹ƒhÀ•Wî•ñ‚ğæ“¾
+	hitSlimeSpeed = m_pSlime[HitSlimeNum]->GetSpeed();				// Õ“Ë‚·‚éƒXƒ‰ƒCƒ€‚Ì‘¬“x‚ğæ“¾
+	hitSlimeSize = m_pSlime[HitSlimeNum]->GetScale();				// Õ“Ëæ‚ÌƒXƒ‰ƒCƒ€‚ÌƒTƒCƒY‚ğŠm•Û
+
+	// ƒ{ƒX
+	standBossLevel = LEVEL_BOSS;									// Õ“Ë‚·‚é	ƒ{ƒXƒXƒ‰ƒCƒ€‚ÌƒTƒCƒY‚ğæ“¾
+	standBossTransform = m_pBoss[StandBossNum]->GetTransform();		// Õ“Ë‚·‚é	ƒ{ƒXƒXƒ‰ƒCƒ€‚Ìƒ[ƒ‹ƒhÀ•Wî•ñ‚ğæ“¾
+
+	// ‚»‚Ì‘¼
+	travelAngle = hitSlimeTransform.Angle(standBossTransform);		// Õ“Ë‚·‚é‘¤‚Ìis•ûŒü
+	reflectionAngle = standBossTransform.Angle(hitSlimeTransform);	// Õ“Ë‚·‚é‘¤‚Ì‹t•ûŒü(”½Ë)
+
+	//-- ƒtƒŒƒCƒ€ƒXƒ‰ƒCƒ€ƒqƒbƒgˆ—
+	// ƒtƒŒƒCƒ€@¨@ƒ{ƒX
+	if (hitSlimeLevel == LEVEL_FLAME && standBossLevel == LEVEL_BOSS)
+	{
+		// ƒtƒŒƒCƒ€‚ª”š”­‚µ‚Äƒ{ƒX‚Íc‚é
+		pExpMng->SwitchExplode(hitSlimeLevel, hitSlimeTransform.fPos, hitSlimeSize);	//ƒXƒ‰ƒCƒ€‚ÌƒŒƒxƒ‹‚É‚æ‚Á‚Ä”š”­‚ÌŠÔ‚ÆƒTƒCƒY‚ğ•ªŠò
+		SAFE_DELETE(m_pSlime[HitSlimeNum]);												// Õ“Ë‚·‚éƒXƒ‰ƒCƒ€‚ğíœ
+	}
+
+	//-- ƒm[ƒ}ƒ‹ƒXƒ‰ƒCƒ€ƒqƒbƒgˆ—
+	// ƒ{ƒX‚ªÕ“Ë‚³‚ê‚éê‡(¬¨‘å)
+	else if (hitSlimeLevel < standBossLevel)
+	{
+		m_pSlime[HitSlimeNum]->HitMoveStart(hitSlimeSpeed * COL_SUB_HIT_TO_BIG, reflectionAngle);			// Õ“Ë‚·‚éƒXƒ‰ƒCƒ€‚É‚«”ò‚ÑˆÚ“®ˆ—
+		m_pBoss[StandBossNum]->HitMoveStart(hitSlimeSpeed * COL_SUB_STAND_TO_SMALL, travelAngle);			// Õ“Ë‚³‚ê‚½ƒXƒ‰ƒCƒ€‚É‚«”ò‚ÑˆÚ“®ˆ—
+
+	}
+
+}
+
+/* ========================================
+	ƒ{ƒX¨ƒXƒ‰ƒCƒ€ÚG•ªŠòŠÖ”
+	----------------------------------------
+	“à—eFƒ{ƒX‚©‚çƒXƒ‰ƒCƒ€‚Æ‚ÌÚG‚ğ³‚µ‚¢ˆ—‚É•ªŠò‚³‚¹‚é
+	----------------------------------------
+	ˆø”1FÕ“Ë‚·‚éƒXƒ‰ƒCƒ€‚Ì”z—ñ”Ô†
+	ˆø”2FÕ“Ë‚³‚ê‚½ƒXƒ‰ƒCƒ€‚Ì”z—ñ”Ô†
+	ˆø”3F”š”­ƒ}ƒl[ƒWƒƒ[
+	----------------------------------------
+	–ß’lF‚È‚µ
+======================================== */
+void CSlimeManager::HitBossSlimeBranch(int HitSlimeNum, int StandSlimeNum, CExplosionManager* pExpMng)
+{
+	E_SLIME_LEVEL standSlimeLevel;				// ƒŒƒxƒ‹
+	E_SLIME_LEVEL hitBossLevel;					// ƒŒƒxƒ‹(ƒ{ƒX)
+	tagTransform3d standSlimeTransform;			// ƒ[ƒ‹ƒhÀ•WŒn
+	tagTransform3d hitBossTransform;			// ƒ[ƒ‹ƒhÀ•WŒn(ƒ{ƒX)
+	TTriType<float> standSlimeSize;				// ƒTƒCƒY‚ğŠm•Û						
+	float hitBossSpeed;							// ˆÚ“®ƒXƒs[ƒh(ƒ{ƒX)
+	float travelAngle, reflectionAngle;			// ˆÚ“®•ûŒü
+
+	// --QÆ
+	// // ƒm[ƒ}ƒ‹
+	standSlimeLevel = m_pSlime[StandSlimeNum]->GetSlimeLevel();		// Õ“Ë‚·‚éƒXƒ‰ƒCƒ€‚ÌƒTƒCƒY‚ğæ“¾
+	standSlimeTransform = m_pSlime[StandSlimeNum]->GetTransform();	// Õ“Ë‚·‚éƒXƒ‰ƒCƒ€‚Ìƒ[ƒ‹ƒhÀ•Wî•ñ‚ğæ“¾
+	standSlimeSize = m_pSlime[StandSlimeNum]->GetScale();			// ƒXƒ‰ƒCƒ€‚ÌƒTƒCƒY‚ğŠm•Û
+
+	// ƒ{ƒX
+	hitBossLevel = LEVEL_BOSS;										// Õ“Ë‚·‚é	ƒ{ƒXƒXƒ‰ƒCƒ€‚ÌƒTƒCƒY‚ğæ“¾
+	hitBossTransform = m_pBoss[HitSlimeNum]->GetTransform();		// Õ“Ë‚·‚é	ƒ{ƒXƒXƒ‰ƒCƒ€‚Ìƒ[ƒ‹ƒhÀ•Wî•ñ‚ğæ“¾
+	hitBossSpeed = m_pBoss[HitSlimeNum]->GetSpeed();				// Õ“Ë‚·‚é	ƒ{ƒXƒXƒ‰ƒCƒ€‚Ì‘¬“x‚ğæ“¾	¦ƒ{ƒX‚Íˆê’è‚È‚Í‚¸‚¾‚©‚ç•Ï‚¦‚½‚¢
+	
+	// ‚»‚Ì‘¼
+	travelAngle = hitBossTransform.Angle(standSlimeTransform);		// Õ“Ë‚·‚é‘¤‚Ìis•ûŒü
+	reflectionAngle = standSlimeTransform.Angle(hitBossTransform);	// Õ“Ë‚·‚é‘¤‚Ì‹t•ûŒü(”½Ë)
+
+	//-- ƒtƒŒƒCƒ€ƒXƒ‰ƒCƒ€ƒqƒbƒgˆ—
+	// ƒ{ƒX@¨@ƒtƒŒƒCƒ€
+	if (hitBossLevel == LEVEL_BOSS && standSlimeLevel == LEVEL_FLAME)
+	{
+		// ƒtƒŒƒCƒ€‚ª”š”­‚µ‚Äƒ{ƒX‚Íc‚é
+		pExpMng->SwitchExplode(standSlimeLevel, standSlimeTransform.fPos, standSlimeSize);	//ƒXƒ‰ƒCƒ€‚ÌƒŒƒxƒ‹‚É‚æ‚Á‚Ä”š”­‚ÌŠÔ‚ÆƒTƒCƒY‚ğ•ªŠò
+		SAFE_DELETE(m_pSlime[StandSlimeNum]);												// Õ“Ë‚·‚éƒXƒ‰ƒCƒ€‚ğíœ
+	}
+
+	//-- ƒm[ƒ}ƒ‹ƒXƒ‰ƒCƒ€ƒqƒbƒgˆ—
+	// ƒ{ƒX‚ªÕ“Ë‚·‚éê‡(‘å¨¬) 
+	else if (hitBossLevel > standSlimeLevel)
+	{
+		m_pBoss[HitSlimeNum]->HitMoveStart(hitBossSpeed * COL_SUB_HIT_TO_SMALL, travelAngle);				// Õ“Ë‚·‚éƒXƒ‰ƒCƒ€‚É‚«”ò‚ÑˆÚ“®ˆ—
+		m_pSlime[StandSlimeNum]->HitMoveStart(hitBossSpeed * COL_SUB_STAND_TO_BIG, travelAngle);			// Õ“Ë‚³‚ê‚½ƒXƒ‰ƒCƒ€‚É‚«”ò‚ÑˆÚ“®ˆ—
+
+	}
+}
+
+/* ========================================
+	ƒ{ƒX¨ƒ{ƒXÚG•ªŠòŠÖ”
+	----------------------------------------
+	“à—eFƒXƒ‰ƒCƒ€‚©‚çƒ{ƒX‚Æ‚ÌÚG‚ğ³‚µ‚¢ˆ—‚É•ªŠò‚³‚¹‚é
+	----------------------------------------
+	ˆø”1FÕ“Ë‚·‚éƒXƒ‰ƒCƒ€‚Ì”z—ñ”Ô†
+	ˆø”2FÕ“Ë‚³‚ê‚½ƒXƒ‰ƒCƒ€‚Ì”z—ñ”Ô†
+	ˆø”3F”š”­ƒ}ƒl[ƒWƒƒ[
+	----------------------------------------
+	–ß’lF‚È‚µ
+======================================== */
+void CSlimeManager::HitBossBossBranch(int HitBossNum, int StandBossNum, CExplosionManager* pExpMng)
+{
+	E_SLIME_LEVEL hitBossLevel, standBossLevel;					// ƒŒƒxƒ‹(ƒ{ƒX)
+	tagTransform3d hitBossTransform, standBossTransform;		// ƒ[ƒ‹ƒhÀ•WŒn(ƒ{ƒX)					
+	float hitBossSpeed;											// ˆÚ“®ƒXƒs[ƒh(ƒ{ƒX)
+	float travelAngle, reflectionAngle;							// ˆÚ“®•ûŒü
+
+	// --QÆ
+	// ƒ{ƒX
+	hitBossLevel = LEVEL_BOSS;									// Õ“Ë‚·‚é	ƒ{ƒXƒXƒ‰ƒCƒ€‚ÌƒTƒCƒY‚ğæ“¾
+	hitBossTransform = m_pBoss[HitBossNum]->GetTransform();		// Õ“Ë‚·‚é	ƒ{ƒXƒXƒ‰ƒCƒ€‚Ìƒ[ƒ‹ƒhÀ•Wî•ñ‚ğæ“¾
+	hitBossSpeed = m_pBoss[HitBossNum]->GetSpeed();				// Õ“Ë‚·‚é	ƒ{ƒXƒXƒ‰ƒCƒ€‚Ì‘¬“x‚ğæ“¾	¦ƒ{ƒX‚Íˆê’è‚È‚Í‚¸‚¾‚©‚ç•Ï‚¦‚½‚¢
+	standBossLevel = LEVEL_BOSS;								// Õ“Ë‚·‚é	ƒ{ƒXƒXƒ‰ƒCƒ€‚ÌƒTƒCƒY‚ğæ“¾
+	standBossTransform = m_pBoss[StandBossNum]->GetTransform();	// Õ“Ë‚·‚é	ƒ{ƒXƒXƒ‰ƒCƒ€‚Ìƒ[ƒ‹ƒhÀ•Wî•ñ‚ğæ“¾
+
+	// ‚»‚Ì‘¼
+	travelAngle = hitBossTransform.Angle(standBossTransform);		// Õ“Ë‚·‚é‘¤‚Ìis•ûŒü
+	reflectionAngle = standBossTransform.Angle(hitBossTransform);	// Õ“Ë‚·‚é‘¤‚Ì‹t•ûŒü(”½Ë)
+
+	// --ƒ{ƒX“¯mƒqƒbƒgˆ—
+	if (hitBossLevel == LEVEL_BOSS && standBossLevel == LEVEL_BOSS)
+	{
+		//(‘å¨¬)‚Æ“¯‚¶‹““®‚ğs‚¤
+		m_pBoss[HitBossNum]->HitMoveStart(hitBossSpeed * COL_SUB_HIT_TO_SMALL, travelAngle);				// Õ“Ë‚·‚éƒXƒ‰ƒCƒ€‚É‚«”ò‚ÑˆÚ“®ˆ—
+		m_pBoss[StandBossNum]->HitMoveStart(hitBossSpeed * COL_SUB_STAND_TO_BIG, travelAngle);			// Õ“Ë‚³‚ê‚½ƒXƒ‰ƒCƒ€‚É‚«”ò‚ÑˆÚ“®ˆ—
+
+	}
+}
+
+/* ========================================
+	”š”­ÚGŠÖ”(ƒ{ƒX)
+	----------------------------------------
+	“à—eF‰æ–Êã‚Ì”š”­‚Éƒ{ƒX‚ªÚG‚µ‚½‚Ìˆ—
+	----------------------------------------
+	ˆø”1FÚG‚µ‚½ƒ{ƒX‚Ì”z—ñ”Ô†(int)
+	ˆø”2F”š”­ƒ}ƒl[ƒWƒƒ[‚Ìƒ|ƒCƒ“ƒ^
+	ˆø”3FÚG‚µ‚½”š”­‚Ì”z—ñ”Ô†(int)
+	----------------------------------------
+	–ß’lF‚È‚µ
+======================================== */
+void CSlimeManager::TouchBossExplosion(int BossNum, CExplosionManager* pExpMng, int ExpNum)
+{
+	CExplosion* touchExplosion = pExpMng->GetExplosionPtr(ExpNum);	// ÚG‚µ‚½”š”­‚ğæ“¾
+	TPos3d<float> pos(m_pBoss[BossNum]->GetPos());					// Õ“Ëæ‚ÌƒXƒ‰ƒCƒ€‚ÌˆÊ’u‚ğŠm•Û
+	E_SLIME_LEVEL level = m_pBoss[BossNum]->GetSlimeLevel();		// Õ“Ëæ‚ÌƒXƒ‰ƒCƒ€‚ÌƒŒƒxƒ‹‚ğŠm•Û
+	TTriType<float> size = m_pBoss[BossNum]->GetScale();			// Õ“Ëæ‚ÌƒXƒ‰ƒCƒ€ƒTƒCƒY‚ğŠm•Û
+
+	// Šù‚ÉÚGÏ‚İ‚©ŒŸõ
+	if (touchExplosion->GetBossTouched() == false)
+	{
+		// ”š”­ˆĞ—Í•ª‚Ìƒ_ƒ[ƒW‚ğƒ{ƒX‚É—^‚¦‚é
+		m_pBoss[BossNum]->Damage(pExpMng->GetExplosionPtr(ExpNum)->GetDamage());
+		// ˆê“xƒ_ƒ[ƒW‚ğ—^‚¦‚½‚ç“¯‚¶”š”­‚Å‚Íƒ_ƒ[ƒW‚ğ—^‚¦‚È‚¢
+		touchExplosion->BossTouched();
+	}
+	// €–Sˆ—
+	if (m_pBoss[BossNum]->IsDead() == true)
+	{
+		SAFE_DELETE(m_pBoss[BossNum]);	//‚Ô‚Â‚©‚è‚É—ˆ‚½ƒXƒ‰ƒCƒ€(ƒ{ƒX)‚ğíœ
+		
+		pExpMng->SwitchExplode(level, pos, size, pExpMng->GetExplosionPtr(ExpNum)->GetComboNum());	// ”š”­¶¬
+		m_pScoreOHMng->DisplayOverheadScore(pos, LEVEL_4_SCORE * 2, SLIME_SCORE_HEIGHT);
+
+	}
+
 }
 
 /* ========================================
@@ -465,16 +742,16 @@ E_SLIME_LEVEL CSlimeManager::GetRandomLevel()
 }
 
 /* ========================================
-	d‚È‚ç‚È‚¢ŠÖ”
+	ƒXƒ‰ƒCƒ€‚ÆƒXƒ‰ƒCƒ€‚ªd‚È‚ç‚È‚¢ŠÖ”
 	----------------------------------------
 	“à—eF‚Ô‚Â‚©‚Á‚½ƒXƒ‰ƒCƒ€‚ª­‚µ‰Ÿ‚µ–ß‚³‚ê‚éŠÖ”
 	----------------------------------------
 	ˆø”1FÕ“Ë‚µ‚½ƒXƒ‰ƒCƒ€‚Ìƒ|ƒCƒ“ƒ^
 	ˆø”2FÕ“Ë‚³‚ê‚½ƒXƒ‰ƒCƒ€‚Ìƒ|ƒCƒ“ƒ^
 	----------------------------------------
-	–ß’lF
+	–ß’lF–³‚µ
 ======================================== */
-void CSlimeManager::PreventOverlap(CSlimeBase * pMoveSlime, CSlimeBase * pStandSlime)
+void CSlimeManager::PreventSlimeSlimeOverlap(CSlimeBase * pMoveSlime, CSlimeBase * pStandSlime)
 {
 	//«‚ÌƒRƒƒ“ƒgƒAƒEƒg‚Í—‘z“I‚Èˆ—‚Ì‚â‚è‚©‚¯
 	/*
@@ -517,13 +794,82 @@ void CSlimeManager::PreventOverlap(CSlimeBase * pMoveSlime, CSlimeBase * pStandS
 }
 
 /* ========================================
+	ƒXƒ‰ƒCƒ€¨ƒ{ƒX‚ªd‚È‚ç‚È‚¢ŠÖ”
+	----------------------------------------
+	“à—eF‚Ô‚Â‚©‚Á‚½ƒXƒ‰ƒCƒ€‚ª­‚µ‰Ÿ‚µ–ß‚³‚ê‚éŠÖ”
+	----------------------------------------
+	ˆø”1FÕ“Ë‚µ‚½ƒXƒ‰ƒCƒ€‚Ìƒ|ƒCƒ“ƒ^
+	ˆø”2FÕ“Ë‚³‚ê‚½ƒ{ƒX‚Ìƒ|ƒCƒ“ƒ^
+	----------------------------------------
+	–ß’lF–³‚µ
+======================================== */
+void CSlimeManager::PreventSlimeBossOverlap(CSlimeBase* pMoveSlime, CSlime_BossBase* pStandBoss)
+{
+
+	float angle = pStandBoss->GetTransform().Angle(pMoveSlime->GetTransform());				//Õ“Ë‚µ‚Ä‚«‚½Šp“x
+	float distance = pStandBoss->GetSphere().fRadius + pMoveSlime->GetSphere().fRadius;	//‚¨Œİ‚¢‚ÌƒXƒ‰ƒCƒ€‚Ì”¼Œa‚ğ‘«‚µ‚½”
+
+	TPos3d<float> pos = pStandBoss->GetPos();		//‰Ÿ‚µ–ß‚·Šî€‚ÌÀ•W
+	pos.x += cosf(angle) * (distance + 0.001f);		//‚Ô‚Â‚©‚ç‚È‚¢ƒMƒŠƒMƒŠ‚Ì‹——£‚ğİ’è
+	pos.z += sinf(angle) * (distance + 0.001f);		//‚Ô‚Â‚©‚ç‚È‚¢ƒMƒŠƒMƒŠ‚Ì‹——£‚ğİ’è
+
+	pMoveSlime->SetPos(pos);						//‚Ô‚Â‚©‚ç‚È‚¢ƒMƒŠƒMƒŠ‚Ì‹——£‚ÉˆÚ“®
+}
+
+/* ========================================
+	ƒ{ƒX¨ƒXƒ‰ƒCƒ€‚ªd‚È‚ç‚È‚¢ŠÖ”
+	----------------------------------------
+	“à—eF‚Ô‚Â‚©‚ç‚ê‚½ƒXƒ‰ƒCƒ€‚ª­‚µ‰Ÿ‚µ–ß‚³‚ê‚éŠÖ”
+	----------------------------------------
+	ˆø”1FÕ“Ë‚µ‚½ƒXƒ‰ƒCƒ€‚Ìƒ|ƒCƒ“ƒ^
+	ˆø”2FÕ“Ë‚³‚ê‚½ƒXƒ‰ƒCƒ€‚Ìƒ|ƒCƒ“ƒ^
+	----------------------------------------
+	–ß’lF–³‚µ
+======================================== */
+void CSlimeManager::PreventBossSlimeOverlap(CSlime_BossBase* pMoveBoss, CSlimeBase* pStandSlime)
+{
+
+	float angle = pStandSlime->GetTransform().Angle(pMoveBoss->GetTransform());				//Õ“Ë‚µ‚Ä‚«‚½Šp“x
+	float distance = pStandSlime->GetSphere().fRadius + pMoveBoss->GetSphere().fRadius;	//‚¨Œİ‚¢‚ÌƒXƒ‰ƒCƒ€‚Ì”¼Œa‚ğ‘«‚µ‚½”
+
+	TPos3d<float> pos = pStandSlime->GetPos();		//‰Ÿ‚µ–ß‚·Šî€‚ÌÀ•W
+	pos.x += cosf(angle) * (distance + 0.001f);		//‚Ô‚Â‚©‚ç‚È‚¢ƒMƒŠƒMƒŠ‚Ì‹——£‚ğİ’è
+	pos.z += sinf(angle) * (distance + 0.001f);		//‚Ô‚Â‚©‚ç‚È‚¢ƒMƒŠƒMƒŠ‚Ì‹——£‚ğİ’è
+
+	pStandSlime->SetPos(pos);						//‚Ô‚Â‚©‚ç‚È‚¢ƒMƒŠƒMƒŠ‚Ì‹——£‚ÉˆÚ“®
+}
+
+/* ========================================
+	ƒ{ƒX‚Æƒ{ƒX‚ªd‚È‚ç‚È‚¢ŠÖ”
+	----------------------------------------
+	“à—eF‚Ô‚Â‚©‚Á‚½ƒ{ƒX‚ª­‚µ‰Ÿ‚µ–ß‚³‚ê‚éŠÖ”
+	----------------------------------------
+	ˆø”1FÕ“Ë‚µ‚½ƒXƒ‰ƒCƒ€‚Ìƒ|ƒCƒ“ƒ^
+	ˆø”2FÕ“Ë‚³‚ê‚½ƒXƒ‰ƒCƒ€‚Ìƒ|ƒCƒ“ƒ^
+	----------------------------------------
+	–ß’lF–³‚µ
+======================================== */
+void CSlimeManager::PreventBossBossOverlap(CSlime_BossBase* pMoveBoss, CSlime_BossBase* pStandBoss)
+{
+
+	float angle = pStandBoss->GetTransform().Angle(pMoveBoss->GetTransform());				//Õ“Ë‚µ‚Ä‚«‚½Šp“x
+	float distance = pStandBoss->GetSphere().fRadius + pMoveBoss->GetSphere().fRadius;	//‚¨Œİ‚¢‚ÌƒXƒ‰ƒCƒ€‚Ì”¼Œa‚ğ‘«‚µ‚½”
+
+	TPos3d<float> pos = pStandBoss->GetPos();		//‰Ÿ‚µ–ß‚·Šî€‚ÌÀ•W
+	pos.x += cosf(angle) * (distance + 0.001f);		//‚Ô‚Â‚©‚ç‚È‚¢ƒMƒŠƒMƒŠ‚Ì‹——£‚ğİ’è
+	pos.z += sinf(angle) * (distance + 0.001f);		//‚Ô‚Â‚©‚ç‚È‚¢ƒMƒŠƒMƒŠ‚Ì‹——£‚ğİ’è
+
+	pMoveBoss->SetPos(pos);						//‚Ô‚Â‚©‚ç‚È‚¢ƒMƒŠƒMƒŠ‚Ì‹——£‚ÉˆÚ“®
+}
+
+/* ========================================
 	ƒ‚ƒfƒ‹“Ç‚İ‚İŠÖ”
 	----------------------------------------
 	“à—eFƒXƒ‰ƒCƒ€‚Ìƒ‚ƒfƒ‹‚Æ’¸“_ƒVƒF[ƒ_[‚Ì“Ç‚İ‚İ
 	----------------------------------------
-	ˆø”1F‚È‚µ
+	ˆø”1F–³‚µ
 	----------------------------------------
-	–ß’lF
+	–ß’lF–³‚µ
 ======================================== */
 void CSlimeManager::LoadModel()
 {
@@ -562,6 +908,84 @@ void CSlimeManager::LoadModel()
 		MessageBox(NULL, "Flame_Slime", "Error", MB_OK);	//‚±‚±‚ÅƒGƒ‰[ƒƒbƒZ[ƒW•\¦
 	}
 	m_pFlameModel->SetVertexShader(m_pVS);
+	//ƒ{ƒXƒXƒ‰ƒCƒ€‚Ìƒ‚ƒfƒ‹“Ç‚İ‚İ
+	m_pBossModel = new Model;
+	if (!m_pBossModel->Load("Assets/Model/boss_slime_1/boss_slime_1.fbx", 0.23f, Model::XFlip)) {		//”{—¦‚Æ”½“]‚ÍÈ—ª‰Â
+		MessageBox(NULL, "Boss_Slime", "Error", MB_OK);	//‚±‚±‚ÅƒGƒ‰[ƒƒbƒZ[ƒW•\¦
+	}
+	m_pBossModel->SetVertexShader(m_pVS);
+}
+
+/* ========================================
+	”ÍˆÍŠOƒXƒ‰ƒCƒ€ˆÚ“®ŠÖ”
+	----------------------------------------
+	“à—eFƒvƒŒƒCƒ„[‚©‚ç—£‚ê‚·‚¬‚½ƒXƒ‰ƒCƒ€‚ğƒvƒŒƒCƒ„[‚©‚çŒ©‚½‘ÎŠpü‚ÌˆÊ’u‚ÉˆÚ“®
+	----------------------------------------
+	ˆø”FƒQƒbƒg‚µ‚½‚¢ƒXƒ‰ƒCƒ€‚Ì—v‘f”Ô†
+	----------------------------------------
+	–ß’lFƒXƒ‰ƒCƒ€‚Ì”z—ñ
+======================================== */
+void CSlimeManager::OutOfRange()
+{
+	for (int i = 0; i < MAX_SLIME_NUM; i++)
+	{
+		if (!m_pSlime[i]) { continue; }	//null‚È‚çƒXƒLƒbƒv
+
+		TPos3d<float> slimePos = m_pSlime[i]->GetPos();
+		float distance = slimePos.Distance(m_pPlayerPos);
+
+		if (distance >= LEAVE_DISTANCE)	//‹——£‚ª—£‚ê‚·‚¬‚Ä‚¢‚½‚ç
+		{
+			//‘Š‘Î‹——£‚ğŒvZ
+			float disX = m_pPlayerPos.x - slimePos.x;	
+			float disZ = m_pPlayerPos.z - slimePos.z;
+
+			//­‚µ‹ß‚Ã‚¯‚Ä‚©‚ç‘ÎŠpü‚ÉˆÚ“®‚³‚¹‚é
+			if (disX > 0.0f) { disX -= 1.0f; }
+			else { disX += 1.0f; }
+			if (disZ > 0.0f) { disZ -= 1.0f; }
+			else { disZ += 1.0f; }
+			//‘ÎŠpü‚ÌÀ•W‚ğƒZƒbƒg
+			TPos3d<float> setPos = {m_pPlayerPos.x + disX,0.0f,m_pPlayerPos.z + disZ};
+			m_pSlime[i]->SetPos(setPos);
+		}
+	}
+}
+
+
+/* ========================================
+	“¦‘–”»’èŠÖ”
+	----------------------------------------
+	“à—eFƒXƒ‰ƒCƒ€‚Æ”š”­‚ÌˆÊ’uŠÖŒW‚ğŠm”F‚µ‚Ä“¦‚°‚é‚©‚Ç‚¤‚©”»’è‚·‚é
+	----------------------------------------
+	ˆø”1F‚È‚µ
+	----------------------------------------
+	–ß’lF‚È‚µ
+======================================== */
+void CSlimeManager::CheckEscape()
+{
+	for (int j = 0; j < MAX_SLIME_NUM; j++)
+	{
+		if (!m_pSlime[j]) { continue; }						//nullptr‚È‚çƒXƒLƒbƒv
+		if (m_pSlime[j]->GetEscapeFlag()) { continue; }		//‚·‚Å‚É“¦‚°‚Ä‚¢‚é‚È‚çƒXƒLƒbƒv
+
+		TPos3d<float> slimePos = m_pSlime[j]->GetPos();	//ƒXƒ‰ƒCƒ€‚ÌÀ•W‚ğƒQƒbƒg
+		float distance = ESCAPE_DISTANCE;				//“¦‚°‚éó‘Ô‚É‚È‚éÅ‘å‹——£‚ğƒZƒbƒg
+		//”ÍˆÍ“à‚É”š”­‚ª‚ ‚ê‚Î“¦‚°‚é‚½‚ß‚Ìƒtƒ‰ƒO‚ÆÀ•W‚ğƒZƒbƒg
+		for (int i = 0; i < MAX_EXPLOSION_NUM; i++)
+		{
+			CExplosion* pExp = m_pExpMng->GetExplosionPtr(i);	//”š”­‚Ìƒ|ƒCƒ“ƒ^‚ğæ“¾
+			if (!pExp) { continue; }							//nullptr‚È‚çƒXƒLƒbƒv
+			TPos3d<float> expPos = pExp->GetPos();				//”š”­‚ÌÀ•W‚ğƒQƒbƒg
+			float slimeExpDistance = slimePos.Distance(expPos);
+			if (distance > slimeExpDistance)	//‚æ‚è‹ß‚¢”š”­‚ªŒ©‚Â‚©‚Á‚½ê‡
+			{
+				distance = slimeExpDistance;
+				m_pSlime[j]->SetExplosionPos(expPos);	//”š”­‚ÌÀ•W‚ğƒXƒ‰ƒCƒ€‚ÉƒZƒbƒg
+				m_pSlime[j]->SetEscapeFlag(true);		//“¦‚°‚éƒtƒ‰ƒO‚ğON‚É‚·‚é
+			}
+		}
+	}
 }
 
 /* ========================================
@@ -576,6 +1000,20 @@ void CSlimeManager::LoadModel()
 CSlimeBase* CSlimeManager::GetSlimePtr(int num)
 {
 	return m_pSlime[num];
+}
+
+/* ========================================
+	ƒ{ƒXƒXƒ‰ƒCƒ€”z—ñæ“¾ŠÖ”
+	----------------------------------------
+	“à—eFƒ{ƒXƒXƒ‰ƒCƒ€”z—ñ‚Ìæ“¾
+	----------------------------------------
+	ˆø”1FƒQƒbƒg‚µ‚½‚¢ƒ{ƒXƒXƒ‰ƒCƒ€‚Ì—v‘f”Ô†
+	----------------------------------------
+	–ß’lFƒ{ƒXƒXƒ‰ƒCƒ€‚Ì”z—ñ
+======================================== */
+CSlime_BossBase* CSlimeManager::GetBossSlimePtr(int num)
+{
+	return m_pBoss[num];
 }
 
 /* ========================================
@@ -607,15 +1045,15 @@ void CSlimeManager::SetPlayerPos(TPos3d<float> pos)
 }
 
 /* ========================================
-	BoooomUIƒZƒbƒgŠÖ”
+	”š”­ƒ}ƒl[ƒWƒƒ[‚Ìƒ|ƒCƒ“ƒ^ƒZƒbƒgŠÖ”
 	----------------------------------------
-	“à—eFSceneGame‚Ìƒ|ƒCƒ“ƒ^‚ğƒZƒbƒg‚·‚é
+	“à—eF”š”­ƒ}ƒl[ƒWƒƒ[‚Ìƒ|ƒCƒ“ƒ^‚ğƒZƒbƒg‚·‚é
 	----------------------------------------
-	ˆø”1FBoooomUIƒ|ƒCƒ“ƒ^
+	ˆø”1F”š”­ƒ}ƒl[ƒWƒƒ[‚Ìƒ|ƒCƒ“ƒ^
 	----------------------------------------
 	–ß’lF–³‚µ
 ======================================== */
-void CSlimeManager::SetBoooomUI(CExplosionManager* pExpMng)
+void CSlimeManager::SetExplosionMng(CExplosionManager* pExpMng)
 {
 	m_pExpMng = pExpMng;
 }
