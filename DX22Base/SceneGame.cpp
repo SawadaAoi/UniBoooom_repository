@@ -23,7 +23,7 @@
 ========================================== */
 
 // =============== デバッグモード ===================
-#define USE_CAMERA_VIBRATION (false)
+#define USE_CAMERA_VIBRATION (true)
 #define MODE_COORD_AXIS (true)			//座標軸映すかどうか
 #define MODE_GROUND (false)				//座標軸映すかどうか
 #if _DEBUG
