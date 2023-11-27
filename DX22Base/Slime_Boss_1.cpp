@@ -16,7 +16,7 @@
 // =============== インクルード ===================
 #include "Slime_Boss_1.h"
 #include "GameParameter.h"		//定数定義用ヘッダー
-
+#include "Input.h"
 // =============== 定数定義 =======================
 #if MODE_GAME_PARAMETER
 #else
@@ -97,7 +97,7 @@ CSlime_Boss_1::~CSlime_Boss_1()
 =========================================== */
 void CSlime_Boss_1::Update(TPos3d<float> playerPos)
 {
-
+	
 	if (!m_bHitMove)	//敵が通常の移動状態の時
 	{
 		NormalMove(playerPos);	// 通常行動処理
