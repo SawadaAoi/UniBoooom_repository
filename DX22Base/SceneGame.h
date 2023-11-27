@@ -1,25 +1,25 @@
 /* ========================================
 	HEW/UniBoooom!!
 	------------------------------------
-	ã‚²ãƒ¼ãƒ ã‚·ãƒ¼ãƒ³ç”¨ãƒ˜ãƒƒãƒ€
+	ƒQ[ƒ€ƒV[ƒ“—pƒwƒbƒ_
 	------------------------------------
 	SceneGame.h
 	------------------------------------
-	ä½œæˆè€… æ¾¤ç”°
+	ì¬Ò àV“c
 
-	å¤‰æ›´å±¥æ­´
-	ãƒ»2023/11/08 ã‚³ãƒ¡ãƒ³ãƒˆè¿½åŠ ã¨ã€ç„¡é§„ãªç®‡æ‰€ã‚’å‰Šé™¤
-	ãƒ»2023/11/09 ã‚«ãƒ¡ãƒ©ã®ç§»å‹•ãŒåˆ†ã‹ã‚‹ã‚ˆã†ã«åœ°é¢è¿½åŠ ã—ãŸ é«™æœ¨é§¿è¼”
-	ãƒ»2023/11/11 ã‚¹ãƒ©ã‚¤ãƒ åŒå£«ãŒé‡ãªã‚‰ãªã„å‡¦ç†ã‚’è¿½åŠ  yamashita
-	ãƒ»2023/11/19 ã‚µã‚¦ãƒ³ãƒ‰ãƒ•ã‚¡ã‚¤ãƒ«ã®èª­ã¿è¾¼ã¿é–¢æ•°ã‚’è¿½åŠ  yamashita
-	ãƒ»2023/11/19 ã‚µã‚¦ãƒ³ãƒ‰ç”¨ã®ãƒ¡ãƒ³ãƒå¤‰æ•°ã‚’è¿½åŠ  yamashita
-	ãƒ»2023/11/21 ã‚³ãƒ³ãƒœç”¨ã®ãƒ¡ãƒ³ãƒå¤‰æ•°ã‚’è¿½åŠ  Sawada
+	•ÏX—š—ğ
+	E2023/11/08 ƒRƒƒ“ƒg’Ç‰Á‚ÆA–³‘Ê‚È‰ÓŠ‚ğíœ
+	E2023/11/09 ƒJƒƒ‰‚ÌˆÚ“®‚ª•ª‚©‚é‚æ‚¤‚É’n–Ê’Ç‰Á‚µ‚½ ûü–Øx•ã
+	E2023/11/11 ƒXƒ‰ƒCƒ€“¯m‚ªd‚È‚ç‚È‚¢ˆ—‚ğ’Ç‰Á yamashita
+	E2023/11/19 ƒTƒEƒ“ƒhƒtƒ@ƒCƒ‹‚Ì“Ç‚İ‚İŠÖ”‚ğ’Ç‰Á yamashita
+	E2023/11/19 ƒTƒEƒ“ƒh—p‚Ìƒƒ“ƒo•Ï”‚ğ’Ç‰Á yamashita
+	E2023/11/21 ƒRƒ“ƒ{—p‚Ìƒƒ“ƒo•Ï”‚ğ’Ç‰Á Sawada
 
 ========================================== */
 #ifndef __SCENE_GAME_H__
 #define __SCENE_GAME_H__
 
-// =============== ã‚¤ãƒ³ã‚¯ãƒ«ãƒ¼ãƒ‰ ===================
+// =============== ƒCƒ“ƒNƒ‹[ƒh ===================
 #include "Model.h"
 #include "Shader.h"
 #include "Camera.h"
@@ -39,11 +39,11 @@
 
 #include "ScoreOHManager.h"
 #include "TotalScore.h"
-// =============== ã‚¯ãƒ©ã‚¹å®šç¾© =====================
+// =============== ƒNƒ‰ƒX’è‹` =====================
 class SceneGame
 {
 public:
-	// ===ãƒ¡ãƒ³ãƒé–¢æ•°å®£è¨€===
+	// ===ƒƒ“ƒoŠÖ”éŒ¾===
 	SceneGame();
 	~SceneGame();
 	void Update(float tick);
@@ -56,8 +56,8 @@ public:
 	void ExplosionSlimeCollision();
 	void SlimeSlimeNormalMoveCollision();
 private:
-	void LoadSound();	//ã‚µã‚¦ãƒ³ãƒ‰ãƒ•ã‚¡ã‚¤ãƒ«ã®èª­ã¿è¾¼ã¿
-	// ===ãƒ¡ãƒ³ãƒå¤‰æ•°å®£è¨€===
+	void LoadSound();	//ƒTƒEƒ“ƒhƒtƒ@ƒCƒ‹‚Ì“Ç‚İ‚İ
+	// ===ƒƒ“ƒo•Ï”éŒ¾===
 	VertexShader* m_pVs;
 	CCamera* m_pCamera;
 	CPlayer* m_pPlayer;
@@ -76,10 +76,10 @@ private:
 	CTotalScore* m_pTotalScore;
 
 	CScoreOHManager* m_pScoreOHMng;
-	XAUDIO2_BUFFER* m_pBGM;							//BGMã®éŸ³å£°ãƒ‡ãƒ¼ã‚¿
-	XAUDIO2_BUFFER* m_pSEHitHammer;					//SEã®éŸ³å£°ãƒ‡ãƒ¼ã‚¿
-	IXAudio2SourceVoice* m_pSpeaker;				//BGMã‚’èãå–ã‚‹å´
-	IXAudio2SourceVoice* m_pSEHitHammerSpeaker;		//SEã‚’èãå–ã‚‹å´
+	XAUDIO2_BUFFER* m_pBGM;							//BGM‚Ì‰¹ºƒf[ƒ^
+	XAUDIO2_BUFFER* m_pSEHitHammer;					//SE‚Ì‰¹ºƒf[ƒ^
+	IXAudio2SourceVoice* m_pSpeaker;				//BGM‚ğ•·‚«æ‚é‘¤
+	IXAudio2SourceVoice* m_pSEHitHammerSpeaker;		//SE‚ğ•·‚«æ‚é‘¤
 
 };
 
