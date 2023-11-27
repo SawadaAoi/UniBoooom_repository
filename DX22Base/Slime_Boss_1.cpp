@@ -97,10 +97,7 @@ CSlime_Boss_1::~CSlime_Boss_1()
 =========================================== */
 void CSlime_Boss_1::Update(TPos3d<float> playerPos)
 {
-	//////////////////////////////////////////////////////////
-	if (IsKeyTrigger('W')) {
-		m_nHp -= 1;
-	}
+	
 	if (!m_bHitMove)	//“G‚ª’Êí‚ÌˆÚ“®ó‘Ô‚Ì
 	{
 		NormalMove(playerPos);	// ’Êís“®ˆ—

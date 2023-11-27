@@ -10,13 +10,28 @@
 	変更履歴
 	・2023/11/17 クラス作成 Suzumura
 	・2023/11/23 Damage,IsDead関数を追加 Suzumura
+	・2023/11/27 HP表示追加 yamamoto
 
 ========================================== */
 
 // =============== インクルード ===================
 #include "Slime_BossBase.h"
 #include "Sprite.h"
+// =============== 定数定義 =======================
+#if MODE_GAME_PARAMETER
+#else
+const float SLIME_HP_HEIGHT = 5.0f;		//ボスの体力表示位置（Y）
+const float BOSS_HP_SIZEX = 0.3f;		//体力１分の大きさ（X）
+const float BOSS_HP_SIZEY = 0.5f;		//体力１分の大きさ（Y）
+const float BOSS_HPFRAME_SIZEX = 0.2f;	//体力ゲージよりどれだけ大きいか（X）
+const float BOSS_HPFRAME_SIZEY = 0.2f;	//体力ゲージよりどれだけ大きいか（Y）
+const float BOSS_HP_POSX = 8.6f;		//体力ゲージ（減る方）の位置
 
+const int BOSS_DAMAGE_FLASH_FRAME = 0.1 * 60;					// ダメージ受けた際の点滅フレーム(無敵ではない)
+const int BOSS_DAMAGE_FLASH_TOTAL_FRAME = 0.5 * 60;					// ダメージを受けた際の点滅を何フレーム行うか
+
+
+#endif
 /* ========================================
 	コンストラクタ関数
 	-------------------------------------
@@ -170,14 +185,34 @@ void CSlime_BossBase::Draw(const CCamera* pCamera)
 	matInv = DirectX::XMMatrixInverse(nullptr, matInv);
 
 
-	float width = 0.25*(5 - m_nHp);
 
-
-	DirectX::XMMATRIX world = matInv * DirectX::XMMatrixTranslation(m_Transform.fPos.x - width, m_Transform.fPos.y+ SLIME_HP_HEIGHT, m_Transform.fPos.z);
+	//フレーム
+	DirectX::XMMATRIX world = matInv * DirectX::XMMatrixTranslation(m_Transform.fPos.x+0.2f, m_Transform.fPos.y + SLIME_HP_HEIGHT, m_Transform.fPos.z);
 	DirectX::XMStoreFloat4x4(&mat[0], DirectX::XMMatrixTranspose(world));
-	Sprite::SetSize(DirectX::XMFLOAT2(0.5f*m_nHp, 0.5f));
+	Sprite::SetSize(DirectX::XMFLOAT2(3.2f, 0.7f));
+
+	Sprite::SetUVPos(DirectX::XMFLOAT2(1.0f, 1.0f));
+	Sprite::SetUVScale(DirectX::XMFLOAT2(1.0f, 1.0f));
+
+
+	Sprite::SetWorld(mat[0]);
+	Sprite::SetView(mat[1]);
+	Sprite::SetProjection(mat[2]);
+	Sprite::SetTexture(m_pHpFrameTexture);
+	Sprite::Draw();
+
+
+
+
+
+	float width = (BOSS_HP_SIZEX /2)*(BOSS_HP_POSX - m_nHp);
+
+
+	 world = matInv * DirectX::XMMatrixTranslation(m_Transform.fPos.x - width, m_Transform.fPos.y+ SLIME_HP_HEIGHT, m_Transform.fPos.z);
+	DirectX::XMStoreFloat4x4(&mat[0], DirectX::XMMatrixTranspose(world));
+	Sprite::SetSize(DirectX::XMFLOAT2(BOSS_HP_SIZEX*m_nHp, BOSS_HP_SIZEY));
 	
-	Sprite::SetUVPos(DirectX::XMFLOAT2(1.0f,1.0f));//0.2と0.5はtimeと同じなのであとでゲームパラメータに追加して変えます
+	Sprite::SetUVPos(DirectX::XMFLOAT2(1.0f,1.0f));
 	Sprite::SetUVScale(DirectX::XMFLOAT2(1.0f,1.0f));
 
 	Sprite::SetWorld(mat[0]);
@@ -185,6 +220,8 @@ void CSlime_BossBase::Draw(const CCamera* pCamera)
 	Sprite::SetProjection(mat[2]);
 	Sprite::SetTexture(m_pBossHpTexture);
 	Sprite::Draw();
+
+	
 
 	
 

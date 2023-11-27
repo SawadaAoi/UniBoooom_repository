@@ -12,6 +12,7 @@
 	・2023/11/20 Damage、IsDead関数を追加 Suzumura
 	・2023/11/23 Hp関係を追加 Suzumura
 	・2023/11/23 点滅処理実装 Suzumura
+	・2023/11/27 HPテクスチャ追加 Suzumura
 ========================================== */
 #ifndef __SLIME_BOSS_BASE__H__
 #define __SLIME_BOSS_BASE__H__
