@@ -21,8 +21,10 @@
 	・2023/11/19 ボススライム用の配列を追加 Suzumura
 	・2023/11/21 BoooomUI用変数追加 Tei
 	・2023/11/26 ボス生成用関数追加	Sawada
+	・2023/11/26 スライムと爆発の距離を調べ逃げるか判定する関数を作成 yamashita
 
    ======================================== */
+
 #ifndef __SLIME_MANAGER_H__
 #define __SLIME_MANAGER_H__
 
@@ -78,8 +80,9 @@ public:
 	void PreventBossBossOverlap(CSlime_BossBase* pMoveBoss, CSlime_BossBase* pStandBoss);							// スライム同士が移動中に接触した時の処理
 	void LoadModel();
 	void OutOfRange();
-  
-	// ゲット関数
+	void CheckEscape();
+
+	//ゲット関数
 	CSlimeBase* GetSlimePtr(int num);
 	CSlime_BossBase* GetBossSlimePtr(int num);
 
@@ -88,7 +91,7 @@ public:
 	void SetPlayerPos(TPos3d<float> pos);
 	void SetScoreOHMng(CScoreOHManager* pScoreMng);
 
-	void SetBoooomUI(CExplosionManager* pExpMng);
+	void SetExplosionMng(CExplosionManager* pExpMng);
 private:
 	// ===メンバ変数宣言=====
 	int GetRandom(int min, int max);
@@ -107,6 +110,7 @@ private:
 	Model* m_pBossModel;
 
 	CScoreOHManager* m_pScoreOHMng;
+	
 
 
 	XAUDIO2_BUFFER* m_pSEHitSlime;					//ハンマーでスライムを打った時のSEのデータ

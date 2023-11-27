@@ -86,8 +86,10 @@ const int SLIME_LEVEL1_PER = 45;																// スライム_1の生成確立
 const int SLIME_LEVEL2_PER = 35;																// スライム_2の生成確立
 const int SLIME_LEVEL3_PER = 10;																// スライム_3の生成確立
 const int SLIME_LEVEL_FLAME_PER = 100 - SLIME_LEVEL1_PER - SLIME_LEVEL2_PER - SLIME_LEVEL3_PER;	// スライム_フレイムの生成確立
-const float MAX_SIZE_EXPLODE = 5.0f;										// スライム4同士の爆発の大きさ
-const float EXPLODE_BASE_RATIO = 1.5f;										// スライムの爆発接触での爆発の大きさのベース
+const float MAX_SIZE_EXPLODE		= 5.0f;										// スライム4同士の爆発の大きさ
+const float EXPLODE_BASE_RATIO		= 1.5f;										// スライムの爆発接触での爆発の大きさのベース
+const float ESCAPE_DISTANCE			= 15.0f;									// 爆発がこの距離より近かったら逃げる範囲
+const int ESCAPE_TIME				= int(60 * 1.0f);							// この間隔で逃げる処理が終了する
 
 
 // スライム同士の反射の減算値

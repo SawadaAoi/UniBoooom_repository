@@ -116,6 +116,7 @@ SceneGame::SceneGame()
 	m_pExplosionMng = new CExplosionManager();
 	m_pExplosionMng->SetCamera(m_pCamera);
 	m_pExplosionMng->SetCombo(m_pCombo);
+	m_pSlimeMng->SetExplosionMng(m_pExplosionMng);
 	//ƒXƒRƒA¶¬
 	m_pScoreOHMng = new CScoreOHManager();
 	m_pScoreOHMng->SetCamera(m_pCamera);

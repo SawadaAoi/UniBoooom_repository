@@ -32,6 +32,8 @@
 	・2023/11/14 列挙にFLAMEを追加、NormalMoveを仮想関数に Suzumura
 	・2023/11/14 SphereInfoの変更に対応 Takagi
 	・2023/11/15 Objectクラスを継承したので修正　yamamoto
+	・2023/11/26 爆発から逃げるフラグ、最も近い爆発を入れる変数を作成　yamashita
+	・2023/11/26 スライムが爆発から逃げる処理を作成　yamashita
 ========================================== */
 #ifndef __SLIME_BASE_H__
 #define __SLIME_BASE_H__
@@ -90,24 +92,30 @@ public:
 	void HitMove();									//スライムが吹き飛び移動状態の時に毎フレーム呼び出して移動させる
 	void HitMoveStart(float speed, float angle);	//スライムが吹き飛ばされたときに速度と角度を決める
 	void Reflect();									//スライムとぶつかって吹き飛ばした際に自分の移動量を減らす
+	void Escape();
 
 	// ゲット関数
 	float GetSpeed();					// スライムの移動速度を取得
 	E_SLIME_LEVEL GetSlimeLevel();		// スライムのレベルを取得
+	bool GetHitMoveFlg();
+	TPos3d<float> GetPos();
+	bool GetEscapeFlag();
 
 	//セット関数
 	virtual void SetNormalSpeed() = 0;
 	void SetCamera(const CCamera* pCamera);
-	bool GetHitMoveFlg();
+	void SetExplosionPos(TPos3d<float> expPos);
+	void SetEscapeFlag(bool bEscape);
 protected:
 	Model* m_pModel;				//3Dモデル
 	VertexShader* m_pVS;			//バーテックスシェーダーのポインタ
 	TTriType<float> m_move;			//移動量
-
+	TPos3d<float> m_ExpPos;		//最も近い爆発の座標
+	bool m_bEscape;					//スライムが逃げる状態かどうか
 	float m_fVecAngle;				//敵の吹き飛ぶ方向
 	float m_fSpeed;					//スライムの移動速度
 	bool m_bHitMove;				//吹っ飛び中かどうか
-
+	int m_nEscapeCnt;				//逃げる状態になった時
 
 	E_SLIME_LEVEL m_eSlimeSize;		//スライムの大きさの列挙
 	const CCamera* m_pCamera;		//カメラのポインタ
