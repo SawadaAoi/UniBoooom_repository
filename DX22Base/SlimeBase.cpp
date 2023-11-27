@@ -104,7 +104,7 @@ void CSlimeBase::Update(TPos3d<float> playerPos)
 	{
 		if (!m_bEscape  && m_nEscapeCnt == 0)	//“¦‚°‚éƒtƒ‰ƒO‚ªoff‚È‚ç
 		{
-			NormalMove(playerSphere);	//’ÊíˆÙ“®
+			NormalMove(playerPos);	//’ÊíˆÙ“®
 		}
 		else
 		{
