@@ -69,6 +69,7 @@ CScoreOverHead::~CScoreOverHead()
 {
 	digits.clear();
 	digitArray.clear();
+	SAFE_DELETE(m_pScoreTexture);
 }
 
 /* ========================================
