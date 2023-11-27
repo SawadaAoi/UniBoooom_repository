@@ -25,6 +25,7 @@
 	・2023/11/19 サウドファイル読み込み関数を作成 yamashita
 	・2023/11/23 ジオメトリーからモデルに差し替え yamashita
 	・2023/11/23 ゲームオーバーの仮表示を削除 yamashita
+	・2023/11/27 影の描画を追加 nieda
 ======================================== */
 
 // =============== インクルード ===================
@@ -96,6 +97,7 @@ CPlayer::CPlayer()
 		MessageBox(NULL, "player", "Error", MB_OK);	//ここでエラーメッセージ表示
 	}
 	m_pModel->SetVertexShader(m_pVS);
+	m_pShadow = new CShadow();
 }
 /* ========================================
    関数：デストラクタ
@@ -108,6 +110,7 @@ CPlayer::CPlayer()
 ======================================== */
 CPlayer::~CPlayer()
 {
+	SAFE_DELETE(m_pShadow);
 	SAFE_DELETE(m_pModel);
 	SAFE_DELETE(m_pVS);
 	SAFE_DELETE(m_pHammer);
@@ -213,6 +216,7 @@ void CPlayer::Draw()
 		m_pHammer->Draw();		//ハンマーの描画
 	}
 
+	m_pShadow->Draw(m_Transform, PLAYER_SHADOW_SCALE, m_pCamera);	// 影の描画
 }
 
 /* ========================================
@@ -415,7 +419,7 @@ int* CPlayer::GetHP()
    ----------------------------------------
    戻値：なし
 ======================================== */
-void CPlayer::SetCamera(const CCamera * pCamera)
+void CPlayer::SetCamera(CCamera * pCamera)
 {
 	m_pCamera = pCamera;	//中身は変えられないけどポインタはかえれるのでヨシ！
 	m_pHammer->SetCamera(m_pCamera);

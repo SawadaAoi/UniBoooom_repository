@@ -18,6 +18,7 @@
 	・2023/11/23 パラメーター追加(// 2D描画) nieda
 	・2023/11/24 パラメーター削除(// カメラ) Takagi
 	・2023/11/25 パラメーター追加(// スコア) yamamoto
+	・2023/11/27 パラメーター追加(// 影) nieda
 
 =========================================== */
 #ifndef __GAME_PARAMETER_H__
@@ -258,6 +259,9 @@ const float TEXTURE_TITLE_BUTTON_POSY = 100.0f;				// タイトル画面ボタン押下指示
 const float TEXTURE_TITLE_BUTTON_WIDTH = 300.0f;			// タイトル画面ボタン押下指示画像の横幅
 const float TEXTURE_TITLE_BUTTON_HEIGHT = 100.0f;			// タイトル画面ボタン押下指示画像の縦幅
 
+// 影 ====================================================================
+const float PI = 3.14159f;				// 円周率
+const float PLAYER_SHADOW_SCALE = 1.0f;	// 影の大きさ
 #endif
 
 #endif // !__GAME_PARAMETER_H__

@@ -345,6 +345,9 @@
     <ClCompile Include="Slime_BossBase.cpp">
       <Filter>ソース ファイル\3dObject</Filter>
     </ClCompile>
+    <ClCompile Include="Shadow.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Defines.h">
@@ -571,6 +574,9 @@
     </ClInclude>
     <ClInclude Include="Slime_BossBase.h">
       <Filter>ヘッダー ファイル\3dObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Shadow.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

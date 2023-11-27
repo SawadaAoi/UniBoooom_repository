@@ -199,6 +199,7 @@
     <ClCompile Include="ScoreOHManager.cpp" />
     <ClCompile Include="SelectStage.cpp" />
     <ClCompile Include="ShaderList.cpp" />
+    <ClCompile Include="Shadow.cpp" />
     <ClCompile Include="Sound.cpp" />
     <ClCompile Include="Slime_BossBase.cpp" />
     <ClCompile Include="Slime_Boss_1.cpp" />
@@ -279,6 +280,7 @@
     <ClInclude Include="ScoreOHManager.h" />
     <ClInclude Include="SelectStage.h" />
     <ClInclude Include="ShaderList.h" />
+    <ClInclude Include="Shadow.h" />
     <ClInclude Include="Sound.h" />
     <ClInclude Include="Slime_BossBase.h" />
     <ClInclude Include="Slime_Boss_1.h" />

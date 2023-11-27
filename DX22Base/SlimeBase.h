@@ -47,6 +47,7 @@
 #include "Camera.h"
 #include "GameParameter.h"		//定数定義用ヘッダー
 #include "Object.h"
+#include "Shadow.h"		// 影表示用ヘッダ
 // =============== 列挙定義 =======================
 enum E_SLIME_LEVEL
 {
@@ -119,6 +120,7 @@ protected:
 
 	E_SLIME_LEVEL m_eSlimeSize;		//スライムの大きさの列挙
 	const CCamera* m_pCamera;		//カメラのポインタ
+	CShadow* m_pShadow;				//影のポインタ
 	
 	DirectX::XMMATRIX m_Ry;				//回転
 
