@@ -121,10 +121,10 @@ const int LEVEL_4x4_SCORE = 1000;			// 赤々の爆発のスコア
 const int MAX_BOOOOM_NUM = 10;					//最大boom数
 const int	MAX_EXPLOSION_NUM		= 20;		// 最大爆発数
 const float EXPAND_QUICK_RATE		= 0.2f;		// 膨張加速割合 
-const float LEVEL_1_EXPLODE_TIME = 10.5f * 60.0f;	// スライム_1の爆発総時間
-const float LEVEL_2_EXPLODE_TIME = 11.0f * 60.0f;	// スライム_2の爆発総時間
-const float LEVEL_3_EXPLODE_TIME = 12.0f * 60.0f;	// スライム_3の爆発総時間
-const float LEVEL_4_EXPLODE_TIME = 13.0f * 60.0f;	// スライム_4の爆発総時間
+const float LEVEL_1_EXPLODE_TIME = 0.5f * 60.0f;	// スライム_1の爆発総時間
+const float LEVEL_2_EXPLODE_TIME = 1.0f * 60.0f;	// スライム_2の爆発総時間
+const float LEVEL_3_EXPLODE_TIME = 2.0f * 60.0f;	// スライム_3の爆発総時間
+const float LEVEL_4_EXPLODE_TIME = 3.0f * 60.0f;	// スライム_4の爆発総時間
 const int	DELAY_TIME			 = 0.2f * 60;		// 遅延秒数
 
 // スコア =====================================================
