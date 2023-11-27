@@ -20,7 +20,7 @@
 	・2023/11/15 各モデルの読み込みを関数化 yamashita
 	・2023/11/21 BoooomUI用変数追加 Tei
 	・2023/11/26 スライムと爆発の距離を調べ逃げるか判定する関数を作成 yamashita
-
+	
    ======================================== */
 #ifndef __SLIME_MANAGER_H__
 #define __SLIME_MANAGER_H__
