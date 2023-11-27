@@ -190,6 +190,7 @@
     <ClCompile Include="ExplosionManager.cpp" />
     <ClCompile Include="Fade.cpp" />
     <ClCompile Include="Floor.cpp" />
+    <ClCompile Include="HealItem.cpp" />
     <ClCompile Include="HitStop.cpp" />
     <ClCompile Include="HP_UI.cpp" />
     <ClCompile Include="ModelParticle.cpp" />
@@ -268,6 +269,7 @@
     <ClInclude Include="EmitterManager.h" />
     <ClInclude Include="Explosion.h" />
     <ClInclude Include="ExplosionManager.h" />
+    <ClInclude Include="HealItem.h" />
     <ClInclude Include="HitStop.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="HP_UI.h" />

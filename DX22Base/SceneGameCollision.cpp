@@ -121,6 +121,11 @@ void SceneGame::PlayerBossCollision()
 	}
 }
 
+void SceneGame::PlayerHealItemCollision()
+{
+
+}
+
 /* ========================================
    ハンマースライム当たり判定関数
    ----------------------------------------

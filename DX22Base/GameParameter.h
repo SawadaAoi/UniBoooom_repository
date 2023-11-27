@@ -223,6 +223,13 @@ const float DRAW_POSY = 60.0f;	// テクスチャを表示する位置のY座標
 const float DRAW_HEIGHT = 90.0f;	// テクスチャの縦幅
 const float DRAW_WIDTH = 90.0f;	// テクスチャの横幅
 
+// 回復アイテム =====================
+const float HEAL_ITEM_SCALE_X = 1.5f;		//　アイテムのスケールX
+const float HEAL_ITEM_SCALE_Y = 1.5f;		//　アイテムのスケールY
+const float HEAL_ITEM_SCALE_Z = 1.5f;		//　アイテムのスケールZ
+const float	HEALITEM_ANGLE_X = 30.0f;		//　回復アイテムの角度
+const int	HEALITEM_DELETE_TIME = 10 * 60;	//　アイテムが消えるまでの時間
+
 // BoooomUI =====================================================
 const float BOOOOM_UI_SIZE_X = 1.0f;		//BoooomUIのXの長さ（textureの比率と合わせる）
 const float BOOOOM_UI_SIZE_Y = 0.565f;		//BoooomUIのYの長さ（textureの比率と合わせる）

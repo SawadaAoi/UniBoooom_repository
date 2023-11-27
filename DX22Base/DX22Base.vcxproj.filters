@@ -124,6 +124,12 @@
     <Filter Include="ソース ファイル\2dObject\Score">
       <UniqueIdentifier>{eae8711d-a654-42a1-ae55-453fd38bb610}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\3dObject\Enemy">
+      <UniqueIdentifier>{cb90cae3-d157-4f53-9c62-653a208774e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\3dObject\Enemy">
+      <UniqueIdentifier>{83da4e47-e125-4627-9e43-ff6868ca6e77}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -146,9 +152,6 @@
     </ClCompile>
     <ClCompile Include="Sprite.cpp">
       <Filter>ソース ファイル\System</Filter>
-    </ClCompile>
-    <ClCompile Include="SceneGame.cpp">
-      <Filter>ソース ファイル\App</Filter>
     </ClCompile>
     <ClCompile Include="Startup.cpp">
       <Filter>ソース ファイル\System</Filter>
@@ -192,15 +195,6 @@
     <ClCompile Include="Explosion.cpp">
       <Filter>ソース ファイル\3dObject</Filter>
     </ClCompile>
-    <ClCompile Include="Slime_1.cpp">
-      <Filter>ソース ファイル\3dObject</Filter>
-    </ClCompile>
-    <ClCompile Include="SlimeBase.cpp">
-      <Filter>ソース ファイル\3dObject</Filter>
-    </ClCompile>
-    <ClCompile Include="SlimeManager.cpp">
-      <Filter>ソース ファイル\3dObject</Filter>
-    </ClCompile>
     <ClCompile Include="Camera.cpp">
       <Filter>ソース ファイル\System\Camera</Filter>
     </ClCompile>
@@ -211,9 +205,6 @@
       <Filter>ソース ファイル\System\Camera</Filter>
     </ClCompile>
     <ClCompile Include="ExplosionManager.cpp">
-      <Filter>ソース ファイル\3dObject</Filter>
-    </ClCompile>
-    <ClCompile Include="SphereInfo.cpp">
       <Filter>ソース ファイル\3dObject</Filter>
     </ClCompile>
     <ClCompile Include="Collision.cpp">
@@ -249,25 +240,10 @@
     <ClCompile Include="Transform2d.cpp">
       <Filter>ソース ファイル\Info</Filter>
     </ClCompile>
-    <ClCompile Include="SceneGameCollision.cpp">
-      <Filter>ソース ファイル\App</Filter>
-    </ClCompile>
-    <ClCompile Include="Slime_4.cpp">
-      <Filter>ソース ファイル\3dObject</Filter>
-    </ClCompile>
-    <ClCompile Include="Slime_2.cpp">
-      <Filter>ソース ファイル\3dObject</Filter>
-    </ClCompile>
-    <ClCompile Include="Slime_3.cpp">
-      <Filter>ソース ファイル\3dObject</Filter>
-    </ClCompile>
     <ClCompile Include="Timer.cpp">
       <Filter>ソース ファイル\2dObject</Filter>
     </ClCompile>
     <ClCompile Include="Object.cpp">
-      <Filter>ソース ファイル\3dObject</Filter>
-    </ClCompile>
-    <ClCompile Include="Slime_Flame.cpp">
       <Filter>ソース ファイル\3dObject</Filter>
     </ClCompile>
     <ClCompile Include="Floor.cpp">
@@ -339,11 +315,44 @@
     <ClCompile Include="BoooomUI.cpp">
       <Filter>ソース ファイル\2dObject</Filter>
     </ClCompile>
-    <ClCompile Include="Slime_Boss_1.cpp">
+    <ClCompile Include="HealItem.cpp">
       <Filter>ソース ファイル\3dObject</Filter>
     </ClCompile>
+    <ClCompile Include="SceneGame.cpp">
+      <Filter>ソース ファイル\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneGameCollision.cpp">
+      <Filter>ソース ファイル\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Slime_1.cpp">
+      <Filter>ソース ファイル\3dObject\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Slime_2.cpp">
+      <Filter>ソース ファイル\3dObject\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Slime_3.cpp">
+      <Filter>ソース ファイル\3dObject\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Slime_4.cpp">
+      <Filter>ソース ファイル\3dObject\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Slime_Boss_1.cpp">
+      <Filter>ソース ファイル\3dObject\Enemy</Filter>
+    </ClCompile>
     <ClCompile Include="Slime_BossBase.cpp">
-      <Filter>ソース ファイル\3dObject</Filter>
+      <Filter>ソース ファイル\3dObject\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Slime_Flame.cpp">
+      <Filter>ソース ファイル\3dObject\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="SlimeBase.cpp">
+      <Filter>ソース ファイル\3dObject\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="SlimeManager.cpp">
+      <Filter>ソース ファイル\3dObject\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="SphereInfo.cpp">
+      <Filter>ソース ファイル\Info</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -370,9 +379,6 @@
     </ClInclude>
     <ClInclude Include="Sprite.h">
       <Filter>ヘッダー ファイル\System</Filter>
-    </ClInclude>
-    <ClInclude Include="SceneGame.h">
-      <Filter>ヘッダー ファイル\App</Filter>
     </ClInclude>
     <ClInclude Include="Model.h">
       <Filter>ヘッダー ファイル\System</Filter>
@@ -410,16 +416,7 @@
     <ClInclude Include="SphereInfo.h">
       <Filter>ヘッダー ファイル\Info</Filter>
     </ClInclude>
-    <ClInclude Include="SlimeBase.h">
-      <Filter>ヘッダー ファイル\3DObject</Filter>
-    </ClInclude>
-    <ClInclude Include="Slime_1.h">
-      <Filter>ヘッダー ファイル\3DObject</Filter>
-    </ClInclude>
     <ClInclude Include="Explosion.h">
-      <Filter>ヘッダー ファイル\3dObject</Filter>
-    </ClInclude>
-    <ClInclude Include="SlimeManager.h">
       <Filter>ヘッダー ファイル\3dObject</Filter>
     </ClInclude>
     <ClInclude Include="CameraDebug.h">
@@ -476,15 +473,6 @@
     <ClInclude Include="StripeParticle.h">
       <Filter>ヘッダー ファイル\2dObject\Effect\Particle\StripeParticle</Filter>
     </ClInclude>
-    <ClInclude Include="Slime_4.h">
-      <Filter>ヘッダー ファイル\3dObject</Filter>
-    </ClInclude>
-    <ClInclude Include="Slime_2.h">
-      <Filter>ヘッダー ファイル\3dObject</Filter>
-    </ClInclude>
-    <ClInclude Include="Slime_3.h">
-      <Filter>ヘッダー ファイル\3dObject</Filter>
-    </ClInclude>
     <ClInclude Include="GameParameter.h">
       <Filter>ヘッダー ファイル\Info</Filter>
     </ClInclude>
@@ -495,9 +483,6 @@
       <Filter>ヘッダー ファイル\2dObject</Filter>
     </ClInclude>
     <ClInclude Include="Object.h">
-      <Filter>ヘッダー ファイル\3dObject</Filter>
-    </ClInclude>
-    <ClInclude Include="Slime_Flame.h">
       <Filter>ヘッダー ファイル\3dObject</Filter>
     </ClInclude>
     <ClInclude Include="Floor.h">
@@ -566,11 +551,38 @@
     <ClInclude Include="BoooomUI.h">
       <Filter>ヘッダー ファイル\2dObject</Filter>
     </ClInclude>
-    <ClInclude Include="Slime_Boss_1.h">
+    <ClInclude Include="HealItem.h">
       <Filter>ヘッダー ファイル\3dObject</Filter>
     </ClInclude>
+    <ClInclude Include="SceneGame.h">
+      <Filter>ヘッダー ファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Slime_1.h">
+      <Filter>ヘッダー ファイル\3dObject\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Slime_2.h">
+      <Filter>ヘッダー ファイル\3dObject\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Slime_3.h">
+      <Filter>ヘッダー ファイル\3dObject\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Slime_4.h">
+      <Filter>ヘッダー ファイル\3dObject\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Slime_Boss_1.h">
+      <Filter>ヘッダー ファイル\3dObject\Enemy</Filter>
+    </ClInclude>
     <ClInclude Include="Slime_BossBase.h">
-      <Filter>ヘッダー ファイル\3dObject</Filter>
+      <Filter>ヘッダー ファイル\3dObject\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Slime_Flame.h">
+      <Filter>ヘッダー ファイル\3dObject\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="SlimeBase.h">
+      <Filter>ヘッダー ファイル\3dObject\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="SlimeManager.h">
+      <Filter>ヘッダー ファイル\3dObject\Enemy</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

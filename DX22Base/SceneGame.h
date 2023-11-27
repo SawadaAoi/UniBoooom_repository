@@ -15,6 +15,7 @@
 	・2023/11/19 サウンド用のメンバ変数を追加 Yamashita
 	・2023/11/21 コンボ用のメンバ変数を追加 Sawada
 	・2023/11/21 ボス用の当たり判定を多数追加 Suzumura
+	・2023/11/27 回復アイテムの追加 Sawada
 
 ========================================== */
 #ifndef __SCENE_GAME_H__
@@ -40,6 +41,8 @@
 
 #include "ScoreOHManager.h"
 #include "TotalScore.h"
+#include "HealItem.h"
+
 // =============== クラス定義 =====================
 class SceneGame
 {
@@ -53,6 +56,7 @@ public:
 	void SceneGameCollision();
 	void PlayerSlimeCollision();
 	void PlayerBossCollision();		//追加
+	void PlayerHealItemCollision();
 	void HammerSlimeCollision();
 	void HammerBossCollision();		//追加
 	void SlimeSlimeCollision();
@@ -84,6 +88,7 @@ private:
 	CStageFinish* m_pStageFin;
 	CFade* m_pFade;
 	CTotalScore* m_pTotalScore;
+	CHealItem* m_pHealItem;
 
 	CScoreOHManager* m_pScoreOHMng;
 	XAUDIO2_BUFFER* m_pBGM;							//BGMの音声データ

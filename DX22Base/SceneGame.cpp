@@ -19,6 +19,7 @@
 	・2023/11/21 コンボ用のメンバ変数を追加 Sawada
 	・2023/11/21 爆発時BoooomUI表示するための処理を追加
 	・2023/11/23 トータルスコア表示追加　yamamoto
+	・2023/11/27 回復アイテムの追加 Sawada
 
 ========================================== */
 
@@ -92,68 +93,52 @@ SceneGame::SceneGame()
 	CLine::Init();
 #endif
 
-	m_pCollision = new CCOLLISION();
-	m_pPlayer = new CPlayer();
-	m_pCamera = new CCameraChase(m_pPlayer->GetPosAddress()) ;
-	m_pPlayer->SetCamera(m_pCamera);
-
 #if MODE_GROUND
 	m_pBox = new CBox();
 #endif
-
+	m_pCollision = new CCOLLISION();
+	m_pPlayer = new CPlayer();
+	m_pCamera = new CCameraChase(m_pPlayer->GetPosAddress());
 
 	m_pFloor = new CFloor(m_pPlayer->GetPosAddress());
-	m_pFloor->SetCamera(m_pCamera);
-	// スライムマネージャー生成
-	m_pSlimeMng = new CSlimeManager();
-	m_pSlimeMng->SetCamera(m_pCamera);
+	m_pSlimeMng = new CSlimeManager();	// スライムマネージャー生成
+	m_pExplosionMng = new CExplosionManager();	// 爆発マネージャー生成
 
 
-	// コンボ数表示生成
-	m_pCombo = new CCombo();
 
-	// 爆発マネージャー生成
-	m_pExplosionMng = new CExplosionManager();
-	m_pExplosionMng->SetCamera(m_pCamera);
-	m_pExplosionMng->SetCombo(m_pCombo);
-	m_pSlimeMng->SetExplosionMng(m_pExplosionMng);
-	//スコア生成
-	m_pScoreOHMng = new CScoreOHManager();
-	m_pScoreOHMng->SetCamera(m_pCamera);
-	m_pSlimeMng->SetScoreOHMng(m_pScoreOHMng);
-
-	//トータルスコア生成
-	m_pTotalScore = new CTotalScore();
-	m_pCombo->SetTotalScore(m_pTotalScore);
-	
-	// タイマー生成
-	m_pTimer = new CTimer();
-	m_pTimer->TimeStart();
-	//ステージ終了のUI表示
-	m_pStageFin = new CStageFinish(m_pPlayer->GetHP(),m_pTimer->GetTimePtr());
-
+	m_pCombo = new CCombo();	// コンボ数表示生成
+	m_pScoreOHMng = new CScoreOHManager();	//スコア生成
+	m_pTotalScore = new CTotalScore();	//トータルスコア生成
+	m_pTimer = new CTimer();	// タイマー生成
+	m_pStageFin = new CStageFinish(m_pPlayer->GetHP(), m_pTimer->GetTimePtr());	//ステージ終了のUI表示
 	m_pHpMng = new CHP_UI(m_pPlayer->GetHP());
+	m_pBossgauge = new CBossgauge(m_pTimer->GetNowTime());	//ボスゲージ
+	m_pHealItem = new CHealItem();
 
 #if USE_FADE_GAME
 	m_pFade = new CFade(m_pCamera);
 #endif
-	//pTex->Create("Assets/NoStar.png");
-	//m_pFade->SetTexture(pTex);
-	//pps->Load("Assets/Shader/PsFade.cso");
-	//m_pFade->SetPixelShader(pps);
-	//pvs->Load("Assets/Shader/VsFade.cso");
-	//m_pFade->SetVertexShader(pvs);
+	m_pPlayer->SetCamera(m_pCamera);
+	m_pFloor->SetCamera(m_pCamera);
+	m_pSlimeMng->SetCamera(m_pCamera);
+	m_pSlimeMng->SetScoreOHMng(m_pScoreOHMng);
+	m_pSlimeMng->SetExplosionMng(m_pExplosionMng);
+	m_pExplosionMng->SetCamera(m_pCamera);
+	m_pExplosionMng->SetCombo(m_pCombo);
 
-
+	m_pBossgauge->SetSlimeManager(m_pSlimeMng);
+	m_pScoreOHMng->SetCamera(m_pCamera);
+	m_pCombo->SetTotalScore(m_pTotalScore);
+	m_pHealItem->SetCamera(m_pCamera);
 
 	LoadSound();
 	//BGMの再生
 	m_pSpeaker = CSound::PlaySound(m_pBGM);		//BGMの再生
 	m_pSpeaker->SetVolume(BGM_VOLUME);			//音量の設定
 
-	//ボスゲージ
-	m_pBossgauge = new CBossgauge(m_pTimer->GetNowTime());
-	m_pBossgauge->SetSlimeManager(m_pSlimeMng);
+
+	m_pTimer->TimeStart();
+	m_pHealItem->Create({ 0.0f, 0.0f, 0.0f });
 }
 
 /* ========================================
@@ -172,6 +157,8 @@ SceneGame::~SceneGame()
 		m_pSpeaker->Stop();
 		m_pSpeaker->DestroyVoice();
 	}
+
+	SAFE_DELETE(m_pHealItem);
 	SAFE_DELETE(m_pStageFin);
 	SAFE_DELETE(m_pHpMng);
 	SAFE_DELETE(m_pTimer);
@@ -262,6 +249,8 @@ void SceneGame::Update(float tick)
 	m_pHpMng->Update();
 
 	m_pBossgauge->Update();
+	m_pHealItem->Update();
+
 	SceneGameCollision();
 
 #if USE_FADE_GAME
@@ -370,6 +359,8 @@ void SceneGame::Draw()
 	m_pBossgauge->Draw();
 
 	m_pScoreOHMng->Draw();//スコアマネージャー描画
+
+	m_pHealItem->Draw();
 
 #if USE_FADE_GAME
 	m_pFade->Draw();
