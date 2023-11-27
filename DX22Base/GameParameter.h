@@ -125,13 +125,15 @@ const int LEVEL_2_SCORE = 30;				// スライム_2のスコア
 const int LEVEL_3_SCORE = 100;				// スライム_3のスコア
 const int LEVEL_4_SCORE = 500;				// スライム_4のスコア
 const int LEVEL_4x4_SCORE = 1000;			// 赤々の爆発のスコア
+const int LEVEL_Boss_SCORE = 3000;			// 赤々の爆発のスコア
+
 // ボススライム
-#define DEBUG_BOSS	(false)	// デバッグ用にゲーム開始時ボスを生成するかどうか
+#define DEBUG_BOSS	(true)	// デバッグ用にゲーム開始時ボスを生成するかどうか
 
 const float LEVEL_BOSS_1_SCALE = 6.0f;								// ボス１の大きさ
 const float LEVEL_BOSS_1_SPEED = ENEMY_MOVE_SPEED * 0.4f;			// ボス１のスピード
-const int	BOSS_1_MAX_HP = 10;								// ボス１の最大HP
-
+const int	BOSS_1_MAX_HP = 5;								// ボス１の最大HP
+const float SLIME_HP_HEIGHT = 6;							//ボスの体力表示位置（Y）
 const float ASSAULT_DISTANCE = 0.2f;								// 突撃反応距離
 const int	ASSAULT_COOL_TIME = 10 * 60;							// 突撃クルータイム
 const int	ASSAULT_CHARGE_TIME = 2 * 60;							// 突撃チャージ時間

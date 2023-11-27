@@ -421,7 +421,7 @@ void CExplosionManager::SwitchExplode(E_SLIME_LEVEL slimeLevel, TPos3d<float> po
 	}
 
 	Create(pos, ExplosionSize, ExplodeTime, comboNum, ExplodeDamage, slimeLevel);	// ”š”­¶¬
-	m_pCombo->AddScore(slimeLevel, comboNum);
+//	m_pCombo->AddScore(slimeLevel, comboNum);
 
 }
 

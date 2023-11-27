@@ -56,6 +56,8 @@ protected:
 
 private:
 	bool m_bDead;		// Ž€‚ñ‚Å‚¢‚é‚©‚Ç‚¤‚©
+	Texture* m_pBossHpTexture;
+	Texture* m_pHpFrameTexture;
 
 };
 
