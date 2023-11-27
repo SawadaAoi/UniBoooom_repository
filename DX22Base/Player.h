@@ -87,7 +87,8 @@ private:
 	bool m_DrawFlg;						// プレイヤーがダメージを受けたら点滅するフラグ
 	int m_FlashCnt;						// 点滅の時間の長さ
 	int m_nMoveCnt;						// プレイヤーの移動によるSEの間隔
-	float m_fDelayCnt;					// ハンマー振り間隔カウント
+	bool m_bIntFlg;						// ハンマー間隔時間フラグ
+	float m_fIntCnt;					// ハンマー間隔時間カウント
 
 	XAUDIO2_BUFFER* m_pSESwingHammer;
 	XAUDIO2_BUFFER* m_pSERun;
