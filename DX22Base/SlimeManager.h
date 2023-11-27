@@ -22,6 +22,7 @@
 	E2023/11/26 ƒXƒ‰ƒCƒ€‚Æ”š”­‚Ì‹——£‚ð’²‚×“¦‚°‚é‚©”»’è‚·‚éŠÖ”‚ðì¬ yamashita
 
    ======================================== */
+
 #ifndef __SLIME_MANAGER_H__
 #define __SLIME_MANAGER_H__
 
