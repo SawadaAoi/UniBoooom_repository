@@ -16,6 +16,7 @@
 	・2023/11/20 SceneGameから移植 nieda
 	・2023/11/21 ゲーム開始時テクスチャ表示 nieda
 	・2023/11/22 動くよう足りない変数など追加 nieda
+	・2023/11/27 バグ修正 takagi
 
 ========================================== */
 
@@ -82,6 +83,7 @@ CStage1::CStage1()
 	m_pExplosionMng = new CExplosionManager();
 	m_pExplosionMng->SetCamera(m_pCamera);
 	m_pExplosionMng->SetCombo(m_pCombo);
+	m_pSlimeMng->SetExplosionMng(m_pExplosionMng);
 
 	// タイマー生成
 	m_pTimer = new CTimer();

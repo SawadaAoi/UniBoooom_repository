@@ -572,6 +572,9 @@
     <ClInclude Include="Slime_BossBase.h">
       <Filter>ヘッダー ファイル\3dObject</Filter>
     </ClInclude>
+    <ClInclude Include="CameraFade.h">
+      <Filter>ヘッダー ファイル\System\Camera</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="VS_Model.hlsl">
