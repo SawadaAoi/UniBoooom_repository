@@ -16,6 +16,7 @@
 	・2023/11/14 全体的に処理の流れが分かりづらかったので修正 Sawada
 	・2023/11/14 SphereInfoの変更に対応 Takagi
 	・2023/11/15 Objectクラスを継承したので修正　yamamoto
+
 ========================================== */
 
 #ifndef __HAMMER_H__
@@ -29,6 +30,7 @@
 #include <DirectXMath.h>
 #include "Camera.h"
 #include "Object.h"
+
 // =============== クラス定義 =====================
 class CHammer
 	: public CObject
@@ -42,7 +44,7 @@ public:
 	bool Update();	// 更新関数
 	void Draw(const CCamera* pCamera);				// 描画関数
 	void Swing();									// 移動による回転移動
-	void AttackStart(TPos3d<float>pPos, float angle);								// 攻撃開始処理
+	void AttackStart(TPos3d<float>pPos, float angle);		// 攻撃開始処理
 private:
 	// ===メンバ変数宣言=====
 	CGeometry* m_pHammerGeo;		// ハンマーを仮表示する図形

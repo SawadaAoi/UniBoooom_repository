@@ -26,15 +26,16 @@
 #include "Sphere.h"				// 球体の情報用ヘッダ
 #include "GameParameter.h"		// 定数定義用ヘッダー
 
+
 // =============== 定数定義 =======================
 const float HALF_PI = 3.141592f / 2;	//ハンマーの開始地点のラジアン角(要修正)
 
 #if MODE_GAME_PARAMETER
 #else
 const float SWING_ANGLE = DirectX::XMConvertToRadians(90.0f);	// ハンマーを振る範囲(扇形の角度の大きさ)
-const float SWING_TIME_FRAME = 0.15f * 60;							// ハンマーを振る時間(フレーム単位)
-const float ROTATE_RADIUS = 1.0f;									// ハンマーが回転するプレイヤーからの距離
-const float HAMMER_COL_SIZE = 0.75f;								// ハンマーの当たり判定の大きさ
+const float SWING_TIME_FRAME = 0.15f * 60;						// ハンマーを振る時間(フレーム単位)
+const float ROTATE_RADIUS = 1.0f;								// ハンマーが回転するプレイヤーからの距離
+const float HAMMER_COL_SIZE = 0.75f;							// ハンマーの当たり判定の大きさ
 const float HAMMER_SIZE = 1.5f;									// ハンマーの大きさ
 #endif
 
@@ -87,8 +88,7 @@ CHammer::~CHammer()
    ======================================== */
 bool CHammer::Update()
 {
-	Swing();	//回転による移動関数
-
+	Swing();		//回転による移動関数
 	// 設定値まで移動しきったら
 	if (m_dAddAngleCnt >= SWING_TIME_FRAME)
 	{
@@ -101,6 +101,8 @@ bool CHammer::Update()
 	{
 		return true;
 	}
+
+	
 }
 
 /* ========================================
@@ -165,5 +167,6 @@ void CHammer::AttackStart(TPos3d<float>pPos, float angle)
 	m_Transform.fPos.x = m_tPlayerPos.x + ROTATE_RADIUS * -cosf(m_fAngleNow);
 	m_Transform.fPos.z = m_tPlayerPos.z + ROTATE_RADIUS * sinf(m_fAngleNow);
 
-
 }
+
+
