@@ -12,6 +12,7 @@
 	・2023/11/19 18の続き takagi
 	・2023/11/20 整理 takagi
 	・2023/11/23 IsFade()関数追加・細かい書き換え takagi
+	・2023/11/24 定数定義修正・定数バッファにUvOffset追加 takagi
 
 ========================================== */
 
@@ -39,23 +40,22 @@ private:
 	typedef struct
 	{
 		TDiType<float> fUvScale;	//UV拡縮
-		TDiType<float> fDummy;		//ダミー
+		TDiType<float> fUvOffset;	//UV移動
 	}UvParam;	//シェーダーに送る情報
 	// ===列挙定義===========
 	enum E_BIT_FLAG
 	{
 		E_BIT_FLAG_FADE_OUT = 0x01,		//フェードアウトフラグ
-		E_BIT_FLAG_FADE_IN = 0x02,		//フェードインフラグ
-		E_BIT_FLAG_FADE_STOP = 0x04,	//フェードストップフラグ
+		E_BIT_FLAG_FADE_STOP = 0x02,	//フェードストップフラグ
+		E_BIT_FLAG_FADE_IN = 0x04,		//フェードインフラグ
 		E_BIT_FLAG_4 = 0x08,			//
 		E_BIT_FLAG_5 = 0x10,			//
 		E_BIT_FLAG_6 = 0x20,			//
 		E_BIT_FLAG_7 = 0x40,			//
 		E_BIT_FLAG_8 = 0x80,			//
-
-		E_BIT_FLAG_MAX = 3,				//要素数(※直打ち)
-	};	//フラグ
+	};	//フェードの種類
 // =============== 定数定義 =====================
+	const int E_BIT_FLAG_MAX = 3;																			//要素数(※直打ち定数)
 	const unsigned char FLAG_FADE_ALL = E_BIT_FLAG_FADE_OUT | E_BIT_FLAG_FADE_STOP | E_BIT_FLAG_FADE_IN;	//フェード系フラグ全て
 public:
 	// ===プロトタイプ宣言===
@@ -67,19 +67,15 @@ public:
 	void Start();					//フェード開始
 	bool IsFade();					//フェード中かどうかを返す
 	bool IsFadeOut();				//フェードアウト中か
-	float GetOutFrameRate();		//フェードアウトの進行度ゲッタ
 	bool IsFadeIn();				//フェードイン中か
-	float GetInFrameRate();			//フェードインの進行度ゲッタ
+	float GetFrameRate();			//フェードインの進行度ゲッタ
 private:
 	// ===メンバ変数宣言=====
 	unsigned char m_ucFlag;				//フラグ
 	tagTransform3d m_Transform;			//ワールド座標
 	DirectX::XMFLOAT4X4 m_aMatrix[3];	//行列
 	UvParam m_UvParam;					//UV情報
-	int m_nFrameOut;
-	int m_nFrameStop;
-	int m_nFrameIn;
-	int m_nMaxFrame;					//フェードアウトフレーム数
+	int m_nFrame;
 	static int ms_nCntFade;				//自身の生成数
 	static VertexShader* ms_pVs;		//頂点シェーダー
 	static PixelShader* ms_pPs;			//ピクセルシェーダー
@@ -101,6 +97,9 @@ private:
 	void UpFlag(const unsigned char& ucBitFlag);	//フラグ起こし
 	void DownFlag(const unsigned char& ucBitFlag);	//フラグ降ろし
 	void SetFlag(const unsigned char& ucBitFlag);	//フラグ反転
+	void FadeOut();									//フェードアウト更新
+	void FadeStop();								//フェードストップ更新
+	void FadeIn();									//フェードイン更新
 };	//フェード
 
 #endif // !___FADE_H___

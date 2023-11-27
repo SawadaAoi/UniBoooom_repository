@@ -13,6 +13,7 @@
 	・2023/11/20 整理 takagi
 	・2023/11/21 更新・描画処理分割 takagi
 	・2023/11/23 IsFade()関数追加・細かい書き換え takagi
+	・2023/11/24 フェードの仕様変更対応 takagi
 
 ========================================== */
 
@@ -20,6 +21,9 @@
 #if _DEBUG
 #define USE_FADE (true)	//フェード試運転
 #endif
+
+#define CONSTANT_FADE_IN (true)
+
 
 // =============== インクルード ===================
 #include "Fade.h"	//自身のヘッダ
@@ -33,23 +37,22 @@
 #endif
 
 // =============== 定数定義 =====================
-const std::string VS_PASS("Assets/Shader/VsFade.cso");	//テクスチャのパス名
-const std::string PS_PASS("Assets/Shader/PsFade.cso");	//テクスチャのパス名
-const std::string TEX_PASS("Assets/Texture/Fade.png");	//テクスチャのパス名
-const TPos3d<float> INIT_POS(640.0f, 360.0f, 0.0f);		//位置初期化
-const TTriType<float> INIT_SCALE(80.0f, 80.0f, 0.0f);	//初期拡縮
-const TTriType<float> INIT_RADIAN(0.0f);				//初期回転
-const int FRAME_MIN(0);									//フェード時間の最小
-const int FRAME_TURNING_1(50);							//拡縮反転１フレーム数	//極小
-const int FRAME_TURNING_2(100);							//拡縮反転２フレーム数	//極大
-const float SCALE_MIN(0.0f);							//最小サイズ
-const float SCALE_TURNINIG_2(30.0f);					//サイズ反転２反転	//極大
-const float SCALE_TURNINIG_1(100.0f);					//サイズ反転１反転	//極小
-const float SCALE_MAX(1000.0f);							//最大サイズ
-const float ROTATE_ACCEL_RATE(4.0f);					//角速度増加割合
-const TDiType<int> SUBSTITUTE_FRAME_FADE(150, 60);		//フェードにかけるフレーム数の代替値	//アウト / ストップ / イン
-const int FRAME_MAX(SUBSTITUTE_FRAME_FADE.x);			//フェード時間の最大
-
+const std::string VS_PASS("Assets/Shader/VsFade.cso");		//テクスチャのパス名
+const std::string PS_PASS("Assets/Shader/PsFade.cso");		//テクスチャのパス名
+const std::string TEX_PASS("Assets/Texture/Fade.png");		//テクスチャのパス名
+const TPos3d<float> INIT_POS(640.0f, 360.0f, 0.0f);			//位置初期化
+const TTriType<float> INIT_SCALE(2000.0f, 2000.0f, 0.0f);	//初期拡縮
+const TTriType<float> INIT_RADIAN(0.0f);					//初期回転
+const TTriType<int> FRAME_FADE_MAX(150, 60, 150);			//フェードにかけるフレーム数	x:アウト, y:ストップ, z:イン
+const int FRAME_MIN(0);										//フェード時間の最小
+const int FRAME_OUT_PATTERN_1_FIN(50);						//フェードアウト開始から拡縮が留まるまでのフレーム数
+const int FRAME_OUT_PATTERN_2_FIN(100);						//フェードアウト開始から拡縮が留まり終わるまでのフレーム数
+const float SCALE_OUT_MIN(500.0f);							//フェードアウト最小サイズ	uvの都合上、値が大きい程サイズが小さくなる
+const float SCALE_IN_MIN(600.0f);							//フェードイン最小サイズ	uvの都合上、値が大きい程サイズが小さくなる
+const float SCALE_OUT_STAY(10.0f);							//フェードアウト拡縮が一時収まるときのサイズ
+const float SCALE_OUT_MAX(0.0f);							//フェード最大サイズ	uvの都合上、値が小さい程サイズが大きくなる
+const float SCALE_IN_MAX(0.0f);								//フェード最大サイズ	uvの都合上、値が小さい程サイズが大きくなる
+const float ROTATE_ACCEL_RATE(8.0f);						//角速度増加割合
 
 // =============== グローバル変数宣言 =====================
 int CFade::ms_nCntFade;							//自身の生成数
@@ -78,11 +81,8 @@ CFade::CFade(const CCamera* pCamera)
 	:m_ucFlag(0x00)									//フラグ
 	,m_pCamera(pCamera)								//カメラ
 	,m_Transform(INIT_POS, INIT_SCALE, INIT_RADIAN)	//ワールド座標
-	,m_UvParam{{ 1.0f, 1.0f }, { 0.0f, 0.0f }}		//シェーダー用UV座標	//TODO:DiTypeの情報が更新されたら反映する
-	,m_nFrameOut(0)
-	,m_nFrameStop(0)
-	,m_nFrameIn(0)
-	,m_nMaxFrame(0)									//最大フレーム数
+	,m_UvParam{ {1.0f}, {0.0f } }					//シェーダー用UV座標
+	,m_nFrame(0)								
 {
 	// =============== 静的作成 ===================
 	if (0 == ms_nCntFade)	//現在、他にこのクラスが作成されていない時
@@ -158,111 +158,56 @@ CFade::~CFade()
 =========================================== */
 void CFade::Update()
 {
-#if USE_FADE
-	if (IsKeyTrigger('7'))
-	{
-		Start();	//フェード開始
-	}
-#endif
-
 	// =============== 検査 ===================
 	if (!ms_pTexture || !(m_ucFlag & FLAG_FADE_ALL))	//描画できない時
 	{
+#if USE_FADE	//※危険だけどどうせ消えるからいいか
+		if (IsKeyTrigger('7'))
+		{
+			Start();	//フェード開始
+		}
+#endif
 		return;	//処理中断
 	}
 
-	// =============== フェードストップ ===================
-	if (m_ucFlag & E_BIT_FLAG_FADE_STOP)	//ストップ処理
+	// =============== 退避 ===================
+	unsigned char ucTemp = m_ucFlag;		//退避
+
+	// =============== フラグ処理 ===================
+	for (int nIdx = 0; nIdx < E_BIT_FLAG_MAX; nIdx++)
 	{
-		if (m_nFrameStop <= FRAME_MIN)	//カウント終了
+		if (ucTemp & 0x01)	//下位ビットから優先して処理する
 		{
-			DownFlag(E_BIT_FLAG_FADE_STOP);	//ストップ終了
-			UpFlag(E_BIT_FLAG_FADE_IN);		//フェードイン開始
-			m_nFrameOut = FRAME_MAX;		//フェード時間再登録
-		}
+			switch (0x01 << nIdx)	//添え字をビット列に変換
+			{
+				// =============== フェードアウト ===================
+			case E_BIT_FLAG_FADE_OUT:	//フェードアウト
+				FadeOut();	//フェードアウト処理
+				break;		//分岐処理終了
 
-		// =============== カウンタ ===================
-		m_nFrameStop--;	//フレームカウント
-	}
-	else
-	{
-		// =============== フェード ===================
+				// =============== フェードストップ ===================
+			case E_BIT_FLAG_FADE_STOP:	//フェードストップ
+				FadeStop();	//フェードストップ処理
+				break;		//分岐処理終了
+
+				// =============== フェードイン ===================
+			case E_BIT_FLAG_FADE_IN:	//フェードイン
+				FadeIn();	//フェードイン処理
+				break;		//分岐処理終了
+
+				// =============== 未対応 ===================
+			default:					//その他
 #if _DEBUG
-		if (m_ucFlag & (E_BIT_FLAG_FADE_IN | E_BIT_FLAG_FADE_OUT))
-		{
+				MessageBox(nullptr, "想定されないフェードの種類です", "Fade.cpp->Update->Error", MB_OK);	//エラー通知
 #endif
-			// =============== 変数宣言 ===================
-			int nFrameTemp;	//フレーム退避用
-
-			// =============== 分岐処理 ===================
-			if (m_ucFlag & E_BIT_FLAG_FADE_OUT)	//フェードアウト時
-			{
-				// =============== 初期化 ===================
-				nFrameTemp = FRAME_MAX - m_nFrameOut;	//退避
-
-				// =============== カウンタ ===================
-				m_nFrameOut--;	//フレームカウント
+				break;						//分岐処理終了
 			}
-			if (m_ucFlag & E_BIT_FLAG_FADE_IN)	//フェードイン時
-			{
-				// =============== 初期化 ===================
-				nFrameTemp = m_nFrameIn;	//退避
-
-				// =============== カウンタ ===================
-				m_nFrameIn--;	//フレームカウント
-			}
-
-			// =============== 状態分岐 ===================
-			if (m_nFrameIn <= FRAME_MIN && m_ucFlag & E_BIT_FLAG_FADE_IN || m_nFrameOut <= FRAME_MIN && m_ucFlag & E_BIT_FLAG_FADE_OUT)	//フェードアウト・イン終了
-			{
-				if (m_ucFlag & E_BIT_FLAG_FADE_OUT)	//フェードアウト時
-				{
-					DownFlag(E_BIT_FLAG_FADE_OUT);	//フェードアウト終了
-					UpFlag(E_BIT_FLAG_FADE_STOP);	//フェードストップ開始
-				}
-				if (m_ucFlag & E_BIT_FLAG_FADE_IN)	//フェードイン時
-				{
-					DownFlag(E_BIT_FLAG_FADE_IN);	//フェードイン終了
-				}
-			}
-			else
-			{
-				if (nFrameTemp <= FRAME_TURNING_1)	//アウト時：開始から第１ターニングポイントまで
-				{
-					m_UvParam.fUvScale.x = (SCALE_TURNINIG_1 - SCALE_MIN) * (float)(nFrameTemp - FRAME_MIN) / (float)(FRAME_TURNING_1);	//拡縮セット
-				}
-				else
-				{
-					if (nFrameTemp <= FRAME_TURNING_2)	//アウト時：第１ターニングポイントから第２ターニングポイントまで
-					{
-						m_UvParam.fUvScale.x = SCALE_TURNINIG_1 + (SCALE_TURNINIG_2 - SCALE_TURNINIG_1) * (float)(nFrameTemp - FRAME_TURNING_1) / (float)(FRAME_TURNING_2 - FRAME_TURNING_1);	//拡縮セット
-					}
-					else
-					{
-						if (nFrameTemp <= FRAME_MAX)	//アウト時：第２ターニングポイントから終了まで
-						{
-							m_UvParam.fUvScale.x = SCALE_TURNINIG_2 + (SCALE_MAX - SCALE_TURNINIG_2) * (float)(nFrameTemp - FRAME_TURNING_2) / (float)(FRAME_MAX - FRAME_TURNING_2);	//拡縮セット
-						}
-#if _DEBUG
-						else
-						{
-							MessageBox(nullptr, "フレーム数が想定を超過しました", "Fade.cpp->Error", MB_OK);	//エラー通知
-						}
-#endif
-					}
-				}
-				m_UvParam.fUvScale.y = m_UvParam.fUvScale.x;	//変更を揃える
-			}
-
-			// =============== 角更新 ===================
-			m_Transform.fRadian.z = DirectX::XMConvertToRadians(nFrameTemp * ROTATE_ACCEL_RATE);	//フレーム数で角更新
-#if _DEBUG
+			break;	//ループ処理終了
 		}
 		else
 		{
-			MessageBox(nullptr, "想定されないフェードの種類です", "Fade.cpp->Error", MB_OK);	//エラー通知
+			ucTemp >>= 1;	//次のフラグ候補へ
 		}
-#endif
 	}
 
 	// =============== 行列更新 ===================
@@ -288,7 +233,7 @@ void CFade::Draw()
 	}
 
 	// =============== 変数宣言 ===================
-	float Param[4] = { m_UvParam.fUvScale.x, m_UvParam.fUvScale.y, m_UvParam.fDummy.x, m_UvParam.fDummy.y };	//定数バッファ書き込み用
+	float Param[4] = { m_UvParam.fUvScale.x, m_UvParam.fUvScale.y, m_UvParam.fUvOffset.x, m_UvParam.fUvOffset.y };	//定数バッファ書き込み用
 
 	// =============== シェーダー使用 ===================
 	ms_pVs->WriteBuffer(0, m_aMatrix);	//定数バッファに行列情報書き込み
@@ -343,9 +288,7 @@ void CFade::Draw()
 void CFade::Start()
 {
 	// =============== フレーム数登録 ===================
-	m_nFrameOut = SUBSTITUTE_FRAME_FADE.x;		//フェードアウトのフレーム数登録
-	m_nFrameStop = SUBSTITUTE_FRAME_FADE.y;	//フェードストップのフレーム数登録
-	m_nFrameIn = SUBSTITUTE_FRAME_FADE.x;		//フェードインのフレーム数登録
+	m_nFrame = FRAME_FADE_MAX.x;		//フェードアウトのフレーム数登録
 
 	// =============== フラグ操作 ===================
 	UpFlag(E_BIT_FLAG_FADE_OUT);	//フェードアウト開始
@@ -384,30 +327,30 @@ bool CFade::IsFade()
 =========================================== */
 bool CFade::IsFadeOut()
 {
-	// =============== 提供 ===================
-	if (m_ucFlag & E_BIT_FLAG_FADE_OUT)	//フェードアウト中
-	{
-		return true;	//フェードしている
-	}
-	else
-	{
-		return false;	//フェードしていない
-	}
-}
+	// =============== 退避 ===================
+	unsigned char ucTemp = m_ucFlag;		//退避
 
-/* ========================================
-	フェードアウト進捗ゲッタ関数
-	-------------------------------------
-	内容：フェードアウトの進行割合を提供する
-	-------------------------------------
-	引数1：なし
-	-------------------------------------
-	戻値：フェードアウト進捗時間 / フェードアウト最大時間 の結果
-=========================================== */
-float CFade::GetOutFrameRate()
-{
-	// =============== 提供 ===================
-	return static_cast<float>(m_nFrameOut) / static_cast<float>(FRAME_MAX);	//進行割合
+	// =============== フラグ処理 ===================
+	for (int nIdx = 0; nIdx < E_BIT_FLAG_MAX; nIdx++)
+	{
+		if (ucTemp & 0x01)	//Update関数と同等の優先度で処理する
+		{
+			// =============== 提供 ===================
+			switch (0x01 << nIdx)	//添え字をビット列に変換
+			{
+				// =============== フェードアウト中 ===================
+			case E_BIT_FLAG_FADE_OUT:	//フェードアウト
+				return true;	//フェードアウトしている
+				break;			//分岐処理終了
+			}
+			break;	//ループ処理終了
+		}
+		else
+		{
+			ucTemp >>= 1;	//次のフラグ候補へ
+		}
+	}
+	return false;	//フェードアウトしていない
 }
 
 /* ========================================
@@ -417,34 +360,108 @@ float CFade::GetOutFrameRate()
 	-------------------------------------
 	引数1：なし
 	-------------------------------------
-	戻値：なし
+	戻値：フェードイン中でtrue, それ以外はfalse
 =========================================== */
 bool CFade::IsFadeIn()
 {
-	// =============== 提供 ===================
-	if (m_ucFlag & E_BIT_FLAG_FADE_IN)	//フェードイン中
+	// =============== 退避 ===================
+	unsigned char ucTemp = m_ucFlag;		//退避
+
+	// =============== フラグ処理 ===================
+	for (int nIdx = 0; nIdx < E_BIT_FLAG_MAX; nIdx++)
 	{
-		return true;	//フェードしている
+		if (ucTemp & 0x01)	//Update関数と同等の優先度で処理する
+		{
+			// =============== 提供 ===================
+			switch (0x01 << nIdx)	//添え字をビット列に変換
+			{
+				// =============== フェードイン中 ===================
+			case E_BIT_FLAG_FADE_IN:	//フェードイン
+				return true;	//フェードインしている
+				break;			//分岐処理終了
+			}
+			break;	//ループ処理終了
+		}
+		else
+		{
+			ucTemp >>= 1;	//次のフラグ候補へ
+		}
 	}
-	else
-	{
-		return false;	//フェードしていない
-	}
+	return false;	//フェードインしていない
 }
 
 /* ========================================
-	フェードイン進捗ゲッタ関数
+	フェード進捗ゲッタ関数
 	-------------------------------------
-	内容：フェードインの進行割合を提供する
+	内容：現在フェードモードの進行割合を提供する
 	-------------------------------------
 	引数1：なし
 	-------------------------------------
-	戻値：フェードイン進捗時間 / フェードイン最大時間 の結果
+	戻値：現在フェードモードの 進捗時間 / 最大時間 の結果	非フェード時は0.0f
 =========================================== */
-float CFade::GetInFrameRate()
+float CFade::GetFrameRate()
 {
-	// =============== 提供 ===================
-	return m_nFrameIn / FRAME_MAX;	//進行割合
+	// =============== 退避 ===================
+	unsigned char ucTemp = m_ucFlag;		//退避
+
+	// =============== フラグ処理 ===================
+	for (int nIdx = 0; nIdx < E_BIT_FLAG_MAX; nIdx++)
+	{
+		if (ucTemp & 0x01)	//下位ビットから優先して処理する
+		{
+			// =============== 提供 ===================
+			switch (0x01 << nIdx)	//添え字をビット列に変換
+			{
+				// =============== フェードアウト ===================
+			case E_BIT_FLAG_FADE_OUT:	//フェードアウト
+#if _DEBUG
+				if (0 == FRAME_FADE_MAX.x)
+				{
+					MessageBox(nullptr, "0除算の危険性があります", "Fade.cpp->GetFrameRate->Error", MB_OK);	//エラー通知
+					return 0.0f;	//臨時対応
+				}
+#endif
+				return static_cast<float>(m_nFrame) / static_cast<float>(FRAME_FADE_MAX.x);	//アウトの進行割合
+				break;		//分岐処理終了
+
+				// =============== フェードストップ ===================
+			case E_BIT_FLAG_FADE_STOP:	//フェードストップ
+#if _DEBUG
+				if (0 == FRAME_FADE_MAX.y)
+				{
+					MessageBox(nullptr, "0除算の危険性があります", "Fade.cpp->GetFrameRate->Error", MB_OK);	//エラー通知
+					return 0.0f;	//臨時対応
+				}
+#endif
+				return static_cast<float>(m_nFrame) / static_cast<float>(FRAME_FADE_MAX.y);	//ストップの進行割合
+				break;		//分岐処理終了
+
+				// =============== フェードイン ===================
+			case E_BIT_FLAG_FADE_IN:	//フェードイン
+#if _DEBUG
+				if (0 == FRAME_FADE_MAX.z)
+				{
+					MessageBox(nullptr, "0除算の危険性があります", "Fade.cpp->GetFrameRate->Error", MB_OK);	//エラー通知
+					return 0.0f;	//代替値で対応
+				}
+#endif
+				return static_cast<float>(m_nFrame) / static_cast<float>(FRAME_FADE_MAX.z);	//インの進行割合
+				break;		//分岐処理終了
+#if _DEBUG
+				// =============== 未対応 ===================
+			default:					//その他
+				MessageBox(nullptr, "想定されないフェードの種類です", "Fade.cpp->GetFrameRate->Error", MB_OK);	//エラー通知
+				break;			//分岐処理終了
+#endif
+			}
+			break;	//ループ処理終了
+		}
+		else
+		{
+			ucTemp >>= 1;	//次のフラグ候補へ
+		}
+	}
+		return 0.0f;	//フェードしていない
 }
 
 /* ========================================
@@ -550,7 +567,7 @@ void CFade::CreateIdxBuffer()
 		// =============== サイズ違い ===================
 	default:	//下記以外
 #if _DEBUG
-		MessageBox(nullptr, "型のサイズがint型と一致しません", "Fade.cpp->Error", MB_OK);	//エラー通知
+		MessageBox(nullptr, "型のサイズがint型と一致しません", "Fade.cpp->CreateIdxBuffer->Error", MB_OK);	//エラー通知
 #endif
 		return;	//処理中断
 
@@ -623,4 +640,155 @@ void CFade::SetFlag(const unsigned char & ucBitFlag)
 {
 	// =============== 代入 ===================
 	m_ucFlag ^= ucBitFlag;	//フラグ操作
+}
+
+/* ========================================
+	フェードアウト更新関数
+	-------------------------------------
+	内容：フェードアウト処理
+	-------------------------------------
+	引数1：なし
+	-------------------------------------
+	戻値：なし
+=========================================== */
+void CFade::FadeOut()
+{
+#if _DEBUG
+	// =============== 検査 ===================
+	if (!(m_ucFlag & E_BIT_FLAG_FADE_OUT))	//アウト処理
+	{
+		MessageBox(nullptr, "フェードアウト中でない時にフェードアウトしようとしています", "Fade.cpp->FadeOut->Error", MB_OK);	//エラー通知
+		return;	//処理中断
+	}
+#endif
+		// =============== 状態分岐 ===================
+		if (m_nFrame <= FRAME_MIN)	//フェードアウト終了
+		{
+			m_UvParam.fUvOffset = 3000.0f;	//テクスチャ位置をずらしフェードを隠す
+			DownFlag(E_BIT_FLAG_FADE_OUT);	//フェードアウト終了
+			m_nFrame = FRAME_FADE_MAX.y;	//フェードストップのフレーム数登録
+			UpFlag(E_BIT_FLAG_FADE_STOP);	//フェードストップ開始
+		}
+		else
+		{
+			// =============== 初期化子付き変数宣言 ===================
+			int nFrameTemp = FRAME_FADE_MAX.x - m_nFrame;	//退避
+			
+			// =============== 拡縮更新 ===================
+			if (nFrameTemp <= FRAME_OUT_PATTERN_1_FIN)	//フェードアウトパターン１：フェードアウト開始から拡縮が留まるまで
+			{
+				m_UvParam.fUvScale.x = SCALE_OUT_MAX + (SCALE_OUT_STAY - SCALE_OUT_MAX) * (float)(nFrameTemp - FRAME_MIN) / (float)(FRAME_OUT_PATTERN_1_FIN);	//拡縮セット
+			}
+			else
+			{
+				if (nFrameTemp <= FRAME_OUT_PATTERN_2_FIN)	//フェードアウトパターン２：拡縮が留まり始めてから留まり終わるまで
+				{
+					m_UvParam.fUvScale.x = SCALE_OUT_STAY;	//拡縮セット
+				}
+				else
+				{
+					if (nFrameTemp <= FRAME_FADE_MAX.x)	//フェードアウトパターン３：拡縮再開からフェードアウト終了まで
+					{
+						m_UvParam.fUvScale.x = SCALE_OUT_STAY + (SCALE_OUT_MIN - SCALE_OUT_STAY) * (float)(nFrameTemp - FRAME_OUT_PATTERN_2_FIN) / (float)(FRAME_FADE_MAX.x - FRAME_OUT_PATTERN_2_FIN);	//拡縮セット
+					}
+#if _DEBUG
+					else
+					{
+						MessageBox(nullptr, "フレーム数が想定を超過しました", "Fade.cpp->FadeOut->Error", MB_OK);	//エラー通知
+					}
+#endif
+				}
+			}
+			m_UvParam.fUvScale.y = m_UvParam.fUvScale.x;	//x値の変更をy値に反映する
+
+			// =============== 回転角更新 ===================
+			m_Transform.fRadian.z = DirectX::XMConvertToRadians(nFrameTemp * ROTATE_ACCEL_RATE);	//フレーム数で角更新
+		}
+
+		// =============== カウンタ ===================
+		m_nFrame--;	//フレームカウント
+}
+
+/* ========================================
+	フェードストップ更新関数
+	-------------------------------------
+	内容：フェードストップ処理
+	-------------------------------------
+	引数1：なし
+	-------------------------------------
+	戻値：なし
+=========================================== */
+void CFade::FadeStop()
+{	
+#if _DEBUG
+	// =============== 検査 ===================
+	if (!(m_ucFlag & E_BIT_FLAG_FADE_STOP))	//ストップ処理
+	{
+		MessageBox(nullptr, "フェードストップ中でない時にフェードストップしようとしています", "Fade.cpp->FadeStop->Error", MB_OK);	//エラー通知
+		return;	//処理中断
+	}
+#endif
+	// =============== フェードストップ ===================
+		if (m_nFrame <= FRAME_MIN)	//カウント終了
+		{
+			m_UvParam.fUvOffset = 0.0f;		//テクスチャ位置を戻しフェードを見せる
+			DownFlag(E_BIT_FLAG_FADE_STOP);	//ストップ終了
+			m_nFrame = FRAME_FADE_MAX.z;	//フェードインのフレーム数登録
+			UpFlag(E_BIT_FLAG_FADE_IN);		//フェードイン開始
+		}
+
+		// =============== カウンタ ===================
+		m_nFrame--;	//フレームカウント
+}
+
+/* ========================================
+	フェードイン更新関数
+	-------------------------------------
+	内容：フェードイン処理
+	-------------------------------------
+	引数1：なし
+	-------------------------------------
+	戻値：なし
+=========================================== */
+void CFade::FadeIn()
+{
+#if _DEBUG
+	// =============== 検査 ===================
+	if (!(m_ucFlag & E_BIT_FLAG_FADE_IN))	//イン処理
+	{
+		MessageBox(nullptr, "フェードイン中でない時にフェードインしようとしています", "Fade.cpp->FadeIn->Error", MB_OK);	//エラー通知
+		return;	//処理中断
+	}
+#endif
+	// =============== 状態分岐 ===================
+	if (m_nFrame <= FRAME_MIN)	//フェードイン終了
+	{
+		DownFlag(E_BIT_FLAG_FADE_IN);	//フェードイン終了
+	}
+	else
+	{
+		// =============== 初期化子付き変数宣言 ===================
+		int nFrameTemp = FRAME_FADE_MAX.z - m_nFrame;	//退避
+
+		// =============== 拡縮更新 ===================
+#if _DEBUG
+		if (m_nFrame <= FRAME_FADE_MAX.z)	//フェードイン
+		{
+#endif
+			m_UvParam.fUvScale.x = SCALE_IN_MAX + (SCALE_IN_MIN - SCALE_IN_MAX) * (float)(m_nFrame - FRAME_MIN) / (float)(FRAME_FADE_MAX.z);	//拡縮セット
+#if _DEBUG
+		}
+		else
+		{
+			MessageBox(nullptr, "フレーム数が想定を超過しました", "Fade.cpp->FadeIn->Error", MB_OK);	//エラー通知
+		}
+#endif
+	}
+	m_UvParam.fUvScale.y = m_UvParam.fUvScale.x;	//x値の変更をy値に反映する
+
+	// =============== 回転角更新 ===================
+	m_Transform.fRadian.z = DirectX::XMConvertToRadians(m_nFrame * ROTATE_ACCEL_RATE);	//フレーム数で角更新
+
+	// =============== カウンタ ===================
+	m_nFrame--;	//フレームカウント
 }

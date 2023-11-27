@@ -23,6 +23,8 @@
 	・2023/11/19 移動のSEを再生 yamashita
 	・2023/11/19 被ダメージ時とハンマーを振るSEを再生 yamashita
 	・2023/11/19 サウドファイル読み込み関数を作成 yamashita
+	・2023/11/23 ジオメトリーからモデルに差し替え yamashita
+	・2023/11/23 ゲームオーバーの仮表示を削除 yamashita
 ======================================== */
 
 // =============== インクルード ===================
@@ -62,8 +64,6 @@ const float	SE_RUN_VOLUME = 0.3f;				//移動によるSEの音量
 ======================================== */
 CPlayer::CPlayer()
 	: m_pHammer(nullptr)
-	, m_pPlayerGeo(nullptr)
-	, m_pGameOver(nullptr)
 	, m_bAttackFlg(false)
 	, m_nHp(0)
 	, m_pCamera(nullptr)
@@ -80,12 +80,22 @@ CPlayer::CPlayer()
 	, m_nMoveCnt(0)
 {
 	m_pHammer = new CHammer();								// Hammerクラスをインスタンス
-	m_pPlayerGeo = new CSphere();							// プレイヤーとして仮表示する球体オブジェクトのインスタンス
-	m_pGameOver = new CSphere();
 	m_nHp = PLAYER_HP;										// プレイヤーのHPを決定
 	m_Sphere.fRadius = PLAYER_RADIUS;						// 当たり判定用の球体の半径
 	m_Transform.fScale = PLAYER_SIZE;
 	LoadSound();	//サウンドファイル読み込み
+
+	//頂点シェーダ読み込み
+	m_pVS = new VertexShader();
+	if (FAILED(m_pVS->Load("Assets/Shader/VS_Model.cso"))) {
+		MessageBox(nullptr, "VS_Model.cso", "Error", MB_OK);
+	}
+	//プレイヤーのモデル読み込み
+	m_pModel = new Model;
+	if (!m_pModel->Load("Assets/Model/player/player.FBX", 1.0f, Model::None)) {		//倍率と反転は省略可
+		MessageBox(NULL, "player", "Error", MB_OK);	//ここでエラーメッセージ表示
+	}
+	m_pModel->SetVertexShader(m_pVS);
 }
 /* ========================================
    関数：デストラクタ
@@ -98,8 +108,8 @@ CPlayer::CPlayer()
 ======================================== */
 CPlayer::~CPlayer()
 {
-	SAFE_DELETE(m_pGameOver);
-	SAFE_DELETE(m_pPlayerGeo);
+	SAFE_DELETE(m_pModel);
+	SAFE_DELETE(m_pVS);
 	SAFE_DELETE(m_pHammer);
 }
 
@@ -175,42 +185,34 @@ void CPlayer::Update()
 ======================================== */
 void CPlayer::Draw()
 {
-	if (!m_pCamera)
-	{
-		return;
-	}
-
 	// 描画しない(点滅処理中)
-	if (m_DrawFlg == false)
+	if (m_DrawFlg == true)
 	{
-		return;
+		DirectX::XMFLOAT4X4 mat[3];
+
+		mat[0] = m_Transform.GetWorldMatrixSRT();
+		mat[1] = m_pCamera->GetViewMatrix();
+		mat[2] = m_pCamera->GetProjectionMatrix();
+
+		//-- 行列をシェーダーへ設定
+		m_pVS->WriteBuffer(0, mat);
+
+		//-- モデル表示
+		if (m_pModel) {
+			// レンダーターゲット、深度バッファの設定
+			RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得
+			DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
+			SetRenderTargets(1, &pRTV, pDSV);		//DSVがnullだと2D表示になる
+
+			m_pModel->Draw();
+		}
 	}
-
-	m_pPlayerGeo->SetWorld(m_Transform.GetWorldMatrixSRT());	//ワールド座標にセット
-	m_pPlayerGeo->SetView(m_pCamera->GetViewMatrix());
-	m_pPlayerGeo->SetProjection(m_pCamera->GetProjectionMatrix());
-
 	
-	m_pPlayerGeo->Draw();		//プレイヤーを描画
-	
-	// 攻撃中の場合
-	if (m_bAttackFlg == true)
+	if (m_bAttackFlg)
 	{
-		m_pHammer->Draw(m_pCamera);		//ハンマーの描画
+		m_pHammer->Draw();		//ハンマーの描画
 	}
 
-	// HPが0になったら
-	if (m_nHp <= 0)	//ゲームオーバーを表すオブジェクトの描画	<=TODO 後々消します(Damage処理がある為)
-	{
-		m_pGameOver->SetView(m_pCamera->GetViewMatrix());										//ビューのセット
-		m_pGameOver->SetProjection(m_pCamera->GetProjectionMatrix());							//プロジェクションのセット
-		DirectX::XMMATRIX mat = DirectX::XMMatrixTranslation(0.0f, 2.0f, 0.0f);					//移動の変換行列
-		mat = DirectX::XMMatrixTranspose(mat);													//転置
-		DirectX::XMFLOAT4X4 fmat;																//セットワールド用の変数
-		DirectX::XMStoreFloat4x4(&fmat, mat);													//MATRIX型から変換
-		m_pGameOver->SetWorld(fmat);															//ワールドのセット
-		m_pGameOver->Draw();																	//GameOverの描画
-	}
 }
 
 /* ========================================
@@ -416,6 +418,7 @@ int* CPlayer::GetHP()
 void CPlayer::SetCamera(const CCamera * pCamera)
 {
 	m_pCamera = pCamera;	//中身は変えられないけどポインタはかえれるのでヨシ！
+	m_pHammer->SetCamera(m_pCamera);
 }
 
 /* ========================================

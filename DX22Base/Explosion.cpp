@@ -21,6 +21,7 @@
 	・2023/11/15 Objectクラスを継承したので修正　yamamoto
 	・2023/11/20 コンボ数配列添え字の追加 Sawada
 	・2023/11/21 初期値の設定と、遅延処理の追加 Sawada
+	・2023/11/21 ボスに一度触ったかを判定用の関数実装 Suzumura
 
 	・2023/11/21 DisplayAddTimeの中にBoooomUIの表示時間処理追加 Tei
 
@@ -55,7 +56,7 @@ const int DELAY_TIME = 0.5f * 60;
 	-------------------------------------
 	戻値：無し
 =========================================== */
-CExplosion::CExplosion(TPos3d<float> fPos, float fSize,float fTime, int comboNum, bool delayFlg)
+CExplosion::CExplosion(TPos3d<float> fPos, float fSize,float fTime, int comboNum, bool delayFlg, int nDamage)
 	: m_fSizeAdd(0.0f)
 	, m_fDelFrame(0.0f)
 	, m_bDelFlg(false)
@@ -64,11 +65,18 @@ CExplosion::CExplosion(TPos3d<float> fPos, float fSize,float fTime, int comboNum
 	, m_dComboNum(comboNum)
 	, m_bDelayFlg(delayFlg)
 	, m_dDelayCnt(0)
+	, m_fDamage(0)
+	, m_pCamera(nullptr)
+	, m_bBossTouched(false)
 {
 	//爆発オブジェクト初期化
 	m_Sphere.fRadius = fSize / 2;	// 当たり判定をセットする
 	m_3dModel		 = new CSphere();
 	m_Transform.fPos = fPos;		// スライムがいた場所に生成する
+	m_fExplodeTime = fTime;		// 爆発総時間をセットする
+	m_fMaxSize = fSize;			// 最大サイズをセットする
+	m_fDamage = nDamage;		// 与えるダメージ量をセットする
+
 }
 
 /* ========================================
@@ -115,9 +123,9 @@ void CExplosion::Update()
 	-------------------------------------
 	内容：爆発の描画処理
 	-------------------------------------
-	引数1：
+	引数1：無し
 	-------------------------------------
-	戻値：
+	戻値：無し
 =========================================== */
 void CExplosion::Draw()
 {
@@ -166,8 +174,23 @@ void CExplosion::DisplayTimeAdd()
 	m_Sphere.fRadius = m_Transform.fScale.y / 2;	// 当たり判定をセットする
 }
 
+
 /* ========================================
-	遅延処理関数
+	ボスにふれたことを知らせる関数
+	-------------------------------------
+	内容：ボスと接触時フラグをon
+	-------------------------------------
+	引数1：無し
+	-------------------------------------
+	戻値：無し
+=========================================== */
+void CExplosion::BossTouched()
+{
+	m_bBossTouched = true;
+}
+
+/* ========================================
+	座標設定処理関数
 	-------------------------------------
 	内容：爆発の発生を遅らせる
 	-------------------------------------
@@ -212,6 +235,34 @@ bool CExplosion::GetDelFlg()
 int CExplosion::GetComboNum()
 {
 	return m_dComboNum;
+}
+
+/* ========================================
+	ダメージ量取得処理関数
+	-------------------------------------
+	内容：与えるダメージを取得する
+	-------------------------------------
+	引数1：無し
+	-------------------------------------
+	戻値：ダメージ量(int)
+=========================================== */
+int CExplosion::GetDamage()
+{
+	return m_fDamage;
+}
+
+/* ========================================
+	既に当たっているか取得処理関数
+	-------------------------------------
+	内容：既にボスとあたっているかどうかを取得する
+	-------------------------------------
+	引数1：無し
+	-------------------------------------
+	戻値：接触フラグ(bool)
+=========================================== */
+bool CExplosion::GetBossTouched()
+{
+	return m_bBossTouched;
 }
 
 /* ========================================

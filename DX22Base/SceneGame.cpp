@@ -13,10 +13,12 @@
 	・2023/11/10 カメラをスライムと爆発にも渡すようにした・lineのメモリリーク対策 髙木駿輔
 	・2023/11/17 振動機能呼び出しデバッグモード追加 takagi
 	・2023/11/18 BGMの再生 yamashita
+	・2023/11/18 爆発時スライムの頭上に表示するスコア追加　yamamoto
 	・2023/11/18~20 フェード試した 髙木駿輔
 	・2023/11/21 フェード更新呼び出し 髙木駿輔
 	・2023/11/21 コンボ用のメンバ変数を追加 Sawada
 	・2023/11/21 爆発時BoooomUI表示するための処理を追加
+	・2023/11/23 トータルスコア表示追加　yamamoto
 
 ========================================== */
 
@@ -151,6 +153,7 @@ SceneGame::SceneGame()
 
 	//ボスゲージ
 	m_pBossgauge = new CBossgauge(m_pTimer->GetNowTime());
+	m_pBossgauge->SetSlimeManager(m_pSlimeMng);
 }
 
 /* ========================================
@@ -177,6 +180,7 @@ SceneGame::~SceneGame()
 	SAFE_DELETE(m_pTimer);
 	SAFE_DELETE(m_pCombo);
 	SAFE_DELETE(m_pExplosionMng);
+	SAFE_DELETE(m_pCombo);
 	SAFE_DELETE(m_pSlimeMng);	// スライムマネージャー削除
 	SAFE_DELETE(m_pFloor);
 	SAFE_DELETE(m_pCamera);
