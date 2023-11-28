@@ -57,7 +57,6 @@ enum E_SLIME_LEVEL
 	LEVEL_3,		//3段階目
 	LEVEL_4,		//4段階目
 	LEVEL_4x4,		//赤アか
-
 	LEVEL_FLAME,			// フレイムスライム
 	LEVEL_BOSS = 999,		// ボススライム	(最強)
 

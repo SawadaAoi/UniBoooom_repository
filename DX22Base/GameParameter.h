@@ -52,6 +52,8 @@ const int	NO_DAMAGE_TIME		= 3 * 60;		// プレイヤーの無敵時間
 const int	DAMAGE_FLASH_FRAME	= 0.1f * 60;	// プレイヤーのダメージ点滅の切り替え間隔
 const int	SE_RUN_INTERVAL		= 0.4f * 60;	//プレイヤーの移動によるSE発生の間隔
 const float	SE_RUN_VOLUME		= 0.3f;			//移動によるSEの音量
+const float HAMMER_INTERVAL_TIME	= 0.7f * 60;	// ハンマー振り間隔
+
 
 // ハンマー
 const float HAMMER_ANGLE_X		= DirectX::XMConvertToRadians(180.0f);								//ハンマーの表示角度
@@ -125,19 +127,26 @@ const int LEVEL_2_SCORE = 30;				// スライム_2のスコア
 const int LEVEL_3_SCORE = 100;				// スライム_3のスコア
 const int LEVEL_4_SCORE = 500;				// スライム_4のスコア
 const int LEVEL_4x4_SCORE = 1000;			// 赤々の爆発のスコア
+const int LEVEL_Boss_SCORE = 3000;			// 赤々の爆発のスコア
+
 // ボススライム
 #define DEBUG_BOSS	(false)	// デバッグ用にゲーム開始時ボスを生成するかどうか
 
 const float LEVEL_BOSS_1_SCALE = 6.0f;								// ボス１の大きさ
 const float LEVEL_BOSS_1_SPEED = ENEMY_MOVE_SPEED * 0.4f;			// ボス１のスピード
 const int	BOSS_1_MAX_HP = 10;								// ボス１の最大HP
-
+const float SLIME_HP_HEIGHT = 5.0f;							//ボスの体力表示位置（Y）
 const float ASSAULT_DISTANCE = 0.2f;								// 突撃反応距離
 const int	ASSAULT_COOL_TIME = 10 * 60;							// 突撃クルータイム
 const int	ASSAULT_CHARGE_TIME = 2 * 60;							// 突撃チャージ時間
 const int	ASSAULT_TIME = 1.0f * 60;						// 突撃総時間
 const float ASSAULT_SPEED = LEVEL_BOSS_1_SPEED * 20.0f;		// 突撃時のスピード
 
+const float BOSS_HP_SIZEX = 0.3f;		//体力１分の大きさ（X）
+const float BOSS_HP_SIZEY = 0.5f;		//体力１分の大きさ（Y）
+const float BOSS_HPFRAME_SIZEX = 0.2f;	//体力ゲージよりどれだけ大きいか（X）
+const float BOSS_HPFRAME_SIZEY = 0.2f;	//体力ゲージよりどれだけ大きいか（Y）
+const float BOSS_HP_POSX = 8.6f;		//体力バー（減る方）の位置
 const int BOSS_DAMAGE_FLASH_FRAME = 0.1 * 60;					// ダメージ受けた際の点滅フレーム(無敵ではない)
 const int BOSS_DAMAGE_FLASH_TOTAL_FRAME = 0.5 * 60;					// ダメージを受けた際の点滅を何フレーム行うか
 
@@ -173,12 +182,27 @@ const TPos2d<float> SMALLDECIMAL_POS(2.0f, -3.0f);//この値で小数点の位置の微調節
 
 
 // カメラ =====================================================
-const TPos3d<float> INIT_POS(0.0f, 2.6f, -3.0f);					// 初期位置
+const TPos3d<float> INIT_POS(0.0f, 1.6f, -3.0f);					//初期位置
 
-const float INIT_ANGLE = DirectX::XMConvertToRadians(73.0f);       // カメラの角度
-const float INIT_NEAR = 1.0f;										// 画面手前初期z値
-const float INIT_FAR = 150.0f;									// 画面奥初期z値
-const float INIT_RADIUS = 15.0f;									// カメラと注視点との距離(初期値)
+const float Pi = 3.141592f;
+constexpr float ANGLE_TO_RADIAN(float fAngle)
+{
+	return fAngle / 180.0f * Pi;	//角度→ラジアン角
+}
+
+const float INIT_ANGLE = DirectX::XMConvertToRadians(73.0f);        //カメラの角度
+const float INIT_NEAR = 1.0f;										//画面手前初期z値
+const float INIT_FAR = 150.0f;										//画面奥初期z値
+const float INIT_RADIUS = 15.0f;									//カメラと注視点との距離(初期値)
+
+const float RADIAN_VELOCITY_WEAK = ANGLE_TO_RADIAN(1.5f);		//角速度：弱
+const float RADIAN_VELOCITY_STRONG = ANGLE_TO_RADIAN(1.0f);		//角速度：強
+const TDiType<float> AMPLITUDE_WEAK(3.0f, 0.7f);				//振幅：弱			x:縦, y:横
+const TDiType<float> AMPLITUDE_STRONG(10.0f, 50.0f);			//振幅：強			x:縦, y:横
+const TDiType<float> VIRTUAL_FRICTION(0.5f);					//疑似摩擦力
+const TDiType<float> VIRTUAL_GRAVITY(0.5f);						//疑似重力
+const TDiType<float> DECREASE_RADIAN_WEAK(0.005f, 0.005f);		//角速度減少量：弱	x:縦, y:横
+const TDiType<float> DECREASE_RADIAN_STRONG(0.005f, 0.008f);	//角速度減少量：強	x:縦, y:横
 
 // UI =====================================================
 // 2D表示
@@ -257,6 +281,15 @@ const float TEXTURE_TITLE_BUTTON_POSX = SCREEN_WIDTH_ / 2;	// タイトル画像表示位
 const float TEXTURE_TITLE_BUTTON_POSY = 100.0f;				// タイトル画面ボタン押下指示画像表示位置のY座標
 const float TEXTURE_TITLE_BUTTON_WIDTH = 300.0f;			// タイトル画面ボタン押下指示画像の横幅
 const float TEXTURE_TITLE_BUTTON_HEIGHT = 100.0f;			// タイトル画面ボタン押下指示画像の縦幅
+
+// ヒットストップ =========================================================
+const int FRAME_STOP_SOFT = 30;		//ストップ：軽　のフレーム数	// 現在使用している物
+const int FRAME_STOP_NORMAL = 60;	//ストップ：中　のフレーム数
+const int FRAME_STOP_HEAVY = 120;	//ストップ：重　のフレーム数
+const int FRAME_STOP_DEATH = 999;	//ストップ：死　のフレーム数
+
+
+
 
 #endif
 

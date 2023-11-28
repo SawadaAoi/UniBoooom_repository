@@ -25,6 +25,7 @@
 	・2023/11/19 サウドファイル読み込み関数を作成 yamashita
 	・2023/11/23 ジオメトリーからモデルに差し替え yamashita
 	・2023/11/23 ゲームオーバーの仮表示を削除 yamashita
+	・2023/11/27 Update内ハンマー振り間隔処理追加 Tei
 ======================================== */
 
 // =============== インクルード ===================
@@ -47,7 +48,9 @@ const float PLAYER_SIZE			= 1.0f;			// プレイヤーの大きさ
 const int	NO_DAMAGE_TIME		= 3 * 60;		//プレイヤーの無敵時間
 const int	DAMAGE_FLASH_FRAME	= 0.1f * 60;	// プレイヤーのダメージ点滅の切り替え間隔
 const int	SE_RUN_INTERVAL		= 0.4f * 60;	//プレイヤーの移動によるSE発生の間隔
-const float	SE_RUN_VOLUME = 0.3f;				//移動によるSEの音量
+const float	SE_RUN_VOLUME		= 0.3f;			//移動によるSEの音量
+const float HAMMER_INTERVAL_TIME	= 1.0f * 60;	// ハンマー振り間隔
+
 #endif
 
 // =============== グローバル変数定義 =============
@@ -78,6 +81,8 @@ CPlayer::CPlayer()
 	, m_pSEDamaged(nullptr)
 	, m_pSEDamagedSpeaker(nullptr)
 	, m_nMoveCnt(0)
+	, m_bIntFlg(false)
+	, m_fIntCnt(0.0f)
 {
 	m_pHammer = new CHammer();								// Hammerクラスをインスタンス
 	m_nHp = PLAYER_HP;										// プレイヤーのHPを決定
@@ -131,10 +136,23 @@ void CPlayer::Update()
 		if (m_pHammer->Update() == false)
 		{
 			m_bAttackFlg = false;	// 攻撃中フラグをオフにする
+			m_bIntFlg = true;		// ハンマー振り間隔フラグオン
 		}
+
 	}
 	else
 	{
+		// ハンマー間隔時間フラグがオンの時
+		if (m_bIntFlg)
+		{
+			m_fIntCnt++;				// ハンマー間隔時間カウント加算
+			if (m_fIntCnt >= HAMMER_INTERVAL_TIME)
+			{
+				m_bIntFlg = false;		// ハンマー間隔時間フラグオン
+				m_fIntCnt = 0.0f;		//ハンマー間隔時間リセット
+			}
+		}
+
 		// コントローラが接続されてない場合
 		if (GetUseVController() == false)
 		{
@@ -146,14 +164,15 @@ void CPlayer::Update()
 			MoveController();
 		}
 
-		// スペースキーを押した時、またはコントローラのBボタンを押した時
-		if (IsKeyTrigger(VK_SPACE) || IsKeyTriggerController(BUTTON_B))
+
+		// スペースキーを押した時、またはコントローラのBボタンを押した時 && ハンマー間隔時間経過済み
+		if ((IsKeyTrigger(VK_SPACE) || IsKeyTriggerController(BUTTON_B)) && !m_bIntFlg)
 		{
 			m_pHammer->AttackStart(m_Transform.fPos, m_Transform.fRadian.y);	// ハンマー攻撃開始
 			m_bAttackFlg = true;	// 攻撃フラグを有効にする
 			m_pSESwingHamSpeaker = CSound::PlaySound(m_pSESwingHammer);	//ハンマーを振るSEの再生
 		}
-		
+
 	}
 	
 	// 無敵状態になっている場合

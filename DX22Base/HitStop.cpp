@@ -17,15 +17,17 @@
 // =============== インクルード ===================
 #include "HitStop.h"	//自身のヘッダ
 #include "Defines.h"	//画面情報
+#include "GameParameter.h"
 
 // =============== 定数定義 =====================
+
+#if MODE_GAME_PARAMETER
+#else
 const int FRAME_STOP_SOFT = 30;		//ストップ：軽　のフレーム数
 const int FRAME_STOP_NORMAL = 60;	//ストップ：中　のフレーム数
 const int FRAME_STOP_HEAVY = 120;	//ストップ：重　のフレーム数
 const int FRAME_STOP_DEATH = 999;	//ストップ：死　のフレーム数
-//#if MODE_GAME_PARAMETER
-//#else
-//#endif
+#endif
 
 // =============== プロトタイプ宣言 =====================
 int StopSoft(const int& nFrame);	//ストップ：軽
