@@ -109,8 +109,8 @@ SceneGame::SceneGame()
 	m_pScoreOHMng = new CScoreOHManager();	//スコア生成
 	m_pTotalScore = new CTotalScore();	//トータルスコア生成
 	m_pTimer = new CTimer();	// タイマー生成
-	m_pStageFin = new CStageFinish(m_pPlayer->GetHP(), m_pTimer->GetTimePtr());	//ステージ終了のUI表示
-	m_pHpMng = new CHP_UI(m_pPlayer->GetHP());
+	m_pStageFin = new CStageFinish(m_pPlayer->GetHpPtr(), m_pTimer->GetTimePtr());	//ステージ終了のUI表示
+	m_pHpMng = new CHP_UI(m_pPlayer->GetHpPtr());
 	m_pBossgauge = new CBossgauge(m_pTimer->GetNowTime());	//ボスゲージ
 
 
