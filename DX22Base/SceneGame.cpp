@@ -132,7 +132,7 @@ SceneGame::SceneGame()
 	//ステージ終了のUI表示
 	m_pStageFin = new CStageFinish(m_pPlayer->GetHP(),m_pTimer->GetTimePtr());
 
-	m_pHpMng = new CHP_UI(m_pPlayer->GetHP());
+	m_pHpMng = new CHP_UI(m_pPlayer->GetHP(), m_pCamera);
 
 #if USE_FADE_GAME
 	m_pFade = new CFade(m_pCamera);

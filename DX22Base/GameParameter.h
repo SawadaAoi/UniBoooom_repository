@@ -240,11 +240,8 @@ const int FADE_TIME = 5 * 60;							//ボスゲージが溜まってから消える時間
 
 
 // HP
-const float DRAW_POSX = 80.0f;	// テクスチャを表示する位置のX座標
-const float DRAW_FIRSTPOSX = 0.9f;		// 1つ目のテクスチャを表示する位置の調節用
-const float DRAW_GAP = 1.15f;	// テクスチャ同士の間隔
-const float DRAW_POSY = 60.0f;	// テクスチャを表示する位置のY座標
-const float DRAW_HEIGHT = 90.0f;	// テクスチャの縦幅
+const TTriType<float> HP_UI_POS = { 80.0f, 660.0f ,0.0f };	// テクスチャの縦幅、横幅
+const TTriType<float> HP_UI_SIZE = { 90.0f, 90.0f ,0.0f };	// テクスチャの縦幅、横幅
 const float DRAW_WIDTH = 90.0f;	// テクスチャの横幅
 
 // BoooomUI =====================================================
