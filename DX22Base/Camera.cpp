@@ -27,6 +27,9 @@
 #include "Defines.h"	//画面情報
 #include "GameParameter.h"
 
+// =============== デバッグモード =====================
+#define NEW_VIBRATE (true)	//新しい振動方法を実装
+
 // =============== 定数定義 =====================
 const float ASPECT = (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT;	//画面比率(y / x)
 const TPos3d<float> INIT_LOOK(0.0f, 0.0f, 0.0f);					//初期注視地点
@@ -276,6 +279,9 @@ void CCamera::HandleFlag()
 	if (m_ucFlag & E_BIT_FLAG_VIBRATION_UP_DOWN_STRONG)
 	{
 		// =============== 振動 ===================
+#if NEW_VIBRATE
+
+#else
 		m_fAddRadianStrong.y -= DECREASE_RADIAN_STRONG.y;								//角速度増加量更新
 		if (m_fAddRadianStrong.y >= 0.0f)
 		{
@@ -291,5 +297,6 @@ void CCamera::HandleFlag()
 			m_fOffsetVibrateEye.y = 0.0f;						//初期化
 			m_fOffsetVibrateLook.y = 0.0f;						//初期化
 		}
+#endif
 	}
 }
