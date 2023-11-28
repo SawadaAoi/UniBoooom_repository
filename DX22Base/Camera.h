@@ -76,6 +76,8 @@ protected:
 	float m_fRadius;						//距離
 	TDiType<float> m_fOffsetVibrateEye;		//カメラ位置振動(x,z)
 	TDiType<float> m_fOffsetVibrateLook;	//注視点振動(x,z)
+	int m_nFrame;
+	float m_fChangeRateAmplitude;			//振幅補正率
 
 	// ===プロトタイプ宣言===
 	void HandleFlag();	//フラグ別処理

@@ -354,12 +354,6 @@
     <ClCompile Include="Random.cpp">
       <Filter>ソース ファイル\System\Random</Filter>
     </ClCompile>
-    <ClCompile Include="UniformDistribution.cpp">
-      <Filter>ソース ファイル\System\Random</Filter>
-    </ClCompile>
-    <ClCompile Include="NormalDistribution.cpp">
-      <Filter>ソース ファイル\System\Random</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Defines.h">
@@ -591,12 +585,6 @@
       <Filter>ヘッダー ファイル\System\Camera</Filter>
     </ClInclude>
     <ClInclude Include="Random.h">
-      <Filter>ヘッダー ファイル\System\Random</Filter>
-    </ClInclude>
-    <ClInclude Include="UniformDistribution.h">
-      <Filter>ヘッダー ファイル\System\Random</Filter>
-    </ClInclude>
-    <ClInclude Include="NormalDistribution.h">
       <Filter>ヘッダー ファイル\System\Random</Filter>
     </ClInclude>
   </ItemGroup>

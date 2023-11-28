@@ -26,6 +26,8 @@
 #include "Camera.h"		//自身のヘッダ
 #include "Defines.h"	//画面情報
 #include "GameParameter.h"
+#include "Random.h"		//乱数生成用
+#include <vector>		//配列型コンテナ
 
 // =============== デバッグモード =====================
 #define NEW_VIBRATE (true)	//新しい振動方法を実装
@@ -58,8 +60,18 @@ const TDiType<float> VIRTUAL_GRAVITY(0.5f);						//疑似重力
 const TDiType<float> DECREASE_RADIAN_WEAK(0.005f, 0.005f);		//角速度減少量：弱	x:縦, y:横
 const TDiType<float> DECREASE_RADIAN_STRONG(0.005f, 0.008f);	//角速度減少量：強	x:縦, y:横
 #endif
+const int INIT_FRAME = 99;																//振動のフレーム数
+const float CHANGE_RATE_AMPLITUDE_STRONG(0.95f);											//振幅変化率：強
+std::vector<double> PROBABILITY_AMPITUDE_STRONG_Y = { 0.1, 0.3, 0.5, 0.3, 0.1 };	//振れ幅の確率：横強振動
+const std::vector<float> TABLE_AMPITUDE_STRONG_Y = { -11.0f, -5.0f, 0.0f, 5.0f, 11.0f };		//振れ幅のテーブル：横強振動
 
-
+float RANDOM_AMPITUDE_STRONG_Y()
+{
+	// =============== 提供 ===================
+	return TABLE_AMPITUDE_STRONG_Y[
+		std::discrete_distribution<>{ PROBABILITY_AMPITUDE_STRONG_Y.begin(), PROBABILITY_AMPITUDE_STRONG_Y.end() }
+		(CRandom::GetEngine())];	//乱数で決定されたテーブルの要素
+}	//ランダムな振幅を取得
 
 /* ========================================
 	コンストラクタ関数
@@ -85,6 +97,8 @@ CCamera::CCamera()
 	,m_fRadianVelocityStrong(0.0f)				//蓄積角速度：強
 	,m_fAddRadianWeak(RADIAN_VELOCITY_WEAK)		//角速度増加量：弱
 	,m_fAddRadianStrong(RADIAN_VELOCITY_STRONG)	//角速度増加量：強
+	,m_nFrame(INIT_FRAME)						//フレーム数
+	,m_fChangeRateAmplitude(1.0f)				//
 {
 }
 
@@ -280,7 +294,15 @@ void CCamera::HandleFlag()
 	{
 		// =============== 振動 ===================
 #if NEW_VIBRATE
+		if (m_nFrame > 0)
+		{
+			m_fRadianVelocityStrong.y += m_fAddRadianWeak.y;							//角速度更新
+			m_fOffsetVibrateEye.y = RANDOM_AMPITUDE_STRONG_Y() * m_fChangeRateAmplitude * sinf(m_fRadianVelocityStrong.y);	//単振動
+			m_fOffsetVibrateLook.y = m_fOffsetVibrateEye.y + m_fOffsetVibrateEye.y;		//注視点振動
+			m_fChangeRateAmplitude *= CHANGE_RATE_AMPLITUDE_STRONG;	//補正率変化
 
+			m_nFrame--;
+		}
 #else
 		m_fAddRadianStrong.y -= DECREASE_RADIAN_STRONG.y;								//角速度増加量更新
 		if (m_fAddRadianStrong.y >= 0.0f)
@@ -289,14 +311,16 @@ void CCamera::HandleFlag()
 			m_fOffsetVibrateEye.y = AMPLITUDE_WEAK.y * sinf(m_fRadianVelocityStrong.y);	//単振動
 			m_fOffsetVibrateLook.y = m_fOffsetVibrateEye.y + m_fOffsetVibrateEye.y;		//注視点振動
 		}
+#endif
 		else
 		{
 			DownFlag(E_BIT_FLAG_VIBRATION_UP_DOWN_STRONG);		//フラグ下降
-			m_fAddRadianStrong.y = RADIAN_VELOCITY_STRONG;		//角速度増加量初期化
+			//m_fAddRadianStrong.y = RADIAN_VELOCITY_STRONG;		//角速度増加量初期化
 			m_fRadianVelocityStrong.y = 0.0f;					//角速度初期化
 			m_fOffsetVibrateEye.y = 0.0f;						//初期化
 			m_fOffsetVibrateLook.y = 0.0f;						//初期化
+			m_fChangeRateAmplitude = 1.0f;
+			m_nFrame = INIT_FRAME;
 		}
-#endif
 	}
 }
