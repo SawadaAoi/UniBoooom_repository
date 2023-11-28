@@ -57,6 +57,7 @@ public:
 	void DamageAnimation();
 	void SE_Move();
 	void LoadSound();	//サウンド読み込み関数
+	void Healing();
 
 	// ゲット関数
 	tagSphereInfo GetHammerSphere();	//当たり判定を取るためゲッター

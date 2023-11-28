@@ -59,7 +59,6 @@
 #include "GameParameter.h"
 
 
-
 // =============== 定数定義 =======================
 #if MODE_GAME_PARAMETER
 #else
@@ -101,9 +100,9 @@ SceneGame::SceneGame()
 	m_pCamera = new CCameraChase(m_pPlayer->GetPosAddress());
 
 	m_pFloor = new CFloor(m_pPlayer->GetPosAddress());
-	m_pSlimeMng = new CSlimeManager();	// スライムマネージャー生成
+	m_pSlimeMng = new CSlimeManager();			// スライムマネージャー生成
 	m_pExplosionMng = new CExplosionManager();	// 爆発マネージャー生成
-
+	m_pHealItemMng = new CHealItemManager();	// 回復アイテムマネージャー
 
 
 	m_pCombo = new CCombo();	// コンボ数表示生成
@@ -113,7 +112,6 @@ SceneGame::SceneGame()
 	m_pStageFin = new CStageFinish(m_pPlayer->GetHP(), m_pTimer->GetTimePtr());	//ステージ終了のUI表示
 	m_pHpMng = new CHP_UI(m_pPlayer->GetHP());
 	m_pBossgauge = new CBossgauge(m_pTimer->GetNowTime());	//ボスゲージ
-	m_pHealItem = new CHealItem();
 
 #if USE_FADE_GAME
 	m_pFade = new CFade(m_pCamera);
@@ -123,13 +121,14 @@ SceneGame::SceneGame()
 	m_pSlimeMng->SetCamera(m_pCamera);
 	m_pSlimeMng->SetScoreOHMng(m_pScoreOHMng);
 	m_pSlimeMng->SetExplosionMng(m_pExplosionMng);
+	m_pSlimeMng->SetHealMng(m_pHealItemMng);
 	m_pExplosionMng->SetCamera(m_pCamera);
 	m_pExplosionMng->SetCombo(m_pCombo);
 
 	m_pBossgauge->SetSlimeManager(m_pSlimeMng);
 	m_pScoreOHMng->SetCamera(m_pCamera);
 	m_pCombo->SetTotalScore(m_pTotalScore);
-	m_pHealItem->SetCamera(m_pCamera);
+	m_pHealItemMng->SetCamera(m_pCamera);
 
 	LoadSound();
 	//BGMの再生
@@ -138,7 +137,6 @@ SceneGame::SceneGame()
 
 
 	m_pTimer->TimeStart();
-	m_pHealItem->Create({ 0.0f, 0.0f, 0.0f });
 }
 
 /* ========================================
@@ -158,7 +156,7 @@ SceneGame::~SceneGame()
 		m_pSpeaker->DestroyVoice();
 	}
 
-	SAFE_DELETE(m_pHealItem);
+	SAFE_DELETE(m_pHealItemMng);
 	SAFE_DELETE(m_pStageFin);
 	SAFE_DELETE(m_pHpMng);
 	SAFE_DELETE(m_pTimer);
@@ -249,7 +247,7 @@ void SceneGame::Update(float tick)
 	m_pHpMng->Update();
 
 	m_pBossgauge->Update();
-	m_pHealItem->Update();
+	m_pHealItemMng->Update();
 
 	SceneGameCollision();
 
@@ -332,6 +330,7 @@ void SceneGame::Draw()
 	SetRenderTargets(1, &pRTV, pDSV);		//DSVがnullだと2D表示になる
 	//床の描画
 	m_pFloor->Draw();
+	m_pHealItemMng->Draw();
 	// スライムマネージャー描画
 	m_pSlimeMng->Draw();
 	m_pPlayer->Draw();
@@ -360,7 +359,6 @@ void SceneGame::Draw()
 
 	m_pScoreOHMng->Draw();//スコアマネージャー描画
 
-	m_pHealItem->Draw();
 
 #if USE_FADE_GAME
 	m_pFade->Draw();

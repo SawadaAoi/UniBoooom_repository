@@ -41,7 +41,7 @@
 
 #include "ScoreOHManager.h"
 #include "TotalScore.h"
-#include "HealItem.h"
+#include "HealItemManager.h"
 
 // =============== クラス定義 =====================
 class SceneGame
@@ -88,7 +88,7 @@ private:
 	CStageFinish* m_pStageFin;
 	CFade* m_pFade;
 	CTotalScore* m_pTotalScore;
-	CHealItem* m_pHealItem;
+	CHealItemManager* m_pHealItemMng;
 
 	CScoreOHManager* m_pScoreOHMng;
 	XAUDIO2_BUFFER* m_pBGM;							//BGMの音声データ

@@ -130,6 +130,12 @@
     <Filter Include="ヘッダー ファイル\3dObject\Enemy">
       <UniqueIdentifier>{83da4e47-e125-4627-9e43-ff6868ca6e77}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\3dObject\Item">
+      <UniqueIdentifier>{0bb8e1c9-598a-4c56-b27a-cda84d126e8c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\3dObject\Item">
+      <UniqueIdentifier>{0ea1b806-d542-4336-9c38-b1aa9e85136a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -315,9 +321,6 @@
     <ClCompile Include="BoooomUI.cpp">
       <Filter>ソース ファイル\2dObject</Filter>
     </ClCompile>
-    <ClCompile Include="HealItem.cpp">
-      <Filter>ソース ファイル\3dObject</Filter>
-    </ClCompile>
     <ClCompile Include="SceneGame.cpp">
       <Filter>ソース ファイル\Scene</Filter>
     </ClCompile>
@@ -353,6 +356,15 @@
     </ClCompile>
     <ClCompile Include="SphereInfo.cpp">
       <Filter>ソース ファイル\Info</Filter>
+    </ClCompile>
+    <ClCompile Include="HealItemManager.cpp">
+      <Filter>ソース ファイル\3dObject\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="HealItem.cpp">
+      <Filter>ソース ファイル\3dObject\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="Item.cpp">
+      <Filter>ソース ファイル\3dObject\Item</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -551,9 +563,6 @@
     <ClInclude Include="BoooomUI.h">
       <Filter>ヘッダー ファイル\2dObject</Filter>
     </ClInclude>
-    <ClInclude Include="HealItem.h">
-      <Filter>ヘッダー ファイル\3dObject</Filter>
-    </ClInclude>
     <ClInclude Include="SceneGame.h">
       <Filter>ヘッダー ファイル\Scene</Filter>
     </ClInclude>
@@ -583,6 +592,15 @@
     </ClInclude>
     <ClInclude Include="SlimeManager.h">
       <Filter>ヘッダー ファイル\3dObject\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="HealItem.h">
+      <Filter>ヘッダー ファイル\3dObject\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="HealItemManager.h">
+      <Filter>ヘッダー ファイル\3dObject\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="Item.h">
+      <Filter>ヘッダー ファイル\3dObject\Item</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

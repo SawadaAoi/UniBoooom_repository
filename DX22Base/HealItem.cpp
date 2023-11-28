@@ -1,66 +1,64 @@
 /* ========================================
 	HEW/UniBoooom!!
 	------------------------------------
-	HealItem用cpp
+	HealItem用ヘッダ
 	------------------------------------
 	HealItem.cpp
 	------------------------------------
 	作成者
 		yamashita
 	変更履歴
-	・2023/11/23 cpp作成 yamashita
-	・2023/11/23 Create関数作成 yamashita
-	・2023/11/23 Y軸回転するように変更 yamashita
-	・2023/11/23 上下にゆらゆらするように変更 yamashita
-	・2023/11/23 上を向いた状態で回転するように変更 yamashita
+	・2023/11/27 cpp作成 yamashita
+	・2023/11/28 上下に動く挙動を追加 yamashita
+	・2023/11/28 回転の挙動を追加 yamashita
 
 ========================================== */
 
+// =============== インクルード ===================
 #include "HealItem.h"
-#include "DirectWrite.h"
 #include "GameParameter.h"
 
-// =============== 定数定義 =====================
+// =============== 定数定義 ===================
 #if MODE_GAME_PARAMETER
+
 #else
-const float HEAL_ITEM_SCALE_X = 1.5f;		//　アイテムのスケールX
-const float HEAL_ITEM_SCALE_Y = 1.5f;		//　アイテムのスケールY
-const float HEAL_ITEM_SCALE_Z = 1.5f;		//　アイテムのスケールZ
-const float	HEALITEM_ANGLE_X = 30.0f;		//　回復アイテムの角度
-const int	HEALITEM_DELETE_TIME = 10 * 60;	//　アイテムが消えるまでの時間
+const int	MOVE_INTERVAL = 60;
+const int	MOVE_INTERVAL = 2;				//  アニメーションの周期
+const int	COUNT_UP = 6;					//  1秒で360になるように調整
+const float	HEALITEM_MOVE_Y = 1.0f;			//  移動する高さ
+const float	HEALITEM_HEIGHT = 1.0f;			//  
 #endif
 
 /* ========================================
-   関数：コンストラクタ
+   コンストラクタ
    ----------------------------------------
-   内容：生成時に行う処理
+   内容：開始処理
    ----------------------------------------
-   引数：プレイヤーの座標ポインタ
+   引数：生成する座標、モデルのポインタ、頂点シェーダーのポインタ
    ----------------------------------------
    戻値：なし
 ======================================== */
-CHealItem::CHealItem()
-	:m_pModel(nullptr)
-	, m_pVS(nullptr)
-	, m_pCamera(nullptr)
+CHealItem::CHealItem(TPos3d<float> pos, Model* pModel, VertexShader* pVS)
+	:m_fAnimeCnt(0.0f)
+	,m_pModel(nullptr)
+	,m_pVS(nullptr)
 {
-	//頂点シェーダ読み込み
-	m_pVS = new VertexShader();
-	if (FAILED(m_pVS->Load("Assets/Shader/VS_Model.cso"))) {
-		MessageBox(nullptr, "VS_Model.cso", "Error", MB_OK);
-	}
-	//床のモデル読み込み
-	m_pModel = new Model;
-	if (!m_pModel->Load("Assets/Model/heart_1/heart_1.fbx", 1.0f, Model::XFlip)) {		//倍率と反転は省略可
-		MessageBox(NULL, "floor", "Error", MB_OK);	//ここでエラーメッセージ表示
-	}
+	m_Transform.fPos = pos;
+	m_Transform.fPos.y = HEALITEM_HEIGHT;		//表示される初期の高さ
+	m_Transform.fScale = { HEAL_ITEM_SCALE_X, HEAL_ITEM_SCALE_Y, HEAL_ITEM_SCALE_Z };	//サイズ調整
+	float radY = DirectX::XMConvertToRadians(HEALITEM_ANGLE_X);
+	m_Transform.fRadian = { radY,0.0f,0.0f };	//角度初期化
+	m_Sphere.fRadius = 1.0f;
+
+	m_pModel = pModel;
+	m_pVS = pVS;
 	m_pModel->SetVertexShader(m_pVS);
 }
 
 /* ========================================
-   関数：デストラクタ
+   デストラクタ
    ----------------------------------------
-   内容：終了時に行う処理
+   内容：終了処理
    ----------------------------------------
    引数：なし
    ----------------------------------------
@@ -68,20 +66,13 @@ CHealItem::CHealItem()
 ======================================== */
 CHealItem::~CHealItem()
 {
-	SAFE_DELETE(m_pModel);
-	SAFE_DELETE(m_pVS);
 
-	for (auto i = m_healItem.begin(); i != m_healItem.end();)
-	{
-		i = m_healItem.erase(i);
-	}
-	m_healItem.clear();
 }
 
 /* ========================================
-	アップデート関数
+   更新処理
    ----------------------------------------
-   内容：毎フレーム行う処理
+   内容：毎フレーム呼び出す処理
    ----------------------------------------
    引数：なし
    ----------------------------------------
@@ -89,39 +80,17 @@ CHealItem::~CHealItem()
 ======================================== */
 void CHealItem::Update()
 {
-	for (auto i = m_healItem.begin(); i != m_healItem.end();)
-	{
-		if (i->m_bUse == true)
-		{
-			//カウント増加
-			i->m_Cnt++;
-			float radian = i->m_Cnt % 360;
-			i->m_Transform.fPos.y = sin(DirectX::XMConvertToRadians((float)radian)) * 0.5f;	//上下にゆらゆらする
-			i->m_Transform.fRadian.y = DirectX::XMConvertToRadians((float)radian);			//Y軸でくるくる回転する
-
-			//カウントが一定以上なら消去
-			if (i->m_Cnt >= HEALITEM_DELETE_TIME)
-			{ 
-				i->m_bUse = false; 
-			}
-
-			i++;	//次のコンテナに移動
-		}
-		else	//bUseがfalseなら消去
-		{
-			//消去して自動的に次のコンテナに移動
-			i = m_healItem.erase(i);
-		}
-
-
-		
-	}
+	m_fAnimeCnt += COUNT_UP / HEALITEM_MOVE_INTERVAL;					//1秒60フレームで360カウント
+	int degree = int(m_fAnimeCnt) % 360;								//360(一周)で剰余演算
+	float rad = DirectX::XMConvertToRadians((float)degree);				//ラジアン角に変換
+	m_Transform.fPos.y = cosf(rad) * HEALITEM_MOVE_Y + HEALITEM_HEIGHT;	//cosで1～-1をまわる
+	m_Transform.fRadian.y = rad;										//cosで1～-1で回転する
 }
 
 /* ========================================
-   描画関数
+   描画処理
    ----------------------------------------
-   内容：オブジェクトの描画
+   内容：毎フレーム呼び出す処理
    ----------------------------------------
    引数：なし
    ----------------------------------------
@@ -129,67 +98,28 @@ void CHealItem::Update()
 ======================================== */
 void CHealItem::Draw()
 {
-	DirectX::XMFLOAT4X4 mat[3];
+	if (!m_pCamera) { return; }
 
-	for (auto i = m_healItem.begin();i != m_healItem.end(); i++)
-	{
-		//Transformの関数を使うと角度の計算がX→Y→Zの順番だがY→X→Zの順番にしたいため手動で変換行列を書いた
-		DirectX::XMMATRIX worldMat;
-		worldMat = DirectX::XMMatrixScaling(i->m_Transform.fScale.x, i->m_Transform.fScale.y, i->m_Transform.fScale.z) *	//拡縮
-			DirectX::XMMatrixRotationY(i->m_Transform.fRadian.y) * DirectX::XMMatrixRotationX(i->m_Transform.fRadian.x) *	//Y回転→X回転
-			DirectX::XMMatrixTranslation(i->m_Transform.fPos.x, i->m_Transform.fPos.y, i->m_Transform.fPos.z);				//移動
-		worldMat = DirectX::XMMatrixTranspose(worldMat);	//転置
-		DirectX::XMFLOAT4X4 world;					//mat[0]に入れる変数
-		DirectX::XMStoreFloat4x4(&world, worldMat);	//Matrix型からfloat4x4に変換
+	//-- モデル表示
+	if (m_pModel) {
+		DirectX::XMFLOAT4X4 mat[3];
 
-		
-		mat[0] = world;
+		//拡縮、回転、移動(Y軸回転を先にしたかったのでSRTは使わない)
+		DirectX::XMStoreFloat4x4(&mat[0],DirectX::XMMatrixTranspose(DirectX::XMMatrixScaling(m_Transform.fScale.x, m_Transform.fScale.y, m_Transform.fScale.z)
+			* DirectX::XMMatrixRotationY(m_Transform.fRadian.y)
+			* DirectX::XMMatrixRotationX(m_Transform.fRadian.x) * DirectX::XMMatrixRotationZ(m_Transform.fRadian.z)
+			* DirectX::XMMatrixTranslation(m_Transform.fPos.x, m_Transform.fPos.y, m_Transform.fPos.z)));
 		mat[1] = m_pCamera->GetViewMatrix();
 		mat[2] = m_pCamera->GetProjectionMatrix();
 
 		//-- 行列をシェーダーへ設定
 		m_pVS->WriteBuffer(0, mat);
 
-		//-- モデル表示
-		if (m_pModel) {
-			m_pModel->Draw();
-		}
+		// レンダーターゲット、深度バッファの設定
+		RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得
+		DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
+		SetRenderTargets(1, &pRTV, pDSV);		//DSVがnullだと2D表示になる
+
+		m_pModel->Draw();
 	}
-}
-
-/* ========================================
-   ヒールアイテム生成関数
-   ----------------------------------------
-   内容：
-   ----------------------------------------
-   引数：生成する座標
-   ----------------------------------------
-   戻値：なし
-======================================== */
-void CHealItem::Create(TPos3d<float> pos)
-{
-	//構造体の変数を初期化
-	HEAL_ITEM healItem;
-	healItem.m_Transform.fPos = pos;
-	healItem.m_Transform.fScale = { HEAL_ITEM_SCALE_X ,HEAL_ITEM_SCALE_Y ,HEAL_ITEM_SCALE_Z };
-	healItem.m_Transform.fRadian = {DirectX::XMConvertToRadians(HEALITEM_ANGLE_X),0.0f,0.0f};	//アイテムが上を向くようにセット
-	healItem.m_Cnt = 0;
-	healItem.m_bUse = true;
-
-	//初期化した変数をコンテナに格納
-	m_healItem.push_back(healItem);
-}
-
-/* ========================================
-   カメラセット関数
-   ----------------------------------------
-   内容：他のオブジェクトと同じカメラをセットする
-   ----------------------------------------
-   引数：カメラのポインタ
-   ----------------------------------------
-   戻値：なし
-======================================== */
-void CHealItem::SetCamera(const CCamera * pCamera)
-{
-	m_pCamera = pCamera;
 }

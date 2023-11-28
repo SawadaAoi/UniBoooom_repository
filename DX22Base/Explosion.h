@@ -63,7 +63,7 @@ private:
 	// ===メンバ変数宣言===
 	float			m_fMaxSize;
 	TTriType<float>	m_fSizeAdd;
-	int				m_fDelFrame;		// 爆発表示カウント
+	int				m_nDelFrame;		// 爆発表示カウント
 	bool			m_bDelFlg;			// 爆発終了フラグ
 	float			m_fExplodeTime;		// 爆発総時間
 	float			m_fDamage;			// ボスに与えるダメージ量

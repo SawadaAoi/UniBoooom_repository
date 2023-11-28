@@ -49,9 +49,10 @@ const int	PLAYER_HP			= 5;			// プレイヤーのHP
 const float PLAYER_RADIUS		= 0.1f;			// プレイヤーの当たり判定の大きさ
 const float PLAYER_SIZE			= 0.2f;			// プレイヤーの大きさ
 const int	NO_DAMAGE_TIME		= 3 * 60;		// プレイヤーの無敵時間
-const int	DAMAGE_FLASH_FRAME	= 0.1f * 60;	// プレイヤーのダメージ点滅の切り替え間隔
-const int	SE_RUN_INTERVAL		= 0.4f * 60;	//プレイヤーの移動によるSE発生の間隔
+const int	DAMAGE_FLASH_FRAME	= int(0.1f * 60);	// プレイヤーのダメージ点滅の切り替え間隔
+const int	SE_RUN_INTERVAL		= int(0.4f * 60);	//プレイヤーの移動によるSE発生の間隔
 const float	SE_RUN_VOLUME		= 0.3f;			//移動によるSEの音量
+const int	HEAL_NUM			= 1;			//プレイヤーの回復量
 
 // ハンマー
 const float HAMMER_ANGLE_X		= DirectX::XMConvertToRadians(180.0f);								//ハンマーの表示角度
@@ -79,9 +80,9 @@ const float MOVE_RESIST = 0.05f;	// 吹き飛び移動中のスライムの移動速度に毎フレー
 const float MOVE_DISTANCE_PLAYER = 13.0f;	// プレイヤー追跡移動に切り替える距離
 const float SLIME_BASE_RADIUS = 0.5f;		// スライムの基準の大きさ
 
-const int ENEMY_CREATE_INTERVAL = 2 * 60;													// 生成間隔
+const int ENEMY_CREATE_INTERVAL = int(2.0f * 60);								// 生成間隔
 const int RANDOM_POS = 15;														// 生成座標範囲
-const int CREATE_DISTANCE = 10;														// プレイヤーからどれくらい離れた距離に生成するか
+const int CREATE_DISTANCE = 10;													// プレイヤーからどれくらい離れた距離に生成するか
 const int SLIME_LEVEL1_PER = 45;																// スライム_1の生成確立
 const int SLIME_LEVEL2_PER = 35;																// スライム_2の生成確立
 const int SLIME_LEVEL3_PER = 10;																// スライム_3の生成確立
@@ -134,12 +135,12 @@ const int	BOSS_1_MAX_HP = 10;								// ボス１の最大HP
 
 const float ASSAULT_DISTANCE = 0.2f;								// 突撃反応距離
 const int	ASSAULT_COOL_TIME = 10 * 60;							// 突撃クルータイム
-const int	ASSAULT_CHARGE_TIME = 2 * 60;							// 突撃チャージ時間
-const int	ASSAULT_TIME = 1.0f * 60;						// 突撃総時間
+const int	ASSAULT_CHARGE_TIME = int(2 * 60);						// 突撃チャージ時間
+const int	ASSAULT_TIME = int(1.0f * 60);						// 突撃総時間
 const float ASSAULT_SPEED = LEVEL_BOSS_1_SPEED * 20.0f;		// 突撃時のスピード
 
-const int BOSS_DAMAGE_FLASH_FRAME = 0.1 * 60;					// ダメージ受けた際の点滅フレーム(無敵ではない)
-const int BOSS_DAMAGE_FLASH_TOTAL_FRAME = 0.5 * 60;					// ダメージを受けた際の点滅を何フレーム行うか
+const int BOSS_DAMAGE_FLASH_FRAME = int(0.1f * 60);					// ダメージ受けた際の点滅フレーム(無敵ではない)
+const int BOSS_DAMAGE_FLASH_TOTAL_FRAME = int(0.5f * 60);			// ダメージを受けた際の点滅を何フレーム行うか
 
 // 爆発 =====================================================
 const int	MAX_EXPLOSION_NUM = 20;			// 最大爆発数
@@ -150,7 +151,7 @@ const float LEVEL_2_EXPLODE_TIME = 1.0f * 60.0f;	// スライム_2の爆発総時間
 const float LEVEL_3_EXPLODE_TIME = 2.0f * 60.0f;	// スライム_3の爆発総時間
 const float LEVEL_4_EXPLODE_TIME = 3.0f * 60.0f;	// スライム_4の爆発総時間
 const float LEVEL_BOSS_EXPLODE_TIME = 4.0f * 60.0f;	// スライム_ボスの爆発総時間
-const int	DELAY_TIME = 0.2f * 60;		// 遅延秒数
+const int	DELAY_TIME = int(0.2f * 60);			// 遅延秒数
 
 const int	LEVEL_1_EXPLODE_DAMAGE = 1;
 const int	LEVEL_2_EXPLODE_DAMAGE = 2;
@@ -227,8 +228,11 @@ const float DRAW_WIDTH = 90.0f;	// テクスチャの横幅
 const float HEAL_ITEM_SCALE_X = 1.5f;		//　アイテムのスケールX
 const float HEAL_ITEM_SCALE_Y = 1.5f;		//　アイテムのスケールY
 const float HEAL_ITEM_SCALE_Z = 1.5f;		//　アイテムのスケールZ
-const float	HEALITEM_ANGLE_X = 30.0f;		//　回復アイテムの角度
-const int	HEALITEM_DELETE_TIME = 10 * 60;	//　アイテムが消えるまでの時間
+const float	HEALITEM_ANGLE_X = 50.0f;		//　回復アイテムの角度
+const float	HEALITEM_MOVE_INTERVAL = 4.0f;		//  アニメーションの周期
+const int	COUNT_UP = 6;						//  1秒で360になるように調整
+const float	HEALITEM_MOVE_Y = 0.5f;				//  アイテムの上下に揺れる高さ(-1～1までを移動するので移動量は2)
+const float	HEALITEM_HEIGHT = HEALITEM_MOVE_Y;	//  回復アイテムの初期の高さ
 
 // BoooomUI =====================================================
 const float BOOOOM_UI_SIZE_X = 1.0f;		//BoooomUIのXの長さ（textureの比率と合わせる）
@@ -241,8 +245,8 @@ const int	MAX_COMBO_NUM = 5;					// 最大同時コンボ数
 const TPos2d<float> COMBO_UI_POSITION = { 1025.0f, 600.0f };	// コンボUIの描画位置
 const TPos2d<float> COMBO_UI_SIZE = { 70.0f, 130.0f };	// コンボUIの大きさ
 const float COMBO_UI_NUM_SPACE = 80.0f;				// 数字の間スペース
-const float COMBO_UI_MULTI_DISP_SPACE = 100.0f;				// 同時コンボ描画時の上下の空白
-const int COMBO_UI_DISP_DILAY_TIME = 2.0f * 60;			// 残コンボ数表示の秒数
+const float COMBO_UI_MULTI_DISP_SPACE = 100.0f;			// 同時コンボ描画時の上下の空白
+const int COMBO_UI_DISP_DILAY_TIME = int(2.0f * 60);			// 残コンボ数表示の秒数
 
 const TPos2d<float> COMBO_UI_BACK_POS = { 1100.0f, 600.0f };	// コンボUIの背景の描画位置
 const TPos2d<float> COMBO_UI_BACK_SIZE = { 370.0f, 280.0f };	// コンボUIの背景の大きさ

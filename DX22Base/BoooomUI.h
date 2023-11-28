@@ -44,7 +44,7 @@ private:
 	TPos3d<float> m_pos;			//描画の位置
 	TPos3d<float> m_scale;			//描画のスケールサイズ
 
-	int			m_fDelFrame;		// BoooomUI表示カウント
+	int			m_nDelFrame;		// BoooomUI表示カウント
 	bool		m_bDelFlg;			// 表示終了フラグ
 	float		m_fExplodeTime;		// 爆発総時間
 };
