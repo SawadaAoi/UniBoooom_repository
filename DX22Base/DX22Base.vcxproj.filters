@@ -602,6 +602,9 @@
     <ClInclude Include="Item.h">
       <Filter>ヘッダー ファイル\3dObject\Item</Filter>
     </ClInclude>
+    <ClInclude Include="CameraFade.h">
+      <Filter>ヘッダー ファイル\System\Camera</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="VS_Model.hlsl">

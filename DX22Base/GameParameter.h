@@ -1,273 +1,310 @@
 /* ========================================
 	HEW/UniBoooom!!
 	---------------------------------------
-	�Q�[���p�����[�^�[�����p�w�b�_
+	ゲームパラメーター調整用ヘッダ
 	---------------------------------------
 	GameParameter.h
 
-	�쐬��	�鑺����
+	作成者	鈴村朋也
 
-	�ύX����
-	�E2023/11/11 �w�b�_�쐬 Suzumura
-	�E2023/11/13 �p�����[�^�[�ǉ�(LEVEL_�Z_EXPLODE_TIME) Suzumura
-	�E2023/11/14 �p�����[�^�[�ǉ�(// �t���C���X���C��) Suzumura
-	�E2023/11/15 �p�����[�^�[�ǉ�(// �t���C���X���C��) Suzumura
-	�E2023/11/18 �p�����[�^�[�ǉ�(// �X�R�A) yamamoto
-	�E2023/11/21 �p�����[�^�[�ǉ�(// �R���{��) Sawada
-	�E2023/11/23 �p�����[�^�[�ǉ�(// �{�X�P�X���C��) Suzumura
-	�E2023/11/23 �p�����[�^�[�ǉ�(// 2D�`��) nieda
-	�E2023/11/24 �p�����[�^�[�폜(// �J����) Takagi
-	�E2023/11/25 �p�����[�^�[�ǉ�(// �X�R�A) yamamoto
+	変更履歴
+	・2023/11/11 ヘッダ作成 Suzumura
+	・2023/11/13 パラメーター追加(LEVEL_〇_EXPLODE_TIME) Suzumura
+	・2023/11/14 パラメーター追加(// フレイムスライム) Suzumura
+	・2023/11/15 パラメーター追加(// フレイムスライム) Suzumura
+	・2023/11/18 パラメーター追加(// スコア) yamamoto
+	・2023/11/21 パラメーター追加(// コンボ数) Sawada
+	・2023/11/23 パラメーター追加(// ボス１スライム) Suzumura
+	・2023/11/23 パラメーター追加(// 2D描画) nieda
+	・2023/11/24 パラメーター削除(// カメラ) Takagi
+	・2023/11/25 パラメーター追加(// スコア) yamamoto
 
 =========================================== */
 #ifndef __GAME_PARAMETER_H__
 #define __GAME_PARAMETER_H__
 
-// =============== �C���N���[�h ===================
+// =============== インクルード ===================
 #include "Pos2d.h"
 #include "Pos3d.h"
 #include <DirectXMath.h>
 
-// =============== �p�����[�^�[ ���[�h =======================
+// =============== パラメーター モード =======================
 #define MODE_GAME_PARAMETER	(true)
 
 #if MODE_GAME_PARAMETER
 
-// =============== �C���N���[�h ===================
+// =============== インクルード ===================
 #include "Pos3d.h"
 
-//�Q�[���V�[��================================================
-const float BGM_VOLUME = 0.02f;				//�V�[���Q�[���̉���
-const float SE_HAMMER_HIT_VOLUME = 0.5f;	// �X���C����ł�������SE�̉���
-// ��ʃT�C�Y
+//ゲームシーン================================================
+const float BGM_VOLUME = 0.02f;				//シーンゲームの音量
+const float SE_HAMMER_HIT_VOLUME = 0.5f;	// スライムを打った時のSEの音量
+// 画面サイズ
 const int SCREEN_WIDTH_ = 1280;
 const int SCREEN_HEIGHT_ = 720;
 
-// �v���C���[ ================================================
-const float PLAYER_MOVE_SPEED	= 0.1f;			// �v���C���[�̈ړ����x
-const int	PLAYER_HP			= 5;			// �v���C���[��HP
-const float PLAYER_RADIUS		= 0.1f;			// �v���C���[�̓����蔻��̑傫��
-const float PLAYER_SIZE			= 0.2f;			// �v���C���[�̑傫��
-const int	NO_DAMAGE_TIME		= 3 * 60;		// �v���C���[�̖��G����
-const int	DAMAGE_FLASH_FRAME	= int(0.1f * 60);	// �v���C���[�̃_���[�W�_�ł̐؂�ւ��Ԋu
-const int	SE_RUN_INTERVAL		= int(0.4f * 60);	//�v���C���[�̈ړ��ɂ��SE�����̊Ԋu
-const float	SE_RUN_VOLUME		= 0.3f;			//�ړ��ɂ��SE�̉���
-const int	HEAL_NUM			= 1;			//�v���C���[�̉񕜗�
-
-// �n���}�[
-const float HAMMER_ANGLE_X		= DirectX::XMConvertToRadians(180.0f);								//�n���}�[�̕\���p�x
-const float HAMMER_ANGLE_Y		= DirectX::XMConvertToRadians(0.0f);								//�n���}�[�̕\���p�x
-const float HAMMER_ANGLE_Z		= DirectX::XMConvertToRadians(0.0f);								//�n���}�[�̕\���p�x
-const float SWING_ANGLE			= DirectX::XMConvertToRadians(90.0f);	// �n���}�[��U��͈�(��`�̊p�x�̑傫��)
-const float SWING_TIME_FRAME	= 0.15f * 60;							// �n���}�[��U�鎞��(�t���[���P��)
-const float ROTATE_RADIUS		= 1.0f;									// �n���}�[����]����v���C���[����̋���
-const float HAMMER_COL_SIZE		= 0.75f;								//�n���}�[�̓����蔻��̑傫��
-const float HAMMER_SIZE			= 0.2f;									//�n���}�[�̑傫��
+// プレイヤー ================================================
+const float PLAYER_MOVE_SPEED	= 0.1f;			// プレイヤーの移動速度
+const int	PLAYER_HP			= 10;			// プレイヤーのHP
+const float PLAYER_RADIUS		= 0.1f;			// プレイヤーの当たり判定の大きさ
+const float PLAYER_SIZE			= 0.2f;			// プレイヤーの大きさ
+const int	NO_DAMAGE_TIME		= 3 * 60;		// プレイヤーの無敵時間
+const int	DAMAGE_FLASH_FRAME	= int(0.1f * 60);	// プレイヤーのダメージ点滅の切り替え間隔
+const int	SE_RUN_INTERVAL		= int(0.4f * 60);	//プレイヤーの移動によるSE発生の間隔
+const float	SE_RUN_VOLUME		= 0.3f;			//移動によるSEの音量
+const int	HEAL_NUM			= 1;			//プレイヤーの回復量
+const float HAMMER_INTERVAL_TIME	= 0.4f * 60;	// ハンマー振り間隔
 
 
-// �G�L���� ==================================================
-
-// ����
-const int	MAX_SLIME_NUM = 50;		// �X���C���̍ő吶����
-const int	MAX_BOSS_SLIME_NUM = 5;		// �{�X�X���C���̍ő吶����
-const int	START_ENEMY_NUM = 6;		// �Q�[���J�n���̓G�L�����̐�
-const float ENEMY_MOVE_SPEED = 0.035f;	// �G�̒ʏ�ړ����x
-const float HAMMER_HIT_MOVE_SPEED = 1.0f;		// �n���}�[�ɐ�����΂��ꂽ���̃X�s�[�h
-const int	RANDOM_MOVE_SWITCH_TIME = 3 * 60;	// �����_���ړ��̕����؂�ւ�
-
-const float SPEED_DOWN_RATIO = 0.6f;		// ������ԍۂɂ�����ړ����x�̕ω��̊���    RATIO=>����
-const float MOVE_RESIST = 0.05f;	// ������шړ����̃X���C���̈ړ����x�ɖ��t���[�������錸�Z���l
-const float MOVE_DISTANCE_PLAYER = 13.0f;	// �v���C���[�ǐՈړ��ɐ؂�ւ��鋗��
-const float SLIME_BASE_RADIUS = 0.5f;		// �X���C���̊�̑傫��
-
-const int ENEMY_CREATE_INTERVAL = int(2.0f * 60);								// �����Ԋu
-const int RANDOM_POS = 15;														// �������W�͈�
-const int CREATE_DISTANCE = 10;													// �v���C���[����ǂꂭ�炢���ꂽ�����ɐ������邩
-const int SLIME_LEVEL1_PER = 45;																// �X���C��_1�̐����m��
-const int SLIME_LEVEL2_PER = 35;																// �X���C��_2�̐����m��
-const int SLIME_LEVEL3_PER = 10;																// �X���C��_3�̐����m��
-const int SLIME_LEVEL_FLAME_PER = 100 - SLIME_LEVEL1_PER - SLIME_LEVEL2_PER - SLIME_LEVEL3_PER;	// �X���C��_�t���C���̐����m��
-const float MAX_SIZE_EXPLODE		= 5.0f;										// �X���C��4���m�̔����̑傫��
-const float EXPLODE_BASE_RATIO		= 1.5f;										// �X���C���̔����ڐG�ł̔����̑傫���̃x�[�X
-const float ESCAPE_DISTANCE			= 15.0f;									// ���������̋������߂������瓦����͈�
-const int ESCAPE_TIME				= int(60 * 1.0f);							// ���̊Ԋu�œ����鏈�����I������
+// ハンマー
+const float HAMMER_ANGLE_X		= DirectX::XMConvertToRadians(180.0f);								//ハンマーの表示角度
+const float HAMMER_ANGLE_Y		= DirectX::XMConvertToRadians(0.0f);								//ハンマーの表示角度
+const float HAMMER_ANGLE_Z		= DirectX::XMConvertToRadians(0.0f);								//ハンマーの表示角度
+const float SWING_ANGLE			= DirectX::XMConvertToRadians(90.0f);	// ハンマーを振る範囲(扇形の角度の大きさ)
+const float SWING_TIME_FRAME	= 0.15f * 60;							// ハンマーを振る時間(フレーム単位)
+const float ROTATE_RADIUS		= 1.0f;									// ハンマーが回転するプレイヤーからの距離
+const float HAMMER_COL_SIZE		= 0.75f;								//ハンマーの当たり判定の大きさ
+const float HAMMER_SIZE			= 0.2f;									//ハンマーの大きさ
 
 
-// �X���C�����m�̔��˂̌��Z�l
-// ��1.0f�ł��̂܂�
-const float COL_SUB_HIT_TO_BIG		= 0.1f;			// �X���C���Փ�(������)�̏Փˑ��̌��Z�l(���˂���ړ�)
-const float COL_SUB_STAND_TO_SMALL	= 0.8f;			// �X���C���Փ�(������)�̏Փ˂���鑤�̌��Z�l(�Փ˂��ꂽ����)
-const float COL_SUB_HIT_TO_SMALL	= 0.3f;			// �X���C���Փ�(�偨��)�̏Փˑ��̌��Z�l(�ړ�����)
-const float COL_SUB_STAND_TO_BIG	= 1.2f;			// �X���C���Փ�(�偨��)�̏Փ˂���鑤�̌��Z�l(�Փ˂��ꂽ����)
-const float LEAVE_DISTANCE = 40.0f;					// ����ȏ㗣�ꂽ��Ίp����Ɉړ�����
+// 敵キャラ ==================================================
 
-// �T�C�Y1
-const float LEVEL1_SCALE = 1.0f;					// �X���C���Q���x���P�̑傫��(�����蔻��܂�)
-const float LEVEL1_SPEED = ENEMY_MOVE_SPEED;		// �ړ����x
+// 共通
+const int	MAX_SLIME_NUM = 50;		// スライムの最大生成数
+const int	MAX_BOSS_SLIME_NUM = 5;		// ボススライムの最大生成数
+const int	START_ENEMY_NUM = 6;		// ゲーム開始時の敵キャラの数
+const float ENEMY_MOVE_SPEED = 0.035f;	// 敵の通常移動速度
+const float HAMMER_HIT_MOVE_SPEED = 1.0f;		// ハンマーに吹き飛ばされた時のスピード
+const int	RANDOM_MOVE_SWITCH_TIME = 3 * 60;	// ランダム移動の方向切り替え
 
-// �T�C�Y2
-const float LEVEL2_SCALE = 2.0f;					// �X���C���Q���x���Q�̑傫��(�����蔻��܂�)
-const float LEVEL2_SPEED = ENEMY_MOVE_SPEED * 0.9f;	// �ړ����x
+const float SPEED_DOWN_RATIO = 0.6f;		// 吹き飛ぶ際にかかる移動速度の変化の割合    RATIO=>割合
+const float MOVE_RESIST = 0.05f;	// 吹き飛び移動中のスライムの移動速度に毎フレームかかる減算数値
+const float MOVE_DISTANCE_PLAYER = 13.0f;	// プレイヤー追跡移動に切り替える距離
+const float SLIME_BASE_RADIUS = 0.5f;		// スライムの基準の大きさ
 
-// �T�C�Y3
-const float LEVEL3_SCALE = 3.0f;					// �X���C���Q���x���R�̑傫��(�����蔻��܂�)
-const float LEVEL3_SPEED = ENEMY_MOVE_SPEED * 0.7f;	// �ړ����x
+const int ENEMY_CREATE_INTERVAL = int(2.0f * 60);								// 生成間隔
+const int RANDOM_POS = 15;														// 生成座標範囲
+const int CREATE_DISTANCE = 10;													// プレイヤーからどれくらい離れた距離に生成するか
+const int SLIME_LEVEL1_PER = 45;																// スライム_1の生成確立
+const int SLIME_LEVEL2_PER = 35;																// スライム_2の生成確立
+const int SLIME_LEVEL3_PER = 10;																// スライム_3の生成確立
+const int SLIME_LEVEL_FLAME_PER = 100 - SLIME_LEVEL1_PER - SLIME_LEVEL2_PER - SLIME_LEVEL3_PER;	// スライム_フレイムの生成確立
+const float MAX_SIZE_EXPLODE		= 5.0f;										// スライム4同士の爆発の大きさ
+const float EXPLODE_BASE_RATIO		= 1.5f;										// スライムの爆発接触での爆発の大きさのベース
+const float ESCAPE_DISTANCE			= 15.0f;									// 爆発がこの距離より近かったら逃げる範囲
+const int ESCAPE_TIME				= int(60 * 1.0f);							// この間隔で逃げる処理が終了する
 
-// �T�C�Y4
-const float LEVEL4_SCALE = 5.0f;					// �X���C���Q���x���S�̑傫��(�����蔻��܂�)
-const float LEVEL4_SPEED = ENEMY_MOVE_SPEED * 0.5f;	// �ړ����x
 
-// �t���C���X���C��
-const float LEVEL_FLAME_SCALE = 1.0f;						// �X���C���Q�t���C���̑傫��(�����蔻��܂�)
-const float LEVEL_FLAME_SPEED = ENEMY_MOVE_SPEED * 0.2f;	// �ړ����x
+// スライム同士の反射の減算値
+// ↓1.0fでそのまま
+const float COL_SUB_HIT_TO_BIG		= 0.1f;			// スライム衝突(小→大)の衝突側の減算値(反射する移動)
+const float COL_SUB_STAND_TO_SMALL	= 0.8f;			// スライム衝突(小→大)の衝突される側の減算値(衝突された方向)
+const float COL_SUB_HIT_TO_SMALL	= 0.3f;			// スライム衝突(大→小)の衝突側の減算値(移動方向)
+const float COL_SUB_STAND_TO_BIG	= 1.2f;			// スライム衝突(大→小)の衝突される側の減算値(衝突された方向)
+const float LEAVE_DISTANCE = 40.0f;					// これ以上離れたら対角線上に移動する
 
-const int LEVEL_1_SCORE = 10;				// �X���C��_1�̃X�R�A
-const int LEVEL_2_SCORE = 30;				// �X���C��_2�̃X�R�A
-const int LEVEL_3_SCORE = 100;				// �X���C��_3�̃X�R�A
-const int LEVEL_4_SCORE = 500;				// �X���C��_4�̃X�R�A
-const int LEVEL_4x4_SCORE = 1000;			// �ԁX�̔����̃X�R�A
-// �{�X�X���C��
-#define DEBUG_BOSS	(false)	// �f�o�b�O�p�ɃQ�[���J�n���{�X�𐶐����邩�ǂ���
+// サイズ1
+const float LEVEL1_SCALE = 1.0f;					// スライム＿レベル１の大きさ(当たり判定含む)
+const float LEVEL1_SPEED = ENEMY_MOVE_SPEED;		// 移動速度
+const int	LEVEL1_ATTACK = 1;						// 攻撃力
 
-const float LEVEL_BOSS_1_SCALE = 6.0f;								// �{�X�P�̑傫��
-const float LEVEL_BOSS_1_SPEED = ENEMY_MOVE_SPEED * 0.4f;			// �{�X�P�̃X�s�[�h
-const int	BOSS_1_MAX_HP = 10;								// �{�X�P�̍ő�HP
+// サイズ2
+const float LEVEL2_SCALE = 2.0f;					// スライム＿レベル２の大きさ(当たり判定含む)
+const float LEVEL2_SPEED = ENEMY_MOVE_SPEED * 0.9f;	// 移動速度
+const int	LEVEL2_ATTACK = 1;						// 攻撃力
 
-const float ASSAULT_DISTANCE = 0.2f;								// �ˌ���������
-const int	ASSAULT_COOL_TIME = 10 * 60;							// �ˌ��N���[�^�C��
-const int	ASSAULT_CHARGE_TIME = int(2 * 60);						// �ˌ��`���[�W����
-const int	ASSAULT_TIME = int(1.0f * 60);						// �ˌ�������
-const float ASSAULT_SPEED = LEVEL_BOSS_1_SPEED * 20.0f;		// �ˌ����̃X�s�[�h
+// サイズ3
+const float LEVEL3_SCALE = 3.0f;					// スライム＿レベル３の大きさ(当たり判定含む)
+const float LEVEL3_SPEED = ENEMY_MOVE_SPEED * 0.7f;	// 移動速度
+const int	LEVEL3_ATTACK = 1;						// 攻撃力
 
-const int BOSS_DAMAGE_FLASH_FRAME = int(0.1f * 60);					// �_���[�W�󂯂��ۂ̓_�Ńt���[��(���G�ł͂Ȃ�)
-const int BOSS_DAMAGE_FLASH_TOTAL_FRAME = int(0.5f * 60);			// �_���[�W���󂯂��ۂ̓_�ł����t���[���s����
+// サイズ4
+const float LEVEL4_SCALE = 5.0f;					// スライム＿レベル４の大きさ(当たり判定含む)
+const float LEVEL4_SPEED = ENEMY_MOVE_SPEED * 0.5f;	// 移動速度
+const int	LEVEL4_ATTACK = 2;						// 攻撃力
 
-// ���� =====================================================
-const int	MAX_EXPLOSION_NUM = 20;			// �ő唚����
-const float EXPAND_QUICK_RATE = 0.2f;			// �c���������� 
-const int MAX_BOOOOM_NUM = 10;					//�ő�boom��
-const float LEVEL_1_EXPLODE_TIME = 0.5f * 60.0f;	// �X���C��_1�̔���������
-const float LEVEL_2_EXPLODE_TIME = 1.0f * 60.0f;	// �X���C��_2�̔���������
-const float LEVEL_3_EXPLODE_TIME = 2.0f * 60.0f;	// �X���C��_3�̔���������
-const float LEVEL_4_EXPLODE_TIME = 3.0f * 60.0f;	// �X���C��_4�̔���������
-const float LEVEL_BOSS_EXPLODE_TIME = 4.0f * 60.0f;	// �X���C��_�{�X�̔���������
-const int	DELAY_TIME = int(0.2f * 60);			// �x���b��
+// フレイムスライム
+const float LEVEL_FLAME_SCALE = 1.0f;						// スライム＿フレイムの大きさ(当たり判定含む)
+const float LEVEL_FLAME_SPEED = ENEMY_MOVE_SPEED * 0.2f;	// 移動速度
+const int	LEVEL_FLAME_ATTACK = 1;							// 攻撃力
+
+const int LEVEL_1_SCORE = 10;				// スライム_1のスコア
+const int LEVEL_2_SCORE = 30;				// スライム_2のスコア
+const int LEVEL_3_SCORE = 100;				// スライム_3のスコア
+const int LEVEL_4_SCORE = 500;				// スライム_4のスコア
+const int LEVEL_4x4_SCORE = 1000;			// 赤々の爆発のスコア
+const int LEVEL_Boss_SCORE = 3000;			// 赤々の爆発のスコア
+
+// ボススライム
+#define DEBUG_BOSS	(false)	// デバッグ用にゲーム開始時ボスを生成するかどうか
+
+const float LEVEL_BOSS_1_SCALE = 6.0f;								// ボス１の大きさ
+const float LEVEL_BOSS_1_SPEED = ENEMY_MOVE_SPEED * 0.4f;			// ボス１のスピード
+const int	BOSS_1_MAX_HP = 10;								// ボス１の最大HP
+const int	BOSS_1_ATTACK = 2;								// ボス１の攻撃力
+
+const float SLIME_HP_HEIGHT = 5.0f;							//ボスの体力表示位置（Y）
+const float ASSAULT_DISTANCE = 0.2f;								// 突撃反応距離
+const int	ASSAULT_COOL_TIME = 10 * 60;							// 突撃クルータイム
+const int	ASSAULT_CHARGE_TIME = int(2 * 60);						// 突撃チャージ時間
+const int	ASSAULT_TIME = int(1.0f * 60);						// 突撃総時間
+const float ASSAULT_SPEED = LEVEL_BOSS_1_SPEED * 20.0f;		// 突撃時のスピード
+
+const float BOSS_HP_SIZEX = 0.3f;		//体力１分の大きさ（X）
+const float BOSS_HP_SIZEY = 0.5f;		//体力１分の大きさ（Y）
+const float BOSS_HPFRAME_SIZEX = 0.2f;	//体力ゲージよりどれだけ大きいか（X）
+const float BOSS_HPFRAME_SIZEY = 0.2f;	//体力ゲージよりどれだけ大きいか（Y）
+const float BOSS_HP_POSX = 8.6f;		//体力バー（減る方）の位置
+const int BOSS_DAMAGE_FLASH_FRAME = int(0.1f * 60);					// ダメージ受けた際の点滅フレーム(無敵ではない)
+const int BOSS_DAMAGE_FLASH_TOTAL_FRAME = int(0.5f * 60);			// ダメージを受けた際の点滅を何フレーム行うか
+
+// 爆発 =====================================================
+const int	MAX_EXPLOSION_NUM = 20;			// 最大爆発数
+const float EXPAND_QUICK_RATE = 0.2f;			// 膨張加速割合 
+const int MAX_BOOOOM_NUM = 10;					//最大boom数
+const float LEVEL_1_EXPLODE_TIME = 0.5f * 60.0f;	// スライム_1の爆発総時間
+const float LEVEL_2_EXPLODE_TIME = 1.0f * 60.0f;	// スライム_2の爆発総時間
+const float LEVEL_3_EXPLODE_TIME = 2.0f * 60.0f;	// スライム_3の爆発総時間
+const float LEVEL_4_EXPLODE_TIME = 3.0f * 60.0f;	// スライム_4の爆発総時間
+const float LEVEL_BOSS_EXPLODE_TIME = 4.0f * 60.0f;	// スライム_ボスの爆発総時間
+const int	DELAY_TIME = int(0.2f * 60);			// 遅延秒数
 
 const int	LEVEL_1_EXPLODE_DAMAGE = 1;
 const int	LEVEL_2_EXPLODE_DAMAGE = 2;
 const int	LEVEL_3_EXPLODE_DAMAGE = 3;
 const int	LEVEL_4_EXPLODE_DAMAGE = 4;
-// �X�R�A =====================================================
-const float SLIME_SCORE_HEIGHT = 4.0f;			//����������X�R�A�̕\���ʒu
+// スコア =====================================================
+const float SLIME_SCORE_HEIGHT = 4.0f;			//爆発時頭上スコアの表示位置
 
-const int TOTALSCORE_DIGIT = 5;				//�g�[�^���X�R�A�̌���
-const int MAX_TOTALSCORE = 99999;			//���ꏏ�ɕς��Ă��������i������9��ǉ��j//�ő�g�[�^�A���X�R�A
-const TPos2d<float> TOTALSCORE_POS(1100.0f, 25.0f);			//�g�[�^���X�R�A�̈ʒu�ݒ�
+const int TOTALSCORE_DIGIT = 5;				//トータルスコアの桁数
+const int MAX_TOTALSCORE = 99999;			//↑一緒に変えてください（桁数分9を追加）//最大トータアルスコア
+const TPos2d<float> TOTALSCORE_POS(1100.0f, 25.0f);			//トータルスコアの位置設定
 
-const DirectX::XMFLOAT2 TOTALSCORE_SIZE(50.0f, -50.0f);		//�g�[�^���X�R�A�̕\���̑傫��
-const DirectX::XMFLOAT2 PLUSSCORE_SIZE(30.0f, -30.0f);		//�v���X�X�R�A�̕\���̑傫��
-const int ROW_HIGHT = 40;			//�X�R�A�𕡐��\������ԏォ��ǂ̂��炢�����邩�iPLUSSCORE_SIZE.y�̐�Βl���傫�������Łj
+const DirectX::XMFLOAT2 TOTALSCORE_SIZE(50.0f, -50.0f);		//トータルスコアの表示の大きさ
+const DirectX::XMFLOAT2 PLUSSCORE_SIZE(30.0f, -30.0f);		//プラススコアの表示の大きさ
+const int ROW_HIGHT = 40;			//スコアを複数個表示時一番上からどのくらい下げるか（PLUSSCORE_SIZE.yの絶対値より大きい数字で）
 
-const DirectX::XMFLOAT2 SMALLDECIMAL_SIZE(15.0f, -15.0f);	//�����_�̑傫��
-const int MAGNIFICATION = 40;		//�{���\�����̊Ԋu�B��ԉE�̐�������ǂꂾ�����ɂ��炷���i�����_������̂ł������P�A����j
-const TPos2d<float> SMALLDECIMAL_POS(2.0f, -3.0f);//���̒l�ŏ����_�̈ʒu�̔�����
+const DirectX::XMFLOAT2 SMALLDECIMAL_SIZE(15.0f, -15.0f);	//小数点の大きさ
+const int MAGNIFICATION = 40;		//倍率表示時の間隔。一番右の数字からどれだけ左にずらすか（小数点を入れるのでそこもケアする）
+const TPos2d<float> SMALLDECIMAL_POS(2.0f, -3.0f);//この値で小数点の位置の微調節
 
 
-// �J���� =====================================================
-const TPos3d<float> INIT_POS(0.0f, 2.6f, -3.0f);					// �����ʒu
+// カメラ =====================================================
+const TPos3d<float> INIT_POS(0.0f, 1.6f, -3.0f);					//初期位置
 
-const float INIT_ANGLE = DirectX::XMConvertToRadians(73.0f);       // �J�����̊p�x
-const float INIT_NEAR = 1.0f;										// ��ʎ�O����z�l
-const float INIT_FAR = 150.0f;									// ��ʉ�����z�l
-const float INIT_RADIUS = 15.0f;									// �J�����ƒ����_�Ƃ̋���(�����l)
+const float Pi = 3.141592f;
+constexpr float ANGLE_TO_RADIAN(float fAngle)
+{
+	return fAngle / 180.0f * Pi;	//角度→ラジアン角
+}
+
+const float INIT_ANGLE = DirectX::XMConvertToRadians(73.0f);        //カメラの角度
+const float INIT_NEAR = 1.0f;										//画面手前初期z値
+const float INIT_FAR = 150.0f;										//画面奥初期z値
+const float INIT_RADIUS = 15.0f;									//カメラと注視点との距離(初期値)
+
+const float RADIAN_VELOCITY_WEAK = ANGLE_TO_RADIAN(1.5f);		//角速度：弱
+const float RADIAN_VELOCITY_STRONG = ANGLE_TO_RADIAN(1.0f);		//角速度：強
+const TDiType<float> AMPLITUDE_WEAK(3.0f, 0.7f);				//振幅：弱			x:縦, y:横
+const TDiType<float> AMPLITUDE_STRONG(10.0f, 50.0f);			//振幅：強			x:縦, y:横
+const TDiType<float> VIRTUAL_FRICTION(0.5f);					//疑似摩擦力
+const TDiType<float> VIRTUAL_GRAVITY(0.5f);						//疑似重力
+const TDiType<float> DECREASE_RADIAN_WEAK(0.005f, 0.005f);		//角速度減少量：弱	x:縦, y:横
+const TDiType<float> DECREASE_RADIAN_STRONG(0.005f, 0.008f);	//角速度減少量：強	x:縦, y:横
 
 // UI =====================================================
-// 2D�\��
-const float VIEW_LEFT = 0.0f;		// ��ʍ��[�̍��W
-const float VIEW_RIGHT = 1280.0f;	// ��ʉE�[�̍��W�i��ʉ����j
-const float VIEW_BOTTOM = 720.0f;	// ��ʉ��[�̍��W�i��ʏc���j
-const float VIEW_TOP = 0.0f;		// ��ʏ�[�̍��W
-const float NEAR_Z = 0.1f;			// ��ʂɎʂ�n�߂鋗��
-const float FAR_Z = 10.0f;			// �ʂ�����E����
+// 2D表示
+const float VIEW_LEFT = 0.0f;		// 画面左端の座標
+const float VIEW_RIGHT = 1280.0f;	// 画面右端の座標（画面横幅）
+const float VIEW_BOTTOM = 720.0f;	// 画面下端の座標（画面縦幅）
+const float VIEW_TOP = 0.0f;		// 画面上端の座標
+const float NEAR_Z = 0.1f;			// 画面に写り始める距離
+const float FAR_Z = 10.0f;			// 写せる限界距離
 
-// �^�C�}�[ =====================================================
-const int STAGE_TIME = 180 * 60;	//�X�e�[�W�������ԁi�b*�t���[���j
-const TPos2d<float> MINUTE_POS(565.0f, 25.0f);			//���̈ʒu�ݒ�
-const TPos2d<float> SECOND_TENS_POS(640.0f, 25.0f);	//�\�̌��b�̈ʒu�ݒ�
-const TPos2d<float> SECOND_ONE_POS(690.0f, 25.0f);		//��̌��b�̈ʒu�ݒ�
-const TPos2d<float> TIME_BACKGROUND_POS(630.0f, 25.0f);	//�o�b�N�O���E���h�ʒu�ݒ�
-const TPos2d<float> TIME_COLON_POS(602.5f, 25.0f);		//�R�����̈ʒu�ݒ�
-const float TIME_BACK_GROUND_SIZE_X = 200.0f;			//�^�C�}�[�̃o�b�N�O�����h��X�̒����ݒ�
-const float TIME_BACK_GROUND_SIZE_Y = -75.0f;			//�^�C�}�[�̃o�b�N�O�����h��Y�̒����ݒ�
-const float TIME_COLON_SIZE_X = 35.0f;					//�^�C�}�[�̃R������X�̒����ݒ�
-const float TIME_COLON_SIZE_Y = -35.0f;					//�^�C�}�[�̃R������Y�̒����ݒ�
+// タイマー =====================================================
+const int STAGE_TIME = 180 * 60;	//ステージ制限時間（秒*フレーム）
+const TPos2d<float> MINUTE_POS(565.0f, 25.0f);			//分の位置設定
+const TPos2d<float> SECOND_TENS_POS(640.0f, 25.0f);	//十の桁秒の位置設定
+const TPos2d<float> SECOND_ONE_POS(690.0f, 25.0f);		//一の桁秒の位置設定
+const TPos2d<float> TIME_BACKGROUND_POS(630.0f, 25.0f);	//バックグラウンド位置設定
+const TPos2d<float> TIME_COLON_POS(602.5f, 25.0f);		//コロンの位置設定
+const float TIME_BACK_GROUND_SIZE_X = 200.0f;			//タイマーのバックグランドのXの長さ設定
+const float TIME_BACK_GROUND_SIZE_Y = -75.0f;			//タイマーのバックグランドのYの長さ設定
+const float TIME_COLON_SIZE_X = 35.0f;					//タイマーのコロンのXの長さ設定
+const float TIME_COLON_SIZE_Y = -35.0f;					//タイマーのコロンのYの長さ設定
 
-// �{�X�Q�[�W =====================================================
-const int BOSS_GAUGE_FULL_TIME = 45 * 60;		//�{�X�Q�[�WMAX�ɂȂ鎞��(���b�o��) * 60�t���[��
-const int SECOND_EMPTY_BOSS_GAUGE = 75 * 60;		//��̖ڂ̃{�X��Q�[�W�\������ * 60�t���[��
-const TPos2d<float> BOSS_GAUGE_EMPTY_POS(765.0f, 30.0f);	//�{�X�Q�[�W�i��j�̈ʒu�ݒ�
-const TPos2d<float> BOSS_GAUGE_FULL_POS(765.0f, 31.5f);	//�{�X�Q�[�W�i���j�̈ʒu�ݒ�
-const float BOSS_GAUGE_EMPTY_SIZE_X = 60.0f;			//�{�X�Q�[�W�i��j��X�̒����ݒ�
-const float BOSS_GAUGE_EMPTY_SIZE_Y = -60.0f;			//�{�X�Q�[�W�i��j��Y�̒����ݒ�
-const float BOSS_GAUGE_FULL_SIZE_X = (6.0f / 7.0f) * BOSS_GAUGE_EMPTY_SIZE_X;			//�{�X�Q�[�W�i���j��X�̒����ݒ�
-const float BOSS_GAUGE_FULL_SIZE_Y = (6.0f / 7.0f) * BOSS_GAUGE_EMPTY_SIZE_Y;			//�{�X�Q�[�W�i���j��Y�̒����ݒ�
-const float BOSS_GAUGE_FULL_POS_Y_ADJUST = BOSS_GAUGE_FULL_SIZE_X / 2;		//�{�X�Q�[�W�������A�ʒu�\�����邽�߂̒�����
-const float BOSS_GAUGE_FULL_SIZE_Y_ADJUST = BOSS_GAUGE_FULL_SIZE_Y;	//�{�X�Q�[�W�������A�T�C�Y�v�Z�p�i�v�Z���ĕ\���������䗦�����錳�X�̃T�C�Y(100.0f)�j
-const int FADE_TIME = 5 * 60;							//�{�X�Q�[�W�����܂��Ă�������鎞��
+// ボスゲージ =====================================================
+const int BOSS_GAUGE_FULL_TIME = 45 * 60;		//ボスゲージMAXになる時間(何秒出現) * 60フレーム
+const int SECOND_EMPTY_BOSS_GAUGE = 75 * 60;		//二体目のボス空ゲージ表す時間 * 60フレーム
+const TPos2d<float> BOSS_GAUGE_EMPTY_POS(765.0f, 30.0f);	//ボスゲージ（空）の位置設定
+const TPos2d<float> BOSS_GAUGE_FULL_POS(765.0f, 31.5f);	//ボスゲージ（満）の位置設定
+const float BOSS_GAUGE_EMPTY_SIZE_X = 60.0f;			//ボスゲージ（空）のXの長さ設定
+const float BOSS_GAUGE_EMPTY_SIZE_Y = -60.0f;			//ボスゲージ（空）のYの長さ設定
+const float BOSS_GAUGE_FULL_SIZE_X = (6.0f / 7.0f) * BOSS_GAUGE_EMPTY_SIZE_X;			//ボスゲージ（満）のXの長さ設定
+const float BOSS_GAUGE_FULL_SIZE_Y = (6.0f / 7.0f) * BOSS_GAUGE_EMPTY_SIZE_Y;			//ボスゲージ（満）のYの長さ設定
+const float BOSS_GAUGE_FULL_POS_Y_ADJUST = BOSS_GAUGE_FULL_SIZE_X / 2;		//ボスゲージ増加時、位置表示するための調整量
+const float BOSS_GAUGE_FULL_SIZE_Y_ADJUST = BOSS_GAUGE_FULL_SIZE_Y;	//ボスゲージ増加時、サイズ計算用（計算して表示したい比率かける元々のサイズ(100.0f)）
+const int FADE_TIME = 5 * 60;							//ボスゲージが溜まってから消える時間
 
 
 // HP
-const float DRAW_POSX = 80.0f;	// �e�N�X�`����\������ʒu��X���W
-const float DRAW_FIRSTPOSX = 0.9f;		// 1�ڂ̃e�N�X�`����\������ʒu�̒��ߗp
-const float DRAW_GAP = 1.15f;	// �e�N�X�`�����m�̊Ԋu
-const float DRAW_POSY = 60.0f;	// �e�N�X�`����\������ʒu��Y���W
-const float DRAW_HEIGHT = 90.0f;	// �e�N�X�`���̏c��
-const float DRAW_WIDTH = 90.0f;	// �e�N�X�`���̉���
+const TTriType<float> HP_UI_POS = { 80.0f, 60.0f ,0.0f };	// テクスチャの縦幅、横幅
+const TTriType<float> HP_UI_SIZE = { 90.0f, 90.0f ,0.0f };	// テクスチャの縦幅、横幅
+const float DRAW_WIDTH = 90.0f;	// テクスチャの横幅
 
-// �񕜃A�C�e�� =====================
-const float HEAL_ITEM_SCALE_X = 1.5f;		//�@�A�C�e���̃X�P�[��X
-const float HEAL_ITEM_SCALE_Y = 1.5f;		//�@�A�C�e���̃X�P�[��Y
-const float HEAL_ITEM_SCALE_Z = 1.5f;		//�@�A�C�e���̃X�P�[��Z
-const float	HEALITEM_ANGLE_X = 50.0f;		//�@�񕜃A�C�e���̊p�x
-const float	HEALITEM_MOVE_INTERVAL = 4.0f;		//  �A�j���[�V�����̎���
-const int	COUNT_UP = 6;						//  1�b��360�ɂȂ�悤�ɒ���
-const float	HEALITEM_MOVE_Y = 0.5f;				//  �A�C�e���̏㉺�ɗh��鍂��(-1�`1�܂ł��ړ�����̂ňړ��ʂ�2)
-const float	HEALITEM_HEIGHT = HEALITEM_MOVE_Y;	//  �񕜃A�C�e���̏����̍���
+// 回復アイテム =====================
+const float HEAL_ITEM_SCALE_X = 1.5f;		//　アイテムのスケールX
+const float HEAL_ITEM_SCALE_Y = 1.5f;		//　アイテムのスケールY
+const float HEAL_ITEM_SCALE_Z = 1.5f;		//　アイテムのスケールZ
+const float	HEALITEM_ANGLE_X = 50.0f;		//　回復アイテムの角度
+const float	HEALITEM_MOVE_INTERVAL = 4.0f;		//  アニメーションの周期
+const int	COUNT_UP = 6;						//  1秒で360になるように調整
+const float	HEALITEM_MOVE_Y = 0.5f;				//  アイテムの上下に揺れる高さ(-1～1までを移動するので移動量は2)
+const float	HEALITEM_HEIGHT = HEALITEM_MOVE_Y;	//  回復アイテムの初期の高さ
 
 // BoooomUI =====================================================
-const float BOOOOM_UI_SIZE_X = 1.0f;		//BoooomUI��X�̒����itexture�̔䗦�ƍ��킹��j
-const float BOOOOM_UI_SIZE_Y = 0.565f;		//BoooomUI��Y�̒����itexture�̔䗦�ƍ��킹��j
-const float BOOOOM_UI_SCALE_X = 6.0f;		//BoooomUI�T�C�Y�̃X�P�[��
-const float BOOOOM_UI_SCALE_Y = 6.0f;		//BoooomUI�T�C�Y�̃X�P�[��
+const float BOOOOM_UI_SIZE_X = 1.0f;		//BoooomUIのXの長さ（textureの比率と合わせる）
+const float BOOOOM_UI_SIZE_Y = 0.565f;		//BoooomUIのYの長さ（textureの比率と合わせる）
+const float BOOOOM_UI_SCALE_X = 6.0f;		//BoooomUIサイズのスケール
+const float BOOOOM_UI_SCALE_Y = 6.0f;		//BoooomUIサイズのスケール
 
-// �R���{ =========================================================
-const int	MAX_COMBO_NUM = 5;					// �ő哯���R���{��
-const TPos2d<float> COMBO_UI_POSITION = { 1025.0f, 600.0f };	// �R���{UI�̕`��ʒu
-const TPos2d<float> COMBO_UI_SIZE = { 70.0f, 130.0f };	// �R���{UI�̑傫��
-const float COMBO_UI_NUM_SPACE = 80.0f;				// �����̊ԃX�y�[�X
-const float COMBO_UI_MULTI_DISP_SPACE = 100.0f;			// �����R���{�`�掞�̏㉺�̋�
-const int COMBO_UI_DISP_DILAY_TIME = int(2.0f * 60);			// �c�R���{���\���̕b��
+// コンボ =========================================================
+const int	MAX_COMBO_NUM = 5;					// 最大同時コンボ数
+const TPos2d<float> COMBO_UI_POSITION = { 1025.0f, 600.0f };	// コンボUIの描画位置
+const TPos2d<float> COMBO_UI_SIZE = { 70.0f, 130.0f };	// コンボUIの大きさ
+const float COMBO_UI_NUM_SPACE = 80.0f;				// 数字の間スペース
+const float COMBO_UI_MULTI_DISP_SPACE = 100.0f;			// 同時コンボ描画時の上下の空白
+const int COMBO_UI_DISP_DILAY_TIME = int(2.0f * 60);			// 残コンボ数表示の秒数
 
-const TPos2d<float> COMBO_UI_BACK_POS = { 1100.0f, 600.0f };	// �R���{UI�̔w�i�̕`��ʒu
-const TPos2d<float> COMBO_UI_BACK_SIZE = { 370.0f, 280.0f };	// �R���{UI�̔w�i�̑傫��
-const TPos2d<float> COMBO_UI_STRING_POS = { 1150.0f, 615.5f };	// �R���{UI�̕����̕`��ʒu
-const TPos2d<float> COMBO_UI_STRING_SIZE = { 180.0f, 100.0f };		// �R���{UI�̕����̑傫��
+const TPos2d<float> COMBO_UI_BACK_POS = { 1100.0f, 600.0f };	// コンボUIの背景の描画位置
+const TPos2d<float> COMBO_UI_BACK_SIZE = { 370.0f, 280.0f };	// コンボUIの背景の大きさ
+const TPos2d<float> COMBO_UI_STRING_POS = { 1150.0f, 615.5f };	// コンボUIの文字の描画位置
+const TPos2d<float> COMBO_UI_STRING_SIZE = { 180.0f, 100.0f };		// コンボUIの文字の大きさ
 
-// �� ====================================
+// 床 ====================================
 const float FLOOR_SCALE_X = 1.1f;
 const float FLOOR_SCALE_Z = 1.1f;
 const float FLOOR_OFFSET_X = 48.0f * FLOOR_SCALE_X;
 const float FLOOR_OFFSET_Z = 48.0f * FLOOR_SCALE_Z;
 
-// �^�C�g����� =========================================================
-const float TEXTURE_TITLE_TITLE_POSX = SCREEN_WIDTH_ / 2;	// �^�C�g���摜�\���ʒu��X���W
-const float TEXTURE_TITLE_TITLE_POSY = 400.0f;				// �^�C�g���摜�\���ʒu��Y���W
-const float TEXTURE_TITLE_TITLE_WIDTH = 300.0f;				// �^�C�g���摜�̉���
-const float TEXTURE_TITLE_TITLE_HEIGHT = 50.0f;				// �^�C�g���摜�̏c��
-const float TEXTURE_TITLE_BUTTON_POSX = SCREEN_WIDTH_ / 2;	// �^�C�g���摜�\���ʒu��X���W
-const float TEXTURE_TITLE_BUTTON_POSY = 100.0f;				// �^�C�g����ʃ{�^�������w���摜�\���ʒu��Y���W
-const float TEXTURE_TITLE_BUTTON_WIDTH = 300.0f;			// �^�C�g����ʃ{�^�������w���摜�̉���
-const float TEXTURE_TITLE_BUTTON_HEIGHT = 100.0f;			// �^�C�g����ʃ{�^�������w���摜�̏c��
+// タイトル画面 =========================================================
+const float TEXTURE_TITLE_TITLE_POSX = SCREEN_WIDTH_ / 2;	// タイトル画像表示位置のX座標
+const float TEXTURE_TITLE_TITLE_POSY = 400.0f;				// タイトル画像表示位置のY座標
+const float TEXTURE_TITLE_TITLE_WIDTH = 300.0f;				// タイトル画像の横幅
+const float TEXTURE_TITLE_TITLE_HEIGHT = 50.0f;				// タイトル画像の縦幅
+const float TEXTURE_TITLE_BUTTON_POSX = SCREEN_WIDTH_ / 2;	// タイトル画像表示位置のX座標
+const float TEXTURE_TITLE_BUTTON_POSY = 100.0f;				// タイトル画面ボタン押下指示画像表示位置のY座標
+const float TEXTURE_TITLE_BUTTON_WIDTH = 300.0f;			// タイトル画面ボタン押下指示画像の横幅
+const float TEXTURE_TITLE_BUTTON_HEIGHT = 100.0f;			// タイトル画面ボタン押下指示画像の縦幅
+
+// ヒットストップ =========================================================
+const int FRAME_STOP_SOFT = 30;		//ストップ：軽　のフレーム数	// 現在使用している物
+const int FRAME_STOP_NORMAL = 60;	//ストップ：中　のフレーム数
+const int FRAME_STOP_HEAVY = 120;	//ストップ：重　のフレーム数
+const int FRAME_STOP_DEATH = 999;	//ストップ：死　のフレーム数
+
+
+
 
 #endif
 

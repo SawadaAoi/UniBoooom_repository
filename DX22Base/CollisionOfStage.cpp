@@ -60,7 +60,7 @@ void CStage::PlayerSlimeCollision()
 		// スライムとハンマーが衝突した場合
 		if (m_pCollision->CheckCollisionSphere(m_pPlayer->GetSphere(), pSlimeNow->GetSphere(), m_pPlayer->GetPos(), pSlimeNow->GetPos()))
 		{
-			m_pPlayer->Damage();
+			m_pPlayer->Damage(pSlimeNow->GetAttack());
 		}
 	}
 }

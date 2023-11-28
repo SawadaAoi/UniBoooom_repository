@@ -320,6 +320,7 @@ void CCombo::AddScore(int num, int combo)
 	case LEVEL_3:		m_dComboInfo[combo].dScore += LEVEL_3_SCORE;	break;
 	case LEVEL_4:		m_dComboInfo[combo].dScore += LEVEL_4_SCORE;	break;
 	case LEVEL_4x4:		m_dComboInfo[combo].dScore += LEVEL_4x4_SCORE;	break;
+	case LEVEL_BOSS:	m_dComboInfo[combo].dScore += LEVEL_Boss_SCORE;	break;
 	case LEVEL_FLAME:	m_dComboInfo[combo].dScore += LEVEL_1_SCORE;	break;	// ‰ŠƒXƒ‰ƒCƒ€‚Æ”š”­‚ªÚG‚µ‚½Û‚Íˆê”Ô¬‚³‚¢”š”­
 	}
 }

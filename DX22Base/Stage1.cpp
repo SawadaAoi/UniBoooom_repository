@@ -16,6 +16,7 @@
 	・2023/11/20 SceneGameから移植 nieda
 	・2023/11/21 ゲーム開始時テクスチャ表示 nieda
 	・2023/11/22 動くよう足りない変数など追加 nieda
+	・2023/11/27 バグ修正 takagi
 
 ========================================== */
 
@@ -82,13 +83,14 @@ CStage1::CStage1()
 	m_pExplosionMng = new CExplosionManager();
 	m_pExplosionMng->SetCamera(m_pCamera);
 	m_pExplosionMng->SetCombo(m_pCombo);
+	m_pSlimeMng->SetExplosionMng(m_pExplosionMng);
 
 	// タイマー生成
 	m_pTimer = new CTimer();
 	m_pTimer->TimeStart();
 
 	//ステージ終了のUI表示
-	m_pStageFin = new CStageFinish(m_pPlayer->GetHP(), m_pTimer->GetTimePtr());
+	m_pStageFin = new CStageFinish(m_pPlayer->GetHpPtr(), m_pTimer->GetTimePtr());
 
 	LoadSound();
 	//BGMの再生

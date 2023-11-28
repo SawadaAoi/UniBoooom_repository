@@ -25,21 +25,27 @@
 // =============== インクルード ===================
 #include "Camera.h"		//自身のヘッダ
 #include "Defines.h"	//画面情報
+#include "GameParameter.h"
 
 // =============== 定数定義 =====================
 const float ASPECT = (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT;	//画面比率(y / x)
 const TPos3d<float> INIT_LOOK(0.0f, 0.0f, 0.0f);					//初期注視地点
 const TTriType<float> INIT_UP_VECTOR(0.0f, 1.0f, 0.0f);				//カメラの上方向
+#if MODE_GAME_PARAMETER
+#else
 const TPos3d<float> INIT_POS(0.0f, 1.6f, -3.0f);					//初期位置
-const float INIT_ANGLE = DirectX::XMConvertToRadians(73.0f);        //カメラの角度
-const float INIT_NEAR = 1.0f;										//画面手前初期z値
-const float INIT_FAR = 150.0f;										//画面奥初期z値
-const float INIT_RADIUS = 15.0f;									//カメラと注視点との距離(初期値)
+
 const float Pi = 3.141592f;
 constexpr float ANGLE_TO_RADIAN(float fAngle)
 {
 	return fAngle / 180.0f * Pi;	//角度→ラジアン角
 }
+
+const float INIT_ANGLE = DirectX::XMConvertToRadians(73.0f);        //カメラの角度
+const float INIT_NEAR = 1.0f;										//画面手前初期z値
+const float INIT_FAR = 150.0f;										//画面奥初期z値
+const float INIT_RADIUS = 15.0f;									//カメラと注視点との距離(初期値)
+
 const float RADIAN_VELOCITY_WEAK = ANGLE_TO_RADIAN(1.5f);		//角速度：弱
 const float RADIAN_VELOCITY_STRONG = ANGLE_TO_RADIAN(1.0f);		//角速度：強
 const TDiType<float> AMPLITUDE_WEAK(3.0f, 0.7f);				//振幅：弱			x:縦, y:横
@@ -48,6 +54,9 @@ const TDiType<float> VIRTUAL_FRICTION(0.5f);					//疑似摩擦力
 const TDiType<float> VIRTUAL_GRAVITY(0.5f);						//疑似重力
 const TDiType<float> DECREASE_RADIAN_WEAK(0.005f, 0.005f);		//角速度減少量：弱	x:縦, y:横
 const TDiType<float> DECREASE_RADIAN_STRONG(0.005f, 0.008f);	//角速度減少量：強	x:縦, y:横
+#endif
+
+
 
 /* ========================================
 	コンストラクタ関数
