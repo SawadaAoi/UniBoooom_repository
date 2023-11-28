@@ -64,7 +64,7 @@ CTimer::CTimer()
 
 	//タイマーの裏テクスチャ読み込む
 	m_pTextureBG = new Texture;
-	if (FAILED(m_pTextureBG->Create("Assets/Texture/time_background.png")))
+	if (FAILED(m_pTextureBG->Create("Assets/Texture/timer_back_1.png")))
 	{
 		MessageBox(NULL, "timebackground.png", "Error", MB_OK);
 	}

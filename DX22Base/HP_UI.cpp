@@ -120,7 +120,7 @@ void CHP_UI::Draw()
 		DirectX::XMFLOAT4X4 mat[3];
 
 		// ワールド行列はXとYのみを考慮して作成
-		DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(DRAW_POSX + (i * DRAW_WIDTH), DRAW_POSY, 0.0f);	// ワールド行列（必要に応じて変数を増やしたり、複数処理を記述したりする）
+		DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(DRAW_POSX + (i * DRAW_GAP), DRAW_POSY, 0.0f);	// ワールド行列（必要に応じて変数を増やしたり、複数処理を記述したりする）
 		DirectX::XMStoreFloat4x4(&mat[0], DirectX::XMMatrixTranspose(world));
 
 		// ビュー行列は2Dだとカメラの位置があまり関係ないので、単位行列を設定する
@@ -150,7 +150,7 @@ void CHP_UI::Draw()
 		DirectX::XMFLOAT4X4 mat_Full[3];
 
 		// ワールド行列はXとYのみを考慮して作成
-		DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(DRAW_POSX + (i * DRAW_WIDTH), DRAW_POSY, 0.0f);	// ワールド行列（必要に応じて変数を増やしたり、複数処理を記述したりする）
+		DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(DRAW_POSX + (i * DRAW_GAP), DRAW_POSY, 0.0f);	// ワールド行列（必要に応じて変数を増やしたり、複数処理を記述したりする）
 		DirectX::XMStoreFloat4x4(&mat_Full[0], DirectX::XMMatrixTranspose(world));
 
 		// ビュー行列は2Dだとカメラの位置があまり関係ないので、単位行列を設定する
