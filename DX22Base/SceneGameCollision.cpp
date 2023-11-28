@@ -48,6 +48,7 @@ void SceneGame::SceneGameCollision()
 {
 	PlayerSlimeCollision();
 	PlayerBossCollision();
+	PlayerHealItemCollision();
 	HammerSlimeCollision();
 	HammerBossCollision();
 	SlimeSlimeCollision();
@@ -117,6 +118,35 @@ void SceneGame::PlayerBossCollision()
 		if (m_pCollision->CheckCollisionSphere(m_pPlayer->GetSphere(), pBossNow->GetSphere(), m_pPlayer->GetPos(), pBossNow->GetPos()))
 		{
 			m_pPlayer->Damage(pBossNow->GetAttack());
+		}
+	}
+}
+
+/* ========================================
+   回復アイテム当たり判定関数
+   ----------------------------------------
+   内容：回復アイテムとプレイヤーの当たり判定
+   ----------------------------------------
+   引数：なし
+   ----------------------------------------
+   戻値：なし
+   ======================================== */
+void SceneGame::PlayerHealItemCollision()
+{
+	std::vector<CHealItem*>* pHealItemList = m_pHealItemMng->GetHealItemConPtr();
+	if (pHealItemList->size() == 0) { return; }	//中身が空ならスキップ
+
+	for (auto i = pHealItemList->begin(); i != pHealItemList->end();)
+	{
+		if (m_pCollision->CheckCollisionSphere(m_pPlayer->GetSphere(), (*i)->GetSphere(), m_pPlayer->GetPos(), (*i)->GetPos()))
+		{
+			delete (*i);
+			i = pHealItemList->erase(i);	//アイテムの消去
+			m_pPlayer->Healing();		//プレイヤーのHPの回復
+		}
+		else
+		{
+			i++;	//アイテムが機内場合はイテレータを進める
 		}
 	}
 }

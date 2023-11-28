@@ -38,7 +38,7 @@
 #include "GameParameter.h"		//定数定義用ヘッダー
 #include "Sound.h"
 #include "ScoreOHManager.h"
-
+#include "HealItemManager.h"
 // =============== 定数定義 =======================
 #if MODE_GAME_PARAMETER
 
@@ -90,7 +90,7 @@ public:
 	void SetCamera(CCamera* pCamera);		//スライムを移すカメラのポインタをセット
 	void SetPlayerPos(TPos3d<float> pos);
 	void SetScoreOHMng(CScoreOHManager* pScoreMng);
-
+	void SetHealMng(CHealItemManager* pHealItemMng);
 	void SetExplosionMng(CExplosionManager* pExpMng);
 private:
 	// ===メンバ変数宣言=====
@@ -110,7 +110,7 @@ private:
 	Model* m_pBossModel;
 
 	CScoreOHManager* m_pScoreOHMng;
-	
+	CHealItemManager* m_pHealItemMng;
 
 
 	XAUDIO2_BUFFER* m_pSEHitSlime;					//ハンマーでスライムを打った時のSEのデータ
