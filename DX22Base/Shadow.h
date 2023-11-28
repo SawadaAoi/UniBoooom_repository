@@ -26,7 +26,7 @@ public:
 	CShadow();		// コンストラクタ
 	~CShadow();		// デストラクタ
 	void Update();	// 更新関数
-	void Draw(tagTransform3d m_Pos, float fscale, CCamera* pCamera);	// 描画関数
+	void Draw(tagTransform3d m_Pos, float fscale, const CCamera* pCamera);	// 描画関数
 private:
 	bool m_bDisp;				// 表示するか判定
 	Texture* m_pTextureShadow;	// テクスチャクラスのポインタ

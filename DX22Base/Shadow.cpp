@@ -67,6 +67,7 @@ CShadow::~CShadow()
 void CShadow::Update()
 {
 	// 一旦作ってみた
+	m_bDisp ^= 1;	// 表示、非表示の切り替え
 }
 
 /* ========================================
@@ -80,12 +81,11 @@ void CShadow::Update()
    ----------------------------------------
    戻値：なし
 ======================================== */
-void CShadow::Draw(tagTransform3d m_Pos, float fScale, CCamera* pCamera)
+void CShadow::Draw(tagTransform3d m_Pos, float fScale, const CCamera* pCamera)
 {
 	if (m_bDisp)	// 表示フラグがONの場合
-	{
-		// 移動行列を求める
-		DirectX::XMMATRIX mat_shadow = DirectX::XMMatrixTranslation(m_Pos.fPos.x, m_Pos.fPos.z, m_Pos.fPos.y) * DirectX::XMMatrixRotationX(PI / 2);
+	{		
+		DirectX::XMMATRIX mat_shadow = DirectX::XMMatrixTranslation(m_Pos.fPos.x, m_Pos.fPos.z, m_Pos.fPos.y) * DirectX::XMMatrixRotationX(PI / 2);	// 移動行列を求める
 		DirectX::XMFLOAT4X4 world;	// 読み取り用の行列の宣言
 		DirectX::XMStoreFloat4x4(&world, DirectX::XMMatrixTranspose(mat_shadow));	// 格納する
 		Sprite::SetWorld(world);								// ワールド行列の設定

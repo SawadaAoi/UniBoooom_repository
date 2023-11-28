@@ -10,6 +10,7 @@
 	変更履歴
 	・2023/11/17 クラス作成 Suzumura
 	・2023/11/23 突撃処理の追加 Suzumura
+	・2023/11/28 影の大きさを設定する変数追加 nieda
 
 ========================================== */
 
@@ -52,6 +53,8 @@ CSlime_Boss_1::CSlime_Boss_1()
 	SetNormalSpeed();
 	SetMaxHp();
 	m_nHp = m_nMaxHp;
+	m_fScaleShadow = BOSS_1_SHADOW_SCALE;	// 影の大きさを設定
+
 }
 
 /* ========================================

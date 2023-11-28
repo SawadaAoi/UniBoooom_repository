@@ -260,8 +260,15 @@ const float TEXTURE_TITLE_BUTTON_WIDTH = 300.0f;			// タイトル画面ボタン押下指示
 const float TEXTURE_TITLE_BUTTON_HEIGHT = 100.0f;			// タイトル画面ボタン押下指示画像の縦幅
 
 // 影 ====================================================================
-const float PI = 3.14159f;				// 円周率
-const float PLAYER_SHADOW_SCALE = 1.0f;	// 影の大きさ
+const float PI = 3.14159f;					// 円周率
+const float PLAYER_SHADOW_SCALE = 1.5f;		// プレイヤーの影の大きさ
+const float LEVEL_1_SHADOW_SCALE = 1.0f;	// スライム＿レベル１の影の大きさ
+const float LEVEL_2_SHADOW_SCALE = 2.5f;	// スライム＿レベル２の影の大きさ
+const float LEVEL_3_SHADOW_SCALE = 3.5f;	// スライム＿レベル３の影の大きさ
+const float LEVEL_4_SHADOW_SCALE = 8.0f;	// スライム＿レベル４の影の大きさ
+const float LEVEL_FLAME_SHADOW_SCALE = 2.0f;// スライム＿フレイムの影の大きさ
+const float BOSS_1_SHADOW_SCALE = 12.0f;		// ボス１の影の大きさ
+
 #endif
 
 #endif // !__GAME_PARAMETER_H__

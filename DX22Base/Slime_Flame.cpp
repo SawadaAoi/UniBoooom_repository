@@ -11,6 +11,7 @@
 	・2023/11/14 クラス作成 Suzumura
 	・2023/11/14 炎スライム仕様の実装 Suzumura
 	・2023/11/15 スライムのモデルと頂点シェーダーをmanagerから受け取るように変更 yamashita
+	・2023/11/28 影の大きさを設定する変数追加 nieda
 
 ========================================== */
 
@@ -39,6 +40,7 @@ CSlime_Flame::CSlime_Flame()
 	m_Sphere.fRadius *= LEVEL_FLAME_SCALE;
 	m_eSlimeSize = E_SLIME_LEVEL::LEVEL_FLAME;
 	SetNormalSpeed();
+	m_fScaleShadow = LEVEL_FLAME_SHADOW_SCALE;	// 影の大きさを設定
 }
 
 /* ========================================

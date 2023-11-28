@@ -10,6 +10,7 @@
 	•ÏX—š—ð
 	E2023/11/17 ƒNƒ‰ƒXì¬ Suzumura
 	E2023/11/23 Damage,IsDeadŠÖ”‚ð’Ç‰Á Suzumura
+	E2023/11/28 ‰e‚Ì•`‰æ‚ð’Ç‰Á nieda
 
 ========================================== */
 
@@ -129,6 +130,9 @@ void CSlime_BossBase::Draw(const CCamera* pCamera)
 	if (m_pModel) {
 		m_pModel->Draw();
 	}
+
+	m_pShadow->Draw(m_Transform, m_fScaleShadow, pCamera);	// ‰e‚Ì•`‰æ
+
 }
 
 

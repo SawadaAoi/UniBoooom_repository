@@ -110,7 +110,6 @@ private:
 	Model* m_pBossModel;
 
 	CScoreOHManager* m_pScoreOHMng;
-	
 
 
 	XAUDIO2_BUFFER* m_pSEHitSlime;					//ハンマーでスライムを打った時のSEのデータ
