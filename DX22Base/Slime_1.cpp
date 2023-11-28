@@ -29,6 +29,7 @@
 #else
 const float LEVEL1_SCALE = 1.0f;
 const float LEVEL1_SPEED = ENEMY_MOVE_SPEED;
+const int	LEVEL1_ATTACK = 1;	// 攻撃力
 #endif
 /* ========================================
 	コンストラクタ関数
@@ -45,7 +46,7 @@ CSlime_1::CSlime_1()
 	m_Sphere.fRadius *= LEVEL1_SCALE;
 	m_eSlimeSize = E_SLIME_LEVEL::LEVEL_1;
 	SetNormalSpeed();
-
+	m_nAttack = LEVEL1_ATTACK;
 }
 
 /* ========================================

@@ -8,7 +8,8 @@
 	作成者	仁枝潤哉
 
 	変更履歴
-	・2023/11/16 新規作成 仁枝潤哉
+	・2023/11/16 新規作成 Nieda
+	・2023/11/28 半分ずつ減るように修正 Sawada
 
 ========================================== */
 
@@ -31,7 +32,7 @@
 	-------------------------------------
 	戻値：なし
 =========================================== */
-CHP_UI::CHP_UI(const int* pPlayerHp, const CCamera* pCamera)
+CHP_UI::CHP_UI(const int* pPlayerHp)
 {
 
 	m_pTexture[HEART_FULL] = new Texture();	// HPのテクスチャ読み込み
@@ -55,33 +56,6 @@ CHP_UI::CHP_UI(const int* pPlayerHp, const CCamera* pCamera)
 
 	m_pPlayerHp = pPlayerHp;
 
-	if (*m_pPlayerHp % 2 == 0)
-	{
-		m_HeartNone.resize(*m_pPlayerHp / 2);
-	}
-	else
-	{
-		m_HeartNone.resize((*m_pPlayerHp / 2 + 1));
-	}
-	m_HeartFull.resize(*m_pPlayerHp / 2 + 1);
-
-	for (int i = 0; i < m_HeartNone.size(); i++)
-	{
-		m_HeartNone[i].SetCamera(pCamera);
-		m_HeartNone[i].SetSize(HP_UI_SIZE);
-		m_HeartNone[i].SetTexture(m_pTexture[HEART_NONE]);
-		m_HeartNone[i].SetPos(TPos3d<float>(HP_UI_POS.x + (i * DRAW_WIDTH), HP_UI_POS.y, 0.0f));
-
-	}
-
-	for (int i = 0; i < m_HeartFull.size(); i++)
-	{
-		m_HeartFull[i].SetCamera(pCamera);
-		m_HeartFull[i].SetSize(HP_UI_SIZE);
-		m_HeartFull[i].SetPos(TPos3d<float>(HP_UI_POS.x + (i * DRAW_WIDTH), HP_UI_POS.y, 0.0f));
-		m_HeartFull[i].SetTexture(m_pTexture[HEART_FULL]); 	// ハート1個分
-
-	}
 }
 
 /* ========================================
@@ -112,28 +86,7 @@ CHP_UI::~CHP_UI()
 void CHP_UI::Update()
 {
 
-	HEART_STATE tex;	// 表示画像を指定する
-	int hpCnt = 0;		// 偶数の時に進める(表示位置調整用)
-	for (int i = 0; i < m_HeartFull.size(); i++)
-	{
-		if (*m_pPlayerHp < i)
-		{
-			m_HeartFull[hpCnt].SetTexture(m_pTexture[HEART_NONE]);
-		}
-
-		// 奇数の場合
-		if ((i+1) % 2 != 0)
-		{
-			m_HeartFull[hpCnt].SetTexture(m_pTexture[HEART_HALF]);
-		}
-		// 偶数の場合
-		else
-		{
-			m_HeartFull[hpCnt].SetTexture(m_pTexture[HEART_FULL]); 	// ハート1個分
-			hpCnt++;
-
-		}
-	}
+	
 }
 
 /* ========================================
@@ -147,22 +100,6 @@ void CHP_UI::Update()
 =========================================== */
 void CHP_UI::Draw()
 {
-	//for (auto i= m_HeartNone.begin();i != m_HeartNone.end(); i++)
-	//{
-	//	//m_HeartNone[i].Draw();
-	//	i->Draw();
-
-
-	//}
-
-	for (auto i = m_HeartFull.begin(); i != m_HeartFull.end(); i++)
-	{
-		i->Draw();
-
-	}
-
-	return;
-
 	int hpNum = 0;	// 何個目のハートか(表示位置調整用)
 	// 空のハートを表示
 	for (int i = 1; i <= PLAYER_HP; i++)
@@ -193,14 +130,14 @@ void CHP_UI::Draw()
 		DirectX::XMStoreFloat4x4(&mat[2], DirectX::XMMatrixTranspose(proj));
 
 		// スプライトの設定
-		//Sprite::SetWorld(mat[0]);
-		//Sprite::SetView(mat[1]);
-		//Sprite::SetProjection(mat[2]);
-		//Sprite::SetSize(DirectX::XMFLOAT2(DRAW_HEIGHT, -DRAW_WIDTH));
-		//Sprite::SetUVPos(DirectX::XMFLOAT2(0.0f, 0.0f));
-		//Sprite::SetUVScale(DirectX::XMFLOAT2(1.0f, 1.0f));
-		//Sprite::SetTexture(m_pTexture[HEART_NONE]);
-		//Sprite::Draw();
+		Sprite::SetWorld(mat[0]);
+		Sprite::SetView(mat[1]);
+		Sprite::SetProjection(mat[2]);
+		Sprite::SetSize(DirectX::XMFLOAT2(HP_UI_SIZE.x, -HP_UI_SIZE.y));
+		Sprite::SetUVPos(DirectX::XMFLOAT2(0.0f, 0.0f));
+		Sprite::SetUVScale(DirectX::XMFLOAT2(1.0f, 1.0f));
+		Sprite::SetTexture(m_pTexture[HEART_NONE]);
+		Sprite::Draw();
 
 
 		hpNum++;	// 表示したら位置を進める
@@ -238,14 +175,14 @@ void CHP_UI::Draw()
 		}
 
 		// スプライトの設定
-		//Sprite::SetWorld(mat_Full[0]);
-		//Sprite::SetView(mat_Full[1]);
-		//Sprite::SetProjection(mat_Full[2]);
-		//Sprite::SetSize(DirectX::XMFLOAT2(DRAW_HEIGHT, -DRAW_WIDTH));
-		//Sprite::SetUVPos(DirectX::XMFLOAT2(0.0f, 0.0f));
-		//Sprite::SetUVScale(DirectX::XMFLOAT2(1.0f, 1.0f));
-		//Sprite::SetTexture(m_pTexture[tex]);
-		//Sprite::Draw();
+		Sprite::SetWorld(mat_Full[0]);
+		Sprite::SetView(mat_Full[1]);
+		Sprite::SetProjection(mat_Full[2]);
+		Sprite::SetSize(DirectX::XMFLOAT2(HP_UI_SIZE.x, -HP_UI_SIZE.y));
+		Sprite::SetUVPos(DirectX::XMFLOAT2(0.0f, 0.0f));
+		Sprite::SetUVScale(DirectX::XMFLOAT2(1.0f, 1.0f));
+		Sprite::SetTexture(m_pTexture[tex]);
+		Sprite::Draw();
 
 
 	}

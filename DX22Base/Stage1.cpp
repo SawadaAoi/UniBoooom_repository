@@ -90,7 +90,7 @@ CStage1::CStage1()
 	m_pTimer->TimeStart();
 
 	//ステージ終了のUI表示
-	m_pStageFin = new CStageFinish(m_pPlayer->GetHP(), m_pTimer->GetTimePtr());
+	m_pStageFin = new CStageFinish(m_pPlayer->GetHpPtr(), m_pTimer->GetTimePtr());
 
 	LoadSound();
 	//BGMの再生

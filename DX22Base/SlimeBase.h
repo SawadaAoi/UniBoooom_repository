@@ -99,6 +99,7 @@ public:
 	bool GetHitMoveFlg();
 	TPos3d<float> GetPos();
 	bool GetEscapeFlag();
+	int GetAttack();
 
 	//セット関数
 	virtual void SetNormalSpeed() = 0;
@@ -109,7 +110,7 @@ protected:
 	Model* m_pModel;				//3Dモデル
 	VertexShader* m_pVS;			//バーテックスシェーダーのポインタ
 	TTriType<float> m_move;			//移動量
-	TPos3d<float> m_ExpPos;		//最も近い爆発の座標
+	TPos3d<float> m_ExpPos;			//最も近い爆発の座標
 	bool m_bEscape;					//スライムが逃げる状態かどうか
 	float m_fVecAngle;				//敵の吹き飛ぶ方向
 	float m_fSpeed;					//スライムの移動速度
@@ -122,6 +123,8 @@ protected:
 	DirectX::XMMATRIX m_Ry;				//回転
 
 	int m_RanMoveCnt;			// ランダム移動の加算値
+	int m_nAttack;				// 攻撃力
+
 private:
 
 };

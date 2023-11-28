@@ -23,6 +23,8 @@
 #else
 const float LEVEL_FLAME_SCALE = 1.0f;
 const float LEVEL_FLAME_SPEED = ENEMY_MOVE_SPEED * 0.2f;
+const int	LEVEL_FLAME_ATTACK = 1;	// 攻撃力
+
 #endif
 /* ========================================
 	コンストラクタ関数
@@ -38,7 +40,9 @@ CSlime_Flame::CSlime_Flame()
 	m_Transform.fScale = { LEVEL_FLAME_SCALE,LEVEL_FLAME_SCALE ,LEVEL_FLAME_SCALE };
 	m_Sphere.fRadius *= LEVEL_FLAME_SCALE;
 	m_eSlimeSize = E_SLIME_LEVEL::LEVEL_FLAME;
-	SetNormalSpeed();
+	SetNormalSpeed();	
+	m_nAttack = LEVEL_FLAME_ATTACK;
+
 }
 
 /* ========================================

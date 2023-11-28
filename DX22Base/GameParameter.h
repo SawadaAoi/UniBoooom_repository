@@ -45,14 +45,14 @@ const int SCREEN_HEIGHT_ = 720;
 
 // プレイヤー ================================================
 const float PLAYER_MOVE_SPEED	= 0.1f;			// プレイヤーの移動速度
-const int	PLAYER_HP			= 5;			// プレイヤーのHP
+const int	PLAYER_HP			= 10;			// プレイヤーのHP
 const float PLAYER_RADIUS		= 0.1f;			// プレイヤーの当たり判定の大きさ
 const float PLAYER_SIZE			= 0.2f;			// プレイヤーの大きさ
 const int	NO_DAMAGE_TIME		= 3 * 60;		// プレイヤーの無敵時間
 const int	DAMAGE_FLASH_FRAME	= 0.1f * 60;	// プレイヤーのダメージ点滅の切り替え間隔
 const int	SE_RUN_INTERVAL		= 0.4f * 60;	//プレイヤーの移動によるSE発生の間隔
 const float	SE_RUN_VOLUME		= 0.3f;			//移動によるSEの音量
-const float HAMMER_INTERVAL_TIME	= 0.7f * 60;	// ハンマー振り間隔
+const float HAMMER_INTERVAL_TIME	= 0.4f * 60;	// ハンマー振り間隔
 
 
 // ハンマー
@@ -105,22 +105,27 @@ const float LEAVE_DISTANCE = 40.0f;					// これ以上離れたら対角線上に移動する
 // サイズ1
 const float LEVEL1_SCALE = 1.0f;					// スライム＿レベル１の大きさ(当たり判定含む)
 const float LEVEL1_SPEED = ENEMY_MOVE_SPEED;		// 移動速度
+const int	LEVEL1_ATTACK = 1;						// 攻撃力
 
 // サイズ2
 const float LEVEL2_SCALE = 2.0f;					// スライム＿レベル２の大きさ(当たり判定含む)
 const float LEVEL2_SPEED = ENEMY_MOVE_SPEED * 0.9f;	// 移動速度
+const int	LEVEL2_ATTACK = 1;						// 攻撃力
 
 // サイズ3
 const float LEVEL3_SCALE = 3.0f;					// スライム＿レベル３の大きさ(当たり判定含む)
 const float LEVEL3_SPEED = ENEMY_MOVE_SPEED * 0.7f;	// 移動速度
+const int	LEVEL3_ATTACK = 1;						// 攻撃力
 
 // サイズ4
 const float LEVEL4_SCALE = 5.0f;					// スライム＿レベル４の大きさ(当たり判定含む)
 const float LEVEL4_SPEED = ENEMY_MOVE_SPEED * 0.5f;	// 移動速度
+const int	LEVEL4_ATTACK = 2;						// 攻撃力
 
 // フレイムスライム
 const float LEVEL_FLAME_SCALE = 1.0f;						// スライム＿フレイムの大きさ(当たり判定含む)
 const float LEVEL_FLAME_SPEED = ENEMY_MOVE_SPEED * 0.2f;	// 移動速度
+const int	LEVEL_FLAME_ATTACK = 1;							// 攻撃力
 
 const int LEVEL_1_SCORE = 10;				// スライム_1のスコア
 const int LEVEL_2_SCORE = 30;				// スライム_2のスコア
@@ -135,6 +140,8 @@ const int LEVEL_Boss_SCORE = 3000;			// 赤々の爆発のスコア
 const float LEVEL_BOSS_1_SCALE = 6.0f;								// ボス１の大きさ
 const float LEVEL_BOSS_1_SPEED = ENEMY_MOVE_SPEED * 0.4f;			// ボス１のスピード
 const int	BOSS_1_MAX_HP = 10;								// ボス１の最大HP
+const int	BOSS_1_ATTACK = 2;								// ボス１の攻撃力
+
 const float SLIME_HP_HEIGHT = 5.0f;							//ボスの体力表示位置（Y）
 const float ASSAULT_DISTANCE = 0.2f;								// 突撃反応距離
 const int	ASSAULT_COOL_TIME = 10 * 60;							// 突撃クルータイム
@@ -240,7 +247,7 @@ const int FADE_TIME = 5 * 60;							//ボスゲージが溜まってから消える時間
 
 
 // HP
-const TTriType<float> HP_UI_POS = { 80.0f, 660.0f ,0.0f };	// テクスチャの縦幅、横幅
+const TTriType<float> HP_UI_POS = { 80.0f, 60.0f ,0.0f };	// テクスチャの縦幅、横幅
 const TTriType<float> HP_UI_SIZE = { 90.0f, 90.0f ,0.0f };	// テクスチャの縦幅、横幅
 const float DRAW_WIDTH = 90.0f;	// テクスチャの横幅
 

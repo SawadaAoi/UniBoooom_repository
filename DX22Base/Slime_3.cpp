@@ -30,6 +30,8 @@
 #else
 const float LEVEL3_SCALE = 3.0f;
 const float LEVEL3_SPEED = ENEMY_MOVE_SPEED * 0.90;
+const int	LEVEL3_ATTACK = 1;	// çUåÇóÕ
+
 #endif
 
 /* ========================================
@@ -47,6 +49,7 @@ CSlime_3::CSlime_3()
 	m_Sphere.fRadius *= LEVEL3_SCALE;
 	m_eSlimeSize = E_SLIME_LEVEL::LEVEL_3;
 	SetNormalSpeed();
+	m_nAttack = LEVEL3_ATTACK;
 
 }
 
