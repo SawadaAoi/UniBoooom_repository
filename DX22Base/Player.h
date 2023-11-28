@@ -23,12 +23,13 @@
 	・2023/11/19 移動のSEを再生 yamashita
 	・2023/11/19 被ダメージ時とハンマーを振るSEを再生 yamashita
 	・2023/11/19 サウドファイル読み込み関数を作成 yamashita
-	・2023/11/27 ハンマー振り間隔用カウント追加 Tei
+	・2023/11/27 ハンマー振り間隔用カウント追加 Tei	
+	・2023/11/28 ダメージ処理に受けるダメージ量を追加 Sawada
 
 ========================================== */
 
 #ifndef __PLAYER_H__
-#define __PLAYER_H_
+#define __PLAYER_H__
 
 // =============== インクルード ===================
 #include "Shader.h"
@@ -52,7 +53,7 @@ public:
 
 	void Update();	//更新
 	void Draw();	//描画
-	void Damage();	//自身のHPを減らす
+	void Damage(int DmgNum);	//自身のHPを減らす
 	void MoveKeyboard();	// キーボード用入力移動
 	void MoveController();	// コントローラ用入力移動
 	void MoveSizeInputSet(TPos3d<float> fInput);
@@ -65,7 +66,7 @@ public:
 	TPos3d<float>* GetPosAddress();
 	CHammer* GetHammerPtr();
 	bool GetCollide();							//当たり判定があるかの確認
-	int* GetHP();
+	int* GetHpPtr();
 	// セット関数
 	void SetCamera(const CCamera* pCamera);
 	bool GetAttackFlg();
