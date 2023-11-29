@@ -97,7 +97,7 @@ CStage1::CStage1()
 	m_pExplosionMng = new CExplosionManager();
 
 	// スライムマネージャー生成
-	m_pSlimeMng = new CSlimeManager();
+	m_pSlimeMng = new CSlimeManager(m_pPlayer);
 	
 	//================2dObject動的確保================
 
@@ -260,7 +260,6 @@ void CStage1::Update()
 			m_pPlayer->Update();
 
 			// スライムマネージャー更新
-			m_pSlimeMng->SetPlayerPos(m_pPlayer->GetPos());
 			m_pSlimeMng->Update(m_pExplosionMng);
 		}
 

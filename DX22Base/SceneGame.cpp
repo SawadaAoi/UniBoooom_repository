@@ -103,7 +103,7 @@ SceneGame::SceneGame()
 	m_pFloor			= new CFloor(m_pPlayer->GetPosAddress());	// 地面生成
 	m_pHealItemMng		= new CHealItemManager();	// 回復アイテムマネージャー
 	m_pExplosionMng		= new CExplosionManager();	// 爆発マネージャー生成
-	m_pSlimeMng			= new CSlimeManager();
+	m_pSlimeMng			= new CSlimeManager(m_pPlayer);
 
 	m_pUIStageMng		= new CUIStageManager(m_pPlayer, m_pCamera, m_pSlimeMng);	// UIマネージャー生成
 
@@ -216,7 +216,6 @@ void SceneGame::Update(float tick)
 #endif
 	m_pCamera->Update();
 	m_pPlayer->Update();
-	m_pSlimeMng->SetPlayerPos(m_pPlayer->GetPos());
 
 	SceneGameCollision();
 	// スライムマネージャー更新

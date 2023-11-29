@@ -81,7 +81,7 @@ const float LEAVE_DISTANCE = 20.0f;					// これ以上離れたら対角線上に移動する
 	-------------------------------------
 	戻値：無し
 =========================================== */
-CSlimeManager::CSlimeManager()
+CSlimeManager::CSlimeManager(CPlayer* pPlayer)
 	: m_CreateCnt(0)
 	, m_pVS(nullptr)
 	, m_pBlueModel(nullptr)
@@ -95,7 +95,7 @@ CSlimeManager::CSlimeManager()
 	, m_pSEHitSlimeSpeaker(nullptr)
 	, m_pSEUnionSpeaker(nullptr)
 	, m_oldCreatePos{ 0.0f,0.0f,0.0f }
-
+	, m_pPlayer(pPlayer)
 	, m_pExpMng(nullptr)
 {
 	//スライムのモデルと頂点シェーダーの読み込み
@@ -189,7 +189,7 @@ void CSlimeManager::Update(CExplosionManager* pExpMng)
 	for (int i = 0; i < MAX_SLIME_NUM; i++)
 	{
 		if (m_pSlime[i] == nullptr) continue;
-		m_pSlime[i]->Update(m_pPlayerPos);
+		m_pSlime[i]->Update(m_pPlayer->GetPos());
 
 	}
 
@@ -199,7 +199,7 @@ void CSlimeManager::Update(CExplosionManager* pExpMng)
 	for (int i = 0; i < MAX_BOSS_SLIME_NUM; i++)
 	{
 		if (m_pBoss[i] == nullptr) continue;
-		m_pBoss[i]->Update(m_pPlayerPos);
+		m_pBoss[i]->Update(m_pPlayer->GetPos());
 
 	}
 
@@ -263,11 +263,11 @@ void CSlimeManager::Create(E_SLIME_LEVEL level)
 		while (true)
 		{
 			// 乱数をセットする
-			CreatePos.x = GetRandom(int(m_pPlayerPos.x - RANDOM_POS), int(m_pPlayerPos.x + RANDOM_POS));	//乱数取得
-			CreatePos.z = GetRandom(int(m_pPlayerPos.z - RANDOM_POS), int(m_pPlayerPos.z + RANDOM_POS));	
+			CreatePos.x = GetRandom(int(m_pPlayer->GetPos().x - RANDOM_POS), int(m_pPlayer->GetPos().x + RANDOM_POS));	//乱数取得
+			CreatePos.z = GetRandom(int(m_pPlayer->GetPos().z - RANDOM_POS), int(m_pPlayer->GetPos().z + RANDOM_POS));
 			CreatePos.y = 0;
 
-			float PlayerCreateDistance = CreatePos.Distance(m_pPlayerPos);	// 生成座標のプレイヤーとの距離
+			float PlayerCreateDistance = CreatePos.Distance(m_pPlayer->GetPos());	// 生成座標のプレイヤーとの距離
 			float oldCreateDistance = CreatePos.Distance(m_oldCreatePos);	// 生成座標のプレイヤーとの距離
 
 			// プレイヤーから一定の距離離れていれば抜ける
@@ -938,13 +938,13 @@ void CSlimeManager::OutOfRange()
 		if (!m_pSlime[i]) { continue; }	//nullならスキップ
 
 		TPos3d<float> slimePos = m_pSlime[i]->GetPos();
-		float distance = slimePos.Distance(m_pPlayerPos);
+		float distance = slimePos.Distance(m_pPlayer->GetPos());
 
 		if (distance >= LEAVE_DISTANCE)	//距離が離れすぎていたら
 		{
 			//相対距離を計算
-			float disX = m_pPlayerPos.x - slimePos.x;	
-			float disZ = m_pPlayerPos.z - slimePos.z;
+			float disX = m_pPlayer->GetPos().x - slimePos.x;
+			float disZ = m_pPlayer->GetPos().z - slimePos.z;
 
 			//少し近づけてから対角線に移動させる
 			if (disX > 0.0f) { disX -= 1.0f; }
@@ -952,7 +952,7 @@ void CSlimeManager::OutOfRange()
 			if (disZ > 0.0f) { disZ -= 1.0f; }
 			else { disZ += 1.0f; }
 			//対角線の座標をセット
-			TPos3d<float> setPos = {m_pPlayerPos.x + disX,0.0f,m_pPlayerPos.z + disZ};
+			TPos3d<float> setPos = { m_pPlayer->GetPos().x + disX,0.0f,m_pPlayer->GetPos().z + disZ};
 			m_pSlime[i]->SetPos(setPos);
 		}
 	}
@@ -1034,20 +1034,6 @@ CSlime_BossBase* CSlimeManager::GetBossSlimePtr(int num)
 void CSlimeManager::SetCamera(CCamera * pCamera)
 {
 	m_pCamera = pCamera;
-}
-
-/* ========================================
-	プレイヤーの座標取得関数
-	----------------------------------------
-	内容：現在のプレイヤーの座標を取得する
-	----------------------------------------
-	引数1：プレイヤーの座標(現在はスフィアだが、今後変更する)
-	----------------------------------------
-	戻値：無し
-======================================== */
-void CSlimeManager::SetPlayerPos(TPos3d<float> pos)
-{
-	m_pPlayerPos = pos;
 }
 
 /* ========================================

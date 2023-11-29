@@ -39,6 +39,7 @@
 #include "Sound.h"
 #include "ScoreOHManager.h"
 #include "HealItemManager.h"
+#include "Player.h"
 // =============== 定数定義 =======================
 #if MODE_GAME_PARAMETER
 
@@ -52,7 +53,7 @@ class CSlimeManager
 {
 public:
 	// ===プロトタイプ宣言===
-	CSlimeManager();
+	CSlimeManager(CPlayer* pPlayer);
 	~CSlimeManager();
 
 	void Update(CExplosionManager* pExpMng);
@@ -88,7 +89,6 @@ public:
 
 	// セット関数
 	void SetCamera(CCamera* pCamera);		//スライムを移すカメラのポインタをセット
-	void SetPlayerPos(TPos3d<float> pos);
 	void SetScoreOHMng(CScoreOHManager* pScoreMng);
 	void SetHealMng(CHealItemManager* pHealItemMng);
 	void SetExplosionMng(CExplosionManager* pExpMng);
@@ -100,7 +100,7 @@ private:
 	CSlime_BossBase* m_pBoss[MAX_BOSS_SLIME_NUM];
 	CCamera* m_pCamera;
 
-	TPos3d<float> m_pPlayerPos;	// プレイヤーの座標
+	CPlayer* m_pPlayer;	// プレイヤーの座標
 	VertexShader* m_pVS;
 	Model* m_pBlueModel;
 	Model* m_pGreenModel;
