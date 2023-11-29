@@ -20,6 +20,7 @@
 	・2023/11/21 爆発時BoooomUI表示するための処理を追加
 	・2023/11/23 トータルスコア表示追加　yamamoto
 	・2023/11/27 回復アイテムの追加 Sawada
+	・2023/11/29 UIを1つのオブジェクトにまとめた Sawada
 
 ========================================== */
 
@@ -95,15 +96,16 @@ SceneGame::SceneGame()
 #if MODE_GROUND
 	m_pBox = new CBox();
 #endif
-	m_pCollision = new CCOLLISION();
-	m_pPlayer = new CPlayer();
-	m_pCamera = new CCameraChase(m_pPlayer->GetPosAddress());
-	m_pFloor = new CFloor(m_pPlayer->GetPosAddress());	// 地面生成
-	m_pHealItemMng = new CHealItemManager();	// 回復アイテムマネージャー
-	m_pExplosionMng = new CExplosionManager();	// 爆発マネージャー生成
-	m_pSlimeMng = new CSlimeManager();
 
-	m_pUIStageMng = new CUIStageManager(m_pPlayer, m_pCamera, m_pSlimeMng);	// UIマネージャー生成
+	m_pCollision		= new CCOLLISION();
+	m_pPlayer			= new CPlayer();
+	m_pCamera			= new CCameraChase(m_pPlayer->GetPosAddress());
+	m_pFloor			= new CFloor(m_pPlayer->GetPosAddress());	// 地面生成
+	m_pHealItemMng		= new CHealItemManager();	// 回復アイテムマネージャー
+	m_pExplosionMng		= new CExplosionManager();	// 爆発マネージャー生成
+	m_pSlimeMng			= new CSlimeManager();
+
+	m_pUIStageMng		= new CUIStageManager(m_pPlayer, m_pCamera, m_pSlimeMng);	// UIマネージャー生成
 
 
 	
@@ -111,22 +113,17 @@ SceneGame::SceneGame()
 	m_pSlimeMng->SetScoreOHMng(m_pUIStageMng->GetScoreMng());
 	m_pExplosionMng->SetCombo(m_pUIStageMng->GetCombo());
 	m_pSlimeMng->SetExplosionMng(m_pExplosionMng);
-	m_pPlayer->SetCamera(m_pCamera);
-	
+	m_pSlimeMng->SetHealMng(m_pHealItemMng);
 	// 各オブジェクトのカメラーセット
+	m_pPlayer->SetCamera(m_pCamera);
 	m_pSlimeMng->SetCamera(m_pCamera);
 	m_pExplosionMng->SetCamera(m_pCamera);
 	m_pFloor->SetCamera(m_pCamera);
 	m_pHealItemMng->SetCamera(m_pCamera);
+
 #if USE_FADE_GAME
 	m_pFade = new CFade(m_pCamera);
 #endif
-	//pTex->Create("Assets/NoStar.png");
-	//m_pFade->SetTexture(pTex);
-	//pps->Load("Assets/Shader/PsFade.cso");
-	//m_pFade->SetPixelShader(pps);
-	//pvs->Load("Assets/Shader/VsFade.cso");
-	//m_pFade->SetVertexShader(pvs);
 
 	LoadSound();
 	//BGMの再生
@@ -152,6 +149,7 @@ SceneGame::~SceneGame()
 		m_pSpeaker->Stop();
 		m_pSpeaker->DestroyVoice();
 	}
+	SAFE_DELETE(m_pUIStageMng);
 	SAFE_DELETE(m_pHealItemMng);
 	SAFE_DELETE(m_pFade);
 	SAFE_DELETE(m_pExplosionMng);
