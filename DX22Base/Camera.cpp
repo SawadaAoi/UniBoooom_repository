@@ -1,286 +1,415 @@
 /* ========================================
 	HEW/UniBoooom!!
 	------------------------------------
-	ã‚«ãƒ¡ãƒ©ç”¨æŠ½è±¡ã‚¯ãƒ©ã‚¹å®Ÿè£…
+	ƒJƒƒ‰—p’ŠÛƒNƒ‰ƒXÀ‘•
 	------------------------------------
 	Camera.cpp
 	------------------------------------
-	ä½œæˆè€…	takagi
+	ì¬Ò	takagi
 
-	å¤‰æ›´å±¥æ­´
-	ãƒ»2023/10/24 ä»®åˆ¶ä½œ takagi
-	ãƒ»2023/11/02 ãƒ¡ãƒ³ãƒãƒ¼å¤‰æ•°è¿½åŠ  takagi
-	ãƒ»2023/11/04 æ›´æ–°é–¢æ•°ã®å®Ÿè£…éƒ¨åˆ†å‰Šé™¤ takagi
-	ãƒ»2023/11/06 ãƒ•ãƒ©ã‚°æ•´ç†ãƒ»ã‚³ãƒ¡ãƒ³ãƒˆä¿®æ­£ takagi
-	ãƒ»2023/11/07 GetViewMatrix()é–¢æ•°ã«constä¿®é£¾å­ä»˜ä¸ãƒ»ã‚³ãƒ¡ãƒ³ãƒˆä¿®æ­£ takagi
-	ãƒ»2023/11/09 ã‚«ãƒ¡ãƒ©ã®æ§˜ã€…å‹•ä½œãƒã‚§ãƒƒã‚¯ã€‚ takagi
-	ãƒ»2023/11/10 ãƒ‘ãƒ©ãƒ¡ã‚¿ä¿®æ­£ takagi
-	ãƒ»2023/11/11 defineç”¨ãƒ˜ãƒƒãƒ€è¿½åŠ  suzumura
-	ãƒ»2023/11/17 2Dè¡¨ç¤º/3Dè¡¨ç¤ºã®åˆ‡æ›ã‚’ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã§ãªãGetProjectionMatrix()é–¢æ•°ã§è¡Œã†ã‚ˆã†ã«å¤‰æ›´ãƒ»æŒ¯å‹•æ©Ÿèƒ½è¿½åŠ  takagi
-	ãƒ»2023/11/18 2Dè¡¨ç¤ºã®ãƒŸã‚¹ã‚’è¨‚æ­£ takagi
-	ãƒ»2023/11/24 å®šæ•°å€¤ä¿®æ­£ãƒ»ãƒ•ãƒ©ã‚°ãƒã‚°ä¿®æ­£ãƒ»ä¸€éƒ¨ã‚³ãƒ¡ãƒ³ãƒˆè©³ç´°åŒ– takagi
+	•ÏX—š—ğ
+	E2023/10/24 ‰¼§ì takagi
+	E2023/11/02 ƒƒ“ƒo[•Ï”’Ç‰Á takagi
+	E2023/11/04 XVŠÖ”‚ÌÀ‘••”•ªíœ takagi
+	E2023/11/06 ƒtƒ‰ƒO®—EƒRƒƒ“ƒgC³ takagi
+	E2023/11/07 GetViewMatrix()ŠÖ”‚ÉconstCüq•t—^EƒRƒƒ“ƒgC³ takagi
+	E2023/11/09 ƒJƒƒ‰‚Ì—lX“®ìƒ`ƒFƒbƒNB takagi
+	E2023/11/10 ƒpƒ‰ƒƒ^C³ takagi
+	E2023/11/11 define—pƒwƒbƒ_’Ç‰Á suzumura
+	E2023/11/17 2D•\¦/3D•\¦‚ÌØŠ·‚ğƒRƒ“ƒXƒgƒ‰ƒNƒ^‚Å‚È‚­GetProjectionMatrix()ŠÖ”‚Ås‚¤‚æ‚¤‚É•ÏXEU“®‹@”\’Ç‰Á takagi
+	E2023/11/18 2D•\¦‚Ìƒ~ƒX‚ğ’ù³ takagi
+	E2023/11/24 ’è”’lC³Eƒtƒ‰ƒOƒoƒOC³Eˆê•”ƒRƒƒ“ƒgÚ×‰» takagi
+	E2023/11/28 U“®‚Ìd—l•ÏX takagi
+	E2023/11/29 U“®‚ÌVd—l‚ğ‘SU“®‚É”½‰f‚µƒŠƒtƒ@ƒNƒ^ƒŠƒ“ƒOEƒtƒŒ[ƒ€‚ÌƒRƒƒ“ƒg‚È‚¢‚Ì‚Í‘‚«Š·‚¦‚é—\’è‚Ì‚½‚ß takagi
 
 ========================================== */
 
-// =============== ã‚¤ãƒ³ã‚¯ãƒ«ãƒ¼ãƒ‰ ===================
-#include "Camera.h"		//è‡ªèº«ã®ãƒ˜ãƒƒãƒ€
-#include "Defines.h"	//ç”»é¢æƒ…å ±
+// =============== ƒCƒ“ƒNƒ‹[ƒh ===================
+#include "Camera.h"		//©g‚Ìƒwƒbƒ_
+#include "Defines.h"	//‰æ–Êî•ñ
+#include "GameParameter.h"
+#include "Random.h"		//—”¶¬—p
+#include <vector>		//”z—ñŒ^ƒRƒ“ƒeƒi
 
-// =============== å®šæ•°å®šç¾© =====================
-const float ASPECT = (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT;	//ç”»é¢æ¯”ç‡(y / x)
-const TPos3d<float> INIT_LOOK(0.0f, 0.0f, 0.0f);					//åˆæœŸæ³¨è¦–åœ°ç‚¹
-const TTriType<float> INIT_UP_VECTOR(0.0f, 1.0f, 0.0f);				//ã‚«ãƒ¡ãƒ©ã®ä¸Šæ–¹å‘
-const TPos3d<float> INIT_POS(0.0f, 1.6f, -3.0f);					//åˆæœŸä½ç½®
-const float INIT_ANGLE = DirectX::XMConvertToRadians(73.0f);        //ã‚«ãƒ¡ãƒ©ã®è§’åº¦
-const float INIT_NEAR = 1.0f;										//ç”»é¢æ‰‹å‰åˆæœŸzå€¤
-const float INIT_FAR = 150.0f;										//ç”»é¢å¥¥åˆæœŸzå€¤
-const float INIT_RADIUS = 15.0f;									//ã‚«ãƒ¡ãƒ©ã¨æ³¨è¦–ç‚¹ã¨ã®è·é›¢(åˆæœŸå€¤)
-const float Pi = 3.141592f;
-constexpr float ANGLE_TO_RADIAN(float fAngle)
-{
-	return fAngle / 180.0f * Pi;	//è§’åº¦â†’ãƒ©ã‚¸ã‚¢ãƒ³è§’
-}
-const float RADIAN_VELOCITY_WEAK = ANGLE_TO_RADIAN(1.5f);		//è§’é€Ÿåº¦ï¼šå¼±
-const float RADIAN_VELOCITY_STRONG = ANGLE_TO_RADIAN(1.0f);		//è§’é€Ÿåº¦ï¼šå¼·
-const TDiType<float> AMPLITUDE_WEAK(3.0f, 0.7f);				//æŒ¯å¹…ï¼šå¼±			x:ç¸¦, y:æ¨ª
-const TDiType<float> AMPLITUDE_STRONG(10.0f, 50.0f);			//æŒ¯å¹…ï¼šå¼·			x:ç¸¦, y:æ¨ª
-const TDiType<float> VIRTUAL_FRICTION(0.5f);					//ç–‘ä¼¼æ‘©æ“¦åŠ›
-const TDiType<float> VIRTUAL_GRAVITY(0.5f);						//ç–‘ä¼¼é‡åŠ›
-const TDiType<float> DECREASE_RADIAN_WEAK(0.005f, 0.005f);		//è§’é€Ÿåº¦æ¸›å°‘é‡ï¼šå¼±	x:ç¸¦, y:æ¨ª
-const TDiType<float> DECREASE_RADIAN_STRONG(0.005f, 0.008f);	//è§’é€Ÿåº¦æ¸›å°‘é‡ï¼šå¼·	x:ç¸¦, y:æ¨ª
+// =============== ƒfƒoƒbƒOƒ‚[ƒh =====================
+#define NEW_VIBRATE (true)	//V‚µ‚¢U“®•û–@‚ğÀ‘•
+
+// =============== ’è”’è‹` =====================
+const float ASPECT = (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT;	//‰æ–Ê”ä—¦(y / x)
+const TPos3d<float> INIT_LOOK(0.0f, 0.0f, 0.0f);					//‰Šú’‹’n“_
+const TTriType<float> INIT_UP_VECTOR(0.0f, 1.0f, 0.0f);				//ƒJƒƒ‰‚Ìã•ûŒü
+const float INIT_CHANGE_RATE_AMPLITUDE = 1.0f;						//‰ŠúU••Ï‰»—¦
+#if MODE_GAME_PARAMETER
+#else
+const TPos3d<float> INIT_POS(0.0f, 1.6f, -3.0f);					//‰ŠúˆÊ’u
+const float INIT_ANGLE = DirectX::XMConvertToRadians(73.0f);        //ƒJƒƒ‰‚ÌŠp“x
+const float INIT_NEAR = 1.0f;										//‰æ–Êè‘O‰Šúz’l
+const float INIT_FAR = 150.0f;										//‰æ–Ê‰œ‰Šúz’l
+const float INIT_RADIUS = 15.0f;									//ƒJƒƒ‰‚Æ’‹“_‚Æ‚Ì‹——£(‰Šú’l)
+const TDiType<int> INIT_FRAME_WEAK = { 99, 60 };					//ãU“®‚ÌƒtƒŒ[ƒ€”	x:‰¡, y:c
+const TDiType<int> INIT_FRAME_STRONG = { 99, 60 };					//‹­U“®‚ÌƒtƒŒ[ƒ€”	x:‰¡, y:c
+const TDiType<float> CHANGE_RATE_AMPLITUDE_WEAK{ 0.999f, 0.999f };	//‹­U••Ï‰»—¦	1‚ğ’´‚¦‚é‚Æ‘‰Á•ûŒüA‰º‰ñ‚é‚ÆŒ¸­•ûŒü	x:‰¡, y:c
+const TDiType<float> CHANGE_RATE_AMPLITUDE_STRONG{ 0.95f, 0.95f };	//‹­U••Ï‰»—¦	1‚ğ’´‚¦‚é‚Æ‘‰Á•ûŒüA‰º‰ñ‚é‚ÆŒ¸­•ûŒü	x:‰¡, y:c
+///<summary>U•‚ÌŠm—¦Fã
+///<para>‡Œv‚ª1‚É‚È‚é•K—v‚Í‚È‚¢</para>
+///</summary>
+const std::vector<double> PROBABILITY_AMPITUDE_WEAK[CCamera::E_DIRECT_VIBRATE_MAX] = {
+	{ 0.1 },	//‰¡ãU“®
+	{ 0.1, 0.3, 0.5, 0.3, 0.1 },	//cãU“®
+};
+///<summary>
+///<see cref="PROBABILITY_AMPITUDE_WEAK">©ã‹L’è”</see>‚Ìƒe[ƒuƒ‹
+///<para>‡”Ô‚ª‚»‚Ì‚Ü‚Ü‘Î‰‚µ‚Ä‚¨‚èA“¯‚¶”‚È‚¢‚Æ‹@”\‚µ‚È‚¢(“Yí‚Í©—R)</para>
+///<para>Še’l‚ÍU•‚Ì‘å‚«‚³‚ğ•\‚·</para>
+///</summary>
+const std::vector<float> TABLE_AMPITUDE_WEAK[CCamera::E_DIRECT_VIBRATE_MAX] = {
+	{ 0.0f },	//‰¡ãU•
+	{ -11.0f, -5.0f, 0.0f, 5.0f, 11.0f },	//cãU•
+};
+///<summary>U•‚ÌŠm—¦F‹­
+///<para>‡Œv‚ª1‚É‚È‚é•K—v‚Í‚È‚¢</para>
+///</summary>
+const std::vector<double> PROBABILITY_AMPITUDE_STRONG[CCamera::E_DIRECT_VIBRATE_MAX] = {
+	{ 0.1 },	//‰¡‹­U“®
+	{ 0.1, 0.3, 0.5, 0.3, 0.1 },	//c‹­U“®
+};
+///<summary>
+///<see cref="PROBABILITY_AMPITUDE_STRONG">©ã‹L’è”</see>‚Ìƒe[ƒuƒ‹
+///<para>‡”Ô‚ª‚»‚Ì‚Ü‚Ü‘Î‰‚µ‚Ä‚¨‚èA“¯‚¶”‚È‚¢‚Æ‹@”\‚µ‚È‚¢(“Yí‚Í©—R)</para>
+///<para>Še’l‚ÍU•‚Ì‘å‚«‚³‚ğ•\‚·</para>
+///</summary>
+const std::vector<float> TABLE_AMPITUDE_STRONG[CCamera::E_DIRECT_VIBRATE_MAX] = {
+	{ 0.0f },	//‰¡‹­U•
+	{ -11.0f, -5.0f, 0.0f, 5.0f, 11.0f },	//c‹­U•
+};
+#endif
 
 /* ========================================
-	ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿é–¢æ•°
+	ƒRƒ“ƒXƒgƒ‰ƒNƒ^ŠÖ”
 	-------------------------------------
-	å†…å®¹ï¼šç”Ÿæˆæ™‚ã«è¡Œã†å‡¦ç†
+	“à—eF¶¬‚És‚¤ˆ—
 	-------------------------------------
-	å¼•æ•°1ï¼šãªã—
+	ˆø”1F‚È‚µ
 	-------------------------------------
-	æˆ»å€¤ï¼šãªã—
+	–ß’lF‚È‚µ
 =========================================== */
 CCamera::CCamera()
-	:m_ucFlag(0)								//ãƒ•ãƒ©ã‚°
-	,m_fPos(INIT_POS)							//ä½ç½®
-	,m_fLook(INIT_LOOK)							//æ³¨è¦–ç‚¹
-	,m_fUp(INIT_UP_VECTOR)						//ä¸Šæ–¹ãƒ™ã‚¯ãƒˆãƒ«
-	,m_fAngle(INIT_ANGLE)						//è§’åº¦
-	,m_fNear(INIT_NEAR)							//ç”»é¢æ‰‹å‰
-	,m_fFar(INIT_FAR)							//ç”»é¢å¥¥
-	,m_fRadius(INIT_RADIUS)						//æ³¨è¦–ç‚¹ã¨ã‚«ãƒ¡ãƒ©ã®è·é›¢
-	,m_fOffsetVibrateEye(0.0f)					//ã‚«ãƒ¡ãƒ©ä½ç½®æŒ¯å‹•
-	,m_fOffsetVibrateLook(0.0f)					//æ³¨è¦–ç‚¹æŒ¯å‹•
-	,m_fRadianVelocityWeak(0.0f)				//è“„ç©è§’é€Ÿåº¦ï¼šå¼±
-	,m_fRadianVelocityStrong(0.0f)				//è“„ç©è§’é€Ÿåº¦ï¼šå¼·
-	,m_fAddRadianWeak(RADIAN_VELOCITY_WEAK)		//è§’é€Ÿåº¦å¢—åŠ é‡ï¼šå¼±
-	,m_fAddRadianStrong(RADIAN_VELOCITY_STRONG)	//è§’é€Ÿåº¦å¢—åŠ é‡ï¼šå¼·
+	:m_ucFlag(0x00)												//ƒtƒ‰ƒO
+	,m_fPos(INIT_POS)											//ˆÊ’u
+	,m_fLook(INIT_LOOK)											//’‹“_
+	,m_fUp(INIT_UP_VECTOR)										//ã•ûƒxƒNƒgƒ‹
+	,m_fAngle(INIT_ANGLE)										//Šp“x
+	,m_fNear(INIT_NEAR)											//‰æ–Êè‘O
+	,m_fFar(INIT_FAR)											//‰æ–Ê‰œ
+	,m_fRadius(INIT_RADIUS)										//’‹“_‚ÆƒJƒƒ‰‚Ì‹——£
+	,m_fOffsetVibrateEye(0.0f)									//ƒJƒƒ‰ˆÊ’uU“®
+	,m_fOffsetVibrateLook(0.0f)									//’‹“_U“®
+	,m_nFrameWeak(INIT_FRAME_WEAK)								//ƒtƒŒ[ƒ€”FãU“®	x:‰¡, y:c
+	,m_nFrameStrong(INIT_FRAME_STRONG)							//ƒtƒŒ[ƒ€”F‹­U“®	x:‰¡, y:c
+	,m_fChangeRateAmplitudeWeak(INIT_CHANGE_RATE_AMPLITUDE)		//U••Ï“®—¦Fã		x:‰¡, y:c
+	,m_fChangeRateAmplitudeStrong(INIT_CHANGE_RATE_AMPLITUDE)	//U••Ï“®—¦F‹­		x:‰¡, y:c
 {
 }
 
 /* ========================================
-	ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿é–¢æ•°
+	ƒfƒXƒgƒ‰ƒNƒ^ŠÖ”
 	-------------------------------------
-	å†…å®¹ï¼šç ´æ£„æ™‚ã«è¡Œã†å‡¦ç†
+	“à—eF”jŠü‚És‚¤ˆ—
 	-------------------------------------
-	å¼•æ•°1ï¼šãªã—
+	ˆø”1F‚È‚µ
 	-------------------------------------
-	æˆ»å€¤ï¼šãªã—
+	–ß’lF‚È‚µ
 =========================================== */
 CCamera::~CCamera()
 {
 }
 
 /* ========================================
-	ãƒ•ãƒ©ã‚°ã‚ªãƒ³é–¢æ•°
+	ƒtƒ‰ƒOƒIƒ“ŠÖ”
 	-------------------------------------
-	å†…å®¹ï¼šå¼•æ•°ã§ç«‹ã£ã¦ã„ã‚‹ãƒ•ãƒ©ã‚°ã‚’ç«‹ã¦ã‚‹
+	“à—eFˆø”‚Å—§‚Á‚Ä‚¢‚éƒtƒ‰ƒO‚ğ—§‚Ä‚é
 	-------------------------------------
-	å¼•æ•°1ï¼šconst unsigned char & ucBitFlag
+	ˆø”1Fconst unsigned char & ucBitFlag
 	-------------------------------------
-	æˆ»å€¤ï¼šãªã—
+	–ß’lF‚È‚µ
 =========================================== */
 void CCamera::UpFlag(const unsigned char & ucBitFlag)
 {
-	// =============== ä»£å…¥ ===================
-	m_ucFlag |= ucBitFlag;	//ãƒ•ãƒ©ã‚°æ“ä½œ
+	// =============== ‘ã“ü ===================
+	m_ucFlag |= ucBitFlag;	//ƒtƒ‰ƒO‘€ì
 }
 
 /* ========================================
-	ãƒ•ãƒ©ã‚°ã‚ªãƒ•é–¢æ•°
+	ƒtƒ‰ƒOƒIƒtŠÖ”
 	-------------------------------------
-	å†…å®¹ï¼šå¼•æ•°ã§ç«‹ã£ã¦ã„ã‚‹ãƒ•ãƒ©ã‚°ã‚’é™ã‚ã™
+	“à—eFˆø”‚Å—§‚Á‚Ä‚¢‚éƒtƒ‰ƒO‚ğ~‚ë‚·
 	-------------------------------------
-	å¼•æ•°1ï¼šconst unsigned char & ucBitFlag
+	ˆø”1Fconst unsigned char & ucBitFlag
 	-------------------------------------
-	æˆ»å€¤ï¼šãªã—
+	–ß’lF‚È‚µ
 =========================================== */
 void CCamera::DownFlag(const unsigned char & ucBitFlag)
 {
-	// =============== ä»£å…¥ ===================
-	m_ucFlag &= (ucBitFlag ^ 0xFF);	//ãƒ•ãƒ©ã‚°æ“ä½œ
+	// =============== ‘ã“ü ===================
+	m_ucFlag &= (ucBitFlag ^ 0xFF);	//ƒtƒ‰ƒO‘€ì
 }
 
 /* ========================================
-	ãƒ•ãƒ©ã‚°ã‚»ãƒƒã‚¿é–¢æ•°
+	ƒtƒ‰ƒOƒZƒbƒ^ŠÖ”
 	-------------------------------------
-	å†…å®¹ï¼šå¼•æ•°ã§ç«‹ã£ã¦ã„ã‚‹ãƒ•ãƒ©ã‚°ã‚’é€†è»¢ã•ã›ã‚‹
+	“à—eFˆø”‚Å—§‚Á‚Ä‚¢‚éƒtƒ‰ƒO‚ğ‹t“]‚³‚¹‚é
 	-------------------------------------
-	å¼•æ•°1ï¼šconst unsigned char & ucBitFlag
+	ˆø”1Fconst unsigned char & ucBitFlag
 	-------------------------------------
-	æˆ»å€¤ï¼šãªã—
+	–ß’lF‚È‚µ
 =========================================== */
 void CCamera::SetFlag(const unsigned char & ucBitFlag)
 {
-	// =============== ä»£å…¥ ===================
-	m_ucFlag ^= ucBitFlag;	//ãƒ•ãƒ©ã‚°æ“ä½œ
+	// =============== ‘ã“ü ===================
+	m_ucFlag ^= ucBitFlag;	//ƒtƒ‰ƒO‘€ì
 }
 
 /* ========================================
-	ãƒ“ãƒ¥ãƒ¼è¡Œåˆ—å–å¾—é–¢æ•°
+	ƒrƒ…[s—ñæ“¾ŠÖ”
 	-------------------------------------
-	å†…å®¹ï¼šã‚«ãƒ¡ãƒ©ã®ãƒ“ãƒ¥ãƒ¼è¡Œåˆ—ã‚’æä¾›
+	“à—eFƒJƒƒ‰‚Ìƒrƒ…[s—ñ‚ğ’ñ‹Ÿ
 	-------------------------------------
-	å¼•æ•°1ï¼šãªã—
+	ˆø”1F‚È‚µ
 	-------------------------------------
-	æˆ»å€¤ï¼šä½œæˆã—ãŸè¡Œåˆ—
+	–ß’lFì¬‚µ‚½s—ñ
 =========================================== */
 DirectX::XMFLOAT4X4 CCamera::GetViewMatrix() const
 {
-	// =============== å¤‰æ•°å®£è¨€ ===================
-	DirectX::XMFLOAT4X4 mat;
+	// =============== •Ï”éŒ¾ ===================
+	DirectX::XMFLOAT4X4 Mat;
 
-	// =============== ãƒ“ãƒ¥ãƒ¼è¡Œåˆ—ã®è¨ˆç®— ===================
-	DirectX::XMStoreFloat4x4(&mat, DirectX::XMMatrixTranspose(
+	// =============== ƒrƒ…[s—ñ‚ÌŒvZ ===================
+	DirectX::XMStoreFloat4x4(&Mat, DirectX::XMMatrixTranspose(
 		DirectX::XMMatrixLookAtLH(
-			DirectX::XMVectorSet(m_fPos.x, m_fPos.y, m_fPos.z, 0.0f),		//ã‚«ãƒ¡ãƒ©ä½ç½®
-			DirectX::XMVectorSet(m_fLook.x, m_fLook.y, m_fLook.z, 0.0f),	//æ³¨è¦–ç‚¹
-			DirectX::XMVectorSet(m_fUp.x, m_fUp.y, m_fUp.z, 0.0f)))			//ã‚¢ãƒƒãƒ—ãƒ™ã‚¯ãƒˆãƒ«
-	);	//ãƒ“ãƒ¥ãƒ¼å¤‰æ›
+			DirectX::XMVectorSet(m_fPos.x, m_fPos.y, m_fPos.z, 0.0f),		//ƒJƒƒ‰ˆÊ’u
+			DirectX::XMVectorSet(m_fLook.x, m_fLook.y, m_fLook.z, 0.0f),	//’‹“_
+			DirectX::XMVectorSet(m_fUp.x, m_fUp.y, m_fUp.z, 0.0f)))			//ƒAƒbƒvƒxƒNƒgƒ‹
+	);	//ƒrƒ…[•ÏŠ·
 
-	// =============== æä¾› ===================
-	return mat;	//è¡Œåˆ—æä¾›
+	// =============== ’ñ‹Ÿ ===================
+	return Mat;	//s—ñ’ñ‹Ÿ
 }
 
 /* ========================================
-	ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ã‚·ãƒ§ãƒ³è¡Œåˆ—å–å¾—é–¢æ•°
+	‹ts—ñæ“¾ŠÖ”
 	-------------------------------------
-	å†…å®¹ï¼šã‚«ãƒ¡ãƒ©ã®ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ã‚·ãƒ§ãƒ³è¡Œåˆ—ã‚’æä¾›
+	“à—eFƒrƒ…[s—ñ‚Ì‹ts—ñ‚ğ’ñ‹Ÿ
 	-------------------------------------
-	å¼•æ•°1ï¼šconst E_DRAW_TYPE& eDrawï¼š2Dè¡¨ç¤ºã‹3Dè¡¨ç¤ºã‹
+	ˆø”1F‚È‚µ
 	-------------------------------------
-	æˆ»å€¤ï¼šä½œæˆã—ãŸè¡Œåˆ—
+	–ß’lFì¬‚µ‚½s—ñ
+=========================================== */
+DirectX::XMMATRIX CCamera::GetInverseViewMatrix() const
+{
+	// =============== •Ï”éŒ¾ ===================
+	DirectX::XMMATRIX Mat;			//s—ñŠi”[—p
+	DirectX::XMFLOAT4X4* pFlt44;	//s—ñ•ÒW—p
+
+	// =============== ƒrƒ…[s—ñ‚ÌŒvZ ===================
+	Mat = DirectX::XMMatrixLookAtLH(
+		DirectX::XMVectorSet(m_fPos.x, m_fPos.y, m_fPos.z, 0.0f),		//ƒJƒƒ‰ˆÊ’u
+		DirectX::XMVectorSet(m_fLook.x, m_fLook.y, m_fLook.z, 0.0f),	//’‹“_
+		DirectX::XMVectorSet(m_fUp.x, m_fUp.y, m_fUp.z, 0.0f)			//ƒAƒbƒvƒxƒNƒgƒ‹
+		);	//ƒrƒ…[•ÏŠ·
+
+	// =============== s—ñ•ÒW ===================
+	DirectX::XMStoreFloat4x4(pFlt44, Mat);				//s—ñ•ÒW—p‚É•ÏŠ·
+	pFlt44->_41 = pFlt44->_42 = pFlt44->_43 = 0.0f;		//ˆÚ“®’l‘ÅÁ‚µ
+	Mat = DirectX::XMLoadFloat4x4(pFlt44);				//s—ñXV
+
+	// =============== ’ñ‹Ÿ ===================
+	return DirectX::XMMatrixInverse(nullptr, Mat);	//‹ts—ñ
+}
+
+/* ========================================
+	ƒvƒƒWƒFƒNƒVƒ‡ƒ“s—ñæ“¾ŠÖ”
+	-------------------------------------
+	“à—eFƒJƒƒ‰‚ÌƒvƒƒWƒFƒNƒVƒ‡ƒ“s—ñ‚ğ’ñ‹Ÿ
+	-------------------------------------
+	ˆø”1Fconst E_DRAW_TYPE& eDrawF2D•\¦‚©3D•\¦‚©
+	-------------------------------------
+	–ß’lFì¬‚µ‚½s—ñ
 =========================================== */
 DirectX::XMFLOAT4X4 CCamera::GetProjectionMatrix(const E_DRAW_TYPE& eDraw) const
 {
-	// =============== å¤‰æ•°å®£è¨€ ===================
-	DirectX::XMFLOAT4X4 mat;	//è¡Œåˆ—æ ¼ç´ç”¨
+	// =============== •Ï”éŒ¾ ===================
+	DirectX::XMFLOAT4X4 mat;	//s—ñŠi”[—p
 
-	// =============== ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ã‚·ãƒ§ãƒ³è¡Œåˆ—ã®è¨ˆç®— ===================
-	switch (eDraw)	//æŠ•å½±é¸æŠ
+	// =============== ƒvƒƒWƒFƒNƒVƒ‡ƒ“s—ñ‚ÌŒvZ ===================
+	switch (eDraw)	//“Š‰e‘I‘ğ
 	{
-		// =============== 2Dè¡¨ç¤º ===================
-	case E_DRAW_TYPE_2D:	//2Dã®ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ã‚·ãƒ§ãƒ³åº§æ¨™ä½œæˆ
+		// =============== 2D•\¦ ===================
+	case E_DRAW_TYPE_2D:	//2D‚ÌƒvƒƒWƒFƒNƒVƒ‡ƒ“À•Wì¬
 		DirectX::XMStoreFloat4x4(&mat, DirectX::XMMatrixTranspose(
-			DirectX::XMMatrixOrthographicOffCenterLH(0.0f, SCREEN_WIDTH, 0.0f, SCREEN_HEIGHT, m_fNear, m_fFar)));	//å·¦ä¸‹ã‚’åŸç‚¹(0,0)ã¨ã—ãŸåº§æ¨™ç³»
-		break;	//åˆ†å²å‡¦ç†çµ‚äº†
+			DirectX::XMMatrixOrthographicOffCenterLH(0.0f, SCREEN_WIDTH, 0.0f, SCREEN_HEIGHT, m_fNear, m_fFar)));	//¶‰º‚ğŒ´“_(0,0)‚Æ‚µ‚½À•WŒn
+		break;	//•ªŠòˆ—I—¹
 
-    // =============== 3Dè¡¨ç¤º ===================
-	case E_DRAW_TYPE_3D:	//3Dã®ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ã‚·ãƒ§ãƒ³åº§æ¨™ä½œæˆ
+    // =============== 3D•\¦ ===================
+	case E_DRAW_TYPE_3D:	//3D‚ÌƒvƒƒWƒFƒNƒVƒ‡ƒ“À•Wì¬
 		DirectX::XMStoreFloat4x4(&mat, DirectX::XMMatrixTranspose(
-			DirectX::XMMatrixPerspectiveFovLH(m_fAngle, ASPECT, m_fNear, m_fFar)));	//3Dãƒ—ãƒ­ã‚¸ã‚§ã‚¯ã‚·ãƒ§ãƒ³å¤‰æ›
-		break;	//åˆ†å²å‡¦ç†çµ‚äº†
+			DirectX::XMMatrixPerspectiveFovLH(m_fAngle, ASPECT, m_fNear, m_fFar)));	//3DƒvƒƒWƒFƒNƒVƒ‡ƒ“•ÏŠ·
+		break;	//•ªŠòˆ—I—¹
 	}
 
-	// =============== æä¾› ===================
-	return mat;	//è¡Œåˆ—æä¾›
+	// =============== ’ñ‹Ÿ ===================
+	return mat;	//s—ñ’ñ‹Ÿ
 }
 
 /* ========================================
-	ãƒ•ãƒ©ã‚°åˆ¥å‡¦ç†é–¢æ•°
+	U“®‹K–Í•ÏXŠÖ”
 	-------------------------------------
-	å†…å®¹ï¼šãƒ•ãƒ©ã‚°ã«ã‚ˆã£ã¦åˆ¤æ–­ã•ã‚Œã‚‹å„å‡¦ç†ã‚’å®Ÿè¡Œã™ã‚‹
+	“à—eFU“®‚µ‚Ä‚¢‚é‚Ì‚İAU“®‚ÉŠÖ‚·‚é•Ï”‚ÉŠ±Â
 	-------------------------------------
-	å¼•æ•°1ï¼šãªã—
+	ˆø”1Fint nChangeFrameFU“®‚µ‚Ä‚¢‚ém_nFrame‚É‘«‚·ˆø”B³‚Ì’l‚È‚ç‘±ŠÔ‚ª‰„‚ÑA•‰‚È‚çk‚Ş
+	ˆø”2Ffloat fChangegRateAmpFU“®‚µ‚Ä‚¢‚ém_fChangeRateAmplitude‚ÉŠ|‚¯‚éˆø”B³‚Ì’l‚È‚ç‘±ŠÔ‚ª‰„‚ÑA•‰‚È‚çk‚Ş
 	-------------------------------------
-	æˆ»å€¤ï¼šãªã—
+	–ß’lF‚È‚µ
+=========================================== */
+void CCamera::ChangeScaleVibrate(int nChangeFrame, float fChangegRateAmp)	//TODO:”CˆÓ‚ÌU“®‚Éi‚Á‚½Šg’£
+{
+	// =============== U“®ƒtƒ‰ƒO ===================
+	if (m_ucFlag & E_BIT_FLAG_VIBRATION_SIDE_WEAK)
+	{
+		// =============== XV ===================
+		m_nFrameWeak.x += nChangeFrame;					//ƒtƒŒ[ƒ€ƒJƒEƒ“ƒ^Š±Â
+		m_fChangeRateAmplitudeWeak.x *= fChangegRateAmp;	//•â³—¦Š±Â
+	}
+	if (m_ucFlag & E_BIT_FLAG_VIBRATION_UP_DOWN_WEAK)
+	{
+		// =============== XV ===================
+		m_nFrameWeak.y += nChangeFrame;					//ƒtƒŒ[ƒ€ƒJƒEƒ“ƒ^Š±Â
+		m_fChangeRateAmplitudeWeak.y *= fChangegRateAmp;	//•â³—¦Š±Â
+	}
+	if (m_ucFlag & E_BIT_FLAG_VIBRATION_SIDE_STRONG)
+	{
+		// =============== XV ===================
+		m_nFrameStrong.x += nChangeFrame;					//ƒtƒŒ[ƒ€ƒJƒEƒ“ƒ^Š±Â
+		m_fChangeRateAmplitudeStrong.x *= fChangegRateAmp;	//•â³—¦Š±Â
+	}
+	if (m_ucFlag & E_BIT_FLAG_VIBRATION_UP_DOWN_STRONG)
+	{
+		// =============== XV ===================
+		m_nFrameStrong.y += nChangeFrame;					//ƒtƒŒ[ƒ€ƒJƒEƒ“ƒ^Š±Â
+		m_fChangeRateAmplitudeStrong.y *= fChangegRateAmp;	//•â³—¦Š±Â
+	}
+}
+
+/* ========================================
+	ƒtƒ‰ƒO•Êˆ—ŠÖ”
+	-------------------------------------
+	“à—eFƒtƒ‰ƒO‚É‚æ‚Á‚Ä”»’f‚³‚ê‚éŠeˆ—‚ğÀs‚·‚é
+	-------------------------------------
+	ˆø”1F‚È‚µ
+	-------------------------------------
+	–ß’lF‚È‚µ
 =========================================== */
 void CCamera::HandleFlag()
 {
-	// =============== æŒ¯å‹•ãƒ•ãƒ©ã‚° ===================
-			//ãƒ¼å˜æŒ¯å‹•ã®å‹•ããŒãã‚Œã£ã½ã„ã‹ãªã¨æ€ã£ãŸã®ã§æ¡ç”¨ã—ã¦ã¿ã‚‹ãƒ¼
+	// =============== U“®ƒtƒ‰ƒO ===================
+		//Š„‡Œ¸­‚È‚ç0‚É‚È‚ç‚È‚¢‚½‚ß—˜_“I‚È–³ŒÀU“®‚ª‰Â”\I(ÀÛ‚É‚ÍŒë·’ö“x‚Ì’lˆÈ‰º‚É‚È‚é‚Æ‹”F‚Å‚«‚È‚­‚È‚èA‚»‚Ì‚¤‚¿î•ñ—‚¿‚·‚é)
 	if (m_ucFlag & E_BIT_FLAG_VIBRATION_SIDE_WEAK)
 	{
-		// =============== æŒ¯å‹• ===================
-		m_fAddRadianWeak.x -= DECREASE_RADIAN_WEAK.x;								//è§’é€Ÿåº¦å¢—åŠ é‡æ›´æ–°
-		if (m_fAddRadianWeak.x >= 0.0f)
+		// =============== ‰¡ãU“® ===================
+		if (m_nFrameWeak.x > 0)
 		{
-			m_fRadianVelocityWeak.x += m_fAddRadianWeak.x;							//è§’é€Ÿåº¦æ›´æ–°
-			m_fOffsetVibrateEye.x = AMPLITUDE_WEAK.x * sinf(m_fRadianVelocityWeak.x);	//å˜æŒ¯å‹•
-			m_fOffsetVibrateLook.x = m_fOffsetVibrateEye.x;	//æ³¨è¦–ç‚¹æŒ¯å‹•
+			// =============== U“® ===================
+			m_fOffsetVibrateEye.x = TABLE_AMPITUDE_WEAK[E_DIRECT_VIBRATE_SIDE][std::discrete_distribution<>{
+				PROBABILITY_AMPITUDE_WEAK[E_DIRECT_VIBRATE_SIDE].begin(), PROBABILITY_AMPITUDE_WEAK[E_DIRECT_VIBRATE_SIDE].end() }(CRandom::GetEngine())]	//ƒ‰ƒ“ƒ_ƒ€‚ÈU•
+				* m_fChangeRateAmplitudeWeak.x;											//U••â³
+			m_fOffsetVibrateLook.x = m_fOffsetVibrateEye.x + m_fOffsetVibrateEye.x;	//’‹“_U“®
+			m_fChangeRateAmplitudeWeak.x *= CHANGE_RATE_AMPLITUDE_WEAK.x;			//•â³—¦•Ï‰»
+
+			// =============== ƒJƒEƒ“ƒ^ ===================
+			m_nFrameWeak.x--;	//ƒtƒŒ[ƒ€ƒJƒEƒ“ƒg
 		}
 		else
 		{
-			DownFlag(E_BIT_FLAG_VIBRATION_SIDE_WEAK);		//ãƒ•ãƒ©ã‚°ä¸‹é™
-			m_fAddRadianWeak.x = RADIAN_VELOCITY_WEAK;		//è§’é€Ÿåº¦å¢—åŠ é‡åˆæœŸåŒ–
-			m_fRadianVelocityWeak.x = 0.0f;					//è§’é€Ÿåº¦åˆæœŸåŒ–
-			m_fOffsetVibrateEye.x = 0.0f;					//åˆæœŸåŒ–
-			m_fOffsetVibrateLook.x = 0.0f;					//åˆæœŸåŒ–
+			// =============== ‰Šú‰» ===================
+			DownFlag(E_BIT_FLAG_VIBRATION_SIDE_WEAK);				//ƒtƒ‰ƒO‰º~
+			m_fOffsetVibrateEye.x = 0.0f;								//ƒJƒƒ‰ˆÊ’u‚¸‚ê‰Šú‰»
+			m_fOffsetVibrateLook.x = 0.0f;								//’‹“_‚¸‚ê‰Šú‰»
+			m_fChangeRateAmplitudeWeak.x = INIT_CHANGE_RATE_AMPLITUDE;	//U••â³‰Šú‰»
+			m_nFrameWeak.x = INIT_FRAME_WEAK.x;
 		}
 	}
 	if (m_ucFlag & E_BIT_FLAG_VIBRATION_UP_DOWN_WEAK)
 	{
-		// =============== æŒ¯å‹• ===================
-		m_fAddRadianWeak.y -= DECREASE_RADIAN_WEAK.y;									//è§’é€Ÿåº¦å¢—åŠ é‡æ›´æ–°
-		if (m_fAddRadianWeak.y >= 0.0f)
+		// =============== cãU“® ===================
+		if (m_nFrameWeak.y > 0)
 		{
-			m_fRadianVelocityWeak.y += m_fAddRadianWeak.y;								//è§’é€Ÿåº¦æ›´æ–°
-			m_fOffsetVibrateEye.y = AMPLITUDE_WEAK.y * sinf(m_fRadianVelocityWeak.y);	//å˜æŒ¯å‹•
-			m_fOffsetVibrateLook.y = m_fOffsetVibrateEye.y + m_fOffsetVibrateEye.y;		//æ³¨è¦–ç‚¹æŒ¯å‹•
+			// =============== U“® ===================
+			m_fOffsetVibrateEye.y = TABLE_AMPITUDE_WEAK[E_DIRECT_VIBRATE_VERTICAL][std::discrete_distribution<>{
+				PROBABILITY_AMPITUDE_WEAK[E_DIRECT_VIBRATE_VERTICAL].begin(), PROBABILITY_AMPITUDE_WEAK[E_DIRECT_VIBRATE_VERTICAL].end() }(CRandom::GetEngine())]	//ƒ‰ƒ“ƒ_ƒ€‚ÈU•
+				* m_fChangeRateAmplitudeWeak.y;											//U••â³
+			m_fOffsetVibrateLook.y = m_fOffsetVibrateEye.y + m_fOffsetVibrateEye.y;	//’‹“_U“®
+			m_fChangeRateAmplitudeWeak.y *= CHANGE_RATE_AMPLITUDE_WEAK.y;			//•â³—¦•Ï‰»
+
+			// =============== ƒJƒEƒ“ƒ^ ===================
+			m_nFrameWeak.y--;	//ƒtƒŒ[ƒ€ƒJƒEƒ“ƒg
 		}
 		else
 		{
-			DownFlag(E_BIT_FLAG_VIBRATION_UP_DOWN_WEAK);	//ãƒ•ãƒ©ã‚°ä¸‹é™
-			m_fAddRadianWeak.y = RADIAN_VELOCITY_WEAK;		//è§’é€Ÿåº¦å¢—åŠ é‡åˆæœŸåŒ–
-			m_fRadianVelocityWeak.y = 0.0f;					//è§’é€Ÿåº¦åˆæœŸåŒ–
-			m_fOffsetVibrateEye.y = 0.0f;					//åˆæœŸåŒ–
-			m_fOffsetVibrateLook.y = 0.0f;					//åˆæœŸåŒ–
+			// =============== ‰Šú‰» ===================
+			DownFlag(E_BIT_FLAG_VIBRATION_UP_DOWN_WEAK);				//ƒtƒ‰ƒO‰º~
+			m_fOffsetVibrateEye.y = 0.0f;								//ƒJƒƒ‰ˆÊ’u‚¸‚ê‰Šú‰»
+			m_fOffsetVibrateLook.y = 0.0f;								//’‹“_‚¸‚ê‰Šú‰»
+			m_fChangeRateAmplitudeWeak.y = INIT_CHANGE_RATE_AMPLITUDE;	//U••â³‰Šú‰»
+			m_nFrameWeak.y = INIT_FRAME_WEAK.y;
 		}
 	}	
 	if (m_ucFlag & E_BIT_FLAG_VIBRATION_SIDE_STRONG)
 	{
-		// =============== æŒ¯å‹• ===================
-		m_fAddRadianStrong.x -= DECREASE_RADIAN_STRONG.x;									//è§’é€Ÿåº¦å¢—åŠ é‡æ›´æ–°
-		if (m_fAddRadianStrong.x >= 0.0f)
+		// =============== ‰¡‹­U“® ===================
+		if (m_nFrameStrong.x > 0)
 		{
-			m_fRadianVelocityStrong.x += m_fAddRadianStrong.x;								//è§’é€Ÿåº¦æ›´æ–°
-			m_fOffsetVibrateEye.x = AMPLITUDE_STRONG.x * sinf(m_fRadianVelocityStrong.x);	//å˜æŒ¯å‹•
-			m_fOffsetVibrateLook.x = m_fOffsetVibrateEye.x;			//æ³¨è¦–ç‚¹æŒ¯å‹•
+			// =============== U“® ===================
+			m_fOffsetVibrateEye.x = TABLE_AMPITUDE_STRONG[E_DIRECT_VIBRATE_SIDE][std::discrete_distribution<>{
+				PROBABILITY_AMPITUDE_STRONG[E_DIRECT_VIBRATE_SIDE].begin(), PROBABILITY_AMPITUDE_STRONG[E_DIRECT_VIBRATE_SIDE].end() }(CRandom::GetEngine())]	//ƒ‰ƒ“ƒ_ƒ€‚ÈU•
+				* m_fChangeRateAmplitudeStrong.x;									//U••â³
+			m_fOffsetVibrateLook.x = m_fOffsetVibrateEye.x + m_fOffsetVibrateEye.x;	//’‹“_U“®
+			m_fChangeRateAmplitudeStrong.x *= CHANGE_RATE_AMPLITUDE_STRONG.x;		//•â³—¦•Ï‰»
+
+			// =============== ƒJƒEƒ“ƒ^ ===================
+			m_nFrameStrong.x--;	//ƒtƒŒ[ƒ€ƒJƒEƒ“ƒg
 		}
 		else
 		{
-			DownFlag(E_BIT_FLAG_VIBRATION_SIDE_STRONG);			//ãƒ•ãƒ©ã‚°ä¸‹é™
-			m_fAddRadianStrong.x = RADIAN_VELOCITY_STRONG;		//è§’é€Ÿåº¦å¢—åŠ é‡åˆæœŸåŒ–
-			m_fRadianVelocityStrong.x = 0.0f;					//è§’é€Ÿåº¦åˆæœŸåŒ–
-			m_fOffsetVibrateEye.x = 0.0f;						//åˆæœŸåŒ–
-			m_fOffsetVibrateLook.x = 0.0f;						//åˆæœŸåŒ–
+			// =============== ‰Šú‰» ===================
+			DownFlag(E_BIT_FLAG_VIBRATION_SIDE_STRONG);					//ƒtƒ‰ƒO‰º~
+			m_fOffsetVibrateEye.x = 0.0f;									//ƒJƒƒ‰ˆÊ’u‚¸‚ê‰Šú‰»
+			m_fOffsetVibrateLook.x = 0.0f;									//’‹“_‚¸‚ê‰Šú‰»
+			m_fChangeRateAmplitudeStrong.x = INIT_CHANGE_RATE_AMPLITUDE;	//U••â³‰Šú‰»
+			m_nFrameStrong.x = INIT_FRAME_STRONG.x;
 		}
 	}
 	if (m_ucFlag & E_BIT_FLAG_VIBRATION_UP_DOWN_STRONG)
 	{
-		// =============== æŒ¯å‹• ===================
-		m_fAddRadianStrong.y -= DECREASE_RADIAN_STRONG.y;								//è§’é€Ÿåº¦å¢—åŠ é‡æ›´æ–°
-		if (m_fAddRadianStrong.y >= 0.0f)
+		// =============== c‹­U“® ===================
+		if (m_nFrameStrong.y > 0)
 		{
-			m_fRadianVelocityStrong.y += m_fAddRadianWeak.y;							//è§’é€Ÿåº¦æ›´æ–°
-			m_fOffsetVibrateEye.y = AMPLITUDE_WEAK.y * sinf(m_fRadianVelocityStrong.y);	//å˜æŒ¯å‹•
-			m_fOffsetVibrateLook.y = m_fOffsetVibrateEye.y + m_fOffsetVibrateEye.y;		//æ³¨è¦–ç‚¹æŒ¯å‹•
+			// =============== U“® ===================
+			m_fOffsetVibrateEye.y = TABLE_AMPITUDE_STRONG[E_DIRECT_VIBRATE_VERTICAL][std::discrete_distribution<>{
+				PROBABILITY_AMPITUDE_STRONG[E_DIRECT_VIBRATE_VERTICAL].begin(), PROBABILITY_AMPITUDE_STRONG[E_DIRECT_VIBRATE_VERTICAL].end() }(CRandom::GetEngine())]	//ƒ‰ƒ“ƒ_ƒ€‚ÈU•
+				* m_fChangeRateAmplitudeStrong.y;									//U••â³
+			m_fOffsetVibrateLook.y = m_fOffsetVibrateEye.y + m_fOffsetVibrateEye.y;	//’‹“_U“®
+			m_fChangeRateAmplitudeStrong.y *= CHANGE_RATE_AMPLITUDE_STRONG.y;		//•â³—¦•Ï‰»
+
+			// =============== ƒJƒEƒ“ƒ^ ===================
+			m_nFrameStrong.y--;	//ƒtƒŒ[ƒ€ƒJƒEƒ“ƒg
 		}
 		else
 		{
-			DownFlag(E_BIT_FLAG_VIBRATION_UP_DOWN_STRONG);		//ãƒ•ãƒ©ã‚°ä¸‹é™
-			m_fAddRadianStrong.y = RADIAN_VELOCITY_STRONG;		//è§’é€Ÿåº¦å¢—åŠ é‡åˆæœŸåŒ–
-			m_fRadianVelocityStrong.y = 0.0f;					//è§’é€Ÿåº¦åˆæœŸåŒ–
-			m_fOffsetVibrateEye.y = 0.0f;						//åˆæœŸåŒ–
-			m_fOffsetVibrateLook.y = 0.0f;						//åˆæœŸåŒ–
+			// =============== ‰Šú‰» ===================
+			DownFlag(E_BIT_FLAG_VIBRATION_UP_DOWN_STRONG);					//ƒtƒ‰ƒO‰º~
+			m_fOffsetVibrateEye.y = 0.0f;									//ƒJƒƒ‰ˆÊ’u‚¸‚ê‰Šú‰»
+			m_fOffsetVibrateLook.y = 0.0f;									//’‹“_‚¸‚ê‰Šú‰»
+			m_fChangeRateAmplitudeStrong.y = INIT_CHANGE_RATE_AMPLITUDE;	//U••â³‰Šú‰»
+			m_nFrameStrong.y = INIT_FRAME_STRONG.y;
 		}
 	}
 }

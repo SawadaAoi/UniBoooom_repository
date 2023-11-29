@@ -34,9 +34,9 @@ struct tagTransform3d	//ワールド行列に関わる情報
 {
 public:
 	// ===メンバ変数宣言===
-	TPos3d<float> fPos;		//位置
-	TTriType<float> fScale;	//拡縮率
-	TTriType<float> fRadian;	//回転角
+	TPos3d<float> fPos;			// 位置
+	TTriType<float> fScale;		// 拡縮率
+	TTriType<float> fRadian;	// 回転角
 
 	// ===メンバ関数宣言===
 	tagTransform3d();										//コンストラクタ

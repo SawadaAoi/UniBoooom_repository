@@ -29,6 +29,8 @@
 	・2023/11/23 スライムがプレイヤーから一定以上離れると対角線上に移動するように変更 yamashita
 	・2023/11/26 ボス生成用関数追加	Sawada
 	・2023/11/26 スライムと爆発の距離を調べ逃げるか判定する関数を作成 yamashita
+	・2023/11/27 赤赤の爆発生成時にヒットストップと画面揺れするように修正	Sawada
+	・2023/11/29 画面揺れを横強→縦強に変更 takagi
 
 =========================================== */
 
@@ -42,6 +44,7 @@
 #include "Slime_Boss_1.h"
 #include "Input.h"		//後で消す
 #include "GameParameter.h"		//定数定義用ヘッダー
+#include "HitStop.h"
 
 #include <stdlib.h>
 
@@ -260,8 +263,8 @@ void CSlimeManager::Create(E_SLIME_LEVEL level)
 		while (true)
 		{
 			// 乱数をセットする
-			CreatePos.x = GetRandom(m_pPlayerPos.x - RANDOM_POS, m_pPlayerPos.x + RANDOM_POS);	//乱数取得
-			CreatePos.z = GetRandom(m_pPlayerPos.z - RANDOM_POS, m_pPlayerPos.z + RANDOM_POS);	
+			CreatePos.x = GetRandom(int(m_pPlayerPos.x - RANDOM_POS), int(m_pPlayerPos.x + RANDOM_POS));	//乱数取得
+			CreatePos.z = GetRandom(int(m_pPlayerPos.z - RANDOM_POS), int(m_pPlayerPos.z + RANDOM_POS));	
 			CreatePos.y = 0;
 
 			float PlayerCreateDistance = CreatePos.Distance(m_pPlayerPos);	// 生成座標のプレイヤーとの距離
@@ -335,7 +338,7 @@ void CSlimeManager::HitBranch(int HitSlimeNum, int StandSlimeNum, CExplosionMana
 {
 	E_SLIME_LEVEL hitSlimeLevel, standSlimeLevel;				// レベル
 	tagTransform3d hitSlimeTransform, standSlimeTransform;		//ワールド座標系
-	float hitSlimeSpeed, standSlimeSpeed;						// 移動スピード
+	float hitSlimeSpeed;						// 移動スピード
 	float travelAngle, reflectionAngle;							// 移動方向
 
 	hitSlimeLevel = m_pSlime[HitSlimeNum]->GetSlimeLevel();		// 衝突するスライムのサイズを取得
@@ -380,10 +383,14 @@ void CSlimeManager::HitBranch(int HitSlimeNum, int StandSlimeNum, CExplosionMana
 
 		if (hitSlimeLevel == MAX_LEVEL)	//スライムのサイズが最大の時
 		{
+			CHitStop::UpFlag(CHitStop::E_BIT_FLAG_STOP_SOFT);	//フラグオン
+
 			//スライム爆発処理
 			pExpMng->Create(pos, MAX_SIZE_EXPLODE * EXPLODE_BASE_RATIO, LEVEL_4_EXPLODE_TIME, LEVEL_4_EXPLODE_DAMAGE, E_SLIME_LEVEL::LEVEL_4x4);	//衝突されたスライムの位置でレベル４爆発
 			m_pScoreOHMng->DisplayOverheadScore(pos, LEVEL_4_SCORE * 2, SLIME_SCORE_HEIGHT);
 			pExpMng->CreateUI(pos, LEVEL_4_EXPLODE_TIME);		//レベル４爆発した位置boooomUI表示
+
+			m_pCamera->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_STRONG);
 		}
 		else	//最大サイズじゃない場合は1段階大きいスライムを生成する
 		{
@@ -700,7 +707,8 @@ void CSlimeManager::TouchBossExplosion(int BossNum, CExplosionManager* pExpMng, 
 		SAFE_DELETE(m_pBoss[BossNum]);	//ぶつかりに来たスライム(ボス)を削除
 		
 		pExpMng->SwitchExplode(level, pos, size, pExpMng->GetExplosionPtr(ExpNum)->GetComboNum());	// 爆発生成
-		m_pScoreOHMng->DisplayOverheadScore(pos, LEVEL_4_SCORE * 2, SLIME_SCORE_HEIGHT);
+		m_pScoreOHMng->DisplayOverheadScore(pos, LEVEL_Boss_SCORE, SLIME_SCORE_HEIGHT);
+		m_pHealItemMng->Create(pos);
 
 	}
 
@@ -1082,4 +1090,18 @@ int CSlimeManager::GetRandom(int min, int max)
 void CSlimeManager::SetScoreOHMng(CScoreOHManager * pScoreMng)
 {
 	m_pScoreOHMng = pScoreMng;
+}
+
+/* ========================================
+	回復アイテムセット関数
+	----------------------------------------
+	内容：回復アイテムのマネージャーのポインタをセット
+	----------------------------------------
+	引数1：回復アイテムマネージャーのポインタ
+	----------------------------------------
+	戻値：なし
+======================================== */
+void CSlimeManager::SetHealMng(CHealItemManager * pHealItemMng)
+{
+	m_pHealItemMng = pHealItemMng;
 }

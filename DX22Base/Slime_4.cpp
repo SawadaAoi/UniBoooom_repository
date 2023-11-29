@@ -30,6 +30,8 @@
 #else
 const float LEVEL4_SCALE = 4.0f;
 const float LEVEL4_SPEED = ENEMY_MOVE_SPEED * 0.85;
+const int	LEVEL4_ATTACK = 2;	// 攻撃力
+
 #endif
 /* ========================================
 	コンストラクタ関数
@@ -46,6 +48,7 @@ CSlime_4::CSlime_4()
 	m_Sphere.fRadius *= LEVEL4_SCALE;
 	m_eSlimeSize = E_SLIME_LEVEL::LEVEL_4;
 	SetNormalSpeed();
+	m_nAttack = LEVEL4_ATTACK;
 	m_fScaleShadow = LEVEL_4_SHADOW_SCALE;	// 影の大きさを設定
 }
 

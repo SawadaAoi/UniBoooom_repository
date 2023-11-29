@@ -30,6 +30,8 @@
 #else
 const float LEVEL2_SCALE = 2.0f;
 const float LEVEL2_SPEED = ENEMY_MOVE_SPEED * 0.95;
+const int	LEVEL2_ATTACK = 1;	// 攻撃力
+
 #endif
 /* ========================================
 	コンストラクタ関数
@@ -46,6 +48,7 @@ CSlime_2::CSlime_2()
 	m_Sphere.fRadius *= LEVEL2_SCALE;
 	m_eSlimeSize = E_SLIME_LEVEL::LEVEL_2;
 	SetNormalSpeed();
+	m_nAttack = LEVEL2_ATTACK;
 	m_fScaleShadow = LEVEL_2_SHADOW_SCALE;	// 影の大きさを設定
 }
 
