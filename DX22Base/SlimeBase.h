@@ -34,6 +34,8 @@
 	・2023/11/15 Objectクラスを継承したので修正　yamamoto
 	・2023/11/26 爆発から逃げるフラグ、最も近い爆発を入れる変数を作成　yamashita
 	・2023/11/26 スライムが爆発から逃げる処理を作成　yamashita
+	・2023/11/28 影の描画追加 nieda
+
 ========================================== */
 #ifndef __SLIME_BASE_H__
 #define __SLIME_BASE_H__
@@ -47,6 +49,7 @@
 #include "Camera.h"
 #include "GameParameter.h"		//定数定義用ヘッダー
 #include "Object.h"
+#include "Shadow.h"		// 影表示用ヘッダ
 // =============== 列挙定義 =======================
 enum E_SLIME_LEVEL
 {
@@ -119,6 +122,9 @@ protected:
 
 	E_SLIME_LEVEL m_eSlimeSize;		//スライムの大きさの列挙
 	const CCamera* m_pCamera;		//カメラのポインタ
+
+	CShadow* m_pShadow;				//影のポインタ
+	float m_fScaleShadow;			//影の大きさ
 	
 	DirectX::XMMATRIX m_Ry;				//回転
 

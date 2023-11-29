@@ -42,6 +42,7 @@
 #include "Object.h"
 #include "Sound.h"
 #include "Model.h"
+#include "Shadow.h"
 // =============== クラス定義 =====================
 class CPlayer
 	: public CObject
@@ -85,12 +86,13 @@ private:
 	int m_nNoDamageCnt;					// プレイヤーの無敵時間をカウント
 	bool m_bCollide;					// プレイヤーの無敵状態のフラグ(当たり判定をOFF)
 	CHammer* m_pHammer;					// ハンマークラスのポインタ(プレイヤーが管理する)
-	const CCamera* m_pCamera;			// プレイヤーを追従するカメラ
+	const CCamera* m_pCamera;					// プレイヤーを追従するカメラ
 	bool m_DrawFlg;						// プレイヤーがダメージを受けたら点滅するフラグ
 	int m_FlashCnt;						// 点滅の時間の長さ
 	int m_nMoveCnt;						// プレイヤーの移動によるSEの間隔
 	bool m_bIntFlg;						// ハンマー間隔時間フラグ
 	float m_fIntCnt;					// ハンマー間隔時間カウント
+	CShadow* m_pShadow;
 
 	XAUDIO2_BUFFER* m_pSESwingHammer;
 	XAUDIO2_BUFFER* m_pSERun;

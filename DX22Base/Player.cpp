@@ -25,6 +25,7 @@
 	・2023/11/19 サウドファイル読み込み関数を作成 yamashita
 	・2023/11/23 ジオメトリーからモデルに差し替え yamashita
 	・2023/11/23 ゲームオーバーの仮表示を削除 yamashita
+	・2023/11/27 影の描画を追加 nieda
 	・2023/11/27 Update内ハンマー振り間隔処理追加 Tei
 	・2023/11/28 ダメージ処理に受けるダメージ量を追加 Sawada
 	・2023/11/28 回復処理を追加 yamashita
@@ -105,6 +106,7 @@ CPlayer::CPlayer()
 		MessageBox(NULL, "player", "Error", MB_OK);	//ここでエラーメッセージ表示
 	}
 	m_pModel->SetVertexShader(m_pVS);
+	m_pShadow = new CShadow();
 }
 /* ========================================
    関数：デストラクタ
@@ -117,6 +119,7 @@ CPlayer::CPlayer()
 ======================================== */
 CPlayer::~CPlayer()
 {
+	SAFE_DELETE(m_pShadow);
 	SAFE_DELETE(m_pModel);
 	SAFE_DELETE(m_pVS);
 	SAFE_DELETE(m_pHammer);
@@ -236,6 +239,7 @@ void CPlayer::Draw()
 		m_pHammer->Draw();		//ハンマーの描画
 	}
 
+	m_pShadow->Draw(m_Transform, PLAYER_SHADOW_SCALE, m_pCamera);	// 影の描画
 }
 
 /* ========================================

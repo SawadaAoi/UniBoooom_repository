@@ -63,10 +63,10 @@ CSlimeBase::CSlimeBase()
 	, m_bHitMove(false)
 	, m_eSlimeSize(LEVEL_1)	//Œã‚ÅSLIME_NONE‚É‚·‚é <=TODO
 	, m_RanMoveCnt(RANDOM_MOVE_SWITCH_TIME)	// ‰Šú
-	, m_ExpPos{0.0f,0.0f,0.0f}
+	, m_ExpPos{ 0.0f,0.0f,0.0f }
 	, m_bEscape(false)
 	, m_nEscapeCnt(0)
-	, m_nAttack(0)
+	, m_fScaleShadow(0.0f)
 {
 	
 	m_Transform.fScale = (1.0f, 1.0f, 1.0f);
@@ -75,7 +75,8 @@ CSlimeBase::CSlimeBase()
 
 	int random = abs(rand() % 360);	//ƒ‰ƒ“ƒ_ƒ€‚É0`359‚Ì”Žš‚ðì¬
 	m_Ry = DirectX::XMMatrixRotationY(random);
-	
+
+	m_pShadow = new CShadow();	// ‰e¶¬
 }
 
 /* ========================================
@@ -150,6 +151,9 @@ void CSlimeBase::Draw(const CCamera* pCamera)
 	if (m_pModel) {
 		m_pModel->Draw();
 	}
+
+	//-- ‰e‚Ì•`‰æ
+	m_pShadow->Draw(m_Transform, m_fScaleShadow, pCamera);
 }
 
 

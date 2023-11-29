@@ -17,6 +17,7 @@
 	・2023/11/14 Baseからモデル、シェーダの読み込みを移動 Suzumura
 	・2023/11/14 SphereInfoの変更に対応 takagi
 	・2023/11/15 スライムのモデルと頂点シェーダーをmanagerから受け取るように変更 yamashita
+	・2023/11/28 影の大きさを設定する変数追加 nieda
 
 ========================================== */
 
@@ -47,6 +48,7 @@ CSlime_1::CSlime_1()
 	m_eSlimeSize = E_SLIME_LEVEL::LEVEL_1;
 	SetNormalSpeed();
 	m_nAttack = LEVEL1_ATTACK;
+	m_fScaleShadow = LEVEL_1_SHADOW_SCALE;	// 影の大きさを設定
 }
 
 /* ========================================

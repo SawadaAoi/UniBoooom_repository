@@ -150,7 +150,6 @@ CSlimeManager::CSlimeManager()
 =========================================== */
 CSlimeManager::~CSlimeManager()
 {
-
 	SAFE_DELETE(m_pVS);
 	SAFE_DELETE(m_pFlameModel);
 	SAFE_DELETE(m_pRedModel);
@@ -231,7 +230,7 @@ void CSlimeManager::Draw()
 		if (m_pSlime[i] == nullptr) continue;
 		m_pSlime[i]->Draw(m_pCamera);
 	}
-
+				
 	// ボススライム更新
 	for (int i = 0; i < MAX_BOSS_SLIME_NUM; i++)
 	{
@@ -239,7 +238,6 @@ void CSlimeManager::Draw()
 		m_pBoss[i]->Draw(m_pCamera);
 
 	}
-
 }
 
 

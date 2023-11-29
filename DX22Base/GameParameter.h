@@ -19,6 +19,7 @@
 	・2023/11/24 パラメーター削除(// カメラ) Takagi
 	・2023/11/25 パラメーター追加(// スコア) yamamoto
 	・2023/11/24 パラメーター追加(// カメラ) Takagi
+	・2023/11/27 パラメーター追加(// 影) nieda
 
 =========================================== */
 #ifndef __GAME_PARAMETER_H__
@@ -334,6 +335,16 @@ const int FRAME_STOP_DEATH = 999;	//ストップ：死　のフレーム数
 
 
 
+
+// 影 ====================================================================
+const float PI = 3.14159f;					// 円周率
+const float PLAYER_SHADOW_SCALE = 1.5f;		// プレイヤーの影の大きさ
+const float LEVEL_1_SHADOW_SCALE = 1.0f;	// スライム＿レベル１の影の大きさ
+const float LEVEL_2_SHADOW_SCALE = 2.5f;	// スライム＿レベル２の影の大きさ
+const float LEVEL_3_SHADOW_SCALE = 3.5f;	// スライム＿レベル３の影の大きさ
+const float LEVEL_4_SHADOW_SCALE = 8.0f;	// スライム＿レベル４の影の大きさ
+const float LEVEL_FLAME_SHADOW_SCALE = 2.0f;// スライム＿フレイムの影の大きさ
+const float BOSS_1_SHADOW_SCALE = 12.0f;		// ボス１の影の大きさ
 
 #endif
 

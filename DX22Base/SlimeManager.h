@@ -112,7 +112,6 @@ private:
 	CScoreOHManager* m_pScoreOHMng;
 	CHealItemManager* m_pHealItemMng;
 
-
 	XAUDIO2_BUFFER* m_pSEHitSlime;					//ハンマーでスライムを打った時のSEのデータ
 	XAUDIO2_BUFFER* m_pSEUnion;					//ハンマーでスライムを打った時のSEのデータ
 	IXAudio2SourceVoice* m_pSEHitSlimeSpeaker;		//ハンマーでスライムを打った時のSEを聞き取る側
