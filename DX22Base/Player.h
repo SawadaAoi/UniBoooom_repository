@@ -70,7 +70,7 @@ public:
 	bool GetCollide();							//当たり判定があるかの確認
 	int* GetHpPtr();
 	// セット関数
-	void SetCamera(CCamera* pCamera);
+	void SetCamera(const CCamera* pCamera);
 	bool GetAttackFlg();
 	
 
@@ -86,7 +86,7 @@ private:
 	int m_nNoDamageCnt;					// プレイヤーの無敵時間をカウント
 	bool m_bCollide;					// プレイヤーの無敵状態のフラグ(当たり判定をOFF)
 	CHammer* m_pHammer;					// ハンマークラスのポインタ(プレイヤーが管理する)
-	CCamera* m_pCamera;					// プレイヤーを追従するカメラ
+	const CCamera* m_pCamera;					// プレイヤーを追従するカメラ
 	bool m_DrawFlg;						// プレイヤーがダメージを受けたら点滅するフラグ
 	int m_FlashCnt;						// 点滅の時間の長さ
 	int m_nMoveCnt;						// プレイヤーの移動によるSEの間隔

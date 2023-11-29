@@ -442,7 +442,7 @@ int* CPlayer::GetHpPtr()
    ----------------------------------------
    戻値：なし
 ======================================== */
-void CPlayer::SetCamera(CCamera * pCamera)
+void CPlayer::SetCamera(const CCamera * pCamera)
 {
 	m_pCamera = pCamera;	//中身は変えられないけどポインタはかえれるのでヨシ！
 	m_pHammer->SetCamera(m_pCamera);
