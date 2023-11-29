@@ -265,8 +265,8 @@ void CSlimeManager::Create(E_SLIME_LEVEL level)
 		while (true)
 		{
 			// 乱数をセットする
-			CreatePos.x = GetRandom(m_pPlayerPos.x - RANDOM_POS, m_pPlayerPos.x + RANDOM_POS);	//乱数取得
-			CreatePos.z = GetRandom(m_pPlayerPos.z - RANDOM_POS, m_pPlayerPos.z + RANDOM_POS);	
+			CreatePos.x = GetRandom(int(m_pPlayerPos.x - RANDOM_POS), int(m_pPlayerPos.x + RANDOM_POS));	//乱数取得
+			CreatePos.z = GetRandom(int(m_pPlayerPos.z - RANDOM_POS), int(m_pPlayerPos.z + RANDOM_POS));	
 			CreatePos.y = 0;
 
 			float PlayerCreateDistance = CreatePos.Distance(m_pPlayerPos);	// 生成座標のプレイヤーとの距離
@@ -340,7 +340,7 @@ void CSlimeManager::HitBranch(int HitSlimeNum, int StandSlimeNum, CExplosionMana
 {
 	E_SLIME_LEVEL hitSlimeLevel, standSlimeLevel;				// レベル
 	tagTransform3d hitSlimeTransform, standSlimeTransform;		//ワールド座標系
-	float hitSlimeSpeed, standSlimeSpeed;						// 移動スピード
+	float hitSlimeSpeed;						// 移動スピード
 	float travelAngle, reflectionAngle;							// 移動方向
 
 	hitSlimeLevel = m_pSlime[HitSlimeNum]->GetSlimeLevel();		// 衝突するスライムのサイズを取得
@@ -710,6 +710,7 @@ void CSlimeManager::TouchBossExplosion(int BossNum, CExplosionManager* pExpMng, 
 		
 		pExpMng->SwitchExplode(level, pos, size, pExpMng->GetExplosionPtr(ExpNum)->GetComboNum());	// 爆発生成
 		m_pScoreOHMng->DisplayOverheadScore(pos, LEVEL_Boss_SCORE, SLIME_SCORE_HEIGHT);
+		m_pHealItemMng->Create(pos);
 
 	}
 
@@ -1091,4 +1092,18 @@ int CSlimeManager::GetRandom(int min, int max)
 void CSlimeManager::SetScoreOHMng(CScoreOHManager * pScoreMng)
 {
 	m_pScoreOHMng = pScoreMng;
+}
+
+/* ========================================
+	回復アイテムセット関数
+	----------------------------------------
+	内容：回復アイテムのマネージャーのポインタをセット
+	----------------------------------------
+	引数1：回復アイテムマネージャーのポインタ
+	----------------------------------------
+	戻値：なし
+======================================== */
+void CSlimeManager::SetHealMng(CHealItemManager * pHealItemMng)
+{
+	m_pHealItemMng = pHealItemMng;
 }

@@ -39,7 +39,7 @@ CBoooomUI::CBoooomUI(TPos3d<float> pos, Texture* pTex, const CCamera* pCamera, f
 	,m_pos(pos)
 	,m_scale{ BOOOOM_UI_SCALE_X, BOOOOM_UI_SCALE_Y, 0.0f}
 	,m_fExplodeTime(0.0f)
-	,m_fDelFrame(0.0f)
+	,m_nDelFrame(0)
 	,m_bDelFlg(false)
 {
 	
@@ -127,10 +127,10 @@ void CBoooomUI::Draw()
 =========================================== */
 void CBoooomUI::DisplayTimeAdd()
 {
-	m_fDelFrame++;		// フレーム加算
+	m_nDelFrame++;		// フレーム加算
 
 	// 一定秒数時間が経ったら
-	if (m_fExplodeTime <= m_fDelFrame)
+	if (m_fExplodeTime <= m_nDelFrame)
 	{
 		m_bDelFlg = true;	// 削除フラグを立てる
 	}

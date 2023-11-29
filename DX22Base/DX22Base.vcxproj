@@ -190,8 +190,11 @@
     <ClCompile Include="ExplosionManager.cpp" />
     <ClCompile Include="Fade.cpp" />
     <ClCompile Include="Floor.cpp" />
+    <ClCompile Include="HealItem.cpp" />
+    <ClCompile Include="HealItemManager.cpp" />
     <ClCompile Include="HitStop.cpp" />
     <ClCompile Include="HP_UI.cpp" />
+    <ClCompile Include="Item.cpp" />
     <ClCompile Include="ModelParticle.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Particle.cpp" />
@@ -270,7 +273,10 @@
     <ClInclude Include="EmitterManager.h" />
     <ClInclude Include="Explosion.h" />
     <ClInclude Include="ExplosionManager.h" />
+    <ClInclude Include="HealItem.h" />
+    <ClInclude Include="HealItemManager.h" />
     <ClInclude Include="HitStop.h" />
+    <ClInclude Include="Item.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="HP_UI.h" />
     <ClInclude Include="Pos2d.h" />

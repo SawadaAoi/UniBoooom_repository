@@ -130,6 +130,10 @@ void CStageFinish::Draw()
 	}
 	if (m_bDeleteDisp) { return; }	//邪魔な時にUIを表示せずに終了
 
+			// レンダーターゲット、深度バッファの設定
+	RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得
+	DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
+	SetRenderTargets(1, &pRTV, nullptr);	//DSVがnullだと2D表示になる
 
 	std::string txt;
 	switch (m_eGameState)	//ゲームの状態によって分岐
