@@ -32,7 +32,7 @@
 const float LEVEL3_SCALE = 3.0f;
 const float LEVEL3_SPEED = ENEMY_MOVE_SPEED * 0.90;
 const int	LEVEL3_ATTACK = 1;	// 攻撃力
-
+const float CHECK_DEGREE = 180.0f;
 #endif
 
 /* ========================================
@@ -84,6 +84,89 @@ CSlime_3::CSlime_3(TPos3d<float> pos, VertexShader* pVS, Model* pModel)
 =========================================== */
 CSlime_3::~CSlime_3()
 {
+}
+
+/* ========================================
+	更新処理関数
+	-------------------------------------
+	内容：更新処理
+	-------------------------------------
+	引数1：プレイヤー座標(TPos3d)
+	-------------------------------------
+	戻値：無し
+=========================================== */
+void CSlime_3::Update(tagTransform3d playerTransform)
+{
+	if (!m_bHitMove)	//敵が通常の移動状態の時
+	{
+		if (!m_bEscape  && m_nEscapeCnt == 0)	//逃げるフラグがoffなら
+		{
+			NormalMove(playerTransform);	//通常異動
+		}
+		else
+		{
+			Escape();	//爆発から逃げる
+		}
+	}
+	else
+	{
+		//敵の吹き飛び移動
+		HitMove();
+	}
+
+	// -- 座標更新
+	m_Transform.fPos.x += m_move.x;
+	m_Transform.fPos.z += m_move.z;
+}
+
+/* ========================================
+	通常移動関数
+	----------------------------------------
+	内容：プレイヤーを追跡する移動を行う
+	----------------------------------------
+	引数1：プレイヤー当たり判定(Sphere)
+	----------------------------------------
+	戻値：なし
+======================================== */
+void CSlime_3::NormalMove(tagTransform3d playerTransform)
+{
+	TPos3d<float> playerPos = playerTransform.fPos;
+	TTriType<float> playerRad = playerTransform.fRadian;
+
+	// 敵からエネミーの距離、角度を計算
+	float distancePlayer = m_Transform.fPos.Distance(playerPos);
+
+	// プレイヤーと距離が一定以内だったら
+	if (distancePlayer < MOVE_DISTANCE_PLAYER)
+	{
+		//float slimeToPlayerRad = m_Transform.Angle(playerTransform);
+	 	float checkRad = m_Transform.Angle(playerTransform) - playerTransform.fRadian.y;
+		float checkDegree = DirectX::XMConvertToDegrees(checkRad);
+		//if(CHECK_DEGREE - )
+
+		TPos3d<float> movePos;
+		movePos = playerPos - m_Transform.fPos;	// プレイヤーへのベクトルを計算
+		if (distancePlayer != 0)	//0除算回避
+		{
+			m_move.x = movePos.x / distancePlayer * m_fSpeed;
+			m_move.z = movePos.z / distancePlayer * m_fSpeed;
+		}
+		// 敵からプレイヤーへのベクトル
+		DirectX::XMFLOAT3 directionVector;
+		directionVector.x = m_Transform.fPos.x - playerPos.x;
+		directionVector.y = m_Transform.fPos.y - playerPos.y;
+		directionVector.z = m_Transform.fPos.z - playerPos.z;
+
+		// ベクトルを正規化して方向ベクトルを得る
+		DirectX::XMVECTOR direction = DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&directionVector));
+		// 方向ベクトルから回転行列を計算
+		m_Transform.fRadian.y = atan2(directionVector.x, directionVector.z);
+	}
+	else
+	{
+		RandomMove();	// ランダム移動
+
+	}
 }
 
 /* ========================================

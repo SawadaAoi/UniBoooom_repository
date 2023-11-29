@@ -119,6 +119,7 @@ const int	LEVEL2_ATTACK = 1;						// UŒ‚—Í
 const float LEVEL3_SCALE = 3.0f;					// ƒXƒ‰ƒCƒ€QƒŒƒxƒ‹‚R‚Ì‘å‚«‚³(“–‚½‚è”»’èŠÜ‚Þ)
 const float LEVEL3_SPEED = ENEMY_MOVE_SPEED * 0.7f;	// ˆÚ“®‘¬“x
 const int	LEVEL3_ATTACK = 1;						// UŒ‚—Í
+const float CHECK_DEGREE = 180.0f;					// ƒXƒ‰ƒCƒ€‚ÆƒvƒŒƒCƒ„[‚Ì
 
 // ƒTƒCƒY4
 const float LEVEL4_SCALE = 5.0f;					// ƒXƒ‰ƒCƒ€QƒŒƒxƒ‹‚S‚Ì‘å‚«‚³(“–‚½‚è”»’èŠÜ‚Þ)
@@ -190,6 +191,21 @@ const DirectX::XMFLOAT2 SMALLDECIMAL_SIZE(15.0f, -15.0f);	//¬”“_‚Ì‘å‚«‚³
 const int MAGNIFICATION = 40;		//”{—¦•\Ž¦Žž‚ÌŠÔŠuBˆê”Ô‰E‚Ì”Žš‚©‚ç‚Ç‚ê‚¾‚¯¶‚É‚¸‚ç‚·‚©i¬”“_‚ð“ü‚ê‚é‚Ì‚Å‚»‚±‚àƒPƒA‚·‚éj
 const TPos2d<float> SMALLDECIMAL_POS(2.0f, -3.0f);//‚±‚Ì’l‚Å¬”“_‚ÌˆÊ’u‚Ì”÷’²ß
 
+// ‰ñ•œƒAƒCƒeƒ€ =====================
+const float HEAL_ITEM_SCALE_X = 1.5f;		//@ƒAƒCƒeƒ€‚ÌƒXƒP[ƒ‹X
+const float HEAL_ITEM_SCALE_Y = 1.5f;		//@ƒAƒCƒeƒ€‚ÌƒXƒP[ƒ‹Y
+const float HEAL_ITEM_SCALE_Z = 1.5f;		//@ƒAƒCƒeƒ€‚ÌƒXƒP[ƒ‹Z
+const float	HEALITEM_ANGLE_X = 50.0f;		//@‰ñ•œƒAƒCƒeƒ€‚ÌŠp“x
+const float	HEALITEM_MOVE_INTERVAL = 4.0f;		//  ƒAƒjƒ[ƒVƒ‡ƒ“‚ÌŽüŠú
+const int	COUNT_UP = 6;						//  1•b‚Å360‚É‚È‚é‚æ‚¤‚É’²®
+const float	HEALITEM_MOVE_Y = 0.5f;				//  ƒAƒCƒeƒ€‚Ìã‰º‚É—h‚ê‚é‚‚³(-1`1‚Ü‚Å‚ðˆÚ“®‚·‚é‚Ì‚ÅˆÚ“®—Ê‚Í2)
+const float	HEALITEM_HEIGHT = HEALITEM_MOVE_Y;	//  ‰ñ•œƒAƒCƒeƒ€‚Ì‰Šú‚Ì‚‚³
+
+// ° ====================================
+const float FLOOR_SCALE_X = 1.1f;
+const float FLOOR_SCALE_Z = 1.1f;
+const float FLOOR_OFFSET_X = 48.0f * FLOOR_SCALE_X;
+const float FLOOR_OFFSET_Z = 48.0f * FLOOR_SCALE_Z;
 
 // ƒJƒƒ‰ =====================================================
 #include "Random.h"		//—”¶¬—p
@@ -282,16 +298,6 @@ const TTriType<float> HP_UI_POS = { 80.0f, 60.0f ,0.0f };	// ƒeƒNƒXƒ`ƒƒ‚Ìc•A‰
 const TTriType<float> HP_UI_SIZE = { 90.0f, 90.0f ,0.0f };	// ƒeƒNƒXƒ`ƒƒ‚Ìc•A‰¡•
 const float DRAW_WIDTH = 90.0f;	// ƒeƒNƒXƒ`ƒƒ‚Ì‰¡•
 
-// ‰ñ•œƒAƒCƒeƒ€ =====================
-const float HEAL_ITEM_SCALE_X = 1.5f;		//@ƒAƒCƒeƒ€‚ÌƒXƒP[ƒ‹X
-const float HEAL_ITEM_SCALE_Y = 1.5f;		//@ƒAƒCƒeƒ€‚ÌƒXƒP[ƒ‹Y
-const float HEAL_ITEM_SCALE_Z = 1.5f;		//@ƒAƒCƒeƒ€‚ÌƒXƒP[ƒ‹Z
-const float	HEALITEM_ANGLE_X = 50.0f;		//@‰ñ•œƒAƒCƒeƒ€‚ÌŠp“x
-const float	HEALITEM_MOVE_INTERVAL = 4.0f;		//  ƒAƒjƒ[ƒVƒ‡ƒ“‚ÌŽüŠú
-const int	COUNT_UP = 6;						//  1•b‚Å360‚É‚È‚é‚æ‚¤‚É’²®
-const float	HEALITEM_MOVE_Y = 0.5f;				//  ƒAƒCƒeƒ€‚Ìã‰º‚É—h‚ê‚é‚‚³(-1`1‚Ü‚Å‚ðˆÚ“®‚·‚é‚Ì‚ÅˆÚ“®—Ê‚Í2)
-const float	HEALITEM_HEIGHT = HEALITEM_MOVE_Y;	//  ‰ñ•œƒAƒCƒeƒ€‚Ì‰Šú‚Ì‚‚³
-
 // BoooomUI =====================================================
 const float BOOOOM_UI_SIZE_X = 1.0f;		//BoooomUI‚ÌX‚Ì’·‚³itexture‚Ì”ä—¦‚Æ‡‚í‚¹‚éj
 const float BOOOOM_UI_SIZE_Y = 0.565f;		//BoooomUI‚ÌY‚Ì’·‚³itexture‚Ì”ä—¦‚Æ‡‚í‚¹‚éj
@@ -310,12 +316,6 @@ const TPos2d<float> COMBO_UI_BACK_POS = { 1100.0f, 600.0f };	// ƒRƒ“ƒ{UI‚Ì”wŒi‚Ì
 const TPos2d<float> COMBO_UI_BACK_SIZE = { 370.0f, 280.0f };	// ƒRƒ“ƒ{UI‚Ì”wŒi‚Ì‘å‚«‚³
 const TPos2d<float> COMBO_UI_STRING_POS = { 1150.0f, 615.5f };	// ƒRƒ“ƒ{UI‚Ì•¶Žš‚Ì•`‰æˆÊ’u
 const TPos2d<float> COMBO_UI_STRING_SIZE = { 180.0f, 100.0f };		// ƒRƒ“ƒ{UI‚Ì•¶Žš‚Ì‘å‚«‚³
-
-// ° ====================================
-const float FLOOR_SCALE_X = 1.1f;
-const float FLOOR_SCALE_Z = 1.1f;
-const float FLOOR_OFFSET_X = 48.0f * FLOOR_SCALE_X;
-const float FLOOR_OFFSET_Z = 48.0f * FLOOR_SCALE_Z;
 
 // ƒ^ƒCƒgƒ‹‰æ–Ê =========================================================
 const float TEXTURE_TITLE_TITLE_POSX = SCREEN_WIDTH_ / 2;	// ƒ^ƒCƒgƒ‹‰æ‘œ•\Ž¦ˆÊ’u‚ÌXÀ•W
