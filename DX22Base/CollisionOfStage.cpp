@@ -96,7 +96,7 @@ void CStage::PlayerBossCollision()
 		// ボスとハンマーが衝突した場合
 		if (m_pCollision->CheckCollisionSphere(m_pPlayer->GetSphere(), pBossNow->GetSphere(), m_pPlayer->GetPos(), pBossNow->GetPos()))
 		{
-			m_pPlayer->Damage();
+			m_pPlayer->Damage(1);	//TODO:エラー阻止の緊急措置なので適切な値に直す事
 		}
 	}
 }
