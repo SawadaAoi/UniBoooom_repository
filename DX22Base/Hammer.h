@@ -17,6 +17,7 @@
 	・2023/11/14 SphereInfoの変更に対応 Takagi
 	・2023/11/15 Objectクラスを継承したので修正　yamamoto
 	・2023/11/23 ジオメトリーからモデルに差し替え　yamashita
+	・2023/11/29 Intervalの変数、関数追加　yamamoto
 
 ========================================== */
 
@@ -42,10 +43,13 @@ public:
 	CHammer();	//コンストラクタ
 	~CHammer();	//デストラクタ
 
-	bool Update();	// 更新関数
-	void Draw();				// 描画関数
-	void Swing();									// 移動による回転移動
-	void AttackStart(TPos3d<float>pPos, float angle);								// 攻撃開始処理
+	bool Update();			// 更新関数
+	void Draw();			// 描画関数
+	void Swing();											// 移動による回転移動
+	void AttackStart(TPos3d<float>pPos, float angle);		// 攻撃開始処理
+	void PlusInterval();
+	void MinusInterval();
+	float GetInterval();
 	void SetCamera(const CCamera* pCamera);
 private:
 	// ===メンバ変数宣言=====
@@ -55,6 +59,7 @@ private:
 	float m_fAngleNow;				// 今の角度
 	int m_dAddAngleCnt;				// 角度加算フレーム値
 	const CCamera* m_pCamera;		//	
+	float m_fInterval;				//ハンマーを振るインターバル
 };
 
 #endif // !__HAMMER_H__

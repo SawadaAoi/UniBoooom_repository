@@ -19,6 +19,7 @@
 	・2023/11/14 全体的に処理の流れが分かりづらかったので修正 Sawada
 	・2023/11/15 Objectクラスを継承したので修正　yamamoto
 	・2023/11/23 ジオメトリーからモデルに差し替え　yamashita
+	・2023/11/29 Interval追加　yamamoto
 	
 ========================================== */
 
@@ -58,6 +59,7 @@ CHammer::CHammer()
 	, m_fAngleNow(0)
 	, m_dAddAngleCnt(0)
 	, m_pCamera(nullptr)
+	, m_fInterval(INTERVAL_INITIAL)
 {
 	m_Sphere.fRadius = HAMMER_COL_SIZE;
 	m_Transform.fScale = HAMMER_SIZE;
@@ -201,6 +203,45 @@ void CHammer::AttackStart(TPos3d<float>pPos, float angle)
 	m_Transform.fPos.x = m_tPlayerPos.x + ROTATE_RADIUS * -cosf(m_fAngleNow);
 	m_Transform.fPos.z = m_tPlayerPos.z + ROTATE_RADIUS * sinf(m_fAngleNow);
 
+}
+/* ========================================
+   ハンマーの間隔を増加させる関数
+   ----------------------------------------
+   内容：間隔を増加させる
+   ----------------------------------------
+   引数1：なし
+   ----------------------------------------
+   戻値：なし
+   ======================================== */
+void CHammer::PlusInterval()
+{
+	m_fInterval*=INTERVAL_PLUS;
+}
+/* ========================================
+   ハンマーの間隔を減少させる関数
+   ----------------------------------------
+   内容：間隔を減少させる
+   ----------------------------------------
+   引数1：なし
+   ----------------------------------------
+   戻値：なし
+   ======================================== */
+void CHammer::MinusInterval()
+{
+	m_fInterval *= INTERVAL_MINUS;
+}
+/* ========================================
+   ハンマーの間隔取得関数
+   ----------------------------------------
+   内容：ハンマーの間隔取得
+   ----------------------------------------
+   引数1：なし
+   ----------------------------------------
+   戻値：ハンマーを振る間隔
+   ======================================== */
+float CHammer::GetInterval()
+{
+	return m_fInterval;
 }
 
 

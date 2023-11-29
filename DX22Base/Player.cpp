@@ -28,6 +28,7 @@
 	・2023/11/27 Update内ハンマー振り間隔処理追加 Tei
 	・2023/11/28 ダメージ処理に受けるダメージ量を追加 Sawada
 	・2023/11/28 回復処理を追加 yamashita
+	・2023/11/29 ハンマーのインターバル追加 yamamoto
 
 ======================================== */
 
@@ -150,7 +151,7 @@ void CPlayer::Update()
 		if (m_bIntFlg)
 		{
 			m_fIntCnt++;				// ハンマー間隔時間カウント加算
-			if (m_fIntCnt >= HAMMER_INTERVAL_TIME)
+			if (m_fIntCnt >= m_pHammer->GetInterval())
 			{
 				m_bIntFlg = false;		// ハンマー間隔時間フラグオン
 				m_fIntCnt = 0.0f;		//ハンマー間隔時間リセット
@@ -175,7 +176,12 @@ void CPlayer::Update()
 			m_pHammer->AttackStart(m_Transform.fPos, m_Transform.fRadian.y);	// ハンマー攻撃開始
 			m_bAttackFlg = true;	// 攻撃フラグを有効にする
 			m_pSESwingHamSpeaker = CSound::PlaySound(m_pSESwingHammer);	//ハンマーを振るSEの再生
+
+			//ハンマーのインターバルを長くする関数
+			m_pHammer->PlusInterval();
 		}
+
+		m_pHammer->MinusInterval();
 
 	}
 	
