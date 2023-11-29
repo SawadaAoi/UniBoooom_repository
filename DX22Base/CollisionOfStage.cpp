@@ -11,12 +11,14 @@
 
 	変更履歴
 	・2023/11/16 制作 takagi
+	・2023/11/29 ヒットストップ仕様変更対応 takagi
 
 ========================================== */
 
 // =============== インクルード ===================
 #include "Stage.h"	//自身のヘッダ
 #include "GameParameter.h"
+#include "HitStop.h"	//ヒットストップ
 
 
 /* ========================================
@@ -30,14 +32,18 @@
    ======================================== */
 void CStage::Collision()
 {
-	PlayerSlimeCollision();
-	PlayerBossCollision();
-	HammerSlimeCollision();
-	HammerBossCollision();
-	SlimeSlimeCollision();
-	SlimeBossCollision();
-	BossSlimeCollision();
-	BossBossCollision();
+	// =============== ヒットストップ検査 ===================
+	if (!CHitStop::IsStop())	//ヒットストップ時処理しない
+	{
+		PlayerSlimeCollision();
+		PlayerBossCollision();
+		HammerSlimeCollision();
+		HammerBossCollision();
+		SlimeSlimeCollision();
+		SlimeBossCollision();
+		BossSlimeCollision();
+		BossBossCollision();
+	}
 	ExplosionSlimeCollision();
 	ExplosionBossCollision();
 	BossBossNormalMoveCollision();
