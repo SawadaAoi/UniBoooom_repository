@@ -19,6 +19,8 @@
 	・2023/11/17 2D表示/3D表示の切換をコンストラクタでなくGetProjectionMatrix()関数で行うように変更・振動機能追加 takagi
 	・2023/11/18 2D表示のミスを訂正 takagi
 	・2023/11/24 定数値修正・フラグバグ修正・一部コメント詳細化 takagi
+	・2023/11/28 振動の仕様変更 takagi
+	・2023/11/29 振動の新仕様を全振動に反映しリファクタリング・フレームのコメントないのは書き換える予定のため takagi
 
 ========================================== */
 
@@ -36,42 +38,51 @@
 const float ASPECT = (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT;	//画面比率(y / x)
 const TPos3d<float> INIT_LOOK(0.0f, 0.0f, 0.0f);					//初期注視地点
 const TTriType<float> INIT_UP_VECTOR(0.0f, 1.0f, 0.0f);				//カメラの上方向
+const float INIT_CHANGE_RATE_AMPLITUDE = 1.0f;						//初期振幅変化率
 #if MODE_GAME_PARAMETER
 #else
 const TPos3d<float> INIT_POS(0.0f, 1.6f, -3.0f);					//初期位置
-
-const float Pi = 3.141592f;
-constexpr float ANGLE_TO_RADIAN(float fAngle)
-{
-	return fAngle / 180.0f * Pi;	//角度→ラジアン角
-}
-
 const float INIT_ANGLE = DirectX::XMConvertToRadians(73.0f);        //カメラの角度
 const float INIT_NEAR = 1.0f;										//画面手前初期z値
 const float INIT_FAR = 150.0f;										//画面奥初期z値
 const float INIT_RADIUS = 15.0f;									//カメラと注視点との距離(初期値)
-
-const float RADIAN_VELOCITY_WEAK = ANGLE_TO_RADIAN(1.5f);		//角速度：弱
-const float RADIAN_VELOCITY_STRONG = ANGLE_TO_RADIAN(1.0f);		//角速度：強
-const TDiType<float> AMPLITUDE_WEAK(3.0f, 0.7f);				//振幅：弱			x:縦, y:横
-const TDiType<float> AMPLITUDE_STRONG(10.0f, 50.0f);			//振幅：強			x:縦, y:横
-const TDiType<float> VIRTUAL_FRICTION(0.5f);					//疑似摩擦力
-const TDiType<float> VIRTUAL_GRAVITY(0.5f);						//疑似重力
-const TDiType<float> DECREASE_RADIAN_WEAK(0.005f, 0.005f);		//角速度減少量：弱	x:縦, y:横
-const TDiType<float> DECREASE_RADIAN_STRONG(0.005f, 0.008f);	//角速度減少量：強	x:縦, y:横
+const TDiType<int> INIT_FRAME_WEAK = { 99, 60 };					//弱振動のフレーム数	x:横, y:縦
+const TDiType<int> INIT_FRAME_STRONG = { 99, 60 };					//強振動のフレーム数	x:横, y:縦
+const TDiType<float> CHANGE_RATE_AMPLITUDE_WEAK{ 0.999f, 0.999f };	//強振幅変化率	1を超えると増加方向、下回ると減少方向	x:横, y:縦
+const TDiType<float> CHANGE_RATE_AMPLITUDE_STRONG{ 0.95f, 0.95f };	//強振幅変化率	1を超えると増加方向、下回ると減少方向	x:横, y:縦
+///<summary>振幅の確率：弱
+///<para>合計が1になる必要はない</para>
+///</summary>
+const std::vector<double> PROBABILITY_AMPITUDE_WEAK[CCamera::E_DIRECT_VIBRATE_MAX] = {
+	{ 0.1 },	//横弱振動
+	{ 0.1, 0.3, 0.5, 0.3, 0.1 },	//縦弱振動
+};
+///<summary>
+///<see cref="PROBABILITY_AMPITUDE_WEAK">←上記定数</see>のテーブル
+///<para>順番がそのまま対応しており、同じ数ないと機能しない(添削は自由)</para>
+///<para>各値は振幅の大きさを表す</para>
+///</summary>
+const std::vector<float> TABLE_AMPITUDE_WEAK[CCamera::E_DIRECT_VIBRATE_MAX] = {
+	{ 0.0f },	//横弱振幅
+	{ -11.0f, -5.0f, 0.0f, 5.0f, 11.0f },	//縦弱振幅
+};
+///<summary>振幅の確率：強
+///<para>合計が1になる必要はない</para>
+///</summary>
+const std::vector<double> PROBABILITY_AMPITUDE_STRONG[CCamera::E_DIRECT_VIBRATE_MAX] = {
+	{ 0.1 },	//横強振動
+	{ 0.1, 0.3, 0.5, 0.3, 0.1 },	//縦強振動
+};
+///<summary>
+///<see cref="PROBABILITY_AMPITUDE_STRONG">←上記定数</see>のテーブル
+///<para>順番がそのまま対応しており、同じ数ないと機能しない(添削は自由)</para>
+///<para>各値は振幅の大きさを表す</para>
+///</summary>
+const std::vector<float> TABLE_AMPITUDE_STRONG[CCamera::E_DIRECT_VIBRATE_MAX] = {
+	{ 0.0f },	//横強振幅
+	{ -11.0f, -5.0f, 0.0f, 5.0f, 11.0f },	//縦強振幅
+};
 #endif
-const int INIT_FRAME = 99;																//振動のフレーム数
-const float CHANGE_RATE_AMPLITUDE_STRONG(0.95f);											//振幅変化率：強
-std::vector<double> PROBABILITY_AMPITUDE_STRONG_Y = { 0.1, 0.3, 0.5, 0.3, 0.1 };	//振れ幅の確率：横強振動
-const std::vector<float> TABLE_AMPITUDE_STRONG_Y = { -11.0f, -5.0f, 0.0f, 5.0f, 11.0f };		//振れ幅のテーブル：横強振動
-
-float RANDOM_AMPITUDE_STRONG_Y()
-{
-	// =============== 提供 ===================
-	return TABLE_AMPITUDE_STRONG_Y[
-		std::discrete_distribution<>{ PROBABILITY_AMPITUDE_STRONG_Y.begin(), PROBABILITY_AMPITUDE_STRONG_Y.end() }
-		(CRandom::GetEngine())];	//乱数で決定されたテーブルの要素
-}	//ランダムな振幅を取得
 
 /* ========================================
 	コンストラクタ関数
@@ -83,22 +94,20 @@ float RANDOM_AMPITUDE_STRONG_Y()
 	戻値：なし
 =========================================== */
 CCamera::CCamera()
-	:m_ucFlag(0)								//フラグ
-	,m_fPos(INIT_POS)							//位置
-	,m_fLook(INIT_LOOK)							//注視点
-	,m_fUp(INIT_UP_VECTOR)						//上方ベクトル
-	,m_fAngle(INIT_ANGLE)						//角度
-	,m_fNear(INIT_NEAR)							//画面手前
-	,m_fFar(INIT_FAR)							//画面奥
-	,m_fRadius(INIT_RADIUS)						//注視点とカメラの距離
-	,m_fOffsetVibrateEye(0.0f)					//カメラ位置振動
-	,m_fOffsetVibrateLook(0.0f)					//注視点振動
-	,m_fRadianVelocityWeak(0.0f)				//蓄積角速度：弱
-	,m_fRadianVelocityStrong(0.0f)				//蓄積角速度：強
-	,m_fAddRadianWeak(RADIAN_VELOCITY_WEAK)		//角速度増加量：弱
-	,m_fAddRadianStrong(RADIAN_VELOCITY_STRONG)	//角速度増加量：強
-	,m_nFrame(INIT_FRAME)						//フレーム数
-	,m_fChangeRateAmplitude(1.0f)				//
+	:m_ucFlag(0x00)												//フラグ
+	,m_fPos(INIT_POS)											//位置
+	,m_fLook(INIT_LOOK)											//注視点
+	,m_fUp(INIT_UP_VECTOR)										//上方ベクトル
+	,m_fAngle(INIT_ANGLE)										//角度
+	,m_fNear(INIT_NEAR)											//画面手前
+	,m_fFar(INIT_FAR)											//画面奥
+	,m_fRadius(INIT_RADIUS)										//注視点とカメラの距離
+	,m_fOffsetVibrateEye(0.0f)									//カメラ位置振動
+	,m_fOffsetVibrateLook(0.0f)									//注視点振動
+	,m_nFrameWeak(INIT_FRAME_WEAK)								//フレーム数：弱振動	x:横, y:縦
+	,m_nFrameStrong(INIT_FRAME_STRONG)							//フレーム数：強振動	x:横, y:縦
+	,m_fChangeRateAmplitudeWeak(INIT_CHANGE_RATE_AMPLITUDE)		//振幅変動率：弱		x:横, y:縦
+	,m_fChangeRateAmplitudeStrong(INIT_CHANGE_RATE_AMPLITUDE)	//振幅変動率：強		x:横, y:縦
 {
 }
 
@@ -172,10 +181,10 @@ void CCamera::SetFlag(const unsigned char & ucBitFlag)
 DirectX::XMFLOAT4X4 CCamera::GetViewMatrix() const
 {
 	// =============== 変数宣言 ===================
-	DirectX::XMFLOAT4X4 mat;
+	DirectX::XMFLOAT4X4 Mat;
 
 	// =============== ビュー行列の計算 ===================
-	DirectX::XMStoreFloat4x4(&mat, DirectX::XMMatrixTranspose(
+	DirectX::XMStoreFloat4x4(&Mat, DirectX::XMMatrixTranspose(
 		DirectX::XMMatrixLookAtLH(
 			DirectX::XMVectorSet(m_fPos.x, m_fPos.y, m_fPos.z, 0.0f),		//カメラ位置
 			DirectX::XMVectorSet(m_fLook.x, m_fLook.y, m_fLook.z, 0.0f),	//注視点
@@ -183,7 +192,38 @@ DirectX::XMFLOAT4X4 CCamera::GetViewMatrix() const
 	);	//ビュー変換
 
 	// =============== 提供 ===================
-	return mat;	//行列提供
+	return Mat;	//行列提供
+}
+
+/* ========================================
+	逆行列取得関数
+	-------------------------------------
+	内容：ビュー行列の逆行列を提供
+	-------------------------------------
+	引数1：なし
+	-------------------------------------
+	戻値：作成した行列
+=========================================== */
+DirectX::XMMATRIX CCamera::GetInverseViewMatrix() const
+{
+	// =============== 変数宣言 ===================
+	DirectX::XMMATRIX Mat;			//行列格納用
+	DirectX::XMFLOAT4X4* pFlt44;	//行列編集用
+
+	// =============== ビュー行列の計算 ===================
+	Mat = DirectX::XMMatrixLookAtLH(
+		DirectX::XMVectorSet(m_fPos.x, m_fPos.y, m_fPos.z, 0.0f),		//カメラ位置
+		DirectX::XMVectorSet(m_fLook.x, m_fLook.y, m_fLook.z, 0.0f),	//注視点
+		DirectX::XMVectorSet(m_fUp.x, m_fUp.y, m_fUp.z, 0.0f)			//アップベクトル
+		);	//ビュー変換
+
+	// =============== 行列編集 ===================
+	DirectX::XMStoreFloat4x4(pFlt44, Mat);				//行列編集用に変換
+	pFlt44->_41 = pFlt44->_42 = pFlt44->_43 = 0.0f;		//移動値打消し
+	Mat = DirectX::XMLoadFloat4x4(pFlt44);				//行列更新
+
+	// =============== 提供 ===================
+	return DirectX::XMMatrixInverse(nullptr, Mat);	//逆行列
 }
 
 /* ========================================
@@ -221,6 +261,45 @@ DirectX::XMFLOAT4X4 CCamera::GetProjectionMatrix(const E_DRAW_TYPE& eDraw) const
 }
 
 /* ========================================
+	振動規模変更関数
+	-------------------------------------
+	内容：振動している時のみ、振動に関する変数に干渉
+	-------------------------------------
+	引数1：int nChangeFrame：振動しているm_nFrameに足す引数。正の値なら持続時間が延び、負なら縮む
+	引数2：float fChangegRateAmp：振動しているm_fChangeRateAmplitudeに掛ける引数。正の値なら持続時間が延び、負なら縮む
+	-------------------------------------
+	戻値：なし
+=========================================== */
+void CCamera::ChangeScaleVibrate(int nChangeFrame, float fChangegRateAmp)	//TODO:任意の振動に絞った拡張
+{
+	// =============== 振動フラグ ===================
+	if (m_ucFlag & E_BIT_FLAG_VIBRATION_SIDE_WEAK)
+	{
+		// =============== 更新 ===================
+		m_nFrameWeak.x += nChangeFrame;					//フレームカウンタ干渉
+		m_fChangeRateAmplitudeWeak.x *= fChangegRateAmp;	//補正率干渉
+	}
+	if (m_ucFlag & E_BIT_FLAG_VIBRATION_UP_DOWN_WEAK)
+	{
+		// =============== 更新 ===================
+		m_nFrameWeak.y += nChangeFrame;					//フレームカウンタ干渉
+		m_fChangeRateAmplitudeWeak.y *= fChangegRateAmp;	//補正率干渉
+	}
+	if (m_ucFlag & E_BIT_FLAG_VIBRATION_SIDE_STRONG)
+	{
+		// =============== 更新 ===================
+		m_nFrameStrong.x += nChangeFrame;					//フレームカウンタ干渉
+		m_fChangeRateAmplitudeStrong.x *= fChangegRateAmp;	//補正率干渉
+	}
+	if (m_ucFlag & E_BIT_FLAG_VIBRATION_UP_DOWN_STRONG)
+	{
+		// =============== 更新 ===================
+		m_nFrameStrong.y += nChangeFrame;					//フレームカウンタ干渉
+		m_fChangeRateAmplitudeStrong.y *= fChangegRateAmp;	//補正率干渉
+	}
+}
+
+/* ========================================
 	フラグ別処理関数
 	-------------------------------------
 	内容：フラグによって判断される各処理を実行する
@@ -232,95 +311,105 @@ DirectX::XMFLOAT4X4 CCamera::GetProjectionMatrix(const E_DRAW_TYPE& eDraw) const
 void CCamera::HandleFlag()
 {
 	// =============== 振動フラグ ===================
-			//ー単振動の動きがそれっぽいかなと思ったので採用してみるー
+		//割合減少なら0にならないため理論的な無限振動が可能！(実際には誤差程度の値以下になると視認できなくなり、そのうち情報落ちする)
 	if (m_ucFlag & E_BIT_FLAG_VIBRATION_SIDE_WEAK)
 	{
-		// =============== 振動 ===================
-		m_fAddRadianWeak.x -= DECREASE_RADIAN_WEAK.x;								//角速度増加量更新
-		if (m_fAddRadianWeak.x >= 0.0f)
+		// =============== 横弱振動 ===================
+		if (m_nFrameWeak.x > 0)
 		{
-			m_fRadianVelocityWeak.x += m_fAddRadianWeak.x;							//角速度更新
-			m_fOffsetVibrateEye.x = AMPLITUDE_WEAK.x * sinf(m_fRadianVelocityWeak.x);	//単振動
-			m_fOffsetVibrateLook.x = m_fOffsetVibrateEye.x;	//注視点振動
+			// =============== 振動 ===================
+			m_fOffsetVibrateEye.x = TABLE_AMPITUDE_WEAK[E_DIRECT_VIBRATE_SIDE][std::discrete_distribution<>{
+				PROBABILITY_AMPITUDE_WEAK[E_DIRECT_VIBRATE_SIDE].begin(), PROBABILITY_AMPITUDE_WEAK[E_DIRECT_VIBRATE_SIDE].end() }(CRandom::GetEngine())]	//ランダムな振幅
+				* m_fChangeRateAmplitudeWeak.x;											//振幅補正
+			m_fOffsetVibrateLook.x = m_fOffsetVibrateEye.x + m_fOffsetVibrateEye.x;	//注視点振動
+			m_fChangeRateAmplitudeWeak.x *= CHANGE_RATE_AMPLITUDE_WEAK.x;			//補正率変化
+
+			// =============== カウンタ ===================
+			m_nFrameWeak.x--;	//フレームカウント
 		}
 		else
 		{
-			DownFlag(E_BIT_FLAG_VIBRATION_SIDE_WEAK);		//フラグ下降
-			m_fAddRadianWeak.x = RADIAN_VELOCITY_WEAK;		//角速度増加量初期化
-			m_fRadianVelocityWeak.x = 0.0f;					//角速度初期化
-			m_fOffsetVibrateEye.x = 0.0f;					//初期化
-			m_fOffsetVibrateLook.x = 0.0f;					//初期化
+			// =============== 初期化 ===================
+			DownFlag(E_BIT_FLAG_VIBRATION_SIDE_WEAK);				//フラグ下降
+			m_fOffsetVibrateEye.x = 0.0f;								//カメラ位置ずれ初期化
+			m_fOffsetVibrateLook.x = 0.0f;								//注視点ずれ初期化
+			m_fChangeRateAmplitudeWeak.x = INIT_CHANGE_RATE_AMPLITUDE;	//振幅補正初期化
+			m_nFrameWeak.x = INIT_FRAME_WEAK.x;
 		}
 	}
 	if (m_ucFlag & E_BIT_FLAG_VIBRATION_UP_DOWN_WEAK)
 	{
-		// =============== 振動 ===================
-		m_fAddRadianWeak.y -= DECREASE_RADIAN_WEAK.y;									//角速度増加量更新
-		if (m_fAddRadianWeak.y >= 0.0f)
+		// =============== 縦弱振動 ===================
+		if (m_nFrameWeak.y > 0)
 		{
-			m_fRadianVelocityWeak.y += m_fAddRadianWeak.y;								//角速度更新
-			m_fOffsetVibrateEye.y = AMPLITUDE_WEAK.y * sinf(m_fRadianVelocityWeak.y);	//単振動
-			m_fOffsetVibrateLook.y = m_fOffsetVibrateEye.y + m_fOffsetVibrateEye.y;		//注視点振動
+			// =============== 振動 ===================
+			m_fOffsetVibrateEye.y = TABLE_AMPITUDE_WEAK[E_DIRECT_VIBRATE_VERTICAL][std::discrete_distribution<>{
+				PROBABILITY_AMPITUDE_WEAK[E_DIRECT_VIBRATE_VERTICAL].begin(), PROBABILITY_AMPITUDE_WEAK[E_DIRECT_VIBRATE_VERTICAL].end() }(CRandom::GetEngine())]	//ランダムな振幅
+				* m_fChangeRateAmplitudeWeak.y;											//振幅補正
+			m_fOffsetVibrateLook.y = m_fOffsetVibrateEye.y + m_fOffsetVibrateEye.y;	//注視点振動
+			m_fChangeRateAmplitudeWeak.y *= CHANGE_RATE_AMPLITUDE_WEAK.y;			//補正率変化
+
+			// =============== カウンタ ===================
+			m_nFrameWeak.y--;	//フレームカウント
 		}
 		else
 		{
-			DownFlag(E_BIT_FLAG_VIBRATION_UP_DOWN_WEAK);	//フラグ下降
-			m_fAddRadianWeak.y = RADIAN_VELOCITY_WEAK;		//角速度増加量初期化
-			m_fRadianVelocityWeak.y = 0.0f;					//角速度初期化
-			m_fOffsetVibrateEye.y = 0.0f;					//初期化
-			m_fOffsetVibrateLook.y = 0.0f;					//初期化
+			// =============== 初期化 ===================
+			DownFlag(E_BIT_FLAG_VIBRATION_UP_DOWN_WEAK);				//フラグ下降
+			m_fOffsetVibrateEye.y = 0.0f;								//カメラ位置ずれ初期化
+			m_fOffsetVibrateLook.y = 0.0f;								//注視点ずれ初期化
+			m_fChangeRateAmplitudeWeak.y = INIT_CHANGE_RATE_AMPLITUDE;	//振幅補正初期化
+			m_nFrameWeak.y = INIT_FRAME_WEAK.y;
 		}
 	}	
 	if (m_ucFlag & E_BIT_FLAG_VIBRATION_SIDE_STRONG)
 	{
-		// =============== 振動 ===================
-		m_fAddRadianStrong.x -= DECREASE_RADIAN_STRONG.x;									//角速度増加量更新
-		if (m_fAddRadianStrong.x >= 0.0f)
+		// =============== 横強振動 ===================
+		if (m_nFrameStrong.x > 0)
 		{
-			m_fRadianVelocityStrong.x += m_fAddRadianStrong.x;								//角速度更新
-			m_fOffsetVibrateEye.x = AMPLITUDE_STRONG.x * sinf(m_fRadianVelocityStrong.x);	//単振動
-			m_fOffsetVibrateLook.x = m_fOffsetVibrateEye.x;			//注視点振動
+			// =============== 振動 ===================
+			m_fOffsetVibrateEye.x = TABLE_AMPITUDE_STRONG[E_DIRECT_VIBRATE_SIDE][std::discrete_distribution<>{
+				PROBABILITY_AMPITUDE_STRONG[E_DIRECT_VIBRATE_SIDE].begin(), PROBABILITY_AMPITUDE_STRONG[E_DIRECT_VIBRATE_SIDE].end() }(CRandom::GetEngine())]	//ランダムな振幅
+				* m_fChangeRateAmplitudeStrong.x;									//振幅補正
+			m_fOffsetVibrateLook.x = m_fOffsetVibrateEye.x + m_fOffsetVibrateEye.x;	//注視点振動
+			m_fChangeRateAmplitudeStrong.x *= CHANGE_RATE_AMPLITUDE_STRONG.x;		//補正率変化
+
+			// =============== カウンタ ===================
+			m_nFrameStrong.x--;	//フレームカウント
 		}
 		else
 		{
-			DownFlag(E_BIT_FLAG_VIBRATION_SIDE_STRONG);			//フラグ下降
-			m_fAddRadianStrong.x = RADIAN_VELOCITY_STRONG;		//角速度増加量初期化
-			m_fRadianVelocityStrong.x = 0.0f;					//角速度初期化
-			m_fOffsetVibrateEye.x = 0.0f;						//初期化
-			m_fOffsetVibrateLook.x = 0.0f;						//初期化
+			// =============== 初期化 ===================
+			DownFlag(E_BIT_FLAG_VIBRATION_SIDE_STRONG);					//フラグ下降
+			m_fOffsetVibrateEye.x = 0.0f;									//カメラ位置ずれ初期化
+			m_fOffsetVibrateLook.x = 0.0f;									//注視点ずれ初期化
+			m_fChangeRateAmplitudeStrong.x = INIT_CHANGE_RATE_AMPLITUDE;	//振幅補正初期化
+			m_nFrameStrong.x = INIT_FRAME_STRONG.x;
 		}
 	}
 	if (m_ucFlag & E_BIT_FLAG_VIBRATION_UP_DOWN_STRONG)
 	{
-		// =============== 振動 ===================
-#if NEW_VIBRATE
-		if (m_nFrame > 0)
+		// =============== 縦強振動 ===================
+		if (m_nFrameStrong.y > 0)
 		{
-			m_fRadianVelocityStrong.y += m_fAddRadianWeak.y;							//角速度更新
-			m_fOffsetVibrateEye.y = RANDOM_AMPITUDE_STRONG_Y() * m_fChangeRateAmplitude * sinf(m_fRadianVelocityStrong.y);	//単振動
-			m_fOffsetVibrateLook.y = m_fOffsetVibrateEye.y + m_fOffsetVibrateEye.y;		//注視点振動
-			m_fChangeRateAmplitude *= CHANGE_RATE_AMPLITUDE_STRONG;	//補正率変化
+			// =============== 振動 ===================
+			m_fOffsetVibrateEye.y = TABLE_AMPITUDE_STRONG[E_DIRECT_VIBRATE_VERTICAL][std::discrete_distribution<>{
+				PROBABILITY_AMPITUDE_STRONG[E_DIRECT_VIBRATE_VERTICAL].begin(), PROBABILITY_AMPITUDE_STRONG[E_DIRECT_VIBRATE_VERTICAL].end() }(CRandom::GetEngine())]	//ランダムな振幅
+				* m_fChangeRateAmplitudeStrong.y;									//振幅補正
+			m_fOffsetVibrateLook.y = m_fOffsetVibrateEye.y + m_fOffsetVibrateEye.y;	//注視点振動
+			m_fChangeRateAmplitudeStrong.y *= CHANGE_RATE_AMPLITUDE_STRONG.y;		//補正率変化
 
-			m_nFrame--;
+			// =============== カウンタ ===================
+			m_nFrameStrong.y--;	//フレームカウント
 		}
-#else
-		m_fAddRadianStrong.y -= DECREASE_RADIAN_STRONG.y;								//角速度増加量更新
-		if (m_fAddRadianStrong.y >= 0.0f)
-		{
-			m_fRadianVelocityStrong.y += m_fAddRadianWeak.y;							//角速度更新
-			m_fOffsetVibrateEye.y = AMPLITUDE_WEAK.y * sinf(m_fRadianVelocityStrong.y);	//単振動
-			m_fOffsetVibrateLook.y = m_fOffsetVibrateEye.y + m_fOffsetVibrateEye.y;		//注視点振動
-		}
-#endif
 		else
 		{
-			DownFlag(E_BIT_FLAG_VIBRATION_UP_DOWN_STRONG);		//フラグ下降
-			//m_fAddRadianStrong.y = RADIAN_VELOCITY_STRONG;		//角速度増加量初期化
-			m_fRadianVelocityStrong.y = 0.0f;					//角速度初期化
-			m_fOffsetVibrateEye.y = 0.0f;						//初期化
-			m_fOffsetVibrateLook.y = 0.0f;						//初期化
-			m_fChangeRateAmplitude = 1.0f;
-			m_nFrame = INIT_FRAME;
+			// =============== 初期化 ===================
+			DownFlag(E_BIT_FLAG_VIBRATION_UP_DOWN_STRONG);					//フラグ下降
+			m_fOffsetVibrateEye.y = 0.0f;									//カメラ位置ずれ初期化
+			m_fOffsetVibrateLook.y = 0.0f;									//注視点ずれ初期化
+			m_fChangeRateAmplitudeStrong.y = INIT_CHANGE_RATE_AMPLITUDE;	//振幅補正初期化
+			m_nFrameStrong.y = INIT_FRAME_STRONG.y;
 		}
 	}
 }

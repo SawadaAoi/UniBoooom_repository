@@ -18,6 +18,7 @@
 	・2023/11/23 パラメーター追加(// 2D描画) nieda
 	・2023/11/24 パラメーター削除(// カメラ) Takagi
 	・2023/11/25 パラメーター追加(// スコア) yamamoto
+	・2023/11/24 パラメーター追加(// カメラ) Takagi
 
 =========================================== */
 #ifndef __GAME_PARAMETER_H__
@@ -182,27 +183,55 @@ const TPos2d<float> SMALLDECIMAL_POS(2.0f, -3.0f);//この値で小数点の位置の微調節
 
 
 // カメラ =====================================================
-const TPos3d<float> INIT_POS(0.0f, 1.6f, -3.0f);					//初期位置
-
-const float Pi = 3.141592f;
-constexpr float ANGLE_TO_RADIAN(float fAngle)
+#include "Random.h"		//乱数生成用
+#include <vector>		//配列型コンテナ
+enum E_DIRECT_VIBRATE
 {
-	return fAngle / 180.0f * Pi;	//角度→ラジアン角
-}
-
+	E_DIRECT_VIBRATE_SIDE,		//横方向
+	E_DIRECT_VIBRATE_VERTICAL,	//縦方向
+	E_DIRECT_VIBRATE_MAX,		//要素数
+};	//振動方向
+const TPos3d<float> INIT_POS(0.0f, 1.6f, -3.0f);					//初期位置
 const float INIT_ANGLE = DirectX::XMConvertToRadians(73.0f);        //カメラの角度
 const float INIT_NEAR = 1.0f;										//画面手前初期z値
 const float INIT_FAR = 150.0f;										//画面奥初期z値
 const float INIT_RADIUS = 15.0f;									//カメラと注視点との距離(初期値)
-
-const float RADIAN_VELOCITY_WEAK = ANGLE_TO_RADIAN(1.5f);		//角速度：弱
-const float RADIAN_VELOCITY_STRONG = ANGLE_TO_RADIAN(1.0f);		//角速度：強
-const TDiType<float> AMPLITUDE_WEAK(3.0f, 0.7f);				//振幅：弱			x:縦, y:横
-const TDiType<float> AMPLITUDE_STRONG(10.0f, 50.0f);			//振幅：強			x:縦, y:横
-const TDiType<float> VIRTUAL_FRICTION(0.5f);					//疑似摩擦力
-const TDiType<float> VIRTUAL_GRAVITY(0.5f);						//疑似重力
-const TDiType<float> DECREASE_RADIAN_WEAK(0.005f, 0.005f);		//角速度減少量：弱	x:縦, y:横
-const TDiType<float> DECREASE_RADIAN_STRONG(0.005f, 0.008f);	//角速度減少量：強	x:縦, y:横
+const TDiType<int> INIT_FRAME_WEAK = { 99, 60 };					//弱振動のフレーム数	x:横, y:縦
+const TDiType<int> INIT_FRAME_STRONG = { 99, 60 };					//強振動のフレーム数	x:横, y:縦
+const TDiType<float> CHANGE_RATE_AMPLITUDE_WEAK{ 0.999f, 0.999f };	//強振幅変化率	1を超えると増加方向、下回ると減少方向	x:横, y:縦
+const TDiType<float> CHANGE_RATE_AMPLITUDE_STRONG{ 0.95f, 0.95f };	//強振幅変化率	1を超えると増加方向、下回ると減少方向	x:横, y:縦
+///<summary>振幅の確率：弱
+///<para>合計が1になる必要はない</para>
+///</summary>
+const std::vector<double> PROBABILITY_AMPITUDE_WEAK[E_DIRECT_VIBRATE_MAX] = {
+	{ 0.1, 0.1 },	//横弱振動
+	{ 0.1, 0.3, 0.5, 0.3, 0.1 },	//縦弱振動
+};
+///<summary>
+///<see cref="PROBABILITY_AMPITUDE_WEAK">←上記定数</see>のテーブル
+///<para>順番がそのまま対応しており、同じ数ないと機能しない(添削は自由)</para>
+///<para>各値は振幅の大きさを表す</para>
+///</summary>
+const std::vector<float> TABLE_AMPITUDE_WEAK[E_DIRECT_VIBRATE_MAX] = {
+	{ -1.1f, 1.1f },	//横弱振幅
+	{ -11.0f, -5.0f, 0.0f, 5.0f, 11.0f },	//縦弱振幅
+};
+///<summary>振幅の確率：強
+///<para>合計が1になる必要はない</para>
+///</summary>
+const std::vector<double> PROBABILITY_AMPITUDE_STRONG[E_DIRECT_VIBRATE_MAX] = {
+	{ 0.1, 0.1 },	//横強振動
+	{ 0.1, 0.3, 0.5, 0.3, 0.1 },	//縦強振動
+};
+///<summary>
+///<see cref="PROBABILITY_AMPITUDE_STRONG">←上記定数</see>のテーブル
+///<para>順番がそのまま対応しており、同じ数ないと機能しない(添削は自由)</para>
+///<para>各値は振幅の大きさを表す</para>
+///</summary>
+const std::vector<float> TABLE_AMPITUDE_STRONG[E_DIRECT_VIBRATE_MAX] = {
+	{ -1.1f, 1.1f },	//横強振幅
+	{ -11.0f, -5.0f, 0.0f, 5.0f, 11.0f },	//縦強振幅
+};
 
 // UI =====================================================
 // 2D表示
