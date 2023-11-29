@@ -136,6 +136,12 @@
     <Filter Include="ソース ファイル\3dObject\Item">
       <UniqueIdentifier>{0ea1b806-d542-4336-9c38-b1aa9e85136a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\System\Random">
+      <UniqueIdentifier>{a484bd95-6afd-45ea-aa60-b408994f2e19}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\System\Random">
+      <UniqueIdentifier>{8beaba9d-03e4-49e1-ac24-b541952526d1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -365,6 +371,9 @@
     </ClCompile>
     <ClCompile Include="Item.cpp">
       <Filter>ソース ファイル\3dObject\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="Random.cpp">
+      <Filter>ソース ファイル\System\Random</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -604,6 +613,9 @@
     </ClInclude>
     <ClInclude Include="CameraFade.h">
       <Filter>ヘッダー ファイル\System\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Random.h">
+      <Filter>ヘッダー ファイル\System\Random</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
