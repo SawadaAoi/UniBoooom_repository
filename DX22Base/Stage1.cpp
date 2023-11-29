@@ -119,7 +119,7 @@ CStage1::CStage1()
 	m_pStageFin = new CStageFinish(m_pPlayer->GetHpPtr(), m_pTimer->GetTimePtr());
 
 	//プレイヤーHPのUI生成
-	m_pHpMng = new CHP_UI(m_pPlayer->GetHP());
+	m_pHpMng = new CHP_UI(m_pPlayer->GetHpPtr());
 	
 	//================System動的確保================
 

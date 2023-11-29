@@ -32,30 +32,20 @@ CUIStageManager::CUIStageManager(CPlayer* pPlayer, const CCamera * pCamera, CSli
 	, m_pTimer(nullptr)
 	, m_pTotalScore(nullptr)
 {
-	// コンボ数表示生成
 	m_pCombo = new CCombo();
-
-	//スコア生成
+	m_pTimer = new CTimer();
+	m_pBossgauge = new CBossgauge(m_pTimer->GetNowTime());
+	m_pHpMng = new CHP_UI(pPlayer->GetHpPtr());
+	m_pTotalScore = new CTotalScore();
 	m_pScoreOHMng = new CScoreOHManager();
+	m_pStageFin = new CStageFinish(pPlayer->GetHpPtr(), m_pTimer->GetTimePtr());
+
+
+	m_pCombo->SetTotalScore(m_pTotalScore);
+	m_pTimer->TimeStart();
+	m_pBossgauge->SetSlimeManager(pSlimeMng);
 	m_pScoreOHMng->SetCamera(pCamera);
 
-	//トータルスコア生成
-	m_pTotalScore = new CTotalScore();
-	m_pCombo->SetTotalScore(m_pTotalScore);
-	
-
-	// タイマー生成
-	m_pTimer = new CTimer();
-	m_pTimer->TimeStart();
-
-	//ステージ終了のUI表示
-	m_pStageFin = new CStageFinish(pPlayer->GetHP(), m_pTimer->GetTimePtr());
-
-	m_pHpMng = new CHP_UI(pPlayer->GetHP());
-
-	//ボスゲージ
-	m_pBossgauge = new CBossgauge(m_pTimer->GetNowTime());
-	m_pBossgauge->SetSlimeManager(pSlimeMng);
 }
 
 /* ========================================

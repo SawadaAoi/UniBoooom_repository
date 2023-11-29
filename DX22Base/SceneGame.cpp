@@ -98,25 +98,20 @@ SceneGame::SceneGame()
 	m_pCollision = new CCOLLISION();
 	m_pPlayer = new CPlayer();
 	m_pCamera = new CCameraChase(m_pPlayer->GetPosAddress());
-
-	// 地面生成
-	m_pFloor = new CFloor(m_pPlayer->GetPosAddress());
+	m_pFloor = new CFloor(m_pPlayer->GetPosAddress());	// 地面生成
 	m_pHealItemMng = new CHealItemManager();	// 回復アイテムマネージャー
+	m_pExplosionMng = new CExplosionManager();	// 爆発マネージャー生成
+	m_pSlimeMng = new CSlimeManager();
 
+	m_pUIStageMng = new CUIStageManager(m_pPlayer, m_pCamera, m_pSlimeMng);	// UIマネージャー生成
 
-	// 爆発マネージャー生成
-	m_pExplosionMng = new CExplosionManager();
-	
-
-	// UIマネージャー生成
-	m_pUIStageMng = new CUIStageManager(m_pPlayer, m_pCamera, m_pSlimeMng);
 
 	
 	//オブジェクトのUIのセット
 	m_pSlimeMng->SetScoreOHMng(m_pUIStageMng->GetScoreMng());
 	m_pExplosionMng->SetCombo(m_pUIStageMng->GetCombo());
 	m_pSlimeMng->SetExplosionMng(m_pExplosionMng);
-	
+	m_pPlayer->SetCamera(m_pCamera);
 	
 	// 各オブジェクトのカメラーセット
 	m_pSlimeMng->SetCamera(m_pCamera);
