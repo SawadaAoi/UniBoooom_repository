@@ -30,6 +30,7 @@
 	・2023/11/26 ボス生成用関数追加	Sawada
 	・2023/11/26 スライムと爆発の距離を調べ逃げるか判定する関数を作成 yamashita
 	・2023/11/27 赤赤の爆発生成時にヒットストップと画面揺れするように修正	Sawada
+	・2023/11/29 画面揺れを横強→縦強に変更 takagi
 
 =========================================== */
 
@@ -149,7 +150,6 @@ CSlimeManager::CSlimeManager()
 =========================================== */
 CSlimeManager::~CSlimeManager()
 {
-
 	SAFE_DELETE(m_pVS);
 	SAFE_DELETE(m_pFlameModel);
 	SAFE_DELETE(m_pRedModel);
@@ -230,7 +230,7 @@ void CSlimeManager::Draw()
 		if (m_pSlime[i] == nullptr) continue;
 		m_pSlime[i]->Draw(m_pCamera);
 	}
-
+				
 	// ボススライム更新
 	for (int i = 0; i < MAX_BOSS_SLIME_NUM; i++)
 	{
@@ -238,7 +238,6 @@ void CSlimeManager::Draw()
 		m_pBoss[i]->Draw(m_pCamera);
 
 	}
-
 }
 
 
@@ -264,8 +263,8 @@ void CSlimeManager::Create(E_SLIME_LEVEL level)
 		while (true)
 		{
 			// 乱数をセットする
-			CreatePos.x = GetRandom(m_pPlayerPos.x - RANDOM_POS, m_pPlayerPos.x + RANDOM_POS);	//乱数取得
-			CreatePos.z = GetRandom(m_pPlayerPos.z - RANDOM_POS, m_pPlayerPos.z + RANDOM_POS);	
+			CreatePos.x = GetRandom(int(m_pPlayerPos.x - RANDOM_POS), int(m_pPlayerPos.x + RANDOM_POS));	//乱数取得
+			CreatePos.z = GetRandom(int(m_pPlayerPos.z - RANDOM_POS), int(m_pPlayerPos.z + RANDOM_POS));	
 			CreatePos.y = 0;
 
 			float PlayerCreateDistance = CreatePos.Distance(m_pPlayerPos);	// 生成座標のプレイヤーとの距離
@@ -339,7 +338,7 @@ void CSlimeManager::HitBranch(int HitSlimeNum, int StandSlimeNum, CExplosionMana
 {
 	E_SLIME_LEVEL hitSlimeLevel, standSlimeLevel;				// レベル
 	tagTransform3d hitSlimeTransform, standSlimeTransform;		//ワールド座標系
-	float hitSlimeSpeed, standSlimeSpeed;						// 移動スピード
+	float hitSlimeSpeed;						// 移動スピード
 	float travelAngle, reflectionAngle;							// 移動方向
 
 	hitSlimeLevel = m_pSlime[HitSlimeNum]->GetSlimeLevel();		// 衝突するスライムのサイズを取得
@@ -391,7 +390,7 @@ void CSlimeManager::HitBranch(int HitSlimeNum, int StandSlimeNum, CExplosionMana
 			m_pScoreOHMng->DisplayOverheadScore(pos, LEVEL_4_SCORE * 2, SLIME_SCORE_HEIGHT);
 			pExpMng->CreateUI(pos, LEVEL_4_EXPLODE_TIME);		//レベル４爆発した位置boooomUI表示
 
-			m_pCamera->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_SIDE_STRONG);
+			m_pCamera->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_STRONG);
 		}
 		else	//最大サイズじゃない場合は1段階大きいスライムを生成する
 		{
@@ -709,6 +708,7 @@ void CSlimeManager::TouchBossExplosion(int BossNum, CExplosionManager* pExpMng, 
 		
 		pExpMng->SwitchExplode(level, pos, size, pExpMng->GetExplosionPtr(ExpNum)->GetComboNum());	// 爆発生成
 		m_pScoreOHMng->DisplayOverheadScore(pos, LEVEL_Boss_SCORE, SLIME_SCORE_HEIGHT);
+		m_pHealItemMng->Create(pos);
 
 	}
 
@@ -1090,4 +1090,18 @@ int CSlimeManager::GetRandom(int min, int max)
 void CSlimeManager::SetScoreOHMng(CScoreOHManager * pScoreMng)
 {
 	m_pScoreOHMng = pScoreMng;
+}
+
+/* ========================================
+	回復アイテムセット関数
+	----------------------------------------
+	内容：回復アイテムのマネージャーのポインタをセット
+	----------------------------------------
+	引数1：回復アイテムマネージャーのポインタ
+	----------------------------------------
+	戻値：なし
+======================================== */
+void CSlimeManager::SetHealMng(CHealItemManager * pHealItemMng)
+{
+	m_pHealItemMng = pHealItemMng;
 }

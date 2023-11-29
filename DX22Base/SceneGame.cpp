@@ -19,6 +19,7 @@
 	・2023/11/21 コンボ用のメンバ変数を追加 Sawada
 	・2023/11/21 爆発時BoooomUI表示するための処理を追加
 	・2023/11/23 トータルスコア表示追加　yamamoto
+	・2023/11/27 回復アイテムの追加 Sawada
 
 ========================================== */
 
@@ -58,7 +59,6 @@
 #include "GameParameter.h"
 
 
-
 // =============== 定数定義 =======================
 #if MODE_GAME_PARAMETER
 #else
@@ -92,20 +92,17 @@ SceneGame::SceneGame()
 	CLine::Init();
 #endif
 
-	m_pCollision = new CCOLLISION();
-	m_pPlayer = new CPlayer();
-	m_pCamera = new CCameraChase(m_pPlayer->GetPosAddress()) ;
-	m_pPlayer->SetCamera(m_pCamera);
-
 #if MODE_GROUND
 	m_pBox = new CBox();
 #endif
+	m_pCollision = new CCOLLISION();
+	m_pPlayer = new CPlayer();
+	m_pCamera = new CCameraChase(m_pPlayer->GetPosAddress());
 
 	// 地面生成
 	m_pFloor = new CFloor(m_pPlayer->GetPosAddress());
-	// スライムマネージャー生成
-	m_pSlimeMng = new CSlimeManager();
-	
+	m_pHealItemMng = new CHealItemManager();	// 回復アイテムマネージャー
+
 
 	// 爆発マネージャー生成
 	m_pExplosionMng = new CExplosionManager();
@@ -125,8 +122,7 @@ SceneGame::SceneGame()
 	m_pSlimeMng->SetCamera(m_pCamera);
 	m_pExplosionMng->SetCamera(m_pCamera);
 	m_pFloor->SetCamera(m_pCamera);
-
-
+	m_pHealItemMng->SetCamera(m_pCamera);
 #if USE_FADE_GAME
 	m_pFade = new CFade(m_pCamera);
 #endif
@@ -161,6 +157,7 @@ SceneGame::~SceneGame()
 		m_pSpeaker->Stop();
 		m_pSpeaker->DestroyVoice();
 	}
+	SAFE_DELETE(m_pHealItemMng);
 	SAFE_DELETE(m_pFade);
 	SAFE_DELETE(m_pExplosionMng);
 	SAFE_DELETE(m_pSlimeMng);	// スライムマネージャー削除
@@ -233,7 +230,7 @@ void SceneGame::Update(float tick)
 	m_pFloor->Update();
 	m_pSlimeMng->Update(m_pExplosionMng);
 	m_pExplosionMng->Update();
-
+	m_pHealItemMng->Update();
 	// UIマネージャー更新
 	m_pUIStageMng->Update();
 
@@ -316,6 +313,7 @@ void SceneGame::Draw()
 	SetRenderTargets(1, &pRTV, pDSV);		//DSVがnullだと2D表示になる
 	//床の描画
 	m_pFloor->Draw();
+	m_pHealItemMng->Draw();
 	// スライムマネージャー描画
 	m_pSlimeMng->Draw();
 	m_pPlayer->Draw();
@@ -328,6 +326,7 @@ void SceneGame::Draw()
 	//UIの描画
 	SetRenderTargets(1, &pRTV, nullptr);
 	m_pUIStageMng->Draw();
+
 
 
 #if USE_FADE_GAME

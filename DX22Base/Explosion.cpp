@@ -58,7 +58,7 @@ const int DELAY_TIME = 0.5f * 60;
 =========================================== */
 CExplosion::CExplosion(TPos3d<float> fPos, float fSize,float fTime, int comboNum, bool delayFlg, int nDamage)
 	: m_fSizeAdd(0.0f)
-	, m_fDelFrame(0.0f)
+	, m_nDelFrame(0)
 	, m_bDelFlg(false)
 	, m_fExplodeTime(fTime)	// 爆発総時間をセットする
 	, m_fMaxSize(fSize)		// 最大サイズをセットする
@@ -75,7 +75,7 @@ CExplosion::CExplosion(TPos3d<float> fPos, float fSize,float fTime, int comboNum
 	m_Transform.fPos = fPos;		// スライムがいた場所に生成する
 	m_fExplodeTime = fTime;		// 爆発総時間をセットする
 	m_fMaxSize = fSize;			// 最大サイズをセットする
-	m_fDamage = nDamage;		// 与えるダメージ量をセットする
+	m_fDamage = (float)nDamage;		// 与えるダメージ量をセットする
 
 }
 
@@ -149,10 +149,10 @@ void CExplosion::Draw()
 =========================================== */
 void CExplosion::DisplayTimeAdd()
 {
-	m_fDelFrame++;	// フレーム加算
+	m_nDelFrame++;	// フレーム加算
 
 	// 一定秒数まで大きくする
-	if (m_fDelFrame <= m_fExplodeTime )
+	if (m_nDelFrame <= m_fExplodeTime )
 	{
 		// m_fTimeに基づいてm_fSizeAddを決定
 		m_fSizeAdd = m_fMaxSize / m_fExplodeTime / EXPAND_QUICK_RATE;
@@ -165,7 +165,7 @@ void CExplosion::DisplayTimeAdd()
 
 	}
 	// 一定秒数時間が経ったら
-	if (m_fExplodeTime <= m_fDelFrame)
+	if (m_fExplodeTime <= m_nDelFrame)
 	{
 		m_bDelFlg = true;	// 削除フラグを立てる
 	}
@@ -248,7 +248,7 @@ int CExplosion::GetComboNum()
 =========================================== */
 int CExplosion::GetDamage()
 {
-	return m_fDamage;
+	return (int)m_fDamage;
 }
 
 /* ========================================

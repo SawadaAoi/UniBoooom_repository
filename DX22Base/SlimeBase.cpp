@@ -23,6 +23,8 @@
 	・2023/11/14 SphereInfoの変更に対応 Takagi
 	・2023/11/15 Objectクラスを継承したので修正　yamamoto
 	・2023/11/26 スライムが爆発から逃げる処理を作成　yamashita
+	・2023/11/28 攻撃力を追加 Sawada
+
 ========================================== */
 
 // =============== インクルード ===================
@@ -61,9 +63,10 @@ CSlimeBase::CSlimeBase()
 	, m_bHitMove(false)
 	, m_eSlimeSize(LEVEL_1)	//後でSLIME_NONEにする <=TODO
 	, m_RanMoveCnt(RANDOM_MOVE_SWITCH_TIME)	// 初期
-	, m_ExpPos{0.0f,0.0f,0.0f}
+	, m_ExpPos{ 0.0f,0.0f,0.0f }
 	, m_bEscape(false)
 	, m_nEscapeCnt(0)
+	, m_fScaleShadow(0.0f)
 {
 	
 	m_Transform.fScale = (1.0f, 1.0f, 1.0f);
@@ -72,7 +75,8 @@ CSlimeBase::CSlimeBase()
 
 	int random = abs(rand() % 360);	//ランダムに0～359の数字を作成
 	m_Ry = DirectX::XMMatrixRotationY(random);
-	
+
+	m_pShadow = new CShadow();	// 影生成
 }
 
 /* ========================================
@@ -147,6 +151,9 @@ void CSlimeBase::Draw(const CCamera* pCamera)
 	if (m_pModel) {
 		m_pModel->Draw();
 	}
+
+	//-- 影の描画
+	m_pShadow->Draw(m_Transform, m_fScaleShadow, pCamera);
 }
 
 
@@ -403,6 +410,20 @@ TPos3d<float> CSlimeBase::GetPos()
 bool CSlimeBase::GetEscapeFlag()
 {
 	return m_bEscape = false;
+}
+
+/* ========================================
+	攻撃力取得関数
+	----------------------------------------
+	内容：攻撃力を取得する
+	----------------------------------------
+	引数1：なし
+	----------------------------------------
+	戻値：攻撃力
+======================================== */
+int CSlimeBase::GetAttack()
+{
+	return m_nAttack;
 }
 
 /* ========================================

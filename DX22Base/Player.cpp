@@ -25,7 +25,11 @@
 	・2023/11/19 サウドファイル読み込み関数を作成 yamashita
 	・2023/11/23 ジオメトリーからモデルに差し替え yamashita
 	・2023/11/23 ゲームオーバーの仮表示を削除 yamashita
+	・2023/11/27 影の描画を追加 nieda
 	・2023/11/27 Update内ハンマー振り間隔処理追加 Tei
+	・2023/11/28 ダメージ処理に受けるダメージ量を追加 Sawada
+	・2023/11/28 回復処理を追加 yamashita
+
 ======================================== */
 
 // =============== インクルード ===================
@@ -48,6 +52,7 @@ const float PLAYER_SIZE			= 1.0f;			// プレイヤーの大きさ
 const int	NO_DAMAGE_TIME		= 3 * 60;		//プレイヤーの無敵時間
 const int	DAMAGE_FLASH_FRAME	= 0.1f * 60;	// プレイヤーのダメージ点滅の切り替え間隔
 const int	SE_RUN_INTERVAL		= 0.4f * 60;	//プレイヤーの移動によるSE発生の間隔
+const int	HEAL_NUM			= 1;			//プレイヤーの回復量
 const float	SE_RUN_VOLUME		= 0.3f;			//移動によるSEの音量
 const float HAMMER_INTERVAL_TIME	= 1.0f * 60;	// ハンマー振り間隔
 
@@ -101,6 +106,7 @@ CPlayer::CPlayer()
 		MessageBox(NULL, "player", "Error", MB_OK);	//ここでエラーメッセージ表示
 	}
 	m_pModel->SetVertexShader(m_pVS);
+	m_pShadow = new CShadow();
 }
 /* ========================================
    関数：デストラクタ
@@ -113,6 +119,7 @@ CPlayer::CPlayer()
 ======================================== */
 CPlayer::~CPlayer()
 {
+	SAFE_DELETE(m_pShadow);
 	SAFE_DELETE(m_pModel);
 	SAFE_DELETE(m_pVS);
 	SAFE_DELETE(m_pHammer);
@@ -232,6 +239,7 @@ void CPlayer::Draw()
 		m_pHammer->Draw();		//ハンマーの描画
 	}
 
+	m_pShadow->Draw(m_Transform, PLAYER_SHADOW_SCALE, m_pCamera);	// 影の描画
 }
 
 /* ========================================
@@ -239,13 +247,13 @@ void CPlayer::Draw()
    ----------------------------------------
    内容：プレイヤーがダメージを受ける
    ----------------------------------------
-   引数：なし
+   引数：攻撃力
    ----------------------------------------
    戻値：なし
 ======================================== */
-void CPlayer::Damage()
+void CPlayer::Damage(int DmgNum)
 {
-	m_nHp -= 1;
+	m_nHp -= DmgNum;
 	m_bCollide = true;	//プレイヤーを一定時間、無敵にする
 	m_nNoDamageCnt = 0;	//プレイヤー無敵時間のカウントを0に戻す
 	m_pSEDamagedSpeaker = CSound::PlaySound(m_pSEDamaged);	//被ダメージ時のSE再生
@@ -420,7 +428,7 @@ bool CPlayer::GetCollide()
    ----------------------------------------
    戻値：無し
 ======================================== */
-int* CPlayer::GetHP()
+int* CPlayer::GetHpPtr()
 {
 	return &m_nHp;
 }
@@ -512,9 +520,33 @@ void CPlayer::SE_Move()
 	}
 }
 
+/* ========================================
+   プレイヤー用SE読み込み関数
+   ----------------------------------------
+   内容：プレイヤー用のSEのファイルを読み込む
+   ----------------------------------------
+   引数：無し
+   ----------------------------------------
+   戻値：無し
+======================================== */
 void CPlayer::LoadSound()
 {
 	m_pSEDamaged = CSound::LoadSound("Assets/Sound/SE/PlayerDamage.mp3");	//SEの読み込み
 	m_pSESwingHammer = CSound::LoadSound("Assets/Sound/SE/Swing.mp3");		//SEの読み込み
 	m_pSERun = CSound::LoadSound("Assets/Sound/SE/Run.mp3");				//SEの読み込み
+}
+
+/* ========================================
+   プレイヤー回復関数
+   ----------------------------------------
+   内容：プレイヤーのHPを回復する
+   ----------------------------------------
+   引数：無し
+   ----------------------------------------
+   戻値：無し
+======================================== */
+void CPlayer::Healing()
+{
+	if (m_nHp == PLAYER_HP) { return; }
+	m_nHp += HEAL_NUM;
 }

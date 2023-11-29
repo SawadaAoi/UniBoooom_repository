@@ -18,6 +18,7 @@
 	・2023/11/14 SphereInfoの変更に対応 takagi
 	・2023/11/15 スライムのモデルと頂点シェーダーをmanagerから受け取るように変更 yamashita
 	・2023/11/16 引数付きコンストラクタの引数に頂点シェーダーとモデルのポインタを追加 山下凌佑
+	・2023/11/28 影の大きさを設定する変数追加 nieda
 
 ========================================== */
 
@@ -30,6 +31,8 @@
 #else
 const float LEVEL3_SCALE = 3.0f;
 const float LEVEL3_SPEED = ENEMY_MOVE_SPEED * 0.90;
+const int	LEVEL3_ATTACK = 1;	// 攻撃力
+
 #endif
 
 /* ========================================
@@ -47,7 +50,8 @@ CSlime_3::CSlime_3()
 	m_Sphere.fRadius *= LEVEL3_SCALE;
 	m_eSlimeSize = E_SLIME_LEVEL::LEVEL_3;
 	SetNormalSpeed();
-
+	m_nAttack = LEVEL3_ATTACK;
+	m_fScaleShadow = LEVEL_3_SHADOW_SCALE;	// 影の大きさを設定
 }
 
 /* ========================================

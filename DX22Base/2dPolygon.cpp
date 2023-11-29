@@ -10,6 +10,7 @@
 	変更履歴
 	・2023/11/21 作成 takagi
 	・2023/11/22 メッシュサイズを1x1に修正 takagi
+	・2023/11/28 TextureSet関数にポインタ指定できる物を追加
 
 ========================================== */
 
@@ -96,6 +97,8 @@ unsigned int C2dPolygon::ms_unIdxSize;				//インデックスサイズ
 unsigned int C2dPolygon::ms_unIdxCount;				//インデックス数
 ID3D11Buffer* C2dPolygon::ms_pVtxBuffer = nullptr;	//頂点バッファ
 ID3D11Buffer* C2dPolygon::ms_pIdxBuffer = nullptr;	//インデックスバッファ 
+VertexShader* C2dPolygon::m_pDefVs;					//頂点シェーダー
+PixelShader* C2dPolygon::m_pDefPs;					//ピクセルシェーダー
 
 /* ========================================
 	コンストラクタ関数
@@ -124,6 +127,9 @@ C2dPolygon::C2dPolygon()
 	// =============== 形状作成 ===================
 		Make();	//平面ポリゴン作成
 	}
+
+	m_pVs = m_pDefVs;
+	m_pPs = m_pDefPs;
 
 	// =============== 行列作成 ===================
 	m_aMatrix[0] = m_Transform.GetWorldMatrixSRT();							//ワールド行列
@@ -436,6 +442,21 @@ void C2dPolygon::SetTexture(const char* pcTexPass)
 }
 
 /* ========================================
+	テクスチャセッタ関数
+	-------------------------------------
+	内容：テクスチャ作成・登録
+	-------------------------------------
+	引数1：Textureポインタ
+	-------------------------------------
+	戻値：なし
+=========================================== */
+void C2dPolygon::SetTexture(Texture* pTexture)
+{
+	// =============== 作成 ===================
+	m_pTexture = pTexture;		//動的確保
+}
+
+/* ========================================
 	頂点シェーダー関数
 	-------------------------------------
 	内容：頂点シェーダー登録
@@ -473,12 +494,12 @@ void C2dPolygon::SetPixelShader(PixelShader* pPs)
 void C2dPolygon::MakeVertexShader()
 {
 	// =============== 作成 ===================
-	if (m_pVs)	//ヌルチェック
+	if (m_pDefVs)	//ヌルチェック
 	{
-		SAFE_DELETE(m_pVs);	//解放
+		SAFE_DELETE(m_pDefVs);	//解放
 	}
-	m_pVs = new VertexShader();	//動的確保
-	m_pVs->Compile(VS);			//コンパイル
+	m_pDefVs = new VertexShader();	//動的確保
+	m_pDefVs->Compile(VS);			//コンパイル
 }
 
 /* ========================================
@@ -493,12 +514,12 @@ void C2dPolygon::MakeVertexShader()
 void C2dPolygon::MakePixelShader()
 {
 	// =============== 作成 ===================
-	if (m_pPs)	//ヌルチェック
+	if (m_pDefPs)	//ヌルチェック
 	{
-		SAFE_DELETE(m_pPs);	//解放
+		SAFE_DELETE(m_pDefPs);	//解放
 	}
-	m_pPs = new PixelShader();	//動的確保
-	m_pPs->Compile(PS);			//コンパイル
+	m_pDefPs = new PixelShader();	//動的確保
+	m_pDefPs->Compile(PS);			//コンパイル
 }
 
 /* ========================================

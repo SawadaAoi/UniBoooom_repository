@@ -10,6 +10,7 @@
 	変更履歴
 	・2023/11/17 クラス作成 Suzumura
 	・2023/11/23 突撃処理の追加 Suzumura
+	・2023/11/28 影の大きさを設定する変数追加 nieda
 
 ========================================== */
 
@@ -29,6 +30,7 @@ const int ASSAULT_COOL_TIME = 10 * 60;						// 突撃クルータイム
 const int ASSAULT_CHARGE_TIME = 2 * 60;						// 突撃チャージ時間
 const int ASSAULT_TIME = 1.0f * 60;							// 突撃総時間
 const float ASSAULT_SPEED = LEVEL_BOSS_1_SPEED * 15.0f;		// 突撃時のスピード
+const int	BOSS_1_ATTACK = 2;	// 攻撃力
 
 #endif
 /* ========================================
@@ -52,6 +54,9 @@ CSlime_Boss_1::CSlime_Boss_1()
 	SetNormalSpeed();
 	SetMaxHp();
 	m_nHp = m_nMaxHp;
+	m_nAttack = BOSS_1_ATTACK;
+	m_fScaleShadow = BOSS_1_SHADOW_SCALE;	// 影の大きさを設定
+
 }
 
 /* ========================================
