@@ -190,7 +190,7 @@ void CSlimeManager::Update(CExplosionManager* pExpMng)
 	for (int i = 0; i < MAX_SLIME_NUM; i++)
 	{
 		if (m_pSlime[i] == nullptr) continue;
-		m_pSlime[i]->Update(m_pPlayer->GetPos());
+		m_pSlime[i]->Update(m_pPlayer->GetTransform());
 
 	}
 
@@ -200,7 +200,7 @@ void CSlimeManager::Update(CExplosionManager* pExpMng)
 	for (int i = 0; i < MAX_BOSS_SLIME_NUM; i++)
 	{
 		if (m_pBoss[i] == nullptr) continue;
-		m_pBoss[i]->Update(m_pPlayer->GetPos());
+		m_pBoss[i]->Update(m_pPlayer->GetTransform());
 
 	}
 

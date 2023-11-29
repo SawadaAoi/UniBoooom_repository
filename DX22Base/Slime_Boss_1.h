@@ -36,9 +36,9 @@ public:
 	CSlime_Boss_1(TPos3d<float> pos, VertexShader* pVS, Model* pModel);
 	~CSlime_Boss_1();
 
-	void Update(TPos3d<float> playerPos) override;
+	void Update(tagTransform3d playerTransform) override;
 
-	void NormalMove(TPos3d<float> playerPos) override;
+	void NormalMove(tagTransform3d playerTransform) override;
 	void SetNormalSpeed() override;
 	void SetMaxHp() override;
 

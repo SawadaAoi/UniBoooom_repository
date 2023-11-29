@@ -86,10 +86,10 @@ public:
 	// ===プロトタイプ宣言===
 	CSlimeBase();
 	~CSlimeBase();
-	virtual void Update(TPos3d<float> playerPos);
+	virtual void Update(tagTransform3d playerTransform);
 	virtual void Draw(const CCamera* pCamera);
 
-	virtual void NormalMove(TPos3d<float> playerSphere);	// 通常時の移動処理
+	virtual void NormalMove(tagTransform3d playerTransform);	// 通常時の移動処理
 	void RandomMove();
 	void HitMove();									//スライムが吹き飛び移動状態の時に毎フレーム呼び出して移動させる
 	void HitMoveStart(float speed, float angle);	//スライムが吹き飛ばされたときに速度と角度を決める

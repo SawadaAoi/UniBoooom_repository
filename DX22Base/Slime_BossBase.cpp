@@ -88,13 +88,13 @@ CSlime_BossBase::~CSlime_BossBase()
 	-------------------------------------
 	–ß’lF–³‚µ
 =========================================== */
-void CSlime_BossBase::Update(TPos3d<float> playerPos)
+void CSlime_BossBase::Update(tagTransform3d playerTransform)
 {
 	
 	
 	if (!m_bHitMove)	//“G‚ª’Êí‚ÌˆÚ“®ó‘Ô‚Ì
 	{
-		NormalMove(playerPos);
+		NormalMove(playerTransform);
 	}
 	else
 	{

@@ -104,14 +104,14 @@ CSlimeBase::~CSlimeBase()
 	-------------------------------------
 	戻値：無し
 =========================================== */
-void CSlimeBase::Update(TPos3d<float> playerPos)
+void CSlimeBase::Update(tagTransform3d playerTransform)
 {
 
 	if (!m_bHitMove)	//敵が通常の移動状態の時
 	{
 		if (!m_bEscape  && m_nEscapeCnt == 0)	//逃げるフラグがoffなら
 		{
-			NormalMove(playerPos);	//通常異動
+			NormalMove(playerTransform);	//通常異動
 		}
 		else
 		{
@@ -169,8 +169,10 @@ void CSlimeBase::Draw(const CCamera* pCamera)
 	----------------------------------------
 	戻値：なし
 ======================================== */
-void CSlimeBase::NormalMove(TPos3d<float> playerPos)
+void CSlimeBase::NormalMove(tagTransform3d playerTransform)
 {
+	TPos3d<float> playerPos = playerTransform.fPos;
+
 	// 敵からエネミーの距離、角度を計算
 	float distancePlayer	= m_Transform.fPos.Distance(playerPos);
 
