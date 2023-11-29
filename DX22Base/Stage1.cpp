@@ -17,6 +17,7 @@
 	・2023/11/21 ゲーム開始時テクスチャ表示 nieda
 	・2023/11/22 動くよう足りない変数など追加 nieda
 	・2023/11/27 バグ修正 takagi
+	・2023/11/29 ヒットストップ仕様変更対応 takagi
 
 ========================================== */
 
@@ -25,6 +26,7 @@
 #include "CameraChase.h"
 #include "Input.h"
 #include "Line.h"
+#include "HitStop.h"	//ヒットストップ
 
 // =============== デバッグモード ===================
 #define USE_CAMERA_VIBRATION (true)
@@ -44,7 +46,6 @@
 #endif
 
 #if TRY_USE_HIT_STOP
-#include "HitStop.h"
 #include "Input.h"
 #endif
 
@@ -252,12 +253,16 @@ void CStage1::Update()
 		// カメラ更新
 		m_pCamera->Update();
 
-		// プレイヤー更新
-		m_pPlayer->Update();
+		// =============== ヒットストップ検査 ===================
+		if (!CHitStop::IsStop())	//ヒットストップ時処理しない
+		{
+			// プレイヤー更新
+			m_pPlayer->Update();
 
-		// スライムマネージャー更新
-		m_pSlimeMng->SetPlayerPos(m_pPlayer->GetPos());
-		m_pSlimeMng->Update(m_pExplosionMng);
+			// スライムマネージャー更新
+			m_pSlimeMng->SetPlayerPos(m_pPlayer->GetPos());
+			m_pSlimeMng->Update(m_pExplosionMng);
+		}
 
 		//床更新
 		m_pFloor->Update();
