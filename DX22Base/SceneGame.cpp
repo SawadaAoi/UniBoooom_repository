@@ -20,6 +20,7 @@
 	・2023/11/21 爆発時BoooomUI表示するための処理を追加
 	・2023/11/23 トータルスコア表示追加　yamamoto
 	・2023/11/27 回復アイテムの追加 Sawada
+	・2023/11/29 UIを1つのオブジェクトにまとめた Sawada
 
 ========================================== */
 
@@ -95,41 +96,34 @@ SceneGame::SceneGame()
 #if MODE_GROUND
 	m_pBox = new CBox();
 #endif
-	m_pCollision = new CCOLLISION();
-	m_pPlayer = new CPlayer();
-	m_pCamera = new CCameraChase(m_pPlayer->GetPosAddress());
 
-	m_pFloor = new CFloor(m_pPlayer->GetPosAddress());
-	m_pSlimeMng = new CSlimeManager();			// スライムマネージャー生成
-	m_pExplosionMng = new CExplosionManager();	// 爆発マネージャー生成
-	m_pHealItemMng = new CHealItemManager();	// 回復アイテムマネージャー
+	m_pCollision		= new CCOLLISION();
+	m_pPlayer			= new CPlayer();
+	m_pCamera			= new CCameraChase(m_pPlayer->GetPosAddress());
+	m_pFloor			= new CFloor(m_pPlayer->GetPosAddress());	// 地面生成
+	m_pHealItemMng		= new CHealItemManager();	// 回復アイテムマネージャー
+	m_pExplosionMng		= new CExplosionManager();	// 爆発マネージャー生成
+	m_pSlimeMng			= new CSlimeManager();
+
+	m_pUIStageMng		= new CUIStageManager(m_pPlayer, m_pCamera, m_pSlimeMng);	// UIマネージャー生成
 
 
-	m_pCombo = new CCombo();	// コンボ数表示生成
-	m_pScoreOHMng = new CScoreOHManager();	//スコア生成
-	m_pTotalScore = new CTotalScore();	//トータルスコア生成
-	m_pTimer = new CTimer();	// タイマー生成
-	m_pStageFin = new CStageFinish(m_pPlayer->GetHpPtr(), m_pTimer->GetTimePtr());	//ステージ終了のUI表示
-	m_pHpMng = new CHP_UI(m_pPlayer->GetHpPtr());
-	m_pBossgauge = new CBossgauge(m_pTimer->GetNowTime());	//ボスゲージ
-
+	
+	//オブジェクトのUIのセット
+	m_pSlimeMng->SetScoreOHMng(m_pUIStageMng->GetScoreMng());
+	m_pExplosionMng->SetCombo(m_pUIStageMng->GetCombo());
+	m_pSlimeMng->SetExplosionMng(m_pExplosionMng);
+	m_pSlimeMng->SetHealMng(m_pHealItemMng);
+	// 各オブジェクトのカメラーセット
+	m_pPlayer->SetCamera(m_pCamera);
+	m_pSlimeMng->SetCamera(m_pCamera);
+	m_pExplosionMng->SetCamera(m_pCamera);
+	m_pFloor->SetCamera(m_pCamera);
+	m_pHealItemMng->SetCamera(m_pCamera);
 
 #if USE_FADE_GAME
 	m_pFade = new CFade(m_pCamera);
 #endif
-	m_pPlayer->SetCamera(m_pCamera);
-	m_pFloor->SetCamera(m_pCamera);
-	m_pSlimeMng->SetCamera(m_pCamera);
-	m_pSlimeMng->SetScoreOHMng(m_pScoreOHMng);
-	m_pSlimeMng->SetExplosionMng(m_pExplosionMng);
-	m_pSlimeMng->SetHealMng(m_pHealItemMng);
-	m_pExplosionMng->SetCamera(m_pCamera);
-	m_pExplosionMng->SetCombo(m_pCombo);
-
-	m_pBossgauge->SetSlimeManager(m_pSlimeMng);
-	m_pScoreOHMng->SetCamera(m_pCamera);
-	m_pCombo->SetTotalScore(m_pTotalScore);
-	m_pHealItemMng->SetCamera(m_pCamera);
 
 	LoadSound();
 	//BGMの再生
@@ -137,7 +131,6 @@ SceneGame::SceneGame()
 	m_pSpeaker->SetVolume(BGM_VOLUME);			//音量の設定
 
 
-	m_pTimer->TimeStart();
 }
 
 /* ========================================
@@ -156,24 +149,15 @@ SceneGame::~SceneGame()
 		m_pSpeaker->Stop();
 		m_pSpeaker->DestroyVoice();
 	}
-
+	SAFE_DELETE(m_pUIStageMng);
 	SAFE_DELETE(m_pHealItemMng);
-	SAFE_DELETE(m_pStageFin);
-	SAFE_DELETE(m_pHpMng);
-	SAFE_DELETE(m_pTimer);
 	SAFE_DELETE(m_pFade);
-	SAFE_DELETE(m_pBossgauge);
-	SAFE_DELETE(m_pTimer);
-	SAFE_DELETE(m_pCombo);
 	SAFE_DELETE(m_pExplosionMng);
-	SAFE_DELETE(m_pCombo);
 	SAFE_DELETE(m_pSlimeMng);	// スライムマネージャー削除
 	SAFE_DELETE(m_pFloor);
 	SAFE_DELETE(m_pCamera);
 	SAFE_DELETE(m_pPlayer);
 	SAFE_DELETE(m_pCollision);
-	SAFE_DELETE(m_pScoreOHMng);
-	SAFE_DELETE(m_pTotalScore);
 
 #if MODE_COORD_AXIS
 	// 軸線の表示
@@ -234,22 +218,14 @@ void SceneGame::Update(float tick)
 	m_pPlayer->Update();
 	m_pSlimeMng->SetPlayerPos(m_pPlayer->GetPos());
 
+	SceneGameCollision();
 	// スライムマネージャー更新
 	m_pFloor->Update();
 	m_pSlimeMng->Update(m_pExplosionMng);
 	m_pExplosionMng->Update();
-	m_pScoreOHMng->Update();
-	m_pTimer->Update();
-	m_pStageFin->Update();
-	m_pCombo->Update();
-
-	// HPマネージャー更新
-	m_pHpMng->Update();
-
-	m_pBossgauge->Update();
 	m_pHealItemMng->Update();
-
-	SceneGameCollision();
+	// UIマネージャー更新
+	m_pUIStageMng->Update();
 
 #if USE_FADE_GAME
 	m_pFade->Update();
@@ -340,24 +316,10 @@ void SceneGame::Draw()
 	
 
 
-	//タイマー描画
+	//UIの描画
 	SetRenderTargets(1, &pRTV, nullptr);
-	m_pStageFin->Draw();
-	m_pTimer->Draw();
-	m_pCombo->Draw();
+	m_pUIStageMng->Draw();
 
-	// HPマネージャー描画
-	m_pHpMng->Draw();
-
-	m_pTimer->Draw();
-	m_pCombo->Draw();
-	m_pTotalScore->Draw();
-
-
-	//ボスゲージ描画
-	m_pBossgauge->Draw();
-
-	m_pScoreOHMng->Draw();//スコアマネージャー描画
 
 
 #if USE_FADE_GAME

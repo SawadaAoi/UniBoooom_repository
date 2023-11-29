@@ -1087,7 +1087,7 @@ int CSlimeManager::GetRandom(int min, int max)
 	----------------------------------------
 	ñﬂílÅFÇ»Çµ
 ======================================== */
-void CSlimeManager::SetScoreOHMng(CScoreOHManager * pScoreMng)
+void CSlimeManager::SetScoreOHMng(CScoreOHManager* pScoreMng)
 {
 	m_pScoreOHMng = pScoreMng;
 }
