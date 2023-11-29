@@ -15,6 +15,7 @@
 	・2023/11/09 微調整 takagi
 	・2023/11/10 パラメタ修正 takagi
 	・2023/11/18 振動フラグ処理 takagi
+	・2023/11/29 大文字・小文字の修正 takagi
 
 ========================================== */
 
@@ -81,10 +82,10 @@ DirectX::XMFLOAT4X4 CCameraChase::GetViewMatrix() const
 	}
 
 	// =============== 変数宣言 ===================
-	DirectX::XMFLOAT4X4 mat;	//行列格納用
+	DirectX::XMFLOAT4X4 Mat;	//行列格納用
 
 	// =============== ビュー行列の計算 ===================
-	DirectX::XMStoreFloat4x4(&mat, DirectX::XMMatrixTranspose(
+	DirectX::XMStoreFloat4x4(&Mat, DirectX::XMMatrixTranspose(
 		DirectX::XMMatrixLookAtLH(
 			DirectX::XMVectorSet(m_pTarget->x + m_fOffsetVibrateEye.x, m_pTarget->y + m_fRadius * sinf(m_fAngle),
 				m_pTarget->z + m_fOffsetVibrateEye.y - m_fRadius * cosf(m_fAngle), 0.0f),							//カメラ位置
@@ -94,5 +95,5 @@ DirectX::XMFLOAT4X4 CCameraChase::GetViewMatrix() const
 	)));	//ビュー変換
 
 	// =============== 提供 ===================
-	return mat;	//行列提供
+	return Mat;	//行列提供
 }
