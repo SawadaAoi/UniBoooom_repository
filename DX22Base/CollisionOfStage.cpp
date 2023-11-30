@@ -354,20 +354,20 @@ void CStage::BossBossCollision()
    ======================================== */
 void CStage::ExplosionBossCollision()
 {
-	for (int i = 0; i < MAX_EXPLOSION_NUM; ++i)	// 爆発
+	for (int i = 0; i < MAX_EXPLOSION_NUM; ++i)    // 爆発
 	{
-		CExplosion* pExplosion = m_pExplosionMng->GetExplosionPtr(i);	// 衝突する爆発のポインタ
-		if (pExplosion == nullptr) { continue; }	// 未使用の爆発はスルー
+		CExplosion* pExplosion = m_pExplosionMng->GetExplosionPtr(i);    // 衝突する爆発のポインタ
+		if (pExplosion == nullptr) { continue; }    // 未使用の爆発はスルー
 
-		for (int j = 0; j < MAX_SLIME_NUM; ++j)	// スライム
+		for (int j = 0; j < MAX_BOSS_SLIME_NUM; ++j)    // スライム
 		{
-			CSlimeBase* pSlimeTarget = m_pSlimeMng->GetSlimePtr(j);	// 衝突されるスライムのポインタ
+			CSlime_BossBase* pBossTarget = m_pSlimeMng->GetBossSlimePtr(j);    // 衝突されるスライムのポインタ
 
-			if (pSlimeTarget == nullptr)	continue;	// 無効なスライムはスルー
+			if (pBossTarget == nullptr)    continue;    // 無効なスライムはスルー
 
-			if (m_pCollision->CheckCollisionSphere(pExplosion->GetSphere(), pSlimeTarget->GetSphere(), pExplosion->GetPos(), pSlimeTarget->GetPos()))
+			if (m_pCollision->CheckCollisionSphere(pExplosion->GetSphere(), pBossTarget->GetSphere(), pExplosion->GetPos(), pBossTarget->GetPos()))
 			{
-				m_pSlimeMng->TouchExplosion(j, m_pExplosionMng, pExplosion->GetComboNum());// スライムの爆発処理
+				m_pSlimeMng->TouchBossExplosion(j, m_pExplosionMng, i);// スライムの爆発処理
 				break;
 			}
 		}
