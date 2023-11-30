@@ -60,7 +60,8 @@
 =========================================== */
 CStage1::CStage1()
 	: m_nNum(0)
-	, m_fSize(100.0f)
+	, m_fSize(0.0f)
+	, m_fResize(5.0f)
 	, m_bStart(false)
 {
 	// 頂点シェーダの読込
@@ -244,10 +245,9 @@ void CStage1::Update()
 		// タイトルから遷移後すぐゲーム開始にならないようにする処理
 		m_nNum++;
 		
-		if (m_nNum < 100)
+		if (m_nNum < 250)
 		{
-			m_fResize += 1.0f;
-			m_fSize -= m_fResize;
+			m_fSize += m_fResize;
 		}
 		else
 		{
