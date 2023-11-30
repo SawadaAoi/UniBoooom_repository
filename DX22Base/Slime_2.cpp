@@ -84,6 +84,30 @@ CSlime_2::~CSlime_2()
 {
 }
 
+void CSlime_2::Update(tagTransform3d playerTransform)
+{
+	if (!m_bHitMove)	//敵が通常の移動状態の時
+	{
+		if (!m_bEscape  && m_nEscapeCnt == 0)	//逃げるフラグがoffなら
+		{
+			NormalMove(playerTransform);	//通常異動
+		}
+		else
+		{
+			Escape();	//爆発から逃げる
+		}
+	}
+	else
+	{
+		//敵の吹き飛び移動
+		HitMove();
+	}
+
+	// -- 座標更新
+	m_Transform.fPos.x += m_move.x;
+	m_Transform.fPos.z += m_move.z;
+}
+
 /* ========================================
 	スピード決定関数
 	-------------------------------------
