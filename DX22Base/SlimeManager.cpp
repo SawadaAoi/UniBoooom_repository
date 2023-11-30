@@ -1,42 +1,42 @@
 /* ========================================
    HEW/UniBoooom!!
    ---------------------------------------
-   �X���C���}�l�[�W���[ �N���X����
+   スライムマネージャー クラス実装
    ---------------------------------------
    SlimeManager.cpp
 
-   �쐬�ҁF�鑺 ����
+   作成者：鈴村 朋也
 
-   �ύX����
-	�E2023/11/05 �X���C���}�l�[�W���[�N���X�쐬 suzumura
-	�E2023/11/08 �X���C�����m���ڐG�����ۂ̕��򏈗����쐬(���򂵂���ɍs�������͖������@��TODO�����Ă�����)�� yamashita
-	�E2023/11/08 �����������쐬(������̐��������͖����� Slime_2�`Slime_4���܂���������) yamashita
-	�E2023/11/09 ���������A�ϐ��̕ύX sawada
-	�E2023/11/09 �R�����g�̒ǉ� sawada
-	�E2023/11/11 parameter�p�w�b�_�ǉ� suzumura
-	�E2023/11/11 �X���C�����m���d�Ȃ�Ȃ��֐���ǉ� yamashita
-	�E2023/11/13 �X���C�����x�����Ƃɔ������Ԃ�ݒ�ł���悤�ɕύX Suzumura
-	�E2023/11/14 ���X���C���̏��������� Suzumura
-	�E2023/11/14 SphereInfo�̕ύX�ɑΉ� Takagi
-	�E2023/11/15 �e���f���̓ǂݍ��݂�base����ړ� yamashita
-	�E2023/11/15 �e���f���̓ǂݍ��݂��֐��� yamashita
-	�E2023/11/20 �{�X�p�̔z���ǉ�
-	�E2023/11/21 �{�X�p�̓����蔻�莞�̏���(HitSlimeBossBranch...etc)��ǉ�
-	�E2023/11/21 �{�X�p�̒ʏ펞�̏���(PreventSlimeBossOverlap...etc)��ǉ�
-	�E2023/11/21 BoooomUi�\������֐����Ăяo�� Tei
-	�E2023/11/23 �X���C���̐����ʒu���v���C���[���S�ɕύX yamashita
-	�E2023/11/23 �X���C���̐����ʒu���O��̐����ʒu������ȏ㗣���悤�ɕύX	yamashita
-	�E2023/11/23 �X���C�����v���C���[������ȏ㗣���ƑΊp����Ɉړ�����悤�ɕύX yamashita
-	�E2023/11/26 �{�X�����p�֐��ǉ�	Sawada
-	�E2023/11/26 �X���C���Ɣ����̋����𒲂ד����邩���肷��֐����쐬 yamashita
-	�E2023/11/27 �ԐԂ̔����������Ƀq�b�g�X�g�b�v�Ɖ�ʗh�ꂷ��悤�ɏC��	Sawada
-	�E2023/11/29 ��ʗh����������c���ɕύX takagi
-	�E2023/11/29 �v���C���[�̃|�C���^���擾 yamashita
-	�E2023/11/30 �U������ӏ����� takagi
+   変更履歴
+	・2023/11/05 スライムマネージャークラス作成 suzumura
+	・2023/11/08 スライム同士が接触した際の分岐処理を作成(分岐した後に行う処理は未実装　※TODOをつけておいた)の yamashita
+	・2023/11/08 結合処理を作成(結合後の生成処理は未実装 Slime_2～Slime_4がまだ無いから) yamashita
+	・2023/11/09 生成処理、変数の変更 sawada
+	・2023/11/09 コメントの追加 sawada
+	・2023/11/11 parameter用ヘッダ追加 suzumura
+	・2023/11/11 スライム同士が重ならない関数を追加 yamashita
+	・2023/11/13 スライムレベルごとに爆発時間を設定できるように変更 Suzumura
+	・2023/11/14 炎スライムの処理を実装 Suzumura
+	・2023/11/14 SphereInfoの変更に対応 Takagi
+	・2023/11/15 各モデルの読み込みをbaseから移動 yamashita
+	・2023/11/15 各モデルの読み込みを関数化 yamashita
+	・2023/11/20 ボス用の配列を追加
+	・2023/11/21 ボス用の当たり判定時の処理(HitSlimeBossBranch...etc)を追加
+	・2023/11/21 ボス用の通常時の処理(PreventSlimeBossOverlap...etc)を追加
+	・2023/11/21 BoooomUi表示する関数を呼び出す Tei
+	・2023/11/23 スライムの生成位置をプレイヤー中心に変更 yamashita
+	・2023/11/23 スライムの生成位置が前回の生成位置から一定以上離れるように変更	yamashita
+	・2023/11/23 スライムがプレイヤーから一定以上離れると対角線上に移動するように変更 yamashita
+	・2023/11/26 ボス生成用関数追加	Sawada
+	・2023/11/26 スライムと爆発の距離を調べ逃げるか判定する関数を作成 yamashita
+	・2023/11/27 赤赤の爆発生成時にヒットストップと画面揺れするように修正	Sawada
+	・2023/11/29 画面揺れを横強→縦強に変更 takagi
+	・2023/11/30 振動する箇所増設 takagi
+	・2023/11/30 ヒットストップ除去 takagi
 
 =========================================== */
 
-// =============== �C���N���[�h ===================
+// =============== インクルード ===================
 #include "SlimeManager.h"
 #include "Slime_1.h"
 #include "Slime_2.h"
@@ -44,44 +44,44 @@
 #include "Slime_4.h"
 #include "Slime_Flame.h"
 #include "Slime_Boss_1.h"
-#include "Input.h"		//��ŏ���
-#include "GameParameter.h"		//�萔��`�p�w�b�_�[
+#include "Input.h"		//後で消す
+#include "GameParameter.h"		//定数定義用ヘッダー
 #include "HitStop.h"
 
 #include <stdlib.h>
 
-// =============== �萔��` =======================
+// =============== 定数定義 =======================
 #if MODE_GAME_PARAMETER
 #else
-#define DEBUG_BOSS	(false)						// �f�o�b�O�p�ɃQ�[���J�n���{�X�𐶐����邩�ǂ���
+#define DEBUG_BOSS	(false)						// デバッグ用にゲーム開始時ボスを生成するかどうか
 
-const int ENEMY_CREATE_INTERVAL	= 3 * 60;		// �����Ԋu
-const int RANDOM_POS			= 15;			// �������W�͈�
-const int CREATE_DISTANCE		= 10;			// ���������ŏ��l
-const int SLIME_LEVEL1_PER		= 10;			// �X���C��_1�̐����m��
-const int SLIME_LEVEL2_PER		= 15;			// �X���C��_2�̐����m��
-const int SLIME_LEVEL3_PER		= 10;			// �X���C��_3�̐����m��
-const int SLIME_LEVEL_FLAME_PER	= 100 - SLIME_LEVEL1_PER - SLIME_LEVEL2_PER - SLIME_LEVEL3_PER;	// �X���C��_�t���C���̐����m��
+const int ENEMY_CREATE_INTERVAL	= 3 * 60;		// 生成間隔
+const int RANDOM_POS			= 15;			// 生成座標範囲
+const int CREATE_DISTANCE		= 10;			// 生成距離最小値
+const int SLIME_LEVEL1_PER		= 10;			// スライム_1の生成確立
+const int SLIME_LEVEL2_PER		= 15;			// スライム_2の生成確立
+const int SLIME_LEVEL3_PER		= 10;			// スライム_3の生成確立
+const int SLIME_LEVEL_FLAME_PER	= 100 - SLIME_LEVEL1_PER - SLIME_LEVEL2_PER - SLIME_LEVEL3_PER;	// スライム_フレイムの生成確立
 
-const int START_ENEMY_NUM		= 10;			// �Q�[���J�n���̓G�L�����̐�
+const int START_ENEMY_NUM		= 10;			// ゲーム開始時の敵キャラの数
 
-// ��1.0f�ł��̂܂�
-const float COL_SUB_HIT_TO_BIG = 0.7f;				// �X���C���Փ�(������)�̏Փˑ��̌��Z�l(���˂���ړ�)
-const float COL_SUB_STAND_TO_SMALL = 0.3f;			// �X���C���Փ�(������)�̏Փ˂���鑤�̌��Z�l(�Փ˂��ꂽ����)
-const float COL_SUB_HIT_TO_SMALL = 0.3f;			// �X���C���Փ�(�偨��)�̏Փˑ��̌��Z�l(�ړ�����)
-const float COL_SUB_STAND_TO_BIG = 1.2f;			// �X���C���Փ�(�偨��)�̏Փ˂���鑤�̌��Z�l(�Փ˂��ꂽ����)
-const float LEAVE_DISTANCE = 20.0f;					// ����ȏ㗣�ꂽ��Ίp����Ɉړ�����
+// ↓1.0fでそのまま
+const float COL_SUB_HIT_TO_BIG = 0.7f;				// スライム衝突(小→大)の衝突側の減算値(反射する移動)
+const float COL_SUB_STAND_TO_SMALL = 0.3f;			// スライム衝突(小→大)の衝突される側の減算値(衝突された方向)
+const float COL_SUB_HIT_TO_SMALL = 0.3f;			// スライム衝突(大→小)の衝突側の減算値(移動方向)
+const float COL_SUB_STAND_TO_BIG = 1.2f;			// スライム衝突(大→小)の衝突される側の減算値(衝突された方向)
+const float LEAVE_DISTANCE = 20.0f;					// これ以上離れたら対角線上に移動する
 
 #endif
 
 /* ========================================
-	�R���X�g���N�^�֐�
+	コンストラクタ関数
 	-------------------------------------
-	���e�F�R���X�g���N�^
+	内容：コンストラクタ
 	-------------------------------------
-	����1�F����
+	引数1：無し
 	-------------------------------------
-	�ߒl�F����
+	戻値：無し
 =========================================== */
 CSlimeManager::CSlimeManager(CPlayer* pPlayer)
 	: m_CreateCnt(0)
@@ -100,55 +100,55 @@ CSlimeManager::CSlimeManager(CPlayer* pPlayer)
 	, m_pPlayer(pPlayer)
 	, m_pExpMng(nullptr)
 {
-	//�X���C���̃��f���ƒ��_�V�F�[�_�[�̓ǂݍ���
+	//スライムのモデルと頂点シェーダーの読み込み
 	LoadModel();
 
-	// �X���C��������
+	// スライム初期化
 	for (int i = 0; i < MAX_SLIME_NUM; i++)
 	{
 		m_pSlime[i] = nullptr;
 	}
-	// �{�X�X���C��������
+	// ボススライム初期化
 	for (int i = 0; i < MAX_BOSS_SLIME_NUM; i++)
 	{
 		m_pBoss[i] = nullptr;
 	}
 
-	// �Q�[���J�n���ɓG�L�����𐶐�����
+	// ゲーム開始時に敵キャラを生成する
 	for (int i = 0; i < START_ENEMY_NUM; i++)
 	{
-		int ranLv = rand() % 3 + 1;		// ��������X���C���̃��x���𗐐��Ŏw��
-		Create((E_SLIME_LEVEL)ranLv);	// ��������
+		int ranLv = rand() % 3 + 1;		// 生成するスライムのレベルを乱数で指定
+		Create((E_SLIME_LEVEL)ranLv);	// 生成処理
 	}
 
 #if DEBUG_BOSS
-	// �J�n���{�X����
+	// 開始時ボス生成
 	for (int i = 0; i < MAX_BOSS_SLIME_NUM; i++)
 	{
-		// �X���C����use������
+		// スライムのuseを検索
 		if (m_pBoss[i] != nullptr) continue;
-		m_pBoss[i] = new CSlime_Boss_1(TPos3d<float>(5.0f,0.0f,3.0f), m_pVS, m_pBossModel);	//���I����
+		m_pBoss[i] = new CSlime_Boss_1(TPos3d<float>(5.0f,0.0f,3.0f), m_pVS, m_pBossModel);	//動的生成
 
 		break;
 	}
 #endif
 	
 
-	//�T�E���h�t�@�C���̓ǂݍ���
-	m_pSEHitSlime = CSound::LoadSound("Assets/Sound/SE/SlimeHitSlime.mp3");		//�n���}�[��U��������SE�̓ǂݍ���
-	m_pSEUnion = CSound::LoadSound("Assets/Sound/SE/Union.mp3");		//�X���C���������������̂�SE�̓ǂݍ���
+	//サウンドファイルの読み込み
+	m_pSEHitSlime = CSound::LoadSound("Assets/Sound/SE/SlimeHitSlime.mp3");		//ハンマーを振った時のSEの読み込み
+	m_pSEUnion = CSound::LoadSound("Assets/Sound/SE/Union.mp3");		//スライムがくっついた時ののSEの読み込み
 
 
 }
 
 /* ========================================
-	�f�X�g���N�^�֐�
+	デストラクタ関数
 	-------------------------------------
-	���e�F�f�X�g���N�^
+	内容：デストラクタ
 	-------------------------------------
-	����1�F����
+	引数1：無し
 	-------------------------------------
-	�ߒl�F����
+	戻値：無し
 =========================================== */
 CSlimeManager::~CSlimeManager()
 {
@@ -160,13 +160,13 @@ CSlimeManager::~CSlimeManager()
 	SAFE_DELETE(m_pBlueModel);
 	SAFE_DELETE(m_pBossModel);
 
-	// �X���C���폜
+	// スライム削除
 	for (int i = 0; i < MAX_SLIME_NUM; i++)
 	{
 		SAFE_DELETE(m_pSlime[i]);
 	}
 
-	// �{�X�X���C���폜
+	// ボススライム削除
 	for (int i = 0; i < MAX_BOSS_SLIME_NUM; i++)
 	{
 		SAFE_DELETE(m_pBoss[i]);
@@ -175,19 +175,19 @@ CSlimeManager::~CSlimeManager()
 }
 
 /* ========================================
-	�X�V�����֐�
+	更新処理関数
 	-------------------------------------
-	���e�F�X�V����
+	内容：更新処理
 	-------------------------------------
-	����1�F����
+	引数1：無し
 	-------------------------------------
-	�ߒl�F����
+	戻値：無し
 =========================================== */
 void CSlimeManager::Update(CExplosionManager* pExpMng)
 {
-	CheckEscape();	//Update�̑O�ɋ߂��ɔ��������邩�m�F����
+	CheckEscape();	//Updateの前に近くに爆発があるか確認する
 
-	// �X���C���X�V
+	// スライム更新
 	for (int i = 0; i < MAX_SLIME_NUM; i++)
 	{
 		if (m_pSlime[i] == nullptr) continue;
@@ -195,9 +195,9 @@ void CSlimeManager::Update(CExplosionManager* pExpMng)
 
 	}
 
-	OutOfRange();	//�X���C�����v���C���[�����苗�����ꂽ��Ίp���Ɉړ�
+	OutOfRange();	//スライムがプレイヤーから一定距離離れたら対角線に移動
 
-	// �{�X�X���C���X�V
+	// ボススライム更新
 	for (int i = 0; i < MAX_BOSS_SLIME_NUM; i++)
 	{
 		if (m_pBoss[i] == nullptr) continue;
@@ -209,31 +209,31 @@ void CSlimeManager::Update(CExplosionManager* pExpMng)
 	m_CreateCnt++;
 	if(ENEMY_CREATE_INTERVAL<= m_CreateCnt)
 	{
-		// �G ����
-		Create(GetRandomLevel());	//�X���C���̃��x���������_���ɑI��Ő�������
-		m_CreateCnt = 0;				//�J�E���g�����Z�b�g
+		// 敵 生成
+		Create(GetRandomLevel());	//スライムのレベルをランダムに選んで生成する
+		m_CreateCnt = 0;				//カウントをリセット
 	}
 }
 
 /* ========================================
-	�`�揈���֐�
+	描画処理関数
 	-------------------------------------
-	���e�F�`�揈��
+	内容：描画処理
 	-------------------------------------
-	����1�F����
+	引数1：無し
 	-------------------------------------
-	�ߒl�F����
+	戻値：無し
 =========================================== */
 void CSlimeManager::Draw()
 {
-	//"�X���C��"�`��
+	//"スライム"描画
 	for (int i = 0; i < MAX_SLIME_NUM; i++)
 	{
 		if (m_pSlime[i] == nullptr) continue;
 		m_pSlime[i]->Draw(m_pCamera);
 	}
 				
-	// �{�X�X���C���X�V
+	// ボススライム更新
 	for (int i = 0; i < MAX_BOSS_SLIME_NUM; i++)
 	{
 		if (m_pBoss[i] == nullptr) continue;
@@ -244,222 +244,220 @@ void CSlimeManager::Draw()
 
 
 /* ========================================
-	�X���C�������֐�
+	スライム生成関数
 	-------------------------------------
-	���e�F�X���C���̐���
+	内容：スライムの生成
 	-------------------------------------
-	����1�F����
+	引数1：無し
 	-------------------------------------
-	�ߒl�F����
+	戻値：無し
 =========================================== */
 void CSlimeManager::Create(E_SLIME_LEVEL level)
 {
-	TPos3d<float> CreatePos;	// �X���C���̐����ʒu
+	TPos3d<float> CreatePos;	// スライムの生成位置
 
 	for (int i = 0; i < MAX_SLIME_NUM; i++)
 	{
-		// �X���C����use������
+		// スライムのuseを検索
 		if (m_pSlime[i] != nullptr) continue;
 
-		// �K�؂ȍ��W���o��܂ŌJ��Ԃ�
+		// 適切な座標が出るまで繰り返す
 		while (true)
 		{
-			// �������Z�b�g����
-			CreatePos.x = GetRandom(int(m_pPlayer->GetPos().x - RANDOM_POS), int(m_pPlayer->GetPos().x + RANDOM_POS));	//�����擾
+			// 乱数をセットする
+			CreatePos.x = GetRandom(int(m_pPlayer->GetPos().x - RANDOM_POS), int(m_pPlayer->GetPos().x + RANDOM_POS));	//乱数取得
 			CreatePos.z = GetRandom(int(m_pPlayer->GetPos().z - RANDOM_POS), int(m_pPlayer->GetPos().z + RANDOM_POS));
 			CreatePos.y = 0;
 
-			float PlayerCreateDistance = CreatePos.Distance(m_pPlayer->GetPos());	// �������W�̃v���C���[�Ƃ̋���
-			float oldCreateDistance = CreatePos.Distance(m_oldCreatePos);	// �������W�̃v���C���[�Ƃ̋���
+			float PlayerCreateDistance = CreatePos.Distance(m_pPlayer->GetPos());	// 生成座標のプレイヤーとの距離
+			float oldCreateDistance = CreatePos.Distance(m_oldCreatePos);	// 生成座標のプレイヤーとの距離
 
-			// �v���C���[������̋�������Ă���Δ�����
+			// プレイヤーから一定の距離離れていれば抜ける
 			if (PlayerCreateDistance >= CREATE_DISTANCE && oldCreateDistance >= CREATE_DISTANCE) break;	
 		}
 
-		m_oldCreatePos = CreatePos;	//�������W��ێ�
+		m_oldCreatePos = CreatePos;	//生成座標を保持
 		
 		switch (level)
 		{
 		case LEVEL_1:
-			m_pSlime[i] = new CSlime_1(CreatePos,m_pVS,m_pBlueModel);	// ���I����
+			m_pSlime[i] = new CSlime_1(CreatePos,m_pVS,m_pBlueModel);	// 動的生成
 			break;
 		case LEVEL_2:
-			m_pSlime[i] = new CSlime_2(CreatePos, m_pVS, m_pGreenModel);	// ���I����
+			m_pSlime[i] = new CSlime_2(CreatePos, m_pVS, m_pGreenModel);	// 動的生成
 			break;
 		case LEVEL_3:
-			m_pSlime[i] = new CSlime_3(CreatePos, m_pVS, m_pYellowModel);	// ���I����
+			m_pSlime[i] = new CSlime_3(CreatePos, m_pVS, m_pYellowModel);	// 動的生成
 			break;
 		case LEVEL_4:
-			m_pSlime[i] = new CSlime_4(CreatePos, m_pVS, m_pRedModel);	// ���I����
+			m_pSlime[i] = new CSlime_4(CreatePos, m_pVS, m_pRedModel);	// 動的生成
 			break;
 		case LEVEL_FLAME:
-			m_pSlime[i] = new CSlime_Flame(CreatePos,m_pVS,m_pFlameModel);	// ���I����
+			m_pSlime[i] = new CSlime_Flame(CreatePos,m_pVS,m_pFlameModel);	// 動的生成
 			break;
 
 		}
 
-		m_pSlime[i]->SetCamera(m_pCamera);	//�J�������Z�b�g
-		break;						// ����������I��
+		m_pSlime[i]->SetCamera(m_pCamera);	//カメラをセット
+		break;						// 生成したら終了
 		
 	}
 }
 
 /* ========================================
-	�{�X�X���C�������֐�
+	ボススライム生成関数
 	-------------------------------------
-	���e�F�{�X�X���C���̐���
+	内容：ボススライムの生成
 	-------------------------------------
-	����1�F����
+	引数1：無し
 	-------------------------------------
-	�ߒl�F����
+	戻値：無し
 =========================================== */
 void CSlimeManager::CreateBoss()
 {
 	for (int i = 0; i < MAX_BOSS_SLIME_NUM; i++)
 	{
-		// �X���C����use������
+		// スライムのuseを検索
 		if (m_pBoss[i] != nullptr) continue;
-		m_pBoss[i] = new CSlime_Boss_1(TPos3d<float>(0.0f, 0.0f, 0.0f), m_pVS, m_pBossModel);	//���I����(��荇�����ʒu�͉�)
+		m_pBoss[i] = new CSlime_Boss_1(TPos3d<float>(0.0f, 0.0f, 0.0f), m_pVS, m_pBossModel);	//動的生成(取り合えず位置は仮)
 
 		break;
 	}
 }
 
 /* ========================================
-	�X���C���ڐG����֐�
+	スライム接触分岐関数
 	----------------------------------------
-	���e�F�X���C�����m���ڐG�����ۂɕ��򂵂Đ��������������s����
+	内容：スライム同士が接触した際に分岐して正しい処理を実行する
 	----------------------------------------
-	����1�F�Փ˂���X���C���̔z��ԍ�
-	����2�F�Փ˂��ꂽ�X���C���̔z��ԍ�
-	����3�F�����}�l�[�W���[
+	引数1：衝突するスライムの配列番号
+	引数2：衝突されたスライムの配列番号
+	引数3：爆発マネージャー
 	----------------------------------------
-	�ߒl�F�Ȃ�
+	戻値：なし
 ======================================== */
 void CSlimeManager::HitBranch(int HitSlimeNum, int StandSlimeNum, CExplosionManager* pExpMng)
 {
-	E_SLIME_LEVEL hitSlimeLevel, standSlimeLevel;				// ���x��
-	tagTransform3d hitSlimeTransform, standSlimeTransform;		//���[���h���W�n
-	float hitSlimeSpeed;						// �ړ��X�s�[�h
-	float travelAngle, reflectionAngle;							// �ړ�����
+	E_SLIME_LEVEL hitSlimeLevel, standSlimeLevel;				// レベル
+	tagTransform3d hitSlimeTransform, standSlimeTransform;		//ワールド座標系
+	float hitSlimeSpeed;						// 移動スピード
+	float travelAngle, reflectionAngle;							// 移動方向
 
-	hitSlimeLevel = m_pSlime[HitSlimeNum]->GetSlimeLevel();		// �Փ˂���X���C���̃T�C�Y���擾
-	hitSlimeTransform = m_pSlime[HitSlimeNum]->GetTransform();	// �Փ˂���X���C���̃��[���h���W�����擾
-	hitSlimeSpeed = m_pSlime[HitSlimeNum]->GetSpeed();			// �Փ˂���X���C���̑��x���擾
+	hitSlimeLevel = m_pSlime[HitSlimeNum]->GetSlimeLevel();		// 衝突するスライムのサイズを取得
+	hitSlimeTransform = m_pSlime[HitSlimeNum]->GetTransform();	// 衝突するスライムのワールド座標情報を取得
+	hitSlimeSpeed = m_pSlime[HitSlimeNum]->GetSpeed();			// 衝突するスライムの速度を取得
 
-	standSlimeLevel = m_pSlime[StandSlimeNum]->GetSlimeLevel();	// �Փ˂��ꂽ�X���C���̃T�C�Y���擾
-	standSlimeTransform = m_pSlime[StandSlimeNum]->GetTransform();	// �Փ˂���X���C���̃��[���h���W�����擾
+	standSlimeLevel = m_pSlime[StandSlimeNum]->GetSlimeLevel();	// 衝突されたスライムのサイズを取得
+	standSlimeTransform = m_pSlime[StandSlimeNum]->GetTransform();	// 衝突するスライムのワールド座標情報を取得
 
-	travelAngle = hitSlimeTransform.Angle(standSlimeTransform);		// �Փ˂��鑤�̐i�s����
-	reflectionAngle = standSlimeTransform.Angle(hitSlimeTransform);	// �Փ˂��鑤�̋t����(����)
-	TPos3d<float> pos = m_pSlime[StandSlimeNum]->GetPos();        // �Փ˂��ꂽ�X���C���̈ʒu���m��
+	travelAngle = hitSlimeTransform.Angle(standSlimeTransform);		// 衝突する側の進行方向
+	reflectionAngle = standSlimeTransform.Angle(hitSlimeTransform);	// 衝突する側の逆方向(反射)
+	TPos3d<float> pos = m_pSlime[StandSlimeNum]->GetPos();        // 衝突されたスライムの位置を確保
 	
-	//-- �t���C���X���C���q�b�g���� �Ăяo��
+	//-- フレイムスライムヒット処理 呼び出し
 	if (HitFlameBranch(HitSlimeNum, StandSlimeNum, pExpMng)) 
 	{
-		return; //�t���C���X���C���ڐG���s��ꂽ�Ȃ珈�����d�Ȃ�Ȃ��悤��return����
+		return; //フレイムスライム接触が行われたなら処理が重ならないようにreturnする
 	}
 	
-	//-- �m�[�}���X���C���q�b�g����
-	// �Փ˂���X���C�����������ꍇ(������)
+	//-- ノーマルスライムヒット処理
+	// 衝突するスライムが小さい場合(小→大)
 	if (hitSlimeLevel < standSlimeLevel)
 	{
-		m_pSlime[HitSlimeNum]->HitMoveStart(hitSlimeSpeed * COL_SUB_HIT_TO_BIG, reflectionAngle);	// �Փ˂���X���C���ɐ�����шړ�����
-		m_pSlime[StandSlimeNum]->HitMoveStart(hitSlimeSpeed * COL_SUB_STAND_TO_SMALL, travelAngle);	// �Փ˂��ꂽ�X���C���ɐ�����шړ�����
-		m_pSEHitSlimeSpeaker = CSound::PlaySound(m_pSEHitSlime);									// SE�̍Đ�
+		m_pSlime[HitSlimeNum]->HitMoveStart(hitSlimeSpeed * COL_SUB_HIT_TO_BIG, reflectionAngle);	// 衝突するスライムに吹き飛び移動処理
+		m_pSlime[StandSlimeNum]->HitMoveStart(hitSlimeSpeed * COL_SUB_STAND_TO_SMALL, travelAngle);	// 衝突されたスライムに吹き飛び移動処理
+		m_pSEHitSlimeSpeaker = CSound::PlaySound(m_pSEHitSlime);									// SEの再生
 	}
 	
-	// �Փ˂���X���C�����傫���ꍇ(�偨��)
+	// 衝突するスライムが大きい場合(大→小)
 	else if (hitSlimeLevel > standSlimeLevel)
 	{
-		m_pSlime[HitSlimeNum]->HitMoveStart(hitSlimeSpeed * COL_SUB_HIT_TO_SMALL, travelAngle);		// �Փ˂���X���C���ɐ�����шړ�����
-		m_pSlime[StandSlimeNum]->HitMoveStart(hitSlimeSpeed * COL_SUB_STAND_TO_BIG, travelAngle);	// �Փ˂��ꂽ�X���C���ɐ�����шړ�����
-		m_pSEHitSlimeSpeaker = CSound::PlaySound(m_pSEHitSlime);									// SE�̍Đ�
+		m_pSlime[HitSlimeNum]->HitMoveStart(hitSlimeSpeed * COL_SUB_HIT_TO_SMALL, travelAngle);		// 衝突するスライムに吹き飛び移動処理
+		m_pSlime[StandSlimeNum]->HitMoveStart(hitSlimeSpeed * COL_SUB_STAND_TO_BIG, travelAngle);	// 衝突されたスライムに吹き飛び移動処理
+		m_pSEHitSlimeSpeaker = CSound::PlaySound(m_pSEHitSlime);									// SEの再生
 	}
-	//�X���C���̃T�C�Y�������������ꍇ
+	//スライムのサイズが同じだった場合
 	else
 	{
 
-		SAFE_DELETE(m_pSlime[HitSlimeNum]);								// �Փ˂���X���C�����폜
-		SAFE_DELETE(m_pSlime[StandSlimeNum]);							// �Փ˂��ꂽ�X���C�����폜
+		SAFE_DELETE(m_pSlime[HitSlimeNum]);								// 衝突するスライムを削除
+		SAFE_DELETE(m_pSlime[StandSlimeNum]);							// 衝突されたスライムを削除
 
-		if (hitSlimeLevel == MAX_LEVEL)	//�X���C���̃T�C�Y���ő�̎�
+		if (hitSlimeLevel == MAX_LEVEL)	//スライムのサイズが最大の時
 		{
-			CHitStop::UpFlag(CHitStop::E_BIT_FLAG_STOP_SOFT);	//�t���O�I��
-
-			//�X���C����������
-			pExpMng->Create(pos, MAX_SIZE_EXPLODE * EXPLODE_BASE_RATIO, LEVEL_4_EXPLODE_TIME, LEVEL_4_EXPLODE_DAMAGE, E_SLIME_LEVEL::LEVEL_4x4);	//�Փ˂��ꂽ�X���C���̈ʒu�Ń��x���S����
+			//スライム爆発処理
+			pExpMng->Create(pos, MAX_SIZE_EXPLODE * EXPLODE_BASE_RATIO, LEVEL_4_EXPLODE_TIME, LEVEL_4_EXPLODE_DAMAGE, E_SLIME_LEVEL::LEVEL_4x4);	//衝突されたスライムの位置でレベル４爆発
 			m_pScoreOHMng->DisplayOverheadScore(pos, LEVEL_4_SCORE * 2, SLIME_SCORE_HEIGHT);
-			pExpMng->CreateUI(pos, LEVEL_4_EXPLODE_TIME);		//���x���S���������ʒuboooomUI�\��
+			pExpMng->CreateUI(pos, LEVEL_4_EXPLODE_TIME);		//レベル４爆発した位置boooomUI表示
 
 			m_pCamera->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_STRONG | CCamera::E_BIT_FLAG_VIBRATION_SIDE_STRONG);
 		}
-		else	//�ő�T�C�Y����Ȃ��ꍇ��1�i�K�傫���X���C���𐶐�����
+		else	//最大サイズじゃない場合は1段階大きいスライムを生成する
 		{
-			UnionSlime(hitSlimeLevel,pos);	//�X���C���̌�������
+			UnionSlime(hitSlimeLevel,pos);	//スライムの結合処理
 		}
 	}
 }
 
 /* ========================================
-	�t���C���X���C���ڐG����֐�
+	フレイムスライム接触分岐関数
 	----------------------------------------
-	���e�F�t���C���X���C�����ڐG�����ہA���������������s����
+	内容：フレイムスライムが接触した際、正しい処理を実行する
 	----------------------------------------
-	����1�F�Փ˂���X���C���̔z��ԍ�
-	����2�F�Փ˂��ꂽ�X���C���̔z��ԍ�
-	����3�F�����}�l�[�W���[
+	引数1：衝突するスライムの配列番号
+	引数2：衝突されたスライムの配列番号
+	引数3：爆発マネージャー
 	----------------------------------------
-	�ߒl�F�Ȃ�
+	戻値：なし
 ======================================== */
 bool CSlimeManager::HitFlameBranch(int HitSlimeNum, int StandSlimeNum, CExplosionManager* pExpMng)
 {
-	E_SLIME_LEVEL hitSlimeLevel, standSlimeLevel;						// ���x��
-	float hitSlimeSpeed;												// �ړ��X�s�[�h
-	float travelAngle;													// �ړ�����
-	tagTransform3d hitSlimeTransform, standSlimeTransform;				//���[���h�s��Ɋւ����
+	E_SLIME_LEVEL hitSlimeLevel, standSlimeLevel;						// レベル
+	float hitSlimeSpeed;												// 移動スピード
+	float travelAngle;													// 移動方向
+	tagTransform3d hitSlimeTransform, standSlimeTransform;				//ワールド行列に関わる情報
 
-	TTriType<float> hitSlimeSize = m_pSlime[HitSlimeNum]->GetScale();		// �Փː�̃X���C���̃T�C�Y���m��
-	TTriType<float> standSlimeSize = m_pSlime[StandSlimeNum]->GetScale();	// �������ł����X���C���̃T�C�Y���m��
+	TTriType<float> hitSlimeSize = m_pSlime[HitSlimeNum]->GetScale();		// 衝突先のスライムのサイズを確保
+	TTriType<float> standSlimeSize = m_pSlime[StandSlimeNum]->GetScale();	// 吹っ飛んできたスライムのサイズを確保
 
-	hitSlimeTransform = m_pSlime[HitSlimeNum]->GetTransform();				// �Փ˂���̃��[���h�s��Ɋւ����
-	standSlimeTransform = m_pSlime[StandSlimeNum]->GetTransform();			// �Փ˂��ꂽ���[���h�s��Ɋւ����
-	hitSlimeLevel = m_pSlime[HitSlimeNum]->GetSlimeLevel();					// �Փ˂���X���C���̃T�C�Y���擾
-	hitSlimeSpeed = m_pSlime[HitSlimeNum]->GetSpeed();						// �Փ˂���X���C���̑��x���擾
-	travelAngle = hitSlimeTransform.Angle(standSlimeTransform);				// �Փ˂��鑤�̐i�s����
-	standSlimeLevel = m_pSlime[StandSlimeNum]->GetSlimeLevel();				// �Փ˂��ꂽ�X���C���̃T�C�Y���擾
+	hitSlimeTransform = m_pSlime[HitSlimeNum]->GetTransform();				// 衝突するのワールド行列に関わる情報
+	standSlimeTransform = m_pSlime[StandSlimeNum]->GetTransform();			// 衝突されたワールド行列に関わる情報
+	hitSlimeLevel = m_pSlime[HitSlimeNum]->GetSlimeLevel();					// 衝突するスライムのサイズを取得
+	hitSlimeSpeed = m_pSlime[HitSlimeNum]->GetSpeed();						// 衝突するスライムの速度を取得
+	travelAngle = hitSlimeTransform.Angle(standSlimeTransform);				// 衝突する側の進行方向
+	standSlimeLevel = m_pSlime[StandSlimeNum]->GetSlimeLevel();				// 衝突されたスライムのサイズを取得
 
-	//-- �t���C���X���C���q�b�g����
-	// �t���C���@���@�t���C��
+	//-- フレイムスライムヒット処理
+	// フレイム　→　フレイム
 	if (hitSlimeLevel == LEVEL_FLAME && standSlimeLevel == LEVEL_FLAME)
 	{
-		// �w�Փ˂���X���C�����傫���ꍇ(�偨��)�x�Ɠ���������������
-		m_pSlime[HitSlimeNum]->HitMoveStart(hitSlimeSpeed * COL_SUB_HIT_TO_SMALL, travelAngle);		// �Փ˂���X���C���ɐ�����шړ�����
-		m_pSlime[StandSlimeNum]->HitMoveStart(hitSlimeSpeed * COL_SUB_STAND_TO_BIG, travelAngle);	// �Փ˂��ꂽ�X���C���ɐ�����шړ�����
-		m_pSEHitSlimeSpeaker = CSound::PlaySound(m_pSEHitSlime);									//SE�̍Đ�
+		// 『衝突するスライムが大きい場合(大→小)』と同じ動きをさせる
+		m_pSlime[HitSlimeNum]->HitMoveStart(hitSlimeSpeed * COL_SUB_HIT_TO_SMALL, travelAngle);		// 衝突するスライムに吹き飛び移動処理
+		m_pSlime[StandSlimeNum]->HitMoveStart(hitSlimeSpeed * COL_SUB_STAND_TO_BIG, travelAngle);	// 衝突されたスライムに吹き飛び移動処理
+		m_pSEHitSlimeSpeaker = CSound::PlaySound(m_pSEHitSlime);									//SEの再生
 
 		return true;
 	}
-	// �t���C���@���@�m�[�}��
+	// フレイム　→　ノーマル
 	else if (hitSlimeLevel == LEVEL_FLAME)
 	{
-		pExpMng->SwitchExplode(standSlimeLevel, standSlimeTransform.fPos,standSlimeSize);	//�X���C���̃��x���ɂ���Ĕ����̎��ԂƃT�C�Y�𕪊�
+		pExpMng->SwitchExplode(standSlimeLevel, standSlimeTransform.fPos,standSlimeSize);	//スライムのレベルによって爆発の時間とサイズを分岐
 		m_pScoreOHMng->DisplayOverheadScore(standSlimeTransform.fPos, standSlimeLevel);
-		SAFE_DELETE(m_pSlime[HitSlimeNum]);								// �Փ˂���X���C�����폜
-		SAFE_DELETE(m_pSlime[StandSlimeNum]);							// �Փ˂��ꂽ�X���C�����폜
+		SAFE_DELETE(m_pSlime[HitSlimeNum]);								// 衝突するスライムを削除
+		SAFE_DELETE(m_pSlime[StandSlimeNum]);							// 衝突されたスライムを削除
 
 		m_pCamera->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_STRONG);
 		m_pCamera->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_SIDE_WEAK);
 		return true;
 	}
-	// �m�[�}���@���@�t���C��
+	// ノーマル　→　フレイム
 	else if (standSlimeLevel == LEVEL_FLAME)
 	{
-		pExpMng->SwitchExplode(hitSlimeLevel, hitSlimeTransform.fPos, hitSlimeSize);	//�X���C���̃��x���ɂ���Ĕ����̎��ԂƃT�C�Y�𕪊�
+		pExpMng->SwitchExplode(hitSlimeLevel, hitSlimeTransform.fPos, hitSlimeSize);	//スライムのレベルによって爆発の時間とサイズを分岐
 		m_pScoreOHMng->DisplayOverheadScore(hitSlimeTransform.fPos, hitSlimeLevel);
 
-		SAFE_DELETE(m_pSlime[HitSlimeNum]);								// �Փ˂���X���C�����폜
-		SAFE_DELETE(m_pSlime[StandSlimeNum]);							// �Փ˂��ꂽ�X���C�����폜
+		SAFE_DELETE(m_pSlime[HitSlimeNum]);								// 衝突するスライムを削除
+		SAFE_DELETE(m_pSlime[StandSlimeNum]);							// 衝突されたスライムを削除
 
 		m_pCamera->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_STRONG | CCamera::E_BIT_FLAG_VIBRATION_SIDE_WEAK);
 		return true;
@@ -469,13 +467,13 @@ bool CSlimeManager::HitFlameBranch(int HitSlimeNum, int StandSlimeNum, CExplosio
 }
 
 /* ========================================
-	�����֐�
+	結合関数
 	----------------------------------------
-	���e�F1�i�K��̃X���C���𐶐�����֐�
+	内容：1段階上のスライムを生成する関数
 	----------------------------------------
-	����1�F�X���C���̃��x��
+	引数1：スライムのレベル
 	----------------------------------------
-	�ߒl�F�Ȃ�
+	戻値：なし
 ======================================== */
 void CSlimeManager::UnionSlime(E_SLIME_LEVEL level ,TPos3d<float> pos)
 {
@@ -486,232 +484,232 @@ void CSlimeManager::UnionSlime(E_SLIME_LEVEL level ,TPos3d<float> pos)
 		switch (level)
 		{
 		case LEVEL_1:
-			//�T�C�Y2�̃X���C���𐶐�
+			//サイズ2のスライムを生成
 			m_pSlime[i] = new CSlime_2(pos, m_pVS, m_pGreenModel);
 			break;
 		case LEVEL_2:
-			//�T�C�Y3�̃X���C���𐶐�
+			//サイズ3のスライムを生成
 			m_pSlime[i] = new CSlime_3(pos, m_pVS, m_pYellowModel);
 			break;
 		case LEVEL_3:
-			//�T�C�Y4�̃X���C���𐶐�
+			//サイズ4のスライムを生成
 			m_pSlime[i] = new CSlime_4(pos, m_pVS, m_pRedModel);
 			break;
 		}
 
-		m_pSlime[i]->SetCamera(m_pCamera);	//�J�������Z�b�g
-		m_pSEUnionSpeaker = CSound::PlaySound(m_pSEUnion);	//SE�̍Đ�
+		m_pSlime[i]->SetCamera(m_pCamera);	//カメラをセット
+		m_pSEUnionSpeaker = CSound::PlaySound(m_pSEUnion);	//SEの再生
 
 		break;
 	}
 }
 
 /* ========================================
-	�����ڐG�֐�
+	爆発接触関数
 	----------------------------------------
-	���e�F��ʏ�̔����ɃX���C�����ڐG�������̏���
+	内容：画面上の爆発にスライムが接触した時の処理
 	----------------------------------------
-	����1�F��������X���C���̔z��ԍ�
-	����2�F�����}�l�[�W���[�̃|�C���^
+	引数1：爆発するスライムの配列番号
+	引数2：爆発マネージャーのポインタ
 	----------------------------------------
-	�ߒl�F�Ȃ�
+	戻値：なし
 ======================================== */
 void CSlimeManager::TouchExplosion(int DelSlime, CExplosionManager * pExpMng, int comboNum)
 {
-	TPos3d<float> pos(m_pSlime[DelSlime]->GetPos());			// �Փː�̃X���C���̈ʒu���m��
-	E_SLIME_LEVEL level = m_pSlime[DelSlime]->GetSlimeLevel();	// �Փː�̃X���C���̃��x�����m��
-	TTriType<float> size = m_pSlime[DelSlime]->GetScale();		// �Փː�̃X���C���T�C�Y���m��
+	TPos3d<float> pos(m_pSlime[DelSlime]->GetPos());			// 衝突先のスライムの位置を確保
+	E_SLIME_LEVEL level = m_pSlime[DelSlime]->GetSlimeLevel();	// 衝突先のスライムのレベルを確保
+	TTriType<float> size = m_pSlime[DelSlime]->GetScale();		// 衝突先のスライムサイズを確保
 
 	pExpMng->SwitchExplode(level, pos, size, comboNum);
 	m_pScoreOHMng->DisplayOverheadScore(pos, level);
-	//�g�[�^���X�R�A�ilevel,combo)
-	SAFE_DELETE(m_pSlime[DelSlime]);					//�Ԃ���ɗ����X���C�����폜
+	//トータルスコア（level,combo)
+	SAFE_DELETE(m_pSlime[DelSlime]);					//ぶつかりに来たスライムを削除
 
 }
 
 /* ========================================
-	�X���C�����{�X�ڐG����֐�
+	スライム→ボス接触分岐関数
 	----------------------------------------
-	���e�F�X���C������{�X�Ƃ̐ڐG�𐳂��������ɕ��򂳂���
+	内容：スライムからボスとの接触を正しい処理に分岐させる
 	----------------------------------------
-	����1�F�Փ˂���X���C���̔z��ԍ�
-	����2�F�Փ˂��ꂽ�X���C���̔z��ԍ�
-	����3�F�����}�l�[�W���[
+	引数1：衝突するスライムの配列番号
+	引数2：衝突されたスライムの配列番号
+	引数3：爆発マネージャー
 	----------------------------------------
-	�ߒl�F�Ȃ�
+	戻値：なし
 ======================================== */
 void CSlimeManager::HitSlimeBossBranch(int HitSlimeNum, int StandBossNum, CExplosionManager* pExpMng)
 {
-	E_SLIME_LEVEL hitSlimeLevel;								// ���x��
-	E_SLIME_LEVEL standBossLevel;								// ���x��(�{�X)
-	tagTransform3d hitSlimeTransform;							// ���[���h���W�n
-	tagTransform3d standBossTransform;							// ���[���h���W�n(�{�X)
-	TTriType<float> hitSlimeSize;								// �T�C�Y���m��						
-	float hitSlimeSpeed;										// �ړ��X�s�[�h
-	float travelAngle, reflectionAngle;							// �ړ�����
+	E_SLIME_LEVEL hitSlimeLevel;								// レベル
+	E_SLIME_LEVEL standBossLevel;								// レベル(ボス)
+	tagTransform3d hitSlimeTransform;							// ワールド座標系
+	tagTransform3d standBossTransform;							// ワールド座標系(ボス)
+	TTriType<float> hitSlimeSize;								// サイズを確保						
+	float hitSlimeSpeed;										// 移動スピード
+	float travelAngle, reflectionAngle;							// 移動方向
 
-	// --�Q��
-	// �m�[�}��
-	hitSlimeLevel = m_pSlime[HitSlimeNum]->GetSlimeLevel();			// �Փ˂���X���C���̃T�C�Y���擾
-	hitSlimeTransform = m_pSlime[HitSlimeNum]->GetTransform();		// �Փ˂���X���C���̃��[���h���W�����擾
-	hitSlimeSpeed = m_pSlime[HitSlimeNum]->GetSpeed();				// �Փ˂���X���C���̑��x���擾
-	hitSlimeSize = m_pSlime[HitSlimeNum]->GetScale();				// �Փː�̃X���C���̃T�C�Y���m��
+	// --参照
+	// ノーマル
+	hitSlimeLevel = m_pSlime[HitSlimeNum]->GetSlimeLevel();			// 衝突するスライムのサイズを取得
+	hitSlimeTransform = m_pSlime[HitSlimeNum]->GetTransform();		// 衝突するスライムのワールド座標情報を取得
+	hitSlimeSpeed = m_pSlime[HitSlimeNum]->GetSpeed();				// 衝突するスライムの速度を取得
+	hitSlimeSize = m_pSlime[HitSlimeNum]->GetScale();				// 衝突先のスライムのサイズを確保
 
-	// �{�X
-	standBossLevel = LEVEL_BOSS;									// �Փ˂���	�{�X�X���C���̃T�C�Y���擾
-	standBossTransform = m_pBoss[StandBossNum]->GetTransform();		// �Փ˂���	�{�X�X���C���̃��[���h���W�����擾
+	// ボス
+	standBossLevel = LEVEL_BOSS;									// 衝突する	ボススライムのサイズを取得
+	standBossTransform = m_pBoss[StandBossNum]->GetTransform();		// 衝突する	ボススライムのワールド座標情報を取得
 
-	// ���̑�
-	travelAngle = hitSlimeTransform.Angle(standBossTransform);		// �Փ˂��鑤�̐i�s����
-	reflectionAngle = standBossTransform.Angle(hitSlimeTransform);	// �Փ˂��鑤�̋t����(����)
+	// その他
+	travelAngle = hitSlimeTransform.Angle(standBossTransform);		// 衝突する側の進行方向
+	reflectionAngle = standBossTransform.Angle(hitSlimeTransform);	// 衝突する側の逆方向(反射)
 
-	//-- �t���C���X���C���q�b�g����
-	// �t���C���@���@�{�X
+	//-- フレイムスライムヒット処理
+	// フレイム　→　ボス
 	if (hitSlimeLevel == LEVEL_FLAME && standBossLevel == LEVEL_BOSS)
 	{
-		// �t���C�����������ă{�X�͎c��
-		pExpMng->SwitchExplode(hitSlimeLevel, hitSlimeTransform.fPos, hitSlimeSize);	//�X���C���̃��x���ɂ���Ĕ����̎��ԂƃT�C�Y�𕪊�
-		SAFE_DELETE(m_pSlime[HitSlimeNum]);												// �Փ˂���X���C�����폜
+		// フレイムが爆発してボスは残る
+		pExpMng->SwitchExplode(hitSlimeLevel, hitSlimeTransform.fPos, hitSlimeSize);	//スライムのレベルによって爆発の時間とサイズを分岐
+		SAFE_DELETE(m_pSlime[HitSlimeNum]);												// 衝突するスライムを削除
 	}
 
-	//-- �m�[�}���X���C���q�b�g����
-	// �{�X���Փ˂����ꍇ(������)
+	//-- ノーマルスライムヒット処理
+	// ボスが衝突される場合(小→大)
 	else if (hitSlimeLevel < standBossLevel)
 	{
-		m_pSlime[HitSlimeNum]->HitMoveStart(hitSlimeSpeed * COL_SUB_HIT_TO_BIG, reflectionAngle);			// �Փ˂���X���C���ɐ�����шړ�����
-		m_pBoss[StandBossNum]->HitMoveStart(hitSlimeSpeed * COL_SUB_STAND_TO_SMALL, travelAngle);			// �Փ˂��ꂽ�X���C���ɐ�����шړ�����
+		m_pSlime[HitSlimeNum]->HitMoveStart(hitSlimeSpeed * COL_SUB_HIT_TO_BIG, reflectionAngle);			// 衝突するスライムに吹き飛び移動処理
+		m_pBoss[StandBossNum]->HitMoveStart(hitSlimeSpeed * COL_SUB_STAND_TO_SMALL, travelAngle);			// 衝突されたスライムに吹き飛び移動処理
 
 	}
 
 }
 
 /* ========================================
-	�{�X���X���C���ڐG����֐�
+	ボス→スライム接触分岐関数
 	----------------------------------------
-	���e�F�{�X����X���C���Ƃ̐ڐG�𐳂��������ɕ��򂳂���
+	内容：ボスからスライムとの接触を正しい処理に分岐させる
 	----------------------------------------
-	����1�F�Փ˂���X���C���̔z��ԍ�
-	����2�F�Փ˂��ꂽ�X���C���̔z��ԍ�
-	����3�F�����}�l�[�W���[
+	引数1：衝突するスライムの配列番号
+	引数2：衝突されたスライムの配列番号
+	引数3：爆発マネージャー
 	----------------------------------------
-	�ߒl�F�Ȃ�
+	戻値：なし
 ======================================== */
 void CSlimeManager::HitBossSlimeBranch(int HitSlimeNum, int StandSlimeNum, CExplosionManager* pExpMng)
 {
-	E_SLIME_LEVEL standSlimeLevel;				// ���x��
-	E_SLIME_LEVEL hitBossLevel;					// ���x��(�{�X)
-	tagTransform3d standSlimeTransform;			// ���[���h���W�n
-	tagTransform3d hitBossTransform;			// ���[���h���W�n(�{�X)
-	TTriType<float> standSlimeSize;				// �T�C�Y���m��						
-	float hitBossSpeed;							// �ړ��X�s�[�h(�{�X)
-	float travelAngle, reflectionAngle;			// �ړ�����
+	E_SLIME_LEVEL standSlimeLevel;				// レベル
+	E_SLIME_LEVEL hitBossLevel;					// レベル(ボス)
+	tagTransform3d standSlimeTransform;			// ワールド座標系
+	tagTransform3d hitBossTransform;			// ワールド座標系(ボス)
+	TTriType<float> standSlimeSize;				// サイズを確保						
+	float hitBossSpeed;							// 移動スピード(ボス)
+	float travelAngle, reflectionAngle;			// 移動方向
 
-	// --�Q��
-	// // �m�[�}��
-	standSlimeLevel = m_pSlime[StandSlimeNum]->GetSlimeLevel();		// �Փ˂���X���C���̃T�C�Y���擾
-	standSlimeTransform = m_pSlime[StandSlimeNum]->GetTransform();	// �Փ˂���X���C���̃��[���h���W�����擾
-	standSlimeSize = m_pSlime[StandSlimeNum]->GetScale();			// �X���C���̃T�C�Y���m��
+	// --参照
+	// // ノーマル
+	standSlimeLevel = m_pSlime[StandSlimeNum]->GetSlimeLevel();		// 衝突するスライムのサイズを取得
+	standSlimeTransform = m_pSlime[StandSlimeNum]->GetTransform();	// 衝突するスライムのワールド座標情報を取得
+	standSlimeSize = m_pSlime[StandSlimeNum]->GetScale();			// スライムのサイズを確保
 
-	// �{�X
-	hitBossLevel = LEVEL_BOSS;										// �Փ˂���	�{�X�X���C���̃T�C�Y���擾
-	hitBossTransform = m_pBoss[HitSlimeNum]->GetTransform();		// �Փ˂���	�{�X�X���C���̃��[���h���W�����擾
-	hitBossSpeed = m_pBoss[HitSlimeNum]->GetSpeed();				// �Փ˂���	�{�X�X���C���̑��x���擾	���{�X�͈��Ȃ͂�������ς�����
+	// ボス
+	hitBossLevel = LEVEL_BOSS;										// 衝突する	ボススライムのサイズを取得
+	hitBossTransform = m_pBoss[HitSlimeNum]->GetTransform();		// 衝突する	ボススライムのワールド座標情報を取得
+	hitBossSpeed = m_pBoss[HitSlimeNum]->GetSpeed();				// 衝突する	ボススライムの速度を取得	※ボスは一定なはずだから変えたい
 	
-	// ���̑�
-	travelAngle = hitBossTransform.Angle(standSlimeTransform);		// �Փ˂��鑤�̐i�s����
-	reflectionAngle = standSlimeTransform.Angle(hitBossTransform);	// �Փ˂��鑤�̋t����(����)
+	// その他
+	travelAngle = hitBossTransform.Angle(standSlimeTransform);		// 衝突する側の進行方向
+	reflectionAngle = standSlimeTransform.Angle(hitBossTransform);	// 衝突する側の逆方向(反射)
 
-	//-- �t���C���X���C���q�b�g����
-	// �{�X�@���@�t���C��
+	//-- フレイムスライムヒット処理
+	// ボス　→　フレイム
 	if (hitBossLevel == LEVEL_BOSS && standSlimeLevel == LEVEL_FLAME)
 	{
-		// �t���C�����������ă{�X�͎c��
-		pExpMng->SwitchExplode(standSlimeLevel, standSlimeTransform.fPos, standSlimeSize);	//�X���C���̃��x���ɂ���Ĕ����̎��ԂƃT�C�Y�𕪊�
-		SAFE_DELETE(m_pSlime[StandSlimeNum]);												// �Փ˂���X���C�����폜
+		// フレイムが爆発してボスは残る
+		pExpMng->SwitchExplode(standSlimeLevel, standSlimeTransform.fPos, standSlimeSize);	//スライムのレベルによって爆発の時間とサイズを分岐
+		SAFE_DELETE(m_pSlime[StandSlimeNum]);												// 衝突するスライムを削除
 	}
 
-	//-- �m�[�}���X���C���q�b�g����
-	// �{�X���Փ˂���ꍇ(�偨��) 
+	//-- ノーマルスライムヒット処理
+	// ボスが衝突する場合(大→小) 
 	else if (hitBossLevel > standSlimeLevel)
 	{
-		m_pBoss[HitSlimeNum]->HitMoveStart(hitBossSpeed * COL_SUB_HIT_TO_SMALL, travelAngle);				// �Փ˂���X���C���ɐ�����шړ�����
-		m_pSlime[StandSlimeNum]->HitMoveStart(hitBossSpeed * COL_SUB_STAND_TO_BIG, travelAngle);			// �Փ˂��ꂽ�X���C���ɐ�����шړ�����
+		m_pBoss[HitSlimeNum]->HitMoveStart(hitBossSpeed * COL_SUB_HIT_TO_SMALL, travelAngle);				// 衝突するスライムに吹き飛び移動処理
+		m_pSlime[StandSlimeNum]->HitMoveStart(hitBossSpeed * COL_SUB_STAND_TO_BIG, travelAngle);			// 衝突されたスライムに吹き飛び移動処理
 
 	}
 }
 
 /* ========================================
-	�{�X���{�X�ڐG����֐�
+	ボス→ボス接触分岐関数
 	----------------------------------------
-	���e�F�X���C������{�X�Ƃ̐ڐG�𐳂��������ɕ��򂳂���
+	内容：スライムからボスとの接触を正しい処理に分岐させる
 	----------------------------------------
-	����1�F�Փ˂���X���C���̔z��ԍ�
-	����2�F�Փ˂��ꂽ�X���C���̔z��ԍ�
-	����3�F�����}�l�[�W���[
+	引数1：衝突するスライムの配列番号
+	引数2：衝突されたスライムの配列番号
+	引数3：爆発マネージャー
 	----------------------------------------
-	�ߒl�F�Ȃ�
+	戻値：なし
 ======================================== */
 void CSlimeManager::HitBossBossBranch(int HitBossNum, int StandBossNum, CExplosionManager* pExpMng)
 {
-	E_SLIME_LEVEL hitBossLevel, standBossLevel;					// ���x��(�{�X)
-	tagTransform3d hitBossTransform, standBossTransform;		// ���[���h���W�n(�{�X)					
-	float hitBossSpeed;											// �ړ��X�s�[�h(�{�X)
-	float travelAngle, reflectionAngle;							// �ړ�����
+	E_SLIME_LEVEL hitBossLevel, standBossLevel;					// レベル(ボス)
+	tagTransform3d hitBossTransform, standBossTransform;		// ワールド座標系(ボス)					
+	float hitBossSpeed;											// 移動スピード(ボス)
+	float travelAngle, reflectionAngle;							// 移動方向
 
-	// --�Q��
-	// �{�X
-	hitBossLevel = LEVEL_BOSS;									// �Փ˂���	�{�X�X���C���̃T�C�Y���擾
-	hitBossTransform = m_pBoss[HitBossNum]->GetTransform();		// �Փ˂���	�{�X�X���C���̃��[���h���W�����擾
-	hitBossSpeed = m_pBoss[HitBossNum]->GetSpeed();				// �Փ˂���	�{�X�X���C���̑��x���擾	���{�X�͈��Ȃ͂�������ς�����
-	standBossLevel = LEVEL_BOSS;								// �Փ˂���	�{�X�X���C���̃T�C�Y���擾
-	standBossTransform = m_pBoss[StandBossNum]->GetTransform();	// �Փ˂���	�{�X�X���C���̃��[���h���W�����擾
+	// --参照
+	// ボス
+	hitBossLevel = LEVEL_BOSS;									// 衝突する	ボススライムのサイズを取得
+	hitBossTransform = m_pBoss[HitBossNum]->GetTransform();		// 衝突する	ボススライムのワールド座標情報を取得
+	hitBossSpeed = m_pBoss[HitBossNum]->GetSpeed();				// 衝突する	ボススライムの速度を取得	※ボスは一定なはずだから変えたい
+	standBossLevel = LEVEL_BOSS;								// 衝突する	ボススライムのサイズを取得
+	standBossTransform = m_pBoss[StandBossNum]->GetTransform();	// 衝突する	ボススライムのワールド座標情報を取得
 
-	// ���̑�
-	travelAngle = hitBossTransform.Angle(standBossTransform);		// �Փ˂��鑤�̐i�s����
-	reflectionAngle = standBossTransform.Angle(hitBossTransform);	// �Փ˂��鑤�̋t����(����)
+	// その他
+	travelAngle = hitBossTransform.Angle(standBossTransform);		// 衝突する側の進行方向
+	reflectionAngle = standBossTransform.Angle(hitBossTransform);	// 衝突する側の逆方向(反射)
 
-	// --�{�X���m�q�b�g����
+	// --ボス同士ヒット処理
 	if (hitBossLevel == LEVEL_BOSS && standBossLevel == LEVEL_BOSS)
 	{
-		//(�偨��)�Ɠ����������s��
-		m_pBoss[HitBossNum]->HitMoveStart(hitBossSpeed * COL_SUB_HIT_TO_SMALL, travelAngle);				// �Փ˂���X���C���ɐ�����шړ�����
-		m_pBoss[StandBossNum]->HitMoveStart(hitBossSpeed * COL_SUB_STAND_TO_BIG, travelAngle);			// �Փ˂��ꂽ�X���C���ɐ�����шړ�����
+		//(大→小)と同じ挙動を行う
+		m_pBoss[HitBossNum]->HitMoveStart(hitBossSpeed * COL_SUB_HIT_TO_SMALL, travelAngle);				// 衝突するスライムに吹き飛び移動処理
+		m_pBoss[StandBossNum]->HitMoveStart(hitBossSpeed * COL_SUB_STAND_TO_BIG, travelAngle);			// 衝突されたスライムに吹き飛び移動処理
 
 	}
 }
 
 /* ========================================
-	�����ڐG�֐�(�{�X)
+	爆発接触関数(ボス)
 	----------------------------------------
-	���e�F��ʏ�̔����Ƀ{�X���ڐG�������̏���
+	内容：画面上の爆発にボスが接触した時の処理
 	----------------------------------------
-	����1�F�ڐG�����{�X�̔z��ԍ�(int)
-	����2�F�����}�l�[�W���[�̃|�C���^
-	����3�F�ڐG���������̔z��ԍ�(int)
+	引数1：接触したボスの配列番号(int)
+	引数2：爆発マネージャーのポインタ
+	引数3：接触した爆発の配列番号(int)
 	----------------------------------------
-	�ߒl�F�Ȃ�
+	戻値：なし
 ======================================== */
 void CSlimeManager::TouchBossExplosion(int BossNum, CExplosionManager* pExpMng, int ExpNum)
 {
-	CExplosion* touchExplosion = pExpMng->GetExplosionPtr(ExpNum);	// �ڐG�����������擾
-	TPos3d<float> pos(m_pBoss[BossNum]->GetPos());					// �Փː�̃X���C���̈ʒu���m��
-	E_SLIME_LEVEL level = m_pBoss[BossNum]->GetSlimeLevel();		// �Փː�̃X���C���̃��x�����m��
-	TTriType<float> size = m_pBoss[BossNum]->GetScale();			// �Փː�̃X���C���T�C�Y���m��
+	CExplosion* touchExplosion = pExpMng->GetExplosionPtr(ExpNum);	// 接触した爆発を取得
+	TPos3d<float> pos(m_pBoss[BossNum]->GetPos());					// 衝突先のスライムの位置を確保
+	E_SLIME_LEVEL level = m_pBoss[BossNum]->GetSlimeLevel();		// 衝突先のスライムのレベルを確保
+	TTriType<float> size = m_pBoss[BossNum]->GetScale();			// 衝突先のスライムサイズを確保
 
-	// ���ɐڐG�ς݂�����
+	// 既に接触済みか検索
 	if (touchExplosion->GetBossTouched() == false)
 	{
-		// �����З͕��̃_���[�W���{�X�ɗ^����
+		// 爆発威力分のダメージをボスに与える
 		m_pBoss[BossNum]->Damage(pExpMng->GetExplosionPtr(ExpNum)->GetDamage());
-		// ��x�_���[�W��^�����瓯�������ł̓_���[�W��^���Ȃ�
+		// 一度ダメージを与えたら同じ爆発ではダメージを与えない
 		touchExplosion->BossTouched();
 	}
-	// ���S����
+	// 死亡処理
 	if (m_pBoss[BossNum]->IsDead() == true)
 	{
-		SAFE_DELETE(m_pBoss[BossNum]);	//�Ԃ���ɗ����X���C��(�{�X)���폜
+		SAFE_DELETE(m_pBoss[BossNum]);	//ぶつかりに来たスライム(ボス)を削除
 		
-		pExpMng->SwitchExplode(level, pos, size, pExpMng->GetExplosionPtr(ExpNum)->GetComboNum());	// ��������
+		pExpMng->SwitchExplode(level, pos, size, pExpMng->GetExplosionPtr(ExpNum)->GetComboNum());	// 爆発生成
 		m_pScoreOHMng->DisplayOverheadScore(pos, LEVEL_Boss_SCORE, SLIME_SCORE_HEIGHT);
 		m_pHealItemMng->Create(pos);
 
@@ -720,19 +718,19 @@ void CSlimeManager::TouchBossExplosion(int BossNum, CExplosionManager* pExpMng, 
 }
 
 /* ========================================
-	�X���C���z��擾�֐�
+	スライム配列取得関数
 	----------------------------------------
-	���e�F�X���C���z��̎擾
+	内容：スライム配列の取得
 	----------------------------------------
-	����1�F�Ȃ�
+	引数1：なし
 	----------------------------------------
-	�ߒl�F�X���C���̔z��
+	戻値：スライムの配列
 ======================================== */
 E_SLIME_LEVEL CSlimeManager::GetRandomLevel()
 {
-	int random = abs(rand() % 100);	//�����_����0�`99�̐������쐬
+	int random = abs(rand() % 100);	//ランダムに0～99の数字を作成
 	
-	//�萔�Œ�`�����m����1�`3���x���̃X���C���𐶐�
+	//定数で定義した確率で1～3レベルのスライムを生成
 	if (SLIME_LEVEL1_PER > random)	
 	{
 		return LEVEL_1;
@@ -753,25 +751,25 @@ E_SLIME_LEVEL CSlimeManager::GetRandomLevel()
 }
 
 /* ========================================
-	�X���C���ƃX���C�����d�Ȃ�Ȃ��֐�
+	スライムとスライムが重ならない関数
 	----------------------------------------
-	���e�F�Ԃ������X���C�������������߂����֐�
+	内容：ぶつかったスライムが少し押し戻される関数
 	----------------------------------------
-	����1�F�Փ˂����X���C���̃|�C���^
-	����2�F�Փ˂��ꂽ�X���C���̃|�C���^
+	引数1：衝突したスライムのポインタ
+	引数2：衝突されたスライムのポインタ
 	----------------------------------------
-	�ߒl�F����
+	戻値：無し
 ======================================== */
 void CSlimeManager::PreventSlimeSlimeOverlap(CSlimeBase * pMoveSlime, CSlimeBase * pStandSlime)
 {
-	//���̃R�����g�A�E�g�͗��z�I�ȏ����̂�肩��
+	//↓のコメントアウトは理想的な処理のやりかけ
 	/*
-	tagSphereInfo::Sphere standSlimeSphere = pStandSlime->GetSphere();						//�Փ˂��ꂽ�X���C����Sphere���擾
-	tagSphereInfo::Sphere moveSlimeSphere = pMoveSlime->GetSphere();						//�Փ˂����X���C����Sphere���擾
-	float standSlimeToPlayerAngle = standSlimeSphere.Angle(m_pPlayer->GetPlayerSphere());	//�Փ˂��ꂽ�X���C������Player�ւ̊p�x���擾
-	float standSlimeToMoveSlimeAngle = standSlimeSphere.Angle(moveSlimeSphere);				//�Փ˂��ꂽ�X���C������Փ˂����X���C���ւ̊p�x���擾
-	float Distance = standSlimeSphere.Distance(pMoveSlime->GetSphere());					//�X���C�����m�̋������擾
-	float posX, posY, posZ;																	//���W
+	tagSphereInfo::Sphere standSlimeSphere = pStandSlime->GetSphere();						//衝突されたスライムのSphereを取得
+	tagSphereInfo::Sphere moveSlimeSphere = pMoveSlime->GetSphere();						//衝突したスライムのSphereを取得
+	float standSlimeToPlayerAngle = standSlimeSphere.Angle(m_pPlayer->GetPlayerSphere());	//衝突されたスライムからPlayerへの角度を取得
+	float standSlimeToMoveSlimeAngle = standSlimeSphere.Angle(moveSlimeSphere);				//衝突されたスライムから衝突したスライムへの角度を取得
+	float Distance = standSlimeSphere.Distance(pMoveSlime->GetSphere());					//スライム同士の距離を取得
+	float posX, posY, posZ;																	//座標
 
 	if (standSlimeToMoveSlimeAngle < 0) { standSlimeToMoveSlimeAngle = (2 * PI) + standSlimeToMoveSlimeAngle; }	//
 	if (standSlimeToPlayerAngle < 0) { standSlimeToPlayerAngle = (2 * PI) + standSlimeToPlayerAngle; }			
@@ -794,169 +792,169 @@ void CSlimeManager::PreventSlimeSlimeOverlap(CSlimeBase * pMoveSlime, CSlimeBase
 	pMoveSlime->ReversePos();
 	*/
 
-	float angle = pStandSlime->GetTransform().Angle(pMoveSlime->GetTransform());				//�Փ˂��Ă����p�x
-	float distance = pStandSlime->GetSphere().fRadius + pMoveSlime->GetSphere().fRadius;	//���݂��̃X���C���̔��a�𑫂�����
+	float angle = pStandSlime->GetTransform().Angle(pMoveSlime->GetTransform());				//衝突してきた角度
+	float distance = pStandSlime->GetSphere().fRadius + pMoveSlime->GetSphere().fRadius;	//お互いのスライムの半径を足した数
 
-	TPos3d<float> pos = pStandSlime->GetPos();		//�����߂���̍��W
-	pos.x += cosf(angle) * (distance + 0.001f);		//�Ԃ���Ȃ��M���M���̋�����ݒ�
-	pos.z += sinf(angle) * (distance + 0.001f);		//�Ԃ���Ȃ��M���M���̋�����ݒ�
+	TPos3d<float> pos = pStandSlime->GetPos();		//押し戻す基準の座標
+	pos.x += cosf(angle) * (distance + 0.001f);		//ぶつからないギリギリの距離を設定
+	pos.z += sinf(angle) * (distance + 0.001f);		//ぶつからないギリギリの距離を設定
 
-	pMoveSlime->SetPos(pos);						//�Ԃ���Ȃ��M���M���̋����Ɉړ�
+	pMoveSlime->SetPos(pos);						//ぶつからないギリギリの距離に移動
 }
 
 /* ========================================
-	�X���C�����{�X���d�Ȃ�Ȃ��֐�
+	スライム→ボスが重ならない関数
 	----------------------------------------
-	���e�F�Ԃ������X���C�������������߂����֐�
+	内容：ぶつかったスライムが少し押し戻される関数
 	----------------------------------------
-	����1�F�Փ˂����X���C���̃|�C���^
-	����2�F�Փ˂��ꂽ�{�X�̃|�C���^
+	引数1：衝突したスライムのポインタ
+	引数2：衝突されたボスのポインタ
 	----------------------------------------
-	�ߒl�F����
+	戻値：無し
 ======================================== */
 void CSlimeManager::PreventSlimeBossOverlap(CSlimeBase* pMoveSlime, CSlime_BossBase* pStandBoss)
 {
 
-	float angle = pStandBoss->GetTransform().Angle(pMoveSlime->GetTransform());				//�Փ˂��Ă����p�x
-	float distance = pStandBoss->GetSphere().fRadius + pMoveSlime->GetSphere().fRadius;	//���݂��̃X���C���̔��a�𑫂�����
+	float angle = pStandBoss->GetTransform().Angle(pMoveSlime->GetTransform());				//衝突してきた角度
+	float distance = pStandBoss->GetSphere().fRadius + pMoveSlime->GetSphere().fRadius;	//お互いのスライムの半径を足した数
 
-	TPos3d<float> pos = pStandBoss->GetPos();		//�����߂���̍��W
-	pos.x += cosf(angle) * (distance + 0.001f);		//�Ԃ���Ȃ��M���M���̋�����ݒ�
-	pos.z += sinf(angle) * (distance + 0.001f);		//�Ԃ���Ȃ��M���M���̋�����ݒ�
+	TPos3d<float> pos = pStandBoss->GetPos();		//押し戻す基準の座標
+	pos.x += cosf(angle) * (distance + 0.001f);		//ぶつからないギリギリの距離を設定
+	pos.z += sinf(angle) * (distance + 0.001f);		//ぶつからないギリギリの距離を設定
 
-	pMoveSlime->SetPos(pos);						//�Ԃ���Ȃ��M���M���̋����Ɉړ�
+	pMoveSlime->SetPos(pos);						//ぶつからないギリギリの距離に移動
 }
 
 /* ========================================
-	�{�X���X���C�����d�Ȃ�Ȃ��֐�
+	ボス→スライムが重ならない関数
 	----------------------------------------
-	���e�F�Ԃ���ꂽ�X���C�������������߂����֐�
+	内容：ぶつかられたスライムが少し押し戻される関数
 	----------------------------------------
-	����1�F�Փ˂����X���C���̃|�C���^
-	����2�F�Փ˂��ꂽ�X���C���̃|�C���^
+	引数1：衝突したスライムのポインタ
+	引数2：衝突されたスライムのポインタ
 	----------------------------------------
-	�ߒl�F����
+	戻値：無し
 ======================================== */
 void CSlimeManager::PreventBossSlimeOverlap(CSlime_BossBase* pMoveBoss, CSlimeBase* pStandSlime)
 {
 
-	float angle = pStandSlime->GetTransform().Angle(pMoveBoss->GetTransform());				//�Փ˂��Ă����p�x
-	float distance = pStandSlime->GetSphere().fRadius + pMoveBoss->GetSphere().fRadius;	//���݂��̃X���C���̔��a�𑫂�����
+	float angle = pStandSlime->GetTransform().Angle(pMoveBoss->GetTransform());				//衝突してきた角度
+	float distance = pStandSlime->GetSphere().fRadius + pMoveBoss->GetSphere().fRadius;	//お互いのスライムの半径を足した数
 
-	TPos3d<float> pos = pStandSlime->GetPos();		//�����߂���̍��W
-	pos.x += cosf(angle) * (distance + 0.001f);		//�Ԃ���Ȃ��M���M���̋�����ݒ�
-	pos.z += sinf(angle) * (distance + 0.001f);		//�Ԃ���Ȃ��M���M���̋�����ݒ�
+	TPos3d<float> pos = pStandSlime->GetPos();		//押し戻す基準の座標
+	pos.x += cosf(angle) * (distance + 0.001f);		//ぶつからないギリギリの距離を設定
+	pos.z += sinf(angle) * (distance + 0.001f);		//ぶつからないギリギリの距離を設定
 
-	pStandSlime->SetPos(pos);						//�Ԃ���Ȃ��M���M���̋����Ɉړ�
+	pStandSlime->SetPos(pos);						//ぶつからないギリギリの距離に移動
 }
 
 /* ========================================
-	�{�X�ƃ{�X���d�Ȃ�Ȃ��֐�
+	ボスとボスが重ならない関数
 	----------------------------------------
-	���e�F�Ԃ������{�X�����������߂����֐�
+	内容：ぶつかったボスが少し押し戻される関数
 	----------------------------------------
-	����1�F�Փ˂����X���C���̃|�C���^
-	����2�F�Փ˂��ꂽ�X���C���̃|�C���^
+	引数1：衝突したスライムのポインタ
+	引数2：衝突されたスライムのポインタ
 	----------------------------------------
-	�ߒl�F����
+	戻値：無し
 ======================================== */
 void CSlimeManager::PreventBossBossOverlap(CSlime_BossBase* pMoveBoss, CSlime_BossBase* pStandBoss)
 {
 
-	float angle = pStandBoss->GetTransform().Angle(pMoveBoss->GetTransform());				//�Փ˂��Ă����p�x
-	float distance = pStandBoss->GetSphere().fRadius + pMoveBoss->GetSphere().fRadius;	//���݂��̃X���C���̔��a�𑫂�����
+	float angle = pStandBoss->GetTransform().Angle(pMoveBoss->GetTransform());				//衝突してきた角度
+	float distance = pStandBoss->GetSphere().fRadius + pMoveBoss->GetSphere().fRadius;	//お互いのスライムの半径を足した数
 
-	TPos3d<float> pos = pStandBoss->GetPos();		//�����߂���̍��W
-	pos.x += cosf(angle) * (distance + 0.001f);		//�Ԃ���Ȃ��M���M���̋�����ݒ�
-	pos.z += sinf(angle) * (distance + 0.001f);		//�Ԃ���Ȃ��M���M���̋�����ݒ�
+	TPos3d<float> pos = pStandBoss->GetPos();		//押し戻す基準の座標
+	pos.x += cosf(angle) * (distance + 0.001f);		//ぶつからないギリギリの距離を設定
+	pos.z += sinf(angle) * (distance + 0.001f);		//ぶつからないギリギリの距離を設定
 
-	pMoveBoss->SetPos(pos);						//�Ԃ���Ȃ��M���M���̋����Ɉړ�
+	pMoveBoss->SetPos(pos);						//ぶつからないギリギリの距離に移動
 }
 
 /* ========================================
-	���f���ǂݍ��݊֐�
+	モデル読み込み関数
 	----------------------------------------
-	���e�F�X���C���̃��f���ƒ��_�V�F�[�_�[�̓ǂݍ���
+	内容：スライムのモデルと頂点シェーダーの読み込み
 	----------------------------------------
-	����1�F����
+	引数1：無し
 	----------------------------------------
-	�ߒl�F����
+	戻値：無し
 ======================================== */
 void CSlimeManager::LoadModel()
 {
-	//���_�V�F�[�_�ǂݍ���
+	//頂点シェーダ読み込み
 	m_pVS = new VertexShader();
 	if (FAILED(m_pVS->Load("Assets/Shader/VS_Model.cso"))) {
 		MessageBox(nullptr, "VS_Model.cso", "Error", MB_OK);
 	}
-	//���x��1�X���C���̃��f���ǂݍ���
+	//レベル1スライムのモデル読み込み
 	m_pBlueModel = new Model;
-	if (!m_pBlueModel->Load("Assets/Model/slime/slime_blue1.28.FBX", 0.15f, Model::XFlip)) {		//�{���Ɣ��]�͏ȗ���
-		MessageBox(NULL, "slime_blue", "Error", MB_OK);	//�����ŃG���[���b�Z�[�W�\��
+	if (!m_pBlueModel->Load("Assets/Model/slime/slime_blue1.28.FBX", 0.15f, Model::XFlip)) {		//倍率と反転は省略可
+		MessageBox(NULL, "slime_blue", "Error", MB_OK);	//ここでエラーメッセージ表示
 	}
 	m_pBlueModel->SetVertexShader(m_pVS);
-	//���x��2�X���C���̃��f���ǂݍ���
+	//レベル2スライムのモデル読み込み
 	m_pGreenModel = new Model;
-	if (!m_pGreenModel->Load("Assets/Model/slime/slime_green1.28.FBX", 0.15f, Model::XFlip)) {		//�{���Ɣ��]�͏ȗ���
-		MessageBox(NULL, "slime_green", "Error", MB_OK);	//�����ŃG���[���b�Z�[�W�\��
+	if (!m_pGreenModel->Load("Assets/Model/slime/slime_green1.28.FBX", 0.15f, Model::XFlip)) {		//倍率と反転は省略可
+		MessageBox(NULL, "slime_green", "Error", MB_OK);	//ここでエラーメッセージ表示
 	}
 	m_pGreenModel->SetVertexShader(m_pVS);
-	//���x��3�X���C���̃��f���ǂݍ���
+	//レベル3スライムのモデル読み込み
 	m_pYellowModel = new Model;
-	if (!m_pYellowModel->Load("Assets/Model/slime/slime_Yellow1.28.FBX", 0.15f, Model::XFlip)) {		//�{���Ɣ��]�͏ȗ���
-		MessageBox(NULL, "slime_yellow", "Error", MB_OK);	//�����ŃG���[���b�Z�[�W�\��
+	if (!m_pYellowModel->Load("Assets/Model/slime/slime_Yellow1.28.FBX", 0.15f, Model::XFlip)) {		//倍率と反転は省略可
+		MessageBox(NULL, "slime_yellow", "Error", MB_OK);	//ここでエラーメッセージ表示
 	}
 	m_pYellowModel->SetVertexShader(m_pVS);
-	//���x��4�X���C���̃��f���ǂݍ���
+	//レベル4スライムのモデル読み込み
 	m_pRedModel = new Model;
-	if (!m_pRedModel->Load("Assets/Model/slime/slime_red1.28.FBX", 0.18f, Model::XFlip)) {		//�{���Ɣ��]�͏ȗ���
-		MessageBox(NULL, "slime_red", "Error", MB_OK);		//�����ŃG���[���b�Z�[�W�\��
+	if (!m_pRedModel->Load("Assets/Model/slime/slime_red1.28.FBX", 0.18f, Model::XFlip)) {		//倍率と反転は省略可
+		MessageBox(NULL, "slime_red", "Error", MB_OK);		//ここでエラーメッセージ表示
 	}
 	m_pRedModel->SetVertexShader(m_pVS);
-	//�t���C���X���C���̃��f���ǂݍ���
+	//フレイムスライムのモデル読み込み
 	m_pFlameModel = new Model;
-	if (!m_pFlameModel->Load("Assets/Model/Golem/Golem.FBX", 0.015f, Model::XFlip)) {		//�{���Ɣ��]�͏ȗ���
-		MessageBox(NULL, "Flame_Slime", "Error", MB_OK);	//�����ŃG���[���b�Z�[�W�\��
+	if (!m_pFlameModel->Load("Assets/Model/Golem/Golem.FBX", 0.015f, Model::XFlip)) {		//倍率と反転は省略可
+		MessageBox(NULL, "Flame_Slime", "Error", MB_OK);	//ここでエラーメッセージ表示
 	}
 	m_pFlameModel->SetVertexShader(m_pVS);
-	//�{�X�X���C���̃��f���ǂݍ���
+	//ボススライムのモデル読み込み
 	m_pBossModel = new Model;
-	if (!m_pBossModel->Load("Assets/Model/boss_slime_1/boss_slime_1.fbx", 0.23f, Model::XFlip)) {		//�{���Ɣ��]�͏ȗ���
-		MessageBox(NULL, "Boss_Slime", "Error", MB_OK);	//�����ŃG���[���b�Z�[�W�\��
+	if (!m_pBossModel->Load("Assets/Model/boss_slime_1/boss_slime_1.fbx", 0.23f, Model::XFlip)) {		//倍率と反転は省略可
+		MessageBox(NULL, "Boss_Slime", "Error", MB_OK);	//ここでエラーメッセージ表示
 	}
 	m_pBossModel->SetVertexShader(m_pVS);
 }
 
 /* ========================================
-	�͈͊O�X���C���ړ��֐�
+	範囲外スライム移動関数
 	----------------------------------------
-	���e�F�v���C���[���痣�ꂷ�����X���C�����v���C���[���猩���Ίp���̈ʒu�Ɉړ�
+	内容：プレイヤーから離れすぎたスライムをプレイヤーから見た対角線の位置に移動
 	----------------------------------------
-	�����F�Q�b�g�������X���C���̗v�f�ԍ�
+	引数：ゲットしたいスライムの要素番号
 	----------------------------------------
-	�ߒl�F�X���C���̔z��
+	戻値：スライムの配列
 ======================================== */
 void CSlimeManager::OutOfRange()
 {
 	for (int i = 0; i < MAX_SLIME_NUM; i++)
 	{
-		if (!m_pSlime[i]) { continue; }	//null�Ȃ�X�L�b�v
+		if (!m_pSlime[i]) { continue; }	//nullならスキップ
 
 		TPos3d<float> slimePos = m_pSlime[i]->GetPos();
 		float distance = slimePos.Distance(m_pPlayer->GetPos());
 
-		if (distance >= LEAVE_DISTANCE)	//���������ꂷ���Ă�����
+		if (distance >= LEAVE_DISTANCE)	//距離が離れすぎていたら
 		{
-			//���΋������v�Z
+			//相対距離を計算
 			float disX = m_pPlayer->GetPos().x - slimePos.x;
 			float disZ = m_pPlayer->GetPos().z - slimePos.z;
 
-			//�����߂Â��Ă���Ίp���Ɉړ�������
+			//少し近づけてから対角線に移動させる
 			if (disX > 0.0f) { disX -= 1.0f; }
 			else { disX += 1.0f; }
 			if (disZ > 0.0f) { disZ -= 1.0f; }
 			else { disZ += 1.0f; }
-			//�Ίp���̍��W���Z�b�g
+			//対角線の座標をセット
 			TPos3d<float> setPos = { m_pPlayer->GetPos().x + disX,0.0f,m_pPlayer->GetPos().z + disZ};
 			m_pSlime[i]->SetPos(setPos);
 		}
@@ -965,48 +963,48 @@ void CSlimeManager::OutOfRange()
 
 
 /* ========================================
-	��������֐�
+	逃走判定関数
 	----------------------------------------
-	���e�F�X���C���Ɣ����̈ʒu�֌W���m�F���ē����邩�ǂ������肷��
+	内容：スライムと爆発の位置関係を確認して逃げるかどうか判定する
 	----------------------------------------
-	����1�F�Ȃ�
+	引数1：なし
 	----------------------------------------
-	�ߒl�F�Ȃ�
+	戻値：なし
 ======================================== */
 void CSlimeManager::CheckEscape()
 {
 	for (int j = 0; j < MAX_SLIME_NUM; j++)
 	{
-		if (!m_pSlime[j]) { continue; }						//nullptr�Ȃ�X�L�b�v
-		if (m_pSlime[j]->GetEscapeFlag()) { continue; }		//���łɓ����Ă���Ȃ�X�L�b�v
+		if (!m_pSlime[j]) { continue; }						//nullptrならスキップ
+		if (m_pSlime[j]->GetEscapeFlag()) { continue; }		//すでに逃げているならスキップ
 
-		TPos3d<float> slimePos = m_pSlime[j]->GetPos();	//�X���C���̍��W���Q�b�g
-		float distance = ESCAPE_DISTANCE;				//�������ԂɂȂ�ő勗�����Z�b�g
-		//�͈͓��ɔ���������Γ����邽�߂̃t���O�ƍ��W���Z�b�g
+		TPos3d<float> slimePos = m_pSlime[j]->GetPos();	//スライムの座標をゲット
+		float distance = ESCAPE_DISTANCE;				//逃げる状態になる最大距離をセット
+		//範囲内に爆発があれば逃げるためのフラグと座標をセット
 		for (int i = 0; i < MAX_EXPLOSION_NUM; i++)
 		{
-			CExplosion* pExp = m_pExpMng->GetExplosionPtr(i);	//�����̃|�C���^���擾
-			if (!pExp) { continue; }							//nullptr�Ȃ�X�L�b�v
-			TPos3d<float> expPos = pExp->GetPos();				//�����̍��W���Q�b�g
+			CExplosion* pExp = m_pExpMng->GetExplosionPtr(i);	//爆発のポインタを取得
+			if (!pExp) { continue; }							//nullptrならスキップ
+			TPos3d<float> expPos = pExp->GetPos();				//爆発の座標をゲット
 			float slimeExpDistance = slimePos.Distance(expPos);
-			if (distance > slimeExpDistance)	//���߂����������������ꍇ
+			if (distance > slimeExpDistance)	//より近い爆発が見つかった場合
 			{
 				distance = slimeExpDistance;
-				m_pSlime[j]->SetExplosionPos(expPos);	//�����̍��W���X���C���ɃZ�b�g
-				m_pSlime[j]->SetEscapeFlag(true);		//������t���O��ON�ɂ���
+				m_pSlime[j]->SetExplosionPos(expPos);	//爆発の座標をスライムにセット
+				m_pSlime[j]->SetEscapeFlag(true);		//逃げるフラグをONにする
 			}
 		}
 	}
 }
 
 /* ========================================
-	�X���C���z��擾�֐�
+	スライム配列取得関数
 	----------------------------------------
-	���e�F�X���C���z��̎擾
+	内容：スライム配列の取得
 	----------------------------------------
-	����1�F�Q�b�g�������X���C���̗v�f�ԍ�
+	引数1：ゲットしたいスライムの要素番号
 	----------------------------------------
-	�ߒl�F�X���C���̔z��
+	戻値：スライムの配列
 ======================================== */
 CSlimeBase* CSlimeManager::GetSlimePtr(int num)
 {
@@ -1014,13 +1012,13 @@ CSlimeBase* CSlimeManager::GetSlimePtr(int num)
 }
 
 /* ========================================
-	�{�X�X���C���z��擾�֐�
+	ボススライム配列取得関数
 	----------------------------------------
-	���e�F�{�X�X���C���z��̎擾
+	内容：ボススライム配列の取得
 	----------------------------------------
-	����1�F�Q�b�g�������{�X�X���C���̗v�f�ԍ�
+	引数1：ゲットしたいボススライムの要素番号
 	----------------------------------------
-	�ߒl�F�{�X�X���C���̔z��
+	戻値：ボススライムの配列
 ======================================== */
 CSlime_BossBase* CSlimeManager::GetBossSlimePtr(int num)
 {
@@ -1028,13 +1026,13 @@ CSlime_BossBase* CSlimeManager::GetBossSlimePtr(int num)
 }
 
 /* ========================================
-	�J�������Z�b�g�֐�
+	カメラ情報セット関数
 	----------------------------------------
-	���e�F�`�揈���Ŏg�p����J�������Z�b�g
+	内容：描画処理で使用するカメラ情報セット
 	----------------------------------------
-	����1�F�J����
+	引数1：カメラ
 	----------------------------------------
-	�ߒl�F�Ȃ�
+	戻値：なし
 ======================================== */
 void CSlimeManager::SetCamera(CCamera * pCamera)
 {
@@ -1042,13 +1040,13 @@ void CSlimeManager::SetCamera(CCamera * pCamera)
 }
 
 /* ========================================
-	�����}�l�[�W���[�̃|�C���^�Z�b�g�֐�
+	爆発マネージャーのポインタセット関数
 	----------------------------------------
-	���e�F�����}�l�[�W���[�̃|�C���^���Z�b�g����
+	内容：爆発マネージャーのポインタをセットする
 	----------------------------------------
-	����1�F�����}�l�[�W���[�̃|�C���^
+	引数1：爆発マネージャーのポインタ
 	----------------------------------------
-	�ߒl�F����
+	戻値：無し
 ======================================== */
 void CSlimeManager::SetExplosionMng(CExplosionManager* pExpMng)
 {
@@ -1056,13 +1054,13 @@ void CSlimeManager::SetExplosionMng(CExplosionManager* pExpMng)
 }
 
 /* ========================================
-	�����֐�
+	乱数関数
 	----------------------------------------
-	���e�F����قȂ闐���֐�
+	内容：毎回異なる乱数関数
 	----------------------------------------
-	����1�F�����̍ŏ��l�ƍő�l
+	引数1：乱数の最小値と最大値
 	----------------------------------------
-	�ߒl�F����int
+	戻値：乱数int
 ======================================== */
 int CSlimeManager::GetRandom(int min, int max)
 {
@@ -1070,13 +1068,13 @@ int CSlimeManager::GetRandom(int min, int max)
 }
 
 /* ========================================
-	�X�R�A���Z�b�g�֐�
+	スコア情報セット関数
 	----------------------------------------
-	���e�F�����������ɕK�v�ȃX�R�A���Z�b�g
+	内容：爆発生成時に必要なスコア情報セット
 	----------------------------------------
-	����1�F�Ȃ�
+	引数1：なし
 	----------------------------------------
-	�ߒl�F�Ȃ�
+	戻値：なし
 ======================================== */
 void CSlimeManager::SetScoreOHMng(CScoreOHManager* pScoreMng)
 {
@@ -1084,13 +1082,13 @@ void CSlimeManager::SetScoreOHMng(CScoreOHManager* pScoreMng)
 }
 
 /* ========================================
-	�񕜃A�C�e���Z�b�g�֐�
+	回復アイテムセット関数
 	----------------------------------------
-	���e�F�񕜃A�C�e���̃}�l�[�W���[�̃|�C���^���Z�b�g
+	内容：回復アイテムのマネージャーのポインタをセット
 	----------------------------------------
-	����1�F�񕜃A�C�e���}�l�[�W���[�̃|�C���^
+	引数1：回復アイテムマネージャーのポインタ
 	----------------------------------------
-	�ߒl�F�Ȃ�
+	戻値：なし
 ======================================== */
 void CSlimeManager::SetHealMng(CHealItemManager * pHealItemMng)
 {
