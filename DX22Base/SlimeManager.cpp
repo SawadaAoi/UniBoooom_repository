@@ -32,6 +32,7 @@
 	・2023/11/27 赤赤の爆発生成時にヒットストップと画面揺れするように修正	Sawada
 	・2023/11/29 画面揺れを横強→縦強に変更 takagi
 	・2023/11/29 プレイヤーのポインタを取得 yamashita
+	・2023/11/30 振動する箇所増設 takagi
 
 =========================================== */
 
@@ -391,7 +392,7 @@ void CSlimeManager::HitBranch(int HitSlimeNum, int StandSlimeNum, CExplosionMana
 			m_pScoreOHMng->DisplayOverheadScore(pos, LEVEL_4_SCORE * 2, SLIME_SCORE_HEIGHT);
 			pExpMng->CreateUI(pos, LEVEL_4_EXPLODE_TIME);		//レベル４爆発した位置boooomUI表示
 
-			m_pCamera->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_STRONG);
+			m_pCamera->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_STRONG | CCamera::E_BIT_FLAG_VIBRATION_SIDE_STRONG);
 		}
 		else	//最大サイズじゃない場合は1段階大きいスライムを生成する
 		{
@@ -447,6 +448,8 @@ bool CSlimeManager::HitFlameBranch(int HitSlimeNum, int StandSlimeNum, CExplosio
 		SAFE_DELETE(m_pSlime[HitSlimeNum]);								// 衝突するスライムを削除
 		SAFE_DELETE(m_pSlime[StandSlimeNum]);							// 衝突されたスライムを削除
 
+		m_pCamera->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_STRONG);
+		m_pCamera->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_SIDE_WEAK);
 		return true;
 	}
 	// ノーマル　→　フレイム
@@ -458,6 +461,7 @@ bool CSlimeManager::HitFlameBranch(int HitSlimeNum, int StandSlimeNum, CExplosio
 		SAFE_DELETE(m_pSlime[HitSlimeNum]);								// 衝突するスライムを削除
 		SAFE_DELETE(m_pSlime[StandSlimeNum]);							// 衝突されたスライムを削除
 
+		m_pCamera->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_STRONG | CCamera::E_BIT_FLAG_VIBRATION_SIDE_WEAK);
 		return true;
 
 	}
