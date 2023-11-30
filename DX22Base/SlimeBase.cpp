@@ -24,6 +24,7 @@
 	・2023/11/15 Objectクラスを継承したので修正　yamamoto
 	・2023/11/26 スライムが爆発から逃げる処理を作成　yamashita
 	・2023/11/28 攻撃力を追加 Sawada
+	・2023/11/29 影メモリリーク除去 takagi
 
 ========================================== */
 
@@ -63,10 +64,10 @@ CSlimeBase::CSlimeBase()
 	, m_bHitMove(false)
 	, m_eSlimeSize(LEVEL_1)	//後でSLIME_NONEにする <=TODO
 	, m_RanMoveCnt(RANDOM_MOVE_SWITCH_TIME)	// 初期
-	, m_ExpPos{0.0f,0.0f,0.0f}
+	, m_ExpPos{ 0.0f,0.0f,0.0f }
 	, m_bEscape(false)
 	, m_nEscapeCnt(0)
-	, m_nAttack(0)
+	, m_fScaleShadow(0.0f)
 {
 	
 	m_Transform.fScale = (1.0f, 1.0f, 1.0f);
@@ -75,7 +76,8 @@ CSlimeBase::CSlimeBase()
 
 	int random = abs(rand() % 360);	//ランダムに0～359の数字を作成
 	m_Ry = DirectX::XMMatrixRotationY(random);
-	
+
+	m_pShadow = new CShadow();	// 影生成
 }
 
 /* ========================================
@@ -89,6 +91,8 @@ CSlimeBase::CSlimeBase()
 =========================================== */
 CSlimeBase::~CSlimeBase()
 {
+	// =============== メモリ開放 ===================
+	SAFE_DELETE(m_pShadow);	//影解放
 }
 
 /* ========================================
@@ -100,14 +104,14 @@ CSlimeBase::~CSlimeBase()
 	-------------------------------------
 	戻値：無し
 =========================================== */
-void CSlimeBase::Update(TPos3d<float> playerPos)
+void CSlimeBase::Update(tagTransform3d playerTransform)
 {
 
 	if (!m_bHitMove)	//敵が通常の移動状態の時
 	{
 		if (!m_bEscape  && m_nEscapeCnt == 0)	//逃げるフラグがoffなら
 		{
-			NormalMove(playerPos);	//通常異動
+			NormalMove(playerTransform);	//通常異動
 		}
 		else
 		{
@@ -150,6 +154,9 @@ void CSlimeBase::Draw(const CCamera* pCamera)
 	if (m_pModel) {
 		m_pModel->Draw();
 	}
+
+	//-- 影の描画
+	m_pShadow->Draw(m_Transform, m_fScaleShadow, pCamera);
 }
 
 
@@ -162,8 +169,10 @@ void CSlimeBase::Draw(const CCamera* pCamera)
 	----------------------------------------
 	戻値：なし
 ======================================== */
-void CSlimeBase::NormalMove(TPos3d<float> playerPos)
+void CSlimeBase::NormalMove(tagTransform3d playerTransform)
 {
+	TPos3d<float> playerPos = playerTransform.fPos;
+
 	// 敵からエネミーの距離、角度を計算
 	float distancePlayer	= m_Transform.fPos.Distance(playerPos);
 

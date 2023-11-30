@@ -1,146 +1,240 @@
 /* ========================================
 	HEW/UniBoooom!!
 	---------------------------------------
-	�X�e�[�W1����
+	ステージ1実装
 	---------------------------------------
 	Stage1.cpp
 
-	�쐬��
+	作成者
 			takagi
 			nieda
 
-	�ύX����
-	�E2023/11/05 ���� takagi
-	�E2023/11/07 �R�����g�C�� takagi
-	�E2023/11/16 Prot.cpp��Stage1.cpp takagi
-	�E2023/11/20 SceneGame����ڐA nieda
-	�E2023/11/21 �Q�[���J�n���e�N�X�`���\�� nieda
-	�E2023/11/22 �����悤����Ȃ��ϐ��Ȃǒǉ� nieda
-	�E2023/11/27 �o�O�C�� takagi
-	
+	変更履歴
+	・2023/11/05 制作 takagi
+	・2023/11/07 コメント修正 takagi
+	・2023/11/16 Prot.cpp→Stage1.cpp takagi
+	・2023/11/20 SceneGameから移植 nieda
+	・2023/11/21 ゲーム開始時テクスチャ表示 nieda
+	・2023/11/22 動くよう足りない変数など追加 nieda
+	・2023/11/27 バグ修正 takagi
+  ・2023/11/29 ヒットストップ仕様変更対応 takagi
 
 ========================================== */
 
-// =============== �C���N���[�h ===================
-#include "Stage1.h"	//���g�̃w�b�_
+// =============== インクルード ===================
+#include "Stage1.h"	//自身のヘッダ
 #include "CameraChase.h"
 #include "Input.h"
+#include "Line.h"
+#include "HitStop.h"	//ヒットストップ
 
+// =============== デバッグモード ===================
+#define USE_CAMERA_VIBRATION (true)
+#define MODE_COORD_AXIS (true)			//座標軸映すかどうか
+#define MODE_GROUND (false)				//座標軸映すかどうか
+#if _DEBUG
+#define TRY_USE_HIT_STOP (true)
+#endif
+#define USE_FADE_GAME (true)	//フェード試す
+
+#if USE_FADE_GAME
+#include "Fade.h"
+#endif
+
+#if USE_CAMERA_VIBRATION
+#include "Input.h"
+#endif
+
+#if TRY_USE_HIT_STOP
+#include "Input.h"
+#endif
 
 /* ========================================
-	�R���X�g���N�^
+	コンストラクタ
 	----------------------------------------
-	���e�F�������ɍs������
+	内容：生成時に行う処理
 	----------------------------------------
-	����1�F�Ȃ�
+	引数1：なし
 	----------------------------------------
-	�ߒl�F�Ȃ�
+	戻値：なし
 =========================================== */
 CStage1::CStage1()
 	: m_nNum(0)
 	, m_fSize(100.0f)
 	, m_bStart(false)
 {
-	// ���_�V�F�[�_�̓Ǎ�
+	// 頂点シェーダの読込
 	m_pVs = new VertexShader();
 	if (FAILED(m_pVs->Load("Assets/shader/VS_Model.cso"))) {
 		MessageBox(nullptr, "VS_Model.cso", "Error", MB_OK);
 	}
 
-	// �e�N�X�`���Ǎ�
 	m_pTexture = new Texture();
 	if (FAILED(m_pTexture->Create("Assets/Texture/text_start.png")))
 	{
-		MessageBox(NULL, "Stage1 text_start.png", "Error", MB_OK);
+		MessageBox(NULL, "スタートテキスト読み込み", "Error", MB_OK);
 	}
 
-	// �����_�[�^�[�Q�b�g�A�[�x�o�b�t�@�̐ݒ�
-	RenderTarget* pRTV = GetDefaultRTV();	//�f�t�H���g�Ŏg�p���Ă���RenderTargetView�̎擾
-	DepthStencil* pDSV = GetDefaultDSV();	//�f�t�H���g�Ŏg�p���Ă���DepthStencilView�̎擾
-	SetRenderTargets(1, &pRTV, pDSV);		//DSV��null����2D�\���ɂȂ�
+	// レンダーターゲット、深度バッファの設定
+	RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得
+	DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
+	SetRenderTargets(1, &pRTV, pDSV);		//DSVがnullだと2D表示になる
 
-	// �����蔻�萶��
-	m_pCollision = new CCOLLISION();
+#if MODE_COORD_AXIS
+	// 軸線の表示
+	CLine::Init();
+#endif
 
-	// �v���C���[����
+	//================3dObject動的確保================
+
+	//プレイヤー生成
 	m_pPlayer = new CPlayer();
 
-	// �J��������
-	m_pCamera = new CCameraChase(m_pPlayer->GetPosAddress());
-	m_pPlayer->SetCamera(m_pCamera);
-
-	// ������
+	//床生成
 	m_pFloor = new CFloor(m_pPlayer->GetPosAddress());
-	m_pFloor->SetCamera(m_pCamera);
 
-	// �X���C���}�l�[�W���[����
-	m_pSlimeMng = new CSlimeManager();
-	m_pSlimeMng->SetCamera(m_pCamera);
+	// 爆発マネージャー生成
+	m_pExplosionMng = new CExplosionManager();
 
-	// �R���{���\������
+	// スライムマネージャー生成
+	m_pSlimeMng = new CSlimeManager(m_pPlayer);
+	
+	//================2dObject動的確保================
+
+	// コンボ数表示生成
 	m_pCombo = new CCombo();
 
-	// �����}�l�[�W���[����
-	m_pExplosionMng = new CExplosionManager();
-	m_pExplosionMng->SetCamera(m_pCamera);
-	m_pExplosionMng->SetCombo(m_pCombo);
-	m_pSlimeMng->SetExplosionMng(m_pExplosionMng);
+	//頭上スコアマネージャー生成
+	m_pScoreOHMng = new CScoreOHManager();
 
-	// �^�C�}�[����
+	//トータルスコア生成
+	m_pTotalScore = new CTotalScore();
+
+	// タイマー生成
 	m_pTimer = new CTimer();
-	m_pTimer->TimeStart();
 
-	//�X�e�[�W�I����UI�\��
+	//ボスゲージ生成
+	m_pBossgauge = new CBossgauge(m_pTimer->GetNowTime());
+
+	//ステージ終了のUI表示
 	m_pStageFin = new CStageFinish(m_pPlayer->GetHpPtr(), m_pTimer->GetTimePtr());
 
+	//プレイヤーHPのUI生成
+	m_pHpMng = new CHP_UI(m_pPlayer->GetHpPtr());
+	
+	//================System動的確保================
+
+	//カメラ生成
+	m_pCamera = new CCameraChase(m_pPlayer->GetPosAddress());
+
+	//衝突判定チェック生成
+	m_pCollision = new CCOLLISION();
+	
+#if MODE_GROUND
+	m_pBox = new CBox();
+#endif
+#if USE_FADE_GAME
+	m_pFade = new CFade(m_pCamera);
+#endif
+	//================セット================
+
+	//プレイヤー　←　カメラ
+	m_pPlayer->SetCamera(m_pCamera);
+
+	//爆発マネージャー　←　カメラ
+	m_pExplosionMng->SetCamera(m_pCamera);
+
+	//スライムマネージャー　←　カメラ
+	m_pSlimeMng->SetCamera(m_pCamera);
+
+	//床　←　カメラ
+	m_pFloor->SetCamera(m_pCamera);
+
+	//頭上スコアマネージャー　←　カメラ
+	m_pScoreOHMng->SetCamera(m_pCamera);
+
+	//スライムマネージャー　←　スコアマネージャー
+	m_pSlimeMng->SetScoreOHMng(m_pScoreOHMng);
+	
+	//爆発マネージャー　←　コンボ
+	m_pExplosionMng->SetCombo(m_pCombo);
+
+	//スライムマネージャー　←　爆発マネージャー
+	m_pSlimeMng->SetExplosionMng(m_pExplosionMng);
+
+	//コンボ　←　トータルスコア
+	m_pCombo->SetTotalScore(m_pTotalScore);
+
+	//ボスゲージ　←　スライムマネージャー
+	m_pBossgauge->SetSlimeManager(m_pSlimeMng);
+
+
+	//================タイマースタート================
+	m_pTimer->TimeStart();
+
+	//================BGMの設定================
 	LoadSound();
-	//BGM�̍Đ�
-	m_pSpeaker = CSound::PlaySound(m_pBGM);		//BGM�̍Đ�
-	m_pSpeaker->SetVolume(BGM_VOLUME);			//���ʂ̐ݒ�
+	//BGMの再生
+	m_pSpeaker = CSound::PlaySound(m_pBGM);		//BGMの再生
+	m_pSpeaker->SetVolume(BGM_VOLUME);			//音量の設定
 }
 
 /* ========================================
-	�f�X�g���N�^
+	デストラクタ
 	----------------------------------------
-	���e�F�j�����ɍs������
+	内容：破棄時に行う処理
 	----------------------------------------
-	����1�F�Ȃ�
+	引数1：なし
 	----------------------------------------
-	�ߒl�F�Ȃ�
+	戻値：なし
 =========================================== */
 CStage1::~CStage1()
 {
-	/*if (m_pSpeaker)
+	if (m_pSpeaker)
 	{
 		m_pSpeaker->Stop();
 		m_pSpeaker->DestroyVoice();
-	}*/
+	}
 	SAFE_DELETE(m_pStageFin);
+	SAFE_DELETE(m_pHpMng);
 	SAFE_DELETE(m_pTimer);
+	SAFE_DELETE(m_pFade);
+	SAFE_DELETE(m_pBossgauge);
+	SAFE_DELETE(m_pTimer);
+	SAFE_DELETE(m_pCombo);
 	SAFE_DELETE(m_pExplosionMng);
 	SAFE_DELETE(m_pCombo);
-	SAFE_DELETE(m_pSlimeMng);	// �X���C���}�l�[�W���[�폜
+	SAFE_DELETE(m_pSlimeMng);	// スライムマネージャー削除
 	SAFE_DELETE(m_pFloor);
 	SAFE_DELETE(m_pCamera);
 	SAFE_DELETE(m_pPlayer);
 	SAFE_DELETE(m_pCollision);
-	SAFE_DELETE(m_pTexture);
+	SAFE_DELETE(m_pScoreOHMng);
+	SAFE_DELETE(m_pTotalScore);
+
+#if MODE_COORD_AXIS
+	// 軸線の表示
+	CLine::Uninit();
+#endif
 	SAFE_DELETE(m_pVs);
+
+	//SAFE_DELETE(m_pDirectWrite);
+
 }
 
 /* ========================================
-	�X�V�֐�
+	更新関数
 	----------------------------------------
-	���e�F�X�V����
+	内容：更新処理
 	----------------------------------------
-	����1�F�Ȃ�
+	引数1：なし
 	----------------------------------------
-	�ߒl�F�Ȃ�
+	戻値：なし
 =========================================== */
 void CStage1::Update()
 {
-	// �^�C�g������J�ڌシ���Q�[���J�n�ɂȂ�Ȃ��悤�ɂ��鏈��
-	// ���܂�ɂ��K���ɍ�����̂Ŗ{�������ɂ����Ə����܂�
+	// タイトルから遷移後すぐゲーム開始にならないようにする処理
+	// あまりにも適当に作ったので本実装時にちゃんと書きます
 	if (!m_bStart)
 	{
 		m_nNum++;
@@ -156,113 +250,150 @@ void CStage1::Update()
 	}
 	else
 	{
-		// �J�����X�V
+		// カメラ更新
 		m_pCamera->Update();
 
-		// �v���C���[�X�V
-		m_pPlayer->Update();
+		// =============== ヒットストップ検査 ===================
+		if (!CHitStop::IsStop())	//ヒットストップ時処理しない
+		{
+			// プレイヤー更新
+			m_pPlayer->Update();
 
-		// �X���C���}�l�[�W���[�X�V
-		m_pSlimeMng->SetPlayerPos(m_pPlayer->GetPos());
-		m_pSlimeMng->Update(m_pExplosionMng);
+			// スライムマネージャー更新
+			m_pSlimeMng->Update(m_pExplosionMng);
+		}
 
-		// �����}�l�[�W���[�X�V
+		//床更新
+		m_pFloor->Update();
+
+		// 爆発マネージャー更新
 		m_pExplosionMng->Update();
 
-		// �^�C�}�[�X�V
+		// タイマー更新
 		m_pTimer->Update();
 
-		// �X�e�[�W�I���X�V
+		// ステージ終了更新
 		m_pStageFin->Update();
 
-		// �R���{�X�V
+		// コンボ更新
 		m_pCombo->Update();
 
-		// �����蔻��X�V
+		//頭上スコア更新
+		m_pScoreOHMng->Update();
+
+		// HPマネージャー更新
+		m_pHpMng->Update();
+
+		//ボスの出現ゲージ更新
+		m_pBossgauge->Update();
+
+		// 当たり判定更新
 		Collision();
+		
 	}
+
+#if USE_FADE_GAME
+	m_pFade->Update();
+#endif
 
 	if (m_pStageFin->GetDispFlg())
 	{
 		if (IsKeyTrigger(VK_RETURN) || IsKeyTriggerController(BUTTON_A))
 		{
-			m_bFinish = true;	// �^�C�g���V�[���I���t���OON
+			m_bFinish = true;	// タイトルシーン終了フラグON
 		}
 	}
 }
 
 /* ========================================
-	�`��֐�
+	描画関数
 	----------------------------------------
-	���e�F�`�揈��
+	内容：描画処理
 	----------------------------------------
-	����1�F�Ȃ�
+	引数1：なし
 	----------------------------------------
-	�ߒl�F�Ȃ�
+	戻値：なし
 =========================================== */
 void CStage1::Draw()
 {
-	RenderTarget* pRTV = GetDefaultRTV();	//�f�t�H���g�Ŏg�p���Ă���RenderTargetView�̎擾
-	DepthStencil* pDSV = GetDefaultDSV();	//�f�t�H���g�Ŏg�p���Ă���DepthStencilView�̎擾
-	SetRenderTargets(1, &pRTV, pDSV);		//DSV��null����2D�\���ɂȂ�
+	RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得
+	DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
+	SetRenderTargets(1, &pRTV, pDSV);		//DSVがnullだと2D表示になる
 
-	// �X�^�[�g���}�`��
+	// スタート合図描画
 	if (!m_bStart)
 	{
-		// ���܂�ɂ��K���ɍ�����̂Ŏ�������Ȃ炿���Ə����܂�
+		// あまりにも適当に作ったので実装するならちゃんと書きます
 		Draw2d(640.0f, 360.0f, m_fSize, m_fSize, m_pTexture);
 	}
 
-	//���̕`��
+	//床の描画
 	m_pFloor->Draw();
 
-	// �X���C���}�l�[�W���[�`��
+	// スライムマネージャー描画
 	m_pSlimeMng->Draw();
 
-	// �v���C���[�`��
+	// プレイヤー描画
 	m_pPlayer->Draw();
 
-	//�����}�l�[�W���[�`��
+	//爆発マネージャー描画
 	m_pExplosionMng->Draw();
 
-	//�^�C�}�[�`��
+	//タイマー描画
 	SetRenderTargets(1, &pRTV, nullptr);
+
+	//ステージ終了時の結果を描画
 	m_pStageFin->Draw();
 
-	// �^�C�}�[�`��
+	// タイマー描画
 	m_pTimer->Draw();
 
-	// �R���{�`��
+	// HPマネージャー描画
+	m_pHpMng->Draw();
+
+	// コンボ描画
 	m_pCombo->Draw();
 	
+	//トータルスコア描画
+	m_pTotalScore->Draw();
+
+	//ボスゲージ描画
+	m_pBossgauge->Draw();
+
+	//頭上スコアマネージャー描画
+	m_pScoreOHMng->Draw();
+
+#if USE_FADE_GAME
+	m_pFade->Draw();
+#endif
 }
 
 /* ========================================
-	��ރQ�b�^
+	種類ゲッタ
 	----------------------------------------
-	���e�F���g���X�e�[�W1�ł��邱�Ƃ�����
+	内容：自身がステージ1であることを示す
 	----------------------------------------
-	����1�F�Ȃ�
+	引数1：なし
 	----------------------------------------
-	�ߒl�F���g�̎��
+	戻値：自身の種類
 =========================================== */
 CStage1::E_TYPE CStage1::GetType() const
 {
-	// =============== �� ===================
-	return CStage1::E_TYPE_STAGE1;	//���g�̎��
+	// =============== 提供 ===================
+	return CStage1::E_TYPE_STAGE1;	//自身の種類
 }
 
 /* ========================================
-	���V�[���Q�b�^
+	次シーンゲッタ
 	----------------------------------------
-	���e�F�J�ڂ������V�[��������������
+	内容：遷移したいシーンが何かを示す
 	----------------------------------------
-	����1�F�Ȃ�
+	引数1：なし
 	----------------------------------------
-	�ߒl�F�J�ڐ�V�[���̎��
+	戻値：遷移先シーンの種類
 =========================================== */
 CStage1::E_TYPE CStage1::GetNext() const
 {
-	// =============== �� ===================
-	return CStage1::E_TYPE_RESULT;	//�J�ڐ�V�[���̎��
+	// =============== 提供 ===================
+	return CStage1::E_TYPE_RESULT;	//遷移先シーンの種類
 }

@@ -198,10 +198,12 @@
     <ClCompile Include="ModelParticle.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Particle.cpp" />
+    <ClCompile Include="Random.cpp" />
     <ClCompile Include="ScoreOverHead.cpp" />
     <ClCompile Include="ScoreOHManager.cpp" />
     <ClCompile Include="SelectStage.cpp" />
     <ClCompile Include="ShaderList.cpp" />
+    <ClCompile Include="Shadow.cpp" />
     <ClCompile Include="Sound.cpp" />
     <ClCompile Include="Slime_BossBase.cpp" />
     <ClCompile Include="Slime_Boss_1.cpp" />
@@ -244,6 +246,7 @@
     <ClCompile Include="TotalScore.cpp" />
     <ClCompile Include="Transform2d.cpp" />
     <ClCompile Include="Transform3d.cpp" />
+    <ClCompile Include="UIStageManager.cpp" />
     <ClCompile Include="_model.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -282,10 +285,12 @@
     <ClInclude Include="Pos3d.h" />
     <ClInclude Include="ModelParticle.h" />
     <ClInclude Include="Particle.h" />
+    <ClInclude Include="Random.h" />
     <ClInclude Include="ScoreOverHead.h" />
     <ClInclude Include="ScoreOHManager.h" />
     <ClInclude Include="SelectStage.h" />
     <ClInclude Include="ShaderList.h" />
+    <ClInclude Include="Shadow.h" />
     <ClInclude Include="Sound.h" />
     <ClInclude Include="Slime_BossBase.h" />
     <ClInclude Include="Slime_Boss_1.h" />
@@ -326,6 +331,7 @@
     <ClInclude Include="Transform2d.h" />
     <ClInclude Include="Transform3d.h" />
     <ClInclude Include="TriType.h" />
+    <ClInclude Include="UIStageManager.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="PsFade.hlsl">

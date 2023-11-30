@@ -30,14 +30,10 @@
 #include "Collision.h"
 #include "Player.h"
 #include "ExplosionManager.h"
-#include "HP_UI.h"
 #include "DirectWrite.h"
-#include "Timer.h"
 #include "Floor.h"
-#include "StageFinishUI.h"
-#include "Combo.h"
 #include "Fade.h"
-#include "BossGauge.h"
+#include "UIStageManager.h"
 
 #include "ScoreOHManager.h"
 #include "TotalScore.h"
@@ -79,18 +75,16 @@ private:
 	CSlimeManager* m_pSlimeMng;
 	CCOLLISION* m_pCollision;
 	CExplosionManager* m_pExplosionMng;
-	CHP_UI* m_pHpMng;
 	DirectWrite* m_pDirectWrite;
-	CTimer* m_pTimer;
-	CCombo* m_pCombo;
-	CBossgauge* m_pBossgauge;
 	CFloor* m_pFloor;
-	CStageFinish* m_pStageFin;
 	CFade* m_pFade;
 	CTotalScore* m_pTotalScore;
 	CHealItemManager* m_pHealItemMng;
-
+	CBossgauge* m_pBossgauge;
+	CCombo* m_pCombo;
 	CScoreOHManager* m_pScoreOHMng;
+	CUIStageManager* m_pUIStageMng;				//UIのマネジャー
+
 	XAUDIO2_BUFFER* m_pBGM;							//BGMの音声データ
 	XAUDIO2_BUFFER* m_pSEHitHammer;					//SEの音声データ
 	IXAudio2SourceVoice* m_pSpeaker;				//BGMを聞き取る側

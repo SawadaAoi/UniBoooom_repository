@@ -55,6 +55,7 @@ CBossgauge::CBossgauge(int* pTime)
 	, m_fFillGauge(0.0f)
 	, m_nFadeCnt(0)
 {
+
 	//ボスゲージのテクスチャ読む込み
 	m_pBossGaugeEmpty = new Texture();
 	m_pBossGaugeFull = new Texture();
