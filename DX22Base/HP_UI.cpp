@@ -10,6 +10,7 @@
 	変更履歴
 	・2023/11/16 新規作成 仁枝潤哉
 	・2023/11/29 アニメーション追加 仁枝潤哉
+	・2023/12/01 半分のHPアニメーション追加 仁枝潤哉
 
 ========================================== */
 
@@ -66,15 +67,15 @@ CHP_UI::CHP_UI(const int* pPlayerHp)
 	}
 
 	m_pTexture[HEART_FH_ANIM] = new Texture();	// 満タン→半分のHPのテクスチャ読み込み
-	if (FAILED(m_pTexture[HEART_FH_ANIM]->Create("Assets/Texture/hp_FtoE_sprite_1.png")))
+	if (FAILED(m_pTexture[HEART_FH_ANIM]->Create("Assets/Texture/hp_FtoH_sprite_2.png")))
 	{
-		MessageBox(NULL, "HpUI hp_FtoE_sprite_1.png", "Error", MB_OK);
+		MessageBox(NULL, "HpUI hp_FtoH_sprite_2.png", "Error", MB_OK);
 	}
 
 	m_pTexture[HEART_HE_ANIM] = new Texture();	// 半分→空のHPのテクスチャ読み込み
-	if (FAILED(m_pTexture[HEART_HE_ANIM]->Create("Assets/Texture/HP_HtoE_sprite_1.png")))
+	if (FAILED(m_pTexture[HEART_HE_ANIM]->Create("Assets/Texture/HP_HtoE_sprite_2.png")))
 	{
-		MessageBox(NULL, "HpUI HP_HtoE_sprite_1.png", "Error", MB_OK);
+		MessageBox(NULL, "HpUI HP_HtoE_sprite_2.png", "Error", MB_OK);
 	}
 
 	m_pPlayerHp = pPlayerHp;
@@ -244,10 +245,17 @@ void CHP_UI::Draw()
 		Sprite::SetWorld(mat_Anim[0]);
 		Sprite::SetView(mat_Anim[1]);
 		Sprite::SetProjection(mat_Anim[2]);
-		Sprite::SetSize(DirectX::XMFLOAT2(DRAW_HEIGHT + 40.0f, -(DRAW_WIDTH + 40.0f)));	
+		Sprite::SetSize(DirectX::XMFLOAT2(DRAW_ANIM_HEIGHT, -DRAW_ANIM_WIDTH));
 		Sprite::SetUVPos(DirectX::XMFLOAT2(m_fUVposX, m_fUVposY));				
-		Sprite::SetUVScale(DirectX::XMFLOAT2(1.0f/5.0f, 1.0f/5.0f));
-		Sprite::SetTexture(m_pTexture[HEART_FH_ANIM]);
+		Sprite::SetUVScale(DirectX::XMFLOAT2(HP_ANIM_SIZEX, HP_ANIM_SIZEY));
+		if (*m_pPlayerHp % 2 == 1)	// HPが偶数か奇数かによって表示するテクスチャを変更する
+		{
+			Sprite::SetTexture(m_pTexture[HEART_HE_ANIM]);
+		}
+		else
+		{
+			Sprite::SetTexture(m_pTexture[HEART_FH_ANIM]);
+		}
 		Sprite::Draw();
 	}
 
