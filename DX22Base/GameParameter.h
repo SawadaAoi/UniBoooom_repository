@@ -370,6 +370,10 @@ const float BOSS_1_SHADOW_SCALE = 12.0f;		// ボス１の影の大きさ
 // ゲーム開始時スタート表示 ==================================================
 const float TIME_SIZE_MIN = 50;
 
+
+// SE ====================================================================
+const float HIT_HAMMER_VOLUME = 0.3f;
+
 #endif
 
 #endif // !__GAME_PARAMETER_H__
