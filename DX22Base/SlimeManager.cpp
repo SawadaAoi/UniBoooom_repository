@@ -54,7 +54,9 @@
 #else
 #define DEBUG_BOSS	(false)						// デバッグ用にゲーム開始時ボスを生成するかどうか
 
-const int ENEMY_CREATE_INTERVAL	= 3 * 60;		// 生成間隔
+const int ENEMY_CREATE_INTERVAL		= int(3.0f * 60);		// 生成間隔
+const int ENEMY_CREATE_INTERVAL_LV2 = int(2.0f * 60);		// 生成間隔減らす
+const int ENEMY_CREATE_INTERVAL_LV3 = int(1.0f * 60);		// 生成間隔さらに減らす
 const int RANDOM_POS			= 15;			// 生成座標範囲
 const int CREATE_DISTANCE		= 10;			// 生成距離最小値
 const int SLIME_LEVEL1_PER		= 10;			// スライム_1の生成確立
@@ -84,6 +86,7 @@ const float LEAVE_DISTANCE = 20.0f;					// これ以上離れたら対角線上に移動する
 =========================================== */
 CSlimeManager::CSlimeManager(CPlayer* pPlayer)
 	: m_CreateCnt(0)
+	, m_CreateIncreaseCnt(STAGE_TIME)
 	, m_pVS(nullptr)
 	, m_pBlueModel(nullptr)
 	, m_pGreenModel(nullptr)
@@ -204,14 +207,41 @@ void CSlimeManager::Update(CExplosionManager* pExpMng)
 
 	}
 
-
+	//---敵生成---
 	m_CreateCnt++;
-	if(ENEMY_CREATE_INTERVAL<= m_CreateCnt)
+	m_CreateIncreaseCnt--;
+	// 初期時間から三分の二の時間までの生成量（速度）（3s一体）
+	if (m_CreateIncreaseCnt >= (STAGE_TIME / 3 * 2))
 	{
-		// 敵 生成
-		Create(GetRandomLevel());	//スライムのレベルをランダムに選んで生成する
-		m_CreateCnt = 0;				//カウントをリセット
+		if (ENEMY_CREATE_INTERVAL <= m_CreateCnt)
+		{
+			// 敵 生成
+			Create(GetRandomLevel());	//スライムのレベルをランダムに選んで生成する
+			m_CreateCnt = 0;				//カウントをリセット
+		}
 	}
+	// 三分の二の時間から三分の一の時間までの生成量（速度）（2s一体）
+	else if ((STAGE_TIME / 3 * 2) >= m_CreateIncreaseCnt && m_CreateIncreaseCnt >= (STAGE_TIME / 3))
+	{
+		if (ENEMY_CREATE_INTERVAL_LV2 <= m_CreateCnt)
+		{
+			// 敵 生成
+			Create(GetRandomLevel());	//スライムのレベルをランダムに選んで生成する
+			m_CreateCnt = 0;				//カウントをリセット
+		}
+	}
+	//  三分の一の時間から最後の時間までの生成量（速度）（1s一体）
+	else
+	{
+		if (ENEMY_CREATE_INTERVAL_LV3 <= m_CreateCnt)
+		{
+			// 敵 生成
+			Create(GetRandomLevel());	//スライムのレベルをランダムに選んで生成する
+			m_CreateCnt = 0;				//カウントをリセット
+		}
+	}
+
+
 }
 
 /* ========================================

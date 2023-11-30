@@ -72,7 +72,7 @@ const float HAMMER_SIZE			= 0.2f;									//ハンマーの大きさ
 // 敵キャラ ==================================================
 
 // 共通
-const int	MAX_SLIME_NUM = 50;		// スライムの最大生成数
+const int	MAX_SLIME_NUM = 75;		// スライムの最大生成数
 const int	MAX_BOSS_SLIME_NUM = 5;		// ボススライムの最大生成数
 const int	START_ENEMY_NUM = 6;		// ゲーム開始時の敵キャラの数
 const float ENEMY_MOVE_SPEED = 0.035f;	// 敵の通常移動速度
@@ -84,12 +84,14 @@ const float MOVE_RESIST = 0.05f;	// 吹き飛び移動中のスライムの移動速度に毎フレー
 const float MOVE_DISTANCE_PLAYER = 13.0f;	// プレイヤー追跡移動に切り替える距離
 const float SLIME_BASE_RADIUS = 0.5f;		// スライムの基準の大きさ
 
-const int ENEMY_CREATE_INTERVAL = int(2.0f * 60);								// 生成間隔
+const int ENEMY_CREATE_INTERVAL		= int(3.0f * 60);							// 生成間隔
+const int ENEMY_CREATE_INTERVAL_LV2	= int(ENEMY_CREATE_INTERVAL / 3 * 2);		// 生成間隔減らす
+const int ENEMY_CREATE_INTERVAL_LV3 = int(ENEMY_CREATE_INTERVAL / 3);			// 生成間隔さらに減らす
 const int RANDOM_POS = 15;														// 生成座標範囲
 const int CREATE_DISTANCE = 10;													// プレイヤーからどれくらい離れた距離に生成するか
-const int SLIME_LEVEL1_PER = 45;																// スライム_1の生成確立
-const int SLIME_LEVEL2_PER = 35;																// スライム_2の生成確立
-const int SLIME_LEVEL3_PER = 10;																// スライム_3の生成確立
+const int SLIME_LEVEL1_PER = 45;												// スライム_1の生成確立
+const int SLIME_LEVEL2_PER = 35;												// スライム_2の生成確立
+const int SLIME_LEVEL3_PER = 10;												// スライム_3の生成確立
 const int SLIME_LEVEL_FLAME_PER = 100 - SLIME_LEVEL1_PER - SLIME_LEVEL2_PER - SLIME_LEVEL3_PER;	// スライム_フレイムの生成確立
 const float MAX_SIZE_EXPLODE		= 5.0f;										// スライム4同士の爆発の大きさ
 const float EXPLODE_BASE_RATIO		= 1.5f;										// スライムの爆発接触での爆発の大きさのベース

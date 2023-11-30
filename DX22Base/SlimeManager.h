@@ -32,7 +32,6 @@
 // =============== インクルード ===================
 #include "TriType.h"
 //#include "SlimeBase.h"
-#include "ExplosionManager.h"
 #include "Camera.h"
 #include "ExplosionManager.h"
 #include "Slime_BossBase.h"
@@ -110,15 +109,16 @@ private:
 	Model* m_pFlameModel;
 	Model* m_pBossModel;
 
-	CScoreOHManager* m_pScoreOHMng;
-	CHealItemManager* m_pHealItemMng;
+	CScoreOHManager* m_pScoreOHMng;				// スコアマネージャ―ポインタ
+	CHealItemManager* m_pHealItemMng;			// 回復アイテムマネージャーポインタ
 
-	XAUDIO2_BUFFER* m_pSEHitSlime;					//ハンマーでスライムを打った時のSEのデータ
+	XAUDIO2_BUFFER* m_pSEHitSlime;				//ハンマーでスライムを打った時のSEのデータ
 	XAUDIO2_BUFFER* m_pSEUnion;					//ハンマーでスライムを打った時のSEのデータ
-	IXAudio2SourceVoice* m_pSEHitSlimeSpeaker;		//ハンマーでスライムを打った時のSEを聞き取る側
+	IXAudio2SourceVoice* m_pSEHitSlimeSpeaker;	//ハンマーでスライムを打った時のSEを聞き取る側
 	IXAudio2SourceVoice* m_pSEUnionSpeaker;		//ハンマーでスライムを打った時のSEを聞き取る側
 
-	int m_CreateCnt;	// 生成間隔用カウント
+	int m_CreateCnt;			// 生成間隔用カウント
+	int m_CreateIncreaseCnt;	// 生成量増やす用カウント
 	TPos3d<float> m_oldCreatePos;	//1つ前のスライムの生成場所
 	CExplosionManager* m_pExpMng;
 	
