@@ -68,6 +68,9 @@ const float ROTATE_RADIUS		= 1.0f;									// �n���}�[����]����v���C���[�����
 const float HAMMER_COL_SIZE		= 0.75f;								//�n���}�[�̓����蔻��̑傫��
 const float HAMMER_SIZE			= 0.2f;									//�n���}�[�̑傫��
 
+const float INTERVAL_INITIAL	= 0.2f;									//ハンマー初期間隔
+const float INTERVAL_PLUS		= 3.2f;									//ハンマーを一回振るときに乗算される値
+const float INTERVAL_MINUS		= 0.97f;								//毎フレームハンマーを振る間隔を短くさせる値
 
 // �G�L���� ==================================================
 
