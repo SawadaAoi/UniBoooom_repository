@@ -168,6 +168,9 @@ CStage1::CStage1()
 	//ボスゲージ　←　スライムマネージャー
 	m_pBossgauge->SetSlimeManager(m_pSlimeMng);
 
+	//爆発マネージャー　←　タイマー
+	m_pSlimeMng->SetTimer(m_pTimer);
+
 
 	//================タイマースタート================
 	m_pTimer->TimeStart();

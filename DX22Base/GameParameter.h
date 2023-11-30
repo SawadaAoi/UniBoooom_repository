@@ -72,7 +72,9 @@ const float HAMMER_SIZE			= 0.2f;									//ƒnƒ“ƒ}[‚Ì‘å‚«‚³
 // “GƒLƒƒƒ‰ ==================================================
 
 // ‹¤’Ê
-const int	MAX_SLIME_NUM = 75;		// ƒXƒ‰ƒCƒ€‚ÌÅ‘å¶¬”
+const int	MAX_SLIME_NUM = 50;							// ƒXƒ‰ƒCƒ€‚ÌÅ‘å¶¬”
+const int	FIRST_MAX_SLIME_NUM = MAX_SLIME_NUM - 35;	// ‘æˆê’iŠK‚ÌƒXƒ‰ƒCƒ€‚ÌÅ‘å¶¬”
+const int	SECOND_MAX_SLIME_NUM = MAX_SLIME_NUM - 20;	// ‘æ“ñ’iŠK‚ÌƒXƒ‰ƒCƒ€‚ÌÅ‘å¶¬”
 const int	MAX_BOSS_SLIME_NUM = 5;		// ƒ{ƒXƒXƒ‰ƒCƒ€‚ÌÅ‘å¶¬”
 const int	START_ENEMY_NUM = 6;		// ƒQ[ƒ€ŠJŽnŽž‚Ì“GƒLƒƒƒ‰‚Ì”
 const float ENEMY_MOVE_SPEED = 0.035f;	// “G‚Ì’ÊíˆÚ“®‘¬“x
@@ -84,9 +86,7 @@ const float MOVE_RESIST = 0.05f;	// ‚«”ò‚ÑˆÚ“®’†‚ÌƒXƒ‰ƒCƒ€‚ÌˆÚ“®‘¬“x‚É–ˆƒtƒŒ[
 const float MOVE_DISTANCE_PLAYER = 13.0f;	// ƒvƒŒƒCƒ„[’ÇÕˆÚ“®‚ÉØ‚è‘Ö‚¦‚é‹——£
 const float SLIME_BASE_RADIUS = 0.5f;		// ƒXƒ‰ƒCƒ€‚ÌŠî€‚Ì‘å‚«‚³
 
-const int ENEMY_CREATE_INTERVAL		= int(3.0f * 60);							// ¶¬ŠÔŠu
-const int ENEMY_CREATE_INTERVAL_LV2	= int(ENEMY_CREATE_INTERVAL / 3 * 2);		// ¶¬ŠÔŠuŒ¸‚ç‚·
-const int ENEMY_CREATE_INTERVAL_LV3 = int(ENEMY_CREATE_INTERVAL / 3);			// ¶¬ŠÔŠu‚³‚ç‚ÉŒ¸‚ç‚·
+const int ENEMY_CREATE_INTERVAL		= int(1.0f * 60);							// ¶¬ŠÔŠu
 const int RANDOM_POS = 15;														// ¶¬À•W”ÍˆÍ
 const int CREATE_DISTANCE = 10;													// ƒvƒŒƒCƒ„[‚©‚ç‚Ç‚ê‚­‚ç‚¢—£‚ê‚½‹——£‚É¶¬‚·‚é‚©
 const int SLIME_LEVEL1_PER = 45;												// ƒXƒ‰ƒCƒ€_1‚Ì¶¬Šm—§
@@ -264,6 +264,7 @@ const float TIME_BACK_GROUND_SIZE_X = 200.0f;			//ƒ^ƒCƒ}[‚ÌƒoƒbƒNƒOƒ‰ƒ“ƒh‚ÌX‚Ì’
 const float TIME_BACK_GROUND_SIZE_Y = -75.0f;			//ƒ^ƒCƒ}[‚ÌƒoƒbƒNƒOƒ‰ƒ“ƒh‚ÌY‚Ì’·‚³Ý’è
 const float TIME_COLON_SIZE_X = 35.0f;					//ƒ^ƒCƒ}[‚ÌƒRƒƒ“‚ÌX‚Ì’·‚³Ý’è
 const float TIME_COLON_SIZE_Y = -35.0f;					//ƒ^ƒCƒ}[‚ÌƒRƒƒ“‚ÌY‚Ì’·‚³Ý’è
+const float SPEED_BASE = 1.0f;							//Å‰‚ÌƒXƒs[ƒhŒvŽZ’l
 
 // ƒ{ƒXƒQ[ƒW =====================================================
 const int BOSS_GAUGE_FULL_TIME = 45 * 60;		//ƒ{ƒXƒQ[ƒWMAX‚É‚È‚éŽžŠÔ(‰½•boŒ») * 60ƒtƒŒ[ƒ€

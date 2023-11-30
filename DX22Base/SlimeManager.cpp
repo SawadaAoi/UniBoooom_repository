@@ -86,7 +86,6 @@ const float LEAVE_DISTANCE = 20.0f;					// これ以上離れたら対角線上に移動する
 =========================================== */
 CSlimeManager::CSlimeManager(CPlayer* pPlayer)
 	: m_CreateCnt(0)
-	, m_CreateIncreaseCnt(STAGE_TIME)
 	, m_pVS(nullptr)
 	, m_pBlueModel(nullptr)
 	, m_pGreenModel(nullptr)
@@ -101,12 +100,13 @@ CSlimeManager::CSlimeManager(CPlayer* pPlayer)
 	, m_oldCreatePos{ 0.0f,0.0f,0.0f }
 	, m_pPlayer(pPlayer)
 	, m_pExpMng(nullptr)
+	, m_pTimer(nullptr)
 {
 	//スライムのモデルと頂点シェーダーの読み込み
 	LoadModel();
-
+	
 	// スライム初期化
-	for (int i = 0; i < MAX_SLIME_NUM; i++)
+	for (int i = 0; i <MAX_SLIME_NUM; i++)
 	{
 		m_pSlime[i] = nullptr;
 	}
@@ -116,12 +116,7 @@ CSlimeManager::CSlimeManager(CPlayer* pPlayer)
 		m_pBoss[i] = nullptr;
 	}
 
-	// ゲーム開始時に敵キャラを生成する
-	for (int i = 0; i < START_ENEMY_NUM; i++)
-	{
-		int ranLv = rand() % 3 + 1;		// 生成するスライムのレベルを乱数で指定
-		Create((E_SLIME_LEVEL)ranLv);	// 生成処理
-	}
+	
 
 #if DEBUG_BOSS
 	// 開始時ボス生成
@@ -161,9 +156,10 @@ CSlimeManager::~CSlimeManager()
 	SAFE_DELETE(m_pGreenModel);
 	SAFE_DELETE(m_pBlueModel);
 	SAFE_DELETE(m_pBossModel);
+	
 
 	// スライム削除
-	for (int i = 0; i < MAX_SLIME_NUM; i++)
+	for (int i = 0; i <MAX_SLIME_NUM; i++)
 	{
 		SAFE_DELETE(m_pSlime[i]);
 	}
@@ -190,10 +186,10 @@ void CSlimeManager::Update(CExplosionManager* pExpMng)
 	CheckEscape();	//Updateの前に近くに爆発があるか確認する
 
 	// スライム更新
-	for (int i = 0; i < MAX_SLIME_NUM; i++)
+	for (int i = 0; i <MAX_SLIME_NUM; i++)
 	{
 		if (m_pSlime[i] == nullptr) continue;
-		m_pSlime[i]->Update(m_pPlayer->GetTransform());
+		m_pSlime[i]->Update(m_pPlayer->GetTransform(), m_pTimer->GetSlimeMoveSpeed());
 
 	}
 
@@ -209,39 +205,12 @@ void CSlimeManager::Update(CExplosionManager* pExpMng)
 
 	//---敵生成---
 	m_CreateCnt++;
-	m_CreateIncreaseCnt--;
-	// 初期時間から三分の二の時間までの生成量（速度）（3s一体）
-	if (m_CreateIncreaseCnt >= (STAGE_TIME / 3 * 2))
+	if (m_pTimer->GetSlimeCreateInterval() <= m_CreateCnt)
 	{
-		if (ENEMY_CREATE_INTERVAL <= m_CreateCnt)
-		{
-			// 敵 生成
-			Create(GetRandomLevel());	//スライムのレベルをランダムに選んで生成する
-			m_CreateCnt = 0;				//カウントをリセット
-		}
+		// 敵 生成
+		Create(GetRandomLevel());	//スライムのレベルをランダムに選んで生成する
+		m_CreateCnt = 0;				//カウントをリセット
 	}
-	// 三分の二の時間から三分の一の時間までの生成量（速度）（2s一体）
-	else if ((STAGE_TIME / 3 * 2) >= m_CreateIncreaseCnt && m_CreateIncreaseCnt >= (STAGE_TIME / 3))
-	{
-		if (ENEMY_CREATE_INTERVAL_LV2 <= m_CreateCnt)
-		{
-			// 敵 生成
-			Create(GetRandomLevel());	//スライムのレベルをランダムに選んで生成する
-			m_CreateCnt = 0;				//カウントをリセット
-		}
-	}
-	//  三分の一の時間から最後の時間までの生成量（速度）（1s一体）
-	else
-	{
-		if (ENEMY_CREATE_INTERVAL_LV3 <= m_CreateCnt)
-		{
-			// 敵 生成
-			Create(GetRandomLevel());	//スライムのレベルをランダムに選んで生成する
-			m_CreateCnt = 0;				//カウントをリセット
-		}
-	}
-
-
 }
 
 /* ========================================
@@ -256,7 +225,7 @@ void CSlimeManager::Update(CExplosionManager* pExpMng)
 void CSlimeManager::Draw()
 {
 	//"スライム"描画
-	for (int i = 0; i < MAX_SLIME_NUM; i++)
+	for (int i = 0; i <MAX_SLIME_NUM; i++)
 	{
 		if (m_pSlime[i] == nullptr) continue;
 		m_pSlime[i]->Draw(m_pCamera);
@@ -285,7 +254,7 @@ void CSlimeManager::Create(E_SLIME_LEVEL level)
 {
 	TPos3d<float> CreatePos;	// スライムの生成位置
 
-	for (int i = 0; i < MAX_SLIME_NUM; i++)
+	for (int i = 0; i <m_pTimer->GetMaxSlimeNum(); i++)
 	{
 		// スライムのuseを検索
 		if (m_pSlime[i] != nullptr) continue;
@@ -505,7 +474,7 @@ bool CSlimeManager::HitFlameBranch(int HitSlimeNum, int StandSlimeNum, CExplosio
 ======================================== */
 void CSlimeManager::UnionSlime(E_SLIME_LEVEL level ,TPos3d<float> pos)
 {
-	for (int i = 0; i < MAX_SLIME_NUM; i++)
+	for (int i = 0; i <MAX_SLIME_NUM; i++)
 	{
 		if (m_pSlime[i] != nullptr) { continue; }
 
@@ -964,7 +933,7 @@ void CSlimeManager::LoadModel()
 ======================================== */
 void CSlimeManager::OutOfRange()
 {
-	for (int i = 0; i < MAX_SLIME_NUM; i++)
+	for (int i = 0; i <MAX_SLIME_NUM; i++)
 	{
 		if (!m_pSlime[i]) { continue; }	//nullならスキップ
 
@@ -1001,7 +970,7 @@ void CSlimeManager::OutOfRange()
 ======================================== */
 void CSlimeManager::CheckEscape()
 {
-	for (int j = 0; j < MAX_SLIME_NUM; j++)
+	for (int j = 0; j <MAX_SLIME_NUM; j++)
 	{
 		if (!m_pSlime[j]) { continue; }						//nullptrならスキップ
 		if (m_pSlime[j]->GetEscapeFlag()) { continue; }		//すでに逃げているならスキップ
@@ -1082,6 +1051,20 @@ void CSlimeManager::SetExplosionMng(CExplosionManager* pExpMng)
 }
 
 /* ========================================
+	タイマーセット関数
+	----------------------------------------
+	内容：タイマーのポインタをセットする
+	----------------------------------------
+	引数1：タイマーのポインタ
+	----------------------------------------
+	戻値：無し
+======================================== */
+void CSlimeManager::SetTimer(CTimer * pTimer)
+{
+	m_pTimer = pTimer;
+}
+
+/* ========================================
 	乱数関数
 	----------------------------------------
 	内容：毎回異なる乱数関数
@@ -1100,7 +1083,7 @@ int CSlimeManager::GetRandom(int min, int max)
 	----------------------------------------
 	内容：爆発生成時に必要なスコア情報セット
 	----------------------------------------
-	引数1：なし
+	引数1：スコアポインタ
 	----------------------------------------
 	戻値：なし
 ======================================== */

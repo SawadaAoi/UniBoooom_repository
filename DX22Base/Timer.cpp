@@ -52,6 +52,9 @@ CTimer::CTimer()
 	, m_pTextureBG(nullptr)
 	, m_pTextureColon(nullptr)
 	, m_pTextureNum(nullptr)
+	, m_nMaxSlimeNum(0)
+	, m_nSlimeCreateInterval(0)
+	, m_fSlimeMoveSpeed(0.0f)
 {
 	//数字のテクスチャ読む込み
 
@@ -123,7 +126,6 @@ void CTimer::Update()
 	{
 		// TODOゲーム終了処理
 	}
-
 }
 /* ========================================
 	描画関数
@@ -383,4 +385,93 @@ int * CTimer::GetTimePtr()
 int* CTimer::GetNowTime()
 {
 	return &m_nTimeCnt;
+}
+
+/* ========================================
+	取得関数
+	----------------------------------------
+	内容：スライム最大生成数取得
+	----------------------------------------
+	引数1：なし
+	----------------------------------------
+	戻値：int スライム最大生成数
+=========================================== */
+int CTimer::GetMaxSlimeNum()
+{
+	//最初時間（3分）～ 2/3時間（2分）
+	if (m_nTimeCnt >= (STAGE_TIME / 3 * 2))
+	{
+		m_nMaxSlimeNum = FIRST_MAX_SLIME_NUM;
+	}
+	// 2/3時間（2分）～ 1/3時間（1分）
+	else if ((STAGE_TIME / 3 * 2) >= m_nTimeCnt && m_nTimeCnt >= (STAGE_TIME / 3))
+	{
+		m_nMaxSlimeNum = SECOND_MAX_SLIME_NUM;
+	}
+	// 1/3時間（1分）～ 最後まで（0分）
+	else
+	{
+		m_nMaxSlimeNum = MAX_SLIME_NUM;
+	}
+	return m_nMaxSlimeNum;
+}
+
+/* ========================================
+	取得関数
+	----------------------------------------
+	内容：スライムの生成間隔を取得
+	----------------------------------------
+	引数1：なし
+	----------------------------------------
+	戻値：int 生成間隔の秒数
+=========================================== */
+int CTimer::GetSlimeCreateInterval()
+{
+	//最初時間（3分）～ 2/3時間（2分）
+	if (m_nTimeCnt >= (STAGE_TIME / 3 * 2))
+	{
+		m_nSlimeCreateInterval = ENEMY_CREATE_INTERVAL;
+	}
+	// 2/3時間（2分）～ 1/3時間（1分）
+	else if ((STAGE_TIME / 3 * 2) >= m_nTimeCnt && m_nTimeCnt >= (STAGE_TIME / 3))
+	{
+		m_nSlimeCreateInterval = (ENEMY_CREATE_INTERVAL * 2 / 3);
+	}
+	// 1/3時間（1分）～ 最後まで（0分）
+	else
+	{
+		m_nSlimeCreateInterval = (ENEMY_CREATE_INTERVAL / 3);
+	}
+
+	return m_nSlimeCreateInterval;
+}
+
+/* ========================================
+	取得関数
+	----------------------------------------
+	内容：スライムのスピードを取得
+	----------------------------------------
+	引数1：なし
+	----------------------------------------
+	戻値：float スライムのスピード
+=========================================== */
+float CTimer::GetSlimeMoveSpeed()
+{
+	//最初時間（3分）～ 2/3時間（2分）
+	if (m_nTimeCnt >= (STAGE_TIME / 3 * 2))
+	{
+		m_fSlimeMoveSpeed = SPEED_BASE;
+	}
+	// 2/3時間（2分）～ 1/3時間（1分）
+	else if ((STAGE_TIME / 3 * 2) >= m_nTimeCnt && m_nTimeCnt >= (STAGE_TIME / 3))
+	{
+		m_fSlimeMoveSpeed = SPEED_BASE * 1.1f;
+	}
+	// 1/3時間（1分）～ 最後まで（0分）
+	else
+	{
+		m_fSlimeMoveSpeed = SPEED_BASE * 1.2f;
+	}
+
+	return m_fSlimeMoveSpeed;
 }

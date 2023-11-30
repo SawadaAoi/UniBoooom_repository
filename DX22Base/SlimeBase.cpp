@@ -104,7 +104,7 @@ CSlimeBase::~CSlimeBase()
 	-------------------------------------
 	戻値：無し
 =========================================== */
-void CSlimeBase::Update(tagTransform3d playerTransform)
+void CSlimeBase::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
 {
 
 	if (!m_bHitMove)	//敵が通常の移動状態の時
@@ -125,9 +125,11 @@ void CSlimeBase::Update(tagTransform3d playerTransform)
 	}
 
 	// -- 座標更新
-	m_Transform.fPos.x += m_move.x;
-	m_Transform.fPos.z += m_move.z;
+	m_Transform.fPos.x += m_move.x * fSlimeMoveSpeed;
+	m_Transform.fPos.z += m_move.z * fSlimeMoveSpeed;
 }
+
+	
 
 /* ========================================
 	描画処理関数
@@ -307,8 +309,8 @@ void CSlimeBase::Escape()
 	//爆発への角度を取得
 	float rad = atan2f(m_ExpPos.z - m_Transform.fPos.z, m_ExpPos.x - m_Transform.fPos.x);	
 	//爆発と反対方向に移動
-	m_move.x = -(cosf(rad)) * ENEMY_MOVE_SPEED;
-	m_move.z = -(sinf(rad)) * ENEMY_MOVE_SPEED;
+	m_move.x = -(cosf(rad)) * m_fSpeed;
+	m_move.z = -(sinf(rad)) * m_fSpeed;
 	m_Transform.fRadian.y = atan2f(-m_move.x,-m_move.z);
 
 	m_nEscapeCnt++;	//カウントを増加
