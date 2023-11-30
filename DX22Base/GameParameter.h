@@ -55,7 +55,7 @@ const int	DAMAGE_FLASH_FRAME	= int(0.1f * 60);	// プレイヤーのダメージ点滅の切り
 const int	SE_RUN_INTERVAL		= int(0.4f * 60);	//プレイヤーの移動によるSE発生の間隔
 const float	SE_RUN_VOLUME		= 0.3f;			//移動によるSEの音量
 const int	HEAL_NUM			= 1;			//プレイヤーの回復量
-const float HAMMER_INTERVAL_TIME	= 0.4f * 60;	// ハンマー振り間隔
+const float HAMMER_INTERVAL_TIME	= 0.0f * 60;	// ハンマー振り間隔
 
 
 // ハンマー

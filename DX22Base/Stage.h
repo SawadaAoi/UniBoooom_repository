@@ -81,6 +81,8 @@ protected:
 	CTotalScore* m_pTotalScore;
 	CHP_UI* m_pHpMng;
 	CBossgauge* m_pBossgauge;
+	CHealItemManager* m_pHealItemMng;
+
 	
 };	//ステージ
 

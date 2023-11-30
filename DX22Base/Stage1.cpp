@@ -99,6 +99,8 @@ CStage1::CStage1()
 	// スライムマネージャー生成
 	m_pSlimeMng = new CSlimeManager(m_pPlayer);
 	
+	m_pHealItemMng = new CHealItemManager();
+
 	//================2dObject動的確保================
 
 	// コンボ数表示生成
@@ -153,6 +155,8 @@ CStage1::CStage1()
 	//頭上スコアマネージャー　←　カメラ
 	m_pScoreOHMng->SetCamera(m_pCamera);
 
+	m_pHealItemMng->SetCamera(m_pCamera);
+
 	//スライムマネージャー　←　スコアマネージャー
 	m_pSlimeMng->SetScoreOHMng(m_pScoreOHMng);
 	
@@ -168,6 +172,7 @@ CStage1::CStage1()
 	//ボスゲージ　←　スライムマネージャー
 	m_pBossgauge->SetSlimeManager(m_pSlimeMng);
 
+	m_pSlimeMng->SetHealMng(m_pHealItemMng);
 
 	//================タイマースタート================
 	m_pTimer->TimeStart();
@@ -202,6 +207,7 @@ CStage1::~CStage1()
 	SAFE_DELETE(m_pBossgauge);
 	SAFE_DELETE(m_pTimer);
 	SAFE_DELETE(m_pCombo);
+	SAFE_DELETE(m_pHealItemMng);
 	SAFE_DELETE(m_pExplosionMng);
 	SAFE_DELETE(m_pCombo);
 	SAFE_DELETE(m_pSlimeMng);	// スライムマネージャー削除
@@ -268,6 +274,8 @@ void CStage1::Update()
 
 		// 爆発マネージャー更新
 		m_pExplosionMng->Update();
+
+		m_pHealItemMng->Update();
 
 		// タイマー更新
 		m_pTimer->Update();
@@ -338,6 +346,8 @@ void CStage1::Draw()
 
 	//爆発マネージャー描画
 	m_pExplosionMng->Draw();
+
+	m_pHealItemMng->Draw();
 
 	//タイマー描画
 	SetRenderTargets(1, &pRTV, nullptr);
