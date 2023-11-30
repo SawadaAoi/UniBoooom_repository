@@ -350,6 +350,10 @@ const float LEVEL_4_SHADOW_SCALE = 8.0f;	// スライム＿レベル４の影の大きさ
 const float LEVEL_FLAME_SHADOW_SCALE = 2.0f;// スライム＿フレイムの影の大きさ
 const float BOSS_1_SHADOW_SCALE = 12.0f;		// ボス１の影の大きさ
 
+
+// SE ====================================================================
+const float HIT_HAMMER_VOLUME = 0.3f;
+
 #endif
 
 #endif // !__GAME_PARAMETER_H__

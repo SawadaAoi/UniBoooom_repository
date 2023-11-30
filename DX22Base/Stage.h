@@ -36,13 +36,14 @@
 #include "BossGauge.h"
 #include "ScoreOHManager.h"
 #include "TotalScore.h"
+#include "Sound.h"
 
 // =============== クラス定義 =====================
 class CStage :public CScene	//シーン
 {
 public:
 	// =============== プロトタイプ宣言 ===============
-	//CStage();							//コンストラクタ
+	CStage();							//コンストラクタ
 	//virtual ~CStage();					//デストラクタ
 	//virtual void Update();				//更新
 	//virtual void Draw() const;			//描画	
@@ -82,6 +83,10 @@ protected:
 	CHP_UI* m_pHpMng;
 	CBossgauge* m_pBossgauge;
 	
+	//サウンド
+	XAUDIO2_BUFFER* m_pSEHitHammer;
+	IXAudio2SourceVoice* m_pSEHitHammerSpeaker;
+
 };	//ステージ
 
 #endif	//!__STAGE_H__

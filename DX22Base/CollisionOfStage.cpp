@@ -13,6 +13,7 @@
 	・2023/11/16 制作 takagi
 	・2023/11/29 ヒットストップ仕様変更対応 takagi
 	・2023/11/30 ヒットストップをハンマー激突時に変更 takagi
+	・2023/12/01 ハンマーとスライムの当たり判定持にSEを再生 yamashita
 
 ========================================== */
 
@@ -149,6 +150,8 @@ void CStage::HammerSlimeCollision()
 				= m_pPlayer->GetTransform().Angle(pSlimeNow->GetTransform());	// スライムが飛ぶ角度を取得
 
 			pSlimeNow->HitMoveStart(HAMMER_HIT_MOVE_SPEED, fAngleSlime);	// スライムを飛ばす
+			m_pSEHitHammerSpeaker = CSound::PlaySound(m_pSEHitHammer);		//ハンマーでスライム殴った時のSEの再生
+			m_pSEHitHammerSpeaker->SetVolume(HIT_HAMMER_VOLUME);
 		}
 	}
 }
