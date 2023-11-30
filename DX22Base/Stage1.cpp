@@ -70,7 +70,7 @@ CStage1::CStage1()
 	}
 
 	m_pTexture = new Texture();
-	if (FAILED(m_pTexture->Create("Assets/Texture/text_start.png")))
+	if (FAILED(m_pTexture->Create("Assets/Texture/start_sign.png")))
 	{
 		MessageBox(NULL, "スタートテキスト読み込み", "Error", MB_OK);
 	}
@@ -239,17 +239,17 @@ CStage1::~CStage1()
 =========================================== */
 void CStage1::Update()
 {
-	// タイトルから遷移後すぐゲーム開始にならないようにする処理
-	// あまりにも適当に作ったので本実装時にちゃんと書きます
-	if (!m_bStart)
+	if (!m_bStart)	// シーン遷移後ゲームを開始するか判定
 	{
+		// タイトルから遷移後すぐゲーム開始にならないようにする処理
 		m_nNum++;
-		if (m_nNum > 10)
+		
+		if (m_nNum < 100)
 		{
-			m_fSize += 10.0f;
+			m_fResize += 1.0f;
+			m_fSize -= m_fResize;
 		}
-
-		if (m_nNum > 50)
+		else
 		{
 			m_bStart = true;
 		}

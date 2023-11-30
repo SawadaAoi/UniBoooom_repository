@@ -21,6 +21,7 @@
 	E2023/11/24 ƒpƒ‰ƒ[ƒ^[’Ç‰Á(// ƒJƒƒ‰) Takagi
 	E2023/11/27 ƒpƒ‰ƒ[ƒ^[’Ç‰Á(// ‰e) nieda
 	E2023/11/30 ƒpƒ‰ƒ[ƒ^[•ÒW(// ƒJƒƒ‰) Takagi
+	E2023/12/01 ƒpƒ‰ƒ[ƒ^[’Ç‰Á(// HPAƒRƒ“ƒ{‚ÌƒAƒjƒ[ƒVƒ‡ƒ“ŠÖ˜A) nieda
 
 =========================================== */
 #ifndef __GAME_PARAMETER_H__
@@ -205,11 +206,7 @@ const int	COUNT_UP = 6;						//  1•b‚Å360‚É‚È‚é‚æ‚¤‚É’²®
 const float	HEALITEM_MOVE_Y = 0.5f;				//  ƒAƒCƒeƒ€‚Ìã‰º‚É—h‚ê‚é‚‚³(-1`1‚Ü‚Å‚ðˆÚ“®‚·‚é‚Ì‚ÅˆÚ“®—Ê‚Í2)
 const float	HEALITEM_HEIGHT = HEALITEM_MOVE_Y;	//  ‰ñ•œƒAƒCƒeƒ€‚Ì‰Šú‚Ì‚‚³
 
-// ° ====================================
-const float FLOOR_SCALE_X = 1.1f;
-const float FLOOR_SCALE_Z = 1.1f;
-const float FLOOR_OFFSET_X = 48.0f * FLOOR_SCALE_X;
-const float FLOOR_OFFSET_Z = 48.0f * FLOOR_SCALE_Z;
+
 
 // ƒJƒƒ‰ =====================================================
 #include "Random.h"		//—”¶¬—p
@@ -302,6 +299,15 @@ const TTriType<float> HP_UI_POS = { 80.0f, 60.0f ,0.0f };	// ƒeƒNƒXƒ`ƒƒ‚Ìc•A‰
 const TTriType<float> HP_UI_SIZE = { 90.0f, 90.0f ,0.0f };	// ƒeƒNƒXƒ`ƒƒ‚Ìc•A‰¡•
 const float DRAW_WIDTH = 90.0f;	// ƒeƒNƒXƒ`ƒƒ‚Ì‰¡•
 
+const int SWITCH_HP_ANIM = 0;				// ƒAƒjƒ[ƒVƒ‡ƒ“Ø‚è‘Ö‚¦‚ÌŠÔŠu
+const int HP_ANIM_WIDTH_NUM_MAX = 6;		// ‰¡•ªŠ„”Å‘å”
+const int HP_ANIM_HEIGHT_NUM_MAX = 6;		// c•ªŠ„”Å‘å”
+const float HP_ANIM_SIZEX = 1.0f / HP_ANIM_WIDTH_NUM_MAX;	// ƒeƒNƒXƒ`ƒƒ‰¡•ªŠ„ƒTƒCƒY
+const float HP_ANIM_SIZEY = 1.0f / HP_ANIM_HEIGHT_NUM_MAX;	// ƒeƒNƒXƒ`ƒƒc•ªŠ„ƒTƒCƒY
+const float DRAW_ANIM_HEIGHT = HP_UI_SIZE.y + 40.0f;		// ƒAƒjƒ[ƒVƒ‡ƒ“‚Ì•\Ž¦ˆÊ’u
+const float DRAW_ANIM_WIDTH = HP_UI_SIZE.x + 40.0f;		// ƒAƒjƒ[ƒVƒ‡ƒ“‚Ì•\Ž¦ˆÊ’u
+
+
 // BoooomUI =====================================================
 const float BOOOOM_UI_SIZE_X = 1.0f;		//BoooomUI‚ÌX‚Ì’·‚³itexture‚Ì”ä—¦‚Æ‡‚í‚¹‚éj
 const float BOOOOM_UI_SIZE_Y = 0.565f;		//BoooomUI‚ÌY‚Ì’·‚³itexture‚Ì”ä—¦‚Æ‡‚í‚¹‚éj
@@ -316,10 +322,22 @@ const float COMBO_UI_NUM_SPACE = 80.0f;				// ”Žš‚ÌŠÔƒXƒy[ƒX
 const float COMBO_UI_MULTI_DISP_SPACE = 100.0f;			// “¯ŽžƒRƒ“ƒ{•`‰æŽž‚Ìã‰º‚Ì‹ó”’
 const int COMBO_UI_DISP_DILAY_TIME = int(2.0f * 60);			// ŽcƒRƒ“ƒ{”•\Ž¦‚Ì•b”
 
-const TPos2d<float> COMBO_UI_BACK_POS = { 1100.0f, 600.0f };	// ƒRƒ“ƒ{UI‚Ì”wŒi‚Ì•`‰æˆÊ’u
+const TPos2d<float> COMBO_UI_BACK_POS = { 1130.0f, 600.0f };	// ƒRƒ“ƒ{UI‚Ì”wŒi‚Ì•`‰æˆÊ’u
 const TPos2d<float> COMBO_UI_BACK_SIZE = { 370.0f, 280.0f };	// ƒRƒ“ƒ{UI‚Ì”wŒi‚Ì‘å‚«‚³
 const TPos2d<float> COMBO_UI_STRING_POS = { 1150.0f, 615.5f };	// ƒRƒ“ƒ{UI‚Ì•¶Žš‚Ì•`‰æˆÊ’u
 const TPos2d<float> COMBO_UI_STRING_SIZE = { 180.0f, 100.0f };		// ƒRƒ“ƒ{UI‚Ì•¶Žš‚Ì‘å‚«‚³
+
+const int SWITCH_COMBO_ANIM = 1;			// ƒAƒjƒ[ƒVƒ‡ƒ“Ø‚è‘Ö‚¦‚ÌŠÔŠu
+const int COMBO_ANIM_WIDTH_NUM_MAX = 3;		// ‰¡•ªŠ„”Å‘å”
+const int COMBO_ANIM_HEIGHT_NUM_MAX = 3;	// c•ªŠ„”Å‘å”
+const float COMBO_ANIM_SIZEX = 1.0f / COMBO_ANIM_WIDTH_NUM_MAX;		// ƒeƒNƒXƒ`ƒƒ‰¡•ªŠ„ƒTƒCƒY
+const float COMBO_ANIM_SIZEY = 1.0f / COMBO_ANIM_HEIGHT_NUM_MAX;	// ƒeƒNƒXƒ`ƒƒc•ªŠ„ƒTƒCƒY
+
+// ° ====================================
+const float FLOOR_SCALE_X = 1.1f;
+const float FLOOR_SCALE_Z = 1.1f;
+const float FLOOR_OFFSET_X = 48.0f * FLOOR_SCALE_X;
+const float FLOOR_OFFSET_Z = 48.0f * FLOOR_SCALE_Z;
 
 // ƒ^ƒCƒgƒ‹‰æ–Ê =========================================================
 const float TEXTURE_TITLE_TITLE_POSX = SCREEN_WIDTH_ / 2;	// ƒ^ƒCƒgƒ‹‰æ‘œ•\Ž¦ˆÊ’u‚ÌXÀ•W
@@ -349,6 +367,8 @@ const float LEVEL_3_SHADOW_SCALE = 3.5f;	// ƒXƒ‰ƒCƒ€QƒŒƒxƒ‹‚R‚Ì‰e‚Ì‘å‚«‚³
 const float LEVEL_4_SHADOW_SCALE = 8.0f;	// ƒXƒ‰ƒCƒ€QƒŒƒxƒ‹‚S‚Ì‰e‚Ì‘å‚«‚³
 const float LEVEL_FLAME_SHADOW_SCALE = 2.0f;// ƒXƒ‰ƒCƒ€QƒtƒŒƒCƒ€‚Ì‰e‚Ì‘å‚«‚³
 const float BOSS_1_SHADOW_SCALE = 12.0f;		// ƒ{ƒX‚P‚Ì‰e‚Ì‘å‚«‚³
+// ƒQ[ƒ€ŠJŽnŽžƒXƒ^[ƒg•\Ž¦ ==================================================
+const float TIME_SIZE_MIN = 50;
 
 #endif
 
