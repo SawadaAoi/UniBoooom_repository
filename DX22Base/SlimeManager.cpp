@@ -32,6 +32,7 @@
 	・2023/11/27 赤赤の爆発生成時にヒットストップと画面揺れするように修正	Sawada
 	・2023/11/29 画面揺れを横強→縦強に変更 takagi
 	・2023/11/29 プレイヤーのポインタを取得 yamashita
+	・2023/11/30 ヒットストップ除去 takagi
 
 =========================================== */
 
@@ -384,8 +385,6 @@ void CSlimeManager::HitBranch(int HitSlimeNum, int StandSlimeNum, CExplosionMana
 
 		if (hitSlimeLevel == MAX_LEVEL)	//スライムのサイズが最大の時
 		{
-			CHitStop::UpFlag(CHitStop::E_BIT_FLAG_STOP_SOFT);	//フラグオン
-
 			//スライム爆発処理
 			pExpMng->Create(pos, MAX_SIZE_EXPLODE * EXPLODE_BASE_RATIO, LEVEL_4_EXPLODE_TIME, LEVEL_4_EXPLODE_DAMAGE, E_SLIME_LEVEL::LEVEL_4x4);	//衝突されたスライムの位置でレベル４爆発
 			m_pScoreOHMng->DisplayOverheadScore(pos, LEVEL_4_SCORE * 2, SLIME_SCORE_HEIGHT);
