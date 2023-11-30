@@ -16,6 +16,7 @@
 	・2023/11/23 フェード・ヒットストップ機能追加 takagi
 	・2023/11/27 フェード本実装 takagi
 	・2023/11/29 ヒットストップの仕様変更に対応 takagi
+	・2023/12/01 フェードの仕様変更 takagi 
 
 ========================================== */
 
@@ -54,17 +55,18 @@
 	戻値：なし
 =========================================== */
 CSceneManager::CSceneManager()
-
 	: m_pScene(nullptr)						//シーン
 	, m_ePastScene(CScene::E_TYPE_NONE)		//前のシーン
 	, m_eNextScene(CScene::E_TYPE_TITLE)	//シーン遷移先
 	, m_bFinish(false)						//シーン管理を開始
 	,m_pFade(nullptr)						//フェード
+	,m_bStartFadeOut(false)
+	,m_bFinFadeOut(false)
 {
 	// =============== 動的確保 ===================
 	if (!m_pScene)	//ヌルチェック
 	{
-		MakeNewScene();	//最初に始めるシーン作成
+		ChangeScene();	//最初に始めるシーン作成
 	}
 }
 
@@ -121,23 +123,46 @@ void CSceneManager::Update()
 	// =============== ヒットストップ ===================
 	CHitStop::Update();	//ヒットストップ更新
 
-	// =============== フェード系 ===================
-	if (m_pFade)	//ヌルチェック
-	{
-		if (m_pFade->IsFade())	//フェード検査
-		{
-			m_pFade->Update();	//フェード更新
-			return;	//処理中断
-		}
-	}
 
 	// =============== 更新 ===================
 	if (m_pScene)	//ヌルチェック
 	{
-		m_pScene->Update();	//シーン更新
 		if (m_pScene->IsFin())	//シーン終了検査
 		{
-			ChangeScene();	//シーン変更
+			// =============== フェード ===================
+			if (m_pFade)	//ヌルチェック
+			{
+				if (!m_pFade->IsFadeOut())
+				{
+					m_pFade->Start();		//フェード開始
+					m_bStartFadeOut = true;
+				}
+			}
+		}
+		else
+		{
+			// =============== フェード ===================
+			if (m_pFade)	//ヌルチェック
+			{
+				if (!m_pFade->IsFade())
+				{
+					m_pScene->Update();	//シーン更新
+				}
+			}
+		}
+	}
+
+	// =============== フェード系 ===================
+	if (m_pFade)	//ヌルチェック
+	{
+		m_pFade->Update();	//フェード更新
+		if (!m_pFade->IsFade())	//フェード検査
+		{
+ 			if (m_bStartFadeOut)
+			{
+				ChangeScene();
+				m_bStartFadeOut = false;
+			}
 		}
 	}
 }
@@ -191,7 +216,7 @@ bool CSceneManager::IsFin() const
 	戻値：なし
 =========================================== */
 void CSceneManager::ChangeScene()
-{
+{	
 	// =============== 事前準備 =====================
 	if (m_pScene)	//ヌルチェック
 	{
@@ -216,13 +241,12 @@ void CSceneManager::ChangeScene()
 	MakeNewScene();	//新シーン作成
 	
 	// =============== フェード系 ===================
-	if (m_pFade)
+	if (m_pFade)	//ヌルチェック
 	{
 		delete m_pFade;		//メモリ開放
 		m_pFade = nullptr;	//空アドレス代入
 	}
 	m_pFade = new CFade(m_pScene->GetCamera());	//動的確保
-	m_pFade->Start();	//フェード開始
 }
 
 /* ========================================
