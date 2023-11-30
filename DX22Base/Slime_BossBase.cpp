@@ -169,7 +169,7 @@ void CSlime_BossBase::Draw(const CCamera* pCamera)
 		SetRenderTargets(1, &pRTV, pDSV);		//DSVがnullだと2D表示になる
 		m_pModel->Draw();
 	}
-
+	
 	//HP表示
 	RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得
 	DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
