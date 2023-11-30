@@ -87,9 +87,9 @@ const float SLIME_BASE_RADIUS = 0.5f;		// スライムの基準の大きさ
 const int ENEMY_CREATE_INTERVAL = int(2.0f * 60);								// 生成間隔
 const int RANDOM_POS = 15;														// 生成座標範囲
 const int CREATE_DISTANCE = 10;													// プレイヤーからどれくらい離れた距離に生成するか
-const int SLIME_LEVEL1_PER = 45;																// スライム_1の生成確立
-const int SLIME_LEVEL2_PER = 35;																// スライム_2の生成確立
-const int SLIME_LEVEL3_PER = 10;																// スライム_3の生成確立
+const int SLIME_LEVEL1_PER = 5;																// スライム_1の生成確立
+const int SLIME_LEVEL2_PER = 5;																// スライム_2の生成確立
+const int SLIME_LEVEL3_PER = 90;																// スライム_3の生成確立
 const int SLIME_LEVEL_FLAME_PER = 100 - SLIME_LEVEL1_PER - SLIME_LEVEL2_PER - SLIME_LEVEL3_PER;	// スライム_フレイムの生成確立
 const float MAX_SIZE_EXPLODE		= 5.0f;										// スライム4同士の爆発の大きさ
 const float EXPLODE_BASE_RATIO		= 1.5f;										// スライムの爆発接触での爆発の大きさのベース
@@ -119,7 +119,7 @@ const int	LEVEL2_ATTACK = 1;						// 攻撃力
 const float LEVEL3_SCALE = 3.0f;					// スライム＿レベル３の大きさ(当たり判定含む)
 const float LEVEL3_SPEED = ENEMY_MOVE_SPEED * 0.7f;	// 移動速度
 const int	LEVEL3_ATTACK = 1;						// 攻撃力
-const float CHECK_DEGREE = 180.0f;					// スライムとプレイヤーの
+const float LEVEL3_STOP_RANGE = DirectX::XMConvertToRadians(20.0f);	// スライムが止まる角度の範囲
 
 // サイズ4
 const float LEVEL4_SCALE = 5.0f;					// スライム＿レベル４の大きさ(当たり判定含む)

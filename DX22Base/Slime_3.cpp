@@ -19,6 +19,7 @@
 	・2023/11/15 スライムのモデルと頂点シェーダーをmanagerから受け取るように変更 yamashita
 	・2023/11/16 引数付きコンストラクタの引数に頂点シェーダーとモデルのポインタを追加 山下凌佑
 	・2023/11/28 影の大きさを設定する変数追加 nieda
+	・2023/11/30 プレイヤーに見られていたら止まる処理を追加 yamashita
 
 ========================================== */
 
@@ -32,7 +33,7 @@
 const float LEVEL3_SCALE = 3.0f;
 const float LEVEL3_SPEED = ENEMY_MOVE_SPEED * 0.90;
 const int	LEVEL3_ATTACK = 1;	// 攻撃力
-const float CHECK_DEGREE = 180.0f;
+const float LEVEL3_STOP_RANGE = DirectX::XMConvertToRadians(20.0f);	// スライムが止まる角度の範囲
 #endif
 
 /* ========================================
@@ -139,30 +140,39 @@ void CSlime_3::NormalMove(tagTransform3d playerTransform)
 	// プレイヤーと距離が一定以内だったら
 	if (distancePlayer < MOVE_DISTANCE_PLAYER)
 	{
-		//float slimeToPlayerRad = m_Transform.Angle(playerTransform);
-	 	float checkRad = m_Transform.Angle(playerTransform) - playerTransform.fRadian.y;
-		float checkDegree = DirectX::XMConvertToDegrees(checkRad);
-		//if(CHECK_DEGREE - )
-
-		TPos3d<float> movePos;
-		movePos = playerPos - m_Transform.fPos;	// プレイヤーへのベクトルを計算
-		if (distancePlayer != 0)	//0除算回避
+		//プレイヤーがスライムの方向を向いているか確認
+	 	float checkRad = playerTransform.Angle(m_Transform);
+		float adjustPlayerRad = playerRad.y - DirectX::XMConvertToRadians(90.0f);
+		float diffRad = abs(checkRad) - abs(adjustPlayerRad);
+		//プレイヤーの向いている方向がスライムの止まる角度の中だったら
+		if (abs(diffRad) < LEVEL3_STOP_RANGE)
 		{
-			m_move.x = movePos.x / distancePlayer * m_fSpeed;
-			m_move.z = movePos.z / distancePlayer * m_fSpeed;
+			m_move = TTriType<float>(0.0f, 0.0f, 0.0f);
+			m_Transform.fRadian.y = -(m_Transform.Angle(playerTransform) - DirectX::XMConvertToRadians(90.0f));
 		}
-		// 敵からプレイヤーへのベクトル
-		DirectX::XMFLOAT3 directionVector;
-		directionVector.x = m_Transform.fPos.x - playerPos.x;
-		directionVector.y = m_Transform.fPos.y - playerPos.y;
-		directionVector.z = m_Transform.fPos.z - playerPos.z;
+		else	//プレイヤーがスライムと別の方向を向いていたら
+		{
 
-		// ベクトルを正規化して方向ベクトルを得る
-		DirectX::XMVECTOR direction = DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&directionVector));
-		// 方向ベクトルから回転行列を計算
-		m_Transform.fRadian.y = atan2(directionVector.x, directionVector.z);
+			TPos3d<float> movePos;
+			movePos = playerPos - m_Transform.fPos;	// プレイヤーへのベクトルを計算
+			if (distancePlayer != 0)	//0除算回避
+			{
+				m_move.x = movePos.x / distancePlayer * m_fSpeed;
+				m_move.z = movePos.z / distancePlayer * m_fSpeed;
+			}
+			// 敵からプレイヤーへのベクトル
+			DirectX::XMFLOAT3 directionVector;
+			directionVector.x = m_Transform.fPos.x - playerPos.x;
+			directionVector.y = m_Transform.fPos.y - playerPos.y;
+			directionVector.z = m_Transform.fPos.z - playerPos.z;
+
+			// ベクトルを正規化して方向ベクトルを得る
+			DirectX::XMVECTOR direction = DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&directionVector));
+			// 方向ベクトルから回転行列を計算
+			m_Transform.fRadian.y = atan2(-directionVector.x, -directionVector.z);
+		}
 	}
-	else
+	else	//索敵範囲外だったら
 	{
 		RandomMove();	// ランダム移動
 
