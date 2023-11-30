@@ -68,9 +68,9 @@ const float ROTATE_RADIUS		= 1.0f;									// ƒnƒ“ƒ}[‚ª‰ñ“]‚·‚éƒvƒŒƒCƒ„[‚©‚ç‚Ì
 const float HAMMER_COL_SIZE		= 0.75f;								//ƒnƒ“ƒ}[‚Ì“–‚½‚è”»’è‚Ì‘å‚«‚³
 const float HAMMER_SIZE			= 0.2f;									//ƒnƒ“ƒ}[‚Ì‘å‚«‚³
 
-const float INTERVAL_INITIAL	= 0.2f;									//ãƒãƒ³ãƒžãƒ¼åˆæœŸé–“éš”
-const float INTERVAL_PLUS		= 3.2f;									//ãƒãƒ³ãƒžãƒ¼ã‚’ä¸€å›žæŒ¯ã‚‹ã¨ãã«ä¹—ç®—ã•ã‚Œã‚‹å€¤
-const float INTERVAL_MINUS		= 0.97f;								//æ¯Žãƒ•ãƒ¬ãƒ¼ãƒ ãƒãƒ³ãƒžãƒ¼ã‚’æŒ¯ã‚‹é–“éš”ã‚’çŸ­ãã•ã›ã‚‹å€¤
+const float INTERVAL_INITIAL = 0.2f;								//ƒnƒ“ƒ}[‰ŠúŠÔŠu
+const float INTERVAL_PLUS = 3.2f;									//ƒnƒ“ƒ}[‚ðˆê‰ñU‚é‚Æ‚«‚ÉæŽZ‚³‚ê‚é’l
+const float INTERVAL_MINUS = 0.97f;									//–ˆƒtƒŒ[ƒ€ƒnƒ“ƒ}[‚ðU‚éŠÔŠu‚ð’Z‚­‚³‚¹‚é’l
 
 // “GƒLƒƒƒ‰ ==================================================
 
