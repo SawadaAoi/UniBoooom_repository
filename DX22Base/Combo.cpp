@@ -30,8 +30,6 @@ const float COMBO_UI_MULTI_DISP_SPACE = 100.0f;
 const int COMBO_UI_DISP_DILAY_TIME = 2.0f * 60;
 #endif
 
-int g_nCnt = 0;
-
 /* ========================================
 	コンストラクタ
 	----------------------------------------
@@ -46,6 +44,7 @@ CCombo::CCombo()
 	,m_fSizeY(0.0f)
 	,m_nCntWidth(0)
 	,m_nCntHeight(0)
+	,m_nCnt(0)
 {
 	// 数字画像を読み込む
 	m_pTextureNum[0] = new Texture();
@@ -75,7 +74,7 @@ CCombo::CCombo()
 		m_dComboInfo[i].dDispFrame = 0;
 		m_dComboInfo[i].bEndFlg = false;
 		m_dComboInfo[i].dScore = 0;
-		m_nCntCombo[i] = 0;
+		m_nCntOldCombo[i] = 0;		// 直前までのコンボ数格納用変数を初期化
 	}
 }
 
@@ -113,39 +112,38 @@ void CCombo::Update()
 		m_pTotalScore->AddScore(m_dComboInfo[i],i);
 
 		// コンボ背景UIアニメーション再生
-
-		if (m_nCntCombo[i] != m_dComboInfo[i].dCnt)
+		if (m_nCntOldCombo[i] != m_dComboInfo[i].dCnt)	// コンボ数が直前と違ったら
 		{
-			m_nCntWidth = 0;
+			m_nCntWidth = 0;	// アニメーションをリセット
 			m_nCntHeight = 0;
-			m_nCntCombo[i] = m_dComboInfo[i].dCnt;
+			m_nCntOldCombo[i] = m_dComboInfo[i].dCnt;	// 現在のコンボ数を格納
 		}
 
-		g_nCnt++;
+		m_nCnt++;	// カウントを進める
 
-		if (g_nCnt > 1)
+		if (m_nCnt > SWITCH_COMBO_ANIM)	// 一定時間経過したらアニメーションを進める
 		{
-			g_nCnt = 0;
+			m_nCnt = 0;		// カウントをリセット
 
-			m_fSizeX = COMBO_ANIM_SIZEX * m_nCntWidth;
-			m_fSizeY = COMBO_ANIM_SIZEY * m_nCntHeight;
+			m_fSizeX = COMBO_ANIM_SIZEX * m_nCntWidth;		// 横方向のUV座標計算
+			m_fSizeY = COMBO_ANIM_SIZEY * m_nCntHeight;		// 縦方向のUV座標計算
 
-			++m_nCntWidth;
+			++m_nCntWidth;	// 横に1進める
 
-			if (m_nCntWidth == 3)
+			if (m_nCntWidth == COMBO_ANIM_WIDTH_NUM_MAX)	// 右端まで行ったら
 			{
-				m_nCntWidth = 0;
-				++m_nCntHeight;
+				m_nCntWidth = 0;	// 横方向のカウントをリセット
+				++m_nCntHeight;		// 縦に1進める
 			}
 
-			if (m_nCntHeight == 2)
+			if (m_nCntHeight == 2)	// 一番下の段が右端のみなのでそこで止める
 			{
 				m_nCntWidth = 0;
 			}
 
-			if (m_dComboInfo[i].bEndFlg)
+			if (m_dComboInfo[i].bEndFlg)	// コンボが途切れたら
 			{
-				g_nCnt = 0;
+				m_nCnt = 0;		// カウントをリセット
 			}
 		}
 	}
@@ -198,7 +196,7 @@ void CCombo::Draw()
 				m_dComboInfo[i].dDispFrame = 0;
 				m_dComboInfo[i].bEndFlg = false;
 				m_dComboInfo[i].dScore = 0;
-				m_nCntCombo[i] = 0;
+				m_nCntOldCombo[i] = 0;		// コンボ数をリセット
 			}
 		}
 

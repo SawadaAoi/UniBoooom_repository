@@ -303,7 +303,6 @@ const int FRAME_STOP_DEATH = 999;	//ストップ：死　のフレーム数
 // ゲーム開始時スタート表示 ==================================================
 const float TIME_SIZE_MIN = 50;
 
-
 #endif
 
 #endif // !__GAME_PARAMETER_H__
