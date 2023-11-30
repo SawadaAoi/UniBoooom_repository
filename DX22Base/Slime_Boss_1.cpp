@@ -201,7 +201,7 @@ void CSlime_Boss_1::NormalMove(tagTransform3d playerTransform)
 		// ベクトルを正規化して方向ベクトルを得る
 		direction = DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&directionVector));
 		// 方向ベクトルから回転行列を計算
-		m_Transform.fRadian.y = atan2(directionVector.x, directionVector.z);
+		m_Transform.fRadian.y = atan2(-directionVector.x, -directionVector.z);
 
 		// クールタイムが終わってないならNORMALのまま
 		if (m_nFrame <= ASSAULT_COOL_TIME)	break;
@@ -265,7 +265,7 @@ void CSlime_Boss_1::Charge(TPos3d<float> playerPos, TPos3d<float> movePos)
 	// ベクトルを正規化して方向ベクトルを得る
 	direction = DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&directionVector));
 	// 方向ベクトルから回転行列を計算
-	m_Transform.fRadian.y = atan2(directionVector.x, directionVector.z);
+	m_Transform.fRadian.y = atan2(-directionVector.x, -directionVector.z);
 
 	// チャージタイムが終わったら"突撃"
 	if (m_nFrame >= ASSAULT_CHARGE_TIME)

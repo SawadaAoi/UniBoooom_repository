@@ -23,17 +23,26 @@
 class CSlime_2 :
 	public CSlimeBase
 {
+
+public:
+	enum ATTACK_MOVE_TYPE
+	{
+		ATTACK_CHARGE,	// 突進前の溜め
+		ATTACK_TACKLE,	// 突進
+	};
 public:
 	// ===プロトタイプ宣言===
 	CSlime_2();
 	CSlime_2(TPos3d<float> pos, VertexShader* pVS, Model* pModel);
 	~CSlime_2();
 	void Update(tagTransform3d playerTransform) override;
-
+	void NormalMove(tagTransform3d playerTransform) override;
 
 	void SetNormalSpeed() override;
 private:
-
+	ATTACK_MOVE_TYPE m_AtcMoveType;
+	int m_nChargeCnt;
+	int m_nTackleCnt;
 };
 
 

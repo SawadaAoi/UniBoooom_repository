@@ -43,6 +43,9 @@ const int	LEVEL2_ATTACK = 1;	// 攻撃力
 	戻値：無し
 =========================================== */
 CSlime_2::CSlime_2()
+	: m_AtcMoveType(ATTACK_CHARGE)
+	, m_nChargeCnt(0)
+	, m_nTackleCnt(0)
 {
 	m_Transform.fScale = { LEVEL2_SCALE,LEVEL2_SCALE ,LEVEL2_SCALE };
 	m_Sphere.fRadius *= LEVEL2_SCALE;
@@ -106,6 +109,45 @@ void CSlime_2::Update(tagTransform3d playerTransform)
 	// -- 座標更新
 	m_Transform.fPos.x += m_move.x;
 	m_Transform.fPos.z += m_move.z;
+}
+
+/* ========================================
+	通常移動関数
+	----------------------------------------
+	内容：プレイヤーを追跡する移動を行う
+	----------------------------------------
+	引数1：プレイヤー当たり判定(Sphere)
+	----------------------------------------
+	戻値：なし
+======================================== */
+void CSlime_2::NormalMove(tagTransform3d playerTransform)
+{
+
+	TPos3d<float> playerPos = playerTransform.fPos;
+
+	// 敵からエネミーの距離、角度を計算
+	float distancePlayer = m_Transform.fPos.Distance(playerPos);
+
+	// プレイヤーと距離が一定以内だったら
+	if (distancePlayer < MOVE_DISTANCE_PLAYER)
+	{
+
+		switch (m_AtcMoveType)
+		{
+		case CSlime_2::ATTACK_CHARGE:
+
+
+			break;
+		case CSlime_2::ATTACK_TACKLE:
+			break;
+		}
+	}
+	else
+	{
+		RandomMove();	// ランダム移動
+
+	}
+
 }
 
 /* ========================================
