@@ -206,11 +206,7 @@ const int	COUNT_UP = 6;						//  1秒で360になるように調整
 const float	HEALITEM_MOVE_Y = 0.5f;				//  アイテムの上下に揺れる高さ(-1～1までを移動するので移動量は2)
 const float	HEALITEM_HEIGHT = HEALITEM_MOVE_Y;	//  回復アイテムの初期の高さ
 
-// 床 ====================================
-const float FLOOR_SCALE_X = 1.1f;
-const float FLOOR_SCALE_Z = 1.1f;
-const float FLOOR_OFFSET_X = 48.0f * FLOOR_SCALE_X;
-const float FLOOR_OFFSET_Z = 48.0f * FLOOR_SCALE_Z;
+
 
 // カメラ =====================================================
 #include "Random.h"		//乱数生成用
@@ -308,8 +304,8 @@ const int HP_ANIM_WIDTH_NUM_MAX = 6;		// 横分割数最大数
 const int HP_ANIM_HEIGHT_NUM_MAX = 6;		// 縦分割数最大数
 const float HP_ANIM_SIZEX = 1.0f / HP_ANIM_WIDTH_NUM_MAX;	// テクスチャ横分割サイズ
 const float HP_ANIM_SIZEY = 1.0f / HP_ANIM_HEIGHT_NUM_MAX;	// テクスチャ縦分割サイズ
-const float DRAW_ANIM_HEIGHT = DRAW_HEIGHT + 40.0f;		// アニメーションの表示位置
-const float DRAW_ANIM_WIDTH = DRAW_WIDTH + 40.0f;		// アニメーションの表示位置
+const float DRAW_ANIM_HEIGHT = HP_UI_SIZE.y + 40.0f;		// アニメーションの表示位置
+const float DRAW_ANIM_WIDTH = HP_UI_SIZE.x + 40.0f;		// アニメーションの表示位置
 
 
 // BoooomUI =====================================================

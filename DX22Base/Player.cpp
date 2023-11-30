@@ -156,7 +156,7 @@ void CPlayer::Update()
 		if (m_bIntFlg)
 		{
 			m_fIntCnt++;				// ハンマー間隔時間カウント加算
-			if (m_fIntCnt >= HAMMER_INTERVAL_TIME)
+			if (m_fIntCnt >= m_pHammer->GetInterval())
 			{
 				m_bIntFlg = false;		// ハンマー間隔時間フラグオン
 				m_fIntCnt = 0.0f;		//ハンマー間隔時間リセット
