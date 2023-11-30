@@ -52,6 +52,7 @@ public:
 protected:
 	void PlayerSlimeCollision();
 	void PlayerBossCollision();		//’Ç‰Á
+	void PlayerHealItemCollision();
 	void HammerSlimeCollision();
 	void HammerBossCollision();		//’Ç‰Á
 	void SlimeSlimeCollision();
