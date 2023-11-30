@@ -24,12 +24,15 @@
 	・2023/11/19 被ダメージ時とハンマーを振るSEを再生 yamashita
 	・2023/11/19 サウドファイル読み込み関数を作成 yamashita
 	・2023/11/23 ジオメトリーからモデルに差し替え yamashita
-	・2023/11/23 ゲームオーバーの仮表示を削除 yamashita
 	・2023/11/27 影の描画を追加 nieda
+	・2023/11/27 Update内ハンマー振り間隔処理追加 Tei
 	・2023/11/27 Update内ハンマー振り間隔処理追加 Tei
 	・2023/11/28 ダメージ処理に受けるダメージ量を追加 Sawada
 	・2023/11/28 回復処理を追加 yamashita
-
+	・2023/11/28 ダメージ処理に受けるダメージ量を追加 Sawada
+	・2023/11/28 回復処理を追加 yamashita
+	・2023/11/29 ハンマーのインターバル追加 yamamoto
+  
 ======================================== */
 
 // =============== インクルード ===================
@@ -178,7 +181,13 @@ void CPlayer::Update()
 			m_pHammer->AttackStart(m_Transform.fPos, m_Transform.fRadian.y);	// ハンマー攻撃開始
 			m_bAttackFlg = true;	// 攻撃フラグを有効にする
 			m_pSESwingHamSpeaker = CSound::PlaySound(m_pSESwingHammer);	//ハンマーを振るSEの再生
+
+			//ハンマーのインターバルを長くする関数
+			m_pHammer->IntervalAdd();
+
 		}
+    // ハンマーのインターバルを短くする
+		m_pHammer->IntervalSubtract();
 
 	}
 	

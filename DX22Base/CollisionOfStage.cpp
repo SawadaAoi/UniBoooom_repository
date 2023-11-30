@@ -12,6 +12,7 @@
 	変更履歴
 	・2023/11/16 制作 takagi
 	・2023/11/29 ヒットストップ仕様変更対応 takagi
+	・2023/11/30 ヒットストップをハンマー激突時に変更 takagi
 
 ========================================== */
 
@@ -19,6 +20,8 @@
 #include "Stage.h"	//自身のヘッダ
 #include "GameParameter.h"
 #include "HitStop.h"	//ヒットストップ
+#include "Slime_4.h"	//赤スライム種分けよう
+#include <typeinfo.h>	//typeid使用
 
 
 /* ========================================
@@ -133,6 +136,15 @@ void CStage::HammerSlimeCollision()
 		// スライムとハンマーが衝突した場合
 		if (m_pCollision->CheckCollisionSphere(playerHammer->GetSphere(), pSlimeNow->GetSphere(), playerHammer->GetPos(), pSlimeNow->GetPos()))
 		{
+			//赤スライムと激突したときだけヒットストップの時間を長くする
+			if (typeid(CSlime_4) == typeid(*pSlimeNow))
+			{
+				CHitStop::UpFlag(CHitStop::E_BIT_FLAG_STOP_NORMAL);	//ヒットストップ
+			}
+			else
+			{
+				CHitStop::UpFlag(CHitStop::E_BIT_FLAG_STOP_SOFT);	//ヒットストップ
+			}
 			float fAngleSlime
 				= m_pPlayer->GetTransform().Angle(pSlimeNow->GetTransform());	// スライムが飛ぶ角度を取得
 
@@ -166,6 +178,7 @@ void CStage::HammerBossCollision()
 		// スライムとハンマーが衝突した場合
 		if (m_pCollision->CheckCollisionSphere(playerHammer->GetSphere(), pBossNow->GetSphere(), playerHammer->GetPos(), pBossNow->GetPos()))
 		{
+			CHitStop::UpFlag(CHitStop::E_BIT_FLAG_STOP_NORMAL);	//ヒットストップ
 			float fAngleSlime
 				= m_pPlayer->GetTransform().Angle(pBossNow->GetTransform());	// スライムが飛ぶ角度を取得
 
@@ -341,20 +354,20 @@ void CStage::BossBossCollision()
    ======================================== */
 void CStage::ExplosionBossCollision()
 {
-	for (int i = 0; i < MAX_EXPLOSION_NUM; ++i)	// 爆発
+	for (int i = 0; i < MAX_EXPLOSION_NUM; ++i)    // 爆発
 	{
-		CExplosion* pExplosion = m_pExplosionMng->GetExplosionPtr(i);	// 衝突する爆発のポインタ
-		if (pExplosion == nullptr) { continue; }	// 未使用の爆発はスルー
+		CExplosion* pExplosion = m_pExplosionMng->GetExplosionPtr(i);    // 衝突する爆発のポインタ
+		if (pExplosion == nullptr) { continue; }    // 未使用の爆発はスルー
 
-		for (int j = 0; j < MAX_SLIME_NUM; ++j)	// スライム
+		for (int j = 0; j < MAX_BOSS_SLIME_NUM; ++j)    // スライム
 		{
-			CSlimeBase* pSlimeTarget = m_pSlimeMng->GetSlimePtr(j);	// 衝突されるスライムのポインタ
+			CSlime_BossBase* pBossTarget = m_pSlimeMng->GetBossSlimePtr(j);    // 衝突されるスライムのポインタ
 
-			if (pSlimeTarget == nullptr)	continue;	// 無効なスライムはスルー
+			if (pBossTarget == nullptr)    continue;    // 無効なスライムはスルー
 
-			if (m_pCollision->CheckCollisionSphere(pExplosion->GetSphere(), pSlimeTarget->GetSphere(), pExplosion->GetPos(), pSlimeTarget->GetPos()))
+			if (m_pCollision->CheckCollisionSphere(pExplosion->GetSphere(), pBossTarget->GetSphere(), pExplosion->GetPos(), pBossTarget->GetPos()))
 			{
-				m_pSlimeMng->TouchExplosion(j, m_pExplosionMng, pExplosion->GetComboNum());// スライムの爆発処理
+				m_pSlimeMng->TouchBossExplosion(j, m_pExplosionMng, i);// スライムの爆発処理
 				break;
 			}
 		}

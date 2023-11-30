@@ -19,6 +19,7 @@
 					・フラグから2D/3Dの概念を削除・振動機能追加 takagi
 	・2023/11/28 振動の仕様変更 takagi
 	・2023/11/29 振動の新仕様を全振動に反映しリファクタリング takagi
+	・2023/11/30 Effekseer用に関数追加 takagi
 
 ========================================== */
 
@@ -66,6 +67,8 @@ public:
 	DirectX::XMMATRIX GetInverseViewMatrix() const;						//ビュー行列の逆行列取得
 	DirectX::XMFLOAT4X4 GetProjectionMatrix(
 		const E_DRAW_TYPE& eDraw = E_DRAW_TYPE_3D) const;				//プロジェクション行列変換
+	DirectX::XMMATRIX GetViewWithoutTranspose() const;					//転置無しビュー行列取得
+	DirectX::XMMATRIX GetProjectionWithoutTranspose() const;			//転置無しプロジェクション行列取得
 	void ChangeScaleVibrate(int nChangeFrame, float fChangegRateAmp);	//振動の規模を変更する
 protected:
 	// ===メンバ変数宣言=====
