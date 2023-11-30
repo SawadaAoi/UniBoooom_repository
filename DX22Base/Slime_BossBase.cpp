@@ -12,6 +12,7 @@
 	・2023/11/23 Damage,IsDead関数を追加 Suzumura
 	・2023/11/27 HP表示追加 yamamoto
 	・2023/11/28 影の描画を追加 nieda
+	・2023/11/30 メモリリーク除去 takagi
 
 ========================================== */
 
@@ -77,6 +78,11 @@ CSlime_BossBase::CSlime_BossBase()
 =========================================== */
 CSlime_BossBase::~CSlime_BossBase()
 {
+	// =============== 終了 ===================
+	delete m_pBossHpTexture;		//メモリ解放
+	m_pBossHpTexture = nullptr;		//空アドレス代入
+	delete m_pHpFrameTexture;		//メモリ解放
+	m_pHpFrameTexture = nullptr;	//空アドレス代入
 }
 
 /* ========================================
