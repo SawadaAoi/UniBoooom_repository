@@ -15,6 +15,7 @@
 	・2023/11/19 サウンド用のメンバ変数を追加 Yamashita
 	・2023/11/21 コンボ用のメンバ変数を追加 Sawada
 	・2023/11/21 ボス用の当たり判定を多数追加 Suzumura
+	・2023/11/27 回復アイテムの追加 Sawada
 
 ========================================== */
 #ifndef __SCENE_GAME_H__
@@ -29,17 +30,15 @@
 #include "Collision.h"
 #include "Player.h"
 #include "ExplosionManager.h"
-#include "HP_UI.h"
 #include "DirectWrite.h"
-#include "Timer.h"
 #include "Floor.h"
-#include "StageFinishUI.h"
-#include "Combo.h"
 #include "Fade.h"
-#include "BossGauge.h"
+#include "UIStageManager.h"
 
 #include "ScoreOHManager.h"
 #include "TotalScore.h"
+#include "HealItemManager.h"
+
 // =============== クラス定義 =====================
 class SceneGame
 {
@@ -53,6 +52,7 @@ public:
 	void SceneGameCollision();
 	void PlayerSlimeCollision();
 	void PlayerBossCollision();		//追加
+	void PlayerHealItemCollision();
 	void HammerSlimeCollision();
 	void HammerBossCollision();		//追加
 	void SlimeSlimeCollision();
@@ -75,17 +75,16 @@ private:
 	CSlimeManager* m_pSlimeMng;
 	CCOLLISION* m_pCollision;
 	CExplosionManager* m_pExplosionMng;
-	CHP_UI* m_pHpMng;
 	DirectWrite* m_pDirectWrite;
-	CTimer* m_pTimer;
-	CCombo* m_pCombo;
-	CBossgauge* m_pBossgauge;
 	CFloor* m_pFloor;
-	CStageFinish* m_pStageFin;
 	CFade* m_pFade;
 	CTotalScore* m_pTotalScore;
-
+	CHealItemManager* m_pHealItemMng;
+	CBossgauge* m_pBossgauge;
+	CCombo* m_pCombo;
 	CScoreOHManager* m_pScoreOHMng;
+	CUIStageManager* m_pUIStageMng;				//UIのマネジャー
+
 	XAUDIO2_BUFFER* m_pBGM;							//BGMの音声データ
 	XAUDIO2_BUFFER* m_pSEHitHammer;					//SEの音声データ
 	IXAudio2SourceVoice* m_pSpeaker;				//BGMを聞き取る側

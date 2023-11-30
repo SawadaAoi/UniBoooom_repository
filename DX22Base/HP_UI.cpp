@@ -8,7 +8,8 @@
 	作成者	仁枝潤哉
 
 	変更履歴
-	・2023/11/16 新規作成 仁枝潤哉
+	・2023/11/16 新規作成 Nieda
+	・2023/11/28 半分ずつ減るように修正 Sawada
 	・2023/11/29 アニメーション追加 仁枝潤哉
 	・2023/12/01 半分のHPアニメーション追加 仁枝潤哉
 
@@ -23,12 +24,6 @@
 #include "Player.h"
 
 
-// =============== 定数定義 =======================
-//const bool HALF_FLAG = false;
-
-// =============== グローバル変数定義 =============
-//int g_addLife = 2;
-//int g_HpAdjust = 2;
 
 /* ========================================
 	コンストラクタ関数
@@ -80,12 +75,6 @@ CHP_UI::CHP_UI(const int* pPlayerHp)
 
 	m_pPlayerHp = pPlayerHp;
 
-/*
-	if (HALF_FLAG)
-	{
-		g_addLife = 1;
-		g_HpAdjust = 1;
-	}*/	
 }
 
 /* ========================================
@@ -162,14 +151,25 @@ void CHP_UI::Update()
 =========================================== */
 void CHP_UI::Draw()
 {
-
-	for (int i = 0; i < PLAYER_HP; i++)
+	int hpNum = 0;	// 何個目のハートか(表示位置調整用)
+	// 空のハートを表示
+	for (int i = 1; i <= PLAYER_HP; i++)
 	{
+		// 奇数個目のライフかどうか
+		if (i % 2 != 0)
+		{	
+			// 現在の表示ライフ位置が最大値でない(最大値が奇数の場合はハートを表示する(例:HP3の場合は5個表示する))
+			if (i != PLAYER_HP)
+			{
+				continue;
+
+			}
+		}
 
 		DirectX::XMFLOAT4X4 mat[3];
 
 		// ワールド行列はXとYのみを考慮して作成
-		DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(DRAW_POSX + (i * DRAW_GAP), DRAW_POSY, 0.0f);	// ワールド行列（必要に応じて変数を増やしたり、複数処理を記述したりする）
+		DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(HP_UI_POS.x + (hpNum * DRAW_WIDTH), HP_UI_POS.y, 0.0f);	// ワールド行列（必要に応じて変数を増やしたり、複数処理を記述したりする）
 		DirectX::XMStoreFloat4x4(&mat[0], DirectX::XMMatrixTranspose(world));
 
 		// ビュー行列は2Dだとカメラの位置があまり関係ないので、単位行列を設定する
@@ -184,22 +184,24 @@ void CHP_UI::Draw()
 		Sprite::SetWorld(mat[0]);
 		Sprite::SetView(mat[1]);
 		Sprite::SetProjection(mat[2]);
-		Sprite::SetSize(DirectX::XMFLOAT2(DRAW_HEIGHT, -DRAW_WIDTH));
+		Sprite::SetSize(DirectX::XMFLOAT2(HP_UI_SIZE.x, -HP_UI_SIZE.y));
 		Sprite::SetUVPos(DirectX::XMFLOAT2(0.0f, 0.0f));
 		Sprite::SetUVScale(DirectX::XMFLOAT2(1.0f, 1.0f));
 		Sprite::SetTexture(m_pTexture[HEART_NONE]);
 		Sprite::Draw();
 
+
+		hpNum++;	// 表示したら位置を進める
 	}
 
-
-	for (int i = 0; i < *m_pPlayerHp; i++)
+	HEART_STATE tex;	// 表示画像を指定する
+	int hpCnt = 0;		// 偶数の時に進める(表示位置調整用)
+	for (int i = 1; i <= *m_pPlayerHp; i++)
 	{
-	
 		DirectX::XMFLOAT4X4 mat_Full[3];
 
 		// ワールド行列はXとYのみを考慮して作成
-		DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(DRAW_POSX + (i * DRAW_GAP), DRAW_POSY, 0.0f);	// ワールド行列（必要に応じて変数を増やしたり、複数処理を記述したりする）
+		DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(HP_UI_POS.x + (hpCnt * DRAW_WIDTH), HP_UI_POS.y, 0.0f);	// ワールド行列（必要に応じて変数を増やしたり、複数処理を記述したりする）
 		DirectX::XMStoreFloat4x4(&mat_Full[0], DirectX::XMMatrixTranspose(world));
 
 		// ビュー行列は2Dだとカメラの位置があまり関係ないので、単位行列を設定する
@@ -210,15 +212,27 @@ void CHP_UI::Draw()
 		DirectX::XMMATRIX proj = DirectX::XMMatrixOrthographicOffCenterLH(VIEW_LEFT, VIEW_RIGHT, VIEW_BOTTOM, VIEW_TOP, NEAR_Z, FAR_Z);	// 平衡投影行列を設定
 		DirectX::XMStoreFloat4x4(&mat_Full[2], DirectX::XMMatrixTranspose(proj));
 
+		// 奇数の場合
+		if (i % 2 != 0)
+		{
+			tex = HEART_HALF;	// ハート半分
+		}
+		// 偶数の場合
+		else
+		{
+			tex = HEART_FULL;	// ハート1個分
+			hpCnt++;
+
+		}
 
 		// スプライトの設定
 		Sprite::SetWorld(mat_Full[0]);
 		Sprite::SetView(mat_Full[1]);
 		Sprite::SetProjection(mat_Full[2]);
-		Sprite::SetSize(DirectX::XMFLOAT2(DRAW_HEIGHT, -DRAW_WIDTH));
+		Sprite::SetSize(DirectX::XMFLOAT2(HP_UI_SIZE.x, -HP_UI_SIZE.y));
 		Sprite::SetUVPos(DirectX::XMFLOAT2(0.0f, 0.0f));
 		Sprite::SetUVScale(DirectX::XMFLOAT2(1.0f, 1.0f));
-		Sprite::SetTexture(m_pTexture[HEART_FULL]);
+		Sprite::SetTexture(m_pTexture[tex]);
 		Sprite::Draw();
 
 

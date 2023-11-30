@@ -111,7 +111,7 @@ void CTotalScore::Draw()
 
 	for (int i = 0; i < TOTALSCORE_DIGIT; i++)
 	{
-		int width = TOTALSCORE_SIZE.x * i;
+		int width = int(TOTALSCORE_SIZE.x * i);
 		//ワールド行列はXとYのみを考慮して作成(Zは10ぐらいに配置
 		DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(TOTALSCORE_POS.x - width, TOTALSCORE_POS.y, 0.0f);
 		DirectX::XMStoreFloat4x4(&time[0], DirectX::XMMatrixTranspose(world));
@@ -139,11 +139,11 @@ void CTotalScore::Draw()
 		{
 			
  			digitArray = digitsToArray(m_PlusScore[i].nAddScore);	
-			nArraySize = digitArray.size();				//何桁か確認
+			nArraySize = int(digitArray.size());				//何桁か確認
 			for (int i = 0; i < nArraySize; i++)
 			{
-				int width = PLUSSCORE_SIZE.x * i;
-				int hight = ROW_HIGHT * lineNum;
+				int width = int(PLUSSCORE_SIZE.x * i);
+				int hight = int(ROW_HIGHT * lineNum);
 				//ワールド行列はXとYのみを考慮して作成(Zは10ぐらいに配置
 				DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(TOTALSCORE_POS.x - width, TOTALSCORE_POS.y + hight, 0.0f);
 				DirectX::XMStoreFloat4x4(&time[0], DirectX::XMMatrixTranspose(world));
@@ -158,8 +158,8 @@ void CTotalScore::Draw()
 				Sprite::Draw();
 			}
 			//+の表示
-			int width = PLUSSCORE_SIZE.x * nArraySize;
-			int hight = ROW_HIGHT * lineNum;
+			int width = int(PLUSSCORE_SIZE.x * nArraySize);
+			int hight = int(ROW_HIGHT * lineNum);
 			//ワールド行列はXとYのみを考慮して作成(Zは10ぐらいに配置
 			DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(TOTALSCORE_POS.x - width, TOTALSCORE_POS.y + hight, 0.0f);
 			DirectX::XMStoreFloat4x4(&time[0], DirectX::XMMatrixTranspose(world));
@@ -195,8 +195,8 @@ void CTotalScore::Draw()
 			}
 			if (m_PlusScore[i].fComboMagnification != 1.0f)
 			{
-				digitArray = digitsToArray(m_PlusScore[i].fComboMagnification * 10);
-				nArraySize = digitArray.size();				//何桁か確認
+				digitArray = digitsToArray(int(m_PlusScore[i].fComboMagnification * 10));
+				nArraySize = int(digitArray.size());				//何桁か確認
 				for (int i = 0; i < nArraySize; i++)
 				{
 					int width = MAGNIFICATION * i;
@@ -216,8 +216,8 @@ void CTotalScore::Draw()
 				}
 
 				//×表示
-				int width = PLUSSCORE_SIZE.x * 2 + SMALLDECIMAL_SIZE.x;
-				int hight = ROW_HIGHT * lineNum;
+				int width = int(PLUSSCORE_SIZE.x * 2 + SMALLDECIMAL_SIZE.x);
+				int hight = int(ROW_HIGHT * lineNum);
 				//ワールド行列はXとYのみを考慮して作成(Zは10ぐらいに配置
 				DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(TOTALSCORE_POS.x - width, TOTALSCORE_POS.y + hight, 0.0f);
 				DirectX::XMStoreFloat4x4(&time[0], DirectX::XMMatrixTranspose(world));
@@ -230,8 +230,8 @@ void CTotalScore::Draw()
 
 				Sprite::SetSize(DirectX::XMFLOAT2(SMALLDECIMAL_SIZE.x, SMALLDECIMAL_SIZE.y));
 				//小数点表示
-				width = PLUSSCORE_SIZE.x - SMALLDECIMAL_POS.x;
-				hight -= SMALLDECIMAL_POS.y;
+				width = int(PLUSSCORE_SIZE.x - SMALLDECIMAL_POS.x);
+				hight -= int(SMALLDECIMAL_POS.y);
 				//ワールド行列はXとYのみを考慮して作成(Zは10ぐらいに配置
 				world = DirectX::XMMatrixTranslation(TOTALSCORE_POS.x - width, TOTALSCORE_POS.y + hight, 0.0f);
 				DirectX::XMStoreFloat4x4(&time[0], DirectX::XMMatrixTranspose(world));
@@ -309,7 +309,7 @@ void CTotalScore::AddTotalScore()
 	}
 
 	digitArray = digitsToArray(m_nTotalScore);
-	nArraySize = digitArray.size();
+	nArraySize = int(digitArray.size());
 
 	TotalScoreArray.clear();					//加算前のトータルスコア削除
 	for (int i = 0; i < TOTALSCORE_DIGIT; i++)//トータルスコアの桁を作る

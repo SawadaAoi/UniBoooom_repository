@@ -23,6 +23,10 @@
 	・2023/11/14 SphereInfoの変更に対応 Takagi
 	・2023/11/15 Objectクラスを継承したので修正　yamamoto
 	・2023/11/26 スライムが爆発から逃げる処理を作成　yamashita
+	・2023/11/28 攻撃力を追加 Sawada
+	・2023/11/29 影メモリリーク除去 takagi
+	・2023/11/30 モデルの読み込みが反転したのでradian.yが反対になるように変更 yamashita
+
 ========================================== */
 
 // =============== インクルード ===================
@@ -61,9 +65,10 @@ CSlimeBase::CSlimeBase()
 	, m_bHitMove(false)
 	, m_eSlimeSize(LEVEL_1)	//後でSLIME_NONEにする <=TODO
 	, m_RanMoveCnt(RANDOM_MOVE_SWITCH_TIME)	// 初期
-	, m_ExpPos{0.0f,0.0f,0.0f}
+	, m_ExpPos{ 0.0f,0.0f,0.0f }
 	, m_bEscape(false)
 	, m_nEscapeCnt(0)
+	, m_fScaleShadow(0.0f)
 {
 	
 	m_Transform.fScale = (1.0f, 1.0f, 1.0f);
@@ -71,8 +76,9 @@ CSlimeBase::CSlimeBase()
 	m_Sphere.fRadius = SLIME_BASE_RADIUS;
 
 	int random = abs(rand() % 360);	//ランダムに0～359の数字を作成
-	m_Ry = DirectX::XMMatrixRotationY(random);
-	
+	m_Ry = DirectX::XMMatrixRotationY((float)random);
+
+	m_pShadow = new CShadow();	// 影生成
 }
 
 /* ========================================
@@ -86,6 +92,8 @@ CSlimeBase::CSlimeBase()
 =========================================== */
 CSlimeBase::~CSlimeBase()
 {
+	// =============== メモリ開放 ===================
+	SAFE_DELETE(m_pShadow);	//影解放
 }
 
 /* ========================================
@@ -97,14 +105,14 @@ CSlimeBase::~CSlimeBase()
 	-------------------------------------
 	戻値：無し
 =========================================== */
-void CSlimeBase::Update(TPos3d<float> playerPos)
+void CSlimeBase::Update(tagTransform3d playerTransform)
 {
 
 	if (!m_bHitMove)	//敵が通常の移動状態の時
 	{
 		if (!m_bEscape  && m_nEscapeCnt == 0)	//逃げるフラグがoffなら
 		{
-			NormalMove(playerPos);	//通常異動
+			NormalMove(playerTransform);	//通常異動
 		}
 		else
 		{
@@ -147,6 +155,9 @@ void CSlimeBase::Draw(const CCamera* pCamera)
 	if (m_pModel) {
 		m_pModel->Draw();
 	}
+
+	//-- 影の描画
+	m_pShadow->Draw(m_Transform, m_fScaleShadow, pCamera);
 }
 
 
@@ -159,8 +170,10 @@ void CSlimeBase::Draw(const CCamera* pCamera)
 	----------------------------------------
 	戻値：なし
 ======================================== */
-void CSlimeBase::NormalMove(TPos3d<float> playerPos)
+void CSlimeBase::NormalMove(tagTransform3d playerTransform)
 {
+	TPos3d<float> playerPos = playerTransform.fPos;
+
 	// 敵からエネミーの距離、角度を計算
 	float distancePlayer	= m_Transform.fPos.Distance(playerPos);
 
@@ -184,7 +197,7 @@ void CSlimeBase::NormalMove(TPos3d<float> playerPos)
 		// ベクトルを正規化して方向ベクトルを得る
 		DirectX::XMVECTOR direction = DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&directionVector));
 		// 方向ベクトルから回転行列を計算
-		m_Transform.fRadian.y = atan2(directionVector.x, directionVector.z);
+		m_Transform.fRadian.y = atan2(-directionVector.x, -directionVector.z);
 	}
 	else
 	{
@@ -213,11 +226,11 @@ void CSlimeBase::RandomMove()
 		int ranAngle = rand() % 360;	// 移動方向決定
 
 		// 角度方向に移動する
-		m_move.x = -cosf(DirectX::XMConvertToRadians(ranAngle)) * m_fSpeed;
-		m_move.z = sinf(DirectX::XMConvertToRadians(ranAngle)) * m_fSpeed;
+		m_move.x = -cosf(DirectX::XMConvertToRadians((float)ranAngle)) * m_fSpeed;
+		m_move.z = sinf(DirectX::XMConvertToRadians((float)ranAngle)) * m_fSpeed;
 
 		// 向きを変える
-		m_Transform.fRadian.y = DirectX::XMConvertToRadians(ranAngle + 90);
+		m_Transform.fRadian.y = DirectX::XMConvertToRadians((float)ranAngle - 90);
 
 		m_RanMoveCnt = 0;	// 加算値をリセット
 	}
@@ -297,7 +310,7 @@ void CSlimeBase::Escape()
 	//爆発と反対方向に移動
 	m_move.x = -(cosf(rad)) * ENEMY_MOVE_SPEED;
 	m_move.z = -(sinf(rad)) * ENEMY_MOVE_SPEED;
-	m_Transform.fRadian.y = atan2f(-m_move.x,-m_move.z);
+	m_Transform.fRadian.y = atan2f(m_move.x,m_move.z);
 
 	m_nEscapeCnt++;	//カウントを増加
 	if (m_nEscapeCnt > ESCAPE_TIME) 
@@ -403,6 +416,20 @@ TPos3d<float> CSlimeBase::GetPos()
 bool CSlimeBase::GetEscapeFlag()
 {
 	return m_bEscape = false;
+}
+
+/* ========================================
+	攻撃力取得関数
+	----------------------------------------
+	内容：攻撃力を取得する
+	----------------------------------------
+	引数1：なし
+	----------------------------------------
+	戻値：攻撃力
+======================================== */
+int CSlimeBase::GetAttack()
+{
+	return m_nAttack;
 }
 
 /* ========================================

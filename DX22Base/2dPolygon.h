@@ -9,6 +9,7 @@
 
 	変更履歴
 	・2023/11/21 作成 takagi
+	・2023/11/28 TextureSet関数にポインタ指定できる物を追加
 
 ========================================== */
 
@@ -59,6 +60,7 @@ public:
 	void SetColor(float fColor);						//色セッタ(同一値)
 	void SetAlpha(float fAlpha);						//透明度セッタ
 	void SetTexture(const char* pcTexPass);				//テクスチャ登録
+	void SetTexture(Texture* pTexture);				//テクスチャ登録
 	void SetVertexShader(VertexShader* pVs);			//頂点シェーダセッタ
 	void SetPixelShader(PixelShader* pPs);				//ピクセルシェーダセッタ
 private:
@@ -66,6 +68,8 @@ private:
 	tagTransform3d m_Transform;			//ワールド座標
 	DirectX::XMFLOAT4X4 m_aMatrix[3];	//行列
 	Param m_Param;						//シェーダーに書き込む情報
+	static VertexShader* m_pDefVs;				//頂点シェーダー
+	static PixelShader* m_pDefPs;					//ピクセルシェーダー
 	VertexShader* m_pVs;				//頂点シェーダー
 	PixelShader* m_pPs;					//ピクセルシェーダー
 	Texture* m_pTexture;				//テクスチャ情報

@@ -33,12 +33,12 @@ class CSlime_Boss_1 :
 public:
 	// ===プロトタイプ宣言===
 	CSlime_Boss_1();
-	CSlime_Boss_1(TPos3d<float> pos, VertexShader* pVS, Model* pModel);
+	CSlime_Boss_1(TPos3d<float> pos, VertexShader* pVS, Model* pModel1, Model* pModel2);
 	~CSlime_Boss_1();
 
-	void Update(TPos3d<float> playerPos) override;
+	void Update(tagTransform3d playerTransform) override;
 
-	void NormalMove(TPos3d<float> playerPos) override;
+	void NormalMove(tagTransform3d playerTransform) override;
 	void SetNormalSpeed() override;
 	void SetMaxHp() override;
 
@@ -53,7 +53,7 @@ private:
 
 	float m_assaultDistancePlayer;	// 突撃時のプレイヤー間の距離を保存
 	TPos3d<float> m_assaultMovePos;	// 突撃時のMovePosを保存
-
+	Model* m_StateModels[2];
 	E_BOSS_1_STATE m_eState;
 };
 

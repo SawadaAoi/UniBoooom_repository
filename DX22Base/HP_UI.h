@@ -8,6 +8,8 @@
 	作成者	仁枝潤哉
 
 	変更履歴
+	・2023/11/16 新規作成 Nieda
+	・2023/11/28 半分ずつ減るように修正 Sawada
 	・2023/11/16 新規作成 仁枝潤哉
 	・2023/11/29 アニメーション再生用変数追加 仁枝潤哉
 
@@ -17,7 +19,7 @@
 
 // =============== インクルード ===================
 #include "Texture.h"	// テクスチャ用ヘッダ
-#include <vector>
+
 
 // =============== クラス定義 =====================
 class CHP_UI
@@ -40,12 +42,10 @@ public:
 	void Update();				// 更新処理
 	void Draw();				// 描画処理
 
-	void SetHpTexture();
 
 private:
 	// ===メンバ変数宣言===
 	Texture*	m_pTexture[HEART_MAX];		// テクスチャ用ポインタ
-	std::vector<HEART_STATE>	m_HpState;
 	const int*	m_pPlayerHp;				// プレイヤーのHP用ポインタ
 	int m_nPlayerOldHp;						// 変更前のHPを格納
 	bool m_bPlayAnim;	// HPのアニメーションを再生するか判定

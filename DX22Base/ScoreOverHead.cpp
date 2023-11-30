@@ -53,7 +53,7 @@ CScoreOverHead::CScoreOverHead(TPos3d<float> fPos, int nScore, float posY,float 
 	// ”š‚ğŠeŒ…‚²‚Æ‚É”z—ñ‚ÉŠi”[
 	digitArray = digitsToArray(nScore);
 	
-	nArraySize = digitArray.size();
+	nArraySize = int(digitArray.size());
 }
 
 /* ========================================
