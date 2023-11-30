@@ -328,8 +328,8 @@ const float TEXTURE_TITLE_BUTTON_WIDTH = 300.0f;			// タイトル画面ボタン押下指示
 const float TEXTURE_TITLE_BUTTON_HEIGHT = 100.0f;			// タイトル画面ボタン押下指示画像の縦幅
 
 // ヒットストップ =========================================================
-const int FRAME_STOP_SOFT = 30;		//ストップ：軽　のフレーム数	// 現在使用している物
-const int FRAME_STOP_NORMAL = 60;	//ストップ：中　のフレーム数
+const int FRAME_STOP_SOFT = 4;		//ストップ：軽　のフレーム数	// 現在使用している物
+const int FRAME_STOP_NORMAL = 10;	//ストップ：中　のフレーム数
 const int FRAME_STOP_HEAVY = 120;	//ストップ：重　のフレーム数
 const int FRAME_STOP_DEATH = 999;	//ストップ：死　のフレーム数
 
