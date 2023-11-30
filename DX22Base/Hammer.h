@@ -47,8 +47,8 @@ public:
 	void Draw();			// •`‰æŠÖ”
 	void Swing();											// ˆÚ“®‚É‚æ‚é‰ñ“]ˆÚ“®
 	void AttackStart(TPos3d<float>pPos, float angle);		// UŒ‚ŠJnˆ—
-	void PlusInterval();
-	void MinusInterval();
+	void IntervalAdd();
+	void IntervalSubtract();
 	float GetInterval();
 	void SetCamera(const CCamera* pCamera);
 private:

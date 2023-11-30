@@ -39,6 +39,10 @@ const float SWING_TIME_FRAME = 0.15f * 60;						// ハンマーを振る時間(フレーム単
 const float ROTATE_RADIUS = 1.0f;								// ハンマーが回転するプレイヤーからの距離
 const float HAMMER_COL_SIZE = 0.75f;							// ハンマーの当たり判定の大きさ
 const float HAMMER_SIZE = 1.5f;									// ハンマーの大きさ
+
+const float INTERVAL_INITIAL = 0.2f;									//ハンマー初期間隔
+const float INTERVAL_PLUS = 3.2f;									//ハンマーを一回振るときに乗算される値
+const float INTERVAL_MINUS = 0.97f;								//毎フレームハンマーを振る間隔を短くさせる値
 #endif
 
 const float ADJUST_DIRECTX_TO_COSINE = DirectX::XMConvertToRadians(90.0f);	// 三角関数とDirectX角度の差分(DirectXの角度は↑が0度、三角関数は→が0度)
@@ -213,7 +217,7 @@ void CHammer::AttackStart(TPos3d<float>pPos, float angle)
    ----------------------------------------
    戻値：なし
    ======================================== */
-void CHammer::PlusInterval()
+void CHammer::IntervalAdd()
 {
 	m_fInterval*=INTERVAL_PLUS;
 }
@@ -226,7 +230,7 @@ void CHammer::PlusInterval()
    ----------------------------------------
    戻値：なし
    ======================================== */
-void CHammer::MinusInterval()
+void CHammer::IntervalSubtract()
 {
 	m_fInterval *= INTERVAL_MINUS;
 }

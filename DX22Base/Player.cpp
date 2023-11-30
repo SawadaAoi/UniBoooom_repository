@@ -178,10 +178,10 @@ void CPlayer::Update()
 			m_pSESwingHamSpeaker = CSound::PlaySound(m_pSESwingHammer);	//ハンマーを振るSEの再生
 
 			//ハンマーのインターバルを長くする関数
-			m_pHammer->PlusInterval();
+			m_pHammer->IntervalAdd();
 		}
 
-		m_pHammer->MinusInterval();
+		m_pHammer->IntervalSubtract();
 
 	}
 	
