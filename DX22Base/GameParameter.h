@@ -20,6 +20,7 @@
 	・2023/11/25 パラメーター追加(// スコア) yamamoto
 	・2023/11/24 パラメーター追加(// カメラ) Takagi
 	・2023/11/27 パラメーター追加(// 影) nieda
+	・2023/11/30 パラメーター編集(// カメラ) Takagi
 
 =========================================== */
 #ifndef __GAME_PARAMETER_H__
@@ -208,16 +209,16 @@ const float INIT_ANGLE = DirectX::XMConvertToRadians(73.0f);        //カメラの角
 const float INIT_NEAR = 1.0f;										//画面手前初期z値
 const float INIT_FAR = 150.0f;										//画面奥初期z値
 const float INIT_RADIUS = 15.0f;									//カメラと注視点との距離(初期値)
-const TDiType<int> INIT_FRAME_WEAK = { 99, 60 };					//弱振動のフレーム数	x:横, y:縦
-const TDiType<int> INIT_FRAME_STRONG = { 99, 60 };					//強振動のフレーム数	x:横, y:縦
-const TDiType<float> CHANGE_RATE_AMPLITUDE_WEAK{ 0.999f, 0.999f };	//強振幅変化率	1を超えると増加方向、下回ると減少方向	x:横, y:縦
-const TDiType<float> CHANGE_RATE_AMPLITUDE_STRONG{ 0.95f, 0.95f };	//強振幅変化率	1を超えると増加方向、下回ると減少方向	x:横, y:縦
+const TDiType<int> INIT_FRAME_WEAK = { 110, 110 };					//弱振動のフレーム数	x:横, y:縦
+const TDiType<int> INIT_FRAME_STRONG = { 110, 110 };				//強振動のフレーム数	x:横, y:縦
+const TDiType<float> CHANGE_RATE_AMPLITUDE_WEAK{ 0.99f, 0.99f };	//強振幅変化率	1を超えると増加方向、下回ると減少方向	x:横, y:縦
+const TDiType<float> CHANGE_RATE_AMPLITUDE_STRONG{ 0.99f, 0.99f };	//強振幅変化率	1を超えると増加方向、下回ると減少方向	x:横, y:縦
 ///<summary>振幅の確率：弱
 ///<para>合計が1になる必要はない</para>
 ///</summary>
 const std::vector<double> PROBABILITY_AMPITUDE_WEAK[E_DIRECT_VIBRATE_MAX] = {
-	{ 0.1, 0.1 },	//横弱振動
-	{ 0.1, 0.3, 0.5, 0.3, 0.1 },	//縦弱振動
+	{ 0.1, 0.3, 0.5, 0.3, 0.1 }, //横弱振動
+	{ 0.1, 0.3, 0.5, 0.3, 0.1 }, //縦弱振動
 };
 ///<summary>
 ///<see cref="PROBABILITY_AMPITUDE_WEAK">←上記定数</see>のテーブル
@@ -225,14 +226,14 @@ const std::vector<double> PROBABILITY_AMPITUDE_WEAK[E_DIRECT_VIBRATE_MAX] = {
 ///<para>各値は振幅の大きさを表す</para>
 ///</summary>
 const std::vector<float> TABLE_AMPITUDE_WEAK[E_DIRECT_VIBRATE_MAX] = {
-	{ -1.1f, 1.1f },	//横弱振幅
-	{ -11.0f, -5.0f, 0.0f, 5.0f, 11.0f },	//縦弱振幅
+	{ -0.05f, -0.025f, 0.0f, 0.025f, 0.05f },	//横弱振幅
+	{ -0.05f, -0.025f, 0.0f, 0.025f, 0.05f },	//縦弱振幅
 };
 ///<summary>振幅の確率：強
 ///<para>合計が1になる必要はない</para>
 ///</summary>
 const std::vector<double> PROBABILITY_AMPITUDE_STRONG[E_DIRECT_VIBRATE_MAX] = {
-	{ 0.1, 0.1 },	//横強振動
+	{ 0.1, 0.3, 0.5, 0.3, 0.1 },	//横強振動
 	{ 0.1, 0.3, 0.5, 0.3, 0.1 },	//縦強振動
 };
 ///<summary>
@@ -241,8 +242,8 @@ const std::vector<double> PROBABILITY_AMPITUDE_STRONG[E_DIRECT_VIBRATE_MAX] = {
 ///<para>各値は振幅の大きさを表す</para>
 ///</summary>
 const std::vector<float> TABLE_AMPITUDE_STRONG[E_DIRECT_VIBRATE_MAX] = {
-	{ -1.1f, 1.1f },	//横強振幅
-	{ -11.0f, -5.0f, 0.0f, 5.0f, 11.0f },	//縦強振幅
+	{ -0.25f, -0.15f, 0.0f, 0.15f, 0.25f },	//横強振幅
+	{ -2.5f, -1.5f, 0.0f, 1.5f, 2.5f },	//縦強振幅
 };
 
 // UI =====================================================
