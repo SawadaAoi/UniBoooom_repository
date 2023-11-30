@@ -20,6 +20,7 @@
 	E2023/11/25 ƒpƒ‰ƒ[ƒ^[’Ç‰Á(// ƒXƒRƒA) yamamoto
 	E2023/11/24 ƒpƒ‰ƒ[ƒ^[’Ç‰Á(// ƒJƒƒ‰) Takagi
 	E2023/11/27 ƒpƒ‰ƒ[ƒ^[’Ç‰Á(// ‰e) nieda
+	E2023/11/30 ƒpƒ‰ƒ[ƒ^[•ÒW(// ƒJƒƒ‰) Takagi
 
 =========================================== */
 #ifndef __GAME_PARAMETER_H__
@@ -122,6 +123,7 @@ const int	LEVEL2_ATTACK = 1;						// UŒ‚—Í
 const float LEVEL3_SCALE = 3.0f;					// ƒXƒ‰ƒCƒ€QƒŒƒxƒ‹‚R‚Ì‘å‚«‚³(“–‚½‚è”»’èŠÜ‚Þ)
 const float LEVEL3_SPEED = ENEMY_MOVE_SPEED * 0.7f;	// ˆÚ“®‘¬“x
 const int	LEVEL3_ATTACK = 1;						// UŒ‚—Í
+const float LEVEL3_STOP_RANGE = DirectX::XMConvertToRadians(20.0f);	// ƒXƒ‰ƒCƒ€‚ªŽ~‚Ü‚éŠp“x‚Ì”ÍˆÍ
 
 // ƒTƒCƒY4
 const float LEVEL4_SCALE = 5.0f;					// ƒXƒ‰ƒCƒ€QƒŒƒxƒ‹‚S‚Ì‘å‚«‚³(“–‚½‚è”»’èŠÜ‚Þ)
@@ -193,6 +195,21 @@ const DirectX::XMFLOAT2 SMALLDECIMAL_SIZE(15.0f, -15.0f);	//¬”“_‚Ì‘å‚«‚³
 const int MAGNIFICATION = 40;		//”{—¦•\Ž¦Žž‚ÌŠÔŠuBˆê”Ô‰E‚Ì”Žš‚©‚ç‚Ç‚ê‚¾‚¯¶‚É‚¸‚ç‚·‚©i¬”“_‚ð“ü‚ê‚é‚Ì‚Å‚»‚±‚àƒPƒA‚·‚éj
 const TPos2d<float> SMALLDECIMAL_POS(2.0f, -3.0f);//‚±‚Ì’l‚Å¬”“_‚ÌˆÊ’u‚Ì”÷’²ß
 
+// ‰ñ•œƒAƒCƒeƒ€ =====================
+const float HEAL_ITEM_SCALE_X = 1.5f;		//@ƒAƒCƒeƒ€‚ÌƒXƒP[ƒ‹X
+const float HEAL_ITEM_SCALE_Y = 1.5f;		//@ƒAƒCƒeƒ€‚ÌƒXƒP[ƒ‹Y
+const float HEAL_ITEM_SCALE_Z = 1.5f;		//@ƒAƒCƒeƒ€‚ÌƒXƒP[ƒ‹Z
+const float	HEALITEM_ANGLE_X = 50.0f;		//@‰ñ•œƒAƒCƒeƒ€‚ÌŠp“x
+const float	HEALITEM_MOVE_INTERVAL = 4.0f;		//  ƒAƒjƒ[ƒVƒ‡ƒ“‚ÌŽüŠú
+const int	COUNT_UP = 6;						//  1•b‚Å360‚É‚È‚é‚æ‚¤‚É’²®
+const float	HEALITEM_MOVE_Y = 0.5f;				//  ƒAƒCƒeƒ€‚Ìã‰º‚É—h‚ê‚é‚‚³(-1`1‚Ü‚Å‚ðˆÚ“®‚·‚é‚Ì‚ÅˆÚ“®—Ê‚Í2)
+const float	HEALITEM_HEIGHT = HEALITEM_MOVE_Y;	//  ‰ñ•œƒAƒCƒeƒ€‚Ì‰Šú‚Ì‚‚³
+
+// ° ====================================
+const float FLOOR_SCALE_X = 1.1f;
+const float FLOOR_SCALE_Z = 1.1f;
+const float FLOOR_OFFSET_X = 48.0f * FLOOR_SCALE_X;
+const float FLOOR_OFFSET_Z = 48.0f * FLOOR_SCALE_Z;
 
 // ƒJƒƒ‰ =====================================================
 #include "Random.h"		//—”¶¬—p
@@ -208,16 +225,16 @@ const float INIT_ANGLE = DirectX::XMConvertToRadians(73.0f);        //ƒJƒƒ‰‚ÌŠp
 const float INIT_NEAR = 1.0f;										//‰æ–ÊŽè‘O‰Šúz’l
 const float INIT_FAR = 150.0f;										//‰æ–Ê‰œ‰Šúz’l
 const float INIT_RADIUS = 15.0f;									//ƒJƒƒ‰‚Æ’Ž‹“_‚Æ‚Ì‹——£(‰Šú’l)
-const TDiType<int> INIT_FRAME_WEAK = { 99, 60 };					//ŽãU“®‚ÌƒtƒŒ[ƒ€”	x:‰¡, y:c
-const TDiType<int> INIT_FRAME_STRONG = { 99, 60 };					//‹­U“®‚ÌƒtƒŒ[ƒ€”	x:‰¡, y:c
-const TDiType<float> CHANGE_RATE_AMPLITUDE_WEAK{ 0.999f, 0.999f };	//‹­U••Ï‰»—¦	1‚ð’´‚¦‚é‚Æ‘‰Á•ûŒüA‰º‰ñ‚é‚ÆŒ¸­•ûŒü	x:‰¡, y:c
-const TDiType<float> CHANGE_RATE_AMPLITUDE_STRONG{ 0.95f, 0.95f };	//‹­U••Ï‰»—¦	1‚ð’´‚¦‚é‚Æ‘‰Á•ûŒüA‰º‰ñ‚é‚ÆŒ¸­•ûŒü	x:‰¡, y:c
+const TDiType<int> INIT_FRAME_WEAK = { 110, 110 };					//ŽãU“®‚ÌƒtƒŒ[ƒ€”	x:‰¡, y:c
+const TDiType<int> INIT_FRAME_STRONG = { 110, 110 };				//‹­U“®‚ÌƒtƒŒ[ƒ€”	x:‰¡, y:c
+const TDiType<float> CHANGE_RATE_AMPLITUDE_WEAK{ 0.99f, 0.99f };	//‹­U••Ï‰»—¦	1‚ð’´‚¦‚é‚Æ‘‰Á•ûŒüA‰º‰ñ‚é‚ÆŒ¸­•ûŒü	x:‰¡, y:c
+const TDiType<float> CHANGE_RATE_AMPLITUDE_STRONG{ 0.99f, 0.99f };	//‹­U••Ï‰»—¦	1‚ð’´‚¦‚é‚Æ‘‰Á•ûŒüA‰º‰ñ‚é‚ÆŒ¸­•ûŒü	x:‰¡, y:c
 ///<summary>U•‚ÌŠm—¦FŽã
 ///<para>‡Œv‚ª1‚É‚È‚é•K—v‚Í‚È‚¢</para>
 ///</summary>
 const std::vector<double> PROBABILITY_AMPITUDE_WEAK[E_DIRECT_VIBRATE_MAX] = {
-	{ 0.1, 0.1 },	//‰¡ŽãU“®
-	{ 0.1, 0.3, 0.5, 0.3, 0.1 },	//cŽãU“®
+	{ 0.1, 0.3, 0.5, 0.3, 0.1 }, //‰¡ŽãU“®
+	{ 0.1, 0.3, 0.5, 0.3, 0.1 }, //cŽãU“®
 };
 ///<summary>
 ///<see cref="PROBABILITY_AMPITUDE_WEAK">©ã‹L’è”</see>‚Ìƒe[ƒuƒ‹
@@ -225,14 +242,14 @@ const std::vector<double> PROBABILITY_AMPITUDE_WEAK[E_DIRECT_VIBRATE_MAX] = {
 ///<para>Še’l‚ÍU•‚Ì‘å‚«‚³‚ð•\‚·</para>
 ///</summary>
 const std::vector<float> TABLE_AMPITUDE_WEAK[E_DIRECT_VIBRATE_MAX] = {
-	{ -1.1f, 1.1f },	//‰¡ŽãU•
-	{ -11.0f, -5.0f, 0.0f, 5.0f, 11.0f },	//cŽãU•
+	{ -0.05f, -0.025f, 0.0f, 0.025f, 0.05f },	//‰¡ŽãU•
+	{ -0.05f, -0.025f, 0.0f, 0.025f, 0.05f },	//cŽãU•
 };
 ///<summary>U•‚ÌŠm—¦F‹­
 ///<para>‡Œv‚ª1‚É‚È‚é•K—v‚Í‚È‚¢</para>
 ///</summary>
 const std::vector<double> PROBABILITY_AMPITUDE_STRONG[E_DIRECT_VIBRATE_MAX] = {
-	{ 0.1, 0.1 },	//‰¡‹­U“®
+	{ 0.1, 0.3, 0.5, 0.3, 0.1 },	//‰¡‹­U“®
 	{ 0.1, 0.3, 0.5, 0.3, 0.1 },	//c‹­U“®
 };
 ///<summary>
@@ -241,8 +258,8 @@ const std::vector<double> PROBABILITY_AMPITUDE_STRONG[E_DIRECT_VIBRATE_MAX] = {
 ///<para>Še’l‚ÍU•‚Ì‘å‚«‚³‚ð•\‚·</para>
 ///</summary>
 const std::vector<float> TABLE_AMPITUDE_STRONG[E_DIRECT_VIBRATE_MAX] = {
-	{ -1.1f, 1.1f },	//‰¡‹­U•
-	{ -11.0f, -5.0f, 0.0f, 5.0f, 11.0f },	//c‹­U•
+	{ -0.25f, -0.15f, 0.0f, 0.15f, 0.25f },	//‰¡‹­U•
+	{ -2.5f, -1.5f, 0.0f, 1.5f, 2.5f },	//c‹­U•
 };
 
 // UI =====================================================
@@ -285,16 +302,6 @@ const TTriType<float> HP_UI_POS = { 80.0f, 60.0f ,0.0f };	// ƒeƒNƒXƒ`ƒƒ‚Ìc•A‰
 const TTriType<float> HP_UI_SIZE = { 90.0f, 90.0f ,0.0f };	// ƒeƒNƒXƒ`ƒƒ‚Ìc•A‰¡•
 const float DRAW_WIDTH = 90.0f;	// ƒeƒNƒXƒ`ƒƒ‚Ì‰¡•
 
-// ‰ñ•œƒAƒCƒeƒ€ =====================
-const float HEAL_ITEM_SCALE_X = 1.5f;		//@ƒAƒCƒeƒ€‚ÌƒXƒP[ƒ‹X
-const float HEAL_ITEM_SCALE_Y = 1.5f;		//@ƒAƒCƒeƒ€‚ÌƒXƒP[ƒ‹Y
-const float HEAL_ITEM_SCALE_Z = 1.5f;		//@ƒAƒCƒeƒ€‚ÌƒXƒP[ƒ‹Z
-const float	HEALITEM_ANGLE_X = 50.0f;		//@‰ñ•œƒAƒCƒeƒ€‚ÌŠp“x
-const float	HEALITEM_MOVE_INTERVAL = 4.0f;		//  ƒAƒjƒ[ƒVƒ‡ƒ“‚ÌŽüŠú
-const int	COUNT_UP = 6;						//  1•b‚Å360‚É‚È‚é‚æ‚¤‚É’²®
-const float	HEALITEM_MOVE_Y = 0.5f;				//  ƒAƒCƒeƒ€‚Ìã‰º‚É—h‚ê‚é‚‚³(-1`1‚Ü‚Å‚ðˆÚ“®‚·‚é‚Ì‚ÅˆÚ“®—Ê‚Í2)
-const float	HEALITEM_HEIGHT = HEALITEM_MOVE_Y;	//  ‰ñ•œƒAƒCƒeƒ€‚Ì‰Šú‚Ì‚‚³
-
 // BoooomUI =====================================================
 const float BOOOOM_UI_SIZE_X = 1.0f;		//BoooomUI‚ÌX‚Ì’·‚³itexture‚Ì”ä—¦‚Æ‡‚í‚¹‚éj
 const float BOOOOM_UI_SIZE_Y = 0.565f;		//BoooomUI‚ÌY‚Ì’·‚³itexture‚Ì”ä—¦‚Æ‡‚í‚¹‚éj
@@ -313,12 +320,6 @@ const TPos2d<float> COMBO_UI_BACK_POS = { 1100.0f, 600.0f };	// ƒRƒ“ƒ{UI‚Ì”wŒi‚Ì
 const TPos2d<float> COMBO_UI_BACK_SIZE = { 370.0f, 280.0f };	// ƒRƒ“ƒ{UI‚Ì”wŒi‚Ì‘å‚«‚³
 const TPos2d<float> COMBO_UI_STRING_POS = { 1150.0f, 615.5f };	// ƒRƒ“ƒ{UI‚Ì•¶Žš‚Ì•`‰æˆÊ’u
 const TPos2d<float> COMBO_UI_STRING_SIZE = { 180.0f, 100.0f };		// ƒRƒ“ƒ{UI‚Ì•¶Žš‚Ì‘å‚«‚³
-
-// ° ====================================
-const float FLOOR_SCALE_X = 1.1f;
-const float FLOOR_SCALE_Z = 1.1f;
-const float FLOOR_OFFSET_X = 48.0f * FLOOR_SCALE_X;
-const float FLOOR_OFFSET_Z = 48.0f * FLOOR_SCALE_Z;
 
 // ƒ^ƒCƒgƒ‹‰æ–Ê =========================================================
 const float TEXTURE_TITLE_TITLE_POSX = SCREEN_WIDTH_ / 2;	// ƒ^ƒCƒgƒ‹‰æ‘œ•\Ž¦ˆÊ’u‚ÌXÀ•W

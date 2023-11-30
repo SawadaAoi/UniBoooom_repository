@@ -25,6 +25,7 @@
 	・2023/11/26 スライムが爆発から逃げる処理を作成　yamashita
 	・2023/11/28 攻撃力を追加 Sawada
 	・2023/11/29 影メモリリーク除去 takagi
+	・2023/11/30 モデルの読み込みが反転したのでradian.yが反対になるように変更 yamashita
 
 ========================================== */
 
@@ -75,7 +76,7 @@ CSlimeBase::CSlimeBase()
 	m_Sphere.fRadius = SLIME_BASE_RADIUS;
 
 	int random = abs(rand() % 360);	//ランダムに0～359の数字を作成
-	m_Ry = DirectX::XMMatrixRotationY(random);
+	m_Ry = DirectX::XMMatrixRotationY((float)random);
 
 	m_pShadow = new CShadow();	// 影生成
 }
@@ -196,7 +197,7 @@ void CSlimeBase::NormalMove(tagTransform3d playerTransform)
 		// ベクトルを正規化して方向ベクトルを得る
 		DirectX::XMVECTOR direction = DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&directionVector));
 		// 方向ベクトルから回転行列を計算
-		m_Transform.fRadian.y = atan2(directionVector.x, directionVector.z);
+		m_Transform.fRadian.y = atan2(-directionVector.x, -directionVector.z);
 	}
 	else
 	{
@@ -225,11 +226,11 @@ void CSlimeBase::RandomMove()
 		int ranAngle = rand() % 360;	// 移動方向決定
 
 		// 角度方向に移動する
-		m_move.x = -cosf(DirectX::XMConvertToRadians(ranAngle)) * m_fSpeed;
-		m_move.z = sinf(DirectX::XMConvertToRadians(ranAngle)) * m_fSpeed;
+		m_move.x = -cosf(DirectX::XMConvertToRadians((float)ranAngle)) * m_fSpeed;
+		m_move.z = sinf(DirectX::XMConvertToRadians((float)ranAngle)) * m_fSpeed;
 
 		// 向きを変える
-		m_Transform.fRadian.y = DirectX::XMConvertToRadians(ranAngle + 90);
+		m_Transform.fRadian.y = DirectX::XMConvertToRadians((float)ranAngle - 90);
 
 		m_RanMoveCnt = 0;	// 加算値をリセット
 	}
@@ -309,7 +310,7 @@ void CSlimeBase::Escape()
 	//爆発と反対方向に移動
 	m_move.x = -(cosf(rad)) * ENEMY_MOVE_SPEED;
 	m_move.z = -(sinf(rad)) * ENEMY_MOVE_SPEED;
-	m_Transform.fRadian.y = atan2f(-m_move.x,-m_move.z);
+	m_Transform.fRadian.y = atan2f(m_move.x,m_move.z);
 
 	m_nEscapeCnt++;	//カウントを増加
 	if (m_nEscapeCnt > ESCAPE_TIME) 

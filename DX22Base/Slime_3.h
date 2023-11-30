@@ -12,6 +12,7 @@
 	変更履歴
 	・2023/11/08 作成 山下凌佑
 	・2023/11/08 スライムの移動速度を設定する関数を継承 山下凌佑
+	・2023/11/30 UpdateとNormalMoveをoverride yamashita
 
 ========================================== */
 
@@ -27,6 +28,9 @@ public:
 	CSlime_3();
 	CSlime_3(TPos3d<float> pos, VertexShader* pVS, Model* pModel);
 	~CSlime_3();
+
+	void Update(tagTransform3d playerTransform) final;
+	void NormalMove(tagTransform3d playerTransform) final;	// 通常時の移動処理
 
 	void SetNormalSpeed() override;
 private:
