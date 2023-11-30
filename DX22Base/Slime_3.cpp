@@ -26,7 +26,6 @@
 // =============== インクルード ===================
 #include "Slime_3.h"
 #include "GameParameter.h"		//定数定義用ヘッダー
-
 // =============== 定数定義 =======================
 #if MODE_GAME_PARAMETER
 #else
@@ -142,18 +141,20 @@ void CSlime_3::NormalMove(tagTransform3d playerTransform)
 	if (distancePlayer < MOVE_DISTANCE_PLAYER)
 	{
 		//プレイヤーがスライムの方向を向いているか確認
-	 	float checkRad = playerTransform.Angle(m_Transform);
-		float adjustPlayerRad = playerRad.y - DirectX::XMConvertToRadians(90.0f);
-		float diffRad = abs(checkRad) - abs(adjustPlayerRad);
+	 	float checkRad = playerTransform.Angle(m_Transform);	//プレイヤーからスライムへの角度
+		if (checkRad < 0.0f) { checkRad = checkRad + (DirectX::g_XMTwoPi[0]); }			//角度を正の数に変換
+		float adjustPlayerRad = playerRad.y - DirectX::XMConvertToRadians(90.0f);			//プレイヤーの見ている角度
+		if(adjustPlayerRad < 0.0f){adjustPlayerRad = adjustPlayerRad + (DirectX::g_XMTwoPi[0]);}	//角度を正の数に変換
+		float sumRad = checkRad + adjustPlayerRad;
 		//プレイヤーの向いている方向がスライムの止まる角度の中だったら
-		if (abs(diffRad) < LEVEL3_STOP_RANGE)
+		if (abs(sumRad - (DirectX::g_XMTwoPi[0])) < LEVEL3_STOP_RANGE)
 		{
-			m_move = TTriType<float>(0.0f, 0.0f, 0.0f);
-			m_Transform.fRadian.y = -(m_Transform.Angle(playerTransform) - DirectX::XMConvertToRadians(90.0f));
+			m_move = TTriType<float>(0.0f, 0.0f, 0.0f);	//移動量を0にする
+			m_Transform.fRadian.y = -(m_Transform.Angle(playerTransform) - DirectX::XMConvertToRadians(90.0f));	//角度をDirectX用に変更
+			return;
 		}
 		else	//プレイヤーがスライムと別の方向を向いていたら
 		{
-
 			TPos3d<float> movePos;
 			movePos = playerPos - m_Transform.fPos;	// プレイヤーへのベクトルを計算
 			if (distancePlayer != 0)	//0除算回避
@@ -193,6 +194,5 @@ void CSlime_3::SetNormalSpeed()
 {
 	m_fSpeed = LEVEL3_SPEED;	//移動速度に定数をセット
 }
-
 
 
