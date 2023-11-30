@@ -156,14 +156,14 @@ void CFloor::calculationPosition()
 {
 	int offsetX = (int)m_pPlayePos->x;	//プレイヤーの中心からのX座標のずれ
 	int offsetZ = (int)m_pPlayePos->z;	//プレイヤーの中心からのZ座標のずれ
-	if (offsetX >= 0) { offsetX += (FLOOR_OFFSET_X / 2); }	//座標がプラスなら加算
-	else { offsetX -= (FLOOR_OFFSET_X / 2); }					//座標がマイナスなら減算
-	if (offsetZ >= 0) { offsetZ += (FLOOR_OFFSET_X / 2); }	//座標がプラスなら加算
-	else { offsetZ -= (FLOOR_OFFSET_X / 2); }				//座標がマイナスなら減算
+	if (offsetX >= 0) { offsetX += int(FLOOR_OFFSET_X / 2.0f); }	//座標がプラスなら加算
+	else { offsetX -= int(FLOOR_OFFSET_X / 2.0f); }					//座標がマイナスなら減算
+	if (offsetZ >= 0) { offsetZ += int(FLOOR_OFFSET_X / 2.0f); }	//座標がプラスなら加算
+	else { offsetZ -= int(FLOOR_OFFSET_X / 2.0f); }				//座標がマイナスなら減算
 
 	//プレイヤーが床の大きさで何枚目分の所にいるか
-	m_pPlayerFloor.x = (int)offsetX / FLOOR_OFFSET_X;
-	m_pPlayerFloor.z = (int)offsetZ / FLOOR_OFFSET_Z;
+	m_pPlayerFloor.x = int(offsetX / FLOOR_OFFSET_X);
+	m_pPlayerFloor.z = int(offsetZ / FLOOR_OFFSET_Z);
 
 
 	//床を表示する座標を確定

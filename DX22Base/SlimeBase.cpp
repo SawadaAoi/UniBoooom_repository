@@ -76,7 +76,7 @@ CSlimeBase::CSlimeBase()
 	m_Sphere.fRadius = SLIME_BASE_RADIUS;
 
 	int random = abs(rand() % 360);	//ランダムに0～359の数字を作成
-	m_Ry = DirectX::XMMatrixRotationY(random);
+	m_Ry = DirectX::XMMatrixRotationY((float)random);
 
 	m_pShadow = new CShadow();	// 影生成
 }
@@ -226,11 +226,11 @@ void CSlimeBase::RandomMove()
 		int ranAngle = rand() % 360;	// 移動方向決定
 
 		// 角度方向に移動する
-		m_move.x = -cosf(DirectX::XMConvertToRadians(ranAngle)) * m_fSpeed;
-		m_move.z = sinf(DirectX::XMConvertToRadians(ranAngle)) * m_fSpeed;
+		m_move.x = -cosf(DirectX::XMConvertToRadians((float)ranAngle)) * m_fSpeed;
+		m_move.z = sinf(DirectX::XMConvertToRadians((float)ranAngle)) * m_fSpeed;
 
 		// 向きを変える
-		m_Transform.fRadian.y = DirectX::XMConvertToRadians(ranAngle - 90);
+		m_Transform.fRadian.y = DirectX::XMConvertToRadians((float)ranAngle - 90);
 
 		m_RanMoveCnt = 0;	// 加算値をリセット
 	}
