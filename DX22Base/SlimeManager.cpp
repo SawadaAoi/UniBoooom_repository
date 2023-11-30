@@ -91,7 +91,7 @@ CSlimeManager::CSlimeManager(CPlayer* pPlayer)
 	, m_pYellowModel(nullptr)
 	, m_pRedModel(nullptr)
 	, m_pFlameModel(nullptr)
-	, m_pBossModel(nullptr)
+	, m_pBossModel{nullptr,nullptr}
 	, m_pSEHitSlime(nullptr)
 	, m_pSEUnion(nullptr)
 	, m_pSEHitSlimeSpeaker(nullptr)
@@ -158,7 +158,8 @@ CSlimeManager::~CSlimeManager()
 	SAFE_DELETE(m_pYellowModel);
 	SAFE_DELETE(m_pGreenModel);
 	SAFE_DELETE(m_pBlueModel);
-	SAFE_DELETE(m_pBossModel);
+	SAFE_DELETE(m_pBossModel[0]);
+	SAFE_DELETE(m_pBossModel[1]);
 
 	// スライム削除
 	for (int i = 0; i < MAX_SLIME_NUM; i++)
@@ -319,7 +320,7 @@ void CSlimeManager::CreateBoss()
 	{
 		// スライムのuseを検索
 		if (m_pBoss[i] != nullptr) continue;
-		m_pBoss[i] = new CSlime_Boss_1(TPos3d<float>(0.0f, 0.0f, 0.0f), m_pVS, m_pBossModel);	//動的生成(取り合えず位置は仮)
+		m_pBoss[i] = new CSlime_Boss_1(TPos3d<float>(0.0f, 0.0f, 0.0f), m_pVS, m_pBossModel[0], m_pBossModel[1]);	//動的生成(取り合えず位置は仮)
 
 		break;
 	}
@@ -918,11 +919,19 @@ void CSlimeManager::LoadModel()
 	}
 	m_pFlameModel->SetVertexShader(m_pVS);
 	//ボススライムのモデル読み込み
-	m_pBossModel = new Model;
-	if (!m_pBossModel->Load("Assets/Model/boss_slime_1/boss_slime_1.fbx", 0.23f, Model::XFlip)) {		//倍率と反転は省略可
+	m_pBossModel [0]= new Model;
+	if (!m_pBossModel[0]->Load("Assets/Model/boss_slime_1/boss_slime_1.fbx", 0.23f, Model::XFlip)) {		//倍率と反転は省略可
 		MessageBox(NULL, "Boss_Slime", "Error", MB_OK);	//ここでエラーメッセージ表示
 	}
-	m_pBossModel->SetVertexShader(m_pVS);
+
+	m_pBossModel[0]->SetVertexShader(m_pVS);
+	//ボススライムのモデル読み込み
+	m_pBossModel[1] = new Model;
+	if (!m_pBossModel[1]->Load("Assets/Model/boss_slime_1/boss_slime_rush_1.fbx", 0.23f, Model::XFlip)) {		//倍率と反転は省略可
+		MessageBox(NULL, "Boss_Slime", "Error", MB_OK);	//ここでエラーメッセージ表示
+	}
+
+	m_pBossModel[1]->SetVertexShader(m_pVS);
 }
 
 /* ========================================
