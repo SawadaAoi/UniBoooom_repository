@@ -887,37 +887,37 @@ void CSlimeManager::LoadModel()
 	}
 	//レベル1スライムのモデル読み込み
 	m_pBlueModel = new Model;
-	if (!m_pBlueModel->Load("Assets/Model/slime/slime_blue1.28.FBX", 0.15f, Model::XFlip)) {		//倍率と反転は省略可
+	if (!m_pBlueModel->Load("Assets/Model/slime/slime_blue1.28.FBX", 0.15f, Model::ZFlip)) {		//倍率と反転は省略可
 		MessageBox(NULL, "slime_blue", "Error", MB_OK);	//ここでエラーメッセージ表示
 	}
 	m_pBlueModel->SetVertexShader(m_pVS);
 	//レベル2スライムのモデル読み込み
 	m_pGreenModel = new Model;
-	if (!m_pGreenModel->Load("Assets/Model/slime/slime_green1.28.FBX", 0.15f, Model::XFlip)) {		//倍率と反転は省略可
+	if (!m_pGreenModel->Load("Assets/Model/slime/slime_green1.28.FBX", 0.15f, Model::ZFlip)) {		//倍率と反転は省略可
 		MessageBox(NULL, "slime_green", "Error", MB_OK);	//ここでエラーメッセージ表示
 	}
 	m_pGreenModel->SetVertexShader(m_pVS);
 	//レベル3スライムのモデル読み込み
 	m_pYellowModel = new Model;
-	if (!m_pYellowModel->Load("Assets/Model/slime/slime_Yellow1.28.FBX", 0.15f, Model::XFlip)) {		//倍率と反転は省略可
+	if (!m_pYellowModel->Load("Assets/Model/slime/slime_Yellow1.28.FBX", 0.15f, Model::ZFlip)) {		//倍率と反転は省略可
 		MessageBox(NULL, "slime_yellow", "Error", MB_OK);	//ここでエラーメッセージ表示
 	}
 	m_pYellowModel->SetVertexShader(m_pVS);
 	//レベル4スライムのモデル読み込み
 	m_pRedModel = new Model;
-	if (!m_pRedModel->Load("Assets/Model/slime/slime_red1.28.FBX", 0.18f, Model::XFlip)) {		//倍率と反転は省略可
+	if (!m_pRedModel->Load("Assets/Model/slime/slime_red1.28.FBX", 0.18f, Model::ZFlip)) {		//倍率と反転は省略可
 		MessageBox(NULL, "slime_red", "Error", MB_OK);		//ここでエラーメッセージ表示
 	}
 	m_pRedModel->SetVertexShader(m_pVS);
 	//フレイムスライムのモデル読み込み
 	m_pFlameModel = new Model;
-	if (!m_pFlameModel->Load("Assets/Model/Golem/Golem.FBX", 0.015f, Model::XFlip)) {		//倍率と反転は省略可
+	if (!m_pFlameModel->Load("Assets/Model/Golem/Golem.FBX", 0.015f, Model::ZFlip)) {		//倍率と反転は省略可
 		MessageBox(NULL, "Flame_Slime", "Error", MB_OK);	//ここでエラーメッセージ表示
 	}
 	m_pFlameModel->SetVertexShader(m_pVS);
 	//ボススライムのモデル読み込み
 	m_pBossModel = new Model;
-	if (!m_pBossModel->Load("Assets/Model/boss_slime_1/boss_slime_1.fbx", 0.23f, Model::XFlip)) {		//倍率と反転は省略可
+	if (!m_pBossModel->Load("Assets/Model/boss_slime_1/boss_slime_1.fbx", 0.23f, Model::ZFlip)) {		//倍率と反転は省略可
 		MessageBox(NULL, "Boss_Slime", "Error", MB_OK);	//ここでエラーメッセージ表示
 	}
 	m_pBossModel->SetVertexShader(m_pVS);

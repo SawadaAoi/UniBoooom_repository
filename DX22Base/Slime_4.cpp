@@ -124,7 +124,7 @@ void CSlime_4::NormalMove(tagTransform3d playerTransform)
 		//”š”­‚Æ”½‘Î•ûŒü‚ÉˆÚ“®
 		m_move.x = -(cosf(rad)) * m_fSpeed;
 		m_move.z = -(sinf(rad)) * m_fSpeed;
-		m_Transform.fRadian.y = atan2f(-m_move.x, -m_move.z);
+		m_Transform.fRadian.y = atan2f(m_move.x, m_move.z);
 	}
 	else
 	{
