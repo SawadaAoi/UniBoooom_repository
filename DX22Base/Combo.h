@@ -10,6 +10,7 @@
 	変更履歴
 	・2023/11/21 作成 Sawada
 	・2023/11/23 構造体にスコアを追加　yamamoto
+	・2023/11/30 アニメーション用変数追加　nieda
 
 ========================================== */
 #ifndef __COMBO_H__
@@ -61,6 +62,11 @@ private:
 	Texture* m_pTextureNum[3];		// 数字画像
 	ComboInfo m_dComboInfo[MAX_COMBO_NUM];	// コンボ用情報まとめ
 	CTotalScore* m_pTotalScore;	
+	float m_fSizeX;		// 横UV座標格納用
+	float m_fSizeY;		// 縦UV座標格納用
+	int m_nCntWidth;	// テクスチャの横分割数カウント用
+	int m_nCntHeight;	// テクスチャの縦分割数カウント用
+	int m_nCntCombo[MAX_COMBO_NUM];	// コンボ数増加確認用
 };
 
 

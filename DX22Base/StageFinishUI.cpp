@@ -12,6 +12,7 @@
 	・2023/11/20 ゲームのプレイ状態によってUIを表示する yamashita
 	・2023/11/20 UIが邪魔な時に非表示にできるように変更 yamashita
 	・2023/11/23 表示フラグ取得関数作成 nieda
+	・2023/11/30 素材変更 nieda
 
 ========================================== */
 #include "DirectXTex/TextureLoad.h"		
@@ -22,8 +23,8 @@
 #include "Input.h"
 
 // =============== 定数定義 =======================
-const int SCALE_X = 500;	//UIの横幅
-const int SCALE_Y = 100;	//UIの縦幅
+const int SCALE_X = 700;	//UIの横幅
+const int SCALE_Y = 300;	//UIの縦幅
 
 /* ========================================
 	コンストラクタ
@@ -58,9 +59,9 @@ CStageFinish::CStageFinish(int* pPlayerHp, int* pTimeCnt)
 
 	//ゲームオーバーのテクスチャ読み込む
 	m_pTexGameOver = new Texture;
-	if (FAILED(m_pTexGameOver->Create("Assets/Texture/StageFinish/GameOver.png")))
+	if (FAILED(m_pTexGameOver->Create("Assets/Texture/StageFinish/game_over.png")))
 	{
-		MessageBox(NULL, "GameOver.png", "Error", MB_OK);
+		MessageBox(NULL, "game_over.png", "Error", MB_OK);
 	}
 }
 

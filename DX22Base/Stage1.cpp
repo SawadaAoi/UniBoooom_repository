@@ -24,7 +24,7 @@
 #include "Stage1.h"	//自身のヘッダ
 #include "CameraChase.h"
 #include "Input.h"
-
+#include "GameParameter.h"
 
 /* ========================================
 	コンストラクタ
@@ -48,9 +48,9 @@ CStage1::CStage1()
 
 	// テクスチャ読込
 	m_pTexture = new Texture();
-	if (FAILED(m_pTexture->Create("Assets/Texture/text_start.png")))
+	if (FAILED(m_pTexture->Create("Assets/Texture/start_sign.png")))
 	{
-		MessageBox(NULL, "Stage1 text_start.png", "Error", MB_OK);
+		MessageBox(NULL, "Stage1 start_sign.png", "Error", MB_OK);
 	}
 
 	// レンダーターゲット、深度バッファの設定
@@ -109,11 +109,11 @@ CStage1::CStage1()
 =========================================== */
 CStage1::~CStage1()
 {
-	/*if (m_pSpeaker)
+	if (m_pSpeaker)
 	{
 		m_pSpeaker->Stop();
 		m_pSpeaker->DestroyVoice();
-	}*/
+	}
 	SAFE_DELETE(m_pStageFin);
 	SAFE_DELETE(m_pTimer);
 	SAFE_DELETE(m_pExplosionMng);
@@ -138,17 +138,17 @@ CStage1::~CStage1()
 =========================================== */
 void CStage1::Update()
 {
-	// タイトルから遷移後すぐゲーム開始にならないようにする処理
-	// あまりにも適当に作ったので本実装時にちゃんと書きます
-	if (!m_bStart)
+	if (!m_bStart)	// シーン遷移後ゲームを開始するか判定
 	{
+		// タイトルから遷移後すぐゲーム開始にならないようにする処理
 		m_nNum++;
-		if (m_nNum > 10)
+		
+		if (m_nNum < 100)
 		{
-			m_fSize += 10.0f;
+			m_fResize += 1.0f;
+			m_fSize -= m_fResize;
 		}
-
-		if (m_nNum > 50)
+		else
 		{
 			m_bStart = true;
 		}

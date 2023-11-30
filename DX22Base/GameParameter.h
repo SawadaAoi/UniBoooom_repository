@@ -241,11 +241,17 @@ const int FADE_TIME = 5 * 60;							//ボスゲージが溜まってから消える時間
 
 // HP
 const float DRAW_POSX   = 45.0f;	// テクスチャを表示する位置のX座標
-const float DRAW_FIRSTPOSX = 0.0f;		// 1つ目のテクスチャを表示する位置の調節用
-const float DRAW_GAP    = 70.0f;		// テクスチャ同士の間隔
+const float DRAW_FIRSTPOSX = 0.0f;	// 1つ目のテクスチャを表示する位置の調節用
+const float DRAW_GAP    = 70.0f;	// テクスチャ同士の間隔
 const float DRAW_POSY   = 40.0f;	// テクスチャを表示する位置のY座標
 const float DRAW_HEIGHT = 60.0f;	// テクスチャの縦幅
 const float DRAW_WIDTH  = 60.0f;	// テクスチャの横幅
+
+const int SWITCH_HP_ANIM = 1;		// アニメーション切り替えの間隔
+const float HP_ANIM_SIZEX = 1.0f / 5.0f;	// テクスチャ横分割サイズ
+const float HP_ANIM_SIZEY = 1.0f / 5.0f;	// テクスチャ縦分割サイズ
+const int HP_ANIM_WIDTH_NUM_MAX = 5;		// 横分割数最大数
+const int HP_ANIM_HEIGHT_NUM_MAX = 5;		// 縦分割数最大数
 
 // BoooomUI =====================================================
 const float BOOOOM_UI_SIZE_X = 1.0f;		//BoooomUIのXの長さ（textureの比率と合わせる）
@@ -261,10 +267,16 @@ const float COMBO_UI_NUM_SPACE = 80.0f;				// 数字の間スペース
 const float COMBO_UI_MULTI_DISP_SPACE = 100.0f;				// 同時コンボ描画時の上下の空白
 const int COMBO_UI_DISP_DILAY_TIME = 2.0f * 60;			// 残コンボ数表示の秒数
 
-const TPos2d<float> COMBO_UI_BACK_POS = { 1100.0f, 600.0f };	// コンボUIの背景の描画位置
+const TPos2d<float> COMBO_UI_BACK_POS = { 1130.0f, 600.0f };	// コンボUIの背景の描画位置
 const TPos2d<float> COMBO_UI_BACK_SIZE = { 370.0f, 280.0f };	// コンボUIの背景の大きさ
 const TPos2d<float> COMBO_UI_STRING_POS = { 1150.0f, 615.5f };	// コンボUIの文字の描画位置
 const TPos2d<float> COMBO_UI_STRING_SIZE = { 180.0f, 100.0f };		// コンボUIの文字の大きさ
+
+const int SWITCH_COMBO_ANIM = 1;			// アニメーション切り替えの間隔
+const float COMBO_ANIM_SIZEX = 1.0f / 3.0f;	// テクスチャ横分割サイズ
+const float COMBO_ANIM_SIZEY = 1.0f / 3.0f;	// テクスチャ縦分割サイズ
+const int COMBO_ANIM_WIDTH_NUM_MAX = 3;		// 横分割数最大数
+const int COMBO_ANIM_HEIGHT_NUM_MAX = 3;	// 縦分割数最大数
 
 // 床 ====================================
 const float FLOOR_SCALE_X = 1.1f;
@@ -288,7 +300,8 @@ const int FRAME_STOP_NORMAL = 60;	//ストップ：中　のフレーム数
 const int FRAME_STOP_HEAVY = 120;	//ストップ：重　のフレーム数
 const int FRAME_STOP_DEATH = 999;	//ストップ：死　のフレーム数
 
-
+// ゲーム開始時スタート表示 ==================================================
+const float TIME_SIZE_MIN = 50;
 
 
 #endif
