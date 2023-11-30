@@ -19,20 +19,20 @@
 	・2023/11/15 スライムのモデルと頂点シェーダーをmanagerから受け取るように変更 yamashita
 	・2023/11/16 引数付きコンストラクタの引数に頂点シェーダーとモデルのポインタを追加 山下凌佑
 	・2023/11/28 影の大きさを設定する変数追加 nieda
+	・2023/11/30 プレイヤーに見られていたら止まる処理を追加 yamashita
 
 ========================================== */
 
 // =============== インクルード ===================
 #include "Slime_3.h"
 #include "GameParameter.h"		//定数定義用ヘッダー
-
 // =============== 定数定義 =======================
 #if MODE_GAME_PARAMETER
 #else
 const float LEVEL3_SCALE = 3.0f;
 const float LEVEL3_SPEED = ENEMY_MOVE_SPEED * 0.90;
 const int	LEVEL3_ATTACK = 1;	// 攻撃力
-
+const float LEVEL3_STOP_RANGE = DirectX::XMConvertToRadians(20.0f);	// スライムが止まる角度の範囲
 #endif
 
 /* ========================================
@@ -87,6 +87,101 @@ CSlime_3::~CSlime_3()
 }
 
 /* ========================================
+	更新処理関数
+	-------------------------------------
+	内容：更新処理
+	-------------------------------------
+	引数1：プレイヤーのtransform
+	-------------------------------------
+	戻値：無し
+=========================================== */
+void CSlime_3::Update(tagTransform3d playerTransform)
+{
+	if (!m_bHitMove)	//敵が通常の移動状態の時
+	{
+		if (!m_bEscape  && m_nEscapeCnt == 0)	//逃げるフラグがoffなら
+		{
+			NormalMove(playerTransform);	//通常異動
+		}
+		else
+		{
+			Escape();	//爆発から逃げる
+		}
+	}
+	else
+	{
+		//敵の吹き飛び移動
+		HitMove();
+	}
+
+	// -- 座標更新
+	m_Transform.fPos.x += m_move.x;
+	m_Transform.fPos.z += m_move.z;
+}
+
+/* ========================================
+	通常移動関数
+	----------------------------------------
+	内容：プレイヤーを追跡する移動を行う
+		  プレイヤーに見られていたら止まる
+	----------------------------------------
+	引数1：プレイヤーのtransform
+	----------------------------------------
+	戻値：なし
+======================================== */
+void CSlime_3::NormalMove(tagTransform3d playerTransform)
+{
+	TPos3d<float> playerPos = playerTransform.fPos;
+	TTriType<float> playerRad = playerTransform.fRadian;
+
+	// 敵からエネミーの距離、角度を計算
+	float distancePlayer = m_Transform.fPos.Distance(playerPos);
+
+	// プレイヤーと距離が一定以内だったら
+	if (distancePlayer < MOVE_DISTANCE_PLAYER)
+	{
+		//プレイヤーがスライムの方向を向いているか確認
+	 	float checkRad = playerTransform.Angle(m_Transform);	//プレイヤーからスライムへの角度
+		if (checkRad < 0.0f) { checkRad = checkRad + (DirectX::g_XMTwoPi[0]); }			//角度を正の数に変換
+		float adjustPlayerRad = playerRad.y - DirectX::XMConvertToRadians(90.0f);			//プレイヤーの見ている角度
+		if(adjustPlayerRad < 0.0f){adjustPlayerRad = adjustPlayerRad + (DirectX::g_XMTwoPi[0]);}	//角度を正の数に変換
+		float sumRad = checkRad + adjustPlayerRad;
+		//プレイヤーの向いている方向がスライムの止まる角度の中だったら
+		if (abs(sumRad - (DirectX::g_XMTwoPi[0])) < LEVEL3_STOP_RANGE)
+		{
+			m_move = TTriType<float>(0.0f, 0.0f, 0.0f);	//移動量を0にする
+			m_Transform.fRadian.y = -(m_Transform.Angle(playerTransform) - DirectX::XMConvertToRadians(90.0f));	//角度をDirectX用に変更
+			return;
+		}
+		else	//プレイヤーがスライムと別の方向を向いていたら
+		{
+			TPos3d<float> movePos;
+			movePos = playerPos - m_Transform.fPos;	// プレイヤーへのベクトルを計算
+			if (distancePlayer != 0)	//0除算回避
+			{
+				m_move.x = movePos.x / distancePlayer * m_fSpeed;
+				m_move.z = movePos.z / distancePlayer * m_fSpeed;
+			}
+			// 敵からプレイヤーへのベクトル
+			DirectX::XMFLOAT3 directionVector;
+			directionVector.x = m_Transform.fPos.x - playerPos.x;
+			directionVector.y = m_Transform.fPos.y - playerPos.y;
+			directionVector.z = m_Transform.fPos.z - playerPos.z;
+
+			// ベクトルを正規化して方向ベクトルを得る
+			DirectX::XMVECTOR direction = DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&directionVector));
+			// 方向ベクトルから回転行列を計算
+			m_Transform.fRadian.y = atan2(-directionVector.x, -directionVector.z);
+		}
+	}
+	else	//索敵範囲外だったら
+	{
+		RandomMove();	// ランダム移動
+
+	}
+}
+
+/* ========================================
 	スピード決定関数
 	-------------------------------------
 	内容：スライムの移動速度を設定
@@ -99,6 +194,5 @@ void CSlime_3::SetNormalSpeed()
 {
 	m_fSpeed = LEVEL3_SPEED;	//移動速度に定数をセット
 }
-
 
 
