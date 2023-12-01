@@ -222,12 +222,13 @@ void CHammer::AttackStart(TPos3d<float>pPos, float angle)
    ======================================== */
 void CHammer::SwingSpeedAdd()
 {
+	m_fAddAngle = SWING_ANGLE / m_fSwingSpeed;
 	m_fSwingSpeed*=SwingSpeed_PLUS; 
 		if (m_fSwingSpeed >= SwingSpeed_SIOW)
 		{
 			m_fSwingSpeed = SwingSpeed_SIOW;
 		}
-	m_fAddAngle = SWING_ANGLE / m_fSwingSpeed;
+	
 }
 /* ========================================
    ハンマーのスイングスピードを速くする関数
