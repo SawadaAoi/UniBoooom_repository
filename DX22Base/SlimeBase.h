@@ -50,6 +50,7 @@
 #include "GameParameter.h"		//定数定義用ヘッダー
 #include "Object.h"
 #include "Shadow.h"		// 影表示用ヘッダ
+#include "Timer.h"
 // =============== 列挙定義 =======================
 enum E_SLIME_LEVEL
 {
@@ -86,7 +87,7 @@ public:
 	// ===プロトタイプ宣言===
 	CSlimeBase();
 	~CSlimeBase();
-	virtual void Update(tagTransform3d playerTransform);
+	virtual void Update(tagTransform3d playerTransform, float fSlimeMoveSpeed); 
 	virtual void Draw(const CCamera* pCamera);
 
 	virtual void NormalMove(tagTransform3d playerTransform);	// 通常時の移動処理

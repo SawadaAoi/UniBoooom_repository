@@ -34,6 +34,7 @@
 #include "Floor.h"
 #include "Fade.h"
 #include "UIStageManager.h"
+#include "Timer.h"
 
 #include "ScoreOHManager.h"
 #include "TotalScore.h"
@@ -82,6 +83,7 @@ private:
 	CHealItemManager* m_pHealItemMng;
 	CBossgauge* m_pBossgauge;
 	CCombo* m_pCombo;
+	CTimer* m_pTimer;
 	CScoreOHManager* m_pScoreOHMng;
 	CUIStageManager* m_pUIStageMng;				//UIのマネジャー
 
