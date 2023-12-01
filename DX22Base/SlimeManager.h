@@ -109,7 +109,7 @@ private:
 	Model* m_pYellowModel;
 	Model* m_pRedModel;
 	Model* m_pFlameModel;
-	Model* m_pBossModel;
+	Model* m_pBossModel[2];
 
 	CScoreOHManager* m_pScoreOHMng;				// スコアマネージャ―ポインタ
 	CHealItemManager* m_pHealItemMng;			// 回復アイテムマネージャーポインタ

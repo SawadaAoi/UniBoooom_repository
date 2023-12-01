@@ -32,6 +32,8 @@
 	・2023/11/27 赤赤の爆発生成時にヒットストップと画面揺れするように修正	Sawada
 	・2023/11/29 画面揺れを横強→縦強に変更 takagi
 	・2023/11/29 プレイヤーのポインタを取得 yamashita
+	・2023/11/30 モデルの読み込みをMaya準拠からDirectX準拠に変更 yamashita
+	・2023/11/30 振動する箇所増設・ヒットストップ除去・火スライムと赤スライム衝突時に振動強化 takagi
 
 =========================================== */
 
@@ -92,7 +94,7 @@ CSlimeManager::CSlimeManager(CPlayer* pPlayer)
 	, m_pYellowModel(nullptr)
 	, m_pRedModel(nullptr)
 	, m_pFlameModel(nullptr)
-	, m_pBossModel(nullptr)
+	, m_pBossModel{nullptr,nullptr}
 	, m_pSEHitSlime(nullptr)
 	, m_pSEUnion(nullptr)
 	, m_pSEHitSlimeSpeaker(nullptr)
@@ -155,8 +157,8 @@ CSlimeManager::~CSlimeManager()
 	SAFE_DELETE(m_pYellowModel);
 	SAFE_DELETE(m_pGreenModel);
 	SAFE_DELETE(m_pBlueModel);
-	SAFE_DELETE(m_pBossModel);
-	
+	SAFE_DELETE(m_pBossModel[0]);
+	SAFE_DELETE(m_pBossModel[1]);
 
 	// スライム削除
 	for (int i = 0; i <MAX_SLIME_NUM; i++)
@@ -263,8 +265,8 @@ void CSlimeManager::Create(E_SLIME_LEVEL level)
 		while (true)
 		{
 			// 乱数をセットする
-			CreatePos.x = GetRandom(int(m_pPlayer->GetPos().x - RANDOM_POS), int(m_pPlayer->GetPos().x + RANDOM_POS));	//乱数取得
-			CreatePos.z = GetRandom(int(m_pPlayer->GetPos().z - RANDOM_POS), int(m_pPlayer->GetPos().z + RANDOM_POS));
+			CreatePos.x = float(GetRandom(int(m_pPlayer->GetPos().x - RANDOM_POS), int(m_pPlayer->GetPos().x + RANDOM_POS)));	//乱数取得
+			CreatePos.z = float(GetRandom(int(m_pPlayer->GetPos().z - RANDOM_POS), int(m_pPlayer->GetPos().z + RANDOM_POS)));
 			CreatePos.y = 0;
 
 			float PlayerCreateDistance = CreatePos.Distance(m_pPlayer->GetPos());	// 生成座標のプレイヤーとの距離
@@ -317,7 +319,7 @@ void CSlimeManager::CreateBoss()
 	{
 		// スライムのuseを検索
 		if (m_pBoss[i] != nullptr) continue;
-		m_pBoss[i] = new CSlime_Boss_1(TPos3d<float>(0.0f, 0.0f, 0.0f), m_pVS, m_pBossModel);	//動的生成(取り合えず位置は仮)
+		m_pBoss[i] = new CSlime_Boss_1(TPos3d<float>(0.0f, 0.0f, 0.0f), m_pVS, m_pBossModel[0], m_pBossModel[1]);	//動的生成(取り合えず位置は仮)
 
 		break;
 	}
@@ -383,14 +385,12 @@ void CSlimeManager::HitBranch(int HitSlimeNum, int StandSlimeNum, CExplosionMana
 
 		if (hitSlimeLevel == MAX_LEVEL)	//スライムのサイズが最大の時
 		{
-			CHitStop::UpFlag(CHitStop::E_BIT_FLAG_STOP_SOFT);	//フラグオン
-
 			//スライム爆発処理
 			pExpMng->Create(pos, MAX_SIZE_EXPLODE * EXPLODE_BASE_RATIO, LEVEL_4_EXPLODE_TIME, LEVEL_4_EXPLODE_DAMAGE, E_SLIME_LEVEL::LEVEL_4x4);	//衝突されたスライムの位置でレベル４爆発
 			m_pScoreOHMng->DisplayOverheadScore(pos, LEVEL_4_SCORE * 2, SLIME_SCORE_HEIGHT);
 			pExpMng->CreateUI(pos, LEVEL_4_EXPLODE_TIME);		//レベル４爆発した位置boooomUI表示
 
-			m_pCamera->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_STRONG);
+			m_pCamera->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_STRONG | CCamera::E_BIT_FLAG_VIBRATION_SIDE_STRONG);
 		}
 		else	//最大サイズじゃない場合は1段階大きいスライムを生成する
 		{
@@ -443,6 +443,17 @@ bool CSlimeManager::HitFlameBranch(int HitSlimeNum, int StandSlimeNum, CExplosio
 	{
 		pExpMng->SwitchExplode(standSlimeLevel, standSlimeTransform.fPos,standSlimeSize);	//スライムのレベルによって爆発の時間とサイズを分岐
 		m_pScoreOHMng->DisplayOverheadScore(standSlimeTransform.fPos, standSlimeLevel);
+
+		//赤スライム(Stand)と激突したときだけ爆発の振動を大きくする
+		if (typeid(CSlime_4) == typeid(*m_pSlime[HitSlimeNum]))
+		{
+			m_pCamera->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_STRONG | CCamera::E_BIT_FLAG_VIBRATION_SIDE_STRONG);
+		}
+		else
+		{
+			m_pCamera->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_STRONG | CCamera::E_BIT_FLAG_VIBRATION_SIDE_WEAK);
+		}
+
 		SAFE_DELETE(m_pSlime[HitSlimeNum]);								// 衝突するスライムを削除
 		SAFE_DELETE(m_pSlime[StandSlimeNum]);							// 衝突されたスライムを削除
 
@@ -453,6 +464,16 @@ bool CSlimeManager::HitFlameBranch(int HitSlimeNum, int StandSlimeNum, CExplosio
 	{
 		pExpMng->SwitchExplode(hitSlimeLevel, hitSlimeTransform.fPos, hitSlimeSize);	//スライムのレベルによって爆発の時間とサイズを分岐
 		m_pScoreOHMng->DisplayOverheadScore(hitSlimeTransform.fPos, hitSlimeLevel);
+
+		//赤スライム(Hit)と激突したときだけ爆発の振動を大きくする
+		if (typeid(CSlime_4) == typeid(*m_pSlime[HitSlimeNum]))
+		{
+			m_pCamera->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_STRONG | CCamera::E_BIT_FLAG_VIBRATION_SIDE_STRONG);
+		}
+		else
+		{
+			m_pCamera->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_STRONG | CCamera::E_BIT_FLAG_VIBRATION_SIDE_WEAK);
+		}
 
 		SAFE_DELETE(m_pSlime[HitSlimeNum]);								// 衝突するスライムを削除
 		SAFE_DELETE(m_pSlime[StandSlimeNum]);							// 衝突されたスライムを削除
@@ -886,40 +907,48 @@ void CSlimeManager::LoadModel()
 	}
 	//レベル1スライムのモデル読み込み
 	m_pBlueModel = new Model;
-	if (!m_pBlueModel->Load("Assets/Model/slime/slime_blue1.28.FBX", 0.15f, Model::XFlip)) {		//倍率と反転は省略可
+	if (!m_pBlueModel->Load("Assets/Model/slime/slime_blue1.28.FBX", 0.15f, Model::ZFlip)) {		//倍率と反転は省略可
 		MessageBox(NULL, "slime_blue", "Error", MB_OK);	//ここでエラーメッセージ表示
 	}
 	m_pBlueModel->SetVertexShader(m_pVS);
 	//レベル2スライムのモデル読み込み
 	m_pGreenModel = new Model;
-	if (!m_pGreenModel->Load("Assets/Model/slime/slime_green1.28.FBX", 0.15f, Model::XFlip)) {		//倍率と反転は省略可
+	if (!m_pGreenModel->Load("Assets/Model/slime/slime_green1.28.FBX", 0.15f, Model::ZFlip)) {		//倍率と反転は省略可
 		MessageBox(NULL, "slime_green", "Error", MB_OK);	//ここでエラーメッセージ表示
 	}
 	m_pGreenModel->SetVertexShader(m_pVS);
 	//レベル3スライムのモデル読み込み
 	m_pYellowModel = new Model;
-	if (!m_pYellowModel->Load("Assets/Model/slime/slime_Yellow1.28.FBX", 0.15f, Model::XFlip)) {		//倍率と反転は省略可
+	if (!m_pYellowModel->Load("Assets/Model/slime/slime_Yellow1.28.FBX", 0.15f, Model::ZFlip)) {		//倍率と反転は省略可
 		MessageBox(NULL, "slime_yellow", "Error", MB_OK);	//ここでエラーメッセージ表示
 	}
 	m_pYellowModel->SetVertexShader(m_pVS);
 	//レベル4スライムのモデル読み込み
 	m_pRedModel = new Model;
-	if (!m_pRedModel->Load("Assets/Model/slime/slime_red1.28.FBX", 0.18f, Model::XFlip)) {		//倍率と反転は省略可
+	if (!m_pRedModel->Load("Assets/Model/slime/slime_red1.28.FBX", 0.18f, Model::ZFlip)) {		//倍率と反転は省略可
 		MessageBox(NULL, "slime_red", "Error", MB_OK);		//ここでエラーメッセージ表示
 	}
 	m_pRedModel->SetVertexShader(m_pVS);
 	//フレイムスライムのモデル読み込み
 	m_pFlameModel = new Model;
-	if (!m_pFlameModel->Load("Assets/Model/Golem/Golem.FBX", 0.015f, Model::XFlip)) {		//倍率と反転は省略可
+	if (!m_pFlameModel->Load("Assets/Model/Golem/Golem.FBX", 0.015f, Model::ZFlip)) {		//倍率と反転は省略可
 		MessageBox(NULL, "Flame_Slime", "Error", MB_OK);	//ここでエラーメッセージ表示
 	}
 	m_pFlameModel->SetVertexShader(m_pVS);
 	//ボススライムのモデル読み込み
-	m_pBossModel = new Model;
-	if (!m_pBossModel->Load("Assets/Model/boss_slime_1/boss_slime_1.fbx", 0.23f, Model::XFlip)) {		//倍率と反転は省略可
+	m_pBossModel [0]= new Model;
+	if (!m_pBossModel[0]->Load("Assets/Model/boss_slime_1/boss_slime_1.fbx", 0.23f, Model::ZFlip)) {		//倍率と反転は省略可
 		MessageBox(NULL, "Boss_Slime", "Error", MB_OK);	//ここでエラーメッセージ表示
 	}
-	m_pBossModel->SetVertexShader(m_pVS);
+
+	m_pBossModel[0]->SetVertexShader(m_pVS);
+	//ボススライムのモデル読み込み
+	m_pBossModel[1] = new Model;
+	if (!m_pBossModel[1]->Load("Assets/Model/boss_slime_1/boss_slime_rush_1.fbx", 0.23f, Model::ZFlip)) {		//倍率と反転は省略可
+		MessageBox(NULL, "Boss_Slime", "Error", MB_OK);	//ここでエラーメッセージ表示
+	}
+
+	m_pBossModel[1]->SetVertexShader(m_pVS);
 }
 
 /* ========================================

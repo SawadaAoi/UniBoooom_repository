@@ -36,13 +36,14 @@
 #include "BossGauge.h"
 #include "ScoreOHManager.h"
 #include "TotalScore.h"
+#include "Sound.h"
 
 // =============== クラス定義 =====================
 class CStage :public CScene	//シーン
 {
 public:
 	// =============== プロトタイプ宣言 ===============
-	//CStage();							//コンストラクタ
+	CStage();							//コンストラクタ
 	//virtual ~CStage();					//デストラクタ
 	//virtual void Update();				//更新
 	//virtual void Draw() const;			//描画	
@@ -51,6 +52,7 @@ public:
 protected:
 	void PlayerSlimeCollision();
 	void PlayerBossCollision();		//追加
+	void PlayerHealItemCollision();
 	void HammerSlimeCollision();
 	void HammerBossCollision();		//追加
 	void SlimeSlimeCollision();
@@ -81,7 +83,13 @@ protected:
 	CTotalScore* m_pTotalScore;
 	CHP_UI* m_pHpMng;
 	CBossgauge* m_pBossgauge;
+	CHealItemManager* m_pHealItemMng;
+
 	
+	//サウンド
+	XAUDIO2_BUFFER* m_pSEHitHammer;
+	IXAudio2SourceVoice* m_pSEHitHammerSpeaker;
+
 };	//ステージ
 
 #endif	//!__STAGE_H__

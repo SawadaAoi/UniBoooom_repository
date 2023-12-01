@@ -10,6 +10,7 @@
 	変更履歴
 	・2023/11/21 作成 Sawada
 	・2023/11/23 スコアを加算する処理の追加　yamamoto
+	・2023/11/30 UIアニメーション追加　nieda
 
 ========================================== */
 
@@ -29,8 +30,6 @@ const float COMBO_UI_MULTI_DISP_SPACE = 100.0f;
 const int COMBO_UI_DISP_DILAY_TIME = 2.0f * 60;
 #endif
 
-
-
 /* ========================================
 	コンストラクタ
 	----------------------------------------
@@ -41,6 +40,11 @@ const int COMBO_UI_DISP_DILAY_TIME = 2.0f * 60;
 	戻値：なし
 =========================================== */
 CCombo::CCombo()
+	:m_fSizeX(0.0f)
+	,m_fSizeY(0.0f)
+	,m_nCntWidth(0)
+	,m_nCntHeight(0)
+	,m_nCnt(0)
 {
 	// 数字画像を読み込む
 	m_pTextureNum[0] = new Texture();
@@ -51,17 +55,17 @@ CCombo::CCombo()
 
 	// コンボ背景画像読み込み
 	m_pTextureNum[1] = new Texture();
-	if (FAILED(m_pTextureNum[1]->Create("Assets/Texture/Combo/combo_back.png")))
+	if (FAILED(m_pTextureNum[1]->Create("Assets/Texture/Combo/combo_back_sprite_1.png")))
 	{
-		MessageBox(NULL, "combo_back.png", "Error", MB_OK);
+		MessageBox(NULL, "combo_back_sprite_1.png", "Error", MB_OK);
 	}
 
-	// コンボ文字画像読み込み
-	m_pTextureNum[2] = new Texture();
-	if (FAILED(m_pTextureNum[2]->Create("Assets/Texture/Combo/combo_combo.png")))
-	{
-		MessageBox(NULL, "combo_combo.png", "Error", MB_OK);
-	}
+	//// コンボ文字画像読み込み
+	//m_pTextureNum[2] = new Texture();
+	//if (FAILED(m_pTextureNum[2]->Create("Assets/Texture/Combo/combo_combo.png")))
+	//{
+	//	MessageBox(NULL, "combo_combo.png", "Error", MB_OK);
+	//}
 
 	// コンボ情報の初期化
 	for (int i = 0; i < MAX_COMBO_NUM; i++)
@@ -70,6 +74,7 @@ CCombo::CCombo()
 		m_dComboInfo[i].dDispFrame = 0;
 		m_dComboInfo[i].bEndFlg = false;
 		m_dComboInfo[i].dScore = 0;
+		m_nCntOldCombo[i] = 0;		// 直前までのコンボ数格納用変数を初期化
 	}
 }
 
@@ -84,7 +89,7 @@ CCombo::CCombo()
 =========================================== */
 CCombo::~CCombo()
 {
-	for (int i = 0; i < 3; ++i)
+	for (int i = 0; i < 1; ++i)
 	{
 		SAFE_DELETE(m_pTextureNum[i]);
 	}
@@ -105,6 +110,42 @@ void CCombo::Update()
 	{
 		if (m_dComboInfo[i].dCnt == 0) continue;
 		m_pTotalScore->AddScore(m_dComboInfo[i],i);
+
+		// コンボ背景UIアニメーション再生
+		if (m_nCntOldCombo[i] != m_dComboInfo[i].dCnt)	// コンボ数が直前と違ったら
+		{
+			m_nCntWidth = 0;	// アニメーションをリセット
+			m_nCntHeight = 0;
+			m_nCntOldCombo[i] = m_dComboInfo[i].dCnt;	// 現在のコンボ数を格納
+		}
+
+		m_nCnt++;	// カウントを進める
+
+		if (m_nCnt > SWITCH_COMBO_ANIM)	// 一定時間経過したらアニメーションを進める
+		{
+			m_nCnt = 0;		// カウントをリセット
+
+			m_fSizeX = COMBO_ANIM_SIZEX * m_nCntWidth;		// 横方向のUV座標計算
+			m_fSizeY = COMBO_ANIM_SIZEY * m_nCntHeight;		// 縦方向のUV座標計算
+
+			++m_nCntWidth;	// 横に1進める
+
+			if (m_nCntWidth == COMBO_ANIM_WIDTH_NUM_MAX)	// 右端まで行ったら
+			{
+				m_nCntWidth = 0;	// 横方向のカウントをリセット
+				++m_nCntHeight;		// 縦に1進める
+			}
+
+			if (m_nCntHeight == 2)	// 一番下の段が右端のみなのでそこで止める
+			{
+				m_nCntWidth = 0;
+			}
+
+			if (m_dComboInfo[i].bEndFlg)	// コンボが途切れたら
+			{
+				m_nCnt = 0;		// カウントをリセット
+			}
+		}
 	}
 }
 
@@ -119,8 +160,6 @@ void CCombo::Update()
 =========================================== */
 void CCombo::Draw()
 {
-
-
 	int dispCnt = 0;	// 描画コンボ数
 
 	for (int i = 0; i < MAX_COMBO_NUM; i++)
@@ -135,12 +174,12 @@ void CCombo::Draw()
 					COMBO_UI_BACK_SIZE.y,
 					m_pTextureNum[1]);
 
-		// コンボ文字表示
-		DrawTexture(COMBO_UI_STRING_POS.x,
-					COMBO_UI_STRING_POS.y,
-					COMBO_UI_STRING_SIZE.x,
-					COMBO_UI_STRING_SIZE.y,
-					m_pTextureNum[2]);
+		//// コンボ文字表示
+		//DrawTexture(COMBO_UI_STRING_POS.x,
+		//			COMBO_UI_STRING_POS.y,
+		//			COMBO_UI_STRING_SIZE.x,
+		//			COMBO_UI_STRING_SIZE.y,
+		//			m_pTextureNum[2]);
 		
 		float shiftPosY = dispCnt * COMBO_UI_MULTI_DISP_SPACE;	// コンボ同時表示の際の上下の空白をセット
 		DisplayNumber(m_dComboInfo[i].dCnt, shiftPosY);			// 数字の表示
@@ -157,7 +196,7 @@ void CCombo::Draw()
 				m_dComboInfo[i].dDispFrame = 0;
 				m_dComboInfo[i].bEndFlg = false;
 				m_dComboInfo[i].dScore = 0;
-
+				m_nCntOldCombo[i] = 0;		// コンボ数をリセット
 			}
 		}
 
@@ -233,13 +272,9 @@ void CCombo::DisplayNumber(int cnt, float shiftPosY)
 	内容：数字以外のコンボ関係テクスチャの描画処理
 	-------------------------------------
 	引数1：表示位置のX座標
-	-------------------------------------
 	引数2：表示位置のY座標
-	-------------------------------------
 	引数3：表示するテクスチャの縦幅
-	-------------------------------------
 	引数4：表示するテクスチャの横幅
-	-------------------------------------
 	引数5：表示するテクスチャのポインタ
 	-------------------------------------
 	戻値：なし
@@ -265,8 +300,8 @@ void CCombo::DrawTexture(float posX, float posY, float h, float w, Texture* pTex
 	Sprite::SetView(mat[1]);
 	Sprite::SetProjection(mat[2]);
 	Sprite::SetSize(DirectX::XMFLOAT2(h, -w));
-	Sprite::SetUVPos(DirectX::XMFLOAT2(0.0f, 0.0f));
-	Sprite::SetUVScale(DirectX::XMFLOAT2(1.0f, 1.0f));
+	Sprite::SetUVPos(DirectX::XMFLOAT2(m_fSizeX, m_fSizeY));
+	Sprite::SetUVScale(DirectX::XMFLOAT2(COMBO_ANIM_SIZEX, COMBO_ANIM_SIZEY));
 	Sprite::SetTexture(pTexture);
 	Sprite::Draw();
 }

@@ -13,6 +13,7 @@
 	・2023/11/20 整理 takagi
 	・2023/11/23 IsFade()関数追加・細かい書き換え takagi
 	・2023/11/24 定数定義修正・定数バッファにUvOffset追加 takagi
+	・2023/12/01 フェードの仕様変更 takagi 
 
 ========================================== */
 
@@ -88,6 +89,7 @@ private:
 	static unsigned int ms_unIdxCount;	//インデックス数
 	static ID3D11Buffer* ms_pVtxBuffer;	//頂点バッファ
 	static ID3D11Buffer* ms_pIdxBuffer;	//インデックスバッファ
+	static CCamera* ms_pDefCamera;		//専用予備カメラ
 	const CCamera* m_pCamera;			//カメラ追跡
 	// ===プロトタイプ宣言===
 	static void Make();								//形作成

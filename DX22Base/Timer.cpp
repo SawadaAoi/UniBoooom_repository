@@ -67,7 +67,7 @@ CTimer::CTimer()
 
 	//タイマーの裏テクスチャ読み込む
 	m_pTextureBG = new Texture;
-	if (FAILED(m_pTextureBG->Create("Assets/Texture/time_background.png")))
+	if (FAILED(m_pTextureBG->Create("Assets/Texture/timer_back_1.png")))
 	{
 		MessageBox(NULL, "timebackground.png", "Error", MB_OK);
 	}
@@ -249,7 +249,7 @@ void CTimer::TimeStart()
 =========================================== */
 void CTimer::TimeStart(float maxTime)
 {
-	m_nTimeCnt = maxTime * 60;	// 制限時間をセット
+	m_nTimeCnt = int(maxTime * 60);	// 制限時間をセット
 	m_bStartFlg = true;			// 待ち時間なし
 }
 /* ========================================
@@ -264,8 +264,8 @@ void CTimer::TimeStart(float maxTime)
 =========================================== */
 void CTimer::TimeStart(float maxTime, float waitTime)
 {
-	m_dWaitCnt = waitTime * 60;	// 待ち時間
-	m_nTimeCnt = maxTime * 60;	// 制限時間
+	m_dWaitCnt = int(waitTime * 60);	// 待ち時間
+	m_nTimeCnt = int(maxTime * 60);	// 制限時間
 	m_bStartFlg = false;		// 待ち時間あり
 }
 /* ========================================

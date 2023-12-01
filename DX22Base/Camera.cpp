@@ -21,6 +21,7 @@
 	・2023/11/24 定数値修正・フラグバグ修正・一部コメント詳細化 takagi
 	・2023/11/28 振動の仕様変更 takagi
 	・2023/11/29 振動の新仕様を全振動に反映しリファクタリング・フレームのコメントないのは書き換える予定のため takagi
+	・2023/11/30 Effekseer用に関数追加 takagi
 
 ========================================== */
 
@@ -208,7 +209,7 @@ DirectX::XMMATRIX CCamera::GetInverseViewMatrix() const
 {
 	// =============== 変数宣言 ===================
 	DirectX::XMMATRIX Mat;			//行列格納用
-	DirectX::XMFLOAT4X4* pFlt44;	//行列編集用
+	DirectX::XMFLOAT4X4* pFlt44 = nullptr;	//行列編集用
 
 	// =============== ビュー行列の計算 ===================
 	Mat = DirectX::XMMatrixLookAtLH(
@@ -258,6 +259,40 @@ DirectX::XMFLOAT4X4 CCamera::GetProjectionMatrix(const E_DRAW_TYPE& eDraw) const
 
 	// =============== 提供 ===================
 	return mat;	//行列提供
+}
+
+/* ========================================
+	転置無しビュー行列取得関数
+	-------------------------------------
+	内容：転置していないビュー行列を提供
+	-------------------------------------
+	引数1：なし
+	-------------------------------------
+	戻値：作成した行列
+=========================================== */
+DirectX::XMMATRIX CCamera::GetViewWithoutTranspose() const
+{
+	// =============== 提供 ===================
+	return DirectX::XMMatrixLookAtLH(
+		DirectX::XMVectorSet(m_fPos.x, m_fPos.y, m_fPos.z, 0.0f),		//カメラ位置
+		DirectX::XMVectorSet(m_fLook.x, m_fLook.y, m_fLook.z, 0.0f),	//注視点
+		DirectX::XMVectorSet(m_fUp.x, m_fUp.y, m_fUp.z, 0.0f)			//アップベクトル
+	);	//ビュー座標系
+}
+
+/* ========================================
+	転置無しプロジェクション行列取得関数
+	-------------------------------------
+	内容：転置していないプロジェクション行列を提供
+	-------------------------------------
+	引数1：なし
+	-------------------------------------
+	戻値：作成した行列
+=========================================== */
+DirectX::XMMATRIX CCamera::GetProjectionWithoutTranspose() const
+{
+	// =============== 提供 ===================
+	return DirectX::XMMatrixOrthographicOffCenterLH(0.0f, SCREEN_WIDTH, 0.0f, SCREEN_HEIGHT, m_fNear, m_fFar);	//左下を原点(0,0)とした座標系
 }
 
 /* ========================================
