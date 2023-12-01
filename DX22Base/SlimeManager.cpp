@@ -119,6 +119,12 @@ CSlimeManager::CSlimeManager(CPlayer* pPlayer)
 	}
 
 	
+	// ゲーム開始時に敵キャラを生成する
+	for (int i = 0; i < START_ENEMY_NUM; i++)
+	{
+		int ranLv = rand() % 3 + 1;		// 生成するスライムのレベルを乱数で指定
+		Create((E_SLIME_LEVEL)ranLv);	// 生成処理
+	}
 
 #if DEBUG_BOSS
 	// 開始時ボス生成
@@ -256,7 +262,17 @@ void CSlimeManager::Create(E_SLIME_LEVEL level)
 {
 	TPos3d<float> CreatePos;	// スライムの生成位置
 
-	for (int i = 0; i <m_pTimer->GetMaxSlimeNum(); i++)
+	int mMaxNum;
+	if (m_pTimer == nullptr)
+	{
+		mMaxNum = SLM_CREATE_NUM[STATE_FIRST];
+	}
+	else
+	{
+		mMaxNum = m_pTimer->GetMaxSlimeNum();
+	}
+
+	for (int i = 0; i < mMaxNum; i++)
 	{
 		// スライムのuseを検索
 		if (m_pSlime[i] != nullptr) continue;

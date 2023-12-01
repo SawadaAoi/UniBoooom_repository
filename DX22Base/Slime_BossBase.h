@@ -37,7 +37,7 @@ public:
 	CSlime_BossBase();
 	~CSlime_BossBase();
 
-	void Update(tagTransform3d playerTransform);
+	virtual void Update(tagTransform3d playerTransform);
 	void Draw(const CCamera* pCamera) override;
 
 	void Warp(TPos3d<float> playerPos);	// ƒ[ƒvŠÖ” TODO:–¢À‘•

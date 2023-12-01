@@ -279,10 +279,20 @@ const float TIME_BACK_GROUND_SIZE_X = 200.0f;			// タイマーのバックグランドのXの
 const float TIME_BACK_GROUND_SIZE_Y = -75.0f;			// タイマーのバックグランドのYの長さ設定
 const float TIME_COLON_SIZE_X = 35.0f;					// タイマーのコロンのXの長さ設定
 const float TIME_COLON_SIZE_Y = -35.0f;					// タイマーのコロンのYの長さ設定
-const float SPEED_BASE = 1.0f;							// 最初のスピード計算値
 
-const int	FIRST_MAX_SLIME_NUM = MAX_SLIME_NUM - 35;	// 第一段階のスライムの最大生成数
-const int	SECOND_MAX_SLIME_NUM = MAX_SLIME_NUM - 20;	// 第二段階のスライムの最大生成数
+const enum TIME_STATE
+{
+	STATE_FIRST = 0,
+	STATE_SECOND,
+	STATE_THIRD,
+	STATE_MAX,
+};
+
+const float SLM_PARAM_CHANGE_TIME[STATE_MAX]	= { 60.0f, 120.0f, 180.0f };	// 経過時間の秒数
+const int	SLM_CREATE_NUM[STATE_MAX]			= { 20, 35, MAX_SLIME_NUM };	// 最大生成数
+const float SLM_CREATE_INTERVAL_TIME[STATE_MAX] = { 4.0f, 2.0f, 1.0f };			// 生成間隔
+const float SLM_MOVE_ADD_SPEED[STATE_MAX]		= { 1.0f, 1.5f, 2.0f };			// 移動スピード
+
 
 // ボスゲージ =====================================================
 const int BOSS_GAUGE_FULL_TIME = 45 * 60;		//ボスゲージMAXになる時間(何秒出現) * 60フレーム

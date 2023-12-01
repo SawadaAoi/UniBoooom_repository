@@ -12,6 +12,8 @@
 	・2023/11/17 開始処理を複数種類追加、タイマーストップ実装 Sawada
 	・2023/11/18 タイマー描画処理、数字部分の描画関数追加 Tei
 	・2023/11/22 現時点のタイマーを取得関数追加 Tei
+	・2023/12/01 時間経過でスライムのパラメータを変更する処理を修正 Sawada
+
 ========================================== */
 
 // =============== インクルード ===================
@@ -35,6 +37,8 @@ const float TIME_COLON_SIZE_Y = -35.0f;					//タイマーのコロンのYの長さ設定
 
 #endif
 
+
+
 /* ========================================
 	コンストラクタ
 	----------------------------------------
@@ -52,9 +56,9 @@ CTimer::CTimer()
 	, m_pTextureBG(nullptr)
 	, m_pTextureColon(nullptr)
 	, m_pTextureNum(nullptr)
-	, m_nMaxSlimeNum(0)
-	, m_nSlimeCreateInterval(0)
-	, m_fSlimeMoveSpeed(0.0f)
+	, m_nMaxSlimeNum(SLM_CREATE_NUM[STATE_FIRST])
+	, m_nSlimeCreateInterval(SLM_CREATE_INTERVAL_TIME[STATE_FIRST])
+	, m_fSlimeMoveSpeed(SLM_MOVE_ADD_SPEED[STATE_FIRST])
 {
 	//数字のテクスチャ読む込み
 
@@ -126,6 +130,8 @@ void CTimer::Update()
 	{
 		// TODOゲーム終了処理
 	}
+
+	ChangeSlimeParam();
 }
 /* ========================================
 	描画関数
@@ -338,6 +344,7 @@ void CTimer::DrawNumber(TPos2d<float> pos, int number)
 	Sprite::SetTexture(m_pTextureNum);
 	Sprite::Draw();
 }
+
 /* ========================================
 	タイマー待機時間チェック関数
 	----------------------------------------
@@ -356,6 +363,48 @@ void CTimer::WaitTimeCheck()
 		m_bStartFlg = true;
 	}
 
+}
+
+
+/* ========================================
+	スライムパラメータ変更関数
+	----------------------------------------
+	内容：経過時間によってスライムのパラメータを変更する
+	----------------------------------------
+	引数1：なし
+	----------------------------------------
+	戻値：なし
+=========================================== */
+void CTimer::ChangeSlimeParam()
+{
+	int elapsedTimeFrame = STAGE_TIME - m_nTimeCnt;
+
+	// 第一段階
+	if (elapsedTimeFrame < SLM_PARAM_CHANGE_TIME[STATE_FIRST] * 60)
+	{
+		m_nMaxSlimeNum			= SLM_CREATE_NUM[STATE_FIRST];
+		m_nSlimeCreateInterval	= SLM_CREATE_INTERVAL_TIME[STATE_FIRST] * 60;
+		m_fSlimeMoveSpeed		= SLM_MOVE_ADD_SPEED[STATE_FIRST];
+
+	}
+	// 第二段階
+	else if (elapsedTimeFrame < SLM_PARAM_CHANGE_TIME[STATE_SECOND] * 60)
+	{
+		m_nMaxSlimeNum			= SLM_CREATE_NUM[STATE_SECOND];
+		m_nSlimeCreateInterval	= SLM_CREATE_INTERVAL_TIME[STATE_SECOND] * 60;
+		m_fSlimeMoveSpeed = SLM_MOVE_ADD_SPEED[STATE_SECOND];
+
+
+	}
+	// 第三段階
+	else
+	{
+		m_nMaxSlimeNum			= SLM_CREATE_NUM[STATE_THIRD];
+		m_nSlimeCreateInterval	= SLM_CREATE_INTERVAL_TIME[STATE_THIRD] * 60;
+		m_fSlimeMoveSpeed		= SLM_MOVE_ADD_SPEED[STATE_THIRD];
+
+
+	}
 }
 
 
@@ -388,7 +437,7 @@ int* CTimer::GetNowTime()
 }
 
 /* ========================================
-	取得関数
+	スライム変更最大生成数取得関数
 	----------------------------------------
 	内容：スライム最大生成数取得
 	----------------------------------------
@@ -398,26 +447,12 @@ int* CTimer::GetNowTime()
 =========================================== */
 int CTimer::GetMaxSlimeNum()
 {
-	//最初時間（3分）～ 2/3時間（2分）
-	if (m_nTimeCnt >= (STAGE_TIME / 3 * 2))
-	{
-		m_nMaxSlimeNum = FIRST_MAX_SLIME_NUM;
-	}
-	// 2/3時間（2分）～ 1/3時間（1分）
-	else if ((STAGE_TIME / 3 * 2) >= m_nTimeCnt && m_nTimeCnt >= (STAGE_TIME / 3))
-	{
-		m_nMaxSlimeNum = SECOND_MAX_SLIME_NUM;
-	}
-	// 1/3時間（1分）～ 最後まで（0分）
-	else
-	{
-		m_nMaxSlimeNum = MAX_SLIME_NUM;
-	}
+	
 	return m_nMaxSlimeNum;
 }
 
 /* ========================================
-	取得関数
+	スライム変更生成間隔取得関数
 	----------------------------------------
 	内容：スライムの生成間隔を取得
 	----------------------------------------
@@ -427,27 +462,11 @@ int CTimer::GetMaxSlimeNum()
 =========================================== */
 int CTimer::GetSlimeCreateInterval()
 {
-	//最初時間（3分）～ 2/3時間（2分）
-	if (m_nTimeCnt >= (STAGE_TIME / 3 * 2))
-	{
-		m_nSlimeCreateInterval = ENEMY_CREATE_INTERVAL;
-	}
-	// 2/3時間（2分）～ 1/3時間（1分）
-	else if ((STAGE_TIME / 3 * 2) >= m_nTimeCnt && m_nTimeCnt >= (STAGE_TIME / 3))
-	{
-		m_nSlimeCreateInterval = (ENEMY_CREATE_INTERVAL * 2 / 3);
-	}
-	// 1/3時間（1分）～ 最後まで（0分）
-	else
-	{
-		m_nSlimeCreateInterval = (ENEMY_CREATE_INTERVAL / 3);
-	}
-
 	return m_nSlimeCreateInterval;
 }
 
 /* ========================================
-	取得関数
+	スライム変更スピード取得関数
 	----------------------------------------
 	内容：スライムのスピードを取得
 	----------------------------------------
@@ -457,21 +476,5 @@ int CTimer::GetSlimeCreateInterval()
 =========================================== */
 float CTimer::GetSlimeMoveSpeed()
 {
-	//最初時間（3分）～ 2/3時間（2分）
-	if (m_nTimeCnt >= (STAGE_TIME / 3 * 2))
-	{
-		m_fSlimeMoveSpeed = SPEED_BASE;
-	}
-	// 2/3時間（2分）～ 1/3時間（1分）
-	else if ((STAGE_TIME / 3 * 2) >= m_nTimeCnt && m_nTimeCnt >= (STAGE_TIME / 3))
-	{
-		m_fSlimeMoveSpeed = SPEED_BASE * 1.1f;
-	}
-	// 1/3時間（1分）～ 最後まで（0分）
-	else
-	{
-		m_fSlimeMoveSpeed = SPEED_BASE * 1.2f;
-	}
-
 	return m_fSlimeMoveSpeed;
 }
