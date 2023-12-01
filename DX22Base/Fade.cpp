@@ -15,24 +15,13 @@
 	・2023/11/23 IsFade()関数追加・細かい書き換え takagi
 	・2023/11/24 フェードの仕様変更対応 takagi
 	・2023/11/27 疑似カメラ実装 takagi
+	・2023/12/01 フェードの仕様変更 takagi 
 
 ========================================== */
-
-// =============== デバッグモード ===================
-#if _DEBUG
-#define USE_FADE (true)	//フェード試運転
-#endif
-
-#define CONSTANT_FADE_IN (true)
-
 
 // =============== インクルード ===================
 #include "Fade.h"		//自身のヘッダ
 #include "CameraFade.h"	//疑似カメラ
-
-#if USE_FADE
-#include "Input.h"	//キー入力用
-#endif
 
 #if _DEBUG
 #include <Windows.h>	//メッセージボックス用
@@ -43,12 +32,12 @@ const std::string VS_PASS("Assets/Shader/VsFade.cso");		//テクスチャのパス名
 const std::string PS_PASS("Assets/Shader/PsFade.cso");		//テクスチャのパス名
 const std::string TEX_PASS("Assets/Texture/Fade.png");		//テクスチャのパス名
 const TPos3d<float> INIT_POS(640.0f, 360.0f, 0.0f);			//位置初期化
-const TTriType<float> INIT_SCALE(2000.0f, 2000.0f, 0.0f);	//初期拡縮
+const TTriType<float> INIT_SCALE(4000.0f, 4000.0f, 0.0f);	//初期拡縮
 const TTriType<float> INIT_RADIAN(0.0f);					//初期回転
-const TTriType<int> FRAME_FADE_MAX(150, 60, 150);			//フェードにかけるフレーム数	x:アウト, y:ストップ, z:イン
+const TTriType<int> FRAME_FADE_MAX(100, 60, 70);			//フェードにかけるフレーム数	x:アウト, y:ストップ, z:イン
 const int FRAME_MIN(0);										//フェード時間の最小
 const int FRAME_OUT_PATTERN_1_FIN(50);						//フェードアウト開始から拡縮が留まるまでのフレーム数
-const int FRAME_OUT_PATTERN_2_FIN(100);						//フェードアウト開始から拡縮が留まり終わるまでのフレーム数
+const int FRAME_OUT_PATTERN_2_FIN(80);						//フェードアウト開始から拡縮が留まり終わるまでのフレーム数
 const float SCALE_OUT_MIN(500.0f);							//フェードアウト最小サイズ	uvの都合上、値が大きい程サイズが小さくなる
 const float SCALE_IN_MIN(600.0f);							//フェードイン最小サイズ	uvの都合上、値が大きい程サイズが小さくなる
 const float SCALE_OUT_STAY(10.0f);							//フェードアウト拡縮が一時収まるときのサイズ
@@ -69,6 +58,7 @@ unsigned int CFade::ms_unIdxSize;				//インデックスサイズ
 unsigned int CFade::ms_unIdxCount;				//インデックス数
 ID3D11Buffer* CFade::ms_pVtxBuffer = nullptr;	//頂点バッファ
 ID3D11Buffer* CFade::ms_pIdxBuffer = nullptr;	//インデックスバッファ 
+CCamera* CFade::ms_pDefCamera = nullptr;		//専用予備カメラ
 
 /* ========================================
 	コンストラクタ関数
@@ -83,9 +73,28 @@ CFade::CFade(const CCamera* pCamera)
 	:m_ucFlag(0x00)									//フラグ
 	,m_pCamera(pCamera)								//カメラ
 	,m_Transform(INIT_POS, INIT_SCALE, INIT_RADIAN)	//ワールド座標
-	,m_UvParam{ {1.0f}, {0.0f } }					//シェーダー用UV座標
+	,m_UvParam{ {SCALE_OUT_MIN}, {0.0f } }					//シェーダー用UV座標
 	,m_nFrame(0)								
 {
+	// =============== 静的作成 ===================
+	if (0 == ms_nCntFade)	//現在、他にこのクラスが作成されていない時
+	{
+		// =============== カメラ作成 ===================
+		ms_pDefCamera = new CCameraFade();	//予備カメラ
+
+		// =============== シェーダー作成 ===================
+		ms_pVs = new VertexShader();	//頂点シェーダ作成
+		ms_pVs->Load(VS_PASS.c_str());	//頂点シェーダ読み込み
+		ms_pPs = new PixelShader();		//ピクセルシェーダ作成
+		ms_pPs->Load(PS_PASS.c_str());	//ピクセルシェーダ読み込み
+
+	// =============== テクスチャ作成 ===================
+		SetTexture();	//テクスチャ登録
+
+	// =============== 形状作成 ===================
+		Make();	//平面ポリゴン作成
+	}
+
 	// =============== 初期化 ===================
 	if (pCamera)	//ヌルチェック
 	{
@@ -93,23 +102,7 @@ CFade::CFade(const CCamera* pCamera)
 	}
 	else
 	{
-		m_pCamera = new CCameraFade();	//疑似カメラ
-	}
-
-	// =============== 静的作成 ===================
-	if (0 == ms_nCntFade)	//現在、他にこのクラスが作成されていない時
-	{
-		// =============== シェーダー作成 ===================
-		ms_pVs = new VertexShader();		//頂点シェーダ作成
-		ms_pVs->Load(VS_PASS.c_str());		//頂点シェーダ読み込み
-		ms_pPs = new PixelShader();			//ピクセルシェーダ作成
-		ms_pPs->Load(PS_PASS.c_str());		//ピクセルシェーダ読み込み
-
-	// =============== テクスチャ作成 ===================
-		SetTexture();	//テクスチャ登録
-
-	// =============== 形状作成 ===================
-		Make();	//平面ポリゴン作成
+		m_pCamera = ms_pDefCamera;	//疑似カメラ
 	}
 
 	// =============== 行列作成 ===================
@@ -119,6 +112,12 @@ CFade::CFade(const CCamera* pCamera)
 
 	// =============== カウンタ ===================
 	ms_nCntFade++;	//自身の数カウント
+
+	// =============== フレーム数登録 ===================
+	m_nFrame = FRAME_FADE_MAX.z;	//フェードインのフレーム数登録
+
+	// =============== フラグ操作 ===================
+	UpFlag(E_BIT_FLAG_FADE_IN);	//フェードイン開始
 }
 
 /* ========================================
@@ -152,6 +151,7 @@ CFade::~CFade()
 		SAFE_DELETE(ms_pVs);		//頂点シェーダー解放
 		SAFE_DELETE(ms_pPs);		//ピクセルシェーダー解放
 		SAFE_DELETE(ms_pTexture);	//テクスチャ解放
+		SAFE_DELETE(ms_pDefCamera);	//予備カメラ解放
 		//SAFE_DELETE(ms_pVtx);		//頂点情報解放
 		//SAFE_DELETE(ms_pIdx);		//頂点インデックス解放
 		//SAFE_DELETE(ms_pVtxBuffer);	//頂点バッファ解放
@@ -173,12 +173,6 @@ void CFade::Update()
 	// =============== 検査 ===================
 	if (!ms_pTexture || !(m_ucFlag & FLAG_FADE_ALL))	//描画できない時
 	{
-#if USE_FADE	//※危険だけどどうせ消えるからいいか
-		if (IsKeyTrigger('7'))
-		{
-			Start();	//フェード開始
-		}
-#endif
 		return;	//処理中断
 	}
 
@@ -300,7 +294,7 @@ void CFade::Draw()
 void CFade::Start()
 {
 	// =============== フレーム数登録 ===================
-	m_nFrame = FRAME_FADE_MAX.x;		//フェードアウトのフレーム数登録
+	m_nFrame = FRAME_FADE_MAX.x;	//フェードアウトのフレーム数登録
 
 	// =============== フラグ操作 ===================
 	UpFlag(E_BIT_FLAG_FADE_OUT);	//フェードアウト開始
@@ -625,7 +619,7 @@ void CFade::UpFlag(const unsigned char & ucBitFlag)
 }
 
 /* ========================================
-	フラグオン関数
+	フラグオフ関数
 	-------------------------------------
 	内容：引数に対応したフラグを降ろす
 	-------------------------------------
@@ -678,8 +672,8 @@ void CFade::FadeOut()
 		{
 			m_UvParam.fUvOffset = 3000.0f;	//テクスチャ位置をずらしフェードを隠す
 			DownFlag(E_BIT_FLAG_FADE_OUT);	//フェードアウト終了
-			m_nFrame = FRAME_FADE_MAX.y;	//フェードストップのフレーム数登録
-			UpFlag(E_BIT_FLAG_FADE_STOP);	//フェードストップ開始
+			//m_nFrame = FRAME_FADE_MAX.y;	//フェードストップのフレーム数登録
+			//UpFlag(E_BIT_FLAG_FADE_STOP);	//フェードストップ開始
 		}
 		else
 		{
@@ -745,8 +739,8 @@ void CFade::FadeStop()
 		{
 			m_UvParam.fUvOffset = 0.0f;		//テクスチャ位置を戻しフェードを見せる
 			DownFlag(E_BIT_FLAG_FADE_STOP);	//ストップ終了
-			m_nFrame = FRAME_FADE_MAX.z;	//フェードインのフレーム数登録
-			UpFlag(E_BIT_FLAG_FADE_IN);		//フェードイン開始
+			//m_nFrame = FRAME_FADE_MAX.z;	//フェードインのフレーム数登録
+			//UpFlag(E_BIT_FLAG_FADE_IN);		//フェードイン開始
 		}
 
 		// =============== カウンタ ===================

@@ -117,3 +117,8 @@ CCombo * CUIStageManager::GetCombo()
 	return m_pCombo;
 }
 
+CTimer * CUIStageManager::GetTimer()
+{
+	return m_pTimer;
+}
+

@@ -34,6 +34,7 @@
 #include "Floor.h"
 #include "Fade.h"
 #include "UIStageManager.h"
+#include "Timer.h"
 
 #include "ScoreOHManager.h"
 #include "TotalScore.h"

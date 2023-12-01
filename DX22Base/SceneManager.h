@@ -14,6 +14,7 @@
 	・2023/11/16 シーン遷移の流れを実装 takagi
 	・2023/11/17 過去シーンに戻る処理を追加 takagi
 	・2023/11/23 フェード機能追加 takagi
+	・2023/12/01 フェードの仕様変更 takagi 
 
 ========================================== */
 
@@ -40,6 +41,8 @@ private:
 	CScene::E_TYPE m_ePastScene;	//前のシーン
 	CScene::E_TYPE m_eNextScene;	//シーン遷移先
 	bool m_bFinish;					//終了予約用(trueで終了)
+	bool m_bStartFadeOut;			//フェードアウト開始したか
+	bool m_bFinFadeOut;				//フェードアウト終了したか
 	CFade* m_pFade;					//フェード
 
 	// ===プロトタイプ宣言===

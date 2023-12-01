@@ -34,11 +34,12 @@ public:
 	E_TYPE GetType() const override;	//自身の種類ゲッタ
 	E_TYPE GetNext() const override;	//次のシーンゲッタ
 private:
-	int m_nNum;
-	float m_fSize;
-	bool m_bStart;
-	const int* m_pPlayerHp;
-	const int* m_pTimeCnt;
+	int m_nNum;			// ゲームスタート表示カウント用
+	float m_fSize;		// ゲームスタート表示のサイズ
+	float m_fResize;	// ゲームスタート表示のサイズ変更用
+	bool m_bStart;		// ゲームを開始させるか判定
+	const int* m_pPlayerHp;		// プレイヤーHP取得用
+	const int* m_pTimeCnt;		// 制限時間取得用
 };	//ステージ1
 
 #endif	//!__STAGE1_H__

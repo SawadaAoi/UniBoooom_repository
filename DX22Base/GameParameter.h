@@ -20,6 +20,8 @@
 	・2023/11/25 パラメーター追加(// スコア) yamamoto
 	・2023/11/24 パラメーター追加(// カメラ) Takagi
 	・2023/11/27 パラメーター追加(// 影) nieda
+	・2023/11/30 パラメーター編集(// カメラ) Takagi
+	・2023/12/01 パラメーター追加(// HP、コンボのアニメーション関連) nieda
 
 =========================================== */
 #ifndef __GAME_PARAMETER_H__
@@ -55,7 +57,7 @@ const int	DAMAGE_FLASH_FRAME	= int(0.1f * 60);	// プレイヤーのダメージ点滅の切り
 const int	SE_RUN_INTERVAL		= int(0.4f * 60);	//プレイヤーの移動によるSE発生の間隔
 const float	SE_RUN_VOLUME		= 0.3f;			//移動によるSEの音量
 const int	HEAL_NUM			= 1;			//プレイヤーの回復量
-const float HAMMER_INTERVAL_TIME	= 0.4f * 60;	// ハンマー振り間隔
+const float HAMMER_INTERVAL_TIME	= 0.0f * 60;	// ハンマー振り間隔
 
 
 // ハンマー
@@ -68,28 +70,31 @@ const float ROTATE_RADIUS		= 1.0f;									// ハンマーが回転するプレイヤーからの
 const float HAMMER_COL_SIZE		= 0.75f;								//ハンマーの当たり判定の大きさ
 const float HAMMER_SIZE			= 0.2f;									//ハンマーの大きさ
 
+const float INTERVAL_INITIAL = 0.2f;								//ハンマー初期間隔
+const float INTERVAL_PLUS = 3.2f;									//ハンマーを一回振るときに乗算される値
+const float INTERVAL_MINUS = 0.97f;									//毎フレームハンマーを振る間隔を短くさせる値
 
 // 敵キャラ ==================================================
 
 // 共通
-const int	MAX_SLIME_NUM = 50;		// スライムの最大生成数
-const int	MAX_BOSS_SLIME_NUM = 5;		// ボススライムの最大生成数
-const int	START_ENEMY_NUM = 6;		// ゲーム開始時の敵キャラの数
-const float ENEMY_MOVE_SPEED = 0.035f;	// 敵の通常移動速度
+const int	MAX_SLIME_NUM = 50;							// スライムの最大生成数
+const int	MAX_BOSS_SLIME_NUM = 5;				// ボススライムの最大生成数
+const int	START_ENEMY_NUM = 6;				// ゲーム開始時の敵キャラの数
+const float ENEMY_MOVE_SPEED = 0.035f;			// 敵の通常移動速度
 const float HAMMER_HIT_MOVE_SPEED = 1.0f;		// ハンマーに吹き飛ばされた時のスピード
 const int	RANDOM_MOVE_SWITCH_TIME = 3 * 60;	// ランダム移動の方向切り替え
 
 const float SPEED_DOWN_RATIO = 0.6f;		// 吹き飛ぶ際にかかる移動速度の変化の割合    RATIO=>割合
-const float MOVE_RESIST = 0.05f;	// 吹き飛び移動中のスライムの移動速度に毎フレームかかる減算数値
+const float MOVE_RESIST = 0.05f;			// 吹き飛び移動中のスライムの移動速度に毎フレームかかる減算数値
 const float MOVE_DISTANCE_PLAYER = 13.0f;	// プレイヤー追跡移動に切り替える距離
 const float SLIME_BASE_RADIUS = 0.5f;		// スライムの基準の大きさ
 
-const int ENEMY_CREATE_INTERVAL = int(2.0f * 60);								// 生成間隔
+const int ENEMY_CREATE_INTERVAL		= int(1.0f * 60);							// 生成間隔
 const int RANDOM_POS = 15;														// 生成座標範囲
 const int CREATE_DISTANCE = 10;													// プレイヤーからどれくらい離れた距離に生成するか
-const int SLIME_LEVEL1_PER = 45;																// スライム_1の生成確立
-const int SLIME_LEVEL2_PER = 35;																// スライム_2の生成確立
-const int SLIME_LEVEL3_PER = 10;																// スライム_3の生成確立
+const int SLIME_LEVEL1_PER = 45;												// スライム_1の生成確立
+const int SLIME_LEVEL2_PER = 35;												// スライム_2の生成確立
+const int SLIME_LEVEL3_PER = 10;												// スライム_3の生成確立
 const int SLIME_LEVEL_FLAME_PER = 100 - SLIME_LEVEL1_PER - SLIME_LEVEL2_PER - SLIME_LEVEL3_PER;	// スライム_フレイムの生成確立
 const float MAX_SIZE_EXPLODE		= 5.0f;										// スライム4同士の爆発の大きさ
 const float EXPLODE_BASE_RATIO		= 1.5f;										// スライムの爆発接触での爆発の大きさのベース
@@ -119,6 +124,7 @@ const int	LEVEL2_ATTACK = 1;						// 攻撃力
 const float LEVEL3_SCALE = 3.0f;					// スライム＿レベル３の大きさ(当たり判定含む)
 const float LEVEL3_SPEED = ENEMY_MOVE_SPEED * 0.7f;	// 移動速度
 const int	LEVEL3_ATTACK = 1;						// 攻撃力
+const float LEVEL3_STOP_RANGE = DirectX::XMConvertToRadians(20.0f);	// スライムが止まる角度の範囲
 const int	LEVEL2_ATTACK_INTERVAL = int(60 * 4.0f);		// 攻撃終了から次の攻撃までの間隔
 const int	LEVEL2_ATTACK_CHARGE_CNT = int(60 * 1.0f);	// 突進するまでのため時間
 const int	LEVEL2_ATTACK_TACKLE_CNT = int(60 * 0.45f);	// 突進している時間
@@ -157,11 +163,11 @@ const int	ASSAULT_CHARGE_TIME = int(2 * 60);						// 突撃チャージ時間
 const int	ASSAULT_TIME = int(1.0f * 60);						// 突撃総時間
 const float ASSAULT_SPEED = LEVEL_BOSS_1_SPEED * 20.0f;		// 突撃時のスピード
 
-const float BOSS_HP_SIZEX = 0.3f;		//体力１分の大きさ（X）
-const float BOSS_HP_SIZEY = 0.5f;		//体力１分の大きさ（Y）
-const float BOSS_HPFRAME_SIZEX = 0.2f;	//体力ゲージよりどれだけ大きいか（X）
-const float BOSS_HPFRAME_SIZEY = 0.2f;	//体力ゲージよりどれだけ大きいか（Y）
-const float BOSS_HP_POSX = 8.6f;		//体力バー（減る方）の位置
+const float BOSS_HP_SIZEX = 0.3f;		// 体力１分の大きさ（X）
+const float BOSS_HP_SIZEY = 0.5f;		// 体力１分の大きさ（Y）
+const float BOSS_HPFRAME_SIZEX = 0.2f;	// 体力ゲージよりどれだけ大きいか（X）
+const float BOSS_HPFRAME_SIZEY = 0.2f;	// 体力ゲージよりどれだけ大きいか（Y）
+const float BOSS_HP_POSX = 8.6f;		// 体力バー（減る方）の位置
 const int BOSS_DAMAGE_FLASH_FRAME = int(0.1f * 60);					// ダメージ受けた際の点滅フレーム(無敵ではない)
 const int BOSS_DAMAGE_FLASH_TOTAL_FRAME = int(0.5f * 60);			// ダメージを受けた際の点滅を何フレーム行うか
 
@@ -185,15 +191,26 @@ const float SLIME_SCORE_HEIGHT = 4.0f;			//爆発時頭上スコアの表示位置
 
 const int TOTALSCORE_DIGIT = 5;				//トータルスコアの桁数
 const int MAX_TOTALSCORE = 99999;			//↑一緒に変えてください（桁数分9を追加）//最大トータアルスコア
-const TPos2d<float> TOTALSCORE_POS(1100.0f, 25.0f);			//トータルスコアの位置設定
+const TPos2d<float> TOTALSCORE_POS(1230.0f, 50.0f);			//トータルスコアの位置設定
 
-const DirectX::XMFLOAT2 TOTALSCORE_SIZE(50.0f, -50.0f);		//トータルスコアの表示の大きさ
-const DirectX::XMFLOAT2 PLUSSCORE_SIZE(30.0f, -30.0f);		//プラススコアの表示の大きさ
-const int ROW_HIGHT = 40;			//スコアを複数個表示時一番上からどのくらい下げるか（PLUSSCORE_SIZE.yの絶対値より大きい数字で）
+const DirectX::XMFLOAT2 TOTALSCORE_SIZE(50.0f, -75.0f);		//トータルスコアの表示の大きさ
+const DirectX::XMFLOAT2 PLUSSCORE_SIZE(30.0f, -40.0f);		//プラススコアの表示の大きさ
+const int ROW_HIGHT = 60;			//スコアを複数個表示時一番上からどのくらい下げるか（PLUSSCORE_SIZE.yの絶対値より大きい数字で）
 
 const DirectX::XMFLOAT2 SMALLDECIMAL_SIZE(15.0f, -15.0f);	//小数点の大きさ
 const int MAGNIFICATION = 40;		//倍率表示時の間隔。一番右の数字からどれだけ左にずらすか（小数点を入れるのでそこもケアする）
 const TPos2d<float> SMALLDECIMAL_POS(2.0f, -3.0f);//この値で小数点の位置の微調節
+
+// 回復アイテム =====================
+const float HEAL_ITEM_SCALE_X = 1.5f;		//　アイテムのスケールX
+const float HEAL_ITEM_SCALE_Y = 1.5f;		//　アイテムのスケールY
+const float HEAL_ITEM_SCALE_Z = 1.5f;		//　アイテムのスケールZ
+const float	HEALITEM_ANGLE_X = 50.0f;		//　回復アイテムの角度
+const float	HEALITEM_MOVE_INTERVAL = 4.0f;		//  アニメーションの周期
+const int	COUNT_UP = 6;						//  1秒で360になるように調整
+const float	HEALITEM_MOVE_Y = 0.5f;				//  アイテムの上下に揺れる高さ(-1～1までを移動するので移動量は2)
+const float	HEALITEM_HEIGHT = HEALITEM_MOVE_Y;	//  回復アイテムの初期の高さ
+
 
 
 // カメラ =====================================================
@@ -210,16 +227,16 @@ const float INIT_ANGLE = DirectX::XMConvertToRadians(73.0f);        //カメラの角
 const float INIT_NEAR = 1.0f;										//画面手前初期z値
 const float INIT_FAR = 150.0f;										//画面奥初期z値
 const float INIT_RADIUS = 15.0f;									//カメラと注視点との距離(初期値)
-const TDiType<int> INIT_FRAME_WEAK = { 99, 60 };					//弱振動のフレーム数	x:横, y:縦
-const TDiType<int> INIT_FRAME_STRONG = { 99, 60 };					//強振動のフレーム数	x:横, y:縦
-const TDiType<float> CHANGE_RATE_AMPLITUDE_WEAK{ 0.999f, 0.999f };	//強振幅変化率	1を超えると増加方向、下回ると減少方向	x:横, y:縦
-const TDiType<float> CHANGE_RATE_AMPLITUDE_STRONG{ 0.95f, 0.95f };	//強振幅変化率	1を超えると増加方向、下回ると減少方向	x:横, y:縦
+const TDiType<int> INIT_FRAME_WEAK = { 110, 110 };					//弱振動のフレーム数	x:横, y:縦
+const TDiType<int> INIT_FRAME_STRONG = { 110, 110 };				//強振動のフレーム数	x:横, y:縦
+const TDiType<float> CHANGE_RATE_AMPLITUDE_WEAK{ 0.99f, 0.99f };	//強振幅変化率	1を超えると増加方向、下回ると減少方向	x:横, y:縦
+const TDiType<float> CHANGE_RATE_AMPLITUDE_STRONG{ 0.99f, 0.99f };	//強振幅変化率	1を超えると増加方向、下回ると減少方向	x:横, y:縦
 ///<summary>振幅の確率：弱
 ///<para>合計が1になる必要はない</para>
 ///</summary>
 const std::vector<double> PROBABILITY_AMPITUDE_WEAK[E_DIRECT_VIBRATE_MAX] = {
-	{ 0.1, 0.1 },	//横弱振動
-	{ 0.1, 0.3, 0.5, 0.3, 0.1 },	//縦弱振動
+	{ 0.1, 0.3, 0.5, 0.3, 0.1 }, //横弱振動
+	{ 0.1, 0.3, 0.5, 0.3, 0.1 }, //縦弱振動
 };
 ///<summary>
 ///<see cref="PROBABILITY_AMPITUDE_WEAK">←上記定数</see>のテーブル
@@ -227,14 +244,14 @@ const std::vector<double> PROBABILITY_AMPITUDE_WEAK[E_DIRECT_VIBRATE_MAX] = {
 ///<para>各値は振幅の大きさを表す</para>
 ///</summary>
 const std::vector<float> TABLE_AMPITUDE_WEAK[E_DIRECT_VIBRATE_MAX] = {
-	{ -1.1f, 1.1f },	//横弱振幅
-	{ -11.0f, -5.0f, 0.0f, 5.0f, 11.0f },	//縦弱振幅
+	{ -0.05f, -0.025f, 0.0f, 0.025f, 0.05f },	//横弱振幅
+	{ -0.05f, -0.025f, 0.0f, 0.025f, 0.05f },	//縦弱振幅
 };
 ///<summary>振幅の確率：強
 ///<para>合計が1になる必要はない</para>
 ///</summary>
 const std::vector<double> PROBABILITY_AMPITUDE_STRONG[E_DIRECT_VIBRATE_MAX] = {
-	{ 0.1, 0.1 },	//横強振動
+	{ 0.1, 0.3, 0.5, 0.3, 0.1 },	//横強振動
 	{ 0.1, 0.3, 0.5, 0.3, 0.1 },	//縦強振動
 };
 ///<summary>
@@ -243,8 +260,8 @@ const std::vector<double> PROBABILITY_AMPITUDE_STRONG[E_DIRECT_VIBRATE_MAX] = {
 ///<para>各値は振幅の大きさを表す</para>
 ///</summary>
 const std::vector<float> TABLE_AMPITUDE_STRONG[E_DIRECT_VIBRATE_MAX] = {
-	{ -1.1f, 1.1f },	//横強振幅
-	{ -11.0f, -5.0f, 0.0f, 5.0f, 11.0f },	//縦強振幅
+	{ -0.25f, -0.15f, 0.0f, 0.15f, 0.25f },	//横強振幅
+	{ -2.5f, -1.5f, 0.0f, 1.5f, 2.5f },	//縦強振幅
 };
 
 // UI =====================================================
@@ -258,21 +275,35 @@ const float FAR_Z = 10.0f;			// 写せる限界距離
 
 // タイマー =====================================================
 const int STAGE_TIME = 180 * 60;	//ステージ制限時間（秒*フレーム）
-const TPos2d<float> MINUTE_POS(565.0f, 25.0f);			//分の位置設定
-const TPos2d<float> SECOND_TENS_POS(640.0f, 25.0f);	//十の桁秒の位置設定
-const TPos2d<float> SECOND_ONE_POS(690.0f, 25.0f);		//一の桁秒の位置設定
-const TPos2d<float> TIME_BACKGROUND_POS(630.0f, 25.0f);	//バックグラウンド位置設定
-const TPos2d<float> TIME_COLON_POS(602.5f, 25.0f);		//コロンの位置設定
+const TPos2d<float> MINUTE_POS(565.0f, 45.0f);			//分の位置設定
+const TPos2d<float> SECOND_TENS_POS(640.0f, 45.0f);	//十の桁秒の位置設定
+const TPos2d<float> SECOND_ONE_POS(690.0f, 45.0f);		//一の桁秒の位置設定
+const TPos2d<float> TIME_BACKGROUND_POS(630.0f, 45.0f);	//バックグラウンド位置設定
+const TPos2d<float> TIME_COLON_POS(602.5f, 45.0f);		//コロンの位置設定
 const float TIME_BACK_GROUND_SIZE_X = 200.0f;			//タイマーのバックグランドのXの長さ設定
 const float TIME_BACK_GROUND_SIZE_Y = -75.0f;			//タイマーのバックグランドのYの長さ設定
 const float TIME_COLON_SIZE_X = 35.0f;					//タイマーのコロンのXの長さ設定
 const float TIME_COLON_SIZE_Y = -35.0f;					//タイマーのコロンのYの長さ設定
 
+const enum TIME_STATE
+{
+	STATE_FIRST = 0,
+	STATE_SECOND,
+	STATE_THIRD,
+	STATE_MAX,
+};
+
+const float SLM_PARAM_CHANGE_TIME[STATE_MAX]	= { 60.0f, 120.0f, 180.0f };	// 経過時間の秒数
+const int	SLM_CREATE_NUM[STATE_MAX]			= { 20, 35, MAX_SLIME_NUM };	// 最大生成数
+const float SLM_CREATE_INTERVAL_TIME[STATE_MAX] = { 4.0f, 2.0f, 1.0f };			// 生成間隔
+const float SLM_MOVE_ADD_SPEED[STATE_MAX]		= { 1.0f, 1.5f, 2.0f };			// 移動スピード
+
+
 // ボスゲージ =====================================================
 const int BOSS_GAUGE_FULL_TIME = 45 * 60;		//ボスゲージMAXになる時間(何秒出現) * 60フレーム
 const int SECOND_EMPTY_BOSS_GAUGE = 75 * 60;		//二体目のボス空ゲージ表す時間 * 60フレーム
-const TPos2d<float> BOSS_GAUGE_EMPTY_POS(765.0f, 30.0f);	//ボスゲージ（空）の位置設定
-const TPos2d<float> BOSS_GAUGE_FULL_POS(765.0f, 31.5f);	//ボスゲージ（満）の位置設定
+const TPos2d<float> BOSS_GAUGE_EMPTY_POS(765.0f, 45.0f);	//ボスゲージ（空）の位置設定
+const TPos2d<float> BOSS_GAUGE_FULL_POS(765.0f, 46.5f);	//ボスゲージ（満）の位置設定
 const float BOSS_GAUGE_EMPTY_SIZE_X = 60.0f;			//ボスゲージ（空）のXの長さ設定
 const float BOSS_GAUGE_EMPTY_SIZE_Y = -60.0f;			//ボスゲージ（空）のYの長さ設定
 const float BOSS_GAUGE_FULL_SIZE_X = (6.0f / 7.0f) * BOSS_GAUGE_EMPTY_SIZE_X;			//ボスゲージ（満）のXの長さ設定
@@ -283,19 +314,18 @@ const int FADE_TIME = 5 * 60;							//ボスゲージが溜まってから消える時間
 
 
 // HP
-const TTriType<float> HP_UI_POS = { 80.0f, 60.0f ,0.0f };	// テクスチャの縦幅、横幅
-const TTriType<float> HP_UI_SIZE = { 90.0f, 90.0f ,0.0f };	// テクスチャの縦幅、横幅
-const float DRAW_WIDTH = 90.0f;	// テクスチャの横幅
+const TTriType<float> HP_UI_POS = { 45.0f, 50.0f ,0.0f };	// テクスチャの縦幅、横幅
+const TTriType<float> HP_UI_SIZE = { 60.0f, 55.0f ,0.0f };	// テクスチャの縦幅、横幅
+const float DRAW_WIDTH = 65.0f;	// テクスチャの横幅
 
-// 回復アイテム =====================
-const float HEAL_ITEM_SCALE_X = 1.5f;		//　アイテムのスケールX
-const float HEAL_ITEM_SCALE_Y = 1.5f;		//　アイテムのスケールY
-const float HEAL_ITEM_SCALE_Z = 1.5f;		//　アイテムのスケールZ
-const float	HEALITEM_ANGLE_X = 50.0f;		//　回復アイテムの角度
-const float	HEALITEM_MOVE_INTERVAL = 4.0f;		//  アニメーションの周期
-const int	COUNT_UP = 6;						//  1秒で360になるように調整
-const float	HEALITEM_MOVE_Y = 0.5f;				//  アイテムの上下に揺れる高さ(-1～1までを移動するので移動量は2)
-const float	HEALITEM_HEIGHT = HEALITEM_MOVE_Y;	//  回復アイテムの初期の高さ
+const int SWITCH_HP_ANIM = 0;				// アニメーション切り替えの間隔
+const int HP_ANIM_WIDTH_NUM_MAX = 6;		// 横分割数最大数
+const int HP_ANIM_HEIGHT_NUM_MAX = 6;		// 縦分割数最大数
+const float HP_ANIM_SIZEX = 1.0f / HP_ANIM_WIDTH_NUM_MAX;	// テクスチャ横分割サイズ
+const float HP_ANIM_SIZEY = 1.0f / HP_ANIM_HEIGHT_NUM_MAX;	// テクスチャ縦分割サイズ
+const float DRAW_ANIM_HEIGHT = HP_UI_SIZE.y + 40.0f;		// アニメーションの表示位置
+const float DRAW_ANIM_WIDTH = HP_UI_SIZE.x + 40.0f;		// アニメーションの表示位置
+
 
 // BoooomUI =====================================================
 const float BOOOOM_UI_SIZE_X = 1.0f;		//BoooomUIのXの長さ（textureの比率と合わせる）
@@ -305,16 +335,22 @@ const float BOOOOM_UI_SCALE_Y = 6.0f;		//BoooomUIサイズのスケール
 
 // コンボ =========================================================
 const int	MAX_COMBO_NUM = 5;					// 最大同時コンボ数
-const TPos2d<float> COMBO_UI_POSITION = { 1025.0f, 600.0f };	// コンボUIの描画位置
+const TPos2d<float> COMBO_UI_POSITION = { 930.0f, 600.0f };	// コンボUIの描画位置
 const TPos2d<float> COMBO_UI_SIZE = { 70.0f, 130.0f };	// コンボUIの大きさ
 const float COMBO_UI_NUM_SPACE = 80.0f;				// 数字の間スペース
 const float COMBO_UI_MULTI_DISP_SPACE = 100.0f;			// 同時コンボ描画時の上下の空白
 const int COMBO_UI_DISP_DILAY_TIME = int(2.0f * 60);			// 残コンボ数表示の秒数
 
-const TPos2d<float> COMBO_UI_BACK_POS = { 1100.0f, 600.0f };	// コンボUIの背景の描画位置
-const TPos2d<float> COMBO_UI_BACK_SIZE = { 370.0f, 280.0f };	// コンボUIの背景の大きさ
+const TPos2d<float> COMBO_UI_BACK_POS = { 1030.0f, 600.0f };	// コンボUIの背景の描画位置
+const TPos2d<float> COMBO_UI_BACK_SIZE = { 370.0f, 300.0f };	// コンボUIの背景の大きさ
 const TPos2d<float> COMBO_UI_STRING_POS = { 1150.0f, 615.5f };	// コンボUIの文字の描画位置
 const TPos2d<float> COMBO_UI_STRING_SIZE = { 180.0f, 100.0f };		// コンボUIの文字の大きさ
+
+const int SWITCH_COMBO_ANIM = 5;			// アニメーション切り替えの間隔
+const int COMBO_ANIM_WIDTH_NUM_MAX = 3;		// 横分割数最大数
+const int COMBO_ANIM_HEIGHT_NUM_MAX = 3;	// 縦分割数最大数
+const float COMBO_ANIM_SIZEX = 1.0f / COMBO_ANIM_WIDTH_NUM_MAX;		// テクスチャ横分割サイズ
+const float COMBO_ANIM_SIZEY = 1.0f / COMBO_ANIM_HEIGHT_NUM_MAX;	// テクスチャ縦分割サイズ
 
 // 床 ====================================
 const float FLOOR_SCALE_X = 1.1f;
@@ -333,8 +369,8 @@ const float TEXTURE_TITLE_BUTTON_WIDTH = 300.0f;			// タイトル画面ボタン押下指示
 const float TEXTURE_TITLE_BUTTON_HEIGHT = 100.0f;			// タイトル画面ボタン押下指示画像の縦幅
 
 // ヒットストップ =========================================================
-const int FRAME_STOP_SOFT = 30;		//ストップ：軽　のフレーム数	// 現在使用している物
-const int FRAME_STOP_NORMAL = 60;	//ストップ：中　のフレーム数
+const int FRAME_STOP_SOFT = 2;		//ストップ：軽　のフレーム数	// 現在使用している物
+const int FRAME_STOP_NORMAL = 5;	//ストップ：中　のフレーム数
 const int FRAME_STOP_HEAVY = 120;	//ストップ：重　のフレーム数
 const int FRAME_STOP_DEATH = 999;	//ストップ：死　のフレーム数
 
@@ -350,6 +386,12 @@ const float LEVEL_3_SHADOW_SCALE = 3.5f;	// スライム＿レベル３の影の大きさ
 const float LEVEL_4_SHADOW_SCALE = 8.0f;	// スライム＿レベル４の影の大きさ
 const float LEVEL_FLAME_SHADOW_SCALE = 2.0f;// スライム＿フレイムの影の大きさ
 const float BOSS_1_SHADOW_SCALE = 12.0f;		// ボス１の影の大きさ
+// ゲーム開始時スタート表示 ==================================================
+const float TIME_SIZE_MIN = 50;
+
+
+// SE ====================================================================
+const float HIT_HAMMER_VOLUME = 0.3f;
 
 #endif
 

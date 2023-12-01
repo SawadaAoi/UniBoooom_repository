@@ -25,6 +25,7 @@
 	・2023/11/26 スライムが爆発から逃げる処理を作成　yamashita
 	・2023/11/28 攻撃力を追加 Sawada
 	・2023/11/29 影メモリリーク除去 takagi
+	・2023/11/30 モデルの読み込みが反転したのでradian.yが反対になるように変更 yamashita
 
 ========================================== */
 
@@ -75,7 +76,7 @@ CSlimeBase::CSlimeBase()
 	m_Sphere.fRadius = SLIME_BASE_RADIUS;
 
 	int random = abs(rand() % 360);	//ランダムに0～359の数字を作成
-	m_Ry = DirectX::XMMatrixRotationY(random);
+	m_Ry = DirectX::XMMatrixRotationY((float)random);
 
 	m_pShadow = new CShadow();	// 影生成
 }
@@ -104,7 +105,7 @@ CSlimeBase::~CSlimeBase()
 	-------------------------------------
 	戻値：無し
 =========================================== */
-void CSlimeBase::Update(tagTransform3d playerTransform)
+void CSlimeBase::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
 {
 
 	if (!m_bHitMove)	//敵が通常の移動状態の時
@@ -125,9 +126,11 @@ void CSlimeBase::Update(tagTransform3d playerTransform)
 	}
 
 	// -- 座標更新
-	m_Transform.fPos.x += m_move.x;
-	m_Transform.fPos.z += m_move.z;
+	m_Transform.fPos.x += m_move.x * fSlimeMoveSpeed;
+	m_Transform.fPos.z += m_move.z * fSlimeMoveSpeed;
 }
+
+	
 
 /* ========================================
 	描画処理関数
@@ -225,11 +228,11 @@ void CSlimeBase::RandomMove()
 		int ranAngle = rand() % 360;	// 移動方向決定
 
 		// 角度方向に移動する
-		m_move.x = -cosf(DirectX::XMConvertToRadians(ranAngle)) * m_fSpeed;
-		m_move.z = sinf(DirectX::XMConvertToRadians(ranAngle)) * m_fSpeed;
+		m_move.x = -cosf(DirectX::XMConvertToRadians((float)ranAngle)) * m_fSpeed;
+		m_move.z = sinf(DirectX::XMConvertToRadians((float)ranAngle)) * m_fSpeed;
 
 		// 向きを変える
-		m_Transform.fRadian.y = DirectX::XMConvertToRadians(ranAngle - 90);
+		m_Transform.fRadian.y = DirectX::XMConvertToRadians((float)ranAngle - 90);
 
 		m_RanMoveCnt = 0;	// 加算値をリセット
 	}

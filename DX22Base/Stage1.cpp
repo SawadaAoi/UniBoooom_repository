@@ -17,7 +17,7 @@
 	・2023/11/21 ゲーム開始時テクスチャ表示 nieda
 	・2023/11/22 動くよう足りない変数など追加 nieda
 	・2023/11/27 バグ修正 takagi
-	・2023/11/29 ヒットストップ仕様変更対応 takagi
+  ・2023/11/29 ヒットストップ仕様変更対応 takagi
 
 ========================================== */
 
@@ -60,7 +60,8 @@
 =========================================== */
 CStage1::CStage1()
 	: m_nNum(0)
-	, m_fSize(100.0f)
+	, m_fSize(0.0f)
+	, m_fResize(10.0f)
 	, m_bStart(false)
 {
 	// 頂点シェーダの読込
@@ -70,7 +71,7 @@ CStage1::CStage1()
 	}
 
 	m_pTexture = new Texture();
-	if (FAILED(m_pTexture->Create("Assets/Texture/text_start.png")))
+	if (FAILED(m_pTexture->Create("Assets/Texture/start_sign.png")))
 	{
 		MessageBox(NULL, "スタートテキスト読み込み", "Error", MB_OK);
 	}
@@ -99,6 +100,8 @@ CStage1::CStage1()
 	// スライムマネージャー生成
 	m_pSlimeMng = new CSlimeManager(m_pPlayer);
 	
+	m_pHealItemMng = new CHealItemManager();
+
 	//================2dObject動的確保================
 
 	// コンボ数表示生成
@@ -153,6 +156,8 @@ CStage1::CStage1()
 	//頭上スコアマネージャー　←　カメラ
 	m_pScoreOHMng->SetCamera(m_pCamera);
 
+	m_pHealItemMng->SetCamera(m_pCamera);
+
 	//スライムマネージャー　←　スコアマネージャー
 	m_pSlimeMng->SetScoreOHMng(m_pScoreOHMng);
 	
@@ -168,6 +173,10 @@ CStage1::CStage1()
 	//ボスゲージ　←　スライムマネージャー
 	m_pBossgauge->SetSlimeManager(m_pSlimeMng);
 
+	//爆発マネージャー　←　タイマー
+	m_pSlimeMng->SetTimer(m_pTimer);
+
+	m_pSlimeMng->SetHealMng(m_pHealItemMng);
 
 	//================タイマースタート================
 	m_pTimer->TimeStart();
@@ -202,6 +211,7 @@ CStage1::~CStage1()
 	SAFE_DELETE(m_pBossgauge);
 	SAFE_DELETE(m_pTimer);
 	SAFE_DELETE(m_pCombo);
+	SAFE_DELETE(m_pHealItemMng);
 	SAFE_DELETE(m_pExplosionMng);
 	SAFE_DELETE(m_pCombo);
 	SAFE_DELETE(m_pSlimeMng);	// スライムマネージャー削除
@@ -233,17 +243,16 @@ CStage1::~CStage1()
 =========================================== */
 void CStage1::Update()
 {
-	// タイトルから遷移後すぐゲーム開始にならないようにする処理
-	// あまりにも適当に作ったので本実装時にちゃんと書きます
-	if (!m_bStart)
+	if (!m_bStart)	// シーン遷移後ゲームを開始するか判定
 	{
+		// タイトルから遷移後すぐゲーム開始にならないようにする処理
 		m_nNum++;
-		if (m_nNum > 10)
+		
+		if (m_nNum < 120)
 		{
-			m_fSize += 10.0f;
+			m_fSize += m_fResize;
 		}
-
-		if (m_nNum > 50)
+		else
 		{
 			m_bStart = true;
 		}
@@ -268,6 +277,8 @@ void CStage1::Update()
 
 		// 爆発マネージャー更新
 		m_pExplosionMng->Update();
+
+		m_pHealItemMng->Update();
 
 		// タイマー更新
 		m_pTimer->Update();
@@ -338,6 +349,8 @@ void CStage1::Draw()
 
 	//爆発マネージャー描画
 	m_pExplosionMng->Draw();
+
+	m_pHealItemMng->Draw();
 
 	//タイマー描画
 	SetRenderTargets(1, &pRTV, nullptr);

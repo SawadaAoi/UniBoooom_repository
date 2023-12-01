@@ -37,7 +37,7 @@ public:
 	CSlime_BossBase();
 	~CSlime_BossBase();
 
-	void Update(tagTransform3d playerTransform) override;
+	virtual void Update(tagTransform3d playerTransform);
 	void Draw(const CCamera* pCamera) override;
 
 	void Warp(TPos3d<float> playerPos);	// ワープ関数 TODO:未実装
@@ -48,7 +48,7 @@ public:
 
 protected:
 	// ===メンバ変数======
-	int m_nMaxHp;		//最大HPはボスによって変更したいためprotectedに
+	int m_nMaxHp;		// 最大HPはボスによって変更したいためprotectedに
 	int m_nHp;			// 現HP
 
 	int m_nInvFrame;	// 点滅で扱うフレーム
