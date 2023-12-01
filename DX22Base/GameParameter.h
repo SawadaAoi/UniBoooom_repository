@@ -73,7 +73,7 @@ const float HAMMER_SIZE			= 0.2f;									//ハンマーの大きさ
 const float INTERVAL_INITIAL = 0.2f;								//ハンマー初期間隔
 const float SwingSpeed_PLUS = 1.5f;									//ハンマーを一回振るときに乗算される値
 const float SwingSpeed_MINUS = 0.97f;									//毎フレームハンマーを振る間隔を短くさせる値
-
+const float SwingSpeed_SIOW = 50.0f;
 // 敵キャラ ==================================================
 
 // 共通

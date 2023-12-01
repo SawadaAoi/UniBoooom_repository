@@ -41,9 +41,10 @@ const float ROTATE_RADIUS = 1.0f;								// ハンマーが回転するプレイヤーからの距
 const float HAMMER_COL_SIZE = 0.75f;							// ハンマーの当たり判定の大きさ
 const float HAMMER_SIZE = 1.5f;									// ハンマーの大きさ
 
-const float INTERVAL_INITIAL = 0.2f;									//ハンマー初期間隔
-const float INTERVAL_PLUS = 3.2f;									//ハンマーを一回振るときに乗算される値
-const float INTERVAL_MINUS = 0.97f;								//毎フレームハンマーを振る間隔を短くさせる値
+const float SwingSpeed_INITIAL = 0.2f;									//ハンマー初期間隔
+const float SwingSpeed_PLUS = 3.2f;									//ハンマーを一回振るときに乗算される値
+const float SwingSpeed_MINUS = 0.97f;								//毎フレームハンマーを振る間隔を短くさせる値
+const float SwingSpeed_SIOW = 50.0f;								//毎フレームハンマーを振る間隔を短くさせる値
 #endif
 
 const float ADJUST_DIRECTX_TO_COSINE = DirectX::XMConvertToRadians(90.0f);	// 三角関数とDirectX角度の差分(DirectXの角度は↑が0度、三角関数は→が0度)
@@ -173,7 +174,6 @@ void CHammer::Draw()
    ======================================== */
 void CHammer::Swing()
 {
-	//m_fAddAngle = SWING_ANGLE / m_fSwingSpeed;
 	m_fAngleNow -= m_fAddAngle;	// ハンマー当たり判定角度移動		
 
 	// 角度から座標を取得(プレイヤーの位置＋距離＋プレイヤーの周りの円状の位置)
@@ -222,7 +222,11 @@ void CHammer::AttackStart(TPos3d<float>pPos, float angle)
    ======================================== */
 void CHammer::SwingSpeedAdd()
 {
-	m_fSwingSpeed*=SwingSpeed_PLUS;
+	m_fSwingSpeed*=SwingSpeed_PLUS; 
+		if (m_fSwingSpeed >= SwingSpeed_SIOW)
+		{
+			m_fSwingSpeed = SwingSpeed_SIOW;
+		}
 	m_fAddAngle = SWING_ANGLE / m_fSwingSpeed;
 }
 /* ========================================
