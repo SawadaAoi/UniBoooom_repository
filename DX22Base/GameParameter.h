@@ -227,10 +227,10 @@ const float INIT_ANGLE = DirectX::XMConvertToRadians(73.0f);        //ƒJƒƒ‰‚ÌŠp
 const float INIT_NEAR = 1.0f;										//‰æ–ÊŽè‘O‰Šúz’l
 const float INIT_FAR = 150.0f;										//‰æ–Ê‰œ‰Šúz’l
 const float INIT_RADIUS = 15.0f;									//ƒJƒƒ‰‚Æ’Ž‹“_‚Æ‚Ì‹——£(‰Šú’l)
-const TDiType<int> INIT_FRAME_WEAK = { 110, 110 };					//ŽãU“®‚ÌƒtƒŒ[ƒ€”	x:‰¡, y:c
-const TDiType<int> INIT_FRAME_STRONG = { 110, 110 };				//‹­U“®‚ÌƒtƒŒ[ƒ€”	x:‰¡, y:c
+const TDiType<int> INIT_FRAME_WEAK = { 125, 125 };					//ŽãU“®‚ÌƒtƒŒ[ƒ€”	x:‰¡, y:c
+const TDiType<int> INIT_FRAME_STRONG = { 150, 150 };				//‹­U“®‚ÌƒtƒŒ[ƒ€”	x:‰¡, y:c
 const TDiType<float> CHANGE_RATE_AMPLITUDE_WEAK{ 0.99f, 0.99f };	//‹­U••Ï‰»—¦	1‚ð’´‚¦‚é‚Æ‘‰Á•ûŒüA‰º‰ñ‚é‚ÆŒ¸­•ûŒü	x:‰¡, y:c
-const TDiType<float> CHANGE_RATE_AMPLITUDE_STRONG{ 0.99f, 0.99f };	//‹­U••Ï‰»—¦	1‚ð’´‚¦‚é‚Æ‘‰Á•ûŒüA‰º‰ñ‚é‚ÆŒ¸­•ûŒü	x:‰¡, y:c
+const TDiType<float> CHANGE_RATE_AMPLITUDE_STRONG{ 0.97f, 0.97f };	//‹­U••Ï‰»—¦	1‚ð’´‚¦‚é‚Æ‘‰Á•ûŒüA‰º‰ñ‚é‚ÆŒ¸­•ûŒü	x:‰¡, y:c
 ///<summary>U•‚ÌŠm—¦FŽã
 ///<para>‡Œv‚ª1‚É‚È‚é•K—v‚Í‚È‚¢</para>
 ///</summary>
@@ -260,8 +260,8 @@ const std::vector<double> PROBABILITY_AMPITUDE_STRONG[E_DIRECT_VIBRATE_MAX] = {
 ///<para>Še’l‚ÍU•‚Ì‘å‚«‚³‚ð•\‚·</para>
 ///</summary>
 const std::vector<float> TABLE_AMPITUDE_STRONG[E_DIRECT_VIBRATE_MAX] = {
-	{ -0.25f, -0.15f, 0.0f, 0.15f, 0.25f },	//‰¡‹­U•
-	{ -2.5f, -1.5f, 0.0f, 1.5f, 2.5f },	//c‹­U•
+	{ -0.1f, -0.05f, 0.0f, 0.05f, 0.1f },	//‰¡‹­U•
+	{ -1.25f, -0.7f, 0.0f, 0.7f, 1.25f },	//c‹­U•
 };
 
 // UI =====================================================
@@ -370,7 +370,7 @@ const float TEXTURE_TITLE_BUTTON_HEIGHT = 100.0f;			// ƒ^ƒCƒgƒ‹‰æ–Êƒ{ƒ^ƒ“‰Ÿ‰ºŽwŽ
 
 // ƒqƒbƒgƒXƒgƒbƒv =========================================================
 const int FRAME_STOP_SOFT = 2;		//ƒXƒgƒbƒvFŒy@‚ÌƒtƒŒ[ƒ€”	// Œ»ÝŽg—p‚µ‚Ä‚¢‚é•¨
-const int FRAME_STOP_NORMAL = 5;	//ƒXƒgƒbƒvF’†@‚ÌƒtƒŒ[ƒ€”
+const int FRAME_STOP_NORMAL = 4;	//ƒXƒgƒbƒvF’†@‚ÌƒtƒŒ[ƒ€”
 const int FRAME_STOP_HEAVY = 120;	//ƒXƒgƒbƒvFd@‚ÌƒtƒŒ[ƒ€”
 const int FRAME_STOP_DEATH = 999;	//ƒXƒgƒbƒvFŽ€@‚ÌƒtƒŒ[ƒ€”
 
