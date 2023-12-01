@@ -198,6 +198,7 @@
     <ClCompile Include="ModelParticle.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Particle.cpp" />
+    <ClCompile Include="Pose.cpp" />
     <ClCompile Include="Random.cpp" />
     <ClCompile Include="ScoreOverHead.cpp" />
     <ClCompile Include="ScoreOHManager.cpp" />
@@ -285,6 +286,7 @@
     <ClInclude Include="Pos3d.h" />
     <ClInclude Include="ModelParticle.h" />
     <ClInclude Include="Particle.h" />
+    <ClInclude Include="Pose.h" />
     <ClInclude Include="Random.h" />
     <ClInclude Include="ScoreOverHead.h" />
     <ClInclude Include="ScoreOHManager.h" />
