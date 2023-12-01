@@ -80,6 +80,7 @@ void CStage::PlayerSlimeCollision()
 		if (m_pCollision->CheckCollisionSphere(m_pPlayer->GetSphere(), pSlimeNow->GetSphere(), m_pPlayer->GetPos(), pSlimeNow->GetPos()))
 		{
 			m_pPlayer->Damage(pSlimeNow->GetAttack());
+			return;
 		}
 	}
 }
@@ -107,6 +108,7 @@ void CStage::PlayerBossCollision()
 		if (m_pCollision->CheckCollisionSphere(m_pPlayer->GetSphere(), pBossNow->GetSphere(), m_pPlayer->GetPos(), pBossNow->GetPos()))
 		{
 			m_pPlayer->Damage(pBossNow->GetAttack());
+			return;
 		}
 	}
 }
