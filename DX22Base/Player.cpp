@@ -156,7 +156,7 @@ void CPlayer::Update()
 		if (m_bIntFlg)
 		{
 			m_fIntCnt++;				// ハンマー間隔時間カウント加算
-			if (m_fIntCnt >= m_pHammer->GetInterval())
+			if (m_fIntCnt >= HAMMER_INTERVAL_TIME)
 			{
 				m_bIntFlg = false;		// ハンマー間隔時間フラグオン
 				m_fIntCnt = 0.0f;		//ハンマー間隔時間リセット
@@ -182,13 +182,12 @@ void CPlayer::Update()
 			m_bAttackFlg = true;	// 攻撃フラグを有効にする
 			m_pSESwingHamSpeaker = CSound::PlaySound(m_pSESwingHammer);	//ハンマーを振るSEの再生
 
-			//ハンマーのインターバルを長くする関数
-			m_pHammer->IntervalAdd();
-
+			//ハンマーのスイング量を減らす
+			m_pHammer->SwingSpeedAdd();
 		}
-    // ハンマーのインターバルを短くする
-		m_pHammer->IntervalSubtract();
-
+    // ハンマーのスイング量を増やす
+		
+		m_pHammer->SwingSpeedSubtract();
 	}
 	
 	// 無敵状態になっている場合
