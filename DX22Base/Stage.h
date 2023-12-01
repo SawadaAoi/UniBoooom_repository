@@ -37,6 +37,7 @@
 #include "ScoreOHManager.h"
 #include "TotalScore.h"
 #include "Sound.h"
+#include "UIStageManager.h"
 
 // =============== クラス定義 =====================
 class CStage :public CScene	//シーン
@@ -84,7 +85,7 @@ protected:
 	CHP_UI* m_pHpMng;
 	CBossgauge* m_pBossgauge;
 	CHealItemManager* m_pHealItemMng;
-
+	CUIStageManager* m_pUIStageManager;
 	
 	//サウンド
 	XAUDIO2_BUFFER* m_pSEHitHammer;

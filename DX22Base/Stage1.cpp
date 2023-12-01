@@ -84,6 +84,7 @@ CStage1::CStage1()
 	// 軸線の表示
 	CLine::Init();
 #endif
+	
 
 	//================3dObject動的確保================
 
@@ -99,31 +100,9 @@ CStage1::CStage1()
 	// スライムマネージャー生成
 	m_pSlimeMng = new CSlimeManager(m_pPlayer);
 	
+	// 回復アイテムマネージャー生成
 	m_pHealItemMng = new CHealItemManager();
 
-	//================2dObject動的確保================
-
-	// コンボ数表示生成
-	m_pCombo = new CCombo();
-
-	//頭上スコアマネージャー生成
-	m_pScoreOHMng = new CScoreOHManager();
-
-	//トータルスコア生成
-	m_pTotalScore = new CTotalScore();
-
-	// タイマー生成
-	m_pTimer = new CTimer();
-
-	//ボスゲージ生成
-	m_pBossgauge = new CBossgauge(m_pTimer->GetNowTime());
-
-	//ステージ終了のUI表示
-	m_pStageFin = new CStageFinish(m_pPlayer->GetHpPtr(), m_pTimer->GetTimePtr());
-
-	//プレイヤーHPのUI生成
-	m_pHpMng = new CHP_UI(m_pPlayer->GetHpPtr());
-	
 	//================System動的確保================
 
 	//カメラ生成
@@ -131,6 +110,15 @@ CStage1::CStage1()
 
 	//衝突判定チェック生成
 	m_pCollision = new CCOLLISION();
+
+	//================2dObject動的確保================
+
+	// UIマネージャー生成
+	m_pUIStageManager = new CUIStageManager(m_pPlayer, m_pCamera, m_pSlimeMng);
+
+	//ステージ終了のUI表示
+	m_pStageFin = new CStageFinish(m_pPlayer->GetHpPtr(), m_pTimer->GetTimePtr());
+	
 	
 #if MODE_GROUND
 	m_pBox = new CBox();
@@ -152,30 +140,23 @@ CStage1::CStage1()
 	//床　←　カメラ
 	m_pFloor->SetCamera(m_pCamera);
 
-	//頭上スコアマネージャー　←　カメラ
-	m_pScoreOHMng->SetCamera(m_pCamera);
-
+	//回復アイテムマネージャー　←　カメラ
 	m_pHealItemMng->SetCamera(m_pCamera);
 
 	//スライムマネージャー　←　スコアマネージャー
-	m_pSlimeMng->SetScoreOHMng(m_pScoreOHMng);
+	m_pSlimeMng->SetScoreOHMng(m_pUIStageManager->GetScoreMng());
 	
 	//爆発マネージャー　←　コンボ
-	m_pExplosionMng->SetCombo(m_pCombo);
+	m_pExplosionMng->SetCombo(m_pUIStageManager->GetCombo());
 
 	//スライムマネージャー　←　爆発マネージャー
 	m_pSlimeMng->SetExplosionMng(m_pExplosionMng);
 
-	//コンボ　←　トータルスコア
-	m_pCombo->SetTotalScore(m_pTotalScore);
-
-	//ボスゲージ　←　スライムマネージャー
-	m_pBossgauge->SetSlimeManager(m_pSlimeMng);
-
+	// スライムマネージャー　←　回復アイテムマネージャ―
 	m_pSlimeMng->SetHealMng(m_pHealItemMng);
 
 	//================タイマースタート================
-	m_pTimer->TimeStart();
+	//m_pTimer->TimeStart();
 
 	//================BGMの設定================
 	LoadSound();
@@ -201,22 +182,14 @@ CStage1::~CStage1()
 		m_pSpeaker->DestroyVoice();
 	}
 	SAFE_DELETE(m_pStageFin);
-	SAFE_DELETE(m_pHpMng);
-	SAFE_DELETE(m_pTimer);
 	SAFE_DELETE(m_pFade);
-	SAFE_DELETE(m_pBossgauge);
-	SAFE_DELETE(m_pTimer);
-	SAFE_DELETE(m_pCombo);
 	SAFE_DELETE(m_pHealItemMng);
 	SAFE_DELETE(m_pExplosionMng);
-	SAFE_DELETE(m_pCombo);
 	SAFE_DELETE(m_pSlimeMng);	// スライムマネージャー削除
 	SAFE_DELETE(m_pFloor);
 	SAFE_DELETE(m_pCamera);
 	SAFE_DELETE(m_pPlayer);
 	SAFE_DELETE(m_pCollision);
-	SAFE_DELETE(m_pScoreOHMng);
-	SAFE_DELETE(m_pTotalScore);
 
 #if MODE_COORD_AXIS
 	// 軸線の表示
@@ -274,26 +247,12 @@ void CStage1::Update()
 
 		// 爆発マネージャー更新
 		m_pExplosionMng->Update();
-
+		
+		//回復アイテム更新
 		m_pHealItemMng->Update();
 
-		// タイマー更新
-		m_pTimer->Update();
-
-		// ステージ終了更新
-		m_pStageFin->Update();
-
-		// コンボ更新
-		m_pCombo->Update();
-
-		//頭上スコア更新
-		m_pScoreOHMng->Update();
-
-		// HPマネージャー更新
-		m_pHpMng->Update();
-
-		//ボスの出現ゲージ更新
-		m_pBossgauge->Update();
+		// UIマネージャー更新
+		m_pUIStageManager->Update();
 
 		// 当たり判定更新
 		Collision();
@@ -347,31 +306,14 @@ void CStage1::Draw()
 	//爆発マネージャー描画
 	m_pExplosionMng->Draw();
 
+	//回復アイテム描画
 	m_pHealItemMng->Draw();
 
-	//タイマー描画
+	//2D描画変換
 	SetRenderTargets(1, &pRTV, nullptr);
 
-	//ステージ終了時の結果を描画
-	m_pStageFin->Draw();
-
-	// タイマー描画
-	m_pTimer->Draw();
-
-	// HPマネージャー描画
-	m_pHpMng->Draw();
-
-	// コンボ描画
-	m_pCombo->Draw();
-	
-	//トータルスコア描画
-	m_pTotalScore->Draw();
-
-	//ボスゲージ描画
-	m_pBossgauge->Draw();
-
-	//頭上スコアマネージャー描画
-	m_pScoreOHMng->Draw();
+	//UIマネージャー描画
+	m_pUIStageManager->Draw();
 
 #if USE_FADE_GAME
 	m_pFade->Draw();
