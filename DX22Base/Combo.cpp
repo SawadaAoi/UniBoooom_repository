@@ -60,13 +60,6 @@ CCombo::CCombo()
 		MessageBox(NULL, "combo_back_sprite_1.png", "Error", MB_OK);
 	}
 
-	//// コンボ文字画像読み込み
-	//m_pTextureNum[2] = new Texture();
-	//if (FAILED(m_pTextureNum[2]->Create("Assets/Texture/Combo/combo_combo.png")))
-	//{
-	//	MessageBox(NULL, "combo_combo.png", "Error", MB_OK);
-	//}
-
 	// コンボ情報の初期化
 	for (int i = 0; i < MAX_COMBO_NUM; i++)
 	{
@@ -89,7 +82,7 @@ CCombo::CCombo()
 =========================================== */
 CCombo::~CCombo()
 {
-	for (int i = 0; i < 1; ++i)
+	for (int i = 0; i < 2; ++i)
 	{
 		SAFE_DELETE(m_pTextureNum[i]);
 	}
@@ -174,13 +167,6 @@ void CCombo::Draw()
 					COMBO_UI_BACK_SIZE.y,
 					m_pTextureNum[1]);
 
-		//// コンボ文字表示
-		//DrawTexture(COMBO_UI_STRING_POS.x,
-		//			COMBO_UI_STRING_POS.y,
-		//			COMBO_UI_STRING_SIZE.x,
-		//			COMBO_UI_STRING_SIZE.y,
-		//			m_pTextureNum[2]);
-		
 		float shiftPosY = dispCnt * COMBO_UI_MULTI_DISP_SPACE;	// コンボ同時表示の際の上下の空白をセット
 		DisplayNumber(m_dComboInfo[i].dCnt, shiftPosY);			// 数字の表示
 

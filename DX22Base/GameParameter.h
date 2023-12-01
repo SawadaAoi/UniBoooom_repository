@@ -186,11 +186,11 @@ const float SLIME_SCORE_HEIGHT = 4.0f;			//爆発時頭上スコアの表示位置
 
 const int TOTALSCORE_DIGIT = 5;				//トータルスコアの桁数
 const int MAX_TOTALSCORE = 99999;			//↑一緒に変えてください（桁数分9を追加）//最大トータアルスコア
-const TPos2d<float> TOTALSCORE_POS(1100.0f, 25.0f);			//トータルスコアの位置設定
+const TPos2d<float> TOTALSCORE_POS(1230.0f, 50.0f);			//トータルスコアの位置設定
 
-const DirectX::XMFLOAT2 TOTALSCORE_SIZE(50.0f, -50.0f);		//トータルスコアの表示の大きさ
-const DirectX::XMFLOAT2 PLUSSCORE_SIZE(30.0f, -30.0f);		//プラススコアの表示の大きさ
-const int ROW_HIGHT = 40;			//スコアを複数個表示時一番上からどのくらい下げるか（PLUSSCORE_SIZE.yの絶対値より大きい数字で）
+const DirectX::XMFLOAT2 TOTALSCORE_SIZE(50.0f, -75.0f);		//トータルスコアの表示の大きさ
+const DirectX::XMFLOAT2 PLUSSCORE_SIZE(30.0f, -40.0f);		//プラススコアの表示の大きさ
+const int ROW_HIGHT = 60;			//スコアを複数個表示時一番上からどのくらい下げるか（PLUSSCORE_SIZE.yの絶対値より大きい数字で）
 
 const DirectX::XMFLOAT2 SMALLDECIMAL_SIZE(15.0f, -15.0f);	//小数点の大きさ
 const int MAGNIFICATION = 40;		//倍率表示時の間隔。一番右の数字からどれだけ左にずらすか（小数点を入れるのでそこもケアする）
@@ -270,11 +270,11 @@ const float FAR_Z = 10.0f;			// 写せる限界距離
 
 // タイマー =====================================================
 const int STAGE_TIME = 180 * 60;	//ステージ制限時間（秒*フレーム）
-const TPos2d<float> MINUTE_POS(565.0f, 25.0f);			//分の位置設定
-const TPos2d<float> SECOND_TENS_POS(640.0f, 25.0f);	//十の桁秒の位置設定
-const TPos2d<float> SECOND_ONE_POS(690.0f, 25.0f);		//一の桁秒の位置設定
-const TPos2d<float> TIME_BACKGROUND_POS(630.0f, 25.0f);	//バックグラウンド位置設定
-const TPos2d<float> TIME_COLON_POS(602.5f, 25.0f);		//コロンの位置設定
+const TPos2d<float> MINUTE_POS(565.0f, 45.0f);			//分の位置設定
+const TPos2d<float> SECOND_TENS_POS(640.0f, 45.0f);	//十の桁秒の位置設定
+const TPos2d<float> SECOND_ONE_POS(690.0f, 45.0f);		//一の桁秒の位置設定
+const TPos2d<float> TIME_BACKGROUND_POS(630.0f, 45.0f);	//バックグラウンド位置設定
+const TPos2d<float> TIME_COLON_POS(602.5f, 45.0f);		//コロンの位置設定
 const float TIME_BACK_GROUND_SIZE_X = 200.0f;			//タイマーのバックグランドのXの長さ設定
 const float TIME_BACK_GROUND_SIZE_Y = -75.0f;			//タイマーのバックグランドのYの長さ設定
 const float TIME_COLON_SIZE_X = 35.0f;					//タイマーのコロンのXの長さ設定
@@ -283,8 +283,8 @@ const float TIME_COLON_SIZE_Y = -35.0f;					//タイマーのコロンのYの長さ設定
 // ボスゲージ =====================================================
 const int BOSS_GAUGE_FULL_TIME = 45 * 60;		//ボスゲージMAXになる時間(何秒出現) * 60フレーム
 const int SECOND_EMPTY_BOSS_GAUGE = 75 * 60;		//二体目のボス空ゲージ表す時間 * 60フレーム
-const TPos2d<float> BOSS_GAUGE_EMPTY_POS(765.0f, 30.0f);	//ボスゲージ（空）の位置設定
-const TPos2d<float> BOSS_GAUGE_FULL_POS(765.0f, 31.5f);	//ボスゲージ（満）の位置設定
+const TPos2d<float> BOSS_GAUGE_EMPTY_POS(765.0f, 45.0f);	//ボスゲージ（空）の位置設定
+const TPos2d<float> BOSS_GAUGE_FULL_POS(765.0f, 46.5f);	//ボスゲージ（満）の位置設定
 const float BOSS_GAUGE_EMPTY_SIZE_X = 60.0f;			//ボスゲージ（空）のXの長さ設定
 const float BOSS_GAUGE_EMPTY_SIZE_Y = -60.0f;			//ボスゲージ（空）のYの長さ設定
 const float BOSS_GAUGE_FULL_SIZE_X = (6.0f / 7.0f) * BOSS_GAUGE_EMPTY_SIZE_X;			//ボスゲージ（満）のXの長さ設定
@@ -295,9 +295,9 @@ const int FADE_TIME = 5 * 60;							//ボスゲージが溜まってから消える時間
 
 
 // HP
-const TTriType<float> HP_UI_POS = { 80.0f, 60.0f ,0.0f };	// テクスチャの縦幅、横幅
-const TTriType<float> HP_UI_SIZE = { 90.0f, 90.0f ,0.0f };	// テクスチャの縦幅、横幅
-const float DRAW_WIDTH = 90.0f;	// テクスチャの横幅
+const TTriType<float> HP_UI_POS = { 45.0f, 50.0f ,0.0f };	// テクスチャの縦幅、横幅
+const TTriType<float> HP_UI_SIZE = { 60.0f, 55.0f ,0.0f };	// テクスチャの縦幅、横幅
+const float DRAW_WIDTH = 65.0f;	// テクスチャの横幅
 
 const int SWITCH_HP_ANIM = 0;				// アニメーション切り替えの間隔
 const int HP_ANIM_WIDTH_NUM_MAX = 6;		// 横分割数最大数
@@ -316,18 +316,18 @@ const float BOOOOM_UI_SCALE_Y = 6.0f;		//BoooomUIサイズのスケール
 
 // コンボ =========================================================
 const int	MAX_COMBO_NUM = 5;					// 最大同時コンボ数
-const TPos2d<float> COMBO_UI_POSITION = { 1025.0f, 600.0f };	// コンボUIの描画位置
+const TPos2d<float> COMBO_UI_POSITION = { 930.0f, 600.0f };	// コンボUIの描画位置
 const TPos2d<float> COMBO_UI_SIZE = { 70.0f, 130.0f };	// コンボUIの大きさ
 const float COMBO_UI_NUM_SPACE = 80.0f;				// 数字の間スペース
 const float COMBO_UI_MULTI_DISP_SPACE = 100.0f;			// 同時コンボ描画時の上下の空白
 const int COMBO_UI_DISP_DILAY_TIME = int(2.0f * 60);			// 残コンボ数表示の秒数
 
-const TPos2d<float> COMBO_UI_BACK_POS = { 1130.0f, 600.0f };	// コンボUIの背景の描画位置
-const TPos2d<float> COMBO_UI_BACK_SIZE = { 370.0f, 280.0f };	// コンボUIの背景の大きさ
+const TPos2d<float> COMBO_UI_BACK_POS = { 1030.0f, 600.0f };	// コンボUIの背景の描画位置
+const TPos2d<float> COMBO_UI_BACK_SIZE = { 370.0f, 300.0f };	// コンボUIの背景の大きさ
 const TPos2d<float> COMBO_UI_STRING_POS = { 1150.0f, 615.5f };	// コンボUIの文字の描画位置
 const TPos2d<float> COMBO_UI_STRING_SIZE = { 180.0f, 100.0f };		// コンボUIの文字の大きさ
 
-const int SWITCH_COMBO_ANIM = 1;			// アニメーション切り替えの間隔
+const int SWITCH_COMBO_ANIM = 5;			// アニメーション切り替えの間隔
 const int COMBO_ANIM_WIDTH_NUM_MAX = 3;		// 横分割数最大数
 const int COMBO_ANIM_HEIGHT_NUM_MAX = 3;	// 縦分割数最大数
 const float COMBO_ANIM_SIZEX = 1.0f / COMBO_ANIM_WIDTH_NUM_MAX;		// テクスチャ横分割サイズ
