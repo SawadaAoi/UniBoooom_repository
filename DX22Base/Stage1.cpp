@@ -190,6 +190,7 @@ CStage1::~CStage1()
 	SAFE_DELETE(m_pCamera);
 	SAFE_DELETE(m_pPlayer);
 	SAFE_DELETE(m_pCollision);
+	SAFE_DELETE(m_pUIStageManager);
 
 #if MODE_COORD_AXIS
 	// é≤ê¸ÇÃï\é¶
