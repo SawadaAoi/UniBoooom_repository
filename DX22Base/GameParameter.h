@@ -71,8 +71,8 @@ const float HAMMER_COL_SIZE		= 0.75f;								//ハンマーの当たり判定の大きさ
 const float HAMMER_SIZE			= 0.2f;									//ハンマーの大きさ
 
 const float INTERVAL_INITIAL = 0.2f;								//ハンマー初期間隔
-const float INTERVAL_PLUS = 3.2f;									//ハンマーを一回振るときに乗算される値
-const float INTERVAL_MINUS = 0.97f;									//毎フレームハンマーを振る間隔を短くさせる値
+const float SwingSpeed_PLUS = 1.5f;									//ハンマーを一回振るときに乗算される値
+const float SwingSpeed_MINUS = 0.97f;									//毎フレームハンマーを振る間隔を短くさせる値
 
 // 敵キャラ ==================================================
 
