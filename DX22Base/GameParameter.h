@@ -351,7 +351,7 @@ const float TEXTURE_TITLE_BUTTON_HEIGHT = 100.0f;			// ƒ^ƒCƒgƒ‹‰æ–Êƒ{ƒ^ƒ“‰Ÿ‰ºŽwŽ
 
 // ƒqƒbƒgƒXƒgƒbƒv =========================================================
 const int FRAME_STOP_SOFT = 2;		//ƒXƒgƒbƒvFŒy@‚ÌƒtƒŒ[ƒ€”	// Œ»ÝŽg—p‚µ‚Ä‚¢‚é•¨
-const int FRAME_STOP_NORMAL = 5;	//ƒXƒgƒbƒvF’†@‚ÌƒtƒŒ[ƒ€”
+const int FRAME_STOP_NORMAL = 4;	//ƒXƒgƒbƒvF’†@‚ÌƒtƒŒ[ƒ€”
 const int FRAME_STOP_HEAVY = 120;	//ƒXƒgƒbƒvFd@‚ÌƒtƒŒ[ƒ€”
 const int FRAME_STOP_DEATH = 999;	//ƒXƒgƒbƒvFŽ€@‚ÌƒtƒŒ[ƒ€”
 
