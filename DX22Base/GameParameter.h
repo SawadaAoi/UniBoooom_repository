@@ -77,24 +77,24 @@ const float INTERVAL_MINUS = 0.97f;									//毎フレームハンマーを振る間隔を短く
 // 敵キャラ ==================================================
 
 // 共通
-const int	MAX_SLIME_NUM = 50;		// スライムの最大生成数
-const int	MAX_BOSS_SLIME_NUM = 5;		// ボススライムの最大生成数
-const int	START_ENEMY_NUM = 6;		// ゲーム開始時の敵キャラの数
-const float ENEMY_MOVE_SPEED = 0.035f;	// 敵の通常移動速度
+const int	MAX_SLIME_NUM = 50;							// スライムの最大生成数
+const int	MAX_BOSS_SLIME_NUM = 5;				// ボススライムの最大生成数
+const int	START_ENEMY_NUM = 6;				// ゲーム開始時の敵キャラの数
+const float ENEMY_MOVE_SPEED = 0.035f;			// 敵の通常移動速度
 const float HAMMER_HIT_MOVE_SPEED = 1.0f;		// ハンマーに吹き飛ばされた時のスピード
 const int	RANDOM_MOVE_SWITCH_TIME = 3 * 60;	// ランダム移動の方向切り替え
 
 const float SPEED_DOWN_RATIO = 0.6f;		// 吹き飛ぶ際にかかる移動速度の変化の割合    RATIO=>割合
-const float MOVE_RESIST = 0.05f;	// 吹き飛び移動中のスライムの移動速度に毎フレームかかる減算数値
+const float MOVE_RESIST = 0.05f;			// 吹き飛び移動中のスライムの移動速度に毎フレームかかる減算数値
 const float MOVE_DISTANCE_PLAYER = 13.0f;	// プレイヤー追跡移動に切り替える距離
 const float SLIME_BASE_RADIUS = 0.5f;		// スライムの基準の大きさ
 
-const int ENEMY_CREATE_INTERVAL = int(2.0f * 60);								// 生成間隔
+const int ENEMY_CREATE_INTERVAL		= int(1.0f * 60);							// 生成間隔
 const int RANDOM_POS = 15;														// 生成座標範囲
 const int CREATE_DISTANCE = 10;													// プレイヤーからどれくらい離れた距離に生成するか
-const int SLIME_LEVEL1_PER = 45;																// スライム_1の生成確立
-const int SLIME_LEVEL2_PER = 35;																// スライム_2の生成確立
-const int SLIME_LEVEL3_PER = 10;																// スライム_3の生成確立
+const int SLIME_LEVEL1_PER = 45;												// スライム_1の生成確立
+const int SLIME_LEVEL2_PER = 35;												// スライム_2の生成確立
+const int SLIME_LEVEL3_PER = 10;												// スライム_3の生成確立
 const int SLIME_LEVEL_FLAME_PER = 100 - SLIME_LEVEL1_PER - SLIME_LEVEL2_PER - SLIME_LEVEL3_PER;	// スライム_フレイムの生成確立
 const float MAX_SIZE_EXPLODE		= 5.0f;										// スライム4同士の爆発の大きさ
 const float EXPLODE_BASE_RATIO		= 1.5f;										// スライムの爆発接触での爆発の大きさのベース
@@ -158,11 +158,11 @@ const int	ASSAULT_CHARGE_TIME = int(2 * 60);						// 突撃チャージ時間
 const int	ASSAULT_TIME = int(1.0f * 60);						// 突撃総時間
 const float ASSAULT_SPEED = LEVEL_BOSS_1_SPEED * 20.0f;		// 突撃時のスピード
 
-const float BOSS_HP_SIZEX = 0.3f;		//体力１分の大きさ（X）
-const float BOSS_HP_SIZEY = 0.5f;		//体力１分の大きさ（Y）
-const float BOSS_HPFRAME_SIZEX = 0.2f;	//体力ゲージよりどれだけ大きいか（X）
-const float BOSS_HPFRAME_SIZEY = 0.2f;	//体力ゲージよりどれだけ大きいか（Y）
-const float BOSS_HP_POSX = 8.6f;		//体力バー（減る方）の位置
+const float BOSS_HP_SIZEX = 0.3f;		// 体力１分の大きさ（X）
+const float BOSS_HP_SIZEY = 0.5f;		// 体力１分の大きさ（Y）
+const float BOSS_HPFRAME_SIZEX = 0.2f;	// 体力ゲージよりどれだけ大きいか（X）
+const float BOSS_HPFRAME_SIZEY = 0.2f;	// 体力ゲージよりどれだけ大きいか（Y）
+const float BOSS_HP_POSX = 8.6f;		// 体力バー（減る方）の位置
 const int BOSS_DAMAGE_FLASH_FRAME = int(0.1f * 60);					// ダメージ受けた際の点滅フレーム(無敵ではない)
 const int BOSS_DAMAGE_FLASH_TOTAL_FRAME = int(0.5f * 60);			// ダメージを受けた際の点滅を何フレーム行うか
 
@@ -269,16 +269,30 @@ const float NEAR_Z = 0.1f;			// 画面に写り始める距離
 const float FAR_Z = 10.0f;			// 写せる限界距離
 
 // タイマー =====================================================
-const int STAGE_TIME = 180 * 60;	//ステージ制限時間（秒*フレーム）
-const TPos2d<float> MINUTE_POS(565.0f, 25.0f);			//分の位置設定
-const TPos2d<float> SECOND_TENS_POS(640.0f, 25.0f);	//十の桁秒の位置設定
-const TPos2d<float> SECOND_ONE_POS(690.0f, 25.0f);		//一の桁秒の位置設定
-const TPos2d<float> TIME_BACKGROUND_POS(630.0f, 25.0f);	//バックグラウンド位置設定
-const TPos2d<float> TIME_COLON_POS(602.5f, 25.0f);		//コロンの位置設定
-const float TIME_BACK_GROUND_SIZE_X = 200.0f;			//タイマーのバックグランドのXの長さ設定
-const float TIME_BACK_GROUND_SIZE_Y = -75.0f;			//タイマーのバックグランドのYの長さ設定
-const float TIME_COLON_SIZE_X = 35.0f;					//タイマーのコロンのXの長さ設定
-const float TIME_COLON_SIZE_Y = -35.0f;					//タイマーのコロンのYの長さ設定
+const int STAGE_TIME = 180 * 60;						// ステージ制限時間（秒*フレーム）
+const TPos2d<float> MINUTE_POS(565.0f, 25.0f);			// 分の位置設定
+const TPos2d<float> SECOND_TENS_POS(640.0f, 25.0f);		// 十の桁秒の位置設定
+const TPos2d<float> SECOND_ONE_POS(690.0f, 25.0f);		// 一の桁秒の位置設定
+const TPos2d<float> TIME_BACKGROUND_POS(630.0f, 25.0f);	// バックグラウンド位置設定
+const TPos2d<float> TIME_COLON_POS(602.5f, 25.0f);		// コロンの位置設定
+const float TIME_BACK_GROUND_SIZE_X = 200.0f;			// タイマーのバックグランドのXの長さ設定
+const float TIME_BACK_GROUND_SIZE_Y = -75.0f;			// タイマーのバックグランドのYの長さ設定
+const float TIME_COLON_SIZE_X = 35.0f;					// タイマーのコロンのXの長さ設定
+const float TIME_COLON_SIZE_Y = -35.0f;					// タイマーのコロンのYの長さ設定
+
+const enum TIME_STATE
+{
+	STATE_FIRST = 0,
+	STATE_SECOND,
+	STATE_THIRD,
+	STATE_MAX,
+};
+
+const float SLM_PARAM_CHANGE_TIME[STATE_MAX]	= { 60.0f, 120.0f, 180.0f };	// 経過時間の秒数
+const int	SLM_CREATE_NUM[STATE_MAX]			= { 20, 35, MAX_SLIME_NUM };	// 最大生成数
+const float SLM_CREATE_INTERVAL_TIME[STATE_MAX] = { 4.0f, 2.0f, 1.0f };			// 生成間隔
+const float SLM_MOVE_ADD_SPEED[STATE_MAX]		= { 1.0f, 1.5f, 2.0f };			// 移動スピード
+
 
 // ボスゲージ =====================================================
 const int BOSS_GAUGE_FULL_TIME = 45 * 60;		//ボスゲージMAXになる時間(何秒出現) * 60フレーム

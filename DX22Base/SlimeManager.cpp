@@ -56,7 +56,9 @@
 #else
 #define DEBUG_BOSS	(false)						// デバッグ用にゲーム開始時ボスを生成するかどうか
 
-const int ENEMY_CREATE_INTERVAL	= 3 * 60;		// 生成間隔
+const int ENEMY_CREATE_INTERVAL		= int(3.0f * 60);		// 生成間隔
+const int ENEMY_CREATE_INTERVAL_LV2 = int(2.0f * 60);		// 生成間隔減らす
+const int ENEMY_CREATE_INTERVAL_LV3 = int(1.0f * 60);		// 生成間隔さらに減らす
 const int RANDOM_POS			= 15;			// 生成座標範囲
 const int CREATE_DISTANCE		= 10;			// 生成距離最小値
 const int SLIME_LEVEL1_PER		= 10;			// スライム_1の生成確立
@@ -100,12 +102,13 @@ CSlimeManager::CSlimeManager(CPlayer* pPlayer)
 	, m_oldCreatePos{ 0.0f,0.0f,0.0f }
 	, m_pPlayer(pPlayer)
 	, m_pExpMng(nullptr)
+	, m_pTimer(nullptr)
 {
 	//スライムのモデルと頂点シェーダーの読み込み
 	LoadModel();
-
+	
 	// スライム初期化
-	for (int i = 0; i < MAX_SLIME_NUM; i++)
+	for (int i = 0; i <MAX_SLIME_NUM; i++)
 	{
 		m_pSlime[i] = nullptr;
 	}
@@ -115,6 +118,7 @@ CSlimeManager::CSlimeManager(CPlayer* pPlayer)
 		m_pBoss[i] = nullptr;
 	}
 
+	
 	// ゲーム開始時に敵キャラを生成する
 	for (int i = 0; i < START_ENEMY_NUM; i++)
 	{
@@ -163,7 +167,7 @@ CSlimeManager::~CSlimeManager()
 	SAFE_DELETE(m_pBossModel[1]);
 
 	// スライム削除
-	for (int i = 0; i < MAX_SLIME_NUM; i++)
+	for (int i = 0; i <MAX_SLIME_NUM; i++)
 	{
 		SAFE_DELETE(m_pSlime[i]);
 	}
@@ -190,10 +194,10 @@ void CSlimeManager::Update(CExplosionManager* pExpMng)
 	CheckEscape();	//Updateの前に近くに爆発があるか確認する
 
 	// スライム更新
-	for (int i = 0; i < MAX_SLIME_NUM; i++)
+	for (int i = 0; i <MAX_SLIME_NUM; i++)
 	{
 		if (m_pSlime[i] == nullptr) continue;
-		m_pSlime[i]->Update(m_pPlayer->GetTransform());
+		m_pSlime[i]->Update(m_pPlayer->GetTransform(), m_pTimer->GetSlimeMoveSpeed());
 
 	}
 
@@ -207,9 +211,9 @@ void CSlimeManager::Update(CExplosionManager* pExpMng)
 
 	}
 
-
+	//---敵生成---
 	m_CreateCnt++;
-	if(ENEMY_CREATE_INTERVAL<= m_CreateCnt)
+	if (m_pTimer->GetSlimeCreateInterval() <= m_CreateCnt)
 	{
 		// 敵 生成
 		Create(GetRandomLevel());	//スライムのレベルをランダムに選んで生成する
@@ -229,7 +233,7 @@ void CSlimeManager::Update(CExplosionManager* pExpMng)
 void CSlimeManager::Draw()
 {
 	//"スライム"描画
-	for (int i = 0; i < MAX_SLIME_NUM; i++)
+	for (int i = 0; i <MAX_SLIME_NUM; i++)
 	{
 		if (m_pSlime[i] == nullptr) continue;
 		m_pSlime[i]->Draw(m_pCamera);
@@ -258,7 +262,17 @@ void CSlimeManager::Create(E_SLIME_LEVEL level)
 {
 	TPos3d<float> CreatePos;	// スライムの生成位置
 
-	for (int i = 0; i < MAX_SLIME_NUM; i++)
+	int mMaxNum;
+	if (m_pTimer == nullptr)
+	{
+		mMaxNum = SLM_CREATE_NUM[STATE_FIRST];
+	}
+	else
+	{
+		mMaxNum = m_pTimer->GetMaxSlimeNum();
+	}
+
+	for (int i = 0; i < mMaxNum; i++)
 	{
 		// スライムのuseを検索
 		if (m_pSlime[i] != nullptr) continue;
@@ -497,7 +511,7 @@ bool CSlimeManager::HitFlameBranch(int HitSlimeNum, int StandSlimeNum, CExplosio
 ======================================== */
 void CSlimeManager::UnionSlime(E_SLIME_LEVEL level ,TPos3d<float> pos)
 {
-	for (int i = 0; i < MAX_SLIME_NUM; i++)
+	for (int i = 0; i <MAX_SLIME_NUM; i++)
 	{
 		if (m_pSlime[i] != nullptr) { continue; }
 
@@ -964,7 +978,7 @@ void CSlimeManager::LoadModel()
 ======================================== */
 void CSlimeManager::OutOfRange()
 {
-	for (int i = 0; i < MAX_SLIME_NUM; i++)
+	for (int i = 0; i <MAX_SLIME_NUM; i++)
 	{
 		if (!m_pSlime[i]) { continue; }	//nullならスキップ
 
@@ -1001,7 +1015,7 @@ void CSlimeManager::OutOfRange()
 ======================================== */
 void CSlimeManager::CheckEscape()
 {
-	for (int j = 0; j < MAX_SLIME_NUM; j++)
+	for (int j = 0; j <MAX_SLIME_NUM; j++)
 	{
 		if (!m_pSlime[j]) { continue; }						//nullptrならスキップ
 		if (m_pSlime[j]->GetEscapeFlag()) { continue; }		//すでに逃げているならスキップ
@@ -1082,6 +1096,20 @@ void CSlimeManager::SetExplosionMng(CExplosionManager* pExpMng)
 }
 
 /* ========================================
+	タイマーセット関数
+	----------------------------------------
+	内容：タイマーのポインタをセットする
+	----------------------------------------
+	引数1：タイマーのポインタ
+	----------------------------------------
+	戻値：無し
+======================================== */
+void CSlimeManager::SetTimer(CTimer * pTimer)
+{
+	m_pTimer = pTimer;
+}
+
+/* ========================================
 	乱数関数
 	----------------------------------------
 	内容：毎回異なる乱数関数
@@ -1100,7 +1128,7 @@ int CSlimeManager::GetRandom(int min, int max)
 	----------------------------------------
 	内容：爆発生成時に必要なスコア情報セット
 	----------------------------------------
-	引数1：なし
+	引数1：スコアポインタ
 	----------------------------------------
 	戻値：なし
 ======================================== */
