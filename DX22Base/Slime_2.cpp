@@ -43,9 +43,11 @@ const int	LEVEL2_ATTACK = 1;	// 攻撃力
 	戻値：無し
 =========================================== */
 CSlime_2::CSlime_2()
-	: m_AtcMoveType(ATTACK_CHARGE)
+	: m_AtcMoveType(ATTACK_NONE)
 	, m_nChargeCnt(0)
 	, m_nTackleCnt(0)
+	, m_nAtkInterval(0)
+	, tackleDirection{0.0f,0.0f,0.0f,0.0f}
 {
 	m_Transform.fScale = { LEVEL2_SCALE,LEVEL2_SCALE ,LEVEL2_SCALE };
 	m_Sphere.fRadius *= LEVEL2_SCALE;
@@ -131,23 +133,71 @@ void CSlime_2::NormalMove(tagTransform3d playerTransform)
 	// プレイヤーと距離が一定以内だったら
 	if (distancePlayer < MOVE_DISTANCE_PLAYER)
 	{
-
-		switch (m_AtcMoveType)
+		if (m_nAtkInterval > LEVEL2_ATTACK_INTERVAL && m_AtcMoveType == ATTACK_NONE)
 		{
-		case CSlime_2::ATTACK_CHARGE:
-
-
-			break;
-		case CSlime_2::ATTACK_TACKLE:
-			break;
+			m_AtcMoveType = ATTACK_CHARGE;
+			m_nAtkInterval = 0;
+			return;
 		}
 	}
-	else
-	{
-		RandomMove();	// ランダム移動
 
+	//状態による分岐処理
+	switch (m_AtcMoveType)
+	{
+	case(ATTACK_NONE):	//通常状態の時
+		m_nAtkInterval++;
+		CSlimeBase::NormalMove(playerTransform);
+
+		return;
+	case (ATTACK_CHARGE):
+		if (m_nChargeCnt > LEVEL2_ATTACK_CHARGE_CNT)
+		{	//チャージの時間を超えていたらタックル状態に移行する
+			m_AtcMoveType = ATTACK_TACKLE;
+			m_nChargeCnt = 0;
+		}
+		else 
+		{ //まだだったらカウントを溜める
+			m_nChargeCnt++; 
+			CSlimeBase::NormalMove(playerTransform);
+
+		}	
+
+		//タックルの角度を確定
+		// 敵からプレイヤーへのベクトル
+		DirectX::XMFLOAT3 directionVector;
+		directionVector.x = m_Transform.fPos.x - playerPos.x;
+		directionVector.y = m_Transform.fPos.y - playerPos.y;
+		directionVector.z = m_Transform.fPos.z - playerPos.z;
+		
+		// ベクトルを正規化して方向ベクトルを得る
+		tackleDirection = DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&directionVector));
+		// 方向ベクトルから回転行列を計算
+		m_Transform.fRadian.y = (atan2(-tackleDirection.m128_f32[0], -tackleDirection.m128_f32[2]));
+
+		//移動を0に
+		m_move = TTriType<float>(0.0f, 0.0f, 0.0f);
+
+		return;
+	case (ATTACK_TACKLE):
+		if (m_nTackleCnt < LEVEL2_ATTACK_TACKLE_CNT)
+		{	//タックル時間に満たないならタックル継続
+			m_nTackleCnt++;
+			m_move.x = sin(m_Transform.fRadian.y) * LEVEL2_TACKLE_SPEED;
+			m_move.z = cos(m_Transform.fRadian.y) * LEVEL2_TACKLE_SPEED;
+
+			return;
+		}
+		else //タックル時間を超えていればタックル終了
+		{
+			m_AtcMoveType = ATTACK_NONE;
+			m_nTackleCnt = 0;
+			CSlimeBase::NormalMove(playerTransform);
+		}
+		break;
 	}
 
+	//上記のどのifにも当てはまらない場合ランダム移動
+	RandomMove();
 }
 
 /* ========================================

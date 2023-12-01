@@ -119,6 +119,11 @@ const int	LEVEL2_ATTACK = 1;						// 攻撃力
 const float LEVEL3_SCALE = 3.0f;					// スライム＿レベル３の大きさ(当たり判定含む)
 const float LEVEL3_SPEED = ENEMY_MOVE_SPEED * 0.7f;	// 移動速度
 const int	LEVEL3_ATTACK = 1;						// 攻撃力
+const int	LEVEL2_ATTACK_INTERVAL = int(60 * 4.0f);		// 攻撃終了から次の攻撃までの間隔
+const int	LEVEL2_ATTACK_CHARGE_CNT = int(60 * 1.0f);	// 突進するまでのため時間
+const int	LEVEL2_ATTACK_TACKLE_CNT = int(60 * 0.45f);	// 突進している時間
+const float	LEVEL2_TACKLE_SPEED = 0.2f;					// 突進の速度
+
 
 // サイズ4
 const float LEVEL4_SCALE = 5.0f;					// スライム＿レベル４の大きさ(当たり判定含む)

@@ -27,6 +27,7 @@ class CSlime_2 :
 public:
 	enum ATTACK_MOVE_TYPE
 	{
+		ATTACK_NONE,		// ‰Šúó‘Ô
 		ATTACK_CHARGE,	// “Ëi‘O‚Ì—­‚ß
 		ATTACK_TACKLE,	// “Ëi
 	};
@@ -43,6 +44,8 @@ private:
 	ATTACK_MOVE_TYPE m_AtcMoveType;
 	int m_nChargeCnt;
 	int m_nTackleCnt;
+	int m_nAtkInterval;
+	DirectX::XMVECTOR tackleDirection;
 };
 
 
