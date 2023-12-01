@@ -335,7 +335,10 @@ void CSlimeManager::CreateBoss()
 	{
 		// スライムのuseを検索
 		if (m_pBoss[i] != nullptr) continue;
-		m_pBoss[i] = new CSlime_Boss_1(TPos3d<float>(0.0f, 0.0f, 0.0f), m_pVS, m_pBossModel[0], m_pBossModel[1]);	//動的生成(取り合えず位置は仮)
+
+		TPos3d<float> createPos = m_pPlayer->GetPos();
+		createPos.z += ADD_CREATE_BOSS_POS_Z;
+		m_pBoss[i] = new CSlime_Boss_1(createPos, m_pVS, m_pBossModel[0], m_pBossModel[1]);	//動的生成(取り合えず位置は仮)
 
 		break;
 	}

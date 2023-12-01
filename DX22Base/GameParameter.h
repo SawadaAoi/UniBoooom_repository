@@ -170,6 +170,7 @@ const float BOSS_HPFRAME_SIZEY = 0.2f;	// 体力ゲージよりどれだけ大きいか（Y）
 const float BOSS_HP_POSX = 8.6f;		// 体力バー（減る方）の位置
 const int BOSS_DAMAGE_FLASH_FRAME = int(0.1f * 60);					// ダメージ受けた際の点滅フレーム(無敵ではない)
 const int BOSS_DAMAGE_FLASH_TOTAL_FRAME = int(0.5f * 60);			// ダメージを受けた際の点滅を何フレーム行うか
+const float ADD_CREATE_BOSS_POS_Z = 20.0f;							// ダメージを受けた際の点滅を何フレーム行うか
 
 // 爆発 =====================================================
 const int	MAX_EXPLOSION_NUM = 20;			// 最大爆発数
