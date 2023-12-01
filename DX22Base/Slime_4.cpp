@@ -84,7 +84,7 @@ CSlime_4::~CSlime_4()
 {
 }
 
-void CSlime_4::Update(tagTransform3d playerTransform)
+void CSlime_4::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
 {
 
 	if (!m_bHitMove)	//“G‚ª’Êí‚ÌˆÚ“®ó‘Ô‚Ì
@@ -105,8 +105,8 @@ void CSlime_4::Update(tagTransform3d playerTransform)
 	}
 
 	// -- À•WXV
-	m_Transform.fPos.x += m_move.x;
-	m_Transform.fPos.z += m_move.z;
+	m_Transform.fPos.x += m_move.x * fSlimeMoveSpeed;
+	m_Transform.fPos.z += m_move.z * fSlimeMoveSpeed;
 }
 
 void CSlime_4::NormalMove(tagTransform3d playerTransform)

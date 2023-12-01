@@ -29,7 +29,7 @@ public:
 	CSlime_3(TPos3d<float> pos, VertexShader* pVS, Model* pModel);
 	~CSlime_3();
 
-	void Update(tagTransform3d playerTransform);
+	void Update(tagTransform3d playerTransform, float fSlimeMoveSpeed);
 	void NormalMove(tagTransform3d playerTransform) final;	// ’Êí‚ÌˆÚ“®ˆ—
 
 	void SetNormalSpeed() override;
