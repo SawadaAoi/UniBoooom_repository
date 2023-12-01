@@ -10,6 +10,7 @@
 	変更履歴
 	・2023/11/21 作成 takagi
 	・2023/11/28 TextureSet関数にポインタ指定できる物を追加
+	・2023/12/01 テクスチャの扱い方を安全化 takagi
 
 ========================================== */
 
@@ -73,6 +74,7 @@ private:
 	VertexShader* m_pVs;				//頂点シェーダー
 	PixelShader* m_pPs;					//ピクセルシェーダー
 	Texture* m_pTexture;				//テクスチャ情報
+	Texture* m_pTextureLoad;			//テクスチャ情報	deleteしない、ポインタは受け取るだけ
 	static int ms_nCnt2dPolygon;		//自身の生成数
 	static const void* ms_pVtx;			//頂点情報
 	static unsigned int ms_unVtxSize;	//頂点サイズ

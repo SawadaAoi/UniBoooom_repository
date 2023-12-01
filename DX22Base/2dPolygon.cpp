@@ -11,6 +11,7 @@
 	・2023/11/21 作成 takagi
 	・2023/11/22 メッシュサイズを1x1に修正 takagi
 	・2023/11/28 TextureSet関数にポインタ指定できる物を追加
+	・2023/12/01 テクスチャの扱い方を安全化 takagi
 
 ========================================== */
 
@@ -21,10 +22,6 @@
 
 // =============== インクルード ===================
 #include "2dPolygon.h"	//自身のヘッダ
-
-#if USE_2D_POLYGON
-#include "Input.h"	//キー入力用
-#endif
 
 #if _DEBUG
 #include <Windows.h>	//メッセージボックス用
@@ -115,6 +112,7 @@ C2dPolygon::C2dPolygon()
 	,m_pVs(nullptr)									//頂点シェーダー
 	,m_pPs(nullptr)									//ピクセルシェーダー
 	,m_pTexture(nullptr)							//テクスチャ
+	,m_pTextureLoad(nullptr)						//テクスチャアドレス格納専用
 	,m_pCamera(nullptr)								//カメラ
 {
 	// =============== 静的作成 ===================
@@ -189,7 +187,7 @@ C2dPolygon::~C2dPolygon()
 void C2dPolygon::Draw()
 {
 	// =============== 検査 ===================
-	if (!m_pTexture)	//ヌルチェック
+	if (!m_pTextureLoad)	//ヌルチェック
 	{
 #if _DEBUG
 		MessageBox(nullptr, "テクスチャが登録されていません", "2dPolygon.cpp->Draw->Error", MB_OK);	//エラー通知
@@ -216,7 +214,7 @@ void C2dPolygon::Draw()
 	m_pVs->WriteBuffer(0, m_aMatrix);	//定数バッファに行列情報書き込み
 	m_pVs->WriteBuffer(1, &Param);		//定数バッファにUV情報書き込み
 	m_pVs->Bind();						//頂点シェーダー使用
-	m_pPs->SetTexture(0, m_pTexture);	//テクスチャ登録
+	m_pPs->SetTexture(0, m_pTextureLoad);	//テクスチャ登録
 	m_pPs->Bind();						//ピクセルシェーダー使用
 
 	// =============== 変数宣言 ===================
@@ -439,12 +437,13 @@ void C2dPolygon::SetTexture(const char* pcTexPass)
 	// =============== 作成 ===================
 	m_pTexture = new Texture;		//動的確保
 	m_pTexture->Create(pcTexPass);	//新規テクスチャ登録
+	m_pTextureLoad = m_pTexture;	//アドレス格納
 }
 
 /* ========================================
 	テクスチャセッタ関数
 	-------------------------------------
-	内容：テクスチャ作成・登録
+	内容：テクスチャ登録
 	-------------------------------------
 	引数1：Textureポインタ
 	-------------------------------------
@@ -452,8 +451,8 @@ void C2dPolygon::SetTexture(const char* pcTexPass)
 =========================================== */
 void C2dPolygon::SetTexture(Texture* pTexture)
 {
-	// =============== 作成 ===================
-	m_pTexture = pTexture;		//動的確保
+	// =============== 登録 ===================
+	m_pTextureLoad = pTexture;	//アドレス格納
 }
 
 /* ========================================
@@ -467,6 +466,8 @@ void C2dPolygon::SetTexture(Texture* pTexture)
 =========================================== */
 void C2dPolygon::SetVertexShader(VertexShader* pVs)
 {
+	//ポインタ初期化
+	m_pVs = pVs;	//ピクセルシェーダ登録
 }
 
 /* ========================================
@@ -480,6 +481,8 @@ void C2dPolygon::SetVertexShader(VertexShader* pVs)
 =========================================== */
 void C2dPolygon::SetPixelShader(PixelShader* pPs)
 {
+	//ポインタ初期化
+	m_pPs = pPs;	//ピクセルシェーダ登録
 }
 
 /* ========================================

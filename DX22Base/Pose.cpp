@@ -15,6 +15,7 @@
 // =============== インクルード ===================
 #include "Pose.h"	//自身のヘッダ
 #include <map>		//関係性コンテナ
+#include "DiType.h"	//２つの型
 
 // =============== 列挙型定義 ===================
 enum E_2D
@@ -29,8 +30,11 @@ enum E_2D
 const std::string BGM_FILE_PASS("Assets/Sound/BGM/BGM_maou.mp3");
 const std::string SE_FILE_PASS("Assets/Sound/SE/Smash.mp3");
 const std::map<int, std::string> MAP_TEXTURE = {
-	{E_2D_BACK, ""},
+	{E_2D_BACK, "Assets/Texture/PoseBg.png"},	//背景
 };	//ポリゴンとテクスチャの対応表
+const std::map<int, TDiType<std::string>> MAP_SHADER = {
+	{E_2D_BACK, {"VsPose.cso", "PsPose.cso"}},	//背景
+};	//ポリゴンとシェーダー[頂点, ピクセル]の対応表
 
 /* ========================================
 	コンストラクタ
@@ -42,6 +46,8 @@ const std::map<int, std::string> MAP_TEXTURE = {
 	戻値：なし
 =========================================== */
 CPose::CPose(CCamera* pCamera)
+	:m_pBgPs(nullptr)	//背景用ピクセルシェーダ
+	,m_pBgVs(nullptr)	//背景用頂点シェーダ
 {
 	// =============== 初期化 ===================
 	if (pCamera)	//ヌルチェック
@@ -67,6 +73,10 @@ CPose::CPose(CCamera* pCamera)
 	}
 	m_pBGM = CSound::LoadSound(BGM_FILE_PASS.c_str(), true);	//BGMの読み込み
 	m_pSEHitHammer = CSound::LoadSound(SE_FILE_PASS.c_str());	//SEの読み込み
+	
+	// =============== シェーダー設定 ===================
+	m_2dObj[E_2D_BACK]->SetVertexShader(MAP_SHADER.at(E_2D_BACK).x.c_str());
+	m_2dObj[E_2D_BACK]->SetPixelShader(MAP_SHADER.at(E_2D_BACK).y.c_str());
 }
 
 /* ========================================
@@ -112,6 +122,14 @@ void CPose::Update()
 	======================================== */
 void CPose::Draw()
 {
+	// =============== 描画 ===================
+	for (std::vector<C2dPolygon*>::iterator Iterator = m_2dObj.begin(), int nCnt = 0; Iterator < m_2dObj.end(); Iterator++, nCnt++)
+	{
+		if (MAP_TEXTURE.size() < nCnt)	//mapの配列が存在する添え字
+		{
+			(*Iterator)->Draw();	//平面描画
+		}
+	}
 }
 
 /* ========================================

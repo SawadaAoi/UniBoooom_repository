@@ -34,6 +34,8 @@ protected:
 	// ===メンバ変数宣言=====
 	bool m_bFinish;									//終了予約用(trueで終了)
 	std::vector<C2dPolygon*> m_2dObj;				//平面ポリゴン
+	PixelShader* m_pBgPs;							//背景用ピクセルシェーダ
+	VertexShader* m_pBgVs;							//背景用頂点シェーダ
 	CCamera* m_pCamera;								//カメラ
 	XAUDIO2_BUFFER* m_pBGM;							//BGMの音声データ
 	XAUDIO2_BUFFER* m_pSEHitHammer;					//SEの音声データ
