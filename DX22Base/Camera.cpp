@@ -23,6 +23,7 @@
 	・2023/11/29 振動の新仕様を全振動に反映しリファクタリング・フレームのコメントないのは書き換える予定のため takagi
 	・2023/11/30 Effekseer用に関数追加 takagi
 	・2023/12/03 位置ゲッタ作成 takagi
+	・2023/12/04 GetViewWithoutTranspose,GetProjectionWithoutTransposeの戻り値を変更 ymaashita
 
 ========================================== */
 

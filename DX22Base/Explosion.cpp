@@ -22,8 +22,9 @@
 	・2023/11/20 コンボ数配列添え字の追加 Sawada
 	・2023/11/21 初期値の設定と、遅延処理の追加 Sawada
 	・2023/11/21 ボスに一度触ったかを判定用の関数実装 Suzumura
-
 	・2023/11/21 DisplayAddTimeの中にBoooomUIの表示時間処理追加 Tei
+	・2023/12/04 爆発のエフェクトを実装 yamasita
+	・2023/12/04 爆発の仮表示3Dモデルを削除 yamasita
 
 ======================================== */
 
@@ -72,20 +73,15 @@ CExplosion::CExplosion(TPos3d<float> fPos, float fSize, float fTime, int comboNu
 {
 	//爆発オブジェクト初期化
 	m_Sphere.fRadius = fSize / 2;	// 当たり判定をセットする
-	m_3dModel = new CSphere();
 	m_Transform.fPos = fPos;		// スライムがいた場所に生成する
 	m_fExplodeTime = fTime;		// 爆発総時間をセットする
 	m_fMaxSize = fSize;			// 最大サイズをセットする
 	m_fDamage = (float)nDamage;		// 与えるダメージ量をセットする
 	m_pCamera = pCamera;		//カメラをセット
-	TPos3d<float> cameraPos = m_pCamera->GetPos();
-	m_cameraPos = { cameraPos.x, cameraPos.y, cameraPos.z };
-	m_explodeEffect = explodeEffect;
-	m_efcHnadle = LibEffekseer::GetManager()->Play(m_explodeEffect, fPos.x, fPos.y, fPos.z);
-	LibEffekseer::GetManager()->SetScale(m_efcHnadle,EXPLODE_STANDARD_SIZE * fSize, EXPLODE_STANDARD_SIZE * fSize, EXPLODE_STANDARD_SIZE * fSize);
-	LibEffekseer::GetManager()->SetSpeed(m_efcHnadle, EXPLODE_STANDARD_ONE_FRAME / fTime);
-	LibEffekseer::GetManager()->SetModelRenderer(m_efcHnadle, EXPLODE_STANDARD_ONE_FRAME / fTime);
-
+	m_explodeEffect = explodeEffect;	//エフェクトをセット
+	m_efcHnadle = LibEffekseer::GetManager()->Play(m_explodeEffect, fPos.x, fPos.y, fPos.z);	//エフェクトの開始
+	LibEffekseer::GetManager()->SetScale(m_efcHnadle,EXPLODE_STANDARD_SIZE * fSize, EXPLODE_STANDARD_SIZE * fSize, EXPLODE_STANDARD_SIZE * fSize);	//エフェクトのサイズを設定
+	LibEffekseer::GetManager()->SetSpeed(m_efcHnadle, EXPLODE_STANDARD_ONE_FRAME / fTime);		//エフェクトの再生速度を設定
 }
 
 /* ========================================
@@ -100,7 +96,6 @@ CExplosion::CExplosion(TPos3d<float> fPos, float fSize, float fTime, int comboNu
 CExplosion::~CExplosion()
 {
 
-	SAFE_DELETE(m_3dModel);	// メモリ解放
 }
 
 
@@ -138,23 +133,11 @@ void CExplosion::Update()
 =========================================== */
 void CExplosion::Draw()
 {
-	m_3dModel->SetWorld(m_Transform.GetWorldMatrixSRT());
-
-	m_3dModel->SetView(m_pCamera->GetViewMatrix());
-	m_3dModel->SetProjection(m_pCamera->GetProjectionMatrix());
-
-	//m_3dModel->Draw();	// 爆発仮3Dモデルの描画
-	m_pCamera->GetInverseViewMatrix();
-	m_pCamera->GetProjectionMatrix();
 	//エフェクトの描画
-	TPos3d<float> cameraPos = m_pCamera->GetPos();						//カメラ座標を取得
+	TPos3d<float> cameraPos = m_pCamera->GetPos();							//カメラ座標を取得
 	DirectX::XMFLOAT3 fCameraPos(cameraPos.x, cameraPos.y, cameraPos.z);	//XMFLOAT3に変換
 	LibEffekseer::SetViewPosition(fCameraPos);								//カメラ座標をセット
 	LibEffekseer::SetCameraMatrix(m_pCamera->GetViewWithoutTranspose(), m_pCamera->GetProjectionWithoutTranspose());	//転置前のviewとprojectionをセット
-
-	Effekseer::Vector3D vec = LibEffekseer::GetManager()->GetLocation(m_efcHnadle);
-	std::string txt = "X = " + std::to_string(vec.X) + "\nY = " + std::to_string(vec.Y) + "\nZ = " + std::to_string(vec.Z);
-	DirectWrite::DrawString(txt, DirectX::XMFLOAT2(0.0f,200.0f));
 }
 
 
