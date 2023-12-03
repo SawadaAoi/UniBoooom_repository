@@ -373,17 +373,30 @@ const int FRAME_STOP_DEATH = 999;	//ストップ：死　のフレーム数
 
 
 // 影 ====================================================================
-const float PI = 3.14159f;					// 円周率
-const float PLAYER_SHADOW_SCALE = 1.5f;		// プレイヤーの影の大きさ
-const float LEVEL_1_SHADOW_SCALE = 1.0f;	// スライム＿レベル１の影の大きさ
-const float LEVEL_2_SHADOW_SCALE = 2.5f;	// スライム＿レベル２の影の大きさ
-const float LEVEL_3_SHADOW_SCALE = 3.5f;	// スライム＿レベル３の影の大きさ
-const float LEVEL_4_SHADOW_SCALE = 8.0f;	// スライム＿レベル４の影の大きさ
-const float LEVEL_FLAME_SHADOW_SCALE = 2.0f;// スライム＿フレイムの影の大きさ
+const float PI = 3.14159f;						// 円周率
+const float PLAYER_SHADOW_SCALE = 1.5f;			// プレイヤーの影の大きさ
+const float LEVEL_1_SHADOW_SCALE = 1.0f;		// スライム＿レベル１の影の大きさ
+const float LEVEL_2_SHADOW_SCALE = 2.5f;		// スライム＿レベル２の影の大きさ
+const float LEVEL_3_SHADOW_SCALE = 3.5f;		// スライム＿レベル３の影の大きさ
+const float LEVEL_4_SHADOW_SCALE = 8.0f;		// スライム＿レベル４の影の大きさ
+const float LEVEL_FLAME_SHADOW_SCALE = 2.0f;	// スライム＿フレイムの影の大きさ
 const float BOSS_1_SHADOW_SCALE = 12.0f;		// ボス１の影の大きさ
-// ゲーム開始時スタート表示 ==================================================
-const float TIME_SIZE_MIN = 50;
 
+// ゲーム開始時スタート表示 ==================================================
+const float TIME_WAIT_START = 75;				// ゲーム開始合図表示待ち時間
+const int SWITCH_ANIM_START = 1;				// スタートアニメーション切り替え時間
+const int START_SCALE_X = SCREEN_WIDTH_;		// UIの横幅
+const int START_SCALE_Y = SCREEN_HEIGHT_;		// UIの縦幅
+const float START_POS_X = SCREEN_WIDTH_ / 2;	// 表示位置のX座標
+const float START_POS_Y = SCREEN_HEIGHT_ / 2;	// 表示位置のY座標
+
+// ゲームクリア、ゲームオーバー表示 ==================================================
+const int SWITCH_ANIM_CLEAR = 1;				// 成功アニメーション切り替え時間
+const int SWITCH_ANIM_OVER = 1;					// 失敗アニメーション切り替え時間
+const int STATE_SCALE_X = SCREEN_WIDTH_;		// UIの横幅
+const int STATE_SCALE_Y = SCREEN_HEIGHT_;		// UIの縦幅
+const float STATE_POS_X = SCREEN_WIDTH_ / 2;	// 表示位置のX座標
+const float STATE_POS_Y = SCREEN_HEIGHT_ / 2;	// 表示位置のY座標
 
 // SE ====================================================================
 const float HIT_HAMMER_VOLUME = 0.3f;

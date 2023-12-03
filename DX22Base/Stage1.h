@@ -40,6 +40,12 @@ private:
 	bool m_bStart;		// ゲームを開始させるか判定
 	const int* m_pPlayerHp;		// プレイヤーHP取得用
 	const int* m_pTimeCnt;		// 制限時間取得用
+
+	TPos2d<float> m_fUVPos;	// UV座標保存用
+	int m_nCntSwitch;	// アニメーション切り替えカウント用
+	int m_nCntW;		// 横カウント用
+	int m_nCntH;		// 縦カウント用
+	bool m_bStartSign;		// スタート合図開始フラグ
 };	//ステージ1
 
 #endif	//!__STAGE1_H__

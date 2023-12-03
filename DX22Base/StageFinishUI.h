@@ -17,6 +17,7 @@
 
 // =============== インクルード ===================
 #include "Texture.h"
+#include "GameParameter.h"
 
 class CStageFinish
 {
@@ -39,13 +40,18 @@ public:
 	bool GetDispFlg();
 
 private:
-	void EditSprite();
+	void EditSprite(int);
 
 	bool m_bDispFlg;
 	GAME_STATE m_eGameState;
 	const int* m_pPlayerHp;
 	const int* m_pTimeCnt;
 	bool m_bDeleteDisp;
+
+	TPos2d<float> m_fUVPos;	// UV座標保存用
+	int m_nCntSwitch;	// アニメーション切り替えカウント用
+	int m_nCntW;		// 横カウント用
+	int m_nCntH;		// 縦カウント用
 
 	Texture* m_pTexGameClear;
 	Texture* m_pTexGameOver;

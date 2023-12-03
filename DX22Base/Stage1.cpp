@@ -17,7 +17,7 @@
 	・2023/11/21 ゲーム開始時テクスチャ表示 nieda
 	・2023/11/22 動くよう足りない変数など追加 nieda
 	・2023/11/27 バグ修正 takagi
-  ・2023/11/29 ヒットストップ仕様変更対応 takagi
+	・2023/11/29 ヒットストップ仕様変更対応 takagi
 
 ========================================== */
 
@@ -27,6 +27,7 @@
 #include "Input.h"
 #include "Line.h"
 #include "HitStop.h"	//ヒットストップ
+#include "Fade.h"
 
 // =============== デバッグモード ===================
 #define USE_CAMERA_VIBRATION (true)
@@ -49,6 +50,14 @@
 #include "Input.h"
 #endif
 
+// =============== 定数定義 =======================
+const int STARTSIGN_UV_NUM_X = 6;	// テクスチャの横の分割数
+const int STARTSIGN_UV_NUM_Y = 9;	// テクスチャの縦の分割数
+
+const float STARTSIGN_UV_POS_X = 1.0f / STARTSIGN_UV_NUM_X;		// 横のUV座標計算用
+const float STARTSIGN_UV_POS_Y = 1.0f / STARTSIGN_UV_NUM_Y;		// 縦のUV座標計算用
+
+
 /* ========================================
 	コンストラクタ
 	----------------------------------------
@@ -63,6 +72,11 @@ CStage1::CStage1()
 	, m_fSize(0.0f)
 	, m_fResize(10.0f)
 	, m_bStart(false)
+	, m_fUVPos(0.0f, 0.0f)
+	, m_nCntSwitch(0)
+	, m_nCntW(0)
+	, m_nCntH(0)
+	, m_bStartSign(false)
 {
 	// 頂点シェーダの読込
 	m_pVs = new VertexShader();
@@ -71,7 +85,7 @@ CStage1::CStage1()
 	}
 
 	m_pTexture = new Texture();
-	if (FAILED(m_pTexture->Create("Assets/Texture/start_sign.png")))
+	if (FAILED(m_pTexture->Create("Assets/Texture/start_sprite.png")))
 	{
 		MessageBox(NULL, "スタートテキスト読み込み", "Error", MB_OK);
 	}
@@ -247,14 +261,37 @@ void CStage1::Update()
 	{
 		// タイトルから遷移後すぐゲーム開始にならないようにする処理
 		m_nNum++;
-		
-		if (m_nNum < 120)
+
+		if (m_nNum > TIME_WAIT_START)	// フェード終了まで待って合図再生
 		{
-			m_fSize += m_fResize;
+			m_bStartSign = true;
 		}
-		else
+
+		if (m_bStartSign)	// フェードが終了したらアニメーション再生開始
 		{
-			m_bStart = true;
+			m_nCntSwitch++;
+		}
+		
+		if (m_nCntSwitch > 1)	// 一定の間隔で切り替える
+		{
+			m_nCntSwitch = 0;		// カウントを初期化
+
+			m_fUVPos.x = (STARTSIGN_UV_POS_X)* m_nCntW;		// 横方向のUV座標計算
+			m_fUVPos.y = (STARTSIGN_UV_POS_Y)* m_nCntH;		// 縦方向のUV座標計算
+
+			++m_nCntW;		// 横方向に座標を1つ進める
+			if (m_nCntW == STARTSIGN_UV_NUM_X)	// テクスチャの右端まで行ったら 
+			{
+				m_nCntW = 0;	// カウントを初期化
+				++m_nCntH;		// 縦に1進める
+			}
+
+			if (m_nCntH == STARTSIGN_UV_NUM_Y)		// テクスチャの下端まで行ったら
+			{
+				m_nCntH = 0;	// カウントを初期化
+				m_nCntW = 0;
+				m_bStart = true;	// アニメーション再生をOFF
+			}
 		}
 	}
 	else
@@ -334,8 +371,30 @@ void CStage1::Draw()
 	// スタート合図描画
 	if (!m_bStart)
 	{
-		// あまりにも適当に作ったので実装するならちゃんと書きます
-		Draw2d(640.0f, 360.0f, m_fSize, m_fSize, m_pTexture);
+		DirectX::XMFLOAT4X4 mat[3];
+
+		// ワールド行列はXとYのみを考慮して作成
+		DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(START_POS_X, START_POS_Y, 0.0f);	// ワールド行列（必要に応じて変数を増やしたり、複数処理を記述したりする）
+		DirectX::XMStoreFloat4x4(&mat[0], DirectX::XMMatrixTranspose(world));
+
+		// ビュー行列は2Dだとカメラの位置があまり関係ないので、単位行列を設定する
+		DirectX::XMStoreFloat4x4(&mat[1], DirectX::XMMatrixIdentity());
+
+		// プロジェクション行列には2Dとして表示するための行列を設定する
+		// この行列で2Dのスクリーンの大きさが決まる
+		DirectX::XMMATRIX proj = DirectX::XMMatrixOrthographicOffCenterLH(VIEW_LEFT, VIEW_RIGHT, VIEW_BOTTOM, VIEW_TOP, NEAR_Z, FAR_Z);	// 平衡投影行列を設定
+		DirectX::XMStoreFloat4x4(&mat[2], DirectX::XMMatrixTranspose(proj));
+
+
+		// スプライトの設定
+		Sprite::SetWorld(mat[0]);
+		Sprite::SetView(mat[1]);
+		Sprite::SetProjection(mat[2]);
+		Sprite::SetSize(DirectX::XMFLOAT2(START_SCALE_X, -START_SCALE_Y));
+		Sprite::SetUVPos(DirectX::XMFLOAT2(m_fUVPos.x, m_fUVPos.y));
+		Sprite::SetUVScale(DirectX::XMFLOAT2(STARTSIGN_UV_POS_X, STARTSIGN_UV_POS_Y));
+		Sprite::SetTexture(m_pTexture);
+		Sprite::Draw();
 	}
 
 	//床の描画
