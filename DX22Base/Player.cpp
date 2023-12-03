@@ -32,6 +32,7 @@
 	・2023/11/28 ダメージ処理に受けるダメージ量を追加 Sawada
 	・2023/11/28 回復処理を追加 yamashita
 	・2023/11/29 ハンマーのインターバル追加 yamamoto
+	・2023/12/03 カメラの更新を担うため、ポインタのconstを仕方なく除去 takagi
   
 ======================================== */
 
@@ -173,6 +174,9 @@ void CPlayer::Update()
 		{
 			MoveController();
 		}
+
+		// カメラ更新
+		m_pCamera->Update();	//位置更新後、それを即座にカメラに反映させる
 
 
 		// スペースキーを押した時、またはコントローラのBボタンを押した時 && ハンマー間隔時間経過済み
@@ -450,7 +454,7 @@ int* CPlayer::GetHpPtr()
    ----------------------------------------
    戻値：なし
 ======================================== */
-void CPlayer::SetCamera(const CCamera * pCamera)
+void CPlayer::SetCamera(CCamera * pCamera)
 {
 	m_pCamera = pCamera;	//中身は変えられないけどポインタはかえれるのでヨシ！
 	m_pHammer->SetCamera(m_pCamera);
