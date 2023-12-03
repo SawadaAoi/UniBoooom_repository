@@ -89,7 +89,7 @@ CCombo::CCombo()
 =========================================== */
 CCombo::~CCombo()
 {
-	for (int i = 0; i < 2; ++i)
+	for (int i = 0; i < 1; ++i)
 	{
 		SAFE_DELETE(m_pTextureNum[i]);
 	}

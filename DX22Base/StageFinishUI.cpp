@@ -19,19 +19,12 @@
 #include "StageFinishUI.h"
 #include "DirectWrite.h"
 #include "Sprite.h"
+#include "GameParameter.h"
 #include "Input.h"
 
 // =============== 定数定義 =======================
-const int GAMECLEAR_UV_NUM_X = 5;	// テクスチャの横の分割数
-const int GAMECLEAR_UV_NUM_Y = 9;	// テクスチャの縦の分割数
-const int GAMEOVER_UV_NUM_X = 6;	// テクスチャの横の分割数
-const int GAMEOVER_UV_NUM_Y = 9;	// テクスチャの縦の分割数
-
-const float GAMECLEAR_UV_POS_X = 1.0f / GAMECLEAR_UV_NUM_X;		// 横のUV座標計算用
-const float GAMECLEAR_UV_POS_Y = 1.0f / GAMECLEAR_UV_NUM_Y;		// 縦のUV座標計算用
-const float GAMEOVER_UV_POS_X = 1.0f / GAMEOVER_UV_NUM_X;		// 横のUV座標計算用
-const float GAMEOVER_UV_POS_Y = 1.0f / GAMEOVER_UV_NUM_Y;		// 縦のUV座標計算用
-
+const int SCALE_X = 700;	//UIの横幅
+const int SCALE_Y = 300;	//UIの縦幅
 
 /* ========================================
 	コンストラクタ
@@ -51,10 +44,6 @@ CStageFinish::CStageFinish(int* pPlayerHp, int* pTimeCnt)
 	, m_bDeleteDisp(false)
 	, m_pTexGameClear(nullptr)
 	, m_pTexGameOver(nullptr)
-	, m_fUVPos(0.0f, 0.0f)
-	, m_nCntSwitch(0)
-	, m_nCntW(0)
-	, m_nCntH(0)
 {
 	m_pPlayerHp = pPlayerHp;	//プレイヤーのHPのポインタを取得
 	m_pTimeCnt = pTimeCnt;		//制限時間のポインタを取得
@@ -62,7 +51,7 @@ CStageFinish::CStageFinish(int* pPlayerHp, int* pTimeCnt)
 	//ゲームクリアのテクスチャ読み込む
 	m_pTexGameClear = new Texture;
 
-	if (FAILED(m_pTexGameClear->Create("Assets/Texture/StageFinish/finish.png")))
+	if (FAILED(m_pTexGameClear->Create("Assets/Texture/StageFinish/GameClear.png")))
 	{
 		MessageBox(NULL, "GameClear.png", "Error", MB_OK);
 	}
@@ -70,7 +59,7 @@ CStageFinish::CStageFinish(int* pPlayerHp, int* pTimeCnt)
 
 	//ゲームオーバーのテクスチャ読み込む
 	m_pTexGameOver = new Texture;
-	if (FAILED(m_pTexGameOver->Create("Assets/Texture/StageFinish/GameOver.png")))
+	if (FAILED(m_pTexGameOver->Create("Assets/Texture/StageFinish/game_over.png")))
 	{
 		MessageBox(NULL, "game_over.png", "Error", MB_OK);
 	}
@@ -106,6 +95,7 @@ void CStageFinish::Update()
 	//※ゲーム終了後にクリアとゲームオーバーが勝手に切り替わらないように「&&」で「GAME_PLAY」状態だったらを入れた
 	if (0 >= *m_pPlayerHp && m_eGameState == GAME_PLAY)
 	{	//タイマーが0になったらクリア状態に遷移
+
 		m_bDispFlg = true;
 		m_eGameState = GAME_OVER;
 	}
@@ -113,61 +103,6 @@ void CStageFinish::Update()
 	{	//体力が0になったらゲームオーバー状態に遷移
 		m_bDispFlg = true;
 		m_eGameState = GAME_CLEAR;
-	}
-
-	if (m_eGameState == GAME_OVER)
-	{
-		// タイトルから遷移後すぐゲーム開始にならないようにする処理
-		if(!m_bDeleteDisp){ m_nCntSwitch++; }
-
-		if (m_nCntSwitch > SWITCH_ANIM_OVER)
-		{
-			m_nCntSwitch = 0;		// カウントを初期化
-
-			m_fUVPos.x = (GAMEOVER_UV_POS_X)* m_nCntW;		// 横方向のUV座標計算
-			m_fUVPos.y = (GAMEOVER_UV_POS_Y)* m_nCntH;		// 縦方向のUV座標計算
-
-			++m_nCntW;		// 横方向に座標を1つ進める
-			if (m_nCntW == GAMEOVER_UV_NUM_X)	// テクスチャの右端まで行ったら 
-			{
-				m_nCntW = 0;	// カウントを初期化
-				++m_nCntH;		// 縦に1進める
-			}
-
-			if (m_nCntH == GAMEOVER_UV_NUM_Y)		// テクスチャの下端まで行ったら
-			{
-				m_nCntH = 0;	// カウントを初期化
-				m_nCntW = 0;
-				m_bDeleteDisp = true;
-			}
-		}
-	}
-	else if (m_eGameState == GAME_CLEAR)
-	{
-		// タイトルから遷移後すぐゲーム開始にならないようにする処理
-		if (!m_bDeleteDisp) { m_nCntSwitch++; }
-
-		if (m_nCntSwitch > SWITCH_ANIM_CLEAR)
-		{
-			m_nCntSwitch = 0;		// カウントを初期化
-
-			m_fUVPos.x = (GAMECLEAR_UV_POS_X)* m_nCntW;		// 横方向のUV座標計算
-			m_fUVPos.y = (GAMECLEAR_UV_POS_Y)* m_nCntH;		// 縦方向のUV座標計算
-
-			++m_nCntW;		// 横方向に座標を1つ進める
-			if (m_nCntW == GAMECLEAR_UV_NUM_X)	// テクスチャの右端まで行ったら 
-			{
-				m_nCntW = 0;	// カウントを初期化
-				++m_nCntH;		// 縦に1進める
-			}
-
-			if (m_nCntH == GAMECLEAR_UV_NUM_Y)		// テクスチャの下端まで行ったら
-			{
-				m_nCntH = 0;	// カウントを初期化
-				m_nCntW = 0;
-				m_bDeleteDisp = true;
-			}
-		}
 	}
 
 	//表示が邪魔な時に消せるようにする	<=TODO　最後には消去する
@@ -210,14 +145,14 @@ void CStageFinish::Draw()
 	case (GAME_CLEAR):	//ゲームクリアの描画
 
 		//行列変換を行ってからテクスチャをセットして描画
-		EditSprite(GAME_CLEAR);
+		EditSprite();
 		Sprite::SetTexture(m_pTexGameClear);
 		Sprite::Draw();
 		break;
 	case (GAME_OVER):	//ゲームオーバーの描画
 
 		//行列変換を行ってからテクスチャをセットして描画
-		EditSprite(GAME_OVER);
+		EditSprite();
 		Sprite::SetTexture(m_pTexGameOver);
 		Sprite::Draw();
 		break;
@@ -247,12 +182,12 @@ bool CStageFinish::GetDispFlg()
 	----------------------------------------
 	戻値：なし
 =========================================== */
-void CStageFinish::EditSprite(int nState)
+void CStageFinish::EditSprite()
 {
 	DirectX::XMFLOAT4X4 matrix[3];
 
 	//ワールド行列はXとYのみを考慮して作成
-	DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(STATE_POS_X, STATE_POS_Y, 0.0f);
+	DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(SCREEN_WIDTH_ / 2, SCREEN_HEIGHT_ / 2, 0.0f);
 	DirectX::XMStoreFloat4x4(&matrix[0], DirectX::XMMatrixTranspose(world));
 
 	//ビュー行列は2Dだとカメラの位置があまり関係ないので、単位行列を設定する（単位行列は後日
@@ -267,15 +202,9 @@ void CStageFinish::EditSprite(int nState)
 	Sprite::SetWorld(matrix[0]);
 	Sprite::SetView(matrix[1]);
 	Sprite::SetProjection(matrix[2]);
-	Sprite::SetSize(DirectX::XMFLOAT2(STATE_SCALE_X, -STATE_SCALE_Y));
-	if (nState == GAME_OVER)
-	{
-		Sprite::SetUVPos(DirectX::XMFLOAT2(m_fUVPos.x, m_fUVPos.y));
-		Sprite::SetUVScale(DirectX::XMFLOAT2(GAMEOVER_UV_POS_X, GAMEOVER_UV_POS_Y));
-	}
-	else if (nState == GAME_CLEAR)
-	{
-		Sprite::SetUVPos(DirectX::XMFLOAT2(m_fUVPos.x, m_fUVPos.y));
-		Sprite::SetUVScale(DirectX::XMFLOAT2(GAMECLEAR_UV_POS_X, GAMECLEAR_UV_POS_Y));
-	}
+	Sprite::SetSize(DirectX::XMFLOAT2(SCALE_X, -SCALE_Y));
+
+	//変更は無いがSpriteが静的なため他の所での変更を反映されないために戻す
+	Sprite::SetUVPos(DirectX::XMFLOAT2(0.0f, 0.0f));
+	Sprite::SetUVScale(DirectX::XMFLOAT2(1.0f, 1.0f));
 }
