@@ -16,6 +16,7 @@
 	・2023/11/10 パラメタ修正 takagi
 	・2023/11/18 振動フラグ処理 takagi
 	・2023/11/29 大文字・小文字の修正 takagi
+	・2023/12/03 位置ゲッタ用調整 takagi
 
 ========================================== */
 
@@ -35,6 +36,8 @@
 CCameraChase::CCameraChase(const TPos3d<float>* pPos)
 	:m_pTarget(pPos)	//追跡対象(追跡のみを行い値を変更できないようconst修飾子にしている)
 {
+	// =============== 初期化 ===================
+	UpdatePos();	//初期対象位置を自身位置に反映
 }
 
 /* ========================================
@@ -53,7 +56,7 @@ CCameraChase::~CCameraChase()
 /* ========================================
 	更新関数
 	-------------------------------------
-	内容：更新処理
+	内容：更新処理　※このオブジェクトより先に追跡対象の更新必要あり
 	-------------------------------------
 	引数1：なし
 	-------------------------------------
@@ -61,54 +64,47 @@ CCameraChase::~CCameraChase()
 =========================================== */
 void CCameraChase::Update()
 {
+	// =============== 情報更新 ===================
+	UpdatePos();	//位置更新
+
 	// =============== フラグ処理 ===================
 	HandleFlag();	//フラグ内容処理
 }
 
 /* ========================================
-	ビュー行列取得関数
+	転置無しプロジェクション行列取得関数
 	-------------------------------------
-	内容：カメラのビュー行列を提供
+	内容：転置していないプロジェクション行列(2D固定)を提供
 	-------------------------------------
 	引数1：なし
 	-------------------------------------
 	戻値：作成した行列
 =========================================== */
-DirectX::XMFLOAT4X4 CCameraChase::GetViewMatrix() const
+DirectX::XMFLOAT4X4 CCameraChase::GetViewWithoutTranspose() const
 {
-	if (!m_pTarget)
-	{
-		return DirectX::XMFLOAT4X4();
-	}
-
-	// =============== 変数宣言 ===================
-	DirectX::XMFLOAT4X4 Mat;	//行列格納用
-
-	// =============== ビュー行列の計算 ===================
-	DirectX::XMStoreFloat4x4(&Mat, DirectX::XMMatrixTranspose(
-		DirectX::XMMatrixLookAtLH(
-			DirectX::XMVectorSet(m_pTarget->x + m_fOffsetVibrateEye.x, m_pTarget->y + m_fRadius * sinf(m_fAngle),
-				m_pTarget->z + m_fOffsetVibrateEye.y - m_fRadius * cosf(m_fAngle), 0.0f),							//カメラ位置
-			DirectX::XMVectorSet(m_pTarget->x + m_fOffsetVibrateLook.x, m_pTarget->y,
-				m_pTarget->z + m_fOffsetVibrateLook.y, 0.0f),														//注視点
-			DirectX::XMVectorSet(m_fUp.x, m_fUp.y, m_fUp.z, 0.0f)													//アップベクトル
-	)));	//ビュー変換
-
+	DirectX::XMFLOAT4X4 view;
+	DirectX::XMStoreFloat4x4(&view, DirectX::XMMatrixLookAtLH(
+		DirectX::XMVectorSet(m_fPos.x, m_fPos.y, m_fPos.z, 0.0f),					//カメラ位置
+		DirectX::XMVectorSet(m_pTarget->x + m_fOffsetVibrateLook.x, m_pTarget->y,
+			m_pTarget->z + m_fOffsetVibrateLook.y, 0.0f),							//注視点
+		DirectX::XMVectorSet(m_fUp.x, m_fUp.y, m_fUp.z, 0.0f)));						//アップベクトル
 	// =============== 提供 ===================
-	return Mat;	//行列提供
+	return view;
 }
 
 /* ========================================
-	追跡中のカメラ座標取得関数
+	位置更新関数
 	-------------------------------------
-	内容：追跡中のカメラ座標取得
+	内容：位置更新処理　※初期時、Turget位置反映用
 	-------------------------------------
 	引数1：なし
 	-------------------------------------
-	戻値：追跡中のカメラ座標
+	戻値：なし
 =========================================== */
-TPos3d<float> CCameraChase::GetChasePos()const
+void CCameraChase::UpdatePos()
 {
-	return TPos3d<float>(m_pTarget->x + m_fOffsetVibrateEye.x, m_pTarget->y + m_fRadius * sinf(m_fAngle),
-		m_pTarget->z + m_fOffsetVibrateEye.y - m_fRadius * cosf(m_fAngle));
+	// =============== 位置更新 ===================
+	m_fPos.x = m_pTarget->x + m_fOffsetVibrateEye.x;								//カメラx位置
+	m_fPos.y = m_pTarget->y + m_fRadius * sinf(m_fAngle);							//カメラy位置
+	m_fPos.z = m_pTarget->z + m_fOffsetVibrateEye.y - m_fRadius * cosf(m_fAngle);	//カメラz位置
 }

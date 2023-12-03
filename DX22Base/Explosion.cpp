@@ -40,9 +40,9 @@
 //const float MAX_DISPLAY_TIME = 3.0f * 60;	// 爆発持続秒数
 const float EXPAND_QUICK_RATE = 0.2f;   // 膨張加速割合 
 const int DELAY_TIME = 0.5f * 60;
-
-
 #endif
+const float EXPLODE_STANDARD_SIZE = 0.15f;
+const float EXPLODE_STANDARD_ONE_FRAME = 1.38 * 60.0;
 
 /* ========================================
 	コンストラクタ関数
@@ -82,7 +82,9 @@ CExplosion::CExplosion(TPos3d<float> fPos, float fSize, float fTime, int comboNu
 	m_cameraPos = { cameraPos.x, cameraPos.y, cameraPos.z };
 	m_explodeEffect = explodeEffect;
 	m_efcHnadle = LibEffekseer::GetManager()->Play(m_explodeEffect, fPos.x, fPos.y, fPos.z);
-	LibEffekseer::GetManager()->SetScale(m_efcHnadle,0.3f, 0.3f, 0.3f);
+	LibEffekseer::GetManager()->SetScale(m_efcHnadle,EXPLODE_STANDARD_SIZE * fSize, EXPLODE_STANDARD_SIZE * fSize, EXPLODE_STANDARD_SIZE * fSize);
+	LibEffekseer::GetManager()->SetSpeed(m_efcHnadle, EXPLODE_STANDARD_ONE_FRAME / fTime);
+	LibEffekseer::GetManager()->SetModelRenderer(m_efcHnadle, EXPLODE_STANDARD_ONE_FRAME / fTime);
 
 }
 
@@ -147,8 +149,9 @@ void CExplosion::Draw()
 	//エフェクトの描画
 	TPos3d<float> cameraPos = m_pCamera->GetPos();						//カメラ座標を取得
 	DirectX::XMFLOAT3 fCameraPos(cameraPos.x, cameraPos.y, cameraPos.z);	//XMFLOAT3に変換
-	LibEffekseer::SetViewPosition(m_cameraPos);								//カメラ座標をセット
+	LibEffekseer::SetViewPosition(fCameraPos);								//カメラ座標をセット
 	LibEffekseer::SetCameraMatrix(m_pCamera->GetViewWithoutTranspose(), m_pCamera->GetProjectionWithoutTranspose());	//転置前のviewとprojectionをセット
+
 	Effekseer::Vector3D vec = LibEffekseer::GetManager()->GetLocation(m_efcHnadle);
 	std::string txt = "X = " + std::to_string(vec.X) + "\nY = " + std::to_string(vec.Y) + "\nZ = " + std::to_string(vec.Z);
 	DirectWrite::DrawString(txt, DirectX::XMFLOAT2(0.0f,200.0f));

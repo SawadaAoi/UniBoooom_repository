@@ -22,7 +22,7 @@
 	・2023/11/28 振動の仕様変更 takagi
 	・2023/11/29 振動の新仕様を全振動に反映しリファクタリング・フレームのコメントないのは書き換える予定のため takagi
 	・2023/11/30 Effekseer用に関数追加 takagi
-	・2023/12/02 Effekseer用にカメラ座標取得関数を追加 yamashita
+	・2023/12/03 位置ゲッタ作成 takagi
 
 ========================================== */
 
@@ -97,19 +97,19 @@ const std::vector<float> TABLE_AMPITUDE_STRONG[CCamera::E_DIRECT_VIBRATE_MAX] = 
 =========================================== */
 CCamera::CCamera()
 	:m_ucFlag(0x00)												//フラグ
-	,m_fPos(INIT_POS)											//位置
-	,m_fLook(INIT_LOOK)											//注視点
-	,m_fUp(INIT_UP_VECTOR)										//上方ベクトル
-	,m_fAngle(INIT_ANGLE)										//角度
-	,m_fNear(INIT_NEAR)											//画面手前
-	,m_fFar(INIT_FAR)											//画面奥
-	,m_fRadius(INIT_RADIUS)										//注視点とカメラの距離
-	,m_fOffsetVibrateEye(0.0f)									//カメラ位置振動
-	,m_fOffsetVibrateLook(0.0f)									//注視点振動
-	,m_nFrameWeak(INIT_FRAME_WEAK)								//フレーム数：弱振動	x:横, y:縦
-	,m_nFrameStrong(INIT_FRAME_STRONG)							//フレーム数：強振動	x:横, y:縦
-	,m_fChangeRateAmplitudeWeak(INIT_CHANGE_RATE_AMPLITUDE)		//振幅変動率：弱		x:横, y:縦
-	,m_fChangeRateAmplitudeStrong(INIT_CHANGE_RATE_AMPLITUDE)	//振幅変動率：強		x:横, y:縦
+	, m_fPos(INIT_POS)											//位置
+	, m_fLook(INIT_LOOK)											//注視点
+	, m_fUp(INIT_UP_VECTOR)										//上方ベクトル
+	, m_fAngle(INIT_ANGLE)										//角度
+	, m_fNear(INIT_NEAR)											//画面手前
+	, m_fFar(INIT_FAR)											//画面奥
+	, m_fRadius(INIT_RADIUS)										//注視点とカメラの距離
+	, m_fOffsetVibrateEye(0.0f)									//カメラ位置振動
+	, m_fOffsetVibrateLook(0.0f)									//注視点振動
+	, m_nFrameWeak(INIT_FRAME_WEAK)								//フレーム数：弱振動	x:横, y:縦
+	, m_nFrameStrong(INIT_FRAME_STRONG)							//フレーム数：強振動	x:横, y:縦
+	, m_fChangeRateAmplitudeWeak(INIT_CHANGE_RATE_AMPLITUDE)		//振幅変動率：弱		x:横, y:縦
+	, m_fChangeRateAmplitudeStrong(INIT_CHANGE_RATE_AMPLITUDE)	//振幅変動率：強		x:横, y:縦
 {
 }
 
@@ -186,12 +186,7 @@ DirectX::XMFLOAT4X4 CCamera::GetViewMatrix() const
 	DirectX::XMFLOAT4X4 Mat;
 
 	// =============== ビュー行列の計算 ===================
-	DirectX::XMStoreFloat4x4(&Mat, DirectX::XMMatrixTranspose(
-		DirectX::XMMatrixLookAtLH(
-			DirectX::XMVectorSet(m_fPos.x, m_fPos.y, m_fPos.z, 0.0f),		//カメラ位置
-			DirectX::XMVectorSet(m_fLook.x, m_fLook.y, m_fLook.z, 0.0f),	//注視点
-			DirectX::XMVectorSet(m_fUp.x, m_fUp.y, m_fUp.z, 0.0f)))			//アップベクトル
-	);	//ビュー変換
+	DirectX::XMStoreFloat4x4(&Mat, DirectX::XMMatrixTranspose(DirectX::XMLoadFloat4x4(&GetViewWithoutTranspose())));	//ビュー転置
 
 	// =============== 提供 ===================
 	return Mat;	//行列提供
@@ -210,19 +205,16 @@ DirectX::XMMATRIX CCamera::GetInverseViewMatrix() const
 {
 	// =============== 変数宣言 ===================
 	DirectX::XMMATRIX Mat;			//行列格納用
-	DirectX::XMFLOAT4X4* pFlt44 = nullptr;	//行列編集用
+	DirectX::XMFLOAT4X4 pFlt44;	//行列編集用
 
 	// =============== ビュー行列の計算 ===================
-	Mat = DirectX::XMMatrixLookAtLH(
-		DirectX::XMVectorSet(m_fPos.x, m_fPos.y, m_fPos.z, 0.0f),		//カメラ位置
-		DirectX::XMVectorSet(m_fLook.x, m_fLook.y, m_fLook.z, 0.0f),	//注視点
-		DirectX::XMVectorSet(m_fUp.x, m_fUp.y, m_fUp.z, 0.0f)			//アップベクトル
-		);	//ビュー変換
+	DirectX::XMFLOAT4X4 view = GetViewWithoutTranspose();
+	Mat = DirectX::XMLoadFloat4x4(&view);	//ビュー変換
 
 	// =============== 行列編集 ===================
-	DirectX::XMStoreFloat4x4(pFlt44, Mat);				//行列編集用に変換
-	pFlt44->_41 = pFlt44->_42 = pFlt44->_43 = 0.0f;		//移動値打消し
-	Mat = DirectX::XMLoadFloat4x4(pFlt44);				//行列更新
+	DirectX::XMStoreFloat4x4(&pFlt44, Mat);				//行列編集用に変換
+	pFlt44._41 = pFlt44._42 = pFlt44._43 = 0.0f;		//移動値打消し
+	Mat = DirectX::XMLoadFloat4x4(&pFlt44);				//行列更新
 
 	// =============== 提供 ===================
 	return DirectX::XMMatrixInverse(nullptr, Mat);	//逆行列
@@ -251,7 +243,7 @@ DirectX::XMFLOAT4X4 CCamera::GetProjectionMatrix(const E_DRAW_TYPE& eDraw) const
 			DirectX::XMMatrixOrthographicOffCenterLH(0.0f, SCREEN_WIDTH, 0.0f, SCREEN_HEIGHT, m_fNear, m_fFar)));	//左下を原点(0,0)とした座標系
 		break;	//分岐処理終了
 
-    // =============== 3D表示 ===================
+	// =============== 3D表示 ===================
 	case E_DRAW_TYPE_3D:	//3Dのプロジェクション座標作成
 		DirectX::XMStoreFloat4x4(&mat, DirectX::XMMatrixTranspose(
 			DirectX::XMMatrixPerspectiveFovLH(m_fAngle, ASPECT, m_fNear, m_fFar)));	//3Dプロジェクション変換
@@ -274,11 +266,10 @@ DirectX::XMFLOAT4X4 CCamera::GetProjectionMatrix(const E_DRAW_TYPE& eDraw) const
 DirectX::XMFLOAT4X4 CCamera::GetViewWithoutTranspose() const
 {
 	DirectX::XMFLOAT4X4 view;
-	DirectX::XMStoreFloat4x4(&view,
-		DirectX::XMMatrixLookAtLH(
-			DirectX::XMVectorSet(m_fPos.x, m_fPos.y, m_fPos.z, 0.0f),		//カメラ位置
-			DirectX::XMVectorSet(m_fLook.x, m_fLook.y, m_fLook.z, 0.0f),	//注視点
-			DirectX::XMVectorSet(m_fUp.x, m_fUp.y, m_fUp.z, 0.0f)));			//アップベクトル
+	DirectX::XMStoreFloat4x4(&view, DirectX::XMMatrixLookAtLH(
+		DirectX::XMVectorSet(m_fPos.x, m_fPos.y, m_fPos.z, 0.0f),		//カメラ位置
+		DirectX::XMVectorSet(m_fLook.x, m_fLook.y, m_fLook.z, 0.0f),	//注視点
+		DirectX::XMVectorSet(m_fUp.x, m_fUp.y, m_fUp.z, 0.0f)));			//アップベクトル
 	// =============== 提供 ===================
 	return view;	//ビュー座標系
 }
@@ -286,7 +277,7 @@ DirectX::XMFLOAT4X4 CCamera::GetViewWithoutTranspose() const
 /* ========================================
 	転置無しプロジェクション行列取得関数
 	-------------------------------------
-	内容：転置していないプロジェクション行列を提供
+	内容：転置していないプロジェクション行列(2D固定)を提供
 	-------------------------------------
 	引数1：なし
 	-------------------------------------
@@ -294,25 +285,25 @@ DirectX::XMFLOAT4X4 CCamera::GetViewWithoutTranspose() const
 =========================================== */
 DirectX::XMFLOAT4X4 CCamera::GetProjectionWithoutTranspose() const
 {
-	DirectX::XMFLOAT4X4 project;
-	DirectX::XMStoreFloat4x4(&project, 
-		DirectX::XMMatrixPerspectiveFovLH(m_fAngle, ASPECT, m_fNear, m_fFar));	//左下を原点(0,0)とした座標系
+	DirectX::XMFLOAT4X4 projection;
+	DirectX::XMStoreFloat4x4(&projection, DirectX::XMMatrixPerspectiveFovLH(m_fAngle, ASPECT, m_fNear, m_fFar));
 	// =============== 提供 ===================
-	return project;
+	return projection;
 }
 
 /* ========================================
-	カメラ座標関数
+	位置ゲッタ関数
 	-------------------------------------
-	内容：カメラの座標を取得
+	内容：カメラ位置を提供
 	-------------------------------------
 	引数1：なし
 	-------------------------------------
-	戻値：カメラの座標
+	戻値：現在位置
 =========================================== */
 TPos3d<float> CCamera::GetPos() const
 {
-	return m_fPos;
+	// =============== 提供 ===================
+	return m_fPos;	//自身の現在位置
 }
 
 /* ========================================
@@ -376,11 +367,11 @@ void CCamera::HandleFlag()
 			m_fOffsetVibrateEye.x = TABLE_AMPITUDE_WEAK[E_DIRECT_VIBRATE_SIDE][std::discrete_distribution<>{
 				PROBABILITY_AMPITUDE_WEAK[E_DIRECT_VIBRATE_SIDE].begin(), PROBABILITY_AMPITUDE_WEAK[E_DIRECT_VIBRATE_SIDE].end() }(CRandom::GetEngine())]	//ランダムな振幅
 				* m_fChangeRateAmplitudeWeak.x;											//振幅補正
-			m_fOffsetVibrateLook.x = m_fOffsetVibrateEye.x + m_fOffsetVibrateEye.x;	//注視点振動
-			m_fChangeRateAmplitudeWeak.x *= CHANGE_RATE_AMPLITUDE_WEAK.x;			//補正率変化
+				m_fOffsetVibrateLook.x = m_fOffsetVibrateEye.x + m_fOffsetVibrateEye.x;	//注視点振動
+				m_fChangeRateAmplitudeWeak.x *= CHANGE_RATE_AMPLITUDE_WEAK.x;			//補正率変化
 
-			// =============== カウンタ ===================
-			m_nFrameWeak.x--;	//フレームカウント
+				// =============== カウンタ ===================
+				m_nFrameWeak.x--;	//フレームカウント
 		}
 		else
 		{
@@ -401,11 +392,11 @@ void CCamera::HandleFlag()
 			m_fOffsetVibrateEye.y = TABLE_AMPITUDE_WEAK[E_DIRECT_VIBRATE_VERTICAL][std::discrete_distribution<>{
 				PROBABILITY_AMPITUDE_WEAK[E_DIRECT_VIBRATE_VERTICAL].begin(), PROBABILITY_AMPITUDE_WEAK[E_DIRECT_VIBRATE_VERTICAL].end() }(CRandom::GetEngine())]	//ランダムな振幅
 				* m_fChangeRateAmplitudeWeak.y;											//振幅補正
-			m_fOffsetVibrateLook.y = m_fOffsetVibrateEye.y + m_fOffsetVibrateEye.y;	//注視点振動
-			m_fChangeRateAmplitudeWeak.y *= CHANGE_RATE_AMPLITUDE_WEAK.y;			//補正率変化
+				m_fOffsetVibrateLook.y = m_fOffsetVibrateEye.y + m_fOffsetVibrateEye.y;	//注視点振動
+				m_fChangeRateAmplitudeWeak.y *= CHANGE_RATE_AMPLITUDE_WEAK.y;			//補正率変化
 
-			// =============== カウンタ ===================
-			m_nFrameWeak.y--;	//フレームカウント
+				// =============== カウンタ ===================
+				m_nFrameWeak.y--;	//フレームカウント
 		}
 		else
 		{
@@ -416,7 +407,7 @@ void CCamera::HandleFlag()
 			m_fChangeRateAmplitudeWeak.y = INIT_CHANGE_RATE_AMPLITUDE;	//振幅補正初期化
 			m_nFrameWeak.y = INIT_FRAME_WEAK.y;
 		}
-	}	
+	}
 	if (m_ucFlag & E_BIT_FLAG_VIBRATION_SIDE_STRONG)
 	{
 		// =============== 横強振動 ===================
@@ -426,11 +417,11 @@ void CCamera::HandleFlag()
 			m_fOffsetVibrateEye.x = TABLE_AMPITUDE_STRONG[E_DIRECT_VIBRATE_SIDE][std::discrete_distribution<>{
 				PROBABILITY_AMPITUDE_STRONG[E_DIRECT_VIBRATE_SIDE].begin(), PROBABILITY_AMPITUDE_STRONG[E_DIRECT_VIBRATE_SIDE].end() }(CRandom::GetEngine())]	//ランダムな振幅
 				* m_fChangeRateAmplitudeStrong.x;									//振幅補正
-			m_fOffsetVibrateLook.x = m_fOffsetVibrateEye.x + m_fOffsetVibrateEye.x;	//注視点振動
-			m_fChangeRateAmplitudeStrong.x *= CHANGE_RATE_AMPLITUDE_STRONG.x;		//補正率変化
+				m_fOffsetVibrateLook.x = m_fOffsetVibrateEye.x + m_fOffsetVibrateEye.x;	//注視点振動
+				m_fChangeRateAmplitudeStrong.x *= CHANGE_RATE_AMPLITUDE_STRONG.x;		//補正率変化
 
-			// =============== カウンタ ===================
-			m_nFrameStrong.x--;	//フレームカウント
+				// =============== カウンタ ===================
+				m_nFrameStrong.x--;	//フレームカウント
 		}
 		else
 		{
@@ -451,11 +442,11 @@ void CCamera::HandleFlag()
 			m_fOffsetVibrateEye.y = TABLE_AMPITUDE_STRONG[E_DIRECT_VIBRATE_VERTICAL][std::discrete_distribution<>{
 				PROBABILITY_AMPITUDE_STRONG[E_DIRECT_VIBRATE_VERTICAL].begin(), PROBABILITY_AMPITUDE_STRONG[E_DIRECT_VIBRATE_VERTICAL].end() }(CRandom::GetEngine())]	//ランダムな振幅
 				* m_fChangeRateAmplitudeStrong.y;									//振幅補正
-			m_fOffsetVibrateLook.y = m_fOffsetVibrateEye.y + m_fOffsetVibrateEye.y;	//注視点振動
-			m_fChangeRateAmplitudeStrong.y *= CHANGE_RATE_AMPLITUDE_STRONG.y;		//補正率変化
+				m_fOffsetVibrateLook.y = m_fOffsetVibrateEye.y + m_fOffsetVibrateEye.y;	//注視点振動
+				m_fChangeRateAmplitudeStrong.y *= CHANGE_RATE_AMPLITUDE_STRONG.y;		//補正率変化
 
-			// =============== カウンタ ===================
-			m_nFrameStrong.y--;	//フレームカウント
+				// =============== カウンタ ===================
+				m_nFrameStrong.y--;	//フレームカウント
 		}
 		else
 		{

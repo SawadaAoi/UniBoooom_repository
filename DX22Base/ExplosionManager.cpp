@@ -67,7 +67,7 @@ CExplosionManager::CExplosionManager()
 	m_pSEExplode = CSound::LoadSound("Assets/Sound/SE/Explode.mp3");
 
 	//エフェクト初期化
-	m_explodeEffect = LibEffekseer::Create("Assets/Effect/m/mega.efkefc");
+	m_explodeEffect = LibEffekseer::Create("Assets/Effect/mega/mega_reverse (2).efkefc");
 }
 
 /* ========================================
@@ -105,11 +105,6 @@ CExplosionManager::~CExplosionManager()
 =========================================== */
 void CExplosionManager::Update()
 {
-	if (IsKeyTrigger('3'))
-	{
-		Create(TTriType<float>(0.0f, 0.0f, 0.0f), 2.0f, 240.0f, 2, E_SLIME_LEVEL::LEVEL_4);
-	}
-
 	// 爆発を検索
 	for (int i = 0; i < MAX_EXPLOSION_NUM; i++)
 	{

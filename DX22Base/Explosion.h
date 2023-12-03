@@ -32,7 +32,7 @@
 #include "Sphereinfo.h"		//球体情報用ヘッダー
 #include "Transform3d.h"	//ワールド座標系情報ヘッダー
 #include "Sphere.h"			//球定義ヘッダー
-#include "CameraChase.h"			//カメラ定義ヘッダー
+#include "CameraChase.h"	//カメラ定義ヘッダー
 #include "Object.h"			//
 #include "BoooomUI.h"
 #include "LibEffekseer.h"
