@@ -22,6 +22,7 @@
 	・2023/11/28 振動の仕様変更 takagi
 	・2023/11/29 振動の新仕様を全振動に反映しリファクタリング・フレームのコメントないのは書き換える予定のため takagi
 	・2023/11/30 Effekseer用に関数追加 takagi
+	・2023/12/03 位置ゲッタ作成 takagi
 
 ========================================== */
 
@@ -185,12 +186,7 @@ DirectX::XMFLOAT4X4 CCamera::GetViewMatrix() const
 	DirectX::XMFLOAT4X4 Mat;
 
 	// =============== ビュー行列の計算 ===================
-	DirectX::XMStoreFloat4x4(&Mat, DirectX::XMMatrixTranspose(
-		DirectX::XMMatrixLookAtLH(
-			DirectX::XMVectorSet(m_fPos.x, m_fPos.y, m_fPos.z, 0.0f),		//カメラ位置
-			DirectX::XMVectorSet(m_fLook.x, m_fLook.y, m_fLook.z, 0.0f),	//注視点
-			DirectX::XMVectorSet(m_fUp.x, m_fUp.y, m_fUp.z, 0.0f)))			//アップベクトル
-	);	//ビュー変換
+	DirectX::XMStoreFloat4x4(&Mat, DirectX::XMMatrixTranspose(GetViewWithoutTranspose()));	//ビュー転置
 
 	// =============== 提供 ===================
 	return Mat;	//行列提供
@@ -212,11 +208,7 @@ DirectX::XMMATRIX CCamera::GetInverseViewMatrix() const
 	DirectX::XMFLOAT4X4* pFlt44 = nullptr;	//行列編集用
 
 	// =============== ビュー行列の計算 ===================
-	Mat = DirectX::XMMatrixLookAtLH(
-		DirectX::XMVectorSet(m_fPos.x, m_fPos.y, m_fPos.z, 0.0f),		//カメラ位置
-		DirectX::XMVectorSet(m_fLook.x, m_fLook.y, m_fLook.z, 0.0f),	//注視点
-		DirectX::XMVectorSet(m_fUp.x, m_fUp.y, m_fUp.z, 0.0f)			//アップベクトル
-		);	//ビュー変換
+	Mat = GetViewWithoutTranspose();	//ビュー変換
 
 	// =============== 行列編集 ===================
 	DirectX::XMStoreFloat4x4(pFlt44, Mat);				//行列編集用に変換
@@ -283,7 +275,7 @@ DirectX::XMMATRIX CCamera::GetViewWithoutTranspose() const
 /* ========================================
 	転置無しプロジェクション行列取得関数
 	-------------------------------------
-	内容：転置していないプロジェクション行列を提供
+	内容：転置していないプロジェクション行列(2D固定)を提供
 	-------------------------------------
 	引数1：なし
 	-------------------------------------
@@ -293,6 +285,21 @@ DirectX::XMMATRIX CCamera::GetProjectionWithoutTranspose() const
 {
 	// =============== 提供 ===================
 	return DirectX::XMMatrixOrthographicOffCenterLH(0.0f, SCREEN_WIDTH, 0.0f, SCREEN_HEIGHT, m_fNear, m_fFar);	//左下を原点(0,0)とした座標系
+}
+
+/* ========================================
+	位置ゲッタ関数
+	-------------------------------------
+	内容：カメラ位置を提供
+	-------------------------------------
+	引数1：なし
+	-------------------------------------
+	戻値：現在位置
+=========================================== */
+TPos3d<float> CCamera::GetPos() const
+{
+	// =============== 提供 ===================
+	return m_fPos;	//自身の現在位置
 }
 
 /* ========================================

@@ -335,7 +335,10 @@ void CSlimeManager::CreateBoss()
 	{
 		// スライムのuseを検索
 		if (m_pBoss[i] != nullptr) continue;
-		m_pBoss[i] = new CSlime_Boss_1(TPos3d<float>(0.0f, 0.0f, 0.0f), m_pVS, m_pBossModel[0], m_pBossModel[1]);	//動的生成(取り合えず位置は仮)
+
+		TPos3d<float> createPos = m_pPlayer->GetPos();
+		createPos.z += ADD_CREATE_BOSS_POS_Z;
+		m_pBoss[i] = new CSlime_Boss_1(createPos, m_pVS, m_pBossModel[0], m_pBossModel[1]);	//動的生成(取り合えず位置は仮)
 
 		break;
 	}
@@ -467,7 +470,7 @@ bool CSlimeManager::HitFlameBranch(int HitSlimeNum, int StandSlimeNum, CExplosio
 		}
 		else
 		{
-			m_pCamera->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_STRONG | CCamera::E_BIT_FLAG_VIBRATION_SIDE_WEAK);
+			m_pCamera->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_WEAK | CCamera::E_BIT_FLAG_VIBRATION_SIDE_WEAK);
 		}
 
 		SAFE_DELETE(m_pSlime[HitSlimeNum]);								// 衝突するスライムを削除
@@ -488,7 +491,7 @@ bool CSlimeManager::HitFlameBranch(int HitSlimeNum, int StandSlimeNum, CExplosio
 		}
 		else
 		{
-			m_pCamera->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_STRONG | CCamera::E_BIT_FLAG_VIBRATION_SIDE_WEAK);
+			m_pCamera->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_WEAK | CCamera::E_BIT_FLAG_VIBRATION_SIDE_WEAK);
 		}
 
 		SAFE_DELETE(m_pSlime[HitSlimeNum]);								// 衝突するスライムを削除
@@ -559,6 +562,8 @@ void CSlimeManager::TouchExplosion(int DelSlime, CExplosionManager * pExpMng, in
 	//トータルスコア（level,combo)
 	SAFE_DELETE(m_pSlime[DelSlime]);					//ぶつかりに来たスライムを削除
 
+	m_pCamera->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_WEAK | CCamera::E_BIT_FLAG_VIBRATION_SIDE_WEAK);
+	m_pCamera->ChangeScaleVibrate(10, 1.5f);
 }
 
 /* ========================================
@@ -747,6 +752,8 @@ void CSlimeManager::TouchBossExplosion(int BossNum, CExplosionManager* pExpMng, 
 		m_pScoreOHMng->DisplayOverheadScore(pos, LEVEL_Boss_SCORE, SLIME_SCORE_HEIGHT);
 		m_pHealItemMng->Create(pos);
 
+		m_pCamera->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_STRONG | CCamera::E_BIT_FLAG_VIBRATION_SIDE_STRONG);
+		m_pCamera->ChangeScaleVibrate(10, 1.5f);
 	}
 
 }

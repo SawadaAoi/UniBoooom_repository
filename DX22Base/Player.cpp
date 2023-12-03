@@ -32,6 +32,7 @@
 	・2023/11/28 ダメージ処理に受けるダメージ量を追加 Sawada
 	・2023/11/28 回復処理を追加 yamashita
 	・2023/11/29 ハンマーのインターバル追加 yamamoto
+	・2023/12/03 カメラの更新を担うため、ポインタのconstを仕方なく除去 takagi
   
 ======================================== */
 
@@ -105,7 +106,7 @@ CPlayer::CPlayer()
 	}
 	//プレイヤーのモデル読み込み
 	m_pModel = new Model;
-	if (!m_pModel->Load("Assets/Model/player/player.FBX", 1.0f, Model::None)) {		//倍率と反転は省略可
+	if (!m_pModel->Load("Assets/Model/player/player.FBX", 1.0f, Model::ZFlip)) {		//倍率と反転は省略可
 		MessageBox(NULL, "player", "Error", MB_OK);	//ここでエラーメッセージ表示
 	}
 	m_pModel->SetVertexShader(m_pVS);
@@ -156,7 +157,7 @@ void CPlayer::Update()
 		if (m_bIntFlg)
 		{
 			m_fIntCnt++;				// ハンマー間隔時間カウント加算
-			if (m_fIntCnt >= m_pHammer->GetInterval())
+			if (m_fIntCnt >= HAMMER_INTERVAL_TIME)
 			{
 				m_bIntFlg = false;		// ハンマー間隔時間フラグオン
 				m_fIntCnt = 0.0f;		//ハンマー間隔時間リセット
@@ -174,6 +175,9 @@ void CPlayer::Update()
 			MoveController();
 		}
 
+		// カメラ更新
+		m_pCamera->Update();	//位置更新後、それを即座にカメラに反映させる
+
 
 		// スペースキーを押した時、またはコントローラのBボタンを押した時 && ハンマー間隔時間経過済み
 		if ((IsKeyTrigger(VK_SPACE) || IsKeyTriggerController(BUTTON_B)) && !m_bIntFlg)
@@ -182,13 +186,12 @@ void CPlayer::Update()
 			m_bAttackFlg = true;	// 攻撃フラグを有効にする
 			m_pSESwingHamSpeaker = CSound::PlaySound(m_pSESwingHammer);	//ハンマーを振るSEの再生
 
-			//ハンマーのインターバルを長くする関数
-			m_pHammer->IntervalAdd();
-
+			//ハンマーのスイング量を減らす
+			m_pHammer->SwingSpeedAdd();
 		}
-    // ハンマーのインターバルを短くする
-		m_pHammer->IntervalSubtract();
-
+    // ハンマーのスイング量を増やす
+		
+		m_pHammer->SwingSpeedSubtract();
 	}
 	
 	// 無敵状態になっている場合
@@ -451,7 +454,7 @@ int* CPlayer::GetHpPtr()
    ----------------------------------------
    戻値：なし
 ======================================== */
-void CPlayer::SetCamera(const CCamera * pCamera)
+void CPlayer::SetCamera(CCamera * pCamera)
 {
 	m_pCamera = pCamera;	//中身は変えられないけどポインタはかえれるのでヨシ！
 	m_pHammer->SetCamera(m_pCamera);

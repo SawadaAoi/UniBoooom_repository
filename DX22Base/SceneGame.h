@@ -79,12 +79,8 @@ private:
 	DirectWrite* m_pDirectWrite;
 	CFloor* m_pFloor;
 	CFade* m_pFade;
-	CTotalScore* m_pTotalScore;
 	CHealItemManager* m_pHealItemMng;
-	CBossgauge* m_pBossgauge;
-	CCombo* m_pCombo;
-	CTimer* m_pTimer;
-	CScoreOHManager* m_pScoreOHMng;
+
 	CUIStageManager* m_pUIStageMng;				//UIのマネジャー
 
 	XAUDIO2_BUFFER* m_pBGM;							//BGMの音声データ
