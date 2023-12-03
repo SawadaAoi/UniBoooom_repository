@@ -32,6 +32,7 @@
 #include <time.h>
 #include "Sound.h"
 #include "ShaderList.h"	//モデルアニメーション用
+#include "LibEffekseer.h"
 
 // =============== グローバル変数定義 =============
 #if USE_SCENE_MANAGER
@@ -61,6 +62,7 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
 	if (FAILED(hr)) { return hr; }
 
 	CSound::InitSound();
+	LibEffekseer::Init(GetDevice(), GetContext());
 
 	CGeometry::MakeShader();			//シェーダ作成
 	srand((unsigned int)time(NULL));	// 乱数パターン設定
@@ -104,6 +106,7 @@ void Uninit()
 	CGeometry::Uninit();
 	UninitInput();
 	Sprite::Uninit();
+	LibEffekseer::Uninit();
 	CSound::UninitSound();
 	UninitDirectX();
 }
@@ -150,6 +153,7 @@ void Draw()
 #else
 	g_pGame->Draw();
 #endif
+	LibEffekseer::Draw();
 	EndDrawDirectX();
 }
 

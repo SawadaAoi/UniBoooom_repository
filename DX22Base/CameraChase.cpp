@@ -97,3 +97,18 @@ DirectX::XMFLOAT4X4 CCameraChase::GetViewMatrix() const
 	// =============== 提供 ===================
 	return Mat;	//行列提供
 }
+
+/* ========================================
+	追跡中のカメラ座標取得関数
+	-------------------------------------
+	内容：追跡中のカメラ座標取得
+	-------------------------------------
+	引数1：なし
+	-------------------------------------
+	戻値：追跡中のカメラ座標
+=========================================== */
+TPos3d<float> CCameraChase::GetChasePos()const
+{
+	return TPos3d<float>(m_pTarget->x + m_fOffsetVibrateEye.x, m_pTarget->y + m_fRadius * sinf(m_fAngle),
+		m_pTarget->z + m_fOffsetVibrateEye.y - m_fRadius * cosf(m_fAngle));
+}

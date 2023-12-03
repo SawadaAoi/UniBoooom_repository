@@ -32,9 +32,10 @@
 #include "Sphereinfo.h"		//球体情報用ヘッダー
 #include "Transform3d.h"	//ワールド座標系情報ヘッダー
 #include "Sphere.h"			//球定義ヘッダー
-#include "Camera.h"			//カメラ定義ヘッダー
+#include "CameraChase.h"			//カメラ定義ヘッダー
 #include "Object.h"			//
 #include "BoooomUI.h"
+#include "LibEffekseer.h"
 
 //=============== クラス定義 =====================
 class CExplosion
@@ -42,7 +43,7 @@ class CExplosion
 {
 public:
 	// ===メンバ関数宣言===
-	CExplosion(TPos3d<float> fPos, float fSize, float fTime, int comboNum, bool delayFlg, int nDamage);	//コンストラクタ
+	CExplosion(TPos3d<float> fPos, float fSize, float fTime, int comboNum, bool delayFlg, int nDamage, Effekseer::EffectRef explodeEffect,const CCamera* pCamera);	//コンストラクタ
 	~CExplosion();												// デストラクタ
 	void Update();												// 更新関数
 	void Draw();												// 描画関数
@@ -71,11 +72,14 @@ private:
 
 	CGeometry*		m_3dModel;		// 爆発仮3Dモデル
 	const CCamera*	m_pCamera;	//カメラのポインタ
-
+	DirectX::XMFLOAT3 m_cameraPos;
 	int m_dComboNum;			// コンボ配列番号
 
 	bool m_bDelayFlg;		// 爆発遅延フラグ
 	int m_dDelayCnt;		// カウントダウン開始フレーム減算値
+
+	Effekseer::EffectRef m_explodeEffect;
+	Effekseer::Handle m_efcHnadle;
 };
 
 #endif // __EXPLOSION_H__

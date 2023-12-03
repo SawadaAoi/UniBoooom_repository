@@ -31,6 +31,7 @@ public:
 	~CCameraChase();								//デストラクタ
 	void Update();									//更新
 	DirectX::XMFLOAT4X4 GetViewMatrix() const override;	//ビュー行列変換
+	TPos3d<float> GetChasePos()const;
 private:
 	// ===メンバ変数宣言===
 	const TPos3d<float>* m_pTarget;	//追跡目標

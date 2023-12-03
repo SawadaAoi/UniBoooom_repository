@@ -22,6 +22,7 @@
 	・2023/11/28 振動の仕様変更 takagi
 	・2023/11/29 振動の新仕様を全振動に反映しリファクタリング・フレームのコメントないのは書き換える予定のため takagi
 	・2023/11/30 Effekseer用に関数追加 takagi
+	・2023/12/02 Effekseer用にカメラ座標取得関数を追加 yamashita
 
 ========================================== */
 
@@ -270,14 +271,16 @@ DirectX::XMFLOAT4X4 CCamera::GetProjectionMatrix(const E_DRAW_TYPE& eDraw) const
 	-------------------------------------
 	戻値：作成した行列
 =========================================== */
-DirectX::XMMATRIX CCamera::GetViewWithoutTranspose() const
+DirectX::XMFLOAT4X4 CCamera::GetViewWithoutTranspose() const
 {
+	DirectX::XMFLOAT4X4 view;
+	DirectX::XMStoreFloat4x4(&view,
+		DirectX::XMMatrixLookAtLH(
+			DirectX::XMVectorSet(m_fPos.x, m_fPos.y, m_fPos.z, 0.0f),		//カメラ位置
+			DirectX::XMVectorSet(m_fLook.x, m_fLook.y, m_fLook.z, 0.0f),	//注視点
+			DirectX::XMVectorSet(m_fUp.x, m_fUp.y, m_fUp.z, 0.0f)));			//アップベクトル
 	// =============== 提供 ===================
-	return DirectX::XMMatrixLookAtLH(
-		DirectX::XMVectorSet(m_fPos.x, m_fPos.y, m_fPos.z, 0.0f),		//カメラ位置
-		DirectX::XMVectorSet(m_fLook.x, m_fLook.y, m_fLook.z, 0.0f),	//注視点
-		DirectX::XMVectorSet(m_fUp.x, m_fUp.y, m_fUp.z, 0.0f)			//アップベクトル
-	);	//ビュー座標系
+	return view;	//ビュー座標系
 }
 
 /* ========================================
@@ -289,10 +292,27 @@ DirectX::XMMATRIX CCamera::GetViewWithoutTranspose() const
 	-------------------------------------
 	戻値：作成した行列
 =========================================== */
-DirectX::XMMATRIX CCamera::GetProjectionWithoutTranspose() const
+DirectX::XMFLOAT4X4 CCamera::GetProjectionWithoutTranspose() const
 {
+	DirectX::XMFLOAT4X4 project;
+	DirectX::XMStoreFloat4x4(&project, 
+		DirectX::XMMatrixPerspectiveFovLH(m_fAngle, ASPECT, m_fNear, m_fFar));	//左下を原点(0,0)とした座標系
 	// =============== 提供 ===================
-	return DirectX::XMMatrixOrthographicOffCenterLH(0.0f, SCREEN_WIDTH, 0.0f, SCREEN_HEIGHT, m_fNear, m_fFar);	//左下を原点(0,0)とした座標系
+	return project;
+}
+
+/* ========================================
+	カメラ座標関数
+	-------------------------------------
+	内容：カメラの座標を取得
+	-------------------------------------
+	引数1：なし
+	-------------------------------------
+	戻値：カメラの座標
+=========================================== */
+TPos3d<float> CCamera::GetPos() const
+{
+	return m_fPos;
 }
 
 /* ========================================

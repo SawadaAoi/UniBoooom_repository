@@ -138,7 +138,7 @@ void CFloor::Draw()
 
 		//-- ƒ‚ƒfƒ‹•\Ž¦
 		if (m_pModel) {
-			m_pModel->Draw();
+			//m_pModel->Draw();
 		}
 	}
 }

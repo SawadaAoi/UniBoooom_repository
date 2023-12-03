@@ -32,6 +32,7 @@
 #include "Geometry.h"			//空間における形状の抽象クラス定義のヘッダー
 #include "Sphere.h"				//球定義のヘッダー
 #include "GameParameter.h"		//定数定義用ヘッダー
+#include "DirectWrite.h"
 
 // =============== 定数定義 =======================
 #if MODE_GAME_PARAMETER
@@ -56,7 +57,7 @@ const int DELAY_TIME = 0.5f * 60;
 	-------------------------------------
 	戻値：無し
 =========================================== */
-CExplosion::CExplosion(TPos3d<float> fPos, float fSize,float fTime, int comboNum, bool delayFlg, int nDamage)
+CExplosion::CExplosion(TPos3d<float> fPos, float fSize, float fTime, int comboNum, bool delayFlg, int nDamage, Effekseer::EffectRef explodeEffect, const CCamera* pCamera)
 	: m_fSizeAdd(0.0f)
 	, m_nDelFrame(0)
 	, m_bDelFlg(false)
@@ -71,11 +72,17 @@ CExplosion::CExplosion(TPos3d<float> fPos, float fSize,float fTime, int comboNum
 {
 	//爆発オブジェクト初期化
 	m_Sphere.fRadius = fSize / 2;	// 当たり判定をセットする
-	m_3dModel		 = new CSphere();
+	m_3dModel = new CSphere();
 	m_Transform.fPos = fPos;		// スライムがいた場所に生成する
 	m_fExplodeTime = fTime;		// 爆発総時間をセットする
 	m_fMaxSize = fSize;			// 最大サイズをセットする
 	m_fDamage = (float)nDamage;		// 与えるダメージ量をセットする
+	m_pCamera = pCamera;		//カメラをセット
+	TPos3d<float> cameraPos = m_pCamera->GetPos();
+	m_cameraPos = { cameraPos.x, cameraPos.y, cameraPos.z };
+	m_explodeEffect = explodeEffect;
+	m_efcHnadle = LibEffekseer::GetManager()->Play(m_explodeEffect, fPos.x, fPos.y, fPos.z);
+	LibEffekseer::GetManager()->SetScale(m_efcHnadle,0.3f, 0.3f, 0.3f);
 
 }
 
@@ -134,7 +141,17 @@ void CExplosion::Draw()
 	m_3dModel->SetView(m_pCamera->GetViewMatrix());
 	m_3dModel->SetProjection(m_pCamera->GetProjectionMatrix());
 
-	m_3dModel->Draw();	// 爆発仮3Dモデルの描画
+	//m_3dModel->Draw();	// 爆発仮3Dモデルの描画
+	m_pCamera->GetInverseViewMatrix();
+	m_pCamera->GetProjectionMatrix();
+	//エフェクトの描画
+	TPos3d<float> cameraPos = m_pCamera->GetPos();						//カメラ座標を取得
+	DirectX::XMFLOAT3 fCameraPos(cameraPos.x, cameraPos.y, cameraPos.z);	//XMFLOAT3に変換
+	LibEffekseer::SetViewPosition(m_cameraPos);								//カメラ座標をセット
+	LibEffekseer::SetCameraMatrix(m_pCamera->GetViewWithoutTranspose(), m_pCamera->GetProjectionWithoutTranspose());	//転置前のviewとprojectionをセット
+	Effekseer::Vector3D vec = LibEffekseer::GetManager()->GetLocation(m_efcHnadle);
+	std::string txt = "X = " + std::to_string(vec.X) + "\nY = " + std::to_string(vec.Y) + "\nZ = " + std::to_string(vec.Z);
+	DirectWrite::DrawString(txt, DirectX::XMFLOAT2(0.0f,200.0f));
 }
 
 
