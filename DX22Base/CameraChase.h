@@ -29,9 +29,9 @@ class CCameraChase :public CCamera	//カメラ
 {
 public:
 	// ===プロトタイプ宣言===
-	CCameraChase(const TPos3d<float>* pPos);					//コンストラクタ
-	~CCameraChase();											//デストラクタ
-	void Update();												//更新
+	CCameraChase(const TPos3d<float>* pPos);						//コンストラクタ
+	~CCameraChase();												//デストラクタ
+	void Update();													//更新
 	DirectX::XMFLOAT4X4 GetViewWithoutTranspose() const override;	//転置無しビュー行列取得
 private:
 	// ===メンバ変数宣言===

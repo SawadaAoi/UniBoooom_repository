@@ -69,7 +69,7 @@ public:
 	DirectX::XMMATRIX GetInverseViewMatrix() const;						//ビュー行列の逆行列取得
 	DirectX::XMFLOAT4X4 GetProjectionMatrix(
 		const E_DRAW_TYPE& eDraw = E_DRAW_TYPE_3D) const;				//プロジェクション行列変換
-	virtual DirectX::XMFLOAT4X4 GetViewWithoutTranspose() const;			//転置無しビュー行列取得
+	virtual DirectX::XMFLOAT4X4 GetViewWithoutTranspose() const;		//転置無しビュー行列取得
 	DirectX::XMFLOAT4X4 GetProjectionWithoutTranspose() const;			//転置無しプロジェクション行列取得
 	TPos3d<float> GetPos() const;										//カメラ位置提供
 	void ChangeScaleVibrate(int nChangeFrame, float fChangegRateAmp);	//振動の規模を変更する
