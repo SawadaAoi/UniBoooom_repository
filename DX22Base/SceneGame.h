@@ -66,6 +66,7 @@ public:
 	void SlimeBossNormalMoveCollision();		//追加
 	void BossSlimeNormalMoveCollision();		//追加
 	void BossBossNormalMoveCollision();			//追加
+
 private:
 	void LoadSound();	//サウンドファイルの読み込み
 	// ===メンバ変数宣言===

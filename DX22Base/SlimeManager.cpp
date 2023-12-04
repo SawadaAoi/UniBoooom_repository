@@ -837,6 +837,7 @@ void CSlimeManager::PreventSlimeSlimeOverlap(CSlimeBase * pMoveSlime, CSlimeBase
 	float distance = pStandSlime->GetSphere().fRadius + pMoveSlime->GetSphere().fRadius;	//‚¨Œİ‚¢‚ÌƒXƒ‰ƒCƒ€‚Ì”¼Œa‚ğ‘«‚µ‚½”
 
 	TPos3d<float> pos = pStandSlime->GetPos();		//‰Ÿ‚µ–ß‚·Šî€‚ÌÀ•W
+
 	pos.x += cosf(angle) * (distance + 0.001f);		//‚Ô‚Â‚©‚ç‚È‚¢ƒMƒŠƒMƒŠ‚Ì‹——£‚ğİ’è
 	pos.z += sinf(angle) * (distance + 0.001f);		//‚Ô‚Â‚©‚ç‚È‚¢ƒMƒŠƒMƒŠ‚Ì‹——£‚ğİ’è
 

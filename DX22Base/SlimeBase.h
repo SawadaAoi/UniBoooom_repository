@@ -57,11 +57,12 @@ enum E_SLIME_LEVEL
 	LEVEL_NONE,	//SlimeBaseで生成してまだポリモーフィズムしていない状態
 
 	LEVEL_1,		//1段階目
+	LEVEL_FLAME,	//フレイムスライム
 	LEVEL_2,		//2段階目
 	LEVEL_3,		//3段階目
 	LEVEL_4,		//4段階目
 	LEVEL_4x4,		//赤アか
-	LEVEL_FLAME,			// フレイムスライム
+
 	LEVEL_BOSS = 999,		// ボススライム	(最強)
 
 	MAX_LEVEL = LEVEL_4	//最大レベルを設定	(スライムの段階が増えたら変更)
