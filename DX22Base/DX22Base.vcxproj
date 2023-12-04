@@ -259,7 +259,7 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CameraChase.h" />
     <ClInclude Include="CameraDebug.h" />
-    <ClInclude Include="CameraFade.h" />
+    <ClInclude Include="CameraDef.h" />
     <ClInclude Include="Collision.h" />
     <ClInclude Include="Combo.h" />
     <ClInclude Include="Controller.h" />

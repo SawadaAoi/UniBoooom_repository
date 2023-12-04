@@ -139,6 +139,9 @@ CStage1::CStage1()
 #if USE_FADE_GAME
 	m_pFade = new CFade(m_pCamera);
 #endif
+
+	m_pPose = new CPose(m_pCamera);
+
 	//================セット================
 
 	//プレイヤー　←　カメラ
@@ -196,6 +199,7 @@ CStage1::CStage1()
 =========================================== */
 CStage1::~CStage1()
 {
+	SAFE_DELETE(m_pPose);
 	if (m_pSpeaker)
 	{
 		m_pSpeaker->Stop();
@@ -258,6 +262,14 @@ void CStage1::Update()
 	{
 		// カメラ更新
 		m_pCamera->Update();
+		//if (m_pPose)
+		//{
+		//	m_pPose->Update();
+		//}
+		//if (m_pPose->IsPose())
+		//{
+		//	return;
+		//}
 
 		// =============== ヒットストップ検査 ===================
 		if (!CHitStop::IsStop())	//ヒットストップ時処理しない
@@ -376,6 +388,8 @@ void CStage1::Draw()
 #if USE_FADE_GAME
 	m_pFade->Draw();
 #endif
+
+	m_pPose->Draw();
 }
 
 /* ========================================

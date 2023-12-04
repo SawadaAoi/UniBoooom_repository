@@ -12,6 +12,7 @@
 	・2023/11/22 メッシュサイズを1x1に修正 takagi
 	・2023/11/28 TextureSet関数にポインタ指定できる物を追加
 	・2023/12/01 テクスチャの扱い方を安全化 takagi
+	・2023/12/04 デストラクタのs削除対象を修正 takagi
 
 ========================================== */
 
@@ -166,8 +167,8 @@ C2dPolygon::~C2dPolygon()
 	ms_nCnt2dPolygon--;			//自身の数カウント
 
 	// =============== 解放 ===================
-	SAFE_DELETE(m_pVs);			//頂点シェーダー解放
-	SAFE_DELETE(m_pPs);			//ピクセルシェーダー解放
+	SAFE_DELETE(m_pDefVs);			//頂点シェーダー解放
+	SAFE_DELETE(m_pDefPs);			//ピクセルシェーダー解放
 	SAFE_DELETE(m_pTexture);	//テクスチャ解放
 	//SAFE_DELETE(ms_pVtx);		//頂点情報解放
 	//SAFE_DELETE(ms_pIdx);		//頂点インデックス解放

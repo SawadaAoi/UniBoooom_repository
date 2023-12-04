@@ -620,9 +620,6 @@
     <ClInclude Include="Item.h">
       <Filter>ヘッダー ファイル\3dObject\Item</Filter>
     </ClInclude>
-    <ClInclude Include="CameraFade.h">
-      <Filter>ヘッダー ファイル\System\Camera</Filter>
-    </ClInclude>
     <ClInclude Include="Random.h">
       <Filter>ヘッダー ファイル\System\Random</Filter>
     </ClInclude>
@@ -634,6 +631,9 @@
     </ClInclude>
     <ClInclude Include="Pose.h">
       <Filter>ヘッダー ファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraDef.h">
+      <Filter>ヘッダー ファイル\System\Camera</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

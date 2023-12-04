@@ -18,7 +18,7 @@
 #define __STAGE_H__
 
 // =============== インクルード ===================
-#include "Scene.h"			//親のヘッダ
+#include "Scene.h"				//親のヘッダ
 #include "Shader.h"
 #include "Collision.h"
 #include "Player.h"
@@ -33,6 +33,7 @@
 #include "DirectWrite.h"
 #include "Timer.h"
 #include "Fade.h"
+#include "Pose.h"				//メンバのヘッダ
 #include "BossGauge.h"
 #include "ScoreOHManager.h"
 #include "TotalScore.h"
@@ -44,7 +45,7 @@ class CStage :public CScene	//シーン
 public:
 	// =============== プロトタイプ宣言 ===============
 	CStage();							//コンストラクタ
-	//virtual ~CStage();					//デストラクタ
+	virtual ~CStage();					//デストラクタ
 	//virtual void Update();				//更新
 	//virtual void Draw() const;			//描画	
 	//virtual E_TYPE GetType() const = 0;	//自身の種類ゲッタ
@@ -84,7 +85,7 @@ protected:
 	CHP_UI* m_pHpMng;
 	CBossgauge* m_pBossgauge;
 	CHealItemManager* m_pHealItemMng;
-
+	CPose* m_pPose;						//ポーズ画面
 	
 	//サウンド
 	XAUDIO2_BUFFER* m_pSEHitHammer;

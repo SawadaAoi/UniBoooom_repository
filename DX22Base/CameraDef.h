@@ -1,29 +1,30 @@
 /* ========================================
 	HEW/UniBoooom!!
 	------------------------------------
-	フェード用疑似カメラ定義
+	疑似カメラ定義
 	------------------------------------
-	CameraFade.h
+	CameraDef.h
 	------------------------------------
 	作成者	takagi
 
 	変更履歴
 	・2023/11/27 制作 takagi
+	・2023/12/04 フェード以外でもカメラがない時の代用としてほしかったので改名 takagi
 
 ========================================== */
 
-#ifndef ___CAMERA_FADE_H___
-#define ___CAMERA_FADE_H___
+#ifndef ___CAMERA_DEF_H___
+#define ___CAMERA_DEF_H___
 
 // =============== インクルード ===================
 #include "Camera.h"	//親のヘッダ
 
 // =============== クラス定義 =====================
-class CCameraFade :public CCamera	//カメラ
+class CCameraDef :public CCamera	//カメラ
 {
 public:
 	// ===プロトタイプ宣言===
 	void Update() {}	//更新
 };	//疑似カメラ
 
-#endif // !___CAMERA_FADE_H___
+#endif // !___CAMERA_DEF_H___
