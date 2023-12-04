@@ -344,10 +344,14 @@ void CStage1::Draw()
 	// プレイヤー描画
 	m_pPlayer->Draw();
 
+	LibEffekseer::Draw();
+
 	//爆発マネージャー描画
 	m_pExplosionMng->Draw();
 
 	m_pHealItemMng->Draw();
+
+
 
 	//タイマー描画
 	SetRenderTargets(1, &pRTV, nullptr);

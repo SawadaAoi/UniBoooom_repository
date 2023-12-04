@@ -153,7 +153,6 @@ void Draw()
 #else
 	g_pGame->Draw();
 #endif
-	LibEffekseer::Draw();
 	EndDrawDirectX();
 }
 
