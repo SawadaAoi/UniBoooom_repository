@@ -211,7 +211,18 @@ void C2dPolygon::Draw(E_DRAW_MODE eMode)
 	}
 
 	// =============== 行列更新 ===================
-	m_aMatrix[0] = m_Transform.GetWorldMatrixSRT();							//ワールド行列更新
+	switch (eMode)
+	{
+		// =============== 通常描画 ===================
+	case E_DRAW_MODE_NORMAL:	//通常時
+		m_aMatrix[0] = m_Transform.GetWorldMatrixSRT();	//ワールド行列更新
+		break;											//分岐処理終了
+		
+		// =============== ビルボード描画 ===================
+	case E_DRAW_MODE_BILLBOARD:	//ビルボード仕様
+		m_aMatrix[0] = m_Transform.GetWorldMatrixSRT(m_pCamera->GetInverseViewMatrix());	//ビルボードの行列変換
+		break;																				//分岐処理終了
+	}
 	m_aMatrix[2] = m_pCamera->GetProjectionMatrix(CCamera::E_DRAW_TYPE_2D);	//プロジェクション行列更新
 
 	// =============== 変数宣言 ===================
