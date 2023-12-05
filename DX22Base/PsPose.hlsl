@@ -39,10 +39,13 @@ SamplerState Samp : register(s2);	//フェード用サンプラーステート
 float4 main(PS_IN PsIn) : SV_TARGET
 {
 	// =============== 更新 =====================
-	float2 fUv = (PsIn.fUv - 0.5f) * 2.0f;	//UV座標更新
-	float2 fPos = float2(0.0f, 0.0f);		//位置初期化
-	float4 fColor = float4(PsIn.fColor.x, PsIn.fColor.y, PsIn.fColor.z,
-		min(max(distance(fUv, fPos) - 0.24f, 0.0f), Tex.Sample(Samp, PsIn.fUv).w));	//グラデーションのかかった、ぼやけた四隅
+	float2 fUv = (PsIn.fUv - 0.5f) * 2.0f;												//UV座標更新
+	float2 fCentPos = float2(0.0f, 0.0f);												//中心位置
+	float4 fColor = Tex.Sample(Samp, PsIn.fUv);											//テクスチャ貼り付け
+	float fMinAlpha = 0.501f;															//透明度最小値
+	float fMaxAlpha = 1.0f;																//透明度最大値
+	float fReviseAlpha = -0.24f;														//透明度補正値
+	fColor.w = min(max(distance(fUv, fCentPos) + fReviseAlpha, fMinAlpha), fMaxAlpha);	//透明度変更：グラデーションのかかった、ぼやけた四隅
 
 	// =============== 提供 =====================
 	return fColor;	//確定した色

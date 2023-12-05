@@ -22,6 +22,7 @@
 	・2023/11/27 パラメーター追加(// 影) nieda
 	・2023/11/30 パラメーター編集(// カメラ) Takagi
 	・2023/12/01 パラメーター追加(// HP、コンボのアニメーション関連) nieda
+	・2023/11/30 パラメーター追加(// ポーズ) Takagi
 
 =========================================== */
 #ifndef __GAME_PARAMETER_H__
@@ -374,6 +375,10 @@ const float TIME_SIZE_MIN = 50;
 // SE ====================================================================
 const float HIT_HAMMER_VOLUME = 0.3f;
 
+// ポーズ ====================================================================
+const float COMMAND_SPACE_HALF = 85.0f;	//コマンド同士の縦の間
+const float COMMAND_WIDTH = 320.0f;		//コマンド縦幅
+const float COMMAND_HEIGHT = 70.0f;		//コマンド横幅
 #endif
 
 #endif // !__GAME_PARAMETER_H__

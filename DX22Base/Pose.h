@@ -27,7 +27,11 @@ class CPose
 private:
 	enum E_FLAG
 	{
-		E_FLAG_POSEMODE = 0x00, //ポーズモード
+		E_FLAG_POSEMODE = 0x01,			//ポーズモード
+		E_FLAG_COMMAND_CONTINUE = 0x02,	//継続コマンド
+		E_FLAG_COMMAND_FINISH = 0x04,	//終了コマンド
+		E_FLAG_DECIDE_COMMAND = 0x08,	//コマンド決定状態
+		E_FLAG_CALL_FINISH = 0x10,		//終了予約
 	};	//フラグ
 public:
 	// ===プロトタイプ宣言===
@@ -38,10 +42,10 @@ public:
 	bool IsFin() const;									//終了確認
 	void SetCamera(const CCamera* pCamera = nullptr);	//カメラセッタ
 	bool IsPose() const;								//ポーズ中か
+	void Boot();										//ポーズモード起動
 private:
 	// ===メンバ変数宣言=====
 	unsigned char m_ucFlag;							//フラグ
-	bool m_bFinish;									//終了予約用(trueで終了)
 	std::vector<C2dPolygon*> m_2dObj;				//平面ポリゴン
 	PixelShader* m_pBgPs;							//背景用ピクセルシェーダ
 	VertexShader* m_pBgVs;							//背景用頂点シェーダ
@@ -51,6 +55,10 @@ private:
 	XAUDIO2_BUFFER* m_pSEHitHammer;					//SEの音声データ
 	IXAudio2SourceVoice* m_pSpeaker;				//BGMを聞き取る側
 	IXAudio2SourceVoice* m_pSEHitHammerSpeaker;		//SEを聞き取る側
+	// ===プロトタイプ宣言===
+	void UpFlag(const unsigned char& ucBitFlag);	//フラグ起こし
+	void DownFlag(const unsigned char& ucBitFlag);	//フラグ降ろし
+	void SetFlag(const unsigned char& ucBitFlag);	//フラグ反転
 };	//リザルト
 
 #endif	//!__POSE_H__

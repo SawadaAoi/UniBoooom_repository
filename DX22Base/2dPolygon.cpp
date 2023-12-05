@@ -12,7 +12,8 @@
 	・2023/11/22 メッシュサイズを1x1に修正 takagi
 	・2023/11/28 TextureSet関数にポインタ指定できる物を追加
 	・2023/12/01 テクスチャの扱い方を安全化 takagi
-	・2023/12/04 デストラクタのs削除対象を修正 takagi
+	・2023/12/04 デストラクタの削除対象を修正 takagi
+	・2023/12/05 描画のモード追加 takagi
 
 ========================================== */
 
@@ -23,6 +24,7 @@
 
 // =============== インクルード ===================
 #include "2dPolygon.h"	//自身のヘッダ
+#include "CameraDef.h"	//疑似カメラ
 
 #if _DEBUG
 #include <Windows.h>	//メッセージボックス用
@@ -109,7 +111,7 @@ PixelShader* C2dPolygon::m_pDefPs;					//ピクセルシェーダー
 =========================================== */
 C2dPolygon::C2dPolygon()
 	:m_Transform(INIT_POS, INIT_SCALE, INIT_RADIAN)	//ワールド座標
-	,m_Param{{0.0f}, {1.0f, 1.0f}, {0.0f}, 1.0f}	//シェーダーに書き込む情報
+	,m_Param{{0.0f}, {1.0f, 1.0f}, {1.0f}, 1.0f}	//シェーダーに書き込む情報
 	,m_pVs(nullptr)									//頂点シェーダー
 	,m_pPs(nullptr)									//ピクセルシェーダー
 	,m_pTexture(nullptr)							//テクスチャ
@@ -127,8 +129,12 @@ C2dPolygon::C2dPolygon()
 		Make();	//平面ポリゴン作成
 	}
 
+	m_pCameraDef = new CCameraDef();	//疑似カメラ
 	m_pVs = m_pDefVs;
 	m_pPs = m_pDefPs;
+
+	// =============== 初期化 ===================
+	SetCamera(nullptr);	//カメラ初期化
 
 	// =============== 行列作成 ===================
 	m_aMatrix[0] = m_Transform.GetWorldMatrixSRT();							//ワールド行列
@@ -167,6 +173,7 @@ C2dPolygon::~C2dPolygon()
 	ms_nCnt2dPolygon--;			//自身の数カウント
 
 	// =============== 解放 ===================
+	SAFE_DELETE(m_pCameraDef);				//疑似カメラ削除
 	SAFE_DELETE(m_pDefVs);			//頂点シェーダー解放
 	SAFE_DELETE(m_pDefPs);			//ピクセルシェーダー解放
 	SAFE_DELETE(m_pTexture);	//テクスチャ解放
@@ -181,11 +188,11 @@ C2dPolygon::~C2dPolygon()
 	-------------------------------------
 	内容：描画処理
 	-------------------------------------
-	引数1：なし
+	引数1：E_DRAW_MODE eMode：描画モード
 	-------------------------------------
 	戻値：なし
 =========================================== */
-void C2dPolygon::Draw()
+void C2dPolygon::Draw(E_DRAW_MODE eMode)
 {
 	// =============== 検査 ===================
 	if (!m_pTextureLoad)	//ヌルチェック
@@ -263,8 +270,22 @@ void C2dPolygon::Draw()
 =========================================== */
 void C2dPolygon::SetCamera(const CCamera* pCamera)
 {
-	// =============== ポインタ追跡 ===================
-	m_pCamera = pCamera;	//アドレス格納
+	// =============== 変数宣言 ===================
+	int nCnt = 0;				//ループカウント用
+	const CCamera* pCameraUse;	//カメラアドレス退避用
+
+	// =============== 初期化 ===================
+	if (pCamera)	//ヌルチェック
+	{
+		pCameraUse = pCamera;		//新規カメラ登録
+	}
+	else
+	{
+		pCameraUse = m_pCameraDef;	//カメラ代用
+	}
+
+	// =============== カメラ登録 ===================
+	m_pCamera = pCameraUse;	//カメラ登録
 }
 
 /* ========================================

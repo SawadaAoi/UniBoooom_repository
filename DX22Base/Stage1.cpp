@@ -17,7 +17,8 @@
 	・2023/11/21 ゲーム開始時テクスチャ表示 nieda
 	・2023/11/22 動くよう足りない変数など追加 nieda
 	・2023/11/27 バグ修正 takagi
-  ・2023/11/29 ヒットストップ仕様変更対応 takagi
+	・2023/11/29 ヒットストップ仕様変更対応 takagi
+	・2023/12/05 ステージにポーズ実装
 
 ========================================== */
 
@@ -36,6 +37,7 @@
 #define TRY_USE_HIT_STOP (true)
 #endif
 #define USE_FADE_GAME (true)	//フェード試す
+#define USE_POSE (false)	//ポーズ試す		※現在ポーズ中から戻ってくる手段を用意していないため要注意！
 
 #if USE_FADE_GAME
 #include "Fade.h"
@@ -46,6 +48,10 @@
 #endif
 
 #if TRY_USE_HIT_STOP
+#include "Input.h"
+#endif
+
+#if USE_POSE	//ポーズ臨時呼び出し
 #include "Input.h"
 #endif
 
@@ -140,7 +146,9 @@ CStage1::CStage1()
 	m_pFade = new CFade(m_pCamera);
 #endif
 
+#if USE_POSE
 	m_pPose = new CPose(m_pCamera);
+#endif
 
 	//================セット================
 
@@ -262,14 +270,23 @@ void CStage1::Update()
 	{
 		// カメラ更新
 		m_pCamera->Update();
-		//if (m_pPose)
-		//{
-		//	m_pPose->Update();
-		//}
-		//if (m_pPose->IsPose())
-		//{
-		//	return;
-		//}
+
+		//ポーズ更新
+#if USE_POSE
+		if (m_pPose)	//ヌルチェック
+		{
+			if (IsKeyPress('P'))
+			{
+				m_pPose->Boot();
+			}
+			if (m_pPose->IsPose())	//ポーズ中
+			{
+				m_pPose->Update();
+
+				return;	//処理中断
+			}
+		}
+#endif
 
 		// =============== ヒットストップ検査 ===================
 		if (!CHitStop::IsStop())	//ヒットストップ時処理しない
@@ -384,12 +401,17 @@ void CStage1::Draw()
 
 	//頭上スコアマネージャー描画
 	m_pScoreOHMng->Draw();
-
-#if USE_FADE_GAME
-	m_pFade->Draw();
+//
+//#if USE_FADE_GAME
+//	m_pFade->Draw();
+//#endif
+//
+#if USE_POSE
+	if (m_pPose)
+	{
+		m_pPose->Draw();
+	}
 #endif
-
-	m_pPose->Draw();
 }
 
 /* ========================================
