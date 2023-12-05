@@ -12,6 +12,7 @@
 	・2023/11/28 TextureSet関数にポインタ指定できる物を追加
 	・2023/12/01 テクスチャの扱い方を安全化 takagi
 	・2023/12/05 描画のモード追加 takagi
+	・2023/12/06 Draw()関数のデフォルト引数変更 takagi
 
 ========================================== */
 
@@ -55,7 +56,7 @@ public:
 	C2dPolygon();											//コンストラクタ
 	C2dPolygon(const C2dPolygon& Obj);						//コピーコンストラクタ
 	~C2dPolygon();											//デストラクタ
-	void Draw(E_DRAW_MODE eMode = E_DRAW_MODE_BILLBOARD);	//描画
+	void Draw(E_DRAW_MODE eMode = E_DRAW_MODE_NORMAL);		//描画
 	void SetCamera(const CCamera* pCamera);					//カメラセッタ
 	void SetPos(TPos3d<float> fPos);						//位置セッタ
 	void SetSize(TTriType<float> fScale);					//大きさセッタ
