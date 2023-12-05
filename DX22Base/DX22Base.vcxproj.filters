@@ -381,6 +381,9 @@
     <ClCompile Include="UIStageManager.cpp">
       <Filter>ソース ファイル\2dObject</Filter>
     </ClCompile>
+    <ClCompile Include="LibEffekseer.cpp">
+      <Filter>ソース ファイル\System</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Defines.h">
@@ -628,6 +631,9 @@
     </ClInclude>
     <ClInclude Include="UIStageManager.h">
       <Filter>ヘッダー ファイル\2dObject</Filter>
+    </ClInclude>
+    <ClInclude Include="LibEffekseer.h">
+      <Filter>ヘッダー ファイル\System</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

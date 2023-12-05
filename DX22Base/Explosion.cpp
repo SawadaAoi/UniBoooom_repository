@@ -22,8 +22,9 @@
 	・2023/11/20 コンボ数配列添え字の追加 Sawada
 	・2023/11/21 初期値の設定と、遅延処理の追加 Sawada
 	・2023/11/21 ボスに一度触ったかを判定用の関数実装 Suzumura
-
 	・2023/11/21 DisplayAddTimeの中にBoooomUIの表示時間処理追加 Tei
+	・2023/12/04 爆発のエフェクトを実装 yamasita
+	・2023/12/04 爆発の仮表示3Dモデルを削除 yamasita
 
 ======================================== */
 
@@ -32,6 +33,7 @@
 #include "Geometry.h"			//空間における形状の抽象クラス定義のヘッダー
 #include "Sphere.h"				//球定義のヘッダー
 #include "GameParameter.h"		//定数定義用ヘッダー
+#include "DirectWrite.h"
 
 // =============== 定数定義 =======================
 #if MODE_GAME_PARAMETER
@@ -39,9 +41,9 @@
 //const float MAX_DISPLAY_TIME = 3.0f * 60;	// 爆発持続秒数
 const float EXPAND_QUICK_RATE = 0.2f;   // 膨張加速割合 
 const int DELAY_TIME = 0.5f * 60;
-
-
 #endif
+const float EXPLODE_STANDARD_SIZE = 0.15f;
+const float EXPLODE_STANDARD_ONE_FRAME = 1.38 * 60.0;
 
 /* ========================================
 	コンストラクタ関数
@@ -56,7 +58,7 @@ const int DELAY_TIME = 0.5f * 60;
 	-------------------------------------
 	戻値：無し
 =========================================== */
-CExplosion::CExplosion(TPos3d<float> fPos, float fSize,float fTime, int comboNum, bool delayFlg, int nDamage)
+CExplosion::CExplosion(TPos3d<float> fPos, float fSize, float fTime, int comboNum, bool delayFlg, int nDamage, Effekseer::EffectRef explodeEffect, const CCamera* pCamera)
 	: m_fSizeAdd(0.0f)
 	, m_nDelFrame(0)
 	, m_bDelFlg(false)
@@ -71,12 +73,15 @@ CExplosion::CExplosion(TPos3d<float> fPos, float fSize,float fTime, int comboNum
 {
 	//爆発オブジェクト初期化
 	m_Sphere.fRadius = fSize / 2;	// 当たり判定をセットする
-	m_3dModel		 = new CSphere();
 	m_Transform.fPos = fPos;		// スライムがいた場所に生成する
 	m_fExplodeTime = fTime;		// 爆発総時間をセットする
 	m_fMaxSize = fSize;			// 最大サイズをセットする
 	m_fDamage = (float)nDamage;		// 与えるダメージ量をセットする
-
+	m_pCamera = pCamera;		//カメラをセット
+	m_explodeEffect = explodeEffect;	//エフェクトをセット
+	m_efcHnadle = LibEffekseer::GetManager()->Play(m_explodeEffect, fPos.x, fPos.y, fPos.z);	//エフェクトの開始
+	LibEffekseer::GetManager()->SetScale(m_efcHnadle,EXPLODE_STANDARD_SIZE * fSize, EXPLODE_STANDARD_SIZE * fSize, EXPLODE_STANDARD_SIZE * fSize);	//エフェクトのサイズを設定
+	LibEffekseer::GetManager()->SetSpeed(m_efcHnadle, EXPLODE_STANDARD_ONE_FRAME / fTime);		//エフェクトの再生速度を設定
 }
 
 /* ========================================
@@ -91,7 +96,6 @@ CExplosion::CExplosion(TPos3d<float> fPos, float fSize,float fTime, int comboNum
 CExplosion::~CExplosion()
 {
 
-	SAFE_DELETE(m_3dModel);	// メモリ解放
 }
 
 
@@ -129,12 +133,11 @@ void CExplosion::Update()
 =========================================== */
 void CExplosion::Draw()
 {
-	m_3dModel->SetWorld(m_Transform.GetWorldMatrixSRT());
-
-	m_3dModel->SetView(m_pCamera->GetViewMatrix());
-	m_3dModel->SetProjection(m_pCamera->GetProjectionMatrix());
-
-	m_3dModel->Draw();	// 爆発仮3Dモデルの描画
+	//エフェクトの描画
+	TPos3d<float> cameraPos = m_pCamera->GetPos();							//カメラ座標を取得
+	DirectX::XMFLOAT3 fCameraPos(cameraPos.x, cameraPos.y, cameraPos.z);	//XMFLOAT3に変換
+	LibEffekseer::SetViewPosition(fCameraPos);								//カメラ座標をセット
+	LibEffekseer::SetCameraMatrix(m_pCamera->GetViewWithoutTranspose(), m_pCamera->GetProjectionWithoutTranspose());	//転置前のviewとprojectionをセット
 }
 
 
