@@ -22,6 +22,7 @@
 	・2023/11/27 パラメーター追加(// 影) nieda
 	・2023/11/30 パラメーター編集(// カメラ) Takagi
 	・2023/12/01 パラメーター追加(// HP、コンボのアニメーション関連) nieda
+	・2023/12/06 パラメーター編集(// カメラ) Takagi
 
 =========================================== */
 #ifndef __GAME_PARAMETER_H__
@@ -228,6 +229,7 @@ const float INIT_ANGLE = DirectX::XMConvertToRadians(73.0f);        //カメラの角
 const float INIT_NEAR = 1.0f;										//画面手前初期z値
 const float INIT_FAR = 150.0f;										//画面奥初期z値
 const float INIT_RADIUS = 15.0f;									//カメラと注視点との距離(初期値)
+const int MAX_CNT_CHANGE_VIBRATE = 10;								//振動変化数カウンタ
 const TDiType<int> INIT_FRAME_WEAK = { 125, 125 };					//弱振動のフレーム数	x:横, y:縦
 const TDiType<int> INIT_FRAME_STRONG = { 150, 150 };				//強振動のフレーム数	x:横, y:縦
 const TDiType<float> CHANGE_RATE_AMPLITUDE_WEAK{ 0.99f, 0.99f };	//強振幅変化率	1を超えると増加方向、下回ると減少方向	x:横, y:縦

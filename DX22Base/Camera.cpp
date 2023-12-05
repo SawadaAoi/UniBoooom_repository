@@ -23,7 +23,8 @@
 	・2023/11/29 振動の新仕様を全振動に反映しリファクタリング・フレームのコメントないのは書き換える予定のため takagi
 	・2023/11/30 Effekseer用に関数追加 takagi
 	・2023/12/03 位置ゲッタ作成 takagi
-	・2023/12/04 GetViewWithoutTranspose,GetProjectionWithoutTransposeの戻り値を変更 ymaashita
+	・2023/12/04 GetViewWithoutTranspose,GetProjectionWithoutTransposeの戻り値を変更 yamashita
+	・2023/12/06 ゲームパラメータ対応 takagi
 
 ========================================== */
 
@@ -42,7 +43,6 @@ const float ASPECT = (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT;	//画面比率(y / 
 const TPos3d<float> INIT_LOOK(0.0f, 0.0f, 0.0f);					//初期注視地点
 const TTriType<float> INIT_UP_VECTOR(0.0f, 1.0f, 0.0f);				//カメラの上方向
 const float INIT_CHANGE_RATE_AMPLITUDE = 1.0f;						//初期振幅変化率
-const int MAX_CNT_CHANGE_VIBRATE = 10;								//振動変化数カウンタ
 #if MODE_GAME_PARAMETER
 #else
 const TPos3d<float> INIT_POS(0.0f, 1.6f, -3.0f);					//初期位置
@@ -50,6 +50,7 @@ const float INIT_ANGLE = DirectX::XMConvertToRadians(73.0f);        //カメラの角
 const float INIT_NEAR = 1.0f;										//画面手前初期z値
 const float INIT_FAR = 150.0f;										//画面奥初期z値
 const float INIT_RADIUS = 15.0f;									//カメラと注視点との距離(初期値)
+const int MAX_CNT_CHANGE_VIBRATE = 10;								//振動変化数カウンタ
 const TDiType<int> INIT_FRAME_WEAK = { 99, 60 };					//弱振動のフレーム数	x:横, y:縦
 const TDiType<int> INIT_FRAME_STRONG = { 99, 60 };					//強振動のフレーム数	x:横, y:縦
 const TDiType<float> CHANGE_RATE_AMPLITUDE_WEAK{ 0.999f, 0.999f };	//強振幅変化率	1を超えると増加方向、下回ると減少方向	x:横, y:縦
@@ -371,6 +372,11 @@ void CCamera::HandleFlag()
 {
 	// =============== 振動フラグ ===================
 		//割合減少なら0にならないため理論的な無限振動が可能！(実際には誤差程度の値以下になると視認できなくなり、そのうち情報落ちする)
+	if (!m_ucFlag)	//何もフラグ無し
+	{
+		// =============== 初期化 ===================
+		m_nCntChangeVibrate = 0;	//カウンタ初期化
+	}
 	if (m_ucFlag & E_BIT_FLAG_VIBRATION_SIDE_WEAK)
 	{
 		// =============== 横弱振動 ===================
