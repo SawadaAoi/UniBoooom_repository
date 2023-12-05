@@ -21,7 +21,8 @@
 	・2023/11/29 振動の新仕様を全振動に反映しリファクタリング takagi
 	・2023/11/30 Effekseer用に関数追加 takagi
 	・2023/12/03 位置ゲッタ作成 takagi
-	・2023/12/04 GetViewWithoutTranspose,GetProjectionWithoutTransposeの戻り値を変更 ymaashita
+	・2023/12/04 GetViewWithoutTranspose,GetProjectionWithoutTransposeの戻り値を変更 yamashita
+	・2023/12/05 揺れのカウンタ追加 takagi
 
 ========================================== */
 
@@ -95,6 +96,7 @@ private:
 	TDiType<int> m_nFrameStrong;					//フレームカウンタ：強振動	x:横, y:縦
 	TDiType<float> m_fChangeRateAmplitudeWeak;		//振幅補正率：弱			x:横, y:縦
 	TDiType<float> m_fChangeRateAmplitudeStrong;	//振幅補正率：強			x:横, y:縦
+	int m_nCntChangeVibrate;						//カメラ揺れ変更回数
 };	//カメラ
 
 #endif // !___CAMERA_H___

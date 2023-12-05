@@ -42,6 +42,7 @@ const float ASPECT = (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT;	//画面比率(y / 
 const TPos3d<float> INIT_LOOK(0.0f, 0.0f, 0.0f);					//初期注視地点
 const TTriType<float> INIT_UP_VECTOR(0.0f, 1.0f, 0.0f);				//カメラの上方向
 const float INIT_CHANGE_RATE_AMPLITUDE = 1.0f;						//初期振幅変化率
+const int MAX_CNT_CHANGE_VIBRATE = 10;								//振動変化数カウンタ
 #if MODE_GAME_PARAMETER
 #else
 const TPos3d<float> INIT_POS(0.0f, 1.6f, -3.0f);					//初期位置
@@ -99,18 +100,19 @@ const std::vector<float> TABLE_AMPITUDE_STRONG[CCamera::E_DIRECT_VIBRATE_MAX] = 
 CCamera::CCamera()
 	:m_ucFlag(0x00)												//フラグ
 	, m_fPos(INIT_POS)											//位置
-	, m_fLook(INIT_LOOK)											//注視点
+	, m_fLook(INIT_LOOK)										//注視点
 	, m_fUp(INIT_UP_VECTOR)										//上方ベクトル
 	, m_fAngle(INIT_ANGLE)										//角度
-	, m_fNear(INIT_NEAR)											//画面手前
+	, m_fNear(INIT_NEAR)										//画面手前
 	, m_fFar(INIT_FAR)											//画面奥
-	, m_fRadius(INIT_RADIUS)										//注視点とカメラの距離
+	, m_fRadius(INIT_RADIUS)									//注視点とカメラの距離
 	, m_fOffsetVibrateEye(0.0f)									//カメラ位置振動
-	, m_fOffsetVibrateLook(0.0f)									//注視点振動
+	, m_fOffsetVibrateLook(0.0f)								//注視点振動
 	, m_nFrameWeak(INIT_FRAME_WEAK)								//フレーム数：弱振動	x:横, y:縦
 	, m_nFrameStrong(INIT_FRAME_STRONG)							//フレーム数：強振動	x:横, y:縦
-	, m_fChangeRateAmplitudeWeak(INIT_CHANGE_RATE_AMPLITUDE)		//振幅変動率：弱		x:横, y:縦
+	, m_fChangeRateAmplitudeWeak(INIT_CHANGE_RATE_AMPLITUDE)	//振幅変動率：弱		x:横, y:縦
 	, m_fChangeRateAmplitudeStrong(INIT_CHANGE_RATE_AMPLITUDE)	//振幅変動率：強		x:横, y:縦
+	, m_nCntChangeVibrate(0)									//振動回数カウンタ
 {
 }
 
@@ -321,29 +323,38 @@ TPos3d<float> CCamera::GetPos() const
 void CCamera::ChangeScaleVibrate(int nChangeFrame, float fChangegRateAmp)	//TODO:任意の振動に絞った拡張
 {
 	// =============== 振動フラグ ===================
+	if (m_nCntChangeVibrate > MAX_CNT_CHANGE_VIBRATE)
+	{
+		// =============== 終了 ===================
+		return;	//処理中断
+	}
 	if (m_ucFlag & E_BIT_FLAG_VIBRATION_SIDE_WEAK)
 	{
 		// =============== 更新 ===================
-		m_nFrameWeak.x += nChangeFrame;					//フレームカウンタ干渉
+		m_nFrameWeak.x += nChangeFrame;						//フレームカウンタ干渉
 		m_fChangeRateAmplitudeWeak.x *= fChangegRateAmp;	//補正率干渉
+		m_nCntChangeVibrate++;								//振動回数カウント
 	}
 	if (m_ucFlag & E_BIT_FLAG_VIBRATION_UP_DOWN_WEAK)
 	{
 		// =============== 更新 ===================
-		m_nFrameWeak.y += nChangeFrame;					//フレームカウンタ干渉
+		m_nFrameWeak.y += nChangeFrame;						//フレームカウンタ干渉
 		m_fChangeRateAmplitudeWeak.y *= fChangegRateAmp;	//補正率干渉
+		m_nCntChangeVibrate++;								//振動回数カウント
 	}
 	if (m_ucFlag & E_BIT_FLAG_VIBRATION_SIDE_STRONG)
 	{
 		// =============== 更新 ===================
 		m_nFrameStrong.x += nChangeFrame;					//フレームカウンタ干渉
 		m_fChangeRateAmplitudeStrong.x *= fChangegRateAmp;	//補正率干渉
+		m_nCntChangeVibrate++;								//振動回数カウント
 	}
 	if (m_ucFlag & E_BIT_FLAG_VIBRATION_UP_DOWN_STRONG)
 	{
 		// =============== 更新 ===================
 		m_nFrameStrong.y += nChangeFrame;					//フレームカウンタ干渉
 		m_fChangeRateAmplitudeStrong.y *= fChangegRateAmp;	//補正率干渉
+		m_nCntChangeVibrate++;								//振動回数カウント
 	}
 }
 
