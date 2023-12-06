@@ -343,6 +343,7 @@ void CCombo::AddScore(int num, int combo)
 	case LEVEL_4x4:		m_dComboInfo[combo].dScore += LEVEL_4x4_SCORE;	break;
 	case LEVEL_BOSS:	m_dComboInfo[combo].dScore += LEVEL_Boss_SCORE;	break;
 	case LEVEL_FLAME:	m_dComboInfo[combo].dScore += LEVEL_1_SCORE;	break;	// 炎スライムと爆発が接触した際は一番小さい爆発
+	case LEVEL_HEAL:	m_dComboInfo[combo].dScore += LEVEL_1_SCORE;	break;	// 回復スライムと爆発が接触した際は一番小さい爆発
 	}
 }
 

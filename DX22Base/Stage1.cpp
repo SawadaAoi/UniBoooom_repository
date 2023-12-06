@@ -332,6 +332,9 @@ void CStage1::Update()
 		// 当たり判定更新
 		Collision();
 		
+		// 回復アイテム取る判定
+		PlayerHealItemCollision();
+		
 	}
 
 #if USE_FADE_GAME

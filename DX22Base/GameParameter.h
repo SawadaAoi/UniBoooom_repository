@@ -79,7 +79,7 @@ const float SwingSpeed_SIOW = 50.0f;
 // 敵キャラ ==================================================
 
 // 共通
-const int	MAX_SLIME_NUM = 30;							// スライムの最大生成数
+const int	MAX_SLIME_NUM = 30;					// スライムの最大生成数
 const int	MAX_BOSS_SLIME_NUM = 5;				// ボススライムの最大生成数
 const int	START_ENEMY_NUM = 6;				// ゲーム開始時の敵キャラの数
 const float ENEMY_MOVE_SPEED = 0.035f;			// 敵の通常移動速度
@@ -91,17 +91,18 @@ const float MOVE_RESIST = 0.05f;			// 吹き飛び移動中のスライムの移動速度に毎フレ
 const float MOVE_DISTANCE_PLAYER = 18.0f;	// プレイヤー追跡移動に切り替える距離
 const float SLIME_BASE_RADIUS = 0.5f;		// スライムの基準の大きさ
 
-const int ENEMY_CREATE_INTERVAL		= int(1.0f * 60);							// 生成間隔
-const int RANDOM_POS = 15;														// 生成座標範囲
-const int CREATE_DISTANCE = 19;													// プレイヤーからどれくらい離れた距離に生成するか
-const int SLIME_LEVEL1_PER = 45;												// スライム_1の生成確立
-const int SLIME_LEVEL2_PER = 35;												// スライム_2の生成確立
-const int SLIME_LEVEL3_PER = 10;												// スライム_3の生成確立
-const int SLIME_LEVEL_FLAME_PER = 100 - SLIME_LEVEL1_PER - SLIME_LEVEL2_PER - SLIME_LEVEL3_PER;	// スライム_フレイムの生成確立
-const float MAX_SIZE_EXPLODE		= 5.0f;										// スライム4同士の爆発の大きさ
-const float EXPLODE_BASE_RATIO		= 1.5f;										// スライムの爆発接触での爆発の大きさのベース
-const float ESCAPE_DISTANCE			= 15.0f;									// 爆発がこの距離より近かったら逃げる範囲
-const int ESCAPE_TIME				= int(60 * 1.0f);							// この間隔で逃げる処理が終了する
+const int ENEMY_CREATE_INTERVAL		= int(1.0f * 60);			// 生成間隔
+const int RANDOM_POS = 15;										// 生成座標範囲
+const int CREATE_DISTANCE = 19;									// プレイヤーからどれくらい離れた距離に生成するか
+const int SLIME_LEVEL1_PER = 45;								// スライム_1の生成確立
+const int SLIME_LEVEL2_PER = 25;								// スライム_2の生成確立
+const int SLIME_LEVEL3_PER = 15;								// スライム_3の生成確立
+const int SLIME_LEVEL_FLAME_PER = 10;							// スライム_フレイムの生成確率
+const int SLIME_LEVEL_HEAL_PER = 5;								// スライム_ヒールの生成確率
+const float MAX_SIZE_EXPLODE		= 5.0f;						// スライム4同士の爆発の大きさ
+const float EXPLODE_BASE_RATIO		= 1.5f;						// スライムの爆発接触での爆発の大きさのベース
+const float ESCAPE_DISTANCE			= 15.0f;					// 爆発がこの距離より近かったら逃げる範囲
+const int ESCAPE_TIME				= int(60 * 1.0f);			// この間隔で逃げる処理が終了する
 
 
 // スライム同士の反射の減算値
@@ -142,6 +143,11 @@ const int	LEVEL4_ATTACK = 2;						// 攻撃力
 const float LEVEL_FLAME_SCALE = 1.0f;						// スライム＿フレイムの大きさ(当たり判定含む)
 const float LEVEL_FLAME_SPEED = ENEMY_MOVE_SPEED * 0.2f;	// 移動速度
 const int	LEVEL_FLAME_ATTACK = 1;							// 攻撃力
+
+// ヒールスライム
+const float LEVEL_HEAL_SCALE = 1.0f;						// スライム＿ヒールの大きさ(当たり判定含む)
+const float LEVEL_HEAL_SPEED = ENEMY_MOVE_SPEED * 0.3f;		// 移動速度
+const int	LEVEL_HEAL_ATTACK = 1;							// 攻撃力 （いる？
 
 const int LEVEL_1_SCORE = 10;				// スライム_1のスコア
 const int LEVEL_2_SCORE = 30;				// スライム_2のスコア
@@ -389,6 +395,7 @@ const float LEVEL_2_SHADOW_SCALE = 2.5f;	// スライム＿レベル２の影の大きさ
 const float LEVEL_3_SHADOW_SCALE = 3.5f;	// スライム＿レベル３の影の大きさ
 const float LEVEL_4_SHADOW_SCALE = 8.0f;	// スライム＿レベル４の影の大きさ
 const float LEVEL_FLAME_SHADOW_SCALE = 2.0f;// スライム＿フレイムの影の大きさ
+const float LEVEL_HEAL_SHADOW_SCALE = 2.0f;	// スライム＿ヒールの影の大きさ
 const float BOSS_1_SHADOW_SCALE = 12.0f;		// ボス１の影の大きさ
 // ゲーム開始時スタート表示 ==================================================
 const float TIME_SIZE_MIN = 50;

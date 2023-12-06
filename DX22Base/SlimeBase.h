@@ -1,137 +1,140 @@
 /* ========================================
 	HEW/UniBoooom!!
 	---------------------------------------
-	�X���C���x�[�X �N���X��`
+	スライムベース クラス定義
 	---------------------------------------
 	SlimeBase.h
 	
-	�쐬�� �鑺 ����
+	作成者 鈴村 朋也
 	
-	�ύX����
-	�E2023/11/04 �X���C���x�[�X�N���X�쐬 Suzumura
-	�E2023/11/06 ������шړ��Ɛ�����шړ��֐����쐬 Yamashita
-	�E2023/11/06 m_fSpped(�G�̈ړ����x)��m_fVecAngle(�G�̐�����ԕ���)�̃����o�ϐ���ǉ� Yamashita
-	�E2023/11/06 �萔SPEED_DOWN_RATIO(�Ԃ�������̃X���C���ɑ��x��n���ۂɌ������銄��)��ǉ� Yamashita
-	�E2023/11/06 �萔MOVE_RESIST(������шړ����̃X���C���̈ړ����x�ɖ��t���[�������錸�Z���l)��ǉ� Yamashita
-	�E2023/11/07 HitBranch�֐�(�X���C���Ƃ̐ڐG���򏈗�)��SlimeManager�Ɉړ����邽�߂ɍ폜 Yamashita
-	�E2023/11/08 �X���C���̃T�C�Y��\���񋓂��` Yamashita
-	�E2023/11/08 �X���C���̃T�C�Y��Ԃ��֐����쐬 Yamashita
-	�E2023/11/08 GetPos��GetSphere�ɖ��O��ύX Yamashita
-	�E2023/11/08 �X���C���̈ړ����x���擾����֐����쐬 Yamashita
-	�E2023/11/08 �萔��`���w�b�_�[�ɂ������̂�cpp�Ɉړ� Yamashita
-	�E2023/11/08 Union��Explosion���폜(�}�l�[�W���[�Ɉړ��������̂�) Yamashita
-	�E2023/11/08 m_bUse�An_playerDistance�Am_playerAngle���폜(�ꂩ���ł����g�p���Ă��Ȃ���) Yamashita
-	�E2023/11/08 m_Player��ǉ� Yamashita
-	�E2023/11/08 ���W��TPos<Pos>�ɕύX Yamashita
-	�E2023/11/09 Update,NormalMove�̈����ύX Yamashita
-	�E2023/11/08 �X���C���̈ړ����x�̒萔��cpp����h�Ɉړ� Yamashita
-	�E2023/11/10 �J�����|�C���^��ǉ� Yamashita
-	�E2023/11/10 ���̃I�u�W�F�N�g�Ɠ���̃J�������Z�b�g����悤�ɂ��� Yamashita
-	�E2023/11/12 m_Ry��ǉ��i�X���C���̌�����ς��鎞�Ɏg�p�j Yamamoto
-	�E2023/11/13 GetScale�֐��̒ǉ� Suzumura
-	�E2023/11/14 �񋓂�FLAME��ǉ��ANormalMove�����z�֐��� Suzumura
-	�E2023/11/14 SphereInfo�̕ύX�ɑΉ� Takagi
-	�E2023/11/15 Object�N���X���p�������̂ŏC���@yamamoto
-	�E2023/11/26 �������瓦����t���O�A�ł��߂�����������ϐ����쐬�@yamashita
-	�E2023/11/26 �X���C�����������瓦���鏈�����쐬�@yamashita
-	�E2023/11/28 �e�̕`��ǉ� nieda
+	変更履歴
+	・2023/11/04 スライムベースクラス作成 Suzumura
+	・2023/11/06 吹き飛び移動と吹き飛び移動関数を作成 Yamashita
+	・2023/11/06 m_fSpped(敵の移動速度)とm_fVecAngle(敵の吹き飛ぶ方向)のメンバ変数を追加 Yamashita
+	・2023/11/06 定数SPEED_DOWN_RATIO(ぶつかった先のスライムに速度を渡す際に減少する割合)を追加 Yamashita
+	・2023/11/06 定数MOVE_RESIST(吹き飛び移動中のスライムの移動速度に毎フレームかかる減算数値)を追加 Yamashita
+	・2023/11/07 HitBranch関数(スライムとの接触分岐処理)をSlimeManagerに移動するために削除 Yamashita
+	・2023/11/08 スライムのサイズを表す列挙を定義 Yamashita
+	・2023/11/08 スライムのサイズを返す関数を作成 Yamashita
+	・2023/11/08 GetPos→GetSphereに名前を変更 Yamashita
+	・2023/11/08 スライムの移動速度を取得する関数を作成 Yamashita
+	・2023/11/08 定数定義がヘッダーにあったのでcppに移動 Yamashita
+	・2023/11/08 UnionとExplosionを削除(マネージャーに移動させたので) Yamashita
+	・2023/11/08 m_bUse、n_playerDistance、m_playerAngleを削除(一か所でしか使用していない為) Yamashita
+	・2023/11/08 m_Playerを追加 Yamashita
+	・2023/11/08 座標をTPos<Pos>に変更 Yamashita
+	・2023/11/09 Update,NormalMoveの引数変更 Yamashita
+	・2023/11/08 スライムの移動速度の定数をcppからhに移動 Yamashita
+	・2023/11/10 カメラポインタを追加 Yamashita
+	・2023/11/10 他のオブジェクトと同一のカメラをセットするようにした Yamashita
+	・2023/11/12 m_Ryを追加（スライムの向きを変える時に使用） Yamamoto
+	・2023/11/13 GetScale関数の追加 Suzumura
+	・2023/11/14 列挙にFLAMEを追加、NormalMoveを仮想関数に Suzumura
+	・2023/11/14 SphereInfoの変更に対応 Takagi
+	・2023/11/15 Objectクラスを継承したので修正　yamamoto
+	・2023/11/26 爆発から逃げるフラグ、最も近い爆発を入れる変数を作成　yamashita
+	・2023/11/26 スライムが爆発から逃げる処理を作成　yamashita
+	・2023/11/28 影の描画追加 nieda
+	・2023/12/04 列挙にヒールスライムを追加 Tei
 
 ========================================== */
 #ifndef __SLIME_BASE_H__
 #define __SLIME_BASE_H__
 
-// =============== �C���N���[�h ===================
+// =============== インクルード ===================
 #include "Model.h"
 #include "Shader.h"
 #include "SphereInfo.h"
 #include "Transform3d.h"
 #include "Pos3d.h"
 #include "Camera.h"
-#include "GameParameter.h"		//�萔��`�p�w�b�_�[
+#include "GameParameter.h"		//定数定義用ヘッダー
 #include "Object.h"
-#include "Shadow.h"		// �e�\���p�w�b�_
+#include "Shadow.h"		// 影表示用ヘッダ
 #include "Timer.h"
-// =============== �񋓒�` =======================
+// =============== 列挙定義 =======================
 enum E_SLIME_LEVEL
 {
-	LEVEL_NONE,	//SlimeBase�Ő������Ă܂��|�����[�t�B�Y�����Ă��Ȃ����
+	LEVEL_NONE,	//SlimeBaseで生成してまだポリモーフィズムしていない状態
 
-	LEVEL_1,		//1�i�K��
-	LEVEL_FLAME,	//�t���C���X���C��
-	LEVEL_2,		//2�i�K��
-	LEVEL_3,		//3�i�K��
-	LEVEL_4,		//4�i�K��
-	LEVEL_4x4,		//�ԃA��
+	LEVEL_1,		//1段階目
+	LEVEL_FLAME,	//フレイムスライム
+	LEVEL_2,		//2段階目
+	LEVEL_3,		//3段階目
+	LEVEL_4,		//4段階目
+	LEVEL_4x4,		//赤アか
+	LEVEL_FLAME,			// フレイムスライム
+	LEVEL_HEAL,				// ヒールスライム
 
-	LEVEL_BOSS = 999,		// �{�X�X���C��	(�ŋ�)
+	LEVEL_BOSS = 999,		// ボススライム	(最強)
 
-	MAX_LEVEL = LEVEL_4	//�ő僌�x����ݒ�	(�X���C���̒i�K����������ύX)
+	MAX_LEVEL = LEVEL_4	//最大レベルを設定	(スライムの段階が増えたら変更)
 };
 
-// =============== �萔��` =======================
+// =============== 定数定義 =======================
 #if MODE_GAME_PARAMETER
 #else
-const float ENEMY_MOVE_SPEED = 0.01f;	//�G�̈ړ����x
-const int FIRST_EXPLOSION_SCORE = 1000;		//�ԓ��m�̍ŏ��̔����̃X�R�A
-const int LEVEL_1_SCORE = 10;				// �X���C��_1�̃X�R�A
-const int LEVEL_2_SCORE = 30;				// �X���C��_2�̃X�R�A
-const int LEVEL_3_SCORE = 100;				// �X���C��_3�̃X�R�A
-const int LEVEL_4_SCORE = 500;				// �X���C��_4�̃X�R�A
-const int LEVEL_4x4_SCORE = 500;				// �X���C��_4�̃X�R�A
+const float ENEMY_MOVE_SPEED = 0.01f;	//敵の移動速度
+const int FIRST_EXPLOSION_SCORE = 1000;		//赤同士の最初の爆発のスコア
+const int LEVEL_1_SCORE = 10;				// スライム_1のスコア
+const int LEVEL_2_SCORE = 30;				// スライム_2のスコア
+const int LEVEL_3_SCORE = 100;				// スライム_3のスコア
+const int LEVEL_4_SCORE = 500;				// スライム_4のスコア
+const int LEVEL_4x4_SCORE = 500;				// スライム_4のスコア
 #endif
-// =============== �N���X��` =====================
+// =============== クラス定義 =====================
 
 class CSlimeBase
 	: public CObject 
 {
 public:
-	// ===�v���g�^�C�v�錾===
+	// ===プロトタイプ宣言===
 	CSlimeBase();
 	~CSlimeBase();
 	virtual void Update(tagTransform3d playerTransform, float fSlimeMoveSpeed); 
 	virtual void Draw(const CCamera* pCamera);
 
-	virtual void NormalMove(tagTransform3d playerTransform);	// �ʏ펞�̈ړ�����
+	virtual void NormalMove(tagTransform3d playerTransform);	// 通常時の移動処理
 	void RandomMove();
-	void HitMove();									//�X���C����������шړ���Ԃ̎��ɖ��t���[���Ăяo���Ĉړ�������
-	void HitMoveStart(float speed, float angle);	//�X���C����������΂��ꂽ�Ƃ��ɑ��x�Ɗp�x�����߂�
-	void Reflect();									//�X���C���ƂԂ����Đ�����΂����ۂɎ����̈ړ��ʂ����炷
+	void HitMove();									//スライムが吹き飛び移動状態の時に毎フレーム呼び出して移動させる
+	void HitMoveStart(float speed, float angle);	//スライムが吹き飛ばされたときに速度と角度を決める
+	void Reflect();									//スライムとぶつかって吹き飛ばした際に自分の移動量を減らす
 	void Escape();
 
-	// �Q�b�g�֐�
-	float GetSpeed();					// �X���C���̈ړ����x���擾
-	E_SLIME_LEVEL GetSlimeLevel();		// �X���C���̃��x�����擾
+	// ゲット関数
+	float GetSpeed();					// スライムの移動速度を取得
+	E_SLIME_LEVEL GetSlimeLevel();		// スライムのレベルを取得
 	bool GetHitMoveFlg();
 	TPos3d<float> GetPos();
 	bool GetEscapeFlag();
 	int GetAttack();
 
-	//�Z�b�g�֐�
+	//セット関数
 	virtual void SetNormalSpeed() = 0;
 	void SetCamera(const CCamera* pCamera);
 	void SetExplosionPos(TPos3d<float> expPos);
 	void SetEscapeFlag(bool bEscape);
 protected:
-	Model* m_pModel;				//3D���f��
-	VertexShader* m_pVS;			//�o�[�e�b�N�X�V�F�[�_�[�̃|�C���^
-	TTriType<float> m_move;			//�ړ���
-	TPos3d<float> m_ExpPos;			//�ł��߂������̍��W
-	bool m_bEscape;					//�X���C�����������Ԃ��ǂ���
-	float m_fVecAngle;				//�G�̐�����ԕ���
-	float m_fSpeed;					//�X���C���̈ړ����x
-	bool m_bHitMove;				//������ђ����ǂ���
-	int m_nEscapeCnt;				//�������ԂɂȂ�����
+	Model* m_pModel;				//3Dモデル
+	VertexShader* m_pVS;			//バーテックスシェーダーのポインタ
+	TTriType<float> m_move;			//移動量
+	TPos3d<float> m_ExpPos;			//最も近い爆発の座標
+	bool m_bEscape;					//スライムが逃げる状態かどうか
+	float m_fVecAngle;				//敵の吹き飛ぶ方向
+	float m_fSpeed;					//スライムの移動速度
+	bool m_bHitMove;				//吹っ飛び中かどうか
+	int m_nEscapeCnt;				//逃げる状態になった時
 
-	E_SLIME_LEVEL m_eSlimeSize;		//�X���C���̑傫���̗�
-	const CCamera* m_pCamera;		//�J�����̃|�C���^
+	E_SLIME_LEVEL m_eSlimeSize;		//スライムの大きさの列挙
+	const CCamera* m_pCamera;		//カメラのポインタ
 
-	CShadow* m_pShadow;				//�e�̃|�C���^
-	float m_fScaleShadow;			//�e�̑傫��
+	CShadow* m_pShadow;				//影のポインタ
+	float m_fScaleShadow;			//影の大きさ
 	
-	DirectX::XMMATRIX m_Ry;				//��]
+	DirectX::XMMATRIX m_Ry;				//回転
 
-	int m_RanMoveCnt;			// �����_���ړ��̉��Z�l
-	int m_nAttack;				// �U����
+	int m_RanMoveCnt;			// ランダム移動の加算値
+	int m_nAttack;				// 攻撃力
 
 private:
 

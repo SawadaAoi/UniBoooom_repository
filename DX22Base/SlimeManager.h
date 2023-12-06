@@ -65,6 +65,7 @@ public:
 	//-- ノーマル、その他
 	void HitBranch(int HitSlimeArrayNum,int standSlimeArrayNum,CExplosionManager* pExpMng);			// スライムの接触が起きた際の分岐処理
 	bool HitFlameBranch(int HitSlimeNum, int StandSlimeNum, CExplosionManager* pExpMng);			// フレイムスライムとの接触が起きた際の分岐処理
+	bool HitHealBranch(int HitSlimeNum, int StandSlimeNum, CExplosionManager* pExpMng);				// フレイムスライムとの接触が起きた際の分岐処理
 	void UnionSlime(E_SLIME_LEVEL level, TPos3d<float> pos);										// スライムの結合処理
 	void TouchExplosion(int DelSlime, CExplosionManager* pExpMng, int comboNum);					// スライムの爆発処理
 
@@ -104,11 +105,13 @@ private:
 
 	CPlayer* m_pPlayer;	// プレイヤーの座標
 	VertexShader* m_pVS;
+	// スライムのモデル
 	Model* m_pBlueModel;
 	Model* m_pGreenModel;
 	Model* m_pYellowModel;
 	Model* m_pRedModel;
 	Model* m_pFlameModel;
+	Model* m_pHealModel;
 	Model* m_pBossModel[2];
 
 	CScoreOHManager* m_pScoreOHMng;				// スコアマネージャ―ポインタ
