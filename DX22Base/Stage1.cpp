@@ -48,7 +48,7 @@ const float STARTSIGN_UV_POS_Y = 1.0f / STARTSIGN_UV_NUM_Y;		// 縦のUV座標計算用
 #endif
 #define USE_FADE_GAME (true)	//フェード試す
 #define USE_PAUSE (false)	//ポーズ試す		※現在ポーズ中から戻ってくる手段を用意していないため要注意！
-#define SCENE_TRANSITION(false)
+#define SCENE_TRANSITION(false)		// シーン遷移をボタン押下か自動化を切り替え（trueは自動)
 
 #if USE_FADE_GAME
 #include "Fade.h"
@@ -386,7 +386,7 @@ void CStage1::Update()
 		}
 	}
 #else
-	if (m_pStageFin->GetTransitionFlg())
+	if (m_pStageFin->GetDeleteDispFlg())
 	{
 		m_bFinish = true;	// タイトルシーン終了フラグON
 	}

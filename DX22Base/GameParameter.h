@@ -284,7 +284,7 @@ const float NEAR_Z = 0.1f;			// 画面に写り始める距離
 const float FAR_Z = 10.0f;			// 写せる限界距離
 
 // タイマー =====================================================
-const int STAGE_TIME = 180 * 60;	//ステージ制限時間（秒*フレーム）
+const int STAGE_TIME = 10 * 60;	//ステージ制限時間（秒*フレーム）
 const TPos2d<float> MINUTE_POS(565.0f, 45.0f);			//分の位置設定
 const TPos2d<float> SECOND_TENS_POS(640.0f, 45.0f);	//十の桁秒の位置設定
 const TPos2d<float> SECOND_ONE_POS(690.0f, 45.0f);		//一の桁秒の位置設定

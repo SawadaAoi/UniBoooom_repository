@@ -251,9 +251,9 @@ bool CStageFinish::GetDispFlg()
 	----------------------------------------
 	ñﬂílÅFÇ»Çµ
 =========================================== */
-bool CStageFinish::GetTransitionFlg()
+bool CStageFinish::GetDeleteDispFlg()
 {
-	return m_bTransition;
+	return m_bDeleteDisp;
 }
 
 /* ========================================

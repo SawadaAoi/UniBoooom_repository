@@ -38,7 +38,7 @@ public:
 	void Update();
 	void Draw();
 	bool GetDispFlg();
-	bool GetTransitionFlg();	// 画面遷移フラグ取得用
+	bool GetDeleteDispFlg();	// 画面遷移フラグ取得用
 
 private:
 	void EditSprite(int);
