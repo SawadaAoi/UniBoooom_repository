@@ -299,7 +299,7 @@ void CStage1::Update()
 #endif
 
 #if SCENE_TRANSITION
-	if (m_pStageFin->GetDispFlg())
+	if (m_pUIStageManager->GetStageFinish()->GetDispFlg())
 	{
 		if (IsKeyTrigger(VK_RETURN) || IsKeyTriggerController(BUTTON_A))
 		{
@@ -307,7 +307,7 @@ void CStage1::Update()
 		}
 	}
 #else
-	if (m_pStageFin->GetDeleteDispFlg())
+	if (m_pUIStageManager->GetStageFinish()->GetDeleteDispFlg())
 	{
 		m_bFinish = true;	// タイトルシーン終了フラグON
 	}
