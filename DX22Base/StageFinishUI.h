@@ -10,6 +10,7 @@
 	変更履歴
 	・2023/11/20 h,作成 Yamashita
 	・2023/11/20 ゲームのプレイ状態を列挙 yamashita
+	・2023/12/07 自動でシーン遷移させるためのフラグ取得関数追加 nieda
 
 ========================================== */
 #ifndef __STAGE_FINISH_UI_H__
@@ -38,6 +39,7 @@ public:
 	void Update();
 	void Draw();
 	bool GetDispFlg();
+	bool GetDeleteDispFlg();	// 画面遷移フラグ取得用
 
 private:
 	void EditSprite(int);

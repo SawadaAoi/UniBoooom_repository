@@ -21,6 +21,7 @@
 	・2023/12/03 カメラ更新の記述改訂 takagi
 	・2023/12/05 ステージにポーズ実装 takagi
 	・2023/12/06 pose→pause修正、ポーズ文字表示 takagi
+	・2023/12/07 ステージ→リザルト遷移方法切り替え実装 nieda
 
 ========================================== */
 
@@ -48,6 +49,7 @@ const float STARTSIGN_UV_POS_Y = 1.0f / STARTSIGN_UV_NUM_Y;		// 縦のUV座標計算用
 #endif
 #define USE_FADE_GAME (true)	//フェード試す
 #define USE_PAUSE (false)	//ポーズ試す		※現在ポーズ中から戻ってくる手段を用意していないため要注意！
+#define SCENE_TRANSITION(false)		// シーン遷移をボタン押下か自動化を切り替え（trueは自動)
 
 #if USE_FADE_GAME
 #include "Fade.h"
@@ -296,6 +298,7 @@ void CStage1::Update()
 	m_pFade->Update();
 #endif
 
+#if SCENE_TRANSITION
 	if (m_pUIStageManager->GetStageFinish()->GetDispFlg())
 	{
 		if (IsKeyTrigger(VK_RETURN) || IsKeyTriggerController(BUTTON_A))
@@ -303,6 +306,12 @@ void CStage1::Update()
 			m_bFinish = true;	// タイトルシーン終了フラグON
 		}
 	}
+#else
+	if (m_pUIStageManager->GetStageFinish()->GetDeleteDispFlg())
+	{
+		m_bFinish = true;	// タイトルシーン終了フラグON
+	}
+#endif
 }
 
 /* ========================================
