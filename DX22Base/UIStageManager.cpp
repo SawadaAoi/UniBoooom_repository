@@ -122,3 +122,8 @@ CTimer * CUIStageManager::GetTimer()
 	return m_pTimer;
 }
 
+CStageFinish * CUIStageManager::GetStageFinish()
+{
+	return m_pStageFin;
+}
+

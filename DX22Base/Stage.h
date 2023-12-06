@@ -42,6 +42,7 @@
 #include "ScoreOHManager.h"
 #include "TotalScore.h"
 #include "Sound.h"
+#include "UIStageManager.h"
 
 // =============== クラス定義 =====================
 class CStage :public CScene	//シーン
@@ -78,18 +79,19 @@ protected:
 	CSlimeManager* m_pSlimeMng;
 	CCOLLISION* m_pCollision;
 	CExplosionManager* m_pExplosionMng;
-	CTimer* m_pTimer;
-	CCombo* m_pCombo;
+	//CTimer* m_pTimer;
+	//CCombo* m_pCombo;
 	CFloor* m_pFloor;
 	CFade* m_pFade;
-	CStageFinish* m_pStageFin;
+	//CStageFinish* m_pStageFin;
 	Texture* m_pTexture;
 	CScoreOHManager* m_pScoreOHMng;
-	CTotalScore* m_pTotalScore;
-	CHP_UI* m_pHpMng;
-	CBossgauge* m_pBossgauge;
+	////CTotalScore* m_pTotalScore;
+	//CHP_UI* m_pHpMng;
+	//CBossgauge* m_pBossgauge;
 	CHealItemManager* m_pHealItemMng;
 	CPause* m_pPause;						//ポーズ画面
+	CUIStageManager* m_pUIStageManager;
 	
 	//サウンド
 	XAUDIO2_BUFFER* m_pSEHitHammer;
