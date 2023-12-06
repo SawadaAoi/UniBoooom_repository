@@ -105,7 +105,7 @@ CSlimeBase::~CSlimeBase()
 	-------------------------------------
 	戻値：無し
 =========================================== */
-void CSlimeBase::Update(tagTransform3d playerTransform)
+void CSlimeBase::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
 {
 
 	if (!m_bHitMove)	//敵が通常の移動状態の時
@@ -126,9 +126,11 @@ void CSlimeBase::Update(tagTransform3d playerTransform)
 	}
 
 	// -- 座標更新
-	m_Transform.fPos.x += m_move.x;
-	m_Transform.fPos.z += m_move.z;
+	m_Transform.fPos.x += m_move.x * fSlimeMoveSpeed;
+	m_Transform.fPos.z += m_move.z * fSlimeMoveSpeed;
 }
+
+	
 
 /* ========================================
 	描画処理関数

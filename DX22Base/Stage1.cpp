@@ -18,6 +18,7 @@
 	・2023/11/22 動くよう足りない変数など追加 nieda
 	・2023/11/27 バグ修正 takagi
 	・2023/11/29 ヒットストップ仕様変更対応 takagi
+	・2023/12/03 カメラ更新の記述改訂 takagi
 	・2023/12/05 ステージにポーズ実装 takagi
 	・2023/12/06 pose→pause修正、ポーズ文字表示 takagi
 
@@ -185,6 +186,9 @@ CStage1::CStage1()
 	//ボスゲージ　←　スライムマネージャー
 	m_pBossgauge->SetSlimeManager(m_pSlimeMng);
 
+	//爆発マネージャー　←　タイマー
+	m_pSlimeMng->SetTimer(m_pTimer);
+
 	m_pSlimeMng->SetHealMng(m_pHealItemMng);
 
 	//================タイマースタート================
@@ -293,7 +297,7 @@ void CStage1::Update()
 		if (!CHitStop::IsStop())	//ヒットストップ時処理しない
 		{
 			// プレイヤー更新
-			m_pPlayer->Update();
+			m_pPlayer->Update();	//※カメラ更新含
 
 			// スライムマネージャー更新
 			m_pSlimeMng->Update(m_pExplosionMng);
@@ -374,10 +378,14 @@ void CStage1::Draw()
 	// プレイヤー描画
 	m_pPlayer->Draw();
 
+	LibEffekseer::Draw();
+
 	//爆発マネージャー描画
 	m_pExplosionMng->Draw();
 
 	m_pHealItemMng->Draw();
+
+
 
 	//タイマー描画
 	SetRenderTargets(1, &pRTV, nullptr);

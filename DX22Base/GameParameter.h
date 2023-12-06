@@ -73,30 +73,30 @@ const float HAMMER_COL_SIZE		= 0.75f;								//ƒnƒ“ƒ}[‚Ì“–‚½‚è”»’è‚Ì‘å‚«‚³
 const float HAMMER_SIZE			= 0.2f;									//ƒnƒ“ƒ}[‚Ì‘å‚«‚³
 
 const float INTERVAL_INITIAL = 0.2f;								//ƒnƒ“ƒ}[‰ŠúŠÔŠu
-const float INTERVAL_PLUS = 3.2f;									//ƒnƒ“ƒ}[‚ðˆê‰ñU‚é‚Æ‚«‚ÉæŽZ‚³‚ê‚é’l
-const float INTERVAL_MINUS = 0.97f;									//–ˆƒtƒŒ[ƒ€ƒnƒ“ƒ}[‚ðU‚éŠÔŠu‚ð’Z‚­‚³‚¹‚é’l
-
+const float SwingSpeed_PLUS = 1.5f;									//ƒnƒ“ƒ}[‚ðˆê‰ñU‚é‚Æ‚«‚ÉæŽZ‚³‚ê‚é’l
+const float SwingSpeed_MINUS = 0.97f;									//–ˆƒtƒŒ[ƒ€ƒnƒ“ƒ}[‚ðU‚éŠÔŠu‚ð’Z‚­‚³‚¹‚é’l
+const float SwingSpeed_SIOW = 50.0f;
 // “GƒLƒƒƒ‰ ==================================================
 
 // ‹¤’Ê
-const int	MAX_SLIME_NUM = 50;		// ƒXƒ‰ƒCƒ€‚ÌÅ‘å¶¬”
-const int	MAX_BOSS_SLIME_NUM = 5;		// ƒ{ƒXƒXƒ‰ƒCƒ€‚ÌÅ‘å¶¬”
-const int	START_ENEMY_NUM = 6;		// ƒQ[ƒ€ŠJŽnŽž‚Ì“GƒLƒƒƒ‰‚Ì”
-const float ENEMY_MOVE_SPEED = 0.035f;	// “G‚Ì’ÊíˆÚ“®‘¬“x
+const int	MAX_SLIME_NUM = 30;							// ƒXƒ‰ƒCƒ€‚ÌÅ‘å¶¬”
+const int	MAX_BOSS_SLIME_NUM = 5;				// ƒ{ƒXƒXƒ‰ƒCƒ€‚ÌÅ‘å¶¬”
+const int	START_ENEMY_NUM = 6;				// ƒQ[ƒ€ŠJŽnŽž‚Ì“GƒLƒƒƒ‰‚Ì”
+const float ENEMY_MOVE_SPEED = 0.035f;			// “G‚Ì’ÊíˆÚ“®‘¬“x
 const float HAMMER_HIT_MOVE_SPEED = 1.0f;		// ƒnƒ“ƒ}[‚É‚«”ò‚Î‚³‚ê‚½Žž‚ÌƒXƒs[ƒh
 const int	RANDOM_MOVE_SWITCH_TIME = 3 * 60;	// ƒ‰ƒ“ƒ_ƒ€ˆÚ“®‚Ì•ûŒüØ‚è‘Ö‚¦
 
 const float SPEED_DOWN_RATIO = 0.6f;		// ‚«”ò‚ÔÛ‚É‚©‚©‚éˆÚ“®‘¬“x‚Ì•Ï‰»‚ÌŠ„‡    RATIO=>Š„‡
-const float MOVE_RESIST = 0.05f;	// ‚«”ò‚ÑˆÚ“®’†‚ÌƒXƒ‰ƒCƒ€‚ÌˆÚ“®‘¬“x‚É–ˆƒtƒŒ[ƒ€‚©‚©‚éŒ¸ŽZ”’l
-const float MOVE_DISTANCE_PLAYER = 13.0f;	// ƒvƒŒƒCƒ„[’ÇÕˆÚ“®‚ÉØ‚è‘Ö‚¦‚é‹——£
+const float MOVE_RESIST = 0.05f;			// ‚«”ò‚ÑˆÚ“®’†‚ÌƒXƒ‰ƒCƒ€‚ÌˆÚ“®‘¬“x‚É–ˆƒtƒŒ[ƒ€‚©‚©‚éŒ¸ŽZ”’l
+const float MOVE_DISTANCE_PLAYER = 18.0f;	// ƒvƒŒƒCƒ„[’ÇÕˆÚ“®‚ÉØ‚è‘Ö‚¦‚é‹——£
 const float SLIME_BASE_RADIUS = 0.5f;		// ƒXƒ‰ƒCƒ€‚ÌŠî€‚Ì‘å‚«‚³
 
-const int ENEMY_CREATE_INTERVAL = int(2.0f * 60);								// ¶¬ŠÔŠu
+const int ENEMY_CREATE_INTERVAL		= int(1.0f * 60);							// ¶¬ŠÔŠu
 const int RANDOM_POS = 15;														// ¶¬À•W”ÍˆÍ
-const int CREATE_DISTANCE = 10;													// ƒvƒŒƒCƒ„[‚©‚ç‚Ç‚ê‚­‚ç‚¢—£‚ê‚½‹——£‚É¶¬‚·‚é‚©
-const int SLIME_LEVEL1_PER = 45;																// ƒXƒ‰ƒCƒ€_1‚Ì¶¬Šm—§
-const int SLIME_LEVEL2_PER = 35;																// ƒXƒ‰ƒCƒ€_2‚Ì¶¬Šm—§
-const int SLIME_LEVEL3_PER = 10;																// ƒXƒ‰ƒCƒ€_3‚Ì¶¬Šm—§
+const int CREATE_DISTANCE = 19;													// ƒvƒŒƒCƒ„[‚©‚ç‚Ç‚ê‚­‚ç‚¢—£‚ê‚½‹——£‚É¶¬‚·‚é‚©
+const int SLIME_LEVEL1_PER = 45;												// ƒXƒ‰ƒCƒ€_1‚Ì¶¬Šm—§
+const int SLIME_LEVEL2_PER = 35;												// ƒXƒ‰ƒCƒ€_2‚Ì¶¬Šm—§
+const int SLIME_LEVEL3_PER = 10;												// ƒXƒ‰ƒCƒ€_3‚Ì¶¬Šm—§
 const int SLIME_LEVEL_FLAME_PER = 100 - SLIME_LEVEL1_PER - SLIME_LEVEL2_PER - SLIME_LEVEL3_PER;	// ƒXƒ‰ƒCƒ€_ƒtƒŒƒCƒ€‚Ì¶¬Šm—§
 const float MAX_SIZE_EXPLODE		= 5.0f;										// ƒXƒ‰ƒCƒ€4“¯Žm‚Ì”š”­‚Ì‘å‚«‚³
 const float EXPLODE_BASE_RATIO		= 1.5f;										// ƒXƒ‰ƒCƒ€‚Ì”š”­ÚG‚Å‚Ì”š”­‚Ì‘å‚«‚³‚Ìƒx[ƒX
@@ -110,7 +110,7 @@ const float COL_SUB_HIT_TO_BIG		= 0.1f;			// ƒXƒ‰ƒCƒ€Õ“Ë(¬¨‘å)‚ÌÕ“Ë‘¤‚ÌŒ¸ŽZ’
 const float COL_SUB_STAND_TO_SMALL	= 0.8f;			// ƒXƒ‰ƒCƒ€Õ“Ë(¬¨‘å)‚ÌÕ“Ë‚³‚ê‚é‘¤‚ÌŒ¸ŽZ’l(Õ“Ë‚³‚ê‚½•ûŒü)
 const float COL_SUB_HIT_TO_SMALL	= 0.3f;			// ƒXƒ‰ƒCƒ€Õ“Ë(‘å¨¬)‚ÌÕ“Ë‘¤‚ÌŒ¸ŽZ’l(ˆÚ“®•ûŒü)
 const float COL_SUB_STAND_TO_BIG	= 1.2f;			// ƒXƒ‰ƒCƒ€Õ“Ë(‘å¨¬)‚ÌÕ“Ë‚³‚ê‚é‘¤‚ÌŒ¸ŽZ’l(Õ“Ë‚³‚ê‚½•ûŒü)
-const float LEAVE_DISTANCE = 40.0f;					// ‚±‚êˆÈã—£‚ê‚½‚ç‘ÎŠpüã‚ÉˆÚ“®‚·‚é
+const float LEAVE_DISTANCE = 29.0f;					// ‚±‚êˆÈã—£‚ê‚½‚ç‘ÎŠpüã‚ÉˆÚ“®‚·‚é
 
 // ƒTƒCƒY1
 const float LEVEL1_SCALE = 1.0f;					// ƒXƒ‰ƒCƒ€QƒŒƒxƒ‹‚P‚Ì‘å‚«‚³(“–‚½‚è”»’èŠÜ‚Þ)
@@ -127,6 +127,11 @@ const float LEVEL3_SCALE = 3.0f;					// ƒXƒ‰ƒCƒ€QƒŒƒxƒ‹‚R‚Ì‘å‚«‚³(“–‚½‚è”»’èŠÜ‚
 const float LEVEL3_SPEED = ENEMY_MOVE_SPEED * 0.7f;	// ˆÚ“®‘¬“x
 const int	LEVEL3_ATTACK = 1;						// UŒ‚—Í
 const float LEVEL3_STOP_RANGE = DirectX::XMConvertToRadians(20.0f);	// ƒXƒ‰ƒCƒ€‚ªŽ~‚Ü‚éŠp“x‚Ì”ÍˆÍ
+const int	LEVEL2_ATTACK_INTERVAL = int(60 * 4.0f);		// UŒ‚I—¹‚©‚çŽŸ‚ÌUŒ‚‚Ü‚Å‚ÌŠÔŠu
+const int	LEVEL2_ATTACK_CHARGE_CNT = int(60 * 1.0f);	// “Ëi‚·‚é‚Ü‚Å‚Ì‚½‚ßŽžŠÔ
+const int	LEVEL2_ATTACK_TACKLE_CNT = int(60 * 0.45f);	// “Ëi‚µ‚Ä‚¢‚éŽžŠÔ
+const float	LEVEL2_TACKLE_SPEED = 0.2f;					// “Ëi‚Ì‘¬“x
+
 
 // ƒTƒCƒY4
 const float LEVEL4_SCALE = 5.0f;					// ƒXƒ‰ƒCƒ€QƒŒƒxƒ‹‚S‚Ì‘å‚«‚³(“–‚½‚è”»’èŠÜ‚Þ)
@@ -160,13 +165,14 @@ const int	ASSAULT_CHARGE_TIME = int(2 * 60);						// “ËŒ‚ƒ`ƒƒ[ƒWŽžŠÔ
 const int	ASSAULT_TIME = int(1.0f * 60);						// “ËŒ‚‘ŽžŠÔ
 const float ASSAULT_SPEED = LEVEL_BOSS_1_SPEED * 20.0f;		// “ËŒ‚Žž‚ÌƒXƒs[ƒh
 
-const float BOSS_HP_SIZEX = 0.3f;		//‘Ì—Í‚P•ª‚Ì‘å‚«‚³iXj
-const float BOSS_HP_SIZEY = 0.5f;		//‘Ì—Í‚P•ª‚Ì‘å‚«‚³iYj
-const float BOSS_HPFRAME_SIZEX = 0.2f;	//‘Ì—ÍƒQ[ƒW‚æ‚è‚Ç‚ê‚¾‚¯‘å‚«‚¢‚©iXj
-const float BOSS_HPFRAME_SIZEY = 0.2f;	//‘Ì—ÍƒQ[ƒW‚æ‚è‚Ç‚ê‚¾‚¯‘å‚«‚¢‚©iYj
-const float BOSS_HP_POSX = 8.6f;		//‘Ì—Íƒo[iŒ¸‚é•ûj‚ÌˆÊ’u
+const float BOSS_HP_SIZEX = 0.3f;		// ‘Ì—Í‚P•ª‚Ì‘å‚«‚³iXj
+const float BOSS_HP_SIZEY = 0.5f;		// ‘Ì—Í‚P•ª‚Ì‘å‚«‚³iYj
+const float BOSS_HPFRAME_SIZEX = 0.2f;	// ‘Ì—ÍƒQ[ƒW‚æ‚è‚Ç‚ê‚¾‚¯‘å‚«‚¢‚©iXj
+const float BOSS_HPFRAME_SIZEY = 0.2f;	// ‘Ì—ÍƒQ[ƒW‚æ‚è‚Ç‚ê‚¾‚¯‘å‚«‚¢‚©iYj
+const float BOSS_HP_POSX = 8.6f;		// ‘Ì—Íƒo[iŒ¸‚é•ûj‚ÌˆÊ’u
 const int BOSS_DAMAGE_FLASH_FRAME = int(0.1f * 60);					// ƒ_ƒ[ƒWŽó‚¯‚½Û‚Ì“_–ÅƒtƒŒ[ƒ€(–³“G‚Å‚Í‚È‚¢)
 const int BOSS_DAMAGE_FLASH_TOTAL_FRAME = int(0.5f * 60);			// ƒ_ƒ[ƒW‚ðŽó‚¯‚½Û‚Ì“_–Å‚ð‰½ƒtƒŒ[ƒ€s‚¤‚©
+const float ADD_CREATE_BOSS_POS_Z = 20.0f;							// ƒ_ƒ[ƒW‚ðŽó‚¯‚½Û‚Ì“_–Å‚ð‰½ƒtƒŒ[ƒ€s‚¤‚©
 
 // ”š”­ =====================================================
 const int	MAX_EXPLOSION_NUM = 20;			// Å‘å”š”­”
@@ -188,11 +194,11 @@ const float SLIME_SCORE_HEIGHT = 4.0f;			//”š”­Žž“ªãƒXƒRƒA‚Ì•\Ž¦ˆÊ’u
 
 const int TOTALSCORE_DIGIT = 5;				//ƒg[ƒ^ƒ‹ƒXƒRƒA‚ÌŒ…”
 const int MAX_TOTALSCORE = 99999;			//ªˆê‚É•Ï‚¦‚Ä‚­‚¾‚³‚¢iŒ…”•ª9‚ð’Ç‰Áj//Å‘åƒg[ƒ^ƒAƒ‹ƒXƒRƒA
-const TPos2d<float> TOTALSCORE_POS(1100.0f, 25.0f);			//ƒg[ƒ^ƒ‹ƒXƒRƒA‚ÌˆÊ’uÝ’è
+const TPos2d<float> TOTALSCORE_POS(1230.0f, 50.0f);			//ƒg[ƒ^ƒ‹ƒXƒRƒA‚ÌˆÊ’uÝ’è
 
-const DirectX::XMFLOAT2 TOTALSCORE_SIZE(50.0f, -50.0f);		//ƒg[ƒ^ƒ‹ƒXƒRƒA‚Ì•\Ž¦‚Ì‘å‚«‚³
-const DirectX::XMFLOAT2 PLUSSCORE_SIZE(30.0f, -30.0f);		//ƒvƒ‰ƒXƒXƒRƒA‚Ì•\Ž¦‚Ì‘å‚«‚³
-const int ROW_HIGHT = 40;			//ƒXƒRƒA‚ð•¡”ŒÂ•\Ž¦Žžˆê”Ôã‚©‚ç‚Ç‚Ì‚­‚ç‚¢‰º‚°‚é‚©iPLUSSCORE_SIZE.y‚Ìâ‘Î’l‚æ‚è‘å‚«‚¢”Žš‚Åj
+const DirectX::XMFLOAT2 TOTALSCORE_SIZE(50.0f, -75.0f);		//ƒg[ƒ^ƒ‹ƒXƒRƒA‚Ì•\Ž¦‚Ì‘å‚«‚³
+const DirectX::XMFLOAT2 PLUSSCORE_SIZE(30.0f, -40.0f);		//ƒvƒ‰ƒXƒXƒRƒA‚Ì•\Ž¦‚Ì‘å‚«‚³
+const int ROW_HIGHT = 60;			//ƒXƒRƒA‚ð•¡”ŒÂ•\Ž¦Žžˆê”Ôã‚©‚ç‚Ç‚Ì‚­‚ç‚¢‰º‚°‚é‚©iPLUSSCORE_SIZE.y‚Ìâ‘Î’l‚æ‚è‘å‚«‚¢”Žš‚Åj
 
 const DirectX::XMFLOAT2 SMALLDECIMAL_SIZE(15.0f, -15.0f);	//¬”“_‚Ì‘å‚«‚³
 const int MAGNIFICATION = 40;		//”{—¦•\Ž¦Žž‚ÌŠÔŠuBˆê”Ô‰E‚Ì”Žš‚©‚ç‚Ç‚ê‚¾‚¯¶‚É‚¸‚ç‚·‚©i¬”“_‚ð“ü‚ê‚é‚Ì‚Å‚»‚±‚àƒPƒA‚·‚éj
@@ -224,10 +230,11 @@ const float INIT_ANGLE = DirectX::XMConvertToRadians(73.0f);        //ƒJƒƒ‰‚ÌŠp
 const float INIT_NEAR = 1.0f;										//‰æ–ÊŽè‘O‰Šúz’l
 const float INIT_FAR = 150.0f;										//‰æ–Ê‰œ‰Šúz’l
 const float INIT_RADIUS = 15.0f;									//ƒJƒƒ‰‚Æ’Ž‹“_‚Æ‚Ì‹——£(‰Šú’l)
-const TDiType<int> INIT_FRAME_WEAK = { 110, 110 };					//ŽãU“®‚ÌƒtƒŒ[ƒ€”	x:‰¡, y:c
-const TDiType<int> INIT_FRAME_STRONG = { 110, 110 };				//‹­U“®‚ÌƒtƒŒ[ƒ€”	x:‰¡, y:c
+const int MAX_CNT_CHANGE_VIBRATE = 10;								//Å‘åU“®•Ï‰»”
+const TDiType<int> INIT_FRAME_WEAK = { 125, 125 };					//ŽãU“®‚ÌƒtƒŒ[ƒ€”	x:‰¡, y:c
+const TDiType<int> INIT_FRAME_STRONG = { 150, 150 };				//‹­U“®‚ÌƒtƒŒ[ƒ€”	x:‰¡, y:c
 const TDiType<float> CHANGE_RATE_AMPLITUDE_WEAK{ 0.99f, 0.99f };	//‹­U••Ï‰»—¦	1‚ð’´‚¦‚é‚Æ‘‰Á•ûŒüA‰º‰ñ‚é‚ÆŒ¸­•ûŒü	x:‰¡, y:c
-const TDiType<float> CHANGE_RATE_AMPLITUDE_STRONG{ 0.99f, 0.99f };	//‹­U••Ï‰»—¦	1‚ð’´‚¦‚é‚Æ‘‰Á•ûŒüA‰º‰ñ‚é‚ÆŒ¸­•ûŒü	x:‰¡, y:c
+const TDiType<float> CHANGE_RATE_AMPLITUDE_STRONG{ 0.97f, 0.97f };	//‹­U••Ï‰»—¦	1‚ð’´‚¦‚é‚Æ‘‰Á•ûŒüA‰º‰ñ‚é‚ÆŒ¸­•ûŒü	x:‰¡, y:c
 ///<summary>U•‚ÌŠm—¦FŽã
 ///<para>‡Œv‚ª1‚É‚È‚é•K—v‚Í‚È‚¢</para>
 ///</summary>
@@ -257,8 +264,8 @@ const std::vector<double> PROBABILITY_AMPITUDE_STRONG[E_DIRECT_VIBRATE_MAX] = {
 ///<para>Še’l‚ÍU•‚Ì‘å‚«‚³‚ð•\‚·</para>
 ///</summary>
 const std::vector<float> TABLE_AMPITUDE_STRONG[E_DIRECT_VIBRATE_MAX] = {
-	{ -0.25f, -0.15f, 0.0f, 0.15f, 0.25f },	//‰¡‹­U•
-	{ -2.5f, -1.5f, 0.0f, 1.5f, 2.5f },	//c‹­U•
+	{ -0.1f, -0.05f, 0.0f, 0.05f, 0.1f },	//‰¡‹­U•
+	{ -1.25f, -0.7f, 0.0f, 0.7f, 1.25f },	//c‹­U•
 };
 
 // UI =====================================================
@@ -272,21 +279,35 @@ const float FAR_Z = 10.0f;			// ŽÊ‚¹‚éŒÀŠE‹——£
 
 // ƒ^ƒCƒ}[ =====================================================
 const int STAGE_TIME = 180 * 60;	//ƒXƒe[ƒW§ŒÀŽžŠÔi•b*ƒtƒŒ[ƒ€j
-const TPos2d<float> MINUTE_POS(565.0f, 25.0f);			//•ª‚ÌˆÊ’uÝ’è
-const TPos2d<float> SECOND_TENS_POS(640.0f, 25.0f);	//\‚ÌŒ…•b‚ÌˆÊ’uÝ’è
-const TPos2d<float> SECOND_ONE_POS(690.0f, 25.0f);		//ˆê‚ÌŒ…•b‚ÌˆÊ’uÝ’è
-const TPos2d<float> TIME_BACKGROUND_POS(630.0f, 25.0f);	//ƒoƒbƒNƒOƒ‰ƒEƒ“ƒhˆÊ’uÝ’è
-const TPos2d<float> TIME_COLON_POS(602.5f, 25.0f);		//ƒRƒƒ“‚ÌˆÊ’uÝ’è
+const TPos2d<float> MINUTE_POS(565.0f, 45.0f);			//•ª‚ÌˆÊ’uÝ’è
+const TPos2d<float> SECOND_TENS_POS(640.0f, 45.0f);	//\‚ÌŒ…•b‚ÌˆÊ’uÝ’è
+const TPos2d<float> SECOND_ONE_POS(690.0f, 45.0f);		//ˆê‚ÌŒ…•b‚ÌˆÊ’uÝ’è
+const TPos2d<float> TIME_BACKGROUND_POS(630.0f, 45.0f);	//ƒoƒbƒNƒOƒ‰ƒEƒ“ƒhˆÊ’uÝ’è
+const TPos2d<float> TIME_COLON_POS(602.5f, 45.0f);		//ƒRƒƒ“‚ÌˆÊ’uÝ’è
 const float TIME_BACK_GROUND_SIZE_X = 200.0f;			//ƒ^ƒCƒ}[‚ÌƒoƒbƒNƒOƒ‰ƒ“ƒh‚ÌX‚Ì’·‚³Ý’è
 const float TIME_BACK_GROUND_SIZE_Y = -75.0f;			//ƒ^ƒCƒ}[‚ÌƒoƒbƒNƒOƒ‰ƒ“ƒh‚ÌY‚Ì’·‚³Ý’è
 const float TIME_COLON_SIZE_X = 35.0f;					//ƒ^ƒCƒ}[‚ÌƒRƒƒ“‚ÌX‚Ì’·‚³Ý’è
 const float TIME_COLON_SIZE_Y = -35.0f;					//ƒ^ƒCƒ}[‚ÌƒRƒƒ“‚ÌY‚Ì’·‚³Ý’è
 
+const enum TIME_STATE
+{
+	STATE_FIRST = 0,
+	STATE_SECOND,
+	STATE_THIRD,
+	STATE_MAX,
+};
+
+const float SLM_PARAM_CHANGE_TIME[STATE_MAX]	= { 60.0f, 120.0f, 180.0f };	// Œo‰ßŽžŠÔ‚Ì•b”
+const int	SLM_CREATE_NUM[STATE_MAX]			= { 20, 25, MAX_SLIME_NUM };	// Å‘å¶¬”
+const float SLM_CREATE_INTERVAL_TIME[STATE_MAX] = { 1.0f, 1.5f, 1.5f };			// ¶¬ŠÔŠu
+const float SLM_MOVE_ADD_SPEED[STATE_MAX]		= { 1.0f, 1.1f, 1.2f };			// ˆÚ“®ƒXƒs[ƒh
+
+
 // ƒ{ƒXƒQ[ƒW =====================================================
 const int BOSS_GAUGE_FULL_TIME = 45 * 60;		//ƒ{ƒXƒQ[ƒWMAX‚É‚È‚éŽžŠÔ(‰½•boŒ») * 60ƒtƒŒ[ƒ€
 const int SECOND_EMPTY_BOSS_GAUGE = 75 * 60;		//“ñ‘Ì–Ú‚Ìƒ{ƒX‹óƒQ[ƒW•\‚·ŽžŠÔ * 60ƒtƒŒ[ƒ€
-const TPos2d<float> BOSS_GAUGE_EMPTY_POS(765.0f, 30.0f);	//ƒ{ƒXƒQ[ƒWi‹ój‚ÌˆÊ’uÝ’è
-const TPos2d<float> BOSS_GAUGE_FULL_POS(765.0f, 31.5f);	//ƒ{ƒXƒQ[ƒWi–žj‚ÌˆÊ’uÝ’è
+const TPos2d<float> BOSS_GAUGE_EMPTY_POS(765.0f, 45.0f);	//ƒ{ƒXƒQ[ƒWi‹ój‚ÌˆÊ’uÝ’è
+const TPos2d<float> BOSS_GAUGE_FULL_POS(765.0f, 46.5f);	//ƒ{ƒXƒQ[ƒWi–žj‚ÌˆÊ’uÝ’è
 const float BOSS_GAUGE_EMPTY_SIZE_X = 60.0f;			//ƒ{ƒXƒQ[ƒWi‹ój‚ÌX‚Ì’·‚³Ý’è
 const float BOSS_GAUGE_EMPTY_SIZE_Y = -60.0f;			//ƒ{ƒXƒQ[ƒWi‹ój‚ÌY‚Ì’·‚³Ý’è
 const float BOSS_GAUGE_FULL_SIZE_X = (6.0f / 7.0f) * BOSS_GAUGE_EMPTY_SIZE_X;			//ƒ{ƒXƒQ[ƒWi–žj‚ÌX‚Ì’·‚³Ý’è
@@ -297,9 +318,9 @@ const int FADE_TIME = 5 * 60;							//ƒ{ƒXƒQ[ƒW‚ª—­‚Ü‚Á‚Ä‚©‚çÁ‚¦‚éŽžŠÔ
 
 
 // HP
-const TTriType<float> HP_UI_POS = { 80.0f, 60.0f ,0.0f };	// ƒeƒNƒXƒ`ƒƒ‚Ìc•A‰¡•
-const TTriType<float> HP_UI_SIZE = { 90.0f, 90.0f ,0.0f };	// ƒeƒNƒXƒ`ƒƒ‚Ìc•A‰¡•
-const float DRAW_WIDTH = 90.0f;	// ƒeƒNƒXƒ`ƒƒ‚Ì‰¡•
+const TTriType<float> HP_UI_POS = { 45.0f, 50.0f ,0.0f };	// ƒeƒNƒXƒ`ƒƒ‚Ìc•A‰¡•
+const TTriType<float> HP_UI_SIZE = { 60.0f, 55.0f ,0.0f };	// ƒeƒNƒXƒ`ƒƒ‚Ìc•A‰¡•
+const float DRAW_WIDTH = 65.0f;	// ƒeƒNƒXƒ`ƒƒ‚Ì‰¡•
 
 const int SWITCH_HP_ANIM = 0;				// ƒAƒjƒ[ƒVƒ‡ƒ“Ø‚è‘Ö‚¦‚ÌŠÔŠu
 const int HP_ANIM_WIDTH_NUM_MAX = 6;		// ‰¡•ªŠ„”Å‘å”
@@ -318,26 +339,26 @@ const float BOOOOM_UI_SCALE_Y = 6.0f;		//BoooomUIƒTƒCƒY‚ÌƒXƒP[ƒ‹
 
 // ƒRƒ“ƒ{ =========================================================
 const int	MAX_COMBO_NUM = 5;					// Å‘å“¯ŽžƒRƒ“ƒ{”
-const TPos2d<float> COMBO_UI_POSITION = { 1025.0f, 600.0f };	// ƒRƒ“ƒ{UI‚Ì•`‰æˆÊ’u
+const TPos2d<float> COMBO_UI_POSITION = { 930.0f, 600.0f };	// ƒRƒ“ƒ{UI‚Ì•`‰æˆÊ’u
 const TPos2d<float> COMBO_UI_SIZE = { 70.0f, 130.0f };	// ƒRƒ“ƒ{UI‚Ì‘å‚«‚³
 const float COMBO_UI_NUM_SPACE = 80.0f;				// ”Žš‚ÌŠÔƒXƒy[ƒX
 const float COMBO_UI_MULTI_DISP_SPACE = 100.0f;			// “¯ŽžƒRƒ“ƒ{•`‰æŽž‚Ìã‰º‚Ì‹ó”’
 const int COMBO_UI_DISP_DILAY_TIME = int(2.0f * 60);			// ŽcƒRƒ“ƒ{”•\Ž¦‚Ì•b”
 
-const TPos2d<float> COMBO_UI_BACK_POS = { 1130.0f, 600.0f };	// ƒRƒ“ƒ{UI‚Ì”wŒi‚Ì•`‰æˆÊ’u
-const TPos2d<float> COMBO_UI_BACK_SIZE = { 370.0f, 280.0f };	// ƒRƒ“ƒ{UI‚Ì”wŒi‚Ì‘å‚«‚³
+const TPos2d<float> COMBO_UI_BACK_POS = { 1030.0f, 600.0f };	// ƒRƒ“ƒ{UI‚Ì”wŒi‚Ì•`‰æˆÊ’u
+const TPos2d<float> COMBO_UI_BACK_SIZE = { 370.0f, 300.0f };	// ƒRƒ“ƒ{UI‚Ì”wŒi‚Ì‘å‚«‚³
 const TPos2d<float> COMBO_UI_STRING_POS = { 1150.0f, 615.5f };	// ƒRƒ“ƒ{UI‚Ì•¶Žš‚Ì•`‰æˆÊ’u
 const TPos2d<float> COMBO_UI_STRING_SIZE = { 180.0f, 100.0f };		// ƒRƒ“ƒ{UI‚Ì•¶Žš‚Ì‘å‚«‚³
 
-const int SWITCH_COMBO_ANIM = 1;			// ƒAƒjƒ[ƒVƒ‡ƒ“Ø‚è‘Ö‚¦‚ÌŠÔŠu
+const int SWITCH_COMBO_ANIM = 5;			// ƒAƒjƒ[ƒVƒ‡ƒ“Ø‚è‘Ö‚¦‚ÌŠÔŠu
 const int COMBO_ANIM_WIDTH_NUM_MAX = 3;		// ‰¡•ªŠ„”Å‘å”
 const int COMBO_ANIM_HEIGHT_NUM_MAX = 3;	// c•ªŠ„”Å‘å”
 const float COMBO_ANIM_SIZEX = 1.0f / COMBO_ANIM_WIDTH_NUM_MAX;		// ƒeƒNƒXƒ`ƒƒ‰¡•ªŠ„ƒTƒCƒY
 const float COMBO_ANIM_SIZEY = 1.0f / COMBO_ANIM_HEIGHT_NUM_MAX;	// ƒeƒNƒXƒ`ƒƒc•ªŠ„ƒTƒCƒY
 
 // ° ====================================
-const float FLOOR_SCALE_X = 1.1f;
-const float FLOOR_SCALE_Z = 1.1f;
+const float FLOOR_SCALE_X = 3.1f;
+const float FLOOR_SCALE_Z = 3.1f;
 const float FLOOR_OFFSET_X = 48.0f * FLOOR_SCALE_X;
 const float FLOOR_OFFSET_Z = 48.0f * FLOOR_SCALE_Z;
 
@@ -353,7 +374,7 @@ const float TEXTURE_TITLE_BUTTON_HEIGHT = 100.0f;			// ƒ^ƒCƒgƒ‹‰æ–Êƒ{ƒ^ƒ“‰Ÿ‰ºŽwŽ
 
 // ƒqƒbƒgƒXƒgƒbƒv =========================================================
 const int FRAME_STOP_SOFT = 2;		//ƒXƒgƒbƒvFŒy@‚ÌƒtƒŒ[ƒ€”	// Œ»ÝŽg—p‚µ‚Ä‚¢‚é•¨
-const int FRAME_STOP_NORMAL = 5;	//ƒXƒgƒbƒvF’†@‚ÌƒtƒŒ[ƒ€”
+const int FRAME_STOP_NORMAL = 4;	//ƒXƒgƒbƒvF’†@‚ÌƒtƒŒ[ƒ€”
 const int FRAME_STOP_HEAVY = 120;	//ƒXƒgƒbƒvFd@‚ÌƒtƒŒ[ƒ€”
 const int FRAME_STOP_DEATH = 999;	//ƒXƒgƒbƒvFŽ€@‚ÌƒtƒŒ[ƒ€”
 
