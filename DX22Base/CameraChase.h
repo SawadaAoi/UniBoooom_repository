@@ -14,6 +14,7 @@
 	・2023/11/08 TPos修正 takagi
 	・2023/11/10 パラメタ修正 takagi
 	・2023/12/03 位置ゲッタ用調整 takagi
+	・2023/12/04 GetViewWithoutTransposeの戻り値を変更 ymaashita
 
 ========================================== */
 
@@ -28,10 +29,10 @@ class CCameraChase :public CCamera	//カメラ
 {
 public:
 	// ===プロトタイプ宣言===
-	CCameraChase(const TPos3d<float>* pPos);					//コンストラクタ
-	~CCameraChase();											//デストラクタ
-	void Update();												//更新
-	DirectX::XMMATRIX GetViewWithoutTranspose() const override;	//転置無しビュー行列取得
+	CCameraChase(const TPos3d<float>* pPos);						//コンストラクタ
+	~CCameraChase();												//デストラクタ
+	void Update();													//更新
+	DirectX::XMFLOAT4X4 GetViewWithoutTranspose() const override;	//転置無しビュー行列取得
 private:
 	// ===メンバ変数宣言===
 	const TPos3d<float>* m_pTarget;	//追跡目標
