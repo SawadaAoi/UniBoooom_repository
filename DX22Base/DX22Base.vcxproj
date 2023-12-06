@@ -198,7 +198,7 @@
     <ClCompile Include="ModelParticle.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Particle.cpp" />
-    <ClCompile Include="Pose.cpp" />
+    <ClCompile Include="Pause.cpp" />
     <ClCompile Include="Random.cpp" />
     <ClCompile Include="ScoreOverHead.cpp" />
     <ClCompile Include="ScoreOHManager.cpp" />
@@ -286,7 +286,7 @@
     <ClInclude Include="Pos3d.h" />
     <ClInclude Include="ModelParticle.h" />
     <ClInclude Include="Particle.h" />
-    <ClInclude Include="Pose.h" />
+    <ClInclude Include="Pause.h" />
     <ClInclude Include="Random.h" />
     <ClInclude Include="ScoreOverHead.h" />
     <ClInclude Include="ScoreOHManager.h" />
@@ -342,7 +342,7 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
     </FxCompile>
-    <FxCompile Include="PsPose.hlsl">
+    <FxCompile Include="PsPause.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
@@ -354,7 +354,7 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
     </FxCompile>
-    <FxCompile Include="VsPose.hlsl">
+    <FxCompile Include="VsPause.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>

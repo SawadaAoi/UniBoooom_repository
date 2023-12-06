@@ -3,18 +3,19 @@
 	---------------------------------------
 	ポーズ画面定義
 	---------------------------------------
-	Pose.h
+	Pause.h
 
 	作成者	takagi
 
 	変更履歴
 	・2023/12/01 制作 takagi
 	・2023/12/04 続き takagi
+	・2023/12/06 pose→pause修正、ポーズ文字表示 takagi
 
 ========================================== */
 
-#ifndef __POSE_H__	//Pose.hインクルードガード
-#define __POSE_H__
+#ifndef __PAUSE_H__	//Pause.hインクルードガード
+#define __PAUSE_H__
 
 #include "Sound.h"		//音
 #include "Camera.h"		//カメラ
@@ -22,12 +23,12 @@
 #include <vector>		//配列コンテナ
 
 // =============== クラス定義 =====================
-class CPose
+class CPause
 {
 private:
 	enum E_FLAG
 	{
-		E_FLAG_POSEMODE = 0x01,			//ポーズモード
+		E_FLAG_PAUSEMODE = 0x01,			//ポーズモード
 		E_FLAG_COMMAND_CONTINUE = 0x02,	//継続コマンド
 		E_FLAG_COMMAND_FINISH = 0x04,	//終了コマンド
 		E_FLAG_DECIDE_COMMAND = 0x08,	//コマンド決定状態
@@ -35,13 +36,13 @@ private:
 	};	//フラグ
 public:
 	// ===プロトタイプ宣言===
-	CPose(const CCamera* pCamera);						//コンストラクタ
-	~CPose();											//デストラクタ
+	CPause(const CCamera* pCamera);						//コンストラクタ
+	~CPause();											//デストラクタ
 	void Update();										//更新
 	void Draw();										//描画
 	bool IsFin() const;									//終了確認
 	void SetCamera(const CCamera* pCamera = nullptr);	//カメラセッタ
-	bool IsPose() const;								//ポーズ中か
+	bool IsPause() const;								//ポーズ中か
 	void Boot();										//ポーズモード起動
 private:
 	// ===メンバ変数宣言=====
@@ -61,4 +62,4 @@ private:
 	void SetFlag(const unsigned char& ucBitFlag);	//フラグ反転
 };	//リザルト
 
-#endif	//!__POSE_H__
+#endif	//!__PAUSE_H__

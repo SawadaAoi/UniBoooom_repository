@@ -18,7 +18,8 @@
 	・2023/11/22 動くよう足りない変数など追加 nieda
 	・2023/11/27 バグ修正 takagi
 	・2023/11/29 ヒットストップ仕様変更対応 takagi
-	・2023/12/05 ステージにポーズ実装
+	・2023/12/05 ステージにポーズ実装 takagi
+	・2023/12/06 pose→pause修正、ポーズ文字表示 takagi
 
 ========================================== */
 
@@ -37,7 +38,7 @@
 #define TRY_USE_HIT_STOP (true)
 #endif
 #define USE_FADE_GAME (true)	//フェード試す
-#define USE_POSE (false)	//ポーズ試す		※現在ポーズ中から戻ってくる手段を用意していないため要注意！
+#define USE_PAUSE (false)	//ポーズ試す		※現在ポーズ中から戻ってくる手段を用意していないため要注意！
 
 #if USE_FADE_GAME
 #include "Fade.h"
@@ -51,7 +52,7 @@
 #include "Input.h"
 #endif
 
-#if USE_POSE	//ポーズ臨時呼び出し
+#if USE_PAUSE	//ポーズ臨時呼び出し
 #include "Input.h"
 #endif
 
@@ -146,8 +147,8 @@ CStage1::CStage1()
 	m_pFade = new CFade(m_pCamera);
 #endif
 
-#if USE_POSE
-	m_pPose = new CPose(m_pCamera);
+#if USE_PAUSE
+	m_pPause = new CPause(m_pCamera);
 #endif
 
 	//================セット================
@@ -207,7 +208,7 @@ CStage1::CStage1()
 =========================================== */
 CStage1::~CStage1()
 {
-	SAFE_DELETE(m_pPose);
+	SAFE_DELETE(m_pPause);
 	if (m_pSpeaker)
 	{
 		m_pSpeaker->Stop();
@@ -272,16 +273,16 @@ void CStage1::Update()
 		m_pCamera->Update();
 
 		//ポーズ更新
-#if USE_POSE
-		if (m_pPose)	//ヌルチェック
+#if USE_PAUSE
+		if (m_pPause)	//ヌルチェック
 		{
 			if (IsKeyPress('P'))
 			{
-				m_pPose->Boot();
+				m_pPause->Boot();
 			}
-			if (m_pPose->IsPose())	//ポーズ中
+			if (m_pPause->IsPause())	//ポーズ中
 			{
-				m_pPose->Update();
+				m_pPause->Update();
 
 				return;	//処理中断
 			}
@@ -406,10 +407,10 @@ void CStage1::Draw()
 //	m_pFade->Draw();
 //#endif
 //
-#if USE_POSE
-	if (m_pPose)
+#if USE_PAUSE
+	if (m_pPause)
 	{
-		m_pPose->Draw();
+		m_pPause->Draw();
 	}
 #endif
 }

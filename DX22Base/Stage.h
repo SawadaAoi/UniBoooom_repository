@@ -14,6 +14,7 @@
 	・2023/11/22 メンバ変数大量追加 nieda
 	・2023/12/04 ポーズクラス追加・デストラクタ復活 takagi
 	・2023/12/05 コメント修正 takagi
+	・2023/12/06 pose→pause修正、ポーズ文字表示 takagi
 
 ========================================== */
 
@@ -36,7 +37,7 @@
 #include "DirectWrite.h"
 #include "Timer.h"
 #include "Fade.h"
-#include "Pose.h"				//メンバのヘッダ
+#include "Pause.h"				//メンバのヘッダ
 #include "BossGauge.h"
 #include "ScoreOHManager.h"
 #include "TotalScore.h"
@@ -88,7 +89,7 @@ protected:
 	CHP_UI* m_pHpMng;
 	CBossgauge* m_pBossgauge;
 	CHealItemManager* m_pHealItemMng;
-	CPose* m_pPose;						//ポーズ画面
+	CPause* m_pPause;						//ポーズ画面
 	
 	//サウンド
 	XAUDIO2_BUFFER* m_pSEHitHammer;

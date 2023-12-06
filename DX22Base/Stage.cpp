@@ -15,6 +15,7 @@
 	・2023/12/01 サウンドの読み込み yamashita
 	・2023/12/04 ポーズクラス追加・デストラクタ復活 takagi
 	・2023/12/05 コメント修正 takagi
+	・2023/12/06 pose→pause修正、ポーズ文字表示 takagi
 
 ========================================== */
 
@@ -31,7 +32,7 @@
 //	戻値：なし
 //=========================================== */
 CStage::CStage()
-	:m_pPose(nullptr)	//ポーズ
+	:m_pPause(nullptr)	//ポーズ
 {
 	//ハンマーとスライムの接触時のサウンド読み込み
 	m_pSEHitHammer = CSound::LoadSound("Assets/Sound/SE/Smash.mp3");
@@ -49,7 +50,7 @@ CStage::CStage()
 CStage::~CStage()
 {
 	// =============== 終了 ===================
-	SAFE_DELETE(m_pPose);	//ポーズ削除
+	SAFE_DELETE(m_pPause);	//ポーズ削除
 }
 //
 ///* ========================================

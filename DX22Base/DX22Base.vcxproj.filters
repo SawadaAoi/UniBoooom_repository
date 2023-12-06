@@ -381,7 +381,7 @@
     <ClCompile Include="UIStageManager.cpp">
       <Filter>ソース ファイル\2dObject</Filter>
     </ClCompile>
-    <ClCompile Include="Pose.cpp">
+    <ClCompile Include="Pause.cpp">
       <Filter>ソース ファイル\Scene</Filter>
     </ClCompile>
   </ItemGroup>
@@ -629,11 +629,11 @@
     <ClInclude Include="UIStageManager.h">
       <Filter>ヘッダー ファイル\2dObject</Filter>
     </ClInclude>
-    <ClInclude Include="Pose.h">
-      <Filter>ヘッダー ファイル\Scene</Filter>
-    </ClInclude>
     <ClInclude Include="CameraDef.h">
       <Filter>ヘッダー ファイル\System\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Pause.h">
+      <Filter>ヘッダー ファイル\Scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -646,10 +646,10 @@
     <FxCompile Include="VsFade.hlsl">
       <Filter>リソース ファイル\VertexShader</Filter>
     </FxCompile>
-    <FxCompile Include="PsPose.hlsl">
+    <FxCompile Include="PsPause.hlsl">
       <Filter>リソース ファイル\PixelShader</Filter>
     </FxCompile>
-    <FxCompile Include="VsPose.hlsl">
+    <FxCompile Include="VsPause.hlsl">
       <Filter>リソース ファイル\VertexShader</Filter>
     </FxCompile>
   </ItemGroup>

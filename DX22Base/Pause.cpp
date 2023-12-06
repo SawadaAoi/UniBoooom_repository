@@ -3,7 +3,7 @@
 	---------------------------------------
 	ポーズ画面実装
 	---------------------------------------
-	Pose.cpp
+	Pause.cpp
 
 	作成者	takagi
 
@@ -11,11 +11,12 @@
 	・2023/12/01 制作 takagi
 	・2023/12/04 続き takagi
 	・2023/12/05 続き takagi
+	・2023/12/06 pose→pause修正、ポーズ文字表示 takagi
 
 ========================================== */
 
 // =============== インクルード ===================
-#include "Pose.h"		//自身のヘッダ
+#include "Pause.h"		//自身のヘッダ
 #include <map>			//関係性コンテナ
 #include <array>		//配列
 #include "CameraDef.h"	//疑似カメラ
@@ -25,6 +26,9 @@
 enum E_2D
 {
 	E_2D_BACK,		//背景
+	E_2D_PA,		//ポーズの”ポ”
+	E_2D_U,			//ポーズの”ー”
+	E_2D_SE,		//ポーズの”ズ”
 	E_2D_CONTINUE,	//継続コマンド
 	E_2D_FINISH,	//終了コマンド
 	E_2D_MAX,		//要素数
@@ -49,6 +53,8 @@ enum E_SHADER_TYPE
 #include "GameParameter.h"
 #if GAME_PARAMETER
 const float COMMAND_SPACE_HALF = 85.0f;	//コマンド同士の縦の間
+const float PAUSE_Y = 520.0f;			//ポーズ表示部中心y位置
+const float PAUSE_SPACE = 85.0f;		//ポーズ表記の横の間
 const float COMMAND_WIDTH = 320.0f;		//コマンド縦幅
 const float COMMAND_HEIGHT = 70.0f;		//コマンド横幅
 #endif // !GAME_PARAMETER
@@ -57,22 +63,31 @@ const float COMMAND_HEIGHT = 70.0f;		//コマンド横幅
 const std::string BGM_FILE_PASS("Assets/Sound/BGM/BGM_maou.mp3");
 const std::string SE_FILE_PASS("Assets/Sound/SE/Smash.mp3");
 const std::map<int, std::string> MAP_TEXTURE = {
-	{E_2D_BACK, "Assets/Texture/PoseBg.png"},			//背景
-	{E_2D_CONTINUE, "Assets/Texture/pre_title.png"},	//コマンドA
-	{E_2D_FINISH, "Assets/Texture/pre_result.png"},	//コマンドB
+	{E_2D_BACK, "Assets/Texture/Pause/PauseBg.png"},			//背景
+	{E_2D_PA, "Assets/Texture/Pause/Pause_po.png"},													//ポーズの”ポ”
+	{E_2D_U, "Assets/Texture/Pause/Pause_-.png"},													//ポーズの”ー”
+	{E_2D_SE, "Assets/Texture/Pause/Pause_zu.png"},													//ポーズの”ズ
+	{E_2D_CONTINUE, "Assets/Texture/Pause/Pause_Continue.png"},	//継続コマンド
+	{E_2D_FINISH, "Assets/Texture/Pause/Pause_Finish.png"},	//コマンドB
 };	//ポリゴンとテクスチャの対応表
 const std::map<int, TPos3d<float>> MAP_POS = {	//更新順
 	{E_2D_BACK, {static_cast<float>(SCREEN_WIDTH) / 2.0f, static_cast<float>(SCREEN_HEIGHT) / 2.0f, 0.0f}},					//背景
-	{E_2D_CONTINUE, {static_cast<float>(SCREEN_WIDTH) / 2.0f, static_cast<float>(SCREEN_HEIGHT) / 2.0f + COMMAND_SPACE_HALF, 0.0f}},	//コマンドA
-	{E_2D_FINISH, {static_cast<float>(SCREEN_WIDTH) / 2.0f, static_cast<float>(SCREEN_HEIGHT) / 2.0f - COMMAND_SPACE_HALF, 0.0f}},	//コマンドB
+	{E_2D_PA, {static_cast<float>(SCREEN_WIDTH) / 2.0f - CHARA_SPACE, CHARA_Y, 0.0f}},										//ポーズの”ポ”
+	{E_2D_U, {static_cast<float>(SCREEN_WIDTH) / 2.0f, CHARA_Y, 0.0f}},														//ポーズの”ー”
+	{E_2D_SE, {static_cast<float>(SCREEN_WIDTH) / 2.0f + CHARA_SPACE, CHARA_Y, 0.0f}},										//ポーズの”ズ”
+	{E_2D_CONTINUE, {static_cast<float>(SCREEN_WIDTH) / 2.0f, static_cast<float>(SCREEN_HEIGHT) / 2.0f + COMMAND_SPACE_HALF, 0.0f}},	//継続コマンド
+	{E_2D_FINISH, {static_cast<float>(SCREEN_WIDTH) / 2.0f, static_cast<float>(SCREEN_HEIGHT) / 2.0f - COMMAND_SPACE_HALF, 0.0f}},	//終了コマンド
 };	//ポリゴンと初期座標の対応表
 const std::map<int, TPos3d<float>> MAP_SIZE = {	//更新順
 	{E_2D_BACK, {static_cast<float>(SCREEN_WIDTH), static_cast<float>(SCREEN_HEIGHT), 0.0f}},	//背景
-	{E_2D_CONTINUE, {COMMAND_WIDTH, COMMAND_HEIGHT, 0.0f}},													//コマンドA
-	{E_2D_FINISH, {COMMAND_WIDTH, COMMAND_HEIGHT, 0.0f}},													//コマンドB
+	{E_2D_PA, {CHARA_WIDTH, CHARA_HEIGHT, 0.0f}},												//ポーズの”ポ”
+	{E_2D_U, {CHARA_WIDTH, CHARA_HEIGHT, 0.0f}},												//ポーズの”ー”
+	{E_2D_SE, {CHARA_WIDTH, CHARA_HEIGHT, 0.0f}},												//ポーズの”ズ”
+	{E_2D_CONTINUE, {COMMAND_WIDTH, COMMAND_HEIGHT, 0.0f}},										//継続コマンド
+	{E_2D_FINISH, {COMMAND_WIDTH, COMMAND_HEIGHT, 0.0f}},										//終了コマンド
 };	//ポリゴンと初期サイズの対応表
 const std::map<int, std::array<std::string, E_SHADER_TYPE_MAX>> MAP_SHADER = {
-	{E_2D_BACK, {"Assets/Shader/VsPose.cso", "Assets/Shader/PsPose.cso"}},	//背景
+	{E_2D_BACK, {"Assets/Shader/VsPause.cso", "Assets/Shader/PsPause.cso"}},	//背景
 	//TODO:この先オブジェクトを追加したときに読み込むシェーダーがずれたりする恐れがあるので通常時用のシェーダーも作って読み込ませる
 };	//ポリゴンとシェーダー[頂点, ピクセル]の対応表
 
@@ -85,7 +100,7 @@ const std::map<int, std::array<std::string, E_SHADER_TYPE_MAX>> MAP_SHADER = {
 	----------------------------------------
 	戻値：なし
 =========================================== */
-CPose::CPose(const CCamera* pCamera)
+CPause::CPause(const CCamera* pCamera)
 	:m_ucFlag(0x00)			//フラグ
 	,m_pBgPs(nullptr)		//背景用ピクセルシェーダ
 	,m_pBgVs(nullptr)		//背景用頂点シェーダ
@@ -98,9 +113,11 @@ CPose::CPose(const CCamera* pCamera)
 	// =============== 動的確保 ===================
 	m_2dObj = {	//更新順
 		new C2dPolygon(),				//背景用
-		new C2dPolygon(),				//コマンドA用
-		new C2dPolygon(),				//コマンドB用
-		new C2dPolygon(),				//コマンドC用
+		new C2dPolygon(),				//背景用
+		new C2dPolygon(),				//ポの字用
+		new C2dPolygon(),				//ーの字用
+		new C2dPolygon(),				//ズの字用
+		new C2dPolygon(),				//終了コマンド用
 	};	//平面ポリゴン
 	m_pBgVs = new VertexShader;			//頂点シェーダー
 	m_pBgPs = new PixelShader;			//ピクセルシェーダー
@@ -149,7 +166,7 @@ CPose::CPose(const CCamera* pCamera)
 	----------------------------------------
 	戻値：なし
 =========================================== */
-CPose::~CPose()
+CPause::~CPause()
 {	
 	// =============== 終了 ===================
 	SAFE_DELETE(m_pCameraDef);				//疑似カメラ削除
@@ -171,7 +188,7 @@ CPose::~CPose()
 	----------------------------------------
 	戻値：なし
 =========================================== */
-void CPose::Update()
+void CPause::Update()
 {
 	// =============== キー入力 ===================
 	// =============== 決定 ===================
@@ -184,12 +201,12 @@ void CPose::Update()
 		if (m_ucFlag & E_FLAG_COMMAND_CONTINUE)	//継続
 		{
 			// =============== フラグ操作 ===================
-			DownFlag(E_FLAG_POSEMODE | E_FLAG_COMMAND_CONTINUE);	//ポーズを中断し、ゲームを再開する
+			DownFlag(E_FLAG_PAUSEMODE | E_FLAG_COMMAND_CONTINUE);	//ポーズを中断し、ゲームを再開する
 		}
 		if (m_ucFlag & E_FLAG_COMMAND_FINISH)	//継続
 		{
 			// =============== フラグ操作 ===================
-			DownFlag(E_FLAG_POSEMODE | E_FLAG_COMMAND_FINISH);	//ポーズを中断する
+			DownFlag(E_FLAG_PAUSEMODE | E_FLAG_COMMAND_FINISH);	//ポーズを中断する
 			UpFlag(E_FLAG_CALL_FINISH);							//ゲームの終了申請
 		}
 	}
@@ -204,10 +221,10 @@ void CPose::Update()
 	----------------------------------------
 	戻値：なし
 	======================================== */
-void CPose::Draw()
+void CPause::Draw()
 {
 	// =============== モード検査 ===================
-	if (!(m_ucFlag & E_FLAG_POSEMODE))	//ポーズモードのフラグが立っていない
+	if (!(m_ucFlag & E_FLAG_PAUSEMODE))	//ポーズモードのフラグが立っていない
 	{
 		// =============== 終了 ==================
 		return;	//処理中断
@@ -238,7 +255,7 @@ void CPose::Draw()
 	----------------------------------------
 	戻値：なし
 	======================================== */
-bool CPose::IsFin() const
+bool CPause::IsFin() const
 {
 	// =============== 提供 ===================
 	return (m_ucFlag & E_FLAG_CALL_FINISH);	//終了フラグ
@@ -253,7 +270,7 @@ bool CPose::IsFin() const
 	----------------------------------------
 	戻値：なし
 	======================================== */
-void CPose::SetCamera(const CCamera * pCamera)
+void CPause::SetCamera(const CCamera * pCamera)
 {
 	// =============== 変数宣言 ===================
 	int nCnt = 0;				//ループカウント用
@@ -291,10 +308,10 @@ void CPose::SetCamera(const CCamera * pCamera)
 	----------------------------------------
 	戻値：なし
 	======================================== */
-bool CPose::IsPose() const
+bool CPause::IsPause() const
 {
 	// =============== 提供 ===================
-	return (m_ucFlag & E_FLAG_POSEMODE);	//ポーズモードフラグが立っているか
+	return (m_ucFlag & E_FLAG_PAUSEMODE);	//ポーズモードフラグが立っているか
 }
 
 /* ========================================
@@ -306,10 +323,10 @@ bool CPose::IsPose() const
 	----------------------------------------
 	戻値：なし
 	======================================== */
-void CPose::Boot()
+void CPause::Boot()
 {
 	// =============== フラグ操作 ===================
-	UpFlag(E_FLAG_POSEMODE);	//ポーズ開始
+	UpFlag(E_FLAG_PAUSEMODE);	//ポーズ開始
 }
 
 /* ========================================
@@ -321,7 +338,7 @@ void CPose::Boot()
 	-------------------------------------
 	戻値：なし
 =========================================== */
-void CPose::UpFlag(const unsigned char & ucBitFlag)
+void CPause::UpFlag(const unsigned char & ucBitFlag)
 {
 	// =============== 代入 ===================
 	m_ucFlag |= ucBitFlag;	//フラグ操作
@@ -336,7 +353,7 @@ void CPose::UpFlag(const unsigned char & ucBitFlag)
 	-------------------------------------
 	戻値：なし
 =========================================== */
-void CPose::DownFlag(const unsigned char & ucBitFlag)
+void CPause::DownFlag(const unsigned char & ucBitFlag)
 {
 	// =============== 代入 ===================
 	m_ucFlag &= (ucBitFlag ^ 0xFF);	//フラグ操作
@@ -351,7 +368,7 @@ void CPose::DownFlag(const unsigned char & ucBitFlag)
 	-------------------------------------
 	戻値：なし
 =========================================== */
-void CPose::SetFlag(const unsigned char & ucBitFlag)
+void CPause::SetFlag(const unsigned char & ucBitFlag)
 {
 	// =============== 代入 ===================
 	m_ucFlag ^= ucBitFlag;	//フラグ操作
