@@ -17,7 +17,10 @@
 	・2023/11/21 ゲーム開始時テクスチャ表示 nieda
 	・2023/11/22 動くよう足りない変数など追加 nieda
 	・2023/11/27 バグ修正 takagi
-  ・2023/11/29 ヒットストップ仕様変更対応 takagi
+	・2023/11/29 ヒットストップ仕様変更対応 takagi
+	・2023/12/03 カメラ更新の記述改訂 takagi
+	・2023/12/05 ステージにポーズ実装 takagi
+	・2023/12/06 pose→pause修正、ポーズ文字表示 takagi
 
 ========================================== */
 
@@ -44,6 +47,7 @@ const float STARTSIGN_UV_POS_Y = 1.0f / STARTSIGN_UV_NUM_Y;		// 縦のUV座標計算用
 #define TRY_USE_HIT_STOP (true)
 #endif
 #define USE_FADE_GAME (true)	//フェード試す
+#define USE_PAUSE (false)	//ポーズ試す		※現在ポーズ中から戻ってくる手段を用意していないため要注意！
 
 #if USE_FADE_GAME
 #include "Fade.h"
@@ -54,6 +58,10 @@ const float STARTSIGN_UV_POS_Y = 1.0f / STARTSIGN_UV_NUM_Y;		// 縦のUV座標計算用
 #endif
 
 #if TRY_USE_HIT_STOP
+#include "Input.h"
+#endif
+
+#if USE_PAUSE	//ポーズ臨時呼び出し
 #include "Input.h"
 #endif
 
@@ -151,6 +159,11 @@ CStage1::CStage1()
 #if USE_FADE_GAME
 	m_pFade = new CFade(m_pCamera);
 #endif
+
+#if USE_PAUSE
+	m_pPause = new CPause(m_pCamera);
+#endif
+
 	//================セット================
 
 	//プレイヤー　←　カメラ
@@ -185,6 +198,9 @@ CStage1::CStage1()
 	//ボスゲージ　←　スライムマネージャー
 	m_pBossgauge->SetSlimeManager(m_pSlimeMng);
 
+	//爆発マネージャー　←　タイマー
+	m_pSlimeMng->SetTimer(m_pTimer);
+
 	m_pSlimeMng->SetHealMng(m_pHealItemMng);
 
 	//================タイマースタート================
@@ -208,6 +224,7 @@ CStage1::CStage1()
 =========================================== */
 CStage1::~CStage1()
 {
+	SAFE_DELETE(m_pPause);
 	if (m_pSpeaker)
 	{
 		m_pSpeaker->Stop();
@@ -294,11 +311,28 @@ void CStage1::Update()
 		// カメラ更新
 		m_pCamera->Update();
 
+		//ポーズ更新
+#if USE_PAUSE
+		if (m_pPause)	//ヌルチェック
+		{
+			if (IsKeyPress('P'))
+			{
+				m_pPause->Boot();
+			}
+			if (m_pPause->IsPause())	//ポーズ中
+			{
+				m_pPause->Update();
+
+				return;	//処理中断
+			}
+		}
+#endif
+
 		// =============== ヒットストップ検査 ===================
 		if (!CHitStop::IsStop())	//ヒットストップ時処理しない
 		{
 			// プレイヤー更新
-			m_pPlayer->Update();
+			m_pPlayer->Update();	//※カメラ更新含
 
 			// スライムマネージャー更新
 			m_pSlimeMng->Update(m_pExplosionMng);
@@ -332,6 +366,9 @@ void CStage1::Update()
 
 		// 当たり判定更新
 		Collision();
+		
+		// 回復アイテム取る判定
+		PlayerHealItemCollision();
 		
 	}
 
@@ -401,10 +438,14 @@ void CStage1::Draw()
 	// プレイヤー描画
 	m_pPlayer->Draw();
 
+	LibEffekseer::Draw();
+
 	//爆発マネージャー描画
 	m_pExplosionMng->Draw();
 
 	m_pHealItemMng->Draw();
+
+
 
 	//タイマー描画
 	SetRenderTargets(1, &pRTV, nullptr);
@@ -429,9 +470,16 @@ void CStage1::Draw()
 
 	//頭上スコアマネージャー描画
 	m_pScoreOHMng->Draw();
-
-#if USE_FADE_GAME
-	m_pFade->Draw();
+//
+//#if USE_FADE_GAME
+//	m_pFade->Draw();
+//#endif
+//
+#if USE_PAUSE
+	if (m_pPause)
+	{
+		m_pPause->Draw();
+	}
 #endif
 }
 

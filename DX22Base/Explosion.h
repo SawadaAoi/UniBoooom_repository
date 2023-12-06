@@ -21,20 +21,20 @@
 	・2023/11/20 コンボ数配列添え字の追加 Sawada
 	・2023/11/21 初期値の設定と、遅延処理の追加 Sawada
 	・2023/11/21 ボスに一度触ったかを判定用の関数、変数追加 Suzumura
-
+	・2023/12/04 爆発のエフェクトを実装 yamasita
+	・2023/12/04 爆発の仮表示3Dモデルを削除 yamasita
 ======================================== */
 #ifndef __EXPLOSION_H__	//Explosion.hインクルードガード
 #define __EXPLOSION_H__
 
 // =============== インクルード ===================
-#include "Model.h"			//modelクラス定義ヘッダ―
 #include "Shader.h"			//シェーダークラス定義ヘッダー
 #include "Sphereinfo.h"		//球体情報用ヘッダー
 #include "Transform3d.h"	//ワールド座標系情報ヘッダー
-#include "Sphere.h"			//球定義ヘッダー
-#include "Camera.h"			//カメラ定義ヘッダー
+#include "CameraChase.h"	//カメラ定義ヘッダー
 #include "Object.h"			//
 #include "BoooomUI.h"
+#include "LibEffekseer.h"
 
 //=============== クラス定義 =====================
 class CExplosion
@@ -42,7 +42,7 @@ class CExplosion
 {
 public:
 	// ===メンバ関数宣言===
-	CExplosion(TPos3d<float> fPos, float fSize, float fTime, int comboNum, bool delayFlg, int nDamage);	//コンストラクタ
+	CExplosion(TPos3d<float> fPos, float fSize, float fTime, int comboNum, bool delayFlg, int nDamage, Effekseer::EffectRef explodeEffect,const CCamera* pCamera);	//コンストラクタ
 	~CExplosion();												// デストラクタ
 	void Update();												// 更新関数
 	void Draw();												// 描画関数
@@ -69,13 +69,14 @@ private:
 	float			m_fDamage;			// ボスに与えるダメージ量
 	bool			m_bBossTouched;		// 既にボスと接触いるかどうか
 
-	CGeometry*		m_3dModel;		// 爆発仮3Dモデル
 	const CCamera*	m_pCamera;	//カメラのポインタ
-
 	int m_dComboNum;			// コンボ配列番号
 
 	bool m_bDelayFlg;		// 爆発遅延フラグ
 	int m_dDelayCnt;		// カウントダウン開始フレーム減算値
+
+	Effekseer::EffectRef m_explodeEffect;
+	Effekseer::Handle m_efcHnadle;
 };
 
 #endif // __EXPLOSION_H__

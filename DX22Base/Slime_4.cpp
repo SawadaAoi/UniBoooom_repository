@@ -84,6 +84,55 @@ CSlime_4::~CSlime_4()
 {
 }
 
+void CSlime_4::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
+{
+
+	if (!m_bHitMove)	//敵が通常の移動状態の時
+	{
+		if (!m_bEscape  && m_nEscapeCnt == 0)	//逃げるフラグがoffなら
+		{
+			NormalMove(playerTransform);	//通常異動
+		}
+		else
+		{
+			Escape();	//爆発から逃げる
+		}
+	}
+	else
+	{
+		//敵の吹き飛び移動
+		HitMove();
+	}
+
+	// -- 座標更新
+	m_Transform.fPos.x += m_move.x * fSlimeMoveSpeed;
+	m_Transform.fPos.z += m_move.z * fSlimeMoveSpeed;
+}
+
+void CSlime_4::NormalMove(tagTransform3d playerTransform)
+{
+	TPos3d<float> playerPos = playerTransform.fPos;
+
+	// 敵からエネミーの距離、角度を計算
+	float distancePlayer = m_Transform.fPos.Distance(playerPos);
+
+	// プレイヤーと距離が一定以内だったら
+	if (distancePlayer < 5)
+	{
+		//爆発への角度を取得
+		float rad = atan2f(playerPos.z - m_Transform.fPos.z, playerPos.x - m_Transform.fPos.x);
+		//爆発と反対方向に移動
+		m_move.x = -(cosf(rad)) * m_fSpeed;
+		m_move.z = -(sinf(rad)) * m_fSpeed;
+		m_Transform.fRadian.y = atan2f(m_move.x, m_move.z);
+	}
+	else
+	{
+		RandomMove();	// ランダム移動
+
+	}
+}
+
 /* ========================================
 	スピード決定関数
 	-------------------------------------

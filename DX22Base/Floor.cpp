@@ -48,7 +48,7 @@ CFloor::CFloor(TPos3d<float>* pPlayerPos)
 	}
 	//°‚Ìƒ‚ƒfƒ‹“Ç‚Ýž‚Ý
 	m_pModel = new Model;
-	if (!m_pModel->Load("Assets/Model/floor/floor_1.3.FBX", 1.0f, Model::XFlip)) {		//”{—¦‚Æ”½“]‚ÍÈ—ª‰Â
+	if (!m_pModel->Load("Assets/Model/floor/floor_1.4.FBX", 1.0f, Model::XFlip)) {		//”{—¦‚Æ”½“]‚ÍÈ—ª‰Â
 		MessageBox(NULL, "floor", "Error", MB_OK);	//‚±‚±‚ÅƒGƒ‰[ƒƒbƒZ[ƒW•\Ž¦
 	}
 	m_pModel->SetVertexShader(m_pVS);

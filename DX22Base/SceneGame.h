@@ -34,6 +34,7 @@
 #include "Floor.h"
 #include "Fade.h"
 #include "UIStageManager.h"
+#include "Timer.h"
 
 #include "ScoreOHManager.h"
 #include "TotalScore.h"
@@ -65,6 +66,7 @@ public:
 	void SlimeBossNormalMoveCollision();		//追加
 	void BossSlimeNormalMoveCollision();		//追加
 	void BossBossNormalMoveCollision();			//追加
+
 private:
 	void LoadSound();	//サウンドファイルの読み込み
 	// ===メンバ変数宣言===
@@ -78,11 +80,8 @@ private:
 	DirectWrite* m_pDirectWrite;
 	CFloor* m_pFloor;
 	CFade* m_pFade;
-	CTotalScore* m_pTotalScore;
 	CHealItemManager* m_pHealItemMng;
-	CBossgauge* m_pBossgauge;
-	CCombo* m_pCombo;
-	CScoreOHManager* m_pScoreOHMng;
+
 	CUIStageManager* m_pUIStageMng;				//UIのマネジャー
 
 	XAUDIO2_BUFFER* m_pBGM;							//BGMの音声データ

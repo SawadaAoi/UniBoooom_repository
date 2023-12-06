@@ -18,7 +18,7 @@
 	・2023/11/15 Objectクラスを継承したので修正　yamamoto
 	・2023/11/23 ジオメトリーからモデルに差し替え　yamashita
 	・2023/11/29 Intervalの変数、関数追加　yamamoto
-
+	・2023/12/01 IntervalをSwingSpeedに変更　yamamoto
 ========================================== */
 
 #ifndef __HAMMER_H__
@@ -47,8 +47,8 @@ public:
 	void Draw();			// 描画関数
 	void Swing();											// 移動による回転移動
 	void AttackStart(TPos3d<float>pPos, float angle);		// 攻撃開始処理
-	void IntervalAdd();
-	void IntervalSubtract();
+	void SwingSpeedAdd();
+	void SwingSpeedSubtract();
 	float GetInterval();
 	void SetCamera(const CCamera* pCamera);
 private:
@@ -59,7 +59,8 @@ private:
 	float m_fAngleNow;				// 今の角度
 	int m_dAddAngleCnt;				// 角度加算フレーム値
 	const CCamera* m_pCamera;		//	
-	float m_fInterval;				//ハンマーを振るインターバル
+	float m_fSwingSpeed;			//ハンマーを振る時間
+	float m_fAddAngle;				// 1フレームで移動する角度量
 };
 
 #endif // !__HAMMER_H__
