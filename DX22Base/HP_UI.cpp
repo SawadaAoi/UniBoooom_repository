@@ -43,32 +43,32 @@ CHP_UI::CHP_UI(const int* pPlayerHp)
 	, m_nCntWidth(0)
 	, m_nCntHeight(0)
 {
-	m_pTexture[HEART_FULL] = new Texture();	// HPのテクスチャ読み込み
-	if (FAILED(m_pTexture[HEART_FULL]->Create("Assets/Texture/HP_Full_1.png")))
+	m_pTexture[HEART_FULL] = new Texture();	// 満タンのHPのテクスチャ読み込み
+	if (FAILED(m_pTexture[HEART_FULL]->Create("Assets/Texture/HP_UI/HP_Full_2.png")))
 	{
 		MessageBox(NULL, "HpUI HP_Full_1.png", "Error", MB_OK);
 	}
 
-	m_pTexture[HEART_HALF] = new Texture();	// HPのテクスチャ読み込み
-	if (FAILED(m_pTexture[HEART_HALF]->Create("Assets/Texture/HP_Half.png")))
+	m_pTexture[HEART_HALF] = new Texture();	// 半分のHPのテクスチャ読み込み
+	if (FAILED(m_pTexture[HEART_HALF]->Create("Assets/Texture/HP_UI/HP_Half_2.png")))
 	{
-		MessageBox(NULL, "HpUI HP_Full_1.png", "Error", MB_OK);
+		MessageBox(NULL, "HpUI HP_Half_2.png", "Error", MB_OK);
 	}
 
 	m_pTexture[HEART_NONE] = new Texture();	// 空のHPのテクスチャ読み込み
-	if (FAILED(m_pTexture[HEART_NONE]->Create("Assets/Texture/HP_Lost_1.png")))
+	if (FAILED(m_pTexture[HEART_NONE]->Create("Assets/Texture/HP_UI/HP_Lost_2.png")))
 	{
-		MessageBox(NULL, "HpUI HP_Lost_1.png", "Error", MB_OK);
+		MessageBox(NULL, "HpUI HP_Lost_2.png", "Error", MB_OK);
 	}
 
 	m_pTexture[HEART_FH_ANIM] = new Texture();	// 満タン→半分のHPのテクスチャ読み込み
-	if (FAILED(m_pTexture[HEART_FH_ANIM]->Create("Assets/Texture/hp_FtoH_sprite_2.png")))
+	if (FAILED(m_pTexture[HEART_FH_ANIM]->Create("Assets/Texture/HP_UI/hp_FtoH_sprite_2.png")))
 	{
 		MessageBox(NULL, "HpUI hp_FtoH_sprite_2.png", "Error", MB_OK);
 	}
 
 	m_pTexture[HEART_HE_ANIM] = new Texture();	// 半分→空のHPのテクスチャ読み込み
-	if (FAILED(m_pTexture[HEART_HE_ANIM]->Create("Assets/Texture/HP_HtoE_sprite_2.png")))
+	if (FAILED(m_pTexture[HEART_HE_ANIM]->Create("Assets/Texture/HP_UI/HP_HtoE_sprite_2.png")))
 	{
 		MessageBox(NULL, "HpUI HP_HtoE_sprite_2.png", "Error", MB_OK);
 	}

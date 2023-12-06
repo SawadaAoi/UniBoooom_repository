@@ -38,17 +38,25 @@ public:
 	void TimeStop();
 	void TimeRestart();
 	void DrawNumber(TPos2d<float> pos, int number);	//数字描画関数
+
 	int* GetTimePtr();
 	int* GetNowTime();								//今の時間を取得関数
+	int GetMaxSlimeNum();							// スライム最大生成数を取得
+	int GetSlimeCreateInterval();					// スライム生成間隔を取得
+	float GetSlimeMoveSpeed();						// スライムスピードを取得
 
 private:
 	void WaitTimeCheck();
+	void ChangeSlimeParam();
 
 	// ===メンバ変数宣言===
 	bool m_bStartFlg;			// カウントダウン開始フラグ(false = 待機中) 
 	bool m_bStopFlg;			// タイマーストップフラグ(true = stop)
 	int m_nTimeCnt;				// 制限時間フレーム減算値
 	int m_dWaitCnt;				// カウントダウン開始フレーム減算値
+	int m_nMaxSlimeNum;			// スライムの最大生成数
+	int m_nSlimeCreateInterval;	// スライム生成間隔
+	float m_fSlimeMoveSpeed;	// スライムスピード
 
 	Texture* m_pTextureNum;	//タイマー表示用テクスチャポインタ
 	Texture* m_pTextureBG;

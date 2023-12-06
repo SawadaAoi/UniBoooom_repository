@@ -30,6 +30,7 @@
 #include "Sound.h"
 #include "Combo.h"
 #include "BoooomUI.h"
+#include "LibEffekseer.h"
 
 // =============== 定数定義 =======================
 #if MODE_GAME_PARAMETER
@@ -87,6 +88,7 @@ private:
 	Texture* m_pTexUI;	//Boooom用テクスチャ
 	XAUDIO2_BUFFER* m_pSEExplode;
 	IXAudio2SourceVoice* m_pSEExplodeSpeaker;
+	Effekseer::EffectRef m_explodeEffect;		//爆発のエフェクト
 };
 
 #endif // __EXPLOSION_MANAGER_H__

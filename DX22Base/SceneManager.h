@@ -33,7 +33,7 @@ public:
 	CSceneManager();		//コンストラクタ
 	~CSceneManager();		//デストラクタ
 	void Update();			//更新
-	void Draw();		//描画
+	void Draw();			//描画
 	bool IsFin() const;		//終了確認
 private:
 	// ===メンバ変数宣言=====

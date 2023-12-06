@@ -32,7 +32,6 @@
 // =============== インクルード ===================
 #include "TriType.h"
 //#include "SlimeBase.h"
-#include "ExplosionManager.h"
 #include "Camera.h"
 #include "ExplosionManager.h"
 #include "Slime_BossBase.h"
@@ -41,11 +40,12 @@
 #include "ScoreOHManager.h"
 #include "HealItemManager.h"
 #include "Player.h"
+#include "Timer.h"
 // =============== 定数定義 =======================
 #if MODE_GAME_PARAMETER
 
 #else
-const int MAX_SLIME_NUM = 30;			// スライムの最大生成数
+const int MAX_SLIME_NUM = 50;			// スライムの最大生成数
 const int MAX_BOSS_SLIME_NUM = 5;		// ボススライムの最大生成数
 
 #endif
@@ -65,6 +65,7 @@ public:
 	//-- ノーマル、その他
 	void HitBranch(int HitSlimeArrayNum,int standSlimeArrayNum,CExplosionManager* pExpMng);			// スライムの接触が起きた際の分岐処理
 	bool HitFlameBranch(int HitSlimeNum, int StandSlimeNum, CExplosionManager* pExpMng);			// フレイムスライムとの接触が起きた際の分岐処理
+	bool HitHealBranch(int HitSlimeNum, int StandSlimeNum, CExplosionManager* pExpMng);				// フレイムスライムとの接触が起きた際の分岐処理
 	void UnionSlime(E_SLIME_LEVEL level, TPos3d<float> pos);										// スライムの結合処理
 	void TouchExplosion(int DelSlime, CExplosionManager* pExpMng, int comboNum);					// スライムの爆発処理
 
@@ -93,6 +94,7 @@ public:
 	void SetScoreOHMng(CScoreOHManager* pScoreMng);
 	void SetHealMng(CHealItemManager* pHealItemMng);
 	void SetExplosionMng(CExplosionManager* pExpMng);
+	void SetTimer(CTimer* pTimer);
 private:
 	// ===メンバ変数宣言=====
 	int GetRandom(int min, int max);
@@ -103,22 +105,25 @@ private:
 
 	CPlayer* m_pPlayer;	// プレイヤーの座標
 	VertexShader* m_pVS;
+	// スライムのモデル
 	Model* m_pBlueModel;
 	Model* m_pGreenModel;
 	Model* m_pYellowModel;
 	Model* m_pRedModel;
 	Model* m_pFlameModel;
+	Model* m_pHealModel;
 	Model* m_pBossModel[2];
 
-	CScoreOHManager* m_pScoreOHMng;
-	CHealItemManager* m_pHealItemMng;
+	CScoreOHManager* m_pScoreOHMng;				// スコアマネージャ―ポインタ
+	CHealItemManager* m_pHealItemMng;			// 回復アイテムマネージャーポインタ
+	CTimer* m_pTimer;							// タイマーポインタ
 
-	XAUDIO2_BUFFER* m_pSEHitSlime;					//ハンマーでスライムを打った時のSEのデータ
+	XAUDIO2_BUFFER* m_pSEHitSlime;				//ハンマーでスライムを打った時のSEのデータ
 	XAUDIO2_BUFFER* m_pSEUnion;					//ハンマーでスライムを打った時のSEのデータ
-	IXAudio2SourceVoice* m_pSEHitSlimeSpeaker;		//ハンマーでスライムを打った時のSEを聞き取る側
+	IXAudio2SourceVoice* m_pSEHitSlimeSpeaker;	//ハンマーでスライムを打った時のSEを聞き取る側
 	IXAudio2SourceVoice* m_pSEUnionSpeaker;		//ハンマーでスライムを打った時のSEを聞き取る側
 
-	int m_CreateCnt;	// 生成間隔用カウント
+	int m_CreateCnt;			// 生成間隔用カウント
 	TPos3d<float> m_oldCreatePos;	//1つ前のスライムの生成場所
 	CExplosionManager* m_pExpMng;
 	

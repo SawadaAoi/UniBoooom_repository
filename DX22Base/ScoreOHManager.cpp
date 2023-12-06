@@ -76,7 +76,6 @@ void CScoreOHManager::Update()
 		if (m_pScore[i] == nullptr)
 		{
 			continue;
-
 		}
 
 		m_pScore[i]->Update();
@@ -150,6 +149,7 @@ void CScoreOHManager::DisplayOverheadScore(TTriType<float> pos, E_SLIME_LEVEL le
 	case LEVEL_3:		score = LEVEL_3_SCORE;  ScoreTime = LEVEL_3_EXPLODE_TIME; break;
 	case LEVEL_4:		score = LEVEL_4_SCORE;  ScoreTime = LEVEL_4_EXPLODE_TIME; break;
 	case LEVEL_FLAME:	score = LEVEL_1_SCORE;  ScoreTime = LEVEL_1_EXPLODE_TIME; break;
+	case LEVEL_HEAL:	score = LEVEL_1_SCORE;  ScoreTime = LEVEL_1_EXPLODE_TIME; break;	// 回復スライムの点数と残り時間
 	}
 	// スコアを検索
 	for (int i = 0; i < MAX_EXPLOSION_NUM; i++)

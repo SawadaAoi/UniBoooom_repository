@@ -20,6 +20,7 @@
 	・2023/11/15 Objectクラスを継承したので修正　yamamoto
 	・2023/11/23 ジオメトリーからモデルに差し替え　yamashita
 	・2023/11/29 Interval追加　yamamoto
+	・2023/12/01 IntervalをSwingSpeedに変更　yamamoto
 	
 ========================================== */
 
@@ -40,9 +41,10 @@ const float ROTATE_RADIUS = 1.0f;								// ハンマーが回転するプレイヤーからの距
 const float HAMMER_COL_SIZE = 0.75f;							// ハンマーの当たり判定の大きさ
 const float HAMMER_SIZE = 1.5f;									// ハンマーの大きさ
 
-const float INTERVAL_INITIAL = 0.2f;									//ハンマー初期間隔
-const float INTERVAL_PLUS = 3.2f;									//ハンマーを一回振るときに乗算される値
-const float INTERVAL_MINUS = 0.97f;								//毎フレームハンマーを振る間隔を短くさせる値
+const float SwingSpeed_INITIAL = 0.2f;									//ハンマー初期間隔
+const float SwingSpeed_PLUS = 3.2f;									//ハンマーを一回振るときに乗算される値
+const float SwingSpeed_MINUS = 0.97f;								//毎フレームハンマーを振る間隔を短くさせる値
+const float SwingSpeed_SIOW = 50.0f;								//毎フレームハンマーを振る間隔を短くさせる値
 #endif
 
 const float ADJUST_DIRECTX_TO_COSINE = DirectX::XMConvertToRadians(90.0f);	// 三角関数とDirectX角度の差分(DirectXの角度は↑が0度、三角関数は→が0度)
@@ -63,8 +65,9 @@ CHammer::CHammer()
 	, m_fAngleNow(0)
 	, m_dAddAngleCnt(0)
 	, m_pCamera(nullptr)
-	, m_fInterval(INTERVAL_INITIAL)
+	, m_fSwingSpeed(9.0f)
 {
+	m_fAddAngle = SWING_ANGLE / m_fSwingSpeed;
 	m_Sphere.fRadius = HAMMER_COL_SIZE;
 	m_Transform.fScale = HAMMER_SIZE;
 	m_Transform.fRadian.x = HAMMER_ANGLE_X;
@@ -112,7 +115,7 @@ bool CHammer::Update()
 {
 	Swing();		//回転による移動関数
 	// 設定値まで移動しきったら
-	if (m_dAddAngleCnt >= SWING_TIME_FRAME)
+	if (m_dAddAngleCnt >= m_fSwingSpeed)
 	{
 		m_dAddAngleCnt = 0;		// 角度変更フレームカウントリセット
 		
@@ -171,7 +174,7 @@ void CHammer::Draw()
    ======================================== */
 void CHammer::Swing()
 {
-	m_fAngleNow -= ONE_FRAME_ADD_ANGLE;	// ハンマー当たり判定角度移動		
+	m_fAngleNow -= m_fAddAngle;	// ハンマー当たり判定角度移動		
 
 	// 角度から座標を取得(プレイヤーの位置＋距離＋プレイヤーの周りの円状の位置)
 	m_Transform.fPos.x = m_tPlayerPos.x + ROTATE_RADIUS * -cosf(m_fAngleNow);	// 三角関数(反時計回り)とDirectX(時計回り)の角度の向きが逆なので反転する
@@ -209,30 +212,41 @@ void CHammer::AttackStart(TPos3d<float>pPos, float angle)
 
 }
 /* ========================================
-   ハンマーの間隔を増加させる関数
+   ハンマーのスイングスピードを遅くする関数
    ----------------------------------------
-   内容：間隔を増加させる
+   内容：ハンマーのスイングスピードを遅くする
    ----------------------------------------
    引数1：なし
    ----------------------------------------
    戻値：なし
    ======================================== */
-void CHammer::IntervalAdd()
+void CHammer::SwingSpeedAdd()
 {
-	m_fInterval*=INTERVAL_PLUS;
+	m_fAddAngle = SWING_ANGLE / m_fSwingSpeed;
+	m_fSwingSpeed*=SwingSpeed_PLUS; 
+		if (m_fSwingSpeed >= SwingSpeed_SIOW)
+		{
+			m_fSwingSpeed = SwingSpeed_SIOW;
+		}
+	
 }
 /* ========================================
-   ハンマーの間隔を減少させる関数
+   ハンマーのスイングスピードを速くする関数
    ----------------------------------------
-   内容：間隔を減少させる
+   内容：ハンマーのスイングスピードを速くする
    ----------------------------------------
    引数1：なし
    ----------------------------------------
    戻値：なし
    ======================================== */
-void CHammer::IntervalSubtract()
+void CHammer::SwingSpeedSubtract()
 {
-	m_fInterval *= INTERVAL_MINUS;
+	m_fSwingSpeed *= SwingSpeed_MINUS;
+	if (m_fSwingSpeed <= 9.0f)
+	{
+		m_fSwingSpeed = 9.0f;
+	}
+	
 }
 /* ========================================
    ハンマーの間隔取得関数
@@ -245,7 +259,7 @@ void CHammer::IntervalSubtract()
    ======================================== */
 float CHammer::GetInterval()
 {
-	return m_fInterval;
+	return m_fSwingSpeed;
 }
 
 
