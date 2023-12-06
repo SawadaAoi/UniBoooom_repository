@@ -12,13 +12,17 @@
 	変更履歴
 	・2023/11/16 制作 takagi
 	・2023/11/22 メンバ変数大量追加 nieda
+	・2023/12/04 ポーズクラス追加・デストラクタ復活 takagi
+	・2023/12/05 コメント修正 takagi
+	・2023/12/06 pose→pause修正、ポーズ文字表示 takagi
+
 ========================================== */
 
 #ifndef __STAGE_H__	//Stage.hインクルードガード
 #define __STAGE_H__
 
 // =============== インクルード ===================
-#include "Scene.h"			//親のヘッダ
+#include "Scene.h"				//親のヘッダ
 #include "Shader.h"
 #include "Collision.h"
 #include "Player.h"
@@ -33,6 +37,7 @@
 #include "DirectWrite.h"
 #include "Timer.h"
 #include "Fade.h"
+#include "Pause.h"				//メンバのヘッダ
 #include "BossGauge.h"
 #include "ScoreOHManager.h"
 #include "TotalScore.h"
@@ -84,7 +89,7 @@ protected:
 	CHP_UI* m_pHpMng;
 	CBossgauge* m_pBossgauge;
 	CHealItemManager* m_pHealItemMng;
-
+	CPause* m_pPause;						//ポーズ画面
 	
 	//サウンド
 	XAUDIO2_BUFFER* m_pSEHitHammer;

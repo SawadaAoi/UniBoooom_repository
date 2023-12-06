@@ -16,12 +16,13 @@
 	・2023/11/24 フェードの仕様変更対応 takagi
 	・2023/11/27 疑似カメラ実装 takagi
 	・2023/12/01 フェードの仕様変更 takagi 
+	・2023/12/04 カメラのファイル改名適用 takagi
 
 ========================================== */
 
 // =============== インクルード ===================
 #include "Fade.h"		//自身のヘッダ
-#include "CameraFade.h"	//疑似カメラ
+#include "CameraDef.h"	//疑似カメラ
 
 #if _DEBUG
 #include <Windows.h>	//メッセージボックス用
@@ -80,7 +81,7 @@ CFade::CFade(const CCamera* pCamera)
 	if (0 == ms_nCntFade)	//現在、他にこのクラスが作成されていない時
 	{
 		// =============== カメラ作成 ===================
-		ms_pDefCamera = new CCameraFade();	//予備カメラ
+		ms_pDefCamera = new CCameraDef();	//予備カメラ
 
 		// =============== シェーダー作成 ===================
 		ms_pVs = new VertexShader();	//頂点シェーダ作成

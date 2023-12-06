@@ -381,6 +381,12 @@
     <ClCompile Include="UIStageManager.cpp">
       <Filter>ソース ファイル\2dObject</Filter>
     </ClCompile>
+    <ClCompile Include="LibEffekseer.cpp">
+      <Filter>ソース ファイル\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Pause.cpp">
+      <Filter>ソース ファイル\Scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Defines.h">
@@ -617,9 +623,6 @@
     <ClInclude Include="Item.h">
       <Filter>ヘッダー ファイル\3dObject\Item</Filter>
     </ClInclude>
-    <ClInclude Include="CameraFade.h">
-      <Filter>ヘッダー ファイル\System\Camera</Filter>
-    </ClInclude>
     <ClInclude Include="Random.h">
       <Filter>ヘッダー ファイル\System\Random</Filter>
     </ClInclude>
@@ -628,6 +631,15 @@
     </ClInclude>
     <ClInclude Include="UIStageManager.h">
       <Filter>ヘッダー ファイル\2dObject</Filter>
+    </ClInclude>
+    <ClInclude Include="LibEffekseer.h">
+      <Filter>ヘッダー ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraDef.h">
+      <Filter>ヘッダー ファイル\System\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Pause.h">
+      <Filter>ヘッダー ファイル\Scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -638,6 +650,12 @@
       <Filter>リソース ファイル\PixelShader</Filter>
     </FxCompile>
     <FxCompile Include="VsFade.hlsl">
+      <Filter>リソース ファイル\VertexShader</Filter>
+    </FxCompile>
+    <FxCompile Include="PsPause.hlsl">
+      <Filter>リソース ファイル\PixelShader</Filter>
+    </FxCompile>
+    <FxCompile Include="VsPause.hlsl">
       <Filter>リソース ファイル\VertexShader</Filter>
     </FxCompile>
   </ItemGroup>
