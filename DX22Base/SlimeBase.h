@@ -58,7 +58,6 @@ enum E_SLIME_LEVEL
 	LEVEL_NONE,	//SlimeBaseで生成してまだポリモーフィズムしていない状態
 
 	LEVEL_1,		//1段階目
-	LEVEL_FLAME,	//フレイムスライム
 	LEVEL_2,		//2段階目
 	LEVEL_3,		//3段階目
 	LEVEL_4,		//4段階目
