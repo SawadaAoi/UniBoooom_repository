@@ -48,7 +48,6 @@ private:
 	const int* m_pPlayerHp;
 	const int* m_pTimeCnt;
 	bool m_bDeleteDisp;
-	bool m_bTransition;		// ‰æ–Ê‘JˆÚƒtƒ‰ƒO
 
 	Texture* m_pTexGameClear;
 	Texture* m_pTexGameOver;
