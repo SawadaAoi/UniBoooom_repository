@@ -108,37 +108,19 @@ CStage1::CStage1()
 	
 
 	//================3dObject動的確保================
-
-	//プレイヤー生成
-	m_pPlayer = new CPlayer();
-
-	//床生成
-	m_pFloor = new CFloor(m_pPlayer->GetPosAddress());
-
-	// 爆発マネージャー生成
-	m_pExplosionMng = new CExplosionManager();
-
-	// スライムマネージャー生成
-	m_pSlimeMng = new CSlimeManager(m_pPlayer);
-	
-	// 回復アイテムマネージャー生成
-	m_pHealItemMng = new CHealItemManager();
+	m_pPlayer = new CPlayer();							// プレイヤー生成
+	m_pFloor = new CFloor(m_pPlayer->GetPosAddress());	// 床生成
+	m_pExplosionMng = new CExplosionManager();			// 爆発マネージャー生成
+	m_pSlimeMng = new CSlimeManager(m_pPlayer);			// スライムマネージャー生成
+	m_pHealItemMng = new CHealItemManager();			// 回復アイテムマネージャー生成
 
 	//================System動的確保================
-
-	//カメラ生成
-	m_pCamera = new CCameraChase(m_pPlayer->GetPosAddress());
-
-	//衝突判定チェック生成
-	m_pCollision = new CCOLLISION();
+	m_pCamera = new CCameraChase(m_pPlayer->GetPosAddress());	//カメラ生成
+	m_pCollision = new CCOLLISION();							//衝突判定チェック生成
 
 	//================2dObject動的確保================
+	m_pUIStageManager = new CUIStageManager(m_pPlayer, m_pCamera, m_pSlimeMng);	// UIマネージャー生成
 
-	// UIマネージャー生成
-	m_pUIStageManager = new CUIStageManager(m_pPlayer, m_pCamera, m_pSlimeMng);
-
-	//ステージ終了のUI表示
-	m_pStageFin = new CStageFinish(m_pPlayer->GetHpPtr(), m_pTimer->GetTimePtr());
 	
 	
 #if MODE_GROUND
@@ -153,20 +135,11 @@ CStage1::CStage1()
 #endif
 
 	//================セット================
-
-	//プレイヤー　←　カメラ
+	// カメラ
 	m_pPlayer->SetCamera(m_pCamera);
-
-	//爆発マネージャー　←　カメラ
 	m_pExplosionMng->SetCamera(m_pCamera);
-
-	//スライムマネージャー　←　カメラ
 	m_pSlimeMng->SetCamera(m_pCamera);
-
-	//床　←　カメラ
 	m_pFloor->SetCamera(m_pCamera);
-
-	//回復アイテムマネージャー　←　カメラ
 	m_pHealItemMng->SetCamera(m_pCamera);
 
 	//スライムマネージャー　←　スコアマネージャー
@@ -182,10 +155,8 @@ CStage1::CStage1()
 	m_pSlimeMng->SetHealMng(m_pHealItemMng);
 
 	//爆発マネージャー　←　タイマー
-	m_pSlimeMng->SetTimer(m_pTimer);
+	m_pSlimeMng->SetTimer(m_pUIStageManager->GetTimer());
 
-	//================タイマースタート================
-	//m_pTimer->TimeStart();
 
 	//================BGMの設定================
 	LoadSound();
@@ -211,7 +182,6 @@ CStage1::~CStage1()
 		m_pSpeaker->Stop();
 		m_pSpeaker->DestroyVoice();
 	}
-	SAFE_DELETE(m_pStageFin);
 	SAFE_DELETE(m_pFade);
 	SAFE_DELETE(m_pHealItemMng);
 	SAFE_DELETE(m_pExplosionMng);
@@ -312,23 +282,13 @@ void CStage1::Update()
 			m_pSlimeMng->Update(m_pExplosionMng);
 		}
 
-		//床更新
-		m_pFloor->Update();
+		m_pFloor->Update();				// 床更新
+		m_pExplosionMng->Update();		// 爆発マネージャー更新
+		m_pHealItemMng->Update();		// 回復アイテム更新
+		m_pUIStageManager->Update();	// UIマネージャー更新
+		PlayerHealItemCollision();		// 回復アイテム取る判定
+		Collision();					// 当たり判定更新
 
-		// 爆発マネージャー更新
-		m_pExplosionMng->Update();
-		
-		//回復アイテム更新
-		m_pHealItemMng->Update();
-
-		// UIマネージャー更新
-		m_pUIStageManager->Update();
-
-		// 当たり判定更新
-		Collision();
-		
-		// 回復アイテム取る判定
-		PlayerHealItemCollision();
 		
 	}
 
@@ -336,7 +296,7 @@ void CStage1::Update()
 	m_pFade->Update();
 #endif
 
-	if (m_pStageFin->GetDispFlg())
+	if (m_pUIStageManager->GetStageFinish()->GetDispFlg())
 	{
 		if (IsKeyTrigger(VK_RETURN) || IsKeyTriggerController(BUTTON_A))
 		{

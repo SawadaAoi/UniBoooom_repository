@@ -79,16 +79,16 @@ protected:
 	CSlimeManager* m_pSlimeMng;
 	CCOLLISION* m_pCollision;
 	CExplosionManager* m_pExplosionMng;
-	CTimer* m_pTimer;
-	CCombo* m_pCombo;
+	//CTimer* m_pTimer;
+	//CCombo* m_pCombo;
 	CFloor* m_pFloor;
 	CFade* m_pFade;
-	CStageFinish* m_pStageFin;
+	//CStageFinish* m_pStageFin;
 	Texture* m_pTexture;
 	CScoreOHManager* m_pScoreOHMng;
-	CTotalScore* m_pTotalScore;
-	CHP_UI* m_pHpMng;
-	CBossgauge* m_pBossgauge;
+	////CTotalScore* m_pTotalScore;
+	//CHP_UI* m_pHpMng;
+	//CBossgauge* m_pBossgauge;
 	CHealItemManager* m_pHealItemMng;
 	CPause* m_pPause;						//É|Å[ÉYâÊñ 
 	CUIStageManager* m_pUIStageManager;

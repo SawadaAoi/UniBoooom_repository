@@ -35,7 +35,7 @@ public:
 	CScoreOHManager* GetScoreMng();	//スコアマネージャーポインタを取得
 	CCombo* GetCombo();	//コンボのポインタを取得
 	CTimer* GetTimer();	//タイマーのポインタを取得
-
+	CStageFinish* GetStageFinish();
 	
 private:
 	
