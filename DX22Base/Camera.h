@@ -21,6 +21,8 @@
 	・2023/11/29 振動の新仕様を全振動に反映しリファクタリング takagi
 	・2023/11/30 Effekseer用に関数追加 takagi
 	・2023/12/03 位置ゲッタ作成 takagi
+	・2023/12/04 GetViewWithoutTranspose,GetProjectionWithoutTransposeの戻り値を変更 yamashita
+	・2023/12/05 揺れのカウンタ追加 takagi
 
 ========================================== */
 
@@ -68,8 +70,8 @@ public:
 	DirectX::XMMATRIX GetInverseViewMatrix() const;						//ビュー行列の逆行列取得
 	DirectX::XMFLOAT4X4 GetProjectionMatrix(
 		const E_DRAW_TYPE& eDraw = E_DRAW_TYPE_3D) const;				//プロジェクション行列変換
-	virtual DirectX::XMMATRIX GetViewWithoutTranspose() const;			//転置無しビュー行列取得
-	DirectX::XMMATRIX GetProjectionWithoutTranspose() const;			//転置無しプロジェクション行列取得
+	virtual DirectX::XMFLOAT4X4 GetViewWithoutTranspose() const;		//転置無しビュー行列取得
+	DirectX::XMFLOAT4X4 GetProjectionWithoutTranspose() const;			//転置無しプロジェクション行列取得
 	TPos3d<float> GetPos() const;										//カメラ位置提供
 	void ChangeScaleVibrate(int nChangeFrame, float fChangegRateAmp);	//振動の規模を変更する
 protected:
@@ -94,6 +96,7 @@ private:
 	TDiType<int> m_nFrameStrong;					//フレームカウンタ：強振動	x:横, y:縦
 	TDiType<float> m_fChangeRateAmplitudeWeak;		//振幅補正率：弱			x:横, y:縦
 	TDiType<float> m_fChangeRateAmplitudeStrong;	//振幅補正率：強			x:横, y:縦
+	int m_nCntChangeVibrate;						//カメラ揺れ変更回数
 };	//カメラ
 
 #endif // !___CAMERA_H___

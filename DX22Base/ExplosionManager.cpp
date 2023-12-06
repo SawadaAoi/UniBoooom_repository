@@ -28,6 +28,7 @@
 #include "Explosion.h"			//爆発処理ヘッダー
 #include "Sphere.h"				//球定義ヘッダー
 #include "DirectWrite.h"
+#include "Input.h"
 
 // =============== 定数定義 =======================
 const float EXPLODE_VOLUME = 0.5f;
@@ -64,6 +65,9 @@ CExplosionManager::CExplosionManager()
 	}
 	//サウンドファイルの読み込み
 	m_pSEExplode = CSound::LoadSound("Assets/Sound/SE/Explode.mp3");
+
+	//エフェクト初期化
+	m_explodeEffect = LibEffekseer::Create("Assets/Effect/mega/mega_reverse (2).efkefc");
 }
 
 /* ========================================
@@ -176,7 +180,7 @@ void CExplosionManager::Create(TTriType<float> pos,float size, float time, int d
 		// 使用済みの爆発はスルー
 		if (m_pExplosion[i] != nullptr) continue;
 
-		m_pExplosion[i] = new CExplosion(pos, size, time, comboNum, true, damage);	// 座標を指定して生成
+		m_pExplosion[i] = new CExplosion(pos, size, time, comboNum, true, damage,m_explodeEffect,m_pCamera);	// 座標を指定して生成
 		m_pExplosion[i]->SetCamera(m_pCamera);
 		m_pSEExplodeSpeaker = CSound::PlaySound(m_pSEExplode);	//爆発の再生
 		m_pSEExplodeSpeaker->SetVolume(EXPLODE_VOLUME);			//音量調整
@@ -209,7 +213,7 @@ void CExplosionManager::Create(TTriType<float> pos, float size, float time, int 
 		// 使用済みの爆発はスルー
 		if (m_pExplosion[i] != nullptr) continue;
 
-		m_pExplosion[i] = new CExplosion(pos, size, time, comboNum, true, damage);	// 座標を指定して生成
+		m_pExplosion[i] = new CExplosion(pos, size, time, comboNum, true, damage, m_explodeEffect, m_pCamera);	// 座標を指定して生成
 		m_pExplosion[i]->SetCamera(m_pCamera);
 		m_pSEExplodeSpeaker = CSound::PlaySound(m_pSEExplode);	//爆発の再生
 		m_pSEExplodeSpeaker->SetVolume(EXPLODE_VOLUME);			//音量調整
@@ -385,6 +389,7 @@ void CExplosionManager::SwitchExplode(E_SLIME_LEVEL slimeLevel, TPos3d<float> po
 	case LEVEL_3:		ExplodeTime = LEVEL_3_EXPLODE_TIME;		ExplodeDamage = LEVEL_3_EXPLODE_DAMAGE; break;
 	case LEVEL_4:		ExplodeTime = LEVEL_4_EXPLODE_TIME;		ExplodeDamage = LEVEL_4_EXPLODE_DAMAGE; break;
 	case LEVEL_FLAME:	ExplodeTime = LEVEL_1_EXPLODE_TIME;		ExplodeDamage = LEVEL_1_EXPLODE_DAMAGE; break;	// 炎スライムと爆発が接触した際は一番小さい爆発
+	case LEVEL_HEAL:	ExplodeTime = LEVEL_1_EXPLODE_TIME;		ExplodeDamage = LEVEL_1_EXPLODE_DAMAGE; break;	// 回復スライムと爆発が接触した際は一番小さい爆発
 	case LEVEL_BOSS:	ExplodeTime = LEVEL_BOSS_EXPLODE_TIME;	ExplodeDamage = LEVEL_4_EXPLODE_DAMAGE; break;
 	}
 
@@ -416,6 +421,7 @@ void CExplosionManager::SwitchExplode(E_SLIME_LEVEL slimeLevel, TPos3d<float> po
 	case LEVEL_3:		ExplodeTime = LEVEL_3_EXPLODE_TIME;		ExplodeDamage = LEVEL_3_EXPLODE_DAMAGE; break;
 	case LEVEL_4:		ExplodeTime = LEVEL_4_EXPLODE_TIME;		ExplodeDamage = LEVEL_4_EXPLODE_DAMAGE; break;
 	case LEVEL_FLAME:	ExplodeTime = LEVEL_1_EXPLODE_TIME;		ExplodeDamage = LEVEL_1_EXPLODE_DAMAGE; break;	// 炎スライムと爆発が接触した際は一番小さい爆発
+	case LEVEL_HEAL:	ExplodeTime = LEVEL_1_EXPLODE_TIME;		ExplodeDamage = LEVEL_1_EXPLODE_DAMAGE; break;	// 回復スライムと爆発が接触した際は一番小さい爆発
 	case LEVEL_BOSS:	ExplodeTime = LEVEL_BOSS_EXPLODE_TIME;	ExplodeDamage = LEVEL_4_EXPLODE_DAMAGE; break;
 
 	}

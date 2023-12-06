@@ -17,6 +17,7 @@
 	・2023/11/18 振動フラグ処理 takagi
 	・2023/11/29 大文字・小文字の修正 takagi
 	・2023/12/03 位置ゲッタ用調整 takagi
+	・2023/12/04 GetViewWithoutTransposeの戻り値を変更 ymaashita
 
 ========================================== */
 
@@ -80,15 +81,16 @@ void CCameraChase::Update()
 	-------------------------------------
 	戻値：作成した行列
 =========================================== */
-DirectX::XMMATRIX CCameraChase::GetViewWithoutTranspose() const
+DirectX::XMFLOAT4X4 CCameraChase::GetViewWithoutTranspose() const
 {
-	// =============== 提供 ===================
-	return DirectX::XMMatrixLookAtLH(
+	DirectX::XMFLOAT4X4 view;
+	DirectX::XMStoreFloat4x4(&view, DirectX::XMMatrixLookAtLH(
 		DirectX::XMVectorSet(m_fPos.x, m_fPos.y, m_fPos.z, 0.0f),					//カメラ位置
 		DirectX::XMVectorSet(m_pTarget->x + m_fOffsetVibrateLook.x, m_pTarget->y,
 			m_pTarget->z + m_fOffsetVibrateLook.y, 0.0f),							//注視点
-		DirectX::XMVectorSet(m_fUp.x, m_fUp.y, m_fUp.z, 0.0f)						//アップベクトル
-	);	//ビュー座標系
+		DirectX::XMVectorSet(m_fUp.x, m_fUp.y, m_fUp.z, 0.0f)));						//アップベクトル
+	// =============== 提供 ===================
+	return view;
 }
 
 /* ========================================

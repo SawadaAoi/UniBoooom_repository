@@ -473,11 +473,13 @@ void SceneGame::SlimeSlimeNormalMoveCollision()
 			if (pMoveSlime->GetHitMoveFlg() == true)	continue;	// 吹き飛び中のスライムはスルー
 			if (i == j)									continue;	// 自分と同じスライムはスルー
 
-			// スライム同士が衝突した場合
+			
+						 // スライム同士が衝突した場合
 			if (m_pCollision->CheckCollisionSphere(pMoveSlime->GetSphere(), pStandSlime->GetSphere(), pMoveSlime->GetPos(), pStandSlime->GetPos()))
 			{
-				m_pSlimeMng->PreventSlimeSlimeOverlap(pMoveSlime, pStandSlime);	//スライムの位置を押し戻す処理
 
+				m_pSlimeMng->PreventSlimeSlimeOverlap(pMoveSlime, pStandSlime);	//スライムの位置を押し戻す処理
+				
 
 				break;
 			}
