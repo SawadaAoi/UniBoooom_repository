@@ -56,6 +56,7 @@ CStageFinish::CStageFinish(int* pPlayerHp, int* pTimeCnt)
 	, m_nCntSwitch(0)
 	, m_nCntW(0)
 	, m_nCntH(0)
+	, m_bTransition(false)
 {
 	m_pPlayerHp = pPlayerHp;	//プレイヤーのHPのポインタを取得
 	m_pTimeCnt = pTimeCnt;		//制限時間のポインタを取得
@@ -140,6 +141,7 @@ void CStageFinish::Update()
 				m_nCntH = 0;	// カウントを初期化
 				m_nCntW = 0;
 				m_bDeleteDisp = true;
+				m_bTransition = true;
 			}
 		}
 	}
@@ -167,6 +169,7 @@ void CStageFinish::Update()
 				m_nCntH = 0;	// カウントを初期化
 				m_nCntW = 0;
 				m_bDeleteDisp = true;
+				m_bTransition = true;
 			}
 		}
 	}
@@ -237,6 +240,20 @@ void CStageFinish::Draw()
 bool CStageFinish::GetDispFlg()
 {
 	return m_bDispFlg;
+}
+
+/* ========================================
+	画面遷移フラグ取得関数
+	----------------------------------------
+	内容：画面遷移フラグの取得
+	----------------------------------------
+	引数1：なし
+	----------------------------------------
+	戻値：なし
+=========================================== */
+bool CStageFinish::GetTransitionFlg()
+{
+	return m_bTransition;
 }
 
 /* ========================================

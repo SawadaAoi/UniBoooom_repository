@@ -38,6 +38,7 @@ public:
 	void Update();
 	void Draw();
 	bool GetDispFlg();
+	bool GetTransitionFlg();	// 画面遷移フラグ取得用
 
 private:
 	void EditSprite(int);
@@ -47,6 +48,7 @@ private:
 	const int* m_pPlayerHp;
 	const int* m_pTimeCnt;
 	bool m_bDeleteDisp;
+	bool m_bTransition;		// 画面遷移フラグ
 
 	Texture* m_pTexGameClear;
 	Texture* m_pTexGameOver;
