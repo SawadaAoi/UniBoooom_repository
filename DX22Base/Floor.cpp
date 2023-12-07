@@ -12,17 +12,19 @@
 	・2023/11/16 コンストラクタに頂点シェーダーとモデルの読み込みを追加 yamashita
 	・2023/11/16 カメラのセット関数を作成 yamashita
 	・2023/11/22 床の自動生成機能を追加 yamashita
+	・2023/12/07 ゲームパラメータから一部定数移動 takagi
+
 ========================================== */
 #include "Floor.h"
 #include "DirectWrite.h"
 
 // =============== 定数定義 =====================
+const float FLOOR_OFFSET_X = 48.0f * FLOOR_SCALE_X;
+const float FLOOR_OFFSET_Z = 48.0f * FLOOR_SCALE_Z;
 #if MODE_GAME_PARAMETER
 #else
 const float FLOOR_SCALE_X = 1.1f;
 const float FLOOR_SCALE_Z = 1.1f;
-const float FLOOR_OFFSET_X = 48.0f * FLOOR_SCALE_X;
-const float FLOOR_OFFSET_Z = 48.0f * FLOOR_SCALE_Z;
 #endif
 
 /* ========================================

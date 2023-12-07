@@ -11,23 +11,22 @@
 	・2023/11/27 cpp作成 yamashita
 	・2023/11/28 上下に動く挙動を追加 yamashita
 	・2023/11/28 回転の挙動を追加 yamashita
+	・2023/12/07 ゲームパラメータに依存していたので修正・ゲームパラメータから定数移動・不要定数除去 takagi
 
 ========================================== */
 
 // =============== インクルード ===================
 #include "HealItem.h"
-#include "GameParameter.h"
 
 // =============== 定数定義 ===================
-#if MODE_GAME_PARAMETER
-
-#else
-const int	MOVE_INTERVAL = 60;
-const int	MOVE_INTERVAL = 2;				//  アニメーションの周期
-const int	COUNT_UP = 6;					//  1秒で360になるように調整
-const float	HEALITEM_MOVE_Y = 1.0f;			//  移動する高さ
-const float	HEALITEM_HEIGHT = 1.0f;			//  
-#endif
+const float HEAL_ITEM_SCALE_X = 1.5f;		//　アイテムのスケールX
+const float HEAL_ITEM_SCALE_Y = 1.5f;		//　アイテムのスケールY
+const float HEAL_ITEM_SCALE_Z = 1.5f;		//　アイテムのスケールZ
+const float	HEALITEM_ANGLE_X = 50.0f;		//　回復アイテムの角度
+const float	HEALITEM_MOVE_INTERVAL = 4.0f;		//  アニメーションの周期
+const int	COUNT_UP = 6;						//  1秒で360になるように調整
+const float	HEALITEM_MOVE_Y = 0.5f;				//  アイテムの上下に揺れる高さ(-1～1までを移動するので移動量は2)
+const float	HEALITEM_HEIGHT = HEALITEM_MOVE_Y;	//  回復アイテムの初期の高さ
 
 /* ========================================
    コンストラクタ

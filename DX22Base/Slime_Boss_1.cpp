@@ -11,6 +11,7 @@
 	・2023/11/17 クラス作成 Suzumura
 	・2023/11/23 突撃処理の追加 Suzumura
 	・2023/11/28 影の大きさを設定する変数追加 nieda
+	・2023/12/07 ゲームパラメータから一部定数移動 takagi
 
 ========================================== */
 
@@ -31,8 +32,9 @@ const int ASSAULT_CHARGE_TIME = 2 * 60;						// 突撃チャージ時間
 const int ASSAULT_TIME = 1.0f * 60;							// 突撃総時間
 const float ASSAULT_SPEED = LEVEL_BOSS_1_SPEED * 15.0f;		// 突撃時のスピード
 const int	BOSS_1_ATTACK = 2;	// 攻撃力
-
 #endif
+const float BOSS_1_SHADOW_SCALE = 12.0f;		// ボス１の影の大きさ
+
 /* ========================================
 	コンストラクタ関数
 	-------------------------------------

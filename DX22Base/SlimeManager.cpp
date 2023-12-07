@@ -34,6 +34,7 @@
 	E2023/11/29 ƒvƒŒƒCƒ„[‚Ìƒ|ƒCƒ“ƒ^‚ðŽæ“¾ yamashita
 	E2023/11/30 ƒ‚ƒfƒ‹‚Ì“Ç‚Ýž‚Ý‚ðMaya€‹’‚©‚çDirectX€‹’‚É•ÏX yamashita
 	E2023/11/30 U“®‚·‚é‰ÓŠ‘ÝEƒqƒbƒgƒXƒgƒbƒvœ‹ŽE‰ÎƒXƒ‰ƒCƒ€‚ÆÔƒXƒ‰ƒCƒ€Õ“ËŽž‚ÉU“®‹­‰» takagi
+	E2023/12/07 ƒQ[ƒ€ƒpƒ‰ƒ[ƒ^‚©‚çˆê•”’è”ˆÚ“® takagi
 
 =========================================== */
 
@@ -53,6 +54,10 @@
 #include <stdlib.h>
 
 // =============== ’è”’è‹` =======================
+const float COL_SUB_HIT_TO_BIG = 0.1f;			// ƒXƒ‰ƒCƒ€Õ“Ë(¬¨‘å)‚ÌÕ“Ë‘¤‚ÌŒ¸ŽZ’l(”½ŽË‚·‚éˆÚ“®)				//1.0‚Å‚»‚Ì‚Ü‚Ü
+const float COL_SUB_STAND_TO_SMALL = 0.8f;			// ƒXƒ‰ƒCƒ€Õ“Ë(¬¨‘å)‚ÌÕ“Ë‚³‚ê‚é‘¤‚ÌŒ¸ŽZ’l(Õ“Ë‚³‚ê‚½•ûŒü)	//1.0‚Å‚»‚Ì‚Ü‚Ü
+const float COL_SUB_HIT_TO_SMALL = 0.3f;			// ƒXƒ‰ƒCƒ€Õ“Ë(‘å¨¬)‚ÌÕ“Ë‘¤‚ÌŒ¸ŽZ’l(ˆÚ“®•ûŒü)				//1.0‚Å‚»‚Ì‚Ü‚Ü
+const float COL_SUB_STAND_TO_BIG = 1.2f;			// ƒXƒ‰ƒCƒ€Õ“Ë(‘å¨¬)‚ÌÕ“Ë‚³‚ê‚é‘¤‚ÌŒ¸ŽZ’l(Õ“Ë‚³‚ê‚½•ûŒü)	//1.0‚Å‚»‚Ì‚Ü‚Ü
 #if MODE_GAME_PARAMETER
 #else
 #define DEBUG_BOSS	(false)						// ƒfƒoƒbƒO—p‚ÉƒQ[ƒ€ŠJŽnŽžƒ{ƒX‚ð¶¬‚·‚é‚©‚Ç‚¤‚©
@@ -71,11 +76,6 @@ const int SLIME_LEVEL_HEAL_PER = SLIME_LEVEL_FLAME_PER / 2;						// ƒXƒ‰ƒCƒ€_ƒq
 
 const int START_ENEMY_NUM		= 10;			// ƒQ[ƒ€ŠJŽnŽž‚Ì“GƒLƒƒƒ‰‚Ì”
 
-// «1.0f‚Å‚»‚Ì‚Ü‚Ü
-const float COL_SUB_HIT_TO_BIG = 0.7f;				// ƒXƒ‰ƒCƒ€Õ“Ë(¬¨‘å)‚ÌÕ“Ë‘¤‚ÌŒ¸ŽZ’l(”½ŽË‚·‚éˆÚ“®)
-const float COL_SUB_STAND_TO_SMALL = 0.3f;			// ƒXƒ‰ƒCƒ€Õ“Ë(¬¨‘å)‚ÌÕ“Ë‚³‚ê‚é‘¤‚ÌŒ¸ŽZ’l(Õ“Ë‚³‚ê‚½•ûŒü)
-const float COL_SUB_HIT_TO_SMALL = 0.3f;			// ƒXƒ‰ƒCƒ€Õ“Ë(‘å¨¬)‚ÌÕ“Ë‘¤‚ÌŒ¸ŽZ’l(ˆÚ“®•ûŒü)
-const float COL_SUB_STAND_TO_BIG = 1.2f;			// ƒXƒ‰ƒCƒ€Õ“Ë(‘å¨¬)‚ÌÕ“Ë‚³‚ê‚é‘¤‚ÌŒ¸ŽZ’l(Õ“Ë‚³‚ê‚½•ûŒü)
 const float LEAVE_DISTANCE = 20.0f;					// ‚±‚êˆÈã—£‚ê‚½‚ç‘ÎŠpüã‚ÉˆÚ“®‚·‚é
 
 #endif

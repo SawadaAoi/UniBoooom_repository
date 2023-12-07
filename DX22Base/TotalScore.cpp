@@ -12,12 +12,25 @@
 	・2023/11/23　描画処理追加 yamamoto
 	・2023/11/24　テクスチャの張替,コメント訂正 yamamoto
 	・2023/11/26　コンボ倍率の表示の変更 yamamoto
+	・2023/12/07 ゲームパラメータから一部定数移動・インクルード追加 takagi
 
 ========================================== */
 
 // =============== インクルード ===================
 #include "TotalScore.h"
 #include "Sprite.h"
+#include "Pos2d.h"	//二次元座標
+
+// =============== 定数定義 ===================
+const int TOTALSCORE_DIGIT = 5;				//トータルスコアの桁数
+const int MAX_TOTALSCORE = 99999;			//↑一緒に変えてください（桁数分9を追加）//最大トータアルスコア
+const TPos2d<float> TOTALSCORE_POS(1230.0f, 50.0f);			//トータルスコアの位置設定
+const DirectX::XMFLOAT2 TOTALSCORE_SIZE(50.0f, -75.0f);		//トータルスコアの表示の大きさ
+const DirectX::XMFLOAT2 PLUSSCORE_SIZE(30.0f, -40.0f);		//プラススコアの表示の大きさ
+const int ROW_HIGHT = 60;			//スコアを複数個表示時一番上からどのくらい下げるか（PLUSSCORE_SIZE.yの絶対値より大きい数字で）
+const DirectX::XMFLOAT2 SMALLDECIMAL_SIZE(15.0f, -15.0f);	//小数点の大きさ
+const int MAGNIFICATION = 40;		//倍率表示時の間隔。一番右の数字からどれだけ左にずらすか（小数点を入れるのでそこもケアする）
+const TPos2d<float> SMALLDECIMAL_POS(2.0f, -3.0f);//この値で小数点の位置の微調節
 
 /* ========================================
 	関数：コンストラクタ
@@ -190,7 +203,7 @@ void CTotalScore::Draw()
 			{
 				m_PlusScore[i].bEndComboFlg = true;
 				m_PlusScore[i].bDispFlg = true;
-				m_PlusScore[i].nAddScore *= m_PlusScore[i].fComboMagnification;
+				m_PlusScore[i].nAddScore = static_cast<int>(m_PlusScore[i].nAddScore * m_PlusScore[i].fComboMagnification);
 				m_PlusScore[i].nDispFrame = 0;
 			}
 			if (m_PlusScore[i].fComboMagnification != 1.0f)

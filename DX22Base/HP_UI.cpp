@@ -12,6 +12,7 @@
 	・2023/11/28 半分ずつ減るように修正 Sawada
 	・2023/11/29 アニメーション追加 仁枝潤哉
 	・2023/12/01 半分のHPアニメーション追加 仁枝潤哉
+	・2023/12/07 ゲームパラメータから一部定数移動・不要物除去 takagi
 
 ========================================== */
 
@@ -23,7 +24,24 @@
 #include "GameParameter.h"		
 #include "Player.h"
 
-
+// =============== 定数定義 ===================
+const TTriType<float> HP_UI_POS = { 45.0f, 50.0f ,0.0f };	// テクスチャの縦幅、横幅
+const TTriType<float> HP_UI_SIZE = { 60.0f, 55.0f ,0.0f };	// テクスチャの縦幅、横幅
+const float DRAW_WIDTH = 65.0f;	// テクスチャの横幅
+const int SWITCH_HP_ANIM = 0;				// アニメーション切り替えの間隔
+const int HP_ANIM_WIDTH_NUM_MAX = 6;		// 横分割数最大数
+const int HP_ANIM_HEIGHT_NUM_MAX = 6;		// 縦分割数最大数
+const float HP_ANIM_SIZEX = 1.0f / HP_ANIM_WIDTH_NUM_MAX;	// テクスチャ横分割サイズ
+const float HP_ANIM_SIZEY = 1.0f / HP_ANIM_HEIGHT_NUM_MAX;	// テクスチャ縦分割サイズ
+const float DRAW_ANIM_HEIGHT = HP_UI_SIZE.y + 40.0f;		// アニメーションの表示位置
+const float DRAW_ANIM_WIDTH = HP_UI_SIZE.x + 40.0f;		// アニメーションの表示位置
+//TODO:早くカメラ使って
+const float VIEW_LEFT = 0.0f;		// 画面左端の座標
+const float VIEW_RIGHT = 1280.0f;	// 画面右端の座標（画面横幅）
+const float VIEW_BOTTOM = 720.0f;	// 画面下端の座標（画面縦幅）
+const float VIEW_TOP = 0.0f;		// 画面上端の座標
+const float NEAR_Z = 0.1f;			// 画面に写り始める距離
+const float FAR_Z = 10.0f;			// 写せる限界距離
 
 /* ========================================
 	コンストラクタ関数

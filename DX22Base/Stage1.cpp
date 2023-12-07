@@ -22,6 +22,7 @@
 	・2023/12/05 ステージにポーズ実装 takagi
 	・2023/12/06 pose→pause修正、ポーズ文字表示 takagi
 	・2023/12/07 ステージ→リザルト遷移方法切り替え実装 nieda
+	・2023/12/07 ビュー行列取得にカメラ使用 takagi
 
 ========================================== */
 
@@ -332,7 +333,7 @@ void CStage1::Draw()
 	// スタート合図描画
 	if (!m_bStart)
 	{
-		DirectX::XMFLOAT4X4 mat[3];
+		DirectX::XMFLOAT4X4 mat[2];
 
 		// ワールド行列はXとYのみを考慮して作成
 		DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(START_POS_X, START_POS_Y, 0.0f);	// ワールド行列（必要に応じて変数を増やしたり、複数処理を記述したりする）
@@ -341,17 +342,15 @@ void CStage1::Draw()
 		// ビュー行列は2Dだとカメラの位置があまり関係ないので、単位行列を設定する
 		DirectX::XMStoreFloat4x4(&mat[1], DirectX::XMMatrixIdentity());
 
-		// プロジェクション行列には2Dとして表示するための行列を設定する
-		// この行列で2Dのスクリーンの大きさが決まる
-		DirectX::XMMATRIX proj = DirectX::XMMatrixOrthographicOffCenterLH(VIEW_LEFT, VIEW_RIGHT, VIEW_BOTTOM, VIEW_TOP, NEAR_Z, FAR_Z);	// 平衡投影行列を設定
-		DirectX::XMStoreFloat4x4(&mat[2], DirectX::XMMatrixTranspose(proj));
-
 
 		// スプライトの設定
 		Sprite::SetWorld(mat[0]);
 		Sprite::SetView(mat[1]);
-		Sprite::SetProjection(mat[2]);
-		Sprite::SetSize(DirectX::XMFLOAT2(START_SCALE_X, -START_SCALE_Y));
+		if (m_pCamera)	//ヌルチェック
+		{
+			Sprite::SetProjection(m_pCamera->GetProjectionMatrix(CCamera::E_DRAW_TYPE_2D));	// 平行投影行列を設定
+		}
+		Sprite::SetSize(DirectX::XMFLOAT2(START_SCALE_X, START_SCALE_Y));
 		Sprite::SetUVPos(DirectX::XMFLOAT2(m_fUVPos.x, m_fUVPos.y));
 		Sprite::SetUVScale(DirectX::XMFLOAT2(STARTSIGN_UV_POS_X, STARTSIGN_UV_POS_Y));
 		Sprite::SetTexture(m_pTexture);

@@ -31,8 +31,9 @@
 const float LEVEL4_SCALE = 4.0f;
 const float LEVEL4_SPEED = ENEMY_MOVE_SPEED * 0.85;
 const int	LEVEL4_ATTACK = 2;	// 攻撃力
-
 #endif
+const float LEVEL_4_SHADOW_SCALE = 8.0f;	// スライム＿レベル４の影の大きさ
+
 /* ========================================
 	コンストラクタ関数
 	-------------------------------------

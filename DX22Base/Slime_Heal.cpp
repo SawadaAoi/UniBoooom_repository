@@ -9,6 +9,7 @@
 
 	変更履歴
 	・2023/12/04 cpp作成 Tei
+	・2023/12/07 ゲームパラメータから一部定数移動 takagi
 
 ========================================== */
 
@@ -21,8 +22,8 @@
 const float LEVEL_HEAL_SCALE = 1.0f;						// スライム＿ヒールの大きさ(当たり判定含む)
 const float LEVEL_HEAL_SPEED = ENEMY_MOVE_SPEED * 0.3f;		// 移動速度
 const int	LEVEL_HEAL_ATTACK = 1;							// 攻撃力 （いる？
-
 #endif
+const float LEVEL_HEAL_SHADOW_SCALE = 2.0f;	// スライム＿ヒールの影の大きさ
 
 /* ========================================
 	コンストラクタ関数

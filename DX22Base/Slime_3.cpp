@@ -20,6 +20,7 @@
 	・2023/11/16 引数付きコンストラクタの引数に頂点シェーダーとモデルのポインタを追加 山下凌佑
 	・2023/11/28 影の大きさを設定する変数追加 nieda
 	・2023/11/30 プレイヤーに見られていたら止まる処理を追加 yamashita
+	・2023/12/07 ゲームパラメータから一部定数移動 takagi
 
 ========================================== */
 
@@ -27,13 +28,14 @@
 #include "Slime_3.h"
 #include "GameParameter.h"		//定数定義用ヘッダー
 // =============== 定数定義 =======================
+const int	LEVEL3_ATTACK = 1;						// 攻撃力
 #if MODE_GAME_PARAMETER
 #else
 const float LEVEL3_SCALE = 3.0f;
 const float LEVEL3_SPEED = ENEMY_MOVE_SPEED * 0.90;
-const int	LEVEL3_ATTACK = 1;	// 攻撃力
 const float LEVEL3_STOP_RANGE = DirectX::XMConvertToRadians(20.0f);	// スライムが止まる角度の範囲
 #endif
+const float LEVEL_3_SHADOW_SCALE = 3.5f;	// スライム＿レベル３の影の大きさ
 
 /* ========================================
 	コンストラクタ関数
