@@ -228,7 +228,3 @@ const float COMMAND_HEIGHT = 78.0f;		//ÉRÉ}ÉìÉhâ°ïù
 
 #endif // !MODE_GAME_PARAMETER
 #endif // !__GAME_PARAMETER_H__
-
-
-
-

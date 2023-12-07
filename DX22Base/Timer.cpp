@@ -13,7 +13,7 @@
 	・2023/11/18 タイマー描画処理、数字部分の描画関数追加 Tei
 	・2023/11/22 現時点のタイマーを取得関数追加 Tei
 	・2023/12/01 時間経過でスライムのパラメータを変更する処理を修正 Sawada
-	・2023/12/07 ゲームパラメータから一部定数移動 takagi
+	・2023/12/07 ゲームパラメータから一部定数移動・暗黙の型キャスト除去 takagi
 
 ========================================== */
 
@@ -36,7 +36,7 @@ const float TIME_COLON_SIZE_Y = -35.0f;					//タイマーのコロンのYの長さ設定
 #else
 const float SLM_PARAM_CHANGE_TIME[STATE_MAX] = { 60.0f, 120.0f, 180.0f };	// 経過時間の秒数
 const int	SLM_CREATE_NUM[STATE_MAX] = { 20, 25, MAX_SLIME_NUM };	// 最大生成数
-const float SLM_CREATE_INTERVAL_TIME[STATE_MAX] = { 1.0f, 1.5f, 1.5f };			// 生成間隔
+const int SLM_CREATE_INTERVAL_TIME[STATE_MAX] = { 1.0f, 1.5f, 1.5f };			// 生成間隔
 const float SLM_MOVE_ADD_SPEED[STATE_MAX] = { 1.0f, 1.1f, 1.2f };			// 移動スピード
 #endif
 
@@ -60,7 +60,7 @@ CTimer::CTimer()
 	, m_pTextureColon(nullptr)
 	, m_pTextureNum(nullptr)
 	, m_nMaxSlimeNum(SLM_CREATE_NUM[STATE_FIRST])
-	, m_nSlimeCreateInterval(SLM_CREATE_INTERVAL_TIME[STATE_FIRST])
+	, m_nSlimeCreateInterval(static_cast<int>(SLM_CREATE_INTERVAL_TIME[STATE_FIRST]))
 	, m_fSlimeMoveSpeed(SLM_MOVE_ADD_SPEED[STATE_FIRST])
 {
 	//数字のテクスチャ読む込み
@@ -386,7 +386,7 @@ void CTimer::ChangeSlimeParam()
 	if (elapsedTimeFrame < SLM_PARAM_CHANGE_TIME[STATE_FIRST] * 60)
 	{
 		m_nMaxSlimeNum			= SLM_CREATE_NUM[STATE_FIRST];
-		m_nSlimeCreateInterval	= SLM_CREATE_INTERVAL_TIME[STATE_FIRST] * 60;
+		m_nSlimeCreateInterval	= static_cast<int>(SLM_CREATE_INTERVAL_TIME[STATE_FIRST] * 60);
 		m_fSlimeMoveSpeed		= SLM_MOVE_ADD_SPEED[STATE_FIRST];
 
 	}
@@ -394,7 +394,7 @@ void CTimer::ChangeSlimeParam()
 	else if (elapsedTimeFrame < SLM_PARAM_CHANGE_TIME[STATE_SECOND] * 60)
 	{
 		m_nMaxSlimeNum			= SLM_CREATE_NUM[STATE_SECOND];
-		m_nSlimeCreateInterval	= SLM_CREATE_INTERVAL_TIME[STATE_SECOND] * 60;
+		m_nSlimeCreateInterval	= static_cast<int>(SLM_CREATE_INTERVAL_TIME[STATE_SECOND] * 60);
 		m_fSlimeMoveSpeed = SLM_MOVE_ADD_SPEED[STATE_SECOND];
 
 
@@ -403,7 +403,7 @@ void CTimer::ChangeSlimeParam()
 	else
 	{
 		m_nMaxSlimeNum			= SLM_CREATE_NUM[STATE_THIRD];
-		m_nSlimeCreateInterval	= SLM_CREATE_INTERVAL_TIME[STATE_THIRD] * 60;
+		m_nSlimeCreateInterval	= static_cast<int>(SLM_CREATE_INTERVAL_TIME[STATE_THIRD] * 60);
 		m_fSlimeMoveSpeed		= SLM_MOVE_ADD_SPEED[STATE_THIRD];
 
 

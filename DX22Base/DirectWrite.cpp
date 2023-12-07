@@ -144,7 +144,7 @@ void DirectWrite::DrawString(std::string str, DirectX::XMFLOAT2 pos)
 	D2D1_SIZE_F TargetSize = pRT->GetSize();
 
 	//テキストレイアウトを作成
-	pIDWriteFactory->CreateTextLayout(wstr.c_str(), wstr.size(), pTextFormat, TargetSize.width, 
+	pIDWriteFactory->CreateTextLayout(wstr.c_str(), static_cast<unsigned int>(wstr.size()), pTextFormat, TargetSize.width, 
 		TargetSize.height, &pTextLayout);
 
 	//描画位置の確定
@@ -181,7 +181,7 @@ void DirectWrite::DrawString(std::string str, D2D1_RECT_F rect)
 	pRT->BeginDraw();
 
 	//描画処理
-	pRT->DrawTextA(wstr.c_str(), wstr.size(), pTextFormat, rect, pSolidBrush, D2D1_DRAW_TEXT_OPTIONS_NONE);
+	pRT->DrawTextA(wstr.c_str(), static_cast<unsigned int>(wstr.size()), pTextFormat, rect, pSolidBrush, D2D1_DRAW_TEXT_OPTIONS_NONE);
 
 	//描画の終了
 	pRT->EndDraw();

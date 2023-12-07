@@ -25,7 +25,7 @@
 	・2023/11/21 DisplayAddTimeの中にBoooomUIの表示時間処理追加 Tei
 	・2023/12/04 爆発のエフェクトを実装 yamasita
 	・2023/12/04 爆発の仮表示3Dモデルを削除 yamasita
-	・2023/12/07 ゲームパラメータから一部定数移動 takagi
+	・2023/12/07 ゲームパラメータから一部定数移動・暗黙の型キャスト除去 takagi
 
 ======================================== */
 
@@ -44,7 +44,7 @@ const float EXPAND_QUICK_RATE = 0.2f;			// 膨張加速割合
 const int DELAY_TIME = 0.5f * 60;
 #endif
 const float EXPLODE_STANDARD_SIZE = 0.15f;
-const float EXPLODE_STANDARD_ONE_FRAME = 1.38 * 60.0;
+const float EXPLODE_STANDARD_ONE_FRAME = 1.38f * 60.0f;
 
 /* ========================================
 	コンストラクタ関数

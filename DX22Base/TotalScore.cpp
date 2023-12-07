@@ -203,7 +203,7 @@ void CTotalScore::Draw()
 			{
 				m_PlusScore[i].bEndComboFlg = true;
 				m_PlusScore[i].bDispFlg = true;
-				m_PlusScore[i].nAddScore *= m_PlusScore[i].fComboMagnification;
+				m_PlusScore[i].nAddScore = static_cast<int>(m_PlusScore[i].nAddScore * m_PlusScore[i].fComboMagnification);
 				m_PlusScore[i].nDispFrame = 0;
 			}
 			if (m_PlusScore[i].fComboMagnification != 1.0f)
