@@ -10,21 +10,19 @@
 	変更履歴
 	・2023/11/20 cpp,作成 Tei
 	・2023/11/20 描画で必要な関数を作成 Tei
+	・2023/12/07 ゲームパラメータから定数移動 takagi
 
 ========================================== */
 
 // =============== インクルード ===================
 #include "BoooomUI.h"
-#include "GameParameter.h"
 
 // =============== 定数定義 ===================
-#if MODE_GAME_PARAMETER
-#else
-const float BOOOOM_UI_SIZE_X = 1.0f;		//BoooomUIのXの長さ
-const float BOOOOM_UI_SIZE_Y = 0.565f;		//BoooomUIのYの長さ
-const float BOOOOM_UI_SCALE_X = 6.0f;		//BoooomUIのスケール
-const float BOOOOM_UI_SCALE_Y = 6.0f;		//BoooomUIのスケール
-#endif
+const float BOOOOM_UI_SIZE_X = 1.0f;		//BoooomUIのXの長さ（textureの比率と合わせる）
+const float BOOOOM_UI_SIZE_Y = 0.565f;		//BoooomUIのYの長さ（textureの比率と合わせる）
+const float BOOOOM_UI_SCALE_X = 6.0f;		//BoooomUIサイズのスケール
+const float BOOOOM_UI_SCALE_Y = 6.0f;		//BoooomUIサイズのスケール
+
 /* ========================================
 	コンストラクタ
 	----------------------------------------

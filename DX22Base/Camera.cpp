@@ -25,57 +25,60 @@
 	・2023/12/03 位置ゲッタ作成 takagi
 	・2023/12/04 GetViewWithoutTranspose,GetProjectionWithoutTransposeの戻り値を変更 yamashita
 	・2023/12/06 ゲームパラメータ対応 takagi
+	・2023/12/07 ゲームパラメータから定数移動・不要物除去 takagi
 
 ========================================== */
 
 // =============== インクルード ===================
 #include "Camera.h"		//自身のヘッダ
 #include "Defines.h"	//画面情報
-#include "GameParameter.h"
 #include "Random.h"		//乱数生成用
 #include <vector>		//配列型コンテナ
 
-// =============== デバッグモード =====================
-#define NEW_VIBRATE (true)	//新しい振動方法を実装
+// =============== 列挙定義 =====================
+enum E_DIRECT_VIBRATE
+{
+	E_DIRECT_VIBRATE_SIDE,		//横方向
+	E_DIRECT_VIBRATE_VERTICAL,	//縦方向
+	E_DIRECT_VIBRATE_MAX,		//要素数
+};	//振動方向
 
 // =============== 定数定義 =====================
 const float ASPECT = (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT;	//画面比率(y / x)
 const TPos3d<float> INIT_LOOK(0.0f, 0.0f, 0.0f);					//初期注視地点
 const TTriType<float> INIT_UP_VECTOR(0.0f, 1.0f, 0.0f);				//カメラの上方向
 const float INIT_CHANGE_RATE_AMPLITUDE = 1.0f;						//初期振幅変化率
-#if MODE_GAME_PARAMETER
-#else
 const TPos3d<float> INIT_POS(0.0f, 1.6f, -3.0f);					//初期位置
 const float INIT_ANGLE = DirectX::XMConvertToRadians(73.0f);        //カメラの角度
 const float INIT_NEAR = 1.0f;										//画面手前初期z値
 const float INIT_FAR = 150.0f;										//画面奥初期z値
 const float INIT_RADIUS = 15.0f;									//カメラと注視点との距離(初期値)
 const int MAX_CNT_CHANGE_VIBRATE = 10;								//最大振動変化数
-const TDiType<int> INIT_FRAME_WEAK = { 99, 60 };					//弱振動のフレーム数	x:横, y:縦
-const TDiType<int> INIT_FRAME_STRONG = { 99, 60 };					//強振動のフレーム数	x:横, y:縦
-const TDiType<float> CHANGE_RATE_AMPLITUDE_WEAK{ 0.999f, 0.999f };	//強振幅変化率	1を超えると増加方向、下回ると減少方向	x:横, y:縦
-const TDiType<float> CHANGE_RATE_AMPLITUDE_STRONG{ 0.95f, 0.95f };	//強振幅変化率	1を超えると増加方向、下回ると減少方向	x:横, y:縦
+const TDiType<int> INIT_FRAME_WEAK = { 125, 125 };					//弱振動のフレーム数	x:横, y:縦
+const TDiType<int> INIT_FRAME_STRONG = { 150, 150 };				//強振動のフレーム数	x:横, y:縦
+const TDiType<float> CHANGE_RATE_AMPLITUDE_WEAK{ 0.99f, 0.99f };	//強振幅変化率	1を超えると増加方向、下回ると減少方向	x:横, y:縦
+const TDiType<float> CHANGE_RATE_AMPLITUDE_STRONG{ 0.97f, 0.97f };	//強振幅変化率	1を超えると増加方向、下回ると減少方向	x:横, y:縦
 ///<summary>振幅の確率：弱
 ///<para>合計が1になる必要はない</para>
 ///</summary>
-const std::vector<double> PROBABILITY_AMPITUDE_WEAK[CCamera::E_DIRECT_VIBRATE_MAX] = {
-	{ 0.1 },	//横弱振動
-	{ 0.1, 0.3, 0.5, 0.3, 0.1 },	//縦弱振動
+const std::vector<double> PROBABILITY_AMPITUDE_WEAK[E_DIRECT_VIBRATE_MAX] = {
+	{ 0.1, 0.3, 0.5, 0.3, 0.1 }, //横弱振動
+	{ 0.1, 0.3, 0.5, 0.3, 0.1 }, //縦弱振動
 };
 ///<summary>
 ///<see cref="PROBABILITY_AMPITUDE_WEAK">←上記定数</see>のテーブル
 ///<para>順番がそのまま対応しており、同じ数ないと機能しない(添削は自由)</para>
 ///<para>各値は振幅の大きさを表す</para>
 ///</summary>
-const std::vector<float> TABLE_AMPITUDE_WEAK[CCamera::E_DIRECT_VIBRATE_MAX] = {
-	{ 0.0f },	//横弱振幅
-	{ -11.0f, -5.0f, 0.0f, 5.0f, 11.0f },	//縦弱振幅
+const std::vector<float> TABLE_AMPITUDE_WEAK[E_DIRECT_VIBRATE_MAX] = {
+	{ -0.05f, -0.025f, 0.0f, 0.025f, 0.05f },	//横弱振幅
+	{ -0.05f, -0.025f, 0.0f, 0.025f, 0.05f },	//縦弱振幅
 };
 ///<summary>振幅の確率：強
 ///<para>合計が1になる必要はない</para>
 ///</summary>
-const std::vector<double> PROBABILITY_AMPITUDE_STRONG[CCamera::E_DIRECT_VIBRATE_MAX] = {
-	{ 0.1 },	//横強振動
+const std::vector<double> PROBABILITY_AMPITUDE_STRONG[E_DIRECT_VIBRATE_MAX] = {
+	{ 0.1, 0.3, 0.5, 0.3, 0.1 },	//横強振動
 	{ 0.1, 0.3, 0.5, 0.3, 0.1 },	//縦強振動
 };
 ///<summary>
@@ -83,11 +86,12 @@ const std::vector<double> PROBABILITY_AMPITUDE_STRONG[CCamera::E_DIRECT_VIBRATE_
 ///<para>順番がそのまま対応しており、同じ数ないと機能しない(添削は自由)</para>
 ///<para>各値は振幅の大きさを表す</para>
 ///</summary>
-const std::vector<float> TABLE_AMPITUDE_STRONG[CCamera::E_DIRECT_VIBRATE_MAX] = {
-	{ 0.0f },	//横強振幅
-	{ -11.0f, -5.0f, 0.0f, 5.0f, 11.0f },	//縦強振幅
+const std::vector<float> TABLE_AMPITUDE_STRONG[E_DIRECT_VIBRATE_MAX] = {
+	{ -0.1f, -0.05f, 0.0f, 0.05f, 0.1f },	//横強振幅
+	{ -1.25f, -0.7f, 0.0f, 0.7f, 1.25f },	//縦強振幅
 };
-#endif
+
+
 
 /* ========================================
 	コンストラクタ関数

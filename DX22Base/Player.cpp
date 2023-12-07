@@ -33,6 +33,7 @@
 	・2023/11/28 回復処理を追加 yamashita
 	・2023/11/29 ハンマーのインターバル追加 yamamoto
 	・2023/12/03 カメラの更新を担うため、ポインタのconstを仕方なく除去 takagi
+	・2023/12/07 ゲームパラメータから一部定数移動 takagi
   
 ======================================== */
 
@@ -45,24 +46,22 @@
 #include <math.h>				// 円周率
 
 // =============== 定数定義 =======================
-const float KEYBOARD_INPUT_SIZE = 1.0f;	// キーボードの入力値の大きさ
-
+const float KEYBOARD_INPUT_SIZE = 1.0f;						// キーボードの入力値の大きさ
 #if MODE_GAME_PARAMETER
 #else
-const float PLAYER_MOVE_SPEED	= 0.1f;			//プレイヤーの移動量
-const int	PLAYER_HP			= 5;
-const float PLAYER_RADIUS		= 0.3f;			// プレイヤーの当たり判定の大きさ
-const float PLAYER_SIZE			= 1.0f;			// プレイヤーの大きさ
-const int	NO_DAMAGE_TIME		= 3 * 60;		//プレイヤーの無敵時間
-const int	DAMAGE_FLASH_FRAME	= 0.1f * 60;	// プレイヤーのダメージ点滅の切り替え間隔
-const int	SE_RUN_INTERVAL		= 0.4f * 60;	//プレイヤーの移動によるSE発生の間隔
-const int	HEAL_NUM			= 1;			//プレイヤーの回復量
-const float	SE_RUN_VOLUME		= 0.3f;			//移動によるSEの音量
-const float HAMMER_INTERVAL_TIME	= 1.0f * 60;	// ハンマー振り間隔
-
+const float PLAYER_MOVE_SPEED = 0.1f;			//プレイヤーの移動量
+const int	PLAYER_HP = 5;
+const float PLAYER_RADIUS = 0.3f;			// プレイヤーの当たり判定の大きさ
+const float PLAYER_SIZE = 1.0f;			// プレイヤーの大きさ
+const int	NO_DAMAGE_TIME = 3 * 60;		//プレイヤーの無敵時間
+const int	DAMAGE_FLASH_FRAME = 0.1f * 60;	// プレイヤーのダメージ点滅の切り替え間隔
 #endif
+const int	HEAL_NUM = 1;									//プレイヤーの回復量
+const float HAMMER_INTERVAL_TIME = 0.0f * 60;				// ハンマー振り間隔
+const float PLAYER_SHADOW_SCALE = 1.5f;		// プレイヤーの影の大きさ
+const int	SE_RUN_INTERVAL = static_cast<int>(0.4f * 60);	//プレイヤーの移動によるSE発生の間隔
+const float	SE_RUN_VOLUME = 0.3f;							//移動によるSEの音量
 
-// =============== グローバル変数定義 =============
 
 
 /* ========================================

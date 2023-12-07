@@ -13,28 +13,31 @@
 	・2023/11/18 タイマー描画処理、数字部分の描画関数追加 Tei
 	・2023/11/22 現時点のタイマーを取得関数追加 Tei
 	・2023/12/01 時間経過でスライムのパラメータを変更する処理を修正 Sawada
+	・2023/12/07 ゲームパラメータから一部定数移動 takagi
 
 ========================================== */
 
 // =============== インクルード ===================
 #include "Timer.h"
 #include "Sprite.h"
-// =============== 定数定義 =======================
-#if MODE_GAME_PARAMETER
-#else
-const int STAGE_TIME = 180 * 60;	//ステージ制限時間（秒*フレーム）
-const TPos2d<float> MINUTE_POS(565.0f, 25.0f);			//分の位置設定
-const TPos2d<float> SECOND_TENS_POS(640.0f, 25.0f);	//十の桁秒の位置設定
-const TPos2d<float> SECOND_ONE_POS(690.0f, 25.0f);		//一の桁秒の位置設定
-const TPos2d<float> TIME_BACKGROUND_POS(630.0f, 25.0f);	//バックグラウンド位置設定
-const TPos2d<float> TIME_COLON_POS(615.0f, 25.0f);		//コロンの位置設定
+#include "GameParameter.h"
 
-const TPos2d<float> TIME_COLON_POS(602.5f, 25.0f);		//コロンの位置設定
+// =============== 定数定義 =======================
+const TPos2d<float> MINUTE_POS(565.0f, 45.0f);			//分の位置設定
+const TPos2d<float> SECOND_TENS_POS(640.0f, 45.0f);	//十の桁秒の位置設定
+const TPos2d<float> SECOND_ONE_POS(690.0f, 45.0f);		//一の桁秒の位置設定
+const TPos2d<float> TIME_BACKGROUND_POS(630.0f, 45.0f);	//バックグラウンド位置設定
+const TPos2d<float> TIME_COLON_POS(602.5f, 45.0f);		//コロンの位置設定
 const float TIME_BACK_GROUND_SIZE_X = 200.0f;			//タイマーのバックグランドのXの長さ設定
 const float TIME_BACK_GROUND_SIZE_Y = -75.0f;			//タイマーのバックグランドのYの長さ設定
 const float TIME_COLON_SIZE_X = 35.0f;					//タイマーのコロンのXの長さ設定
 const float TIME_COLON_SIZE_Y = -35.0f;					//タイマーのコロンのYの長さ設定
-
+#if MODE_GAME_PARAMETER
+#else
+const float SLM_PARAM_CHANGE_TIME[STATE_MAX] = { 60.0f, 120.0f, 180.0f };	// 経過時間の秒数
+const int	SLM_CREATE_NUM[STATE_MAX] = { 20, 25, MAX_SLIME_NUM };	// 最大生成数
+const float SLM_CREATE_INTERVAL_TIME[STATE_MAX] = { 1.0f, 1.5f, 1.5f };			// 生成間隔
+const float SLM_MOVE_ADD_SPEED[STATE_MAX] = { 1.0f, 1.1f, 1.2f };			// 移動スピード
 #endif
 
 

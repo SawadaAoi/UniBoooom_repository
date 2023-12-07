@@ -19,7 +19,7 @@
 	・2023/11/20 コンボ数機能追加 Sawada
 	・2023/11/21 コンボ数機能の一部をコンボクラスに移動 Sawada
 	・2023/11/21 爆発時にBoooomUIの表示を追加 Tei
-
+	・2023/12/07 Effekseer.hのインクルード追加 Takagi
 
 ========================================== */
 
@@ -29,6 +29,7 @@
 #include "Sphere.h"				//球定義ヘッダー
 #include "DirectWrite.h"
 #include "Input.h"
+#include "LibEffekseer.h"
 
 // =============== 定数定義 =======================
 const float EXPLODE_VOLUME = 0.5f;

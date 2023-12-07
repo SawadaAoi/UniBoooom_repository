@@ -36,6 +36,7 @@
 	・2023/11/26 スライムが爆発から逃げる処理を作成　yamashita
 	・2023/11/28 影の描画追加 nieda
 	・2023/12/04 列挙にヒールスライムを追加 Tei
+	・2023/12/07 ゲームパラメータから一部定数移動 takagi
 
 ========================================== */
 #ifndef __SLIME_BASE_H__
@@ -52,6 +53,7 @@
 #include "Object.h"
 #include "Shadow.h"		// 影表示用ヘッダ
 #include "Timer.h"
+
 // =============== 列挙定義 =======================
 enum E_SLIME_LEVEL
 {
@@ -71,16 +73,18 @@ enum E_SLIME_LEVEL
 };
 
 // =============== 定数定義 =======================
-#if MODE_GAME_PARAMETER
-#else
-const float ENEMY_MOVE_SPEED = 0.01f;	//敵の移動速度
-const int FIRST_EXPLOSION_SCORE = 1000;		//赤同士の最初の爆発のスコア
 const int LEVEL_1_SCORE = 10;				// スライム_1のスコア
 const int LEVEL_2_SCORE = 30;				// スライム_2のスコア
 const int LEVEL_3_SCORE = 100;				// スライム_3のスコア
 const int LEVEL_4_SCORE = 500;				// スライム_4のスコア
-const int LEVEL_4x4_SCORE = 500;				// スライム_4のスコア
+const int LEVEL_4x4_SCORE = 1000;			// 赤々の爆発のスコア
+const int LEVEL_Boss_SCORE = 3000;			// 赤々の爆発のスコア
+#if MODE_GAME_PARAMETER
+#else
+const float ENEMY_MOVE_SPEED = 0.01f;	//敵の移動速度
+const int FIRST_EXPLOSION_SCORE = 1000;		//赤同士の最初の爆発のスコア
 #endif
+
 // =============== クラス定義 =====================
 
 class CSlimeBase

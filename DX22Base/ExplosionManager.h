@@ -16,8 +16,8 @@
 	・2023/11/19 Create関数の引数にdamageを追加 Suzumura
 	・2023/11/20 コンボ数機能追加 Sawada
 	・2023/11/21 コンボ数機能の一部をコンボクラスに移動 Sawada
-
 	・2023/11/21 BoooomUI用のメンバ変数を追加 Tei
+	・2023/12/07 ゲームパラメータから一部定数移動・Effekseer.hのインクルードをcppに移動 takagi
 
 ========================================== */
 #ifndef __EXPLOSION_MANAGER_H__	//ExplosionManager.hインクルードガード
@@ -30,13 +30,17 @@
 #include "Sound.h"
 #include "Combo.h"
 #include "BoooomUI.h"
-#include "LibEffekseer.h"
 
 // =============== 定数定義 =======================
+const int	MAX_EXPLOSION_NUM = 20;			// 最大爆発数
+const int	MAX_BOOOOM_NUM = 10;					//最大boom数
+const int	LEVEL_1_EXPLODE_DAMAGE = 1;
+const int	LEVEL_2_EXPLODE_DAMAGE = 2;
+const int	LEVEL_3_EXPLODE_DAMAGE = 3;
+const int	LEVEL_4_EXPLODE_DAMAGE = 4;
 #if MODE_GAME_PARAMETER
 #else
 const int MAX_BOOOOM_NUM = 10;		//最大boom数
-const int MAX_EXPLOSION_NUM = 20;	//最大爆発数
 const float EXPLODE_BASE_RATIO = 1.5f;			// スライムの爆発接触での爆発の大きさのベース
 const float MAX_SIZE_EXPLODE = 5.0f;				// スライム4同士の爆発の大きさ
 const float LEVEL_1_EXPLODE_TIME	= 0.5f * 60.0f;	// スライム_1の爆発総時間
@@ -44,12 +48,8 @@ const float LEVEL_2_EXPLODE_TIME	= 1.0f * 60.0f;	// スライム_2の爆発総時間
 const float LEVEL_3_EXPLODE_TIME	= 2.0f * 60.0f;	// スライム_3の爆発総時間
 const float LEVEL_4_EXPLODE_TIME	= 3.0f * 60.0f;	// スライム_4の爆発総時間
 const float LEVEL_BOSS_EXPLODE_TIME = 4.0f * 60.0f;	// スライム_ボスの爆発総時間
-
-const int	LEVEL_1_EXPLODE_DAMAGE = 1;
-const int	LEVEL_2_EXPLODE_DAMAGE = 2;
-const int	LEVEL_3_EXPLODE_DAMAGE = 3;
-const int	LEVEL_4_EXPLODE_DAMAGE = 4;
 #endif
+
 // =============== クラス定義 =====================
 class CExplosionManager
 {

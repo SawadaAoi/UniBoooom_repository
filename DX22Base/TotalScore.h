@@ -10,6 +10,7 @@
    変更履歴
 	・2023/11/22　作成 yamamoto
 	・2023/11/23　score構造体、comboの構造体の情報取得処理追加 yamamoto
+	・2023/12/07 ゲームパラメータに依存していたので修正 takagi
 
 ========================================== */
 #ifndef __TOTALSCORE_H__
@@ -17,7 +18,6 @@
 
 // =============== インクルード ===================
 #include <Texture.h>
-#include "GameParameter.h"
 #include"Combo.h"
 #include <vector>
 // =============== クラス定義 =====================

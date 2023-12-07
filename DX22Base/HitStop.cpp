@@ -11,6 +11,7 @@
 	・2023/11/17 作成 takagi
 	・2023/11/21 挙動修正・静的に変更 takagi
 	・2023/11/23 バグ修正 takagi
+	・2023/12/07 ゲームパラメータから定数移動 takagi
 
 ========================================== */
 
@@ -25,9 +26,9 @@
 #else
 const int FRAME_STOP_SOFT = 30;		//ストップ：軽　のフレーム数
 const int FRAME_STOP_NORMAL = 60;	//ストップ：中　のフレーム数
+#endif
 const int FRAME_STOP_HEAVY = 120;	//ストップ：重　のフレーム数
 const int FRAME_STOP_DEATH = 999;	//ストップ：死　のフレーム数
-#endif
 
 // =============== プロトタイプ宣言 =====================
 int StopSoft(const int& nFrame);	//ストップ：軽

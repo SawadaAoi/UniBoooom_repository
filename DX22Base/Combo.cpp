@@ -11,6 +11,7 @@
 	・2023/11/21 作成 Sawada
 	・2023/11/23 スコアを加算する処理の追加　yamamoto
 	・2023/11/30 UIアニメーション追加　nieda
+	・2023/12/07 ゲームパラメータから定数移動 takagi
 
 ========================================== */
 
@@ -20,15 +21,24 @@
 #include "GameParameter.h"
 #include "Pos2d.h"
 #include "TotalScore.h"
+
 // =============== 定数定義 =======================
-#if MODE_GAME_PARAMETER
-#else
-const TPos2d<float> COMBO_UI_POSITION = { 1100.0f,600.0f };
-const TPos2d<float> COMBO_UI_SIZE = { 70.0f,70.0f };
-const float COMBO_UI_NUM_SPACE = 80.0f;
-const float COMBO_UI_MULTI_DISP_SPACE = 100.0f;
-const int COMBO_UI_DISP_DILAY_TIME = 2.0f * 60;
-#endif
+const TPos2d<float> COMBO_UI_POSITION = { 930.0f, 600.0f };	// コンボUIの描画位置
+const TPos2d<float> COMBO_UI_SIZE = { 70.0f, 130.0f };	// コンボUIの大きさ
+const float COMBO_UI_NUM_SPACE = 80.0f;				// 数字の間スペース
+const float COMBO_UI_MULTI_DISP_SPACE = 100.0f;			// 同時コンボ描画時の上下の空白
+const int COMBO_UI_DISP_DILAY_TIME = int(2.0f * 60);			// 残コンボ数表示の秒数
+
+const TPos2d<float> COMBO_UI_BACK_POS = { 1030.0f, 600.0f };	// コンボUIの背景の描画位置
+const TPos2d<float> COMBO_UI_BACK_SIZE = { 370.0f, 300.0f };	// コンボUIの背景の大きさ
+const TPos2d<float> COMBO_UI_STRING_POS = { 1150.0f, 615.5f };	// コンボUIの文字の描画位置
+const TPos2d<float> COMBO_UI_STRING_SIZE = { 180.0f, 100.0f };		// コンボUIの文字の大きさ
+
+const int SWITCH_COMBO_ANIM = 5;			// アニメーション切り替えの間隔
+const int COMBO_ANIM_WIDTH_NUM_MAX = 3;		// 横分割数最大数
+const int COMBO_ANIM_HEIGHT_NUM_MAX = 3;	// 縦分割数最大数
+const float COMBO_ANIM_SIZEX = 1.0f / COMBO_ANIM_WIDTH_NUM_MAX;		// テクスチャ横分割サイズ
+const float COMBO_ANIM_SIZEY = 1.0f / COMBO_ANIM_HEIGHT_NUM_MAX;	// テクスチャ縦分割サイズ
 
 /* ========================================
 	コンストラクタ

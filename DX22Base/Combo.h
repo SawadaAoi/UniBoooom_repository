@@ -11,6 +11,7 @@
 	・2023/11/21 作成 Sawada
 	・2023/11/23 構造体にスコアを追加　yamamoto
 	・2023/11/30 アニメーション用変数追加　nieda
+	・2023/12/07 ゲームパラメータから定数移動 takagi
 
 ========================================== */
 #ifndef __COMBO_H__
@@ -20,13 +21,10 @@
 #include "Sprite.h"
 #include <Texture.h>
 #include "Object.h"
-#include "GameParameter.h"
 class CTotalScore;
+
 // =============== 定数定義 =======================
-#if MODE_GAME_PARAMETER
-#else
-const int	MAX_COMBO_NUM = 5;		// 最大同時コンボ数
-#endif
+const int	MAX_COMBO_NUM = 5;					// 最大同時コンボ数
 
 // =============== クラス定義 =====================
 class CCombo

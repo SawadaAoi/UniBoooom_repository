@@ -21,6 +21,7 @@
 	・2023/11/23 ジオメトリーからモデルに差し替え　yamashita
 	・2023/11/29 Interval追加　yamamoto
 	・2023/12/01 IntervalをSwingSpeedに変更　yamamoto
+	・2023/12/07 ゲームパラメータから一部定数移動 takagi
 	
 ========================================== */
 
@@ -33,9 +34,12 @@
 // =============== 定数定義 =======================
 const float HALF_PI = 3.141592f / 2;	//ハンマーの開始地点のラジアン角(要修正)
 
+const float HAMMER_ANGLE_X = DirectX::XMConvertToRadians(180.0f);	//ハンマーの表示角度
+const float HAMMER_ANGLE_Y = DirectX::XMConvertToRadians(0.0f);		//ハンマーの表示角度
+const float HAMMER_ANGLE_Z = DirectX::XMConvertToRadians(0.0f);		//ハンマーの表示角度
+const float SWING_ANGLE = DirectX::XMConvertToRadians(90.0f);		//ハンマーを振る範囲(扇形の角度の大きさ)
 #if MODE_GAME_PARAMETER
 #else
-const float SWING_ANGLE = DirectX::XMConvertToRadians(90.0f);	// ハンマーを振る範囲(扇形の角度の大きさ)
 const float SWING_TIME_FRAME = 0.15f * 60;						// ハンマーを振る時間(フレーム単位)
 const float ROTATE_RADIUS = 1.0f;								// ハンマーが回転するプレイヤーからの距離
 const float HAMMER_COL_SIZE = 0.75f;							// ハンマーの当たり判定の大きさ

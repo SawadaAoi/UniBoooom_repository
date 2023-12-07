@@ -19,6 +19,7 @@
 	・2023/11/15 スライムのモデルと頂点シェーダーをmanagerから受け取るように変更 yamashita
 	・2023/11/28 影の大きさを設定する変数追加 nieda
 	・2023/12/01 タックルの挙動を追加 yamashita
+	・2023/12/07 ゲームパラメータから一部定数移動 takagi
 
 ========================================== */
 
@@ -27,13 +28,14 @@
 #include "GameParameter.h"		//定数定義用ヘッダー
 
 // =============== 定数定義 =======================
+const int	LEVEL2_ATTACK = 1;						// 攻撃力
 #if MODE_GAME_PARAMETER
 #else
 const float LEVEL2_SCALE = 2.0f;
 const float LEVEL2_SPEED = ENEMY_MOVE_SPEED * 0.95;
-const int	LEVEL2_ATTACK = 1;	// 攻撃力
-
 #endif
+const float LEVEL_2_SHADOW_SCALE = 2.5f;	// スライム＿レベル２の影の大きさ
+
 /* ========================================
 	コンストラクタ関数
 	-------------------------------------

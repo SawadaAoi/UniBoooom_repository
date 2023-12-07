@@ -15,6 +15,7 @@
 	・2023/11/19 スライムを打った時のSEの再生 yamashita
 	・2023/11/20 爆発生成の引数を変更
 	・2023/11/21 ボス用の当たり判定(SlimeBossCollision...etc)を多数追加 Suzumura
+	・2023/12/07 ゲームパラメータから一部定数移動 takagi
 
 ========================================== */
 
@@ -23,9 +24,9 @@
 #include "GameParameter.h"
 
 // =============== 定数定義 =======================
+const float HAMMER_HIT_MOVE_SPEED = 1.0f;		// ハンマーに吹き飛ばされた時のスピード
 #if MODE_GAME_PARAMETER
 #else
-const float HAMMER_HIT_MOVE_SPEED = 1.0f;	// ハンマーに飛ばされた時のスピード
 const float SE_HAMMER_HIT_VOLUME = 0.5f;	// スライムを打った時のSEの音量
 
 #endif 
