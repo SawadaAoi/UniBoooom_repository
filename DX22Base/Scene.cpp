@@ -18,6 +18,7 @@
 	・2023/11/23 サウンドファイル読み込み関数追加 nieda
 	・2023/11/27 カメラ初期化 takagi
 	・2023/12/07 ビュー行列取得にカメラ使用 takagi
+	・2023/12/08 カメラがない時にUIが表示できない問題を修正
 
 ========================================== */
 
@@ -116,7 +117,7 @@ bool CScene::IsFin() const
 ========================================== = */
 void CScene::Draw2d(float posX, float posY, float h, float w, Texture* pTexture)
 {
-	DirectX::XMFLOAT4X4 mat[2];
+	DirectX::XMFLOAT4X4 mat[3];
 
 	// ワールド行列はXとYのみを考慮して作成
 	DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(posX, posY, 0.0f);	// ワールド行列（必要に応じて変数を増やしたり、複数処理を記述したりする）
@@ -131,8 +132,14 @@ void CScene::Draw2d(float posX, float posY, float h, float w, Texture* pTexture)
 	if (m_pCamera)	//ヌルチェック
 	{
 		Sprite::SetProjection(m_pCamera->GetProjectionMatrix(CCamera::E_DRAW_TYPE_2D));	// 平行投影行列を設定
+		Sprite::SetSize(DirectX::XMFLOAT2(h, w));
 	}
-	Sprite::SetSize(DirectX::XMFLOAT2(h, w));
+	else
+	{
+		DirectX::XMStoreFloat4x4(&mat[2], DirectX::XMMatrixTranspose(DirectX::XMMatrixOrthographicOffCenterLH(0.0f, 1280.0f, 720.0f, 0.0f, 0.1f, 10.0f)));
+		Sprite::SetProjection(mat[2]);	// 平行投影行列を設定
+		Sprite::SetSize(DirectX::XMFLOAT2(h, -w));
+	}
 	Sprite::SetUVScale(DirectX::XMFLOAT2(1.0f, 1.0f));
 	Sprite::SetUVPos(DirectX::XMFLOAT2(0.0f, 0.0f));
 	Sprite::SetTexture(pTexture);
