@@ -132,7 +132,7 @@ private:
 	int m_nKill;	//被討伐数
 
 	// ===プロトタイプ宣言===
-	void CntKill();	//被討伐数カウンタ
+	void CntKill(const CSlimeBase* pSlime);	//被討伐数カウンタ
 };
 
 #endif // __SLIME_MANAGER_H__
