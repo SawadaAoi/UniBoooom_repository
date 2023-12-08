@@ -35,6 +35,7 @@
 	・2023/11/30 モデルの読み込みをMaya準拠からDirectX準拠に変更 yamashita
 	・2023/11/30 振動する箇所増設・ヒットストップ除去・火スライムと赤スライム衝突時に振動強化 takagi
 	・2023/12/07 ゲームパラメータから一部定数移動 takagi
+	・2023/12/08 被討伐数のカウンタを追加 takagi
 
 =========================================== */
 
@@ -79,6 +80,7 @@ const int START_ENEMY_NUM		= 10;			// ゲーム開始時の敵キャラの数
 const float LEAVE_DISTANCE = 20.0f;					// これ以上離れたら対角線上に移動する
 
 #endif
+const int MAX_KILL_CNT(999999);	//最大被討伐数
 
 /* ========================================
 	コンストラクタ関数
@@ -107,6 +109,7 @@ CSlimeManager::CSlimeManager(CPlayer* pPlayer)
 	, m_pPlayer(pPlayer)
 	, m_pExpMng(nullptr)
 	, m_pTimer(nullptr)
+	, m_nKill(0)		//被討伐数
 {
 	//スライムのモデルと頂点シェーダーの読み込み
 	LoadModel();
@@ -417,6 +420,10 @@ void CSlimeManager::HitBranch(int HitSlimeNum, int StandSlimeNum, CExplosionMana
 
 		if (hitSlimeLevel == MAX_LEVEL)	//スライムのサイズが最大の時
 		{
+			//二体分の削除判定
+			CntKill();	//討伐された
+			CntKill();	//討伐された
+
 			//スライム爆発処理
 			pExpMng->Create(pos, MAX_SIZE_EXPLODE * EXPLODE_BASE_RATIO, LEVEL_4_EXPLODE_TIME, LEVEL_4_EXPLODE_DAMAGE, E_SLIME_LEVEL::LEVEL_4x4);	//衝突されたスライムの位置でレベル４爆発
 			m_pScoreOHMng->DisplayOverheadScore(pos, LEVEL_4_SCORE * 2, SLIME_SCORE_HEIGHT);
@@ -485,7 +492,9 @@ bool CSlimeManager::HitFlameBranch(int HitSlimeNum, int StandSlimeNum, CExplosio
 
 
 		SAFE_DELETE(m_pSlime[HitSlimeNum]);								// 衝突するスライムを削除
+		CntKill();														//討伐された
 		SAFE_DELETE(m_pSlime[StandSlimeNum]);							// 衝突されたスライムを削除
+		CntKill();														//討伐された
 
 		return true;
 	}
@@ -525,7 +534,9 @@ bool CSlimeManager::HitFlameBranch(int HitSlimeNum, int StandSlimeNum, CExplosio
 		}
 
 		SAFE_DELETE(m_pSlime[HitSlimeNum]);								// 衝突するスライムを削除
+		CntKill();														//討伐された
 		SAFE_DELETE(m_pSlime[StandSlimeNum]);							// 衝突されたスライムを削除
+		CntKill();														//討伐された
 
 		return true;
 	}
@@ -547,7 +558,9 @@ bool CSlimeManager::HitFlameBranch(int HitSlimeNum, int StandSlimeNum, CExplosio
 		}
 
 		SAFE_DELETE(m_pSlime[HitSlimeNum]);								// 衝突するスライムを削除
+		CntKill();														//討伐された
 		SAFE_DELETE(m_pSlime[StandSlimeNum]);							// 衝突されたスライムを削除
+		CntKill();														//討伐された
 
 		return true;
 
@@ -664,6 +677,7 @@ void CSlimeManager::TouchExplosion(int DelSlime, CExplosionManager * pExpMng, in
 
 	//トータルスコア（level,combo)
 	SAFE_DELETE(m_pSlime[DelSlime]);					//ぶつかりに来たスライムを削除
+	CntKill();											//討伐された
 
 	m_pCamera->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_WEAK | CCamera::E_BIT_FLAG_VIBRATION_SIDE_WEAK);
 	m_pCamera->ChangeScaleVibrate(10, 1.5f);
@@ -712,6 +726,7 @@ void CSlimeManager::HitSlimeBossBranch(int HitSlimeNum, int StandBossNum, CExplo
 		// フレイムが爆発してボスは残る
 		pExpMng->SwitchExplode(hitSlimeLevel, hitSlimeTransform.fPos, hitSlimeSize);	//スライムのレベルによって爆発の時間とサイズを分岐
 		SAFE_DELETE(m_pSlime[HitSlimeNum]);												// 衝突するスライムを削除
+		CntKill();																			//討伐された
 	}
 
 	//-- ノーマルスライムヒット処理
@@ -768,6 +783,7 @@ void CSlimeManager::HitBossSlimeBranch(int HitSlimeNum, int StandSlimeNum, CExpl
 		// フレイムが爆発してボスは残る
 		pExpMng->SwitchExplode(standSlimeLevel, standSlimeTransform.fPos, standSlimeSize);	//スライムのレベルによって爆発の時間とサイズを分岐
 		SAFE_DELETE(m_pSlime[StandSlimeNum]);												// 衝突するスライムを削除
+		CntKill();																			//討伐された
 	}
 
 	//-- ノーマルスライムヒット処理
@@ -850,6 +866,7 @@ void CSlimeManager::TouchBossExplosion(int BossNum, CExplosionManager* pExpMng, 
 	if (m_pBoss[BossNum]->IsDead() == true)
 	{
 		SAFE_DELETE(m_pBoss[BossNum]);	//ぶつかりに来たスライム(ボス)を削除
+		CntKill();						//討伐された
 		
 		pExpMng->SwitchExplode(level, pos, size, pExpMng->GetExplosionPtr(ExpNum)->GetComboNum());	// 爆発生成
 		m_pScoreOHMng->DisplayOverheadScore(pos, LEVEL_Boss_SCORE, SLIME_SCORE_HEIGHT);
@@ -1231,6 +1248,21 @@ void CSlimeManager::SetTimer(CTimer * pTimer)
 }
 
 /* ========================================
+	被討伐数ゲッタ関数
+	----------------------------------------
+	内容：被討伐数提供
+	----------------------------------------
+	引数1：なし
+	----------------------------------------
+	戻値：被討伐数
+=========================================== */
+int CSlimeManager::GetKillCnt()
+{
+	// =============== 提供 ===================
+	return m_nKill;	//被討伐数
+}
+
+/* ========================================
 	乱数関数
 	----------------------------------------
 	内容：毎回異なる乱数関数
@@ -1270,4 +1302,23 @@ void CSlimeManager::SetScoreOHMng(CScoreOHManager* pScoreMng)
 void CSlimeManager::SetHealMng(CHealItemManager * pHealItemMng)
 {
 	m_pHealItemMng = pHealItemMng;
+}
+
+/* ========================================
+	被討伐数カウント関数
+	----------------------------------------
+	内容：被討伐数のカウンタを1進める
+	----------------------------------------
+	引数1：なし
+	----------------------------------------
+	戻値：なし
+======================================== */
+void CSlimeManager::CntKill()
+{
+	// =============== 検査 =====================
+	if (m_nKill < MAX_KILL_CNT)	//カウンターストップ
+	{
+		// =============== カウンタ =====================
+		m_nKill++;	//カウント増加
+	}
 }

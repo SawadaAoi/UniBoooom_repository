@@ -9,6 +9,7 @@
 
 	変更履歴
 	・2023/11/28 ヘッダ作成UI用ヘッダ、メンバポインタを入れます Tei
+	・2023/12/08 シーン遷移用に関数追加 takagi
 
 ========================================== */
 
@@ -36,6 +37,7 @@ public:
 	CCombo* GetCombo();	//コンボのポインタを取得
 	CTimer* GetTimer();	//タイマーのポインタを取得
 	CStageFinish* GetStageFinish();
+	int GetTotalScore();	//総スコアゲッタ
 	
 private:
 	

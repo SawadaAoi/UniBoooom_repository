@@ -15,6 +15,7 @@
 	・2023/12/04 ポーズクラス追加・デストラクタ復活 takagi
 	・2023/12/05 コメント修正 takagi
 	・2023/12/06 pose→pause修正、ポーズ文字表示 takagi
+	・2023/12/08 シーン遷移用に変数追加 takagi
 
 ========================================== */
 
@@ -43,6 +44,7 @@
 #include "TotalScore.h"
 #include "Sound.h"
 #include "UIStageManager.h"
+#include "BattleData.h"			//メンバのヘッダ
 
 // =============== クラス定義 =====================
 class CStage :public CScene	//シーン
@@ -92,7 +94,8 @@ protected:
 	CHealItemManager* m_pHealItemMng;
 	CPause* m_pPause;						//ポーズ画面
 	CUIStageManager* m_pUIStageManager;
-	
+	BattleData m_Data;	//戦闘データ記録用変数
+
 	//サウンド
 	XAUDIO2_BUFFER* m_pSEHitHammer;
 	IXAudio2SourceVoice* m_pSEHitHammerSpeaker;
