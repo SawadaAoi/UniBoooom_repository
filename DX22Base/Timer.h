@@ -11,6 +11,7 @@
 	・2023/11/14 h,作成 Tei
 	・2023/11/17 開始処理を複数種類追加、タイマーストップ実装 Sawada
 	・2023/12/07 ゲームパラメータに依存していたので修正・不足インクルード解消・ゲームパラメータから一部定数移動 takagi
+	・2023/12/08 GetErapsedTime()関数追加 takagi
 
 ========================================== */
 #ifndef __TIMER_H__
@@ -48,6 +49,7 @@ public:
 	int GetMaxSlimeNum();							// スライム最大生成数を取得
 	int GetSlimeCreateInterval();					// スライム生成間隔を取得
 	float GetSlimeMoveSpeed();						// スライムスピードを取得
+	int GetErapsedTime();							//経過時間を取得
 
 private:
 	void WaitTimeCheck();

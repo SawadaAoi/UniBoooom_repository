@@ -126,9 +126,14 @@ void CHP_UI::Update()
 {
 	if (m_nPlayerOldHp != *m_pPlayerHp)	// HPに変更があったら
 	{
+		// HP減少時のみアニメーション再生
+		if (m_nPlayerOldHp > *m_pPlayerHp)
+		{
+			m_bPlayAnim = true;		// アニメ再生をON
+		}
+
 		m_nPlayerOldHp = *m_pPlayerHp;	// 現在のHPを格納
 
-		m_bPlayAnim = true;		// アニメ再生をON
 	}
 
 	if (m_bPlayAnim)	// アニメーション再生がONなら

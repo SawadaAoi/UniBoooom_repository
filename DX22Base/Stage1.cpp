@@ -23,8 +23,9 @@
 	・2023/12/06 pose→pause修正、ポーズ文字表示 takagi
 	・2023/12/07 ステージ→リザルト遷移方法切り替え実装 nieda
 	・2023/12/07 ビュー行列取得にカメラ使用 takagi
+	・2023/12/08 リザルトシーン遷移用に処理追加 takagi
 
-========================================== */
+	========================================== */
 
 // =============== インクルード ===================
 #include "Stage1.h"	//自身のヘッダ
@@ -179,6 +180,9 @@ CStage1::CStage1()
 =========================================== */
 CStage1::~CStage1()
 {
+	// =============== セーブ =====================
+	m_Data.Save();	//ステージのデータセーブ
+
 	SAFE_DELETE(m_pPause);
 	if (m_pSpeaker)
 	{
@@ -310,7 +314,16 @@ void CStage1::Update()
 #else
 	if (m_pUIStageManager->GetStageFinish()->GetDeleteDispFlg())
 	{
+		// =============== フラグ管理 =====================
 		m_bFinish = true;	// タイトルシーン終了フラグON
+
+		// =============== 退避 =====================
+		m_Data.nTotalScore = m_pUIStageManager->GetTotalScore();			//スコア退避
+		m_Data.nAliveTime = m_pUIStageManager->GetTimer()->GetErapsedTime();	//経過時間退避
+		if (m_pSlimeMng)	//ヌルチェック
+		{
+			m_Data.nKill = m_pSlimeMng->GetKillCnt();						//討伐数退避
+		}
 	}
 #endif
 }

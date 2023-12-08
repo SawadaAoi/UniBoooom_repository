@@ -23,6 +23,7 @@
 	・2023/11/26 ボス生成用関数追加	Sawada
 	・2023/11/26 スライムと爆発の距離を調べ逃げるか判定する関数を作成 yamashita
 	・2023/11/29 プレイヤーのポインタを取得 yamashita
+	・2023/12/08 被討伐数のカウンタを追加 takagi
 
    ======================================== */
 
@@ -95,6 +96,7 @@ public:
 	void SetHealMng(CHealItemManager* pHealItemMng);
 	void SetExplosionMng(CExplosionManager* pExpMng);
 	void SetTimer(CTimer* pTimer);
+	int GetKillCnt();									//被討伐数ゲッタ
 private:
 	// ===メンバ変数宣言=====
 	int GetRandom(int min, int max);
@@ -127,6 +129,10 @@ private:
 	TPos3d<float> m_oldCreatePos;	//1つ前のスライムの生成場所
 	CExplosionManager* m_pExpMng;
 	
+	int m_nKill;	//被討伐数
+
+	// ===プロトタイプ宣言===
+	void CntKill(const CSlimeBase* pSlime);	//被討伐数カウンタ
 };
 
 #endif // __SLIME_MANAGER_H__
