@@ -56,7 +56,7 @@ const float PLAYER_SIZE = 1.0f;			// プレイヤーの大きさ
 const int	NO_DAMAGE_TIME = 3 * 60;		//プレイヤーの無敵時間
 const int	DAMAGE_FLASH_FRAME = 0.1f * 60;	// プレイヤーのダメージ点滅の切り替え間隔
 #endif
-const int	HEAL_NUM = 1;									//プレイヤーの回復量
+const int	HEAL_NUM = 2;									//プレイヤーの回復量
 const float HAMMER_INTERVAL_TIME = 0.0f * 60;				// ハンマー振り間隔
 const float PLAYER_SHADOW_SCALE = 1.5f;		// プレイヤーの影の大きさ
 const int	SE_RUN_INTERVAL = static_cast<int>(0.4f * 60);	//プレイヤーの移動によるSE発生の間隔
