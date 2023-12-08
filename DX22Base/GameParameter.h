@@ -180,11 +180,9 @@ typedef struct
 
 }BossGaugeSetParam;
 
-const BossGaugeSetParam BOSS_GAUGE_S1[2] = { {0, 45},{75, 45} };
+const BossGaugeSetParam BOSS_GAUGE_S1[2] = { {0, 45},{75, 45} };	// ステージ1のボスゲージ設定
 
-const int BOSS_GAUGE_FULL_TIME = 45;		//ボスゲージMAXになる時間(何秒出現) * 60フレーム
-const int SECOND_EMPTY_BOSS_GAUGE = 75;		//二体目のボス空ゲージ表す時間 * 60フレーム
-const int FADE_TIME = 5 * 60;							//ボスゲージが溜まってから消える時間
+const int FADE_TIME = 5 * 60;										// ボスゲージが溜まってから消える時間
  
 
 // 床 ====================================

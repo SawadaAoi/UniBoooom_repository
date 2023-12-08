@@ -21,19 +21,25 @@
 #include "Timer.h"	//STAGE_TIME用
 
 // =============== 定数定義 =======================
-const TPos2d<float> BOSS_GAUGE_EMPTY_POS(765.0f, 45.0f);	//ボスゲージ（空）の位置設定
-const TPos2d<float> BOSS_GAUGE_FULL_POS(765.0f, 46.5f);	//ボスゲージ（満）の位置設定
-const float BOSS_GAUGE_EMPTY_SIZE_X = 60.0f;			//ボスゲージ（空）のXの長さ設定
-const float BOSS_GAUGE_EMPTY_SIZE_Y = -60.0f;			//ボスゲージ（空）のYの長さ設定
-const float BOSS_GAUGE_FULL_SIZE_X = (6.0f / 7.0f) * BOSS_GAUGE_EMPTY_SIZE_X;			//ボスゲージ（満）のXの長さ設定
-const float BOSS_GAUGE_FULL_SIZE_Y = (6.0f / 7.0f) * BOSS_GAUGE_EMPTY_SIZE_Y;			//ボスゲージ（満）のYの長さ設定
-const float BOSS_GAUGE_FULL_POS_Y_ADJUST = BOSS_GAUGE_FULL_SIZE_X / 2;		//ボスゲージ増加時、位置表示するための調整量
-const float BOSS_GAUGE_FULL_SIZE_Y_ADJUST = BOSS_GAUGE_FULL_SIZE_Y;	//ボスゲージ増加時、サイズ計算用（計算して表示したい比率かける元々のサイズ(100.0f)）
+const TPos2d<float> BOSS_GAUGE_FRAME_POS(765.0f, 45.0f);		// ボスゲージ（枠）の位置設定
+const TPos2d<float> BOSS_GAUGE_FULL_POS(765.0f, 46.5f);			// ボスゲージ（中身）の位置設定
+const TPos2d<float> BOSS_GAUGE_FRAME_SIZE = { 60.0f ,-60.0f };	// ボスゲージ（枠）の大きさ
+const TPos2d<float> BOSS_GAUGE_FULL_SIZE = {					// ボスゲージ（中身）の大きさ
+	(6.0f / 7.0f) * BOSS_GAUGE_FRAME_SIZE.x ,
+	(6.0f / 7.0f) * BOSS_GAUGE_FRAME_SIZE.y };			
+const float BOSS_GAUGE_FULL_POS_Y_ADJUST = BOSS_GAUGE_FULL_SIZE.x / 2;		//ボスゲージ（中身）増加時、位置表示するための調整量
+const float BOSS_GAUGE_FULL_SIZE_Y_ADJUST = BOSS_GAUGE_FULL_SIZE.y;			//ボスゲージ（中身）増加時、サイズ計算用（計算して表示したい比率かける元々のサイズ(100.0f)）
 #if MODE_GAME_PARAMETER
 #else
-const int BOSS_GAUGE_FULL_TIME = 45 * 60;		//ボスゲージMAXになる時間(何秒出現) * 60フレーム
-const int SECOND_EMPTY_BOSS_GAUGE = 75 * 60;		//二体目のボス空ゲージ表す時間 * 60フレーム
-const int FADE_TIME = 5 * 60;							//ボスゲージが溜まってから消える時間
+typedef struct
+{
+	float startTime;	// 開始時間(秒)
+	float maxTime;		// ゲージ経過最大時間(秒)
+
+}BossGaugeSetParam;
+
+const BossGaugeSetParam BOSS_GAUGE_S1[2] = { {0, 45},{75, 45} };	// ステージ1のボスゲージ設定
+const int FADE_TIME = 5 * 60;										// ボスゲージが溜まってから消える時間
 #endif
 
 
@@ -97,7 +103,7 @@ void CBossgauge::Update()
 	for (auto itr = m_BossGauges.begin(); itr != m_BossGauges.end(); ++itr)
 	{
 		// ボスゲージ開始時間よりも前の場合
-		if ((*itr).nStartFrame >= m_pTimer->GetElapsedFrame()) continue;
+		if ((*itr).nStartFrame >= m_pTimer->GetErapsedTime()) continue;
 		// 削除済みのボスゲージの場合
 		if ((*itr).bDelFlg == true) continue;
 
@@ -148,7 +154,7 @@ void CBossgauge::Draw()
 	for (auto itr = m_BossGauges.begin(); itr != m_BossGauges.end(); ++itr)
 	{
 		// ボスゲージ開始時間よりも前の場合
-		if ((*itr).nStartFrame >= m_pTimer->GetElapsedFrame()) continue;
+		if ((*itr).nStartFrame >= m_pTimer->GetErapsedTime()) continue;
 		// 削除済みのボスゲージの場合
 		if ((*itr).bDelFlg == true) continue;
 		
@@ -174,7 +180,7 @@ void CBossgauge::DrawFrame(std::vector<BossGauge>::iterator itr)
 	DirectX::XMFLOAT4X4 bossempty[3];
 
 	//ワールド行列はXとYのみを考慮して作成(Zは10ぐらいに配置
-	DirectX::XMMATRIX worldBossempty = DirectX::XMMatrixTranslation(BOSS_GAUGE_EMPTY_POS.x, BOSS_GAUGE_EMPTY_POS.y, 0.0f);
+	DirectX::XMMATRIX worldBossempty = DirectX::XMMatrixTranslation(BOSS_GAUGE_FRAME_POS.x, BOSS_GAUGE_FRAME_POS.y, 0.0f);
 	DirectX::XMStoreFloat4x4(&bossempty[0], DirectX::XMMatrixTranspose(worldBossempty));
 
 	//ビュー行列は2Dだとカメラの位置があまり関係ないので、単位行列を設定する（単位行列は後日
@@ -189,7 +195,7 @@ void CBossgauge::DrawFrame(std::vector<BossGauge>::iterator itr)
 	Sprite::SetWorld(bossempty[0]);
 	Sprite::SetView(bossempty[1]);
 	Sprite::SetProjection(bossempty[2]);
-	Sprite::SetSize(DirectX::XMFLOAT2(BOSS_GAUGE_EMPTY_SIZE_X, BOSS_GAUGE_EMPTY_SIZE_Y));
+	Sprite::SetSize(DirectX::XMFLOAT2(BOSS_GAUGE_FRAME_SIZE.x, BOSS_GAUGE_FRAME_SIZE.y));
 	Sprite::SetUVPos(DirectX::XMFLOAT2(0.0f, 0.0f));
 	Sprite::SetUVScale(DirectX::XMFLOAT2(1.0f, 1.0f));
 	Sprite::SetColor(DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f - ((float)(*itr).nFadeCnt / (float)FADE_TIME)));
@@ -213,7 +219,10 @@ void CBossgauge::DrawGauge(std::vector<BossGauge>::iterator itr)
 	DirectX::XMFLOAT4X4 bossfull[3];
 
 	//ワールド行列はXとYのみを考慮して作成(Zは10ぐらいに配置
-	DirectX::XMMATRIX worldBossfull = DirectX::XMMatrixTranslation(BOSS_GAUGE_FULL_POS.x, BOSS_GAUGE_FULL_POS.y + (BOSS_GAUGE_FULL_POS_Y_ADJUST - BOSS_GAUGE_FULL_POS_Y_ADJUST * (*itr).fGaugeDispPer), 0.0f);
+	DirectX::XMMATRIX worldBossfull = DirectX::XMMatrixTranslation(
+		BOSS_GAUGE_FULL_POS.x, 
+		BOSS_GAUGE_FULL_POS.y + (BOSS_GAUGE_FULL_POS_Y_ADJUST - (BOSS_GAUGE_FULL_POS_Y_ADJUST * (*itr).fGaugeDispPer))
+		, 0.0f);
 	DirectX::XMStoreFloat4x4(&bossfull[0], DirectX::XMMatrixTranspose(worldBossfull));
 
 	//ビュー行列は2Dだとカメラの位置があまり関係ないので、単位行列を設定する（単位行列は後日
@@ -228,7 +237,7 @@ void CBossgauge::DrawGauge(std::vector<BossGauge>::iterator itr)
 	Sprite::SetWorld(bossfull[0]);
 	Sprite::SetView(bossfull[1]);
 	Sprite::SetProjection(bossfull[2]);
-	Sprite::SetSize(DirectX::XMFLOAT2(BOSS_GAUGE_FULL_SIZE_X, ((*itr).fGaugeDispPer * BOSS_GAUGE_FULL_SIZE_Y_ADJUST)));		//描画大きさ設定
+	Sprite::SetSize(DirectX::XMFLOAT2(BOSS_GAUGE_FULL_SIZE.x, ((*itr).fGaugeDispPer * BOSS_GAUGE_FULL_SIZE_Y_ADJUST)));		//描画大きさ設定
 	Sprite::SetUVPos(DirectX::XMFLOAT2(0.0f, (1.0f - (*itr).fGaugeDispPer)));		//描画のtextureの範囲設定
 	Sprite::SetUVScale(DirectX::XMFLOAT2(1.0f, (*itr).fGaugeDispPer));				//表示するtextureの大きさ設定
 	Sprite::SetTexture(m_pTexGauge);
