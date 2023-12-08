@@ -23,38 +23,48 @@
 #include "Pos3d.h"
 #include "Timer.h"
 #include "SlimeManager.h"
+#include "2dPolygon.h"	//平面ポリゴン
+#include <vector>
+#include "Camera.h"
 
 // =============== クラス定義 =====================
 class CBossgauge
 {
 public:
+	// ===列挙定義===========
+	typedef struct
+	{
+		bool bDelFlg;			// 削除フラグ
+		bool bFadeFlg;			// フェードフラグ
+		int	nStartFrame;		// 開始時間Frame
+		int nMaxGaugeFrame;		// 最大値Frame
+		int nGaugeCnt;			// ゲージ加算
+		int nFadeCnt;			// フェード加算
+		float fGaugeDispPer;	// 表示割合 
+
+	}BossGauge;	// ボスゲージパラメータ
+
+public:
 	// ===プロトタイプ宣言===
-	CBossgauge(int* pTime);
+	CBossgauge(CTimer* pTimer);
 	~CBossgauge();
 	void Update();
 	void Draw();
 
-	void FillGaugeDraw(float textureRange);		//ボスゲージ増加量描画関数
-	bool FirstBossGauge();
-	bool SecondBossGauge();
-
-	//void GetBossPos();	//ボス現在の位置を取得(要る？) 画面外に行ったら矢印で表示する
+	void DrawFrame(std::vector<BossGauge>::iterator itr);	// ボスゲージ枠表示
+	void DrawGauge(std::vector<BossGauge>::iterator itr);	// ボスゲージ増加量描画関数
 
 	void SetSlimeManager(CSlimeManager* pSlimeMng);
 
+	void AddBossGauge(float fStartTime, float fMaxTime);
+
 private:
 	// ===メンバ変数宣言===
-	Texture* m_pBossGaugeEmpty;
-	Texture* m_pBossGaugeFull;
-	int m_nGaugeCnt;		//ボスゲージフレーム加算値
-	bool m_bGaugeFull;		//ゲージ満タンフラグ(満タン = true)
-	bool m_bShowBossGauge;	//ボスゲージ表示フラグ
-	int* m_pTime;			//残り時間のポインタ
-	int m_nAdjustTime;		//ボスゲージ表すタイム調整
-	float m_fFillGauge;		//ゲージの割合
-	int m_nFadeCnt;			//フェードアウト時間
-
-	CSlimeManager* m_pSlimeMng;	// スライム管理(ボス生成で使用する)
+	Texture* m_pTexFrame;
+	Texture* m_pTexGauge;
+	CTimer* m_pTimer;						// 残り時間のポインタ
+	CSlimeManager* m_pSlimeMng;				// スライム管理(ボス生成で使用する)
+	std::vector<BossGauge> m_BossGauges;	// ボスゲージ管理配列(ステージ毎に生成する数配列に格納する)
 };
 
 

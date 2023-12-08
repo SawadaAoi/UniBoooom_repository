@@ -120,9 +120,9 @@ void CSlime_4::NormalMove(tagTransform3d playerTransform)
 	// プレイヤーと距離が一定以内だったら
 	if (distancePlayer < 5)
 	{
-		//爆発への角度を取得
+		// プレイヤーへの角度を取得
 		float rad = atan2f(playerPos.z - m_Transform.fPos.z, playerPos.x - m_Transform.fPos.x);
-		//爆発と反対方向に移動
+		// プレイヤーと反対方向に移動
 		m_move.x = -(cosf(rad)) * m_fSpeed;
 		m_move.z = -(sinf(rad)) * m_fSpeed;
 		m_Transform.fRadian.y = atan2f(m_move.x, m_move.z);
