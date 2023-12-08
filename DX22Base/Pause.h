@@ -11,6 +11,7 @@
 	・2023/12/01 制作 takagi
 	・2023/12/04 続き takagi
 	・2023/12/06 pose→pause修正、ポーズ文字表示 takagi
+	・2023/12/08 アクセス指定子間移動 takagi
 
 ========================================== */
 
@@ -28,7 +29,7 @@ class CPause
 private:
 	enum E_FLAG
 	{
-		E_FLAG_PAUSEMODE = 0x01,			//ポーズモード
+		E_FLAG_PAUSEMODE = 0x01,		//ポーズモード
 		E_FLAG_COMMAND_CONTINUE = 0x02,	//継続コマンド
 		E_FLAG_COMMAND_FINISH = 0x04,	//終了コマンド
 		E_FLAG_DECIDE_COMMAND = 0x08,	//コマンド決定状態
@@ -43,7 +44,6 @@ public:
 	bool IsFin() const;									//終了確認
 	void SetCamera(const CCamera* pCamera = nullptr);	//カメラセッタ
 	bool IsPause() const;								//ポーズ中か
-	void Boot();										//ポーズモード起動
 private:
 	// ===メンバ変数宣言=====
 	unsigned char m_ucFlag;							//フラグ
@@ -57,6 +57,7 @@ private:
 	IXAudio2SourceVoice* m_pSpeaker;				//BGMを聞き取る側
 	IXAudio2SourceVoice* m_pSEHitHammerSpeaker;		//SEを聞き取る側
 	// ===プロトタイプ宣言===
+	void Boot();									//ポーズモード起動
 	void UpFlag(const unsigned char& ucBitFlag);	//フラグ起こし
 	void DownFlag(const unsigned char& ucBitFlag);	//フラグ降ろし
 	void SetFlag(const unsigned char& ucBitFlag);	//フラグ反転

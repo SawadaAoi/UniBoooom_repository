@@ -50,7 +50,7 @@ const float STARTSIGN_UV_POS_Y = 1.0f / STARTSIGN_UV_NUM_Y;		// 縦のUV座標計算用
 #define TRY_USE_HIT_STOP (true)
 #endif
 #define USE_FADE_GAME (true)	//フェード試す
-#define USE_PAUSE (false)	//ポーズ試す		※現在ポーズ中から戻ってくる手段を用意していないため要注意！
+#define USE_PAUSE (true)	//ポーズ試す		※現在ポーズ中から戻ってくる手段を用意していないため要注意！
 #define SCENE_TRANSITION(false)		// シーン遷移をボタン押下か自動化を切り替え（trueは自動)
 
 #if USE_FADE_GAME
@@ -266,16 +266,12 @@ void CStage1::Update()
 #if USE_PAUSE
 		if (m_pPause)	//ヌルチェック
 		{
-			if (IsKeyPress('P'))
-			{
-				m_pPause->Boot();
-			}
+			m_pPause->Update();	//ポーズ更新
 			if (m_pPause->IsPause())	//ポーズ中
 			{
-				m_pPause->Update();
-
 				return;	//処理中断
 			}
+			m_bFinish = m_pPause->IsFin();	//終了判定
 		}
 #endif
 
