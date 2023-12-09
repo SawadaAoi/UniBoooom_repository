@@ -45,7 +45,6 @@ public:
 	void DrawNumber(TPos2d<float> pos, int number);	//数字描画関数
 
 	int* GetTimePtr();
-	int* GetNowTime();								//今の時間を取得関数
 	int GetMaxSlimeNum();							// スライム最大生成数を取得
 	int GetSlimeCreateInterval();					// スライム生成間隔を取得
 	float GetSlimeMoveSpeed();						// スライムスピードを取得

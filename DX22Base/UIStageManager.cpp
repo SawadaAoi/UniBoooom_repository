@@ -35,7 +35,7 @@ CUIStageManager::CUIStageManager(CPlayer* pPlayer, const CCamera * pCamera, CSli
 {
 	m_pCombo = new CCombo();
 	m_pTimer = new CTimer();
-	m_pBossgauge = new CBossgauge(m_pTimer->GetNowTime());
+	m_pBossgauge = new CBossgauge(m_pTimer);
 	m_pHpMng = new CHP_UI(pPlayer->GetHpPtr());
 	m_pTotalScore = new CTotalScore();
 	m_pScoreOHMng = new CScoreOHManager();
@@ -46,6 +46,9 @@ CUIStageManager::CUIStageManager(CPlayer* pPlayer, const CCamera * pCamera, CSli
 	m_pTimer->TimeStart();
 	m_pBossgauge->SetSlimeManager(pSlimeMng);
 	m_pScoreOHMng->SetCamera(pCamera);
+
+	m_pBossgauge->AddBossGauge(BOSS_GAUGE_S1[0].startTime, BOSS_GAUGE_S1[0].maxTime);
+	m_pBossgauge->AddBossGauge(BOSS_GAUGE_S1[1].startTime, BOSS_GAUGE_S1[1].maxTime);
 
 }
 

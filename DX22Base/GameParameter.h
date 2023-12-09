@@ -173,10 +173,17 @@ const float SLM_MOVE_ADD_SPEED[STATE_MAX]		= { 1.0f, 1.1f, 1.2f };			// 移動スピ
 
 
 // ボスゲージ =====================================================
-const int BOSS_GAUGE_FULL_TIME = 45 * 60;		//ボスゲージMAXになる時間(何秒出現) * 60フレーム
-const int SECOND_EMPTY_BOSS_GAUGE = 75 * 60;		//二体目のボス空ゲージ表す時間 * 60フレーム
-const int FADE_TIME = 5 * 60;							//ボスゲージが溜まってから消える時間
+typedef struct
+{
+	float startTime;	// 開始時間(秒)
+	float maxTime;		// ゲージ経過最大時間(秒)
 
+}BossGaugeSetParam;
+
+const BossGaugeSetParam BOSS_GAUGE_S1[2] = { {0, 45},{75, 45} };	// ステージ1のボスゲージ設定
+
+const int FADE_TIME = 5 * 60;										// ボスゲージが溜まってから消える時間
+ 
 
 // 床 ====================================
 const float FLOOR_SCALE_X = 3.1f;
