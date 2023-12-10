@@ -13,6 +13,8 @@
 	・2023/12/05 続き takagi
 	・2023/12/06 pose→pause修正、ポーズ文字表示 takagi
 	・2023/12/08 更新部分制作進行 takagi
+	・2023/12/09 オブジェクト分割 takagi
+	・2023/12/10 制作進行 takagi
 
 ========================================== */
 
@@ -22,6 +24,8 @@
 #include <array>		//配列
 #include "CameraDef.h"	//疑似カメラ
 #include "Input.h"		//キー入力
+#include "CharPause.h"	//インスタンス候補
+#include "BgPause.h"	//インスタンス候補
 
 // =============== 列挙型定義 ===================
 enum E_2D
@@ -59,10 +63,16 @@ const float PAUSE_SPACE = 85.0f;		//ポーズ表記の横の間
 const float COMMAND_WIDTH = 320.0f;		//コマンド縦幅
 const float COMMAND_HEIGHT = 70.0f;		//コマンド横幅
 #endif // !GAME_PARAMETER
-
-
 const std::string BGM_FILE_PASS("Assets/Sound/BGM/BGM_maou.mp3");
 const std::string SE_FILE_PASS("Assets/Sound/SE/Smash.mp3");
+const std::map<int, int> MAP_WAIT = {	//更新順
+	{E_2D_BACK, 0},		//背景
+	{E_2D_PA, 0},		//ポーズの”ポ”
+	{E_2D_U, 0},		//ポーズの”ー”
+	{E_2D_SE, 30},		//ポーズの”ズ”
+	{E_2D_CONTINUE, 15},	//継続コマンド
+	{E_2D_FINISH, 30},	//終了コマンド
+};	//ポリゴンと表示開始待機時間の対応表
 const std::map<int, std::string> MAP_TEXTURE = {	//更新順
 	{E_2D_BACK, "Assets/Texture/Pause/PauseBg.png"},			//背景
 	{E_2D_PA, "Assets/Texture/Pause/Pause_po.png"},				//ポーズの”ポ”
@@ -89,7 +99,7 @@ const std::map<int, TPos3d<float>> MAP_SIZE = {	//更新順
 };	//ポリゴンと初期サイズの対応表
 const std::map<int, std::array<std::string, E_SHADER_TYPE_MAX>> MAP_SHADER = {
 	{E_2D_BACK, {"Assets/Shader/VsPause.cso", "Assets/Shader/PsPause.cso"}},	//背景
-	//TODO:この先オブジェクトを追加したときに読み込むシェーダーがずれたりする恐れがあるので通常時用のシェーダーも作って読み込ませる
+	//TODO:この先オブジェクトを追加したときに読み込むシェーダーがずれたりする恐れがあるので通常時用のシェーダーも作って読み込ませる？
 };	//ポリゴンとシェーダー[頂点, ピクセル]の対応表
 
 /* ========================================
@@ -105,57 +115,10 @@ CPause::CPause(const CCamera* pCamera)
 	:m_ucFlag(0x00)			//フラグ
 	,m_pBgPs(nullptr)		//背景用ピクセルシェーダ
 	,m_pBgVs(nullptr)		//背景用頂点シェーダ
-	//,m_pCamera(nullptr)		//カメラ管理
-	,m_pCameraDef(nullptr)	//疑似カメラ
-{
-	// =============== 変数宣言 ===================
-	int nCnt = 0;	//ループカウント用
-
-	// =============== 動的確保 ===================
-	m_2dObj = {	//更新順
-		new C2dPolygon(),				//背景用
-		new C2dPolygon(),				//背景用
-		new C2dPolygon(),				//ポの字用
-		new C2dPolygon(),				//ーの字用
-		new C2dPolygon(),				//ズの字用
-		new C2dPolygon(),				//終了コマンド用
-	};	//平面ポリゴン
-	m_pBgVs = new VertexShader;			//頂点シェーダー
-	m_pBgPs = new PixelShader;			//ピクセルシェーダー
-	m_pCameraDef = new CCameraDef();	//疑似カメラ
-	
+{	
 	// =============== 初期化 ===================
-	SetCamera(pCamera);	//カメラ初期化
-	for (std::vector<C2dPolygon*>::iterator Iterator = m_2dObj.begin(); Iterator != m_2dObj.end(); Iterator++)
-	{
-		if (MAP_POS.size() > nCnt)	//mapの配列が存在する添え字
-		{
-			(*Iterator)->SetPos({ MAP_POS.at(nCnt) });	//位置初期化
-		}
-		if (MAP_SIZE.size() > nCnt)	//mapの配列が存在する添え字
-		{
-			(*Iterator)->SetSize({ MAP_SIZE.at(nCnt) });	//サイズ初期化
-		}
-		if (MAP_TEXTURE.size() > nCnt)	//mapの配列が存在する添え字
-		{
-			(*Iterator)->SetTexture(MAP_TEXTURE.at(nCnt).c_str());	//テクスチャ登録
-		}
-
-		// =============== カウンタ ===================
-		nCnt++;	//カウント進行
-	}
-
-	// =============== ファイル読み込み ===================
-	m_pBGM = CSound::LoadSound(BGM_FILE_PASS.c_str(), true);	//BGMの読み込み
-	m_pSEHitHammer = CSound::LoadSound(SE_FILE_PASS.c_str());	//SEの読み込み
-
-	// =============== シェーダー設定 ===================
-	m_pBgVs->Load(MAP_SHADER.at(E_2D_BACK)[E_SHADER_TYPE_VERTEX].c_str());	//頂点シェーダー作成
-	m_pBgPs->Load(MAP_SHADER.at(E_2D_BACK)[E_SHADER_TYPE_PIXEL].c_str());	//ピクセルシェーダー作成
-	
-	// =============== シェーダー登録 ===================
-	m_2dObj[E_2D_BACK]->SetVertexShader(m_pBgVs);	//頂点シェーダー登録
-	m_2dObj[E_2D_BACK]->SetPixelShader(m_pBgPs);	//ピクセルシェーダー登録
+	m_pCamera = pCamera;	//カメラ初期化
+	InitObjects();			//オブジェクト初期化
 }
 
 /* ========================================
@@ -170,13 +133,15 @@ CPause::CPause(const CCamera* pCamera)
 CPause::~CPause()
 {	
 	// =============== 終了 ===================
-	SAFE_DELETE(m_pCameraDef);				//疑似カメラ削除
-	SAFE_DELETE(m_pBgPs);					//ピクセルシェーダー削除
-	SAFE_DELETE(m_pBgVs);					//頂点シェーダー削除
-	for (std::vector<C2dPolygon*>::iterator Iterator = m_2dObj.end(); Iterator != m_2dObj.begin();)
+	SAFE_DELETE(m_pBgPs);						//ピクセルシェーダー削除
+	SAFE_DELETE(m_pBgVs);						//頂点シェーダー削除
+	for (std::vector<CPauseObj*>::iterator Iterator = m_p2dObj.end(); Iterator != m_p2dObj.begin();)
 	{
-		delete (*(--Iterator));				//メモリ解放
-		Iterator = m_2dObj.erase(Iterator);	//イテレータ削除・移動
+		if (*(--Iterator))	//ヌルチェック
+		{
+			delete (*Iterator);					//メモリ解放
+		}
+		Iterator = m_p2dObj.erase(Iterator);	//イテレータ削除・移動
 	}
 }
 
@@ -223,11 +188,12 @@ void CPause::Update()
 			// =============== フラグ操作 ===================
 			if (IsPause())	//すでにポーズ中
 			{
-				DownFlag(0xFF);	//フラグ無効化
+				Destroy();
 			}
 			else
 			{
-				UpFlag(E_FLAG_PAUSEMODE | E_FLAG_COMMAND_CONTINUE);	//ポーズ反転
+				//UpFlag(E_FLAG_PAUSEMODE | E_FLAG_COMMAND_CONTINUE);	//ポーズ反転
+				Boot();
 			}
 		}
 
@@ -260,7 +226,6 @@ void CPause::Update()
 		}
 	}
 	
-
 	// =============== 選択確定 ===================
 	if (m_ucFlag & E_FLAG_DECIDE_COMMAND)	//コマンド決定時
 	{
@@ -276,6 +241,40 @@ void CPause::Update()
 			DownFlag(E_FLAG_PAUSEMODE | E_FLAG_COMMAND_FINISH | E_FLAG_DECIDE_COMMAND);	//ポーズを中断する
 			UpFlag(E_FLAG_CALL_FINISH);													//ゲームの終了申請
 		}
+	}
+
+	// =============== 変数宣言 ===================
+	int nCnt = 0;	//ループカウント用
+
+	// =============== 更新 ===================
+	for (std::vector<CPauseObj*>::iterator Iterator = m_p2dObj.begin(); Iterator != m_p2dObj.end(); )
+	{
+		if (MAP_TEXTURE.size() > nCnt)	//mapの配列が存在する添え字
+		{
+			if (*Iterator)	//ヌルチェック
+			{
+				(*Iterator)->Update();						//平面描画
+				if ((*Iterator)->IsDestroyed())	//破棄しても良いとき
+				{
+					delete(*Iterator);						//メモリ解放
+					Iterator = m_p2dObj.erase(Iterator);	//イテレータ削除
+				}
+				else
+				{
+					Iterator++;								//イテレータ補正
+				}
+			}
+		}
+
+		// =============== カウンタ ===================
+		nCnt++;	//カウント進行
+	}
+
+	// =============== ポーズ解除 ===================
+	if (0 == m_p2dObj.size())	//オブジェクト無し時
+	{
+		// =============== フラグ操作 ===================
+		DownFlag(0xFF);	//フラグ無効化
 	}
 }
 
@@ -299,18 +298,24 @@ void CPause::Draw()
 
 	// =============== 変数宣言 ===================
 	int nCnt = 0;	//ループカウント用
+	RenderTarget*  p = GetDefaultRTV();
+	SetRenderTargets(1, &p , nullptr);
 
 	// =============== 描画 ===================
-	for (std::vector<C2dPolygon*>::iterator Iterator = m_2dObj.begin(); Iterator != m_2dObj.end(); Iterator++)
+	for (std::vector<CPauseObj*>::iterator Iterator = m_p2dObj.begin(); Iterator != m_p2dObj.end(); Iterator++)
 	{
 		if (MAP_TEXTURE.size() > nCnt)	//mapの配列が存在する添え字
 		{
-			(*Iterator)->Draw();	//平面描画
+			if (*Iterator)	//ヌルチェック
+			{
+				(*Iterator)->Draw();	//平面描画
+			}
 		}
 
 		// =============== カウンタ ===================
 		nCnt++;	//カウント進行
 	}
+	SetRenderTargets(1, &p, GetDefaultDSV());
 }
 
 /* ========================================
@@ -339,31 +344,7 @@ bool CPause::IsFin() const
 	======================================== */
 void CPause::SetCamera(const CCamera * pCamera)
 {
-	// =============== 変数宣言 ===================
-	int nCnt = 0;				//ループカウント用
-	const CCamera* pCameraUse;	//カメラアドレス退避用
-
-	// =============== 初期化 ===================
-	if (pCamera)	//ヌルチェック
-	{
-		pCameraUse = pCamera;		//新規カメラ登録
-	}
-	else
-	{
-		pCameraUse = m_pCameraDef;	//カメラ代用
-	}
-	
-	// =============== カメラ登録 ===================
-	for (std::vector<C2dPolygon*>::iterator Iterator = m_2dObj.begin(); Iterator < m_2dObj.end(); Iterator++)
-	{
-		if (MAP_TEXTURE.size() > nCnt)	//mapの配列が存在する添え字
-		{
-			(*Iterator)->SetCamera(pCameraUse);	//カメラ登録
-		}
-
-		// =============== カウンタ ===================
-		nCnt++;	//カウント進行
-	}
+	m_pCamera = pCamera;
 }
 
 /* ========================================
@@ -394,6 +375,98 @@ void CPause::Boot()
 {
 	// =============== フラグ操作 ===================
 	UpFlag(E_FLAG_PAUSEMODE);	//ポーズ開始
+}
+
+/* ========================================
+	メンバー初期化関数
+	----------------------------------------
+	内容：メンバーのオブジェクトを動的確保・初期化する
+	----------------------------------------
+	引数1：なし
+	----------------------------------------
+	戻値：なし
+	======================================== */
+void CPause::InitObjects()
+{
+	// =============== 変数宣言 ===================
+	int nCnt = 0;	//ループカウント用
+
+	// =============== 動的確保 ===================
+	m_p2dObj = {	//更新順
+		new CBgPause(MAP_WAIT.at(E_2D_BACK)),		//背景用
+		new CCharPause(MAP_WAIT.at(E_2D_PA)),		//ポの字用
+		new CCharPause(MAP_WAIT.at(E_2D_U)),		//ーの字用
+		new CCharPause(MAP_WAIT.at(E_2D_SE)),		//ズの字用
+		new CPauseObj(MAP_WAIT.at(E_2D_CONTINUE)),	//継続コマンド用
+		new CPauseObj(MAP_WAIT.at(E_2D_FINISH)),	//終了コマンド用
+	};	//平面ポリゴン
+	m_pBgVs = new VertexShader;			//頂点シェーダー
+	m_pBgPs = new PixelShader;			//ピクセルシェーダー
+
+	// =============== 初期化 ===================
+	for (std::vector<CPauseObj*>::iterator Iterator = m_p2dObj.begin(); Iterator != m_p2dObj.end(); Iterator++)
+	{
+		if (MAP_POS.size() > nCnt)	//mapの配列が存在する添え字
+		{
+			(*Iterator)->SetReach({ MAP_POS.at(nCnt) });	//位置初期化
+		}
+		if (MAP_SIZE.size() > nCnt)	//mapの配列が存在する添え字
+		{
+			(*Iterator)->SetSize({ MAP_SIZE.at(nCnt) });	//サイズ初期化
+		}
+		if (MAP_TEXTURE.size() > nCnt)	//mapの配列が存在する添え字
+		{
+			(*Iterator)->SetTexture(MAP_TEXTURE.at(nCnt).c_str());	//テクスチャ登録
+		}
+
+		// =============== カメラ登録 ===================
+		(*Iterator)->SetCamera(m_pCamera);	//カメラ登録
+
+		// =============== カウンタ ===================
+		nCnt++;	//カウント進行
+	}
+
+	// =============== ファイル読み込み ===================
+	m_pBGM = CSound::LoadSound(BGM_FILE_PASS.c_str(), true);	//BGMの読み込み
+	m_pSEHitHammer = CSound::LoadSound(SE_FILE_PASS.c_str());	//SEの読み込み
+
+	// =============== シェーダー設定 ===================
+	m_pBgVs->Load(MAP_SHADER.at(E_2D_BACK)[E_SHADER_TYPE_VERTEX].c_str());	//頂点シェーダー作成
+	m_pBgPs->Load(MAP_SHADER.at(E_2D_BACK)[E_SHADER_TYPE_PIXEL].c_str());	//ピクセルシェーダー作成
+
+	// =============== シェーダー登録 ===================
+	m_p2dObj[E_2D_BACK]->SetVertexShader(m_pBgVs);	//頂点シェーダー登録
+	m_p2dObj[E_2D_BACK]->SetPixelShader(m_pBgPs);	//ピクセルシェーダー登録
+}
+
+/* ========================================
+	終了関数
+	----------------------------------------
+	内容：ポーズモードを終了する
+	----------------------------------------
+	引数1：なし
+	----------------------------------------
+	戻値：なし
+	======================================== */
+void CPause::Destroy()
+{
+	// =============== 変数宣言 ===================
+	int nCnt = 0;	//ループカウント用
+
+	// =============== 更新 ===================
+	for (std::vector<CPauseObj*>::iterator Iterator = m_p2dObj.begin(); Iterator != m_p2dObj.end(); Iterator++)
+	{
+		if (MAP_TEXTURE.size() > nCnt)	//mapの配列が存在する添え字
+		{
+			if (*Iterator)
+			{
+				(*Iterator)->Destroy();	//平面描画
+			}
+		}
+
+		// =============== カウンタ ===================
+		nCnt++;	//カウント進行
+	}
 }
 
 /* ========================================

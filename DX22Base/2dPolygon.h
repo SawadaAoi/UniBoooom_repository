@@ -13,6 +13,7 @@
 	・2023/12/01 テクスチャの扱い方を安全化 takagi
 	・2023/12/05 描画のモード追加 takagi
 	・2023/12/06 Draw()関数のデフォルト引数変更 takagi
+	・2023/12/10 静的変数の名前を修正・デフォルトのカメラも静的関数化。 takagi
 
 ========================================== */
 
@@ -53,47 +54,47 @@ private:
 	}Param;	//シェーダーに送る情報
 public:
 	// ===プロトタイプ宣言===
-	C2dPolygon();											//コンストラクタ
-	C2dPolygon(const C2dPolygon& Obj);						//コピーコンストラクタ
-	~C2dPolygon();											//デストラクタ
-	void Draw(E_DRAW_MODE eMode = E_DRAW_MODE_NORMAL);		//描画
-	void SetCamera(const CCamera* pCamera);					//カメラセッタ
-	void SetPos(TPos3d<float> fPos);						//位置セッタ
-	void SetSize(TTriType<float> fScale);					//大きさセッタ
-	void SetRotate(TTriType<float> fRotate);				//回転セッタ
-	void SetTransform(tagTransform3d Transform);			//ワールド座標セッタ
-	void SetUvOffset(TDiType<float> fUvOffset);				//UVずれセッタ
-	void SetUvScale(TDiType<float> fUvScale);				//UV拡縮セッタ
-	void SetColor(TTriType<float> fRGB, float fAlpha);		//色セッタRGBA
-	void SetColor(TTriType<float> fRGB);					//色セッタRGB
-	void SetColor(float fColor);							//色セッタ(同一値)
-	void SetAlpha(float fAlpha);							//透明度セッタ
-	void SetTexture(const char* pcTexPass);					//テクスチャ登録
-	void SetTexture(Texture* pTexture);						//テクスチャ登録
-	void SetVertexShader(VertexShader* pVs);				//頂点シェーダセッタ
-	void SetPixelShader(PixelShader* pPs);					//ピクセルシェーダセッタ
+	C2dPolygon();													//コンストラクタ
+	C2dPolygon(const C2dPolygon& Obj);								//コピーコンストラクタ
+	virtual ~C2dPolygon();											//デストラクタ
+	virtual void Draw(E_DRAW_MODE eMode = E_DRAW_MODE_NORMAL);		//描画
+	virtual void SetCamera(const CCamera* pCamera);					//カメラセッタ
+	virtual void SetPos(TPos3d<float> fPos);						//位置セッタ
+	virtual void SetSize(TTriType<float> fScale);					//大きさセッタ
+	virtual void SetRotate(TTriType<float> fRotate);				//回転セッタ
+	virtual void SetTransform(tagTransform3d Transform);			//ワールド座標セッタ
+	virtual void SetUvOffset(TDiType<float> fUvOffset);				//UVずれセッタ
+	virtual void SetUvScale(TDiType<float> fUvScale);				//UV拡縮セッタ
+	virtual void SetColor(TTriType<float> fRGB, float fAlpha);		//色セッタRGBA
+	virtual void SetColor(TTriType<float> fRGB);					//色セッタRGB
+	virtual void SetColor(float fColor);							//色セッタ(同一値)
+	virtual void SetAlpha(float fAlpha);							//透明度セッタ
+	virtual void SetTexture(const char* pcTexPass);					//テクスチャ登録
+	virtual void SetTexture(Texture* pTexture);						//テクスチャ登録
+	virtual void SetVertexShader(VertexShader* pVs);				//頂点シェーダセッタ
+	virtual void SetPixelShader(PixelShader* pPs);					//ピクセルシェーダセッタ
 private:
 	// ===メンバ変数宣言=====
-	tagTransform3d m_Transform;			//ワールド座標
-	DirectX::XMFLOAT4X4 m_aMatrix[3];	//行列
-	Param m_Param;						//シェーダーに書き込む情報
-	static VertexShader* m_pDefVs;		//頂点シェーダー
-	static PixelShader* m_pDefPs;		//ピクセルシェーダー
-	VertexShader* m_pVs;				//頂点シェーダー
-	PixelShader* m_pPs;					//ピクセルシェーダー
-	Texture* m_pTexture;				//テクスチャ情報
-	Texture* m_pTextureLoad;			//テクスチャ情報	deleteしない、ポインタは受け取るだけ
-	static int ms_nCnt2dPolygon;		//自身の生成数
-	static const void* ms_pVtx;			//頂点情報
-	static unsigned int ms_unVtxSize;	//頂点サイズ
-	static unsigned int ms_unVtxCount;	//頂点数
-	static const void* ms_pIdx;			//頂点インデックス
-	static unsigned int ms_unIdxSize;	//インデックスサイズ
-	static unsigned int ms_unIdxCount;	//インデックス数
-	static ID3D11Buffer* ms_pVtxBuffer;	//頂点バッファ
-	static ID3D11Buffer* ms_pIdxBuffer;	//インデックスバッファ
-	const CCamera* m_pCamera;			//カメラ追跡
-	const CCamera* m_pCameraDef;		//疑似カメラ
+	tagTransform3d m_Transform;				//ワールド座標
+	DirectX::XMFLOAT4X4 m_aMatrix[3];		//行列
+	Param m_Param;							//シェーダーに書き込む情報
+	static VertexShader* ms_pDefVs;			//頂点シェーダー
+	static PixelShader* ms_pDefPs;			//ピクセルシェーダー
+	VertexShader* m_pVs;					//頂点シェーダー
+	PixelShader* m_pPs;						//ピクセルシェーダー
+	Texture* m_pTexture;					//テクスチャ情報
+	Texture* m_pTextureLoad;				//テクスチャ情報	deleteしない、ポインタは受け取るだけ
+	static int ms_nCnt2dPolygon;			//自身の生成数
+	static const void* ms_pVtx;				//頂点情報
+	static unsigned int ms_unVtxSize;		//頂点サイズ
+	static unsigned int ms_unVtxCount;		//頂点数
+	static const void* ms_pIdx;				//頂点インデックス
+	static unsigned int ms_unIdxSize;		//インデックスサイズ
+	static unsigned int ms_unIdxCount;		//インデックス数
+	static ID3D11Buffer* ms_pVtxBuffer;		//頂点バッファ
+	static ID3D11Buffer* ms_pIdxBuffer;		//インデックスバッファ
+	const CCamera* m_pCamera;				//カメラ追跡
+	static const CCamera* ms_pCameraDef;	//疑似カメラ
 	// ===プロトタイプ宣言===
 	void MakeVertexShader();		//頂点シェーダ作成
 	void MakePixelShader();			//ピクセルシェーダー

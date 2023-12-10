@@ -172,11 +172,13 @@
     <ClCompile Include="2dPolygon.cpp" />
     <ClCompile Include="AnimeModel.cpp" />
     <ClCompile Include="BattleData.cpp" />
+    <ClCompile Include="BgPause.cpp" />
     <ClCompile Include="BoooomUI.cpp" />
     <ClCompile Include="BossGauge.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CameraChase.cpp" />
     <ClCompile Include="CameraDebug.cpp" />
+    <ClCompile Include="CharPause.cpp" />
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="CollisionOfStage.cpp" />
     <ClCompile Include="Combo.cpp" />
@@ -201,6 +203,7 @@
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Particle.cpp" />
     <ClCompile Include="Pause.cpp" />
+    <ClCompile Include="PauseObj.cpp" />
     <ClCompile Include="Random.cpp" />
     <ClCompile Include="ScoreOverHead.cpp" />
     <ClCompile Include="ScoreOHManager.cpp" />
@@ -257,6 +260,7 @@
     <ClInclude Include="2dPolygon.h" />
     <ClInclude Include="AnimeModel.h" />
     <ClInclude Include="BattleData.h" />
+    <ClInclude Include="BgPause.h" />
     <ClInclude Include="BoooomUI.h" />
     <ClInclude Include="BossGauge.h" />
     <ClInclude Include="Box.h" />
@@ -264,6 +268,7 @@
     <ClInclude Include="CameraChase.h" />
     <ClInclude Include="CameraDebug.h" />
     <ClInclude Include="CameraDef.h" />
+    <ClInclude Include="CharPause.h" />
     <ClInclude Include="Collision.h" />
     <ClInclude Include="Combo.h" />
     <ClInclude Include="Controller.h" />
@@ -287,6 +292,7 @@
     <ClInclude Include="LibEffekseer.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="HP_UI.h" />
+    <ClInclude Include="PauseObj.h" />
     <ClInclude Include="Pos2d.h" />
     <ClInclude Include="Pos3d.h" />
     <ClInclude Include="ModelParticle.h" />

@@ -142,6 +142,12 @@
     <Filter Include="ヘッダー ファイル\System\Random">
       <UniqueIdentifier>{8beaba9d-03e4-49e1-ac24-b541952526d1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\2dObject\PauseObj">
+      <UniqueIdentifier>{301982ce-1a32-46cf-9480-a1d42a76860e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\2dObject\PauseObj">
+      <UniqueIdentifier>{29c1bb85-2c64-4540-a5c5-435f2ba90f1c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -392,6 +398,15 @@
     </ClCompile>
     <ClCompile Include="BattleData.cpp">
       <Filter>ソース ファイル\Info</Filter>
+    </ClCompile>
+    <ClCompile Include="CharPause.cpp">
+      <Filter>ソース ファイル\2dObject\PauseObj</Filter>
+    </ClCompile>
+    <ClCompile Include="PauseObj.cpp">
+      <Filter>ソース ファイル\2dObject\PauseObj</Filter>
+    </ClCompile>
+    <ClCompile Include="BgPause.cpp">
+      <Filter>ソース ファイル\2dObject\PauseObj</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -652,6 +667,15 @@
     </ClInclude>
     <ClInclude Include="BattleData.h">
       <Filter>ヘッダー ファイル\Info</Filter>
+    </ClInclude>
+    <ClInclude Include="CharPause.h">
+      <Filter>ヘッダー ファイル\2dObject\PauseObj</Filter>
+    </ClInclude>
+    <ClInclude Include="PauseObj.h">
+      <Filter>ヘッダー ファイル\2dObject\PauseObj</Filter>
+    </ClInclude>
+    <ClInclude Include="BgPause.h">
+      <Filter>ヘッダー ファイル\2dObject\PauseObj</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
