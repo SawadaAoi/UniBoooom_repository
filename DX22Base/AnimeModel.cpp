@@ -236,7 +236,7 @@ void AnimeModel::Draw(const std::vector<UINT>* order, std::function<void(int)> f
 	m_pPS->Bind();
 
 	// 描画数設定
-	int drawNum = m_meshes.size();
+	size_t drawNum = m_meshes.size();
 	if (order)
 	{
 		drawNum = order->size();
@@ -383,14 +383,14 @@ AnimeModel::AnimeNo AnimeModel::AddAnimation(const char* file)
 	Animation& anime = m_animes.back();
 
 	// アニメーション設定
-	float animeFrame = assimpAnime->mTicksPerSecond;
-	anime.totalTime = assimpAnime->mDuration / animeFrame;
+	float animeFrame = static_cast<float>(assimpAnime->mTicksPerSecond);
+	anime.totalTime = static_cast<float>(assimpAnime->mDuration) / animeFrame;
 	anime.channels.resize(assimpAnime->mNumChannels);
 	Channels::iterator channelIt = anime.channels.begin();
 	while (channelIt != anime.channels.end())
 	{
 		// 対応するチャンネル(ボーン)を探索
-		int channelIdx = channelIt - anime.channels.begin();
+		uint32_t channelIdx = static_cast<uint32_t>(channelIt - anime.channels.begin());
 		aiNodeAnim* assimpChannel = assimpAnime->mChannels[channelIdx];
 		AnimeModel::Nodes::iterator nodeIt = std::find_if(m_nodes.begin(), m_nodes.end(),
 			[assimpChannel](Node& node) {
@@ -404,7 +404,7 @@ AnimeModel::AnimeNo AnimeModel::AddAnimation(const char* file)
 		}
 
 		// 各キーの値を設定
-		channelIt->index = nodeIt - m_nodes.begin();
+		channelIt->index = static_cast<NodeIndex>(nodeIt - m_nodes.begin());
 		Timeline& timeline = channelIt->timeline;
 
 		// 一度XMVECTOR型で格納
@@ -412,25 +412,25 @@ AnimeModel::AnimeNo AnimeModel::AddAnimation(const char* file)
 		using XMVectorKeys = std::map<float, DirectX::XMVECTOR>;
 		XMVectorKeys keys[3];
 		// 位置
-		for (int i = 0; i < assimpChannel->mNumPositionKeys; ++i)
+		for (UINT i = 0; i < assimpChannel->mNumPositionKeys; ++i)
 		{
 			aiVectorKey& key = assimpChannel->mPositionKeys[i];
-			keys[0].insert(XMVectorKey(key.mTime / animeFrame,
+			keys[0].insert(XMVectorKey(static_cast<float>(key.mTime) / animeFrame,
 				DirectX::XMVectorSet(key.mValue.x, key.mValue.y, key.mValue.z, 0.0f)
 			));
 		}
 		// 回転
-		for (int i = 0; i < assimpChannel->mNumRotationKeys; ++i)
+		for (UINT i = 0; i < assimpChannel->mNumRotationKeys; ++i)
 		{
 			aiQuatKey& key = assimpChannel->mRotationKeys[i];
-			keys[1].insert(XMVectorKey(key.mTime / animeFrame,
+			keys[1].insert(XMVectorKey(static_cast<float>(key.mTime) / animeFrame,
 				DirectX::XMVectorSet(key.mValue.x, key.mValue.y, key.mValue.z, key.mValue.w)));
 		}
 		// 拡縮
-		for (int i = 0; i < assimpChannel->mNumScalingKeys; ++i)
+		for (UINT i = 0; i < assimpChannel->mNumScalingKeys; ++i)
 		{
 			aiVectorKey& key = assimpChannel->mScalingKeys[i];
-			keys[2].insert(XMVectorKey(key.mTime / animeFrame,
+			keys[2].insert(XMVectorKey(static_cast<float>(key.mTime) / animeFrame,
 				DirectX::XMVectorSet(key.mValue.x, key.mValue.y, key.mValue.z, 0.0f)));
 		}
 
@@ -500,7 +500,7 @@ AnimeModel::AnimeNo AnimeModel::AddAnimation(const char* file)
 	}
 
 	// アニメ番号を返す
-	return m_animes.size() - 1;
+	return static_cast<AnimeNo>(m_animes.size() - 1);
 }
 
 /*
@@ -900,7 +900,7 @@ void AnimeModel::MakeWeight(const void* ptr, int meshIdx)
 			[&FuncFindNode, this, pScene](NodeIndex parent)
 		{
 			std::string name = m_nodes[parent].name;
-			for (int i = 0; i < pScene->mNumMeshes; ++i)
+			for (UINT i = 0; i < pScene->mNumMeshes; ++i)
 			{
 				if (name == pScene->mMeshes[i]->mName.data)
 				{
@@ -1078,14 +1078,26 @@ void AnimeModel::LerpTransform(Transform* pOut, const Transform& a, const Transf
 
 
 
+
+
+
+
+
+
+
+
+
 void AnimeModel::MakeMesh(const void* ptr, float scale, Flip flip)
 {
 	// 事前準備
 	aiVector3D zero3(0.0f, 0.0f, 0.0f);
 	aiColor4D one4(1.0f, 1.0f, 1.0f, 1.0f);
 	const aiScene* pScene = reinterpret_cast<const aiScene*>(ptr);
-	float zflip = flip == Flip::ZFlip ? -1.0f : 1.0f;
-	int idx1 = flip != Flip::None ? 2 : 1;
+	//float zflip = flip == Flip::ZFlip ? -1.0f : 1.0f;
+	float zflip = (flip == Flip::ZFlip || flip == Flip::ZFlipUseAnime) ? -1.0f : 1.0f;
+	//int idx1 = flip != Flip::None ? 2 : 1;
+	//int idx2 = flip != Flip::None ? 1 : 2;
+	int idx1 = (flip == Flip::XFlip || flip == Flip::ZFlip) ? 2 : 1;
 	int idx2 = flip != Flip::None ? 1 : 2;
 
 	// メッシュの作成
@@ -1114,6 +1126,8 @@ void AnimeModel::MakeMesh(const void* ptr, float scale, Flip flip)
 			};
 		}
 
+		MakeWeight(pScene, i);
+
 		// インデックスの作成
 		// mNumFacesはポリゴンの数を表す(１ポリゴンで３インデックス
 		m_meshes[i].indices.resize(pScene->mMeshes[i]->mNumFaces * 3);	// インデックスの必要数分確保
@@ -1138,8 +1152,6 @@ void AnimeModel::MakeMesh(const void* ptr, float scale, Flip flip)
 		desc.idxCount = m_meshes[i].indices.size();
 		desc.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 		m_meshes[i].pMesh = new MeshBuffer(desc);
-
-		MakeWeight(pScene, i);
 	}
 }
 void AnimeModel::MakeMaterial(const void* ptr, std::string directory)

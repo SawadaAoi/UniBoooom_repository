@@ -43,6 +43,7 @@
 #include "Sound.h"
 #include "Model.h"
 #include "Shadow.h"
+#include "AnimeModel.h"
 // =============== クラス定義 =====================
 class CPlayer
 	: public CObject
@@ -79,7 +80,7 @@ private:
 	
 
 	TPos3d<float> m_fMove;				// 移動量
-	Model* m_pModel;					//プレイヤーのモデル
+	AnimeModel* m_pModel;					//プレイヤーのモデル
 	VertexShader* m_pVS;				//頂点シェーダーのポインタ
 	int m_nHp;							// プレイヤーの体力
 	bool m_bAttackFlg;					// 攻撃中かどうかのフラグ
@@ -92,6 +93,7 @@ private:
 	int m_nMoveCnt;						// プレイヤーの移動によるSEの間隔
 	bool m_bIntFlg;						// ハンマー間隔時間フラグ
 	float m_fIntCnt;					// ハンマー間隔時間カウント
+	int m_nTick;						//フレームカウンタ(0to60)
 	CShadow* m_pShadow;
 
 	XAUDIO2_BUFFER* m_pSESwingHammer;

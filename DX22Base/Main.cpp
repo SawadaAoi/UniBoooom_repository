@@ -71,7 +71,6 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
 	InitInput();
 
 	ShaderList::Init();
-	ShaderList::Uninit();
 
 	// ÉVÅ[ÉìçÏê¨
 #if USE_SCENE_MANAGER
@@ -103,6 +102,7 @@ void Uninit()
 #else
 	delete g_pGame;
 #endif
+	ShaderList::Uninit();
 	CGeometry::Uninit();
 	UninitInput();
 	Sprite::Uninit();

@@ -44,6 +44,7 @@
 #include "GameParameter.h"		//定数定義用ヘッダー
 #define _USE_MATH_DEFINES		// 円周率
 #include <math.h>				// 円周率
+#include "ShaderList.h"
 
 // =============== 定数定義 =======================
 const float KEYBOARD_INPUT_SIZE = 1.0f;						// キーボードの入力値の大きさ
@@ -91,6 +92,7 @@ CPlayer::CPlayer()
 	, m_nMoveCnt(0)
 	, m_bIntFlg(false)
 	, m_fIntCnt(0.0f)
+	, m_nTick(0)
 {
 	m_pHammer = new CHammer();								// Hammerクラスをインスタンス
 	m_nHp = PLAYER_HP;										// プレイヤーのHPを決定
@@ -104,11 +106,14 @@ CPlayer::CPlayer()
 		MessageBox(nullptr, "VS_Model.cso", "Error", MB_OK);
 	}
 	//プレイヤーのモデル読み込み
-	m_pModel = new Model;
-	if (!m_pModel->Load("Assets/Model/player/player.FBX", 1.0f, Model::ZFlip)) {		//倍率と反転は省略可
+	m_pModel = new AnimeModel();
+	if (!m_pModel->Load("Assets/Model/player/player.fbx")) {		//倍率と反転は省略可
 		MessageBox(NULL, "player", "Error", MB_OK);	//ここでエラーメッセージ表示
 	}
-	m_pModel->SetVertexShader(m_pVS);
+	m_pModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));
+	AnimeModel::AnimeNo anime = m_pModel->AddAnimation("Assets/Model/mixamo/Running.fbx");
+	m_pModel->Play(anime, true);
+	
 	m_pShadow = new CShadow();
 }
 /* ========================================
@@ -139,6 +144,11 @@ CPlayer::~CPlayer()
 ======================================== */
 void CPlayer::Update()
 {
+	m_nTick++;
+	if (m_nTick > 59)
+	{
+		m_nTick = 0;
+	}
 	// ハンマー攻撃中
 	if (m_bAttackFlg == true)
 	{
@@ -207,6 +217,8 @@ void CPlayer::Update()
 		}
 		
 	}
+	
+	m_pModel->Step(m_nTick);
 
 	SE_Move();	//移動によるSEの処理
 }
@@ -249,6 +261,35 @@ void CPlayer::Draw()
 	{
 		m_pHammer->Draw();		//ハンマーの描画
 	}
+
+	DirectX::XMFLOAT4X4 mat[3] = {
+		m_Transform.GetWorldMatrixSRT(),
+		m_pCamera->GetViewMatrix(),
+		m_pCamera->GetProjectionMatrix()
+	};
+	ShaderList::SetWVP(mat);
+
+	m_pModel->Draw(nullptr, [this](int index)
+	{
+		const AnimeModel::Mesh* pMesh = m_pModel->GetMesh(index);
+		const AnimeModel::Material* pMaterial = m_pModel->GetMaterial(pMesh->materialID);
+		ShaderList::SetMaterial(*pMaterial);
+
+		DirectX::XMFLOAT4X4 bones[200];
+		for (int i = 0; i < pMesh->bones.size() && i < 200; ++i)
+		{
+			// この計算はゲームつくろー「スキンメッシュの仕組み」が参考になる
+			DirectX::XMStoreFloat4x4(&bones[i], DirectX::XMMatrixTranspose(
+				pMesh->bones[i].invOffset *
+				m_pModel->GetBone(pMesh->bones[i].index)
+			));
+		}
+		ShaderList::SetBones(bones);
+	});
+#ifdef _DEBUG
+	m_pModel->DrawBone();
+#endif
+
 
 	m_pShadow->Draw(m_Transform, PLAYER_SHADOW_SCALE, m_pCamera);	// 影の描画
 }
