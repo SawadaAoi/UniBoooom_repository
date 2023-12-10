@@ -52,13 +52,7 @@ private:
 	// ===メンバ変数宣言=====
 	unsigned char m_ucFlag;							//フラグ
 	std::vector<CPauseObj*> m_p2dObj;				//平面ポリゴン
-	PixelShader* m_pBgPs;							//背景用ピクセルシェーダ
-	VertexShader* m_pBgVs;							//背景用頂点シェーダ
 	const CCamera* m_pCamera;						//カメラ	※参照のみに使用、削除しない
-	XAUDIO2_BUFFER* m_pBGM;							//BGMの音声データ
-	XAUDIO2_BUFFER* m_pSEHitHammer;					//SEの音声データ
-	IXAudio2SourceVoice* m_pSpeaker;				//BGMを聞き取る側
-	IXAudio2SourceVoice* m_pSEHitHammerSpeaker;		//SEを聞き取る側
 	// ===プロトタイプ宣言===
 	void Boot();									//ポーズモード起動
 	void InitObjects();								//初期化・動的確保
