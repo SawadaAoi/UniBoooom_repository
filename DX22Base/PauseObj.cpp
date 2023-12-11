@@ -36,8 +36,8 @@ const int MOVE_TIME(30);		//移動にかける時間
 CPauseObj::CPauseObj(const int& nWaitTime)
 	:m_fOffset(MAX_OFFSET)		//位置ズレ
 	,m_fReach(0.0f)				//最終位置
-	,m_pnWaitTime(nullptr)		//待機時間
-	,m_nLogWait(nWaitTime)		//待機時間退避
+	,m_pnWaitTime(nullptr)		//開始待機時間
+	,m_pnRewaitTime(nullptr)	//終了待機時間
 	,m_pnMoveTime(nullptr)		//移動時間
 	,m_pnRemoveTime(nullptr)	//再移動時間
 	,m_bDestroyed(false)		//破棄準備完了フラグ
@@ -62,8 +62,10 @@ CPauseObj::CPauseObj(const int& nWaitTime)
 CPauseObj::~CPauseObj()
 {
 	// =============== 終了 ===================
-	SAFE_DELETE(m_pnMoveTime);	//移動時間削除
-	SAFE_DELETE(m_pnWaitTime);	//待機時間削除
+	SAFE_DELETE(m_pnRemoveTime);	//移動時間削除
+	SAFE_DELETE(m_pnMoveTime);		//移動時間削除
+	SAFE_DELETE(m_pnRewaitTime);	//待機時間削除
+	SAFE_DELETE(m_pnWaitTime);		//待機時間削除
 }
 
 /* ========================================
@@ -85,22 +87,21 @@ void CPauseObj::Update()
 		{
 			(*m_pnWaitTime)--;	//カウントダウン
 
-			// =============== 終了 ===================
-			return;	//処理中断
+		// =============== 終了 ===================
+			return;	//処理中断		※CulculatePos()関数を呼ばないことでズレを表現する
 		}
 		else
 		{
 			SAFE_DELETE(m_pnWaitTime);	//タイマ削除
 		}
 	}
-
-		// =============== 変数宣言 ===================
-		TPos3d<float> fTemp;		//位置退避用
+	// =============== 変数宣言 ===================
+	TPos3d<float> fTemp;		//位置退避用
 
 	// =============== 移動 ===================
-		CulculatePos(fTemp);		//位置計算
-		SetPos(fTemp);				//位置更新
-	//	SetAlpha(1.0f - m_fOffset);	//透明度更新
+	CulculatePos(fTemp);		//位置計算
+	SetPos(fTemp);				//位置更新
+//	SetAlpha(1.0f - m_fOffset);	//透明度更新
 }
 
 /* ========================================
@@ -145,14 +146,14 @@ void CPauseObj::SetReach(const TPos3d<float>& fReach)
 	----------------------------------------
 	内容：破棄処理
 	----------------------------------------
-	引数1：なし
+	引数1：const int& nWaitTime：終了待機時間
 	----------------------------------------
 	戻値：なし
 =========================================== */
-void CPauseObj::Destroy()
+void CPauseObj::Destroy(const int& nWaitTime)
 {
 	// =============== メモリ開放 ===================
-	if (m_pnWaitTime)	//ヌルチェック
+	if (m_pnRewaitTime)	//ヌルチェック
 	{
 		SAFE_DELETE(m_pnWaitTime);		//待機時間削除
 	}
@@ -163,9 +164,9 @@ void CPauseObj::Destroy()
 
 	// =============== 動的確保 ===================
 	m_pnRemoveTime = new int(MOVE_TIME);	//移動時間初期化
-	if (m_nLogWait > 0)	//待機時間がある
+	if (nWaitTime > 0)	//待機時間がある
 	{
-		m_pnWaitTime = new int(m_nLogWait);	//待機時間初期化
+		m_pnRewaitTime = new int(nWaitTime);	//待機時間初期化
 	}
 }
 
@@ -197,6 +198,23 @@ void CPauseObj::CulculatePos(TPos3d<float>& fPos)
 {
 	// =============== 初期化 ===================
 	fPos = m_fReach;	//最終目標位置
+
+	// =============== 検査 ===================
+	if (m_pnRewaitTime)	//ヌルチェック
+	{
+		// =============== タイマ ===================
+		if (*m_pnRewaitTime > 0)
+		{
+			(*m_pnRewaitTime)--;	//カウントダウン
+
+			// =============== 終了 ===================
+			return;	//処理中断		※m_pnRemoveTimeを更新しないことでズレを表現する
+		}
+		else
+		{
+			SAFE_DELETE(m_pnRewaitTime);	//タイマ削除
+		}
+	}
 
 	if (m_pnMoveTime)	//ヌルチェック
 	{
@@ -244,7 +262,8 @@ void CPauseObj::CulculatePos(TPos3d<float>& fPos)
 			{
 				SAFE_DELETE(m_pnRemoveTime);	//タイマ削除
 
-				m_bDestroyed = true;
+				// =============== 破棄準備宣告 ===================
+				m_bDestroyed = true;			//破棄準備完了
 			}
 		}
 	}

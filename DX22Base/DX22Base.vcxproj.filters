@@ -408,6 +408,9 @@
     <ClCompile Include="BgPause.cpp">
       <Filter>ソース ファイル\2dObject\PauseObj</Filter>
     </ClCompile>
+    <ClCompile Include="CommandPause.cpp">
+      <Filter>ソース ファイル\2dObject\PauseObj</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Defines.h">
@@ -675,6 +678,9 @@
       <Filter>ヘッダー ファイル\2dObject\PauseObj</Filter>
     </ClInclude>
     <ClInclude Include="BgPause.h">
+      <Filter>ヘッダー ファイル\2dObject\PauseObj</Filter>
+    </ClInclude>
+    <ClInclude Include="CommandPause.h">
       <Filter>ヘッダー ファイル\2dObject\PauseObj</Filter>
     </ClInclude>
   </ItemGroup>
