@@ -367,7 +367,7 @@ void CStage1::Draw()
 	}
 
 	//床の描画
-	//m_pFloor->Draw();
+	m_pFloor->Draw();
 
 	// スライムマネージャー描画
 	m_pSlimeMng->Draw();

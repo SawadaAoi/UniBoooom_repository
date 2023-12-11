@@ -49,10 +49,10 @@ const TPos3d<float> INIT_LOOK(0.0f, 0.0f, 0.0f);					//初期注視地点
 const TTriType<float> INIT_UP_VECTOR(0.0f, 1.0f, 0.0f);				//カメラの上方向
 const float INIT_CHANGE_RATE_AMPLITUDE = 1.0f;						//初期振幅変化率
 const TPos3d<float> INIT_POS(0.0f, 1.6f, -3.0f);					//初期位置
-const float INIT_ANGLE = DirectX::XMConvertToRadians(45.0f);        //カメラの角度
+const float INIT_ANGLE = DirectX::XMConvertToRadians(73.0f);        //カメラの角度
 const float INIT_NEAR = 1.0f;										//画面手前初期z値
 const float INIT_FAR = 150.0f;										//画面奥初期z値
-const float INIT_RADIUS = 45.0f;									//カメラと注視点との距離(初期値)
+const float INIT_RADIUS = 15.0f;									//カメラと注視点との距離(初期値)
 const int MAX_CNT_CHANGE_VIBRATE = 10;								//最大振動変化数
 const TDiType<int> INIT_FRAME_WEAK = { 125, 125 };					//弱振動のフレーム数	x:横, y:縦
 const TDiType<int> INIT_FRAME_STRONG = { 150, 150 };				//強振動のフレーム数	x:横, y:縦

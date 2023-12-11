@@ -107,13 +107,13 @@ CPlayer::CPlayer()
 	}
 	//プレイヤーのモデル読み込み
 	m_pModel = new AnimeModel();
-	if (!m_pModel->Load("Assets/Model/player/Walk.fbx", 1.0f, AnimeModel::Flip::ZFlipUseAnime)) {		//倍率と反転は省略可
+	if (!m_pModel->Load("Assets/Model/player/Walk.fbx", 1.0f, AnimeModel::Flip::None)) {		//倍率と反転は省略可
 		MessageBox(NULL, "player", "Error", MB_OK);	//ここでエラーメッセージ表示
 	}
 	m_pModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));
 	//m_pModel->SetPixelShader(ShaderList::GetPS(ShaderList::PS_TOON));
 	AnimeModel::AnimeNo anime = m_pModel->AddAnimation("Assets/Model/player/Walk.fbx");
-	m_pModel->Play(anime, true);
+	m_pModel->Play(anime, true, 0.002f);
 	
 	m_pShadow = new CShadow();
 }
@@ -146,10 +146,10 @@ CPlayer::~CPlayer()
 void CPlayer::Update()
 {
 	m_nTick++;
-	//if (m_nTick > 59)
-	//{
-	//	m_nTick = 0;
-	//}
+	if (m_nTick > 18000)
+	{
+		m_nTick = 0;
+	}
 	// ハンマー攻撃中
 	if (m_bAttackFlg == true)
 	{
@@ -219,7 +219,7 @@ void CPlayer::Update()
 		
 	}
 	
-	m_pModel->Step(m_nTick / 200);
+	m_pModel->Step(m_nTick);
 
 	SE_Move();	//移動によるSEの処理
 }
@@ -238,14 +238,14 @@ void CPlayer::Draw()
 	// 描画しない(点滅処理中)
 	if (m_DrawFlg == true)
 	{
-		DirectX::XMFLOAT4X4 mat[3];
+		//DirectX::XMFLOAT4X4 mat[3];
 
-		mat[0] = m_Transform.GetWorldMatrixSRT();
-		mat[1] = m_pCamera->GetViewMatrix();
-		mat[2] = m_pCamera->GetProjectionMatrix();
+		//mat[0] = m_Transform.GetWorldMatrixSRT();
+		//mat[1] = m_pCamera->GetViewMatrix();
+		//mat[2] = m_pCamera->GetProjectionMatrix();
 
-		//-- 行列をシェーダーへ設定
-		m_pVS->WriteBuffer(0, mat);
+		////-- 行列をシェーダーへ設定
+		//m_pVS->WriteBuffer(0, mat);
 
 		//-- モデル表示
 		if (m_pModel) {
@@ -254,8 +254,38 @@ void CPlayer::Draw()
 			DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
 			SetRenderTargets(1, &pRTV, pDSV);		//DSVがnullだと2D表示になる
 
-			m_pModel->Draw();
+			//m_pModel->Draw();
 		}
+
+
+
+		DirectX::XMFLOAT4X4 mat[3] = {
+			m_Transform.GetWorldMatrixSRT(),
+			m_pCamera->GetViewMatrix(),
+			m_pCamera->GetProjectionMatrix()
+		};
+		ShaderList::SetWVP(mat);
+
+		m_pModel->Draw(nullptr, [this](int index)
+		{
+			const AnimeModel::Mesh* pMesh = m_pModel->GetMesh(index);
+			const AnimeModel::Material* pMaterial = m_pModel->GetMaterial(pMesh->materialID);
+			ShaderList::SetMaterial(*pMaterial);
+
+			DirectX::XMFLOAT4X4 bones[200];
+			for (int i = 0; i < pMesh->bones.size() && i < 200; ++i)
+			{
+				// この計算はゲームつくろー「スキンメッシュの仕組み」が参考になる
+				DirectX::XMStoreFloat4x4(&bones[i], DirectX::XMMatrixTranspose(
+					pMesh->bones[i].invOffset *
+					m_pModel->GetBone(pMesh->bones[i].index)
+				));
+			}
+			ShaderList::SetBones(bones);
+		});
+#ifdef _DEBUG
+		//m_pModel->DrawBone();
+#endif
 	}
 	
 	if (m_bAttackFlg)
@@ -263,36 +293,8 @@ void CPlayer::Draw()
 		m_pHammer->Draw();		//ハンマーの描画
 	}
 
-	DirectX::XMFLOAT4X4 mat[3] = {
-		m_Transform.GetWorldMatrixSRT(),
-		m_pCamera->GetViewMatrix(),
-		m_pCamera->GetProjectionMatrix()
-	};
-	ShaderList::SetWVP(mat);
 
-	m_pModel->Draw(nullptr, [this](int index)
-	{
-		const AnimeModel::Mesh* pMesh = m_pModel->GetMesh(index);
-		const AnimeModel::Material* pMaterial = m_pModel->GetMaterial(pMesh->materialID);
-		ShaderList::SetMaterial(*pMaterial);
-
-		DirectX::XMFLOAT4X4 bones[200];
-		for (int i = 0; i < pMesh->bones.size() && i < 200; ++i)
-		{
-			// この計算はゲームつくろー「スキンメッシュの仕組み」が参考になる
-			DirectX::XMStoreFloat4x4(&bones[i], DirectX::XMMatrixTranspose(
-				pMesh->bones[i].invOffset *
-				m_pModel->GetBone(pMesh->bones[i].index)
-			));
-		}
-		ShaderList::SetBones(bones);
-	});
-#ifdef _DEBUG
-	m_pModel->DrawBone();
-#endif
-
-
-	m_pShadow->Draw(m_Transform, PLAYER_SHADOW_SCALE, m_pCamera);	// 影の描画
+	//m_pShadow->Draw(m_Transform, PLAYER_SHADOW_SCALE, m_pCamera);	// 影の描画
 }
 
 /* ========================================

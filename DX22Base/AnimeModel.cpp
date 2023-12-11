@@ -1098,7 +1098,7 @@ void AnimeModel::MakeMesh(const void* ptr, float scale, Flip flip)
 	//int idx1 = flip != Flip::None ? 2 : 1;
 	//int idx2 = flip != Flip::None ? 1 : 2;
 	int idx1 = flip == Flip::None ? 2 : 1;
-	int idx2 = flip != Flip::None ? 1 : 2;
+	int idx2 = flip != Flip::None ? 2 : 1;
 
 	// ƒƒbƒVƒ…‚Ìì¬
 	m_meshes.resize(pScene->mNumMeshes);
