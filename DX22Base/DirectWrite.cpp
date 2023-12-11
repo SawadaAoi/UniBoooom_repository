@@ -132,7 +132,7 @@ void DirectWrite::SetFont(Font font, IDWriteFontCollection * fontCollection, DWR
 	-------------------------------------
 	引数1：表示したい文字
 	引数2：表示したい場所をXY座標で((0,0)は左上)
-	引数3：よくわからんから｢D2D1_DRAW_TEXT_OPTIONS_NONE｣これ書いて
+	-------------------------------------
 	戻値：無し
 =========================================== */
 void DirectWrite::DrawString(std::string str, DirectX::XMFLOAT2 pos)
@@ -169,7 +169,7 @@ void DirectWrite::DrawString(std::string str, DirectX::XMFLOAT2 pos)
 	-------------------------------------
 	引数1：表示したい文字
 	引数2：表示したい場所を左上右下の順番で設定((0,0)は左上)
-	引数3：よくわからんから｢D2D1_DRAW_TEXT_OPTIONS_NONE｣これ書いて
+	-------------------------------------
 	戻値：無し
 =========================================== */
 void DirectWrite::DrawString(std::string str, D2D1_RECT_F rect)
@@ -281,4 +281,51 @@ std::wstring DirectWrite::StringToWString(std::string oString)
 	return(oRet);
 
 	return std::wstring();
+}
+
+/* ========================================
+	フォント用コンストラクタ
+	-------------------------------------
+	フォント初期化
+	-------------------------------------
+	引数1：なし
+	-------------------------------------
+	戻値：無し
+=========================================== */
+FontData::FontData()
+{
+	// =============== 初期化 ===================
+	font = Font::Arial;														//書体：Arial
+	fontCollection = nullptr;												//?
+	fontWeight = DWRITE_FONT_WEIGHT::DWRITE_FONT_WEIGHT_NORMAL;				//文字の太さ
+	fontStyle = DWRITE_FONT_STYLE::DWRITE_FONT_STYLE_NORMAL;				//斜体無し
+	fontStretch = DWRITE_FONT_STRETCH::DWRITE_FONT_STRETCH_NORMAL;			//?
+	fontSize = 20;															//文字の大きさ
+	localName = L"ja-jp";													//?
+	textAlignment = DWRITE_TEXT_ALIGNMENT::DWRITE_TEXT_ALIGNMENT_LEADING;	//左端基準
+	Color = D2D1::ColorF(D2D1::ColorF::Black);								//文字色：黒
+}
+
+/* ========================================
+	リザルト用フォント情報登録関数
+	-------------------------------------
+	リザルト用にフォント変更
+	-------------------------------------
+	引数1：なし
+	-------------------------------------
+	戻値：無し
+=========================================== */
+void FontData::SetFontResult()
+{
+	// =============== 初期化 ===================
+	font = Font::Arial;														//書体：Arial
+	fontCollection = nullptr;												//?
+	fontWeight = DWRITE_FONT_WEIGHT::DWRITE_FONT_WEIGHT_SEMI_BOLD;			//文字の太さ
+	fontStyle = DWRITE_FONT_STYLE::DWRITE_FONT_STYLE_ITALIC;				//イタリック体
+	fontStretch = DWRITE_FONT_STRETCH::DWRITE_FONT_STRETCH_NORMAL;			//?
+	fontSize = 45;															//文字の大きさ
+	localName = L"ja-jp";													//?
+	textAlignment = DWRITE_TEXT_ALIGNMENT::DWRITE_TEXT_ALIGNMENT_LEADING;	//左端基準
+	Color = D2D1::ColorF(D2D1::ColorF::Black);								//文字色：黒
+
 }
