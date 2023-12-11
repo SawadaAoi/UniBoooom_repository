@@ -107,7 +107,7 @@ CPlayer::CPlayer()
 	}
 	//プレイヤーのモデル読み込み
 	m_pModel = new AnimeModel();
-	if (!m_pModel->Load("Assets/Model/player/Walk.fbx", 1.0f, AnimeModel::Flip::None)) {		//倍率と反転は省略可
+	if (!m_pModel->Load("Assets/Model/player/Walk.fbx", 1.0f, AnimeModel::Flip::ZFlipUseAnime)) {		//倍率と反転は省略可
 		MessageBox(NULL, "player", "Error", MB_OK);	//ここでエラーメッセージ表示
 	}
 	m_pModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));
