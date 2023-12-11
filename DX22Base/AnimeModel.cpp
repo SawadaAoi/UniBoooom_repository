@@ -1097,7 +1097,7 @@ void AnimeModel::MakeMesh(const void* ptr, float scale, Flip flip)
 	float zflip = (flip == Flip::ZFlip || flip == Flip::ZFlipUseAnime) ? -1.0f : 1.0f;
 	//int idx1 = flip != Flip::None ? 2 : 1;
 	//int idx2 = flip != Flip::None ? 1 : 2;
-	int idx1 = (flip == Flip::XFlip || flip == Flip::ZFlip) ? 2 : 1;
+	int idx1 = flip == Flip::None ? 2 : 1;
 	int idx2 = flip != Flip::None ? 1 : 2;
 
 	// ƒƒbƒVƒ…‚Ìì¬

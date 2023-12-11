@@ -107,11 +107,12 @@ CPlayer::CPlayer()
 	}
 	//プレイヤーのモデル読み込み
 	m_pModel = new AnimeModel();
-	if (!m_pModel->Load("Assets/Model/player/player.fbx")) {		//倍率と反転は省略可
+	if (!m_pModel->Load("Assets/Model/player/Walk.fbx", 1.0f, AnimeModel::Flip::ZFlipUseAnime)) {		//倍率と反転は省略可
 		MessageBox(NULL, "player", "Error", MB_OK);	//ここでエラーメッセージ表示
 	}
 	m_pModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));
-	AnimeModel::AnimeNo anime = m_pModel->AddAnimation("Assets/Model/mixamo/Running.fbx");
+	//m_pModel->SetPixelShader(ShaderList::GetPS(ShaderList::PS_TOON));
+	AnimeModel::AnimeNo anime = m_pModel->AddAnimation("Assets/Model/player/Walk.fbx");
 	m_pModel->Play(anime, true);
 	
 	m_pShadow = new CShadow();
@@ -145,10 +146,10 @@ CPlayer::~CPlayer()
 void CPlayer::Update()
 {
 	m_nTick++;
-	if (m_nTick > 59)
-	{
-		m_nTick = 0;
-	}
+	//if (m_nTick > 59)
+	//{
+	//	m_nTick = 0;
+	//}
 	// ハンマー攻撃中
 	if (m_bAttackFlg == true)
 	{
@@ -218,7 +219,7 @@ void CPlayer::Update()
 		
 	}
 	
-	m_pModel->Step(m_nTick);
+	m_pModel->Step(m_nTick / 200);
 
 	SE_Move();	//移動によるSEの処理
 }
