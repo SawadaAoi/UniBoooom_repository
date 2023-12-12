@@ -59,9 +59,9 @@ CSceneManager::CSceneManager()
 	, m_ePastScene(CScene::E_TYPE_NONE)		//前のシーン
 	, m_eNextScene(CScene::E_TYPE_STAGE1)	//シーン遷移先
 	, m_bFinish(false)						//シーン管理を開始
-	,m_pFade(nullptr)						//フェード
-	,m_bStartFadeOut(false)
-	,m_bFinFadeOut(false)
+	, m_pFade(nullptr)						//フェード
+	, m_bStartFadeOut(false)
+	, m_bFinFadeOut(false)
 {
 	// =============== 動的確保 ===================
 	if (!m_pScene)	//ヌルチェック

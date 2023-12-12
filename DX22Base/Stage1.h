@@ -36,7 +36,7 @@ public:
 private:
 	
 private:
-	void LoadBGM();
+	void LoadBGM() override final;
 };	//ステージ1
 
 #endif	//!__STAGE1_H__

@@ -35,13 +35,6 @@
 #include "HitStop.h"	//ヒットストップ
 #include "Fade.h"
 
-// =============== 定数定義 =======================
-const int STARTSIGN_UV_NUM_X = 6;	// テクスチャの横の分割数
-const int STARTSIGN_UV_NUM_Y = 9;	// テクスチャの縦の分割数
-
-const float STARTSIGN_UV_POS_X = 1.0f / STARTSIGN_UV_NUM_X;		// 横のUV座標計算用
-const float STARTSIGN_UV_POS_Y = 1.0f / STARTSIGN_UV_NUM_Y;		// 縦のUV座標計算用
-
 /* ========================================
 	コンストラクタ
 	----------------------------------------
@@ -58,8 +51,6 @@ CStage1::CStage1()
 	//BGMの再生
 	m_pBGMSpeaker = CSound::PlaySound(m_pBGM);		//BGMの再生
 	m_pBGMSpeaker->SetVolume(BGM_VOLUME);			//音量の設定
-	
-	
 }
 
 /* ========================================

@@ -74,6 +74,14 @@
 #include "Input.h"
 #endif
 
+// =============== 定数定義 =======================
+const int STARTSIGN_UV_NUM_X = 6;	// テクスチャの横の分割数
+const int STARTSIGN_UV_NUM_Y = 9;	// テクスチャの縦の分割数
+
+const float STARTSIGN_UV_POS_X = 1.0f / STARTSIGN_UV_NUM_X;		// 横のUV座標計算用
+const float STARTSIGN_UV_POS_Y = 1.0f / STARTSIGN_UV_NUM_Y;		// 縦のUV座標計算用
+
+
 // =============== クラス定義 =====================
 class CStage :public CScene	//シーン
 {
@@ -102,6 +110,7 @@ protected:
 	void SlimeBossNormalMoveCollision();		//追加
 	void BossSlimeNormalMoveCollision();		//追加
 	void BossBossNormalMoveCollision();			//追加
+	virtual void LoadBGM();
 	// ===メンバ変数宣言===
 	VertexShader* m_pVs;
 	CPlayer* m_pPlayer;
