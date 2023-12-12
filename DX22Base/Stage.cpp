@@ -33,6 +33,7 @@
 //=========================================== */
 CStage::CStage()
 	:m_pPause(nullptr)	//ポーズ
+	, m_pTexture(nullptr)
 {
 	//ハンマーとスライムの接触時のサウンド読み込み
 	m_pSEHitHammer = CSound::LoadSound("Assets/Sound/SE/Smash.mp3");
