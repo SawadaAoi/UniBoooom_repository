@@ -107,12 +107,12 @@ CPlayer::CPlayer()
 	}
 	//プレイヤーのモデル読み込み
 	m_pModel = new AnimeModel();
-	if (!m_pModel->Load("Assets/Model/player/Walk2.fbx", 1.0f, AnimeModel::Flip::ZFlipUseAnime)) {		//倍率と反転は省略可
+	if (!m_pModel->Load("Assets/Model/player/dash.fbx", 1.0f, AnimeModel::Flip::ZFlipUseAnime)) {		//倍率と反転は省略可
 		MessageBox(NULL, "player", "Error", MB_OK);	//ここでエラーメッセージ表示
 	}
 	m_pModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));
 	//m_pModel->SetPixelShader(ShaderList::GetPS(ShaderList::PS_TOON));
-	AnimeModel::AnimeNo anime = m_pModel->AddAnimation("Assets/Model/player/Walk2.fbx");
+	AnimeModel::AnimeNo anime = m_pModel->AddAnimation("Assets/Model/player/dash.fbx");
 	m_pModel->Play(anime, true);
 	
 	m_pShadow = new CShadow();
