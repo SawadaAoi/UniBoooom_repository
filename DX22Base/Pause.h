@@ -14,6 +14,7 @@
 	・2023/12/08 アクセス指定子間移動 takagi
 	・2023/12/09 オブジェクト分割 takagi
 	・2023/12/10 制作進行 takagi
+	・2023/12/12 フラグ追加 takagi
 
 ========================================== */
 
@@ -37,7 +38,8 @@ private:
 		E_FLAG_COMMAND_CONTINUE = 0x02,	//継続コマンド
 		E_FLAG_COMMAND_FINISH = 0x04,	//終了コマンド
 		E_FLAG_DECIDE_COMMAND = 0x08,	//コマンド決定状態
-		E_FLAG_CALL_FINISH = 0x10,		//終了予約
+		E_FLAG_TIDYING_UP = 0x10,		//片付け中
+		E_FLAG_CALL_FINISH = 0x20,		//終了予約
 	};	//フラグ
 public:
 	// ===プロトタイプ宣言===
