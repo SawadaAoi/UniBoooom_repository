@@ -55,8 +55,6 @@ CScene::CScene()
 CScene::~CScene()
 {
 	SAFE_DELETE(m_pCamera);
-	SAFE_DELETE(m_pBGM);
-	SAFE_DELETE(m_pBGMSpeaker);
 }
 
 /* ========================================

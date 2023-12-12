@@ -23,33 +23,6 @@
 #include "Stage.h"	//自身のヘッダ
 #include "Line.h"
 
-// =============== デバッグモード ===================
-#define USE_CAMERA_VIBRATION (true)
-#define MODE_COORD_AXIS (true)			//座標軸映すかどうか
-#define MODE_GROUND (false)				//座標軸映すかどうか
-#if _DEBUG
-#define TRY_USE_HIT_STOP (true)
-#endif
-#define USE_FADE_GAME (true)	//フェード試す
-#define USE_PAUSE (true)	//ポーズ試す		※現在ポーズ中から戻ってくる手段を用意していないため要注意！
-#define SCENE_TRANSITION(false)		// シーン遷移をボタン押下か自動化を切り替え（trueは自動)
-
-#if USE_FADE_GAME
-#include "Fade.h"
-#endif
-
-#if USE_CAMERA_VIBRATION
-#include "Input.h"
-#endif
-
-#if TRY_USE_HIT_STOP
-#include "Input.h"
-#endif
-
-#if USE_PAUSE	//ポーズ臨時呼び出し
-#include "Input.h"
-#endif
-
 
 ///* ========================================
 //	コンストラクタ
@@ -196,8 +169,6 @@ CStage::~CStage()
 	SAFE_DELETE(m_pHealItemMng);
 	SAFE_DELETE(m_pPause);
 	SAFE_DELETE(m_pUIStageManager);
-	SAFE_DELETE(m_pSEHitHammer);
-	SAFE_DELETE(m_pSEHitHammerSpeaker);
 }
 
 ///* ========================================
