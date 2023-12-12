@@ -42,6 +42,8 @@ private:
 	bool Button8();
 	bool Button9();
 	bool Button10();
+	bool Button11();
+	bool Button12();
 	float LeftStickX();
 	float LeftStickY();
 	float RightStickX();
@@ -49,8 +51,8 @@ private:
 
 
 	JOYINFOEX   m_joyInfoEx;    // ジョイスティックの情報を格納する変数
-	int m_keyState[10];			// ボタン押下情報セット配列(現在)
-	int m_oldState[10];			// ボタン押下情報セット配列(1フレーム前)
+	int m_keyState[12];			// ボタン押下情報セット配列(現在)
+	int m_oldState[12];			// ボタン押下情報セット配列(1フレーム前)
 
 	bool m_bUse;	// コントローラの有効無効フラグ
 };

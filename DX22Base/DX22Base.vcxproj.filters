@@ -411,6 +411,9 @@
     <ClCompile Include="CommandPause.cpp">
       <Filter>ソース ファイル\2dObject\PauseObj</Filter>
     </ClCompile>
+    <ClCompile Include="DrawAnimation.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
     <ClCompile Include="Slime_Boss_2.cpp">
       <Filter>ソース ファイル\3dObject\Enemy</Filter>
     </ClCompile>
@@ -685,6 +688,9 @@
     </ClInclude>
     <ClInclude Include="CommandPause.h">
       <Filter>ヘッダー ファイル\2dObject\PauseObj</Filter>
+    </ClInclude>
+    <ClInclude Include="DrawAnimation.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Slime_Boss_2.h">
       <Filter>ヘッダー ファイル\3dObject\Enemy</Filter>
