@@ -12,6 +12,7 @@
 	変更履歴
 	・2023/11/16 制作 takagi
 	・2023/12/08 シーン遷移用に変数追加 takagi
+	・2023/12/11 成績仮表示 takagi
 
 ========================================== */
 
@@ -22,6 +23,8 @@
 #include "Scene.h"		//親のヘッダ
 #include "Texture.h"
 #include "BattleData.h"	//メンバのヘッダ
+#include <vector>		//配列型コンテナ
+#include "DirectWrite.h"			//出力用
 
 // =============== クラス定義 =====================
 class CResult :public CScene	//シーン
@@ -46,6 +49,8 @@ private:
 	// =============== メンバ変数定義 ===============
 	Texture* m_pTexture[E_RESULT_MAX];
 	BattleData m_Data;					//戦闘結果
+	FontData m_Font;					//フォントデータ
+	FontData m_FontDef;					//デフォルトフォント
 };	//リザルト
 
 #endif	//!__RESULT_H__

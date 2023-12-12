@@ -24,16 +24,18 @@
 // =============== 列挙定義 =======================
 enum ControllerButton
 {
-	BUTTON_X = 0,
-	BUTTON_Y = 1,
-	BUTTON_A = 2,
-	BUTTON_B = 3,
-	BUTTON_LB = 4,
-	BUTTON_RB = 5,
-	BUTTON_LT = 6,
-	BUTTON_RT = 7,
-	BUTTON_LS = 8,
-	BUTTON_RS = 9,
+	BUTTON_X,
+	BUTTON_Y,
+	BUTTON_A,
+	BUTTON_B,
+	BUTTON_LB,		// Lボタン
+	BUTTON_RB,		// Rボタン
+	BUTTON_LT,		// Lトリガー
+	BUTTON_RT,		// Rトリガー
+	BUTTON_LS,		// Lスティック押し込み
+	BUTTON_RS,		// Rスティック押し込み
+	BUTTON_SELECT,	// セレクトボタン
+	BUTTON_START,	// スタートボタン
 };
 
 // ===プロトタイプ宣言===

@@ -44,18 +44,10 @@ struct FontData
 	D2D1_COLOR_F Color;						//フォントの色
 
 	//デフォルトの設定
-	FontData()
-	{
-		font			= Font::Arial;
-		fontCollection	= nullptr;
-		fontWeight		= DWRITE_FONT_WEIGHT::DWRITE_FONT_WEIGHT_NORMAL;
-		fontStyle		= DWRITE_FONT_STYLE::DWRITE_FONT_STYLE_NORMAL;
-		fontStretch		= DWRITE_FONT_STRETCH::DWRITE_FONT_STRETCH_NORMAL;
-		fontSize		= 20;
-		localName		= L"ja-jp";
-		textAlignment	= DWRITE_TEXT_ALIGNMENT::DWRITE_TEXT_ALIGNMENT_LEADING;
-		Color			= D2D1::ColorF(D2D1::ColorF::Black);
-	}
+	FontData();
+	
+	//リザルト用の設定
+	void SetFontResult();
 };
 
 //＝＝＝＝＝DirectWrite設定＝＝＝＝＝
@@ -101,4 +93,4 @@ private:
 //DirectX::XMFLOAT2 pos(0.0f, 0.0f);	//画面内の表示したい場所を設定(0.0f,0.0fは左上端)
 //
 //引数は｢文字列｣｢表示場所｣｢よくわかんないから同じやつで｣
-//m_pDirectWrite->DrawString(str, pos, D2D1_DRAW_TEXT_OPTIONS_NONE);	
+//m_pDirectWrite->DrawString(str, pos);	

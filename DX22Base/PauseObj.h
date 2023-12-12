@@ -29,7 +29,7 @@ public:
 	virtual void Update();												//更新
 	virtual void Draw(E_DRAW_MODE eMode = E_DRAW_MODE_NORMAL) override;	//描画
 	void SetReach(const TPos3d<float>& fReach);							//到達地点セッタ
-	void Destroy();														//破棄
+	void Destroy(const int& nWaitTime = 0);								//破棄
 	bool IsDestroyed();													//破棄準備フラグゲッタ
 protected:
 	// ===メンバ変数宣言=====
@@ -40,7 +40,7 @@ private:
 	// ===メンバ変数宣言=====
 	float m_fOffset;		//最終位置とのxズレ
 	int* m_pnWaitTime;		//初動待機時間計測
-	const int m_nLogWait;	//待機時間退避
+	int* m_pnRewaitTime;	//終了待機時間計測
 	int* m_pnMoveTime;		//ずれた位置から戻るのにかける時間
 	int* m_pnRemoveTime;	//ずれた位置から戻るのにかける時間
 	bool m_bDestroyed;		//破棄準備が完了したか

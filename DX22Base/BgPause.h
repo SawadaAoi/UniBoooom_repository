@@ -24,11 +24,12 @@ class CBgPause :public CPauseObj	//平面オブジェ
 public:
 	// ===プロトタイプ宣言===
 	CBgPause(const int& nWaitTime = 0);	//コンストラクタ
+	~CBgPause();						//デストラクタ
 private:
-	// ===変数宣言===
-	float m_fMoveAngle;	//単振動における回転角[rad]
 	// ===プロトタイプ宣言===
 	void CulculatePos(TPos3d<float>& fPos) override;	//位置算出
+	PixelShader* m_pBgPs;							//背景用ピクセルシェーダ
+	VertexShader* m_pBgVs;							//背景用頂点シェーダ
 };	//ポーズ用オブジェクト
 
 #endif	//!__BG_PAUSE_H__
