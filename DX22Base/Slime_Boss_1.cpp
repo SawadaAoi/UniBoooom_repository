@@ -1,9 +1,9 @@
 /* ========================================
 	HEW/UniBoooom!!
 	------------------------------------
-	ボススライム.cpp
+	ボススライム1.cpp
 	------------------------------------
-	Slime_Boss.cpp
+	Slime_Boss_1.cpp
 	------------------------------------
 	作成者	鈴村朋也
 
@@ -18,7 +18,8 @@
 // =============== インクルード ===================
 #include "Slime_Boss_1.h"
 #include "GameParameter.h"		//定数定義用ヘッダー
-#include "Input.h"
+
+
 // =============== 定数定義 =======================
 #if MODE_GAME_PARAMETER
 #else
@@ -46,7 +47,6 @@ const float BOSS_1_SHADOW_SCALE = 12.0f;		// ボス１の影の大きさ
 =========================================== */
 CSlime_Boss_1::CSlime_Boss_1()
 	:m_nFrame(0)
-	,m_eState(NORMAL)
 	,m_assaultDistancePlayer(0.0f)
 	,m_assaultMovePos{0.0f,0.0f,0.0f}
 {
@@ -113,14 +113,14 @@ void CSlime_Boss_1::Update(tagTransform3d playerTransform)
 	else
 	{
 		// チャージ中にぶっ飛ばされたらクールタイム等をリセット
-		if (m_eState == CHARGE)
+		if (m_nMoveState == CHARGE)
 		{
 			HitMove();		// 敵の吹き飛び移動
 			ResetAssault();	// 突撃リセット
 		}
 
 		// 突撃状態は"吹き飛び"を考慮しない
-		if (m_eState == ASSAULT)
+		if (m_nMoveState == ASSAULT)
 		{
 			m_bHitMove = false;
 		}
@@ -178,7 +178,7 @@ void CSlime_Boss_1::NormalMove(tagTransform3d playerTransform)
 	m_nFrame++;
 
 	// 状態によって動作を決定
-	switch (m_eState)
+	switch (m_nMoveState)
 	{
 	//--ノーマル状態
 	case NORMAL:
@@ -213,7 +213,7 @@ void CSlime_Boss_1::NormalMove(tagTransform3d playerTransform)
 		// プレイヤーと距離が一定以内だったら
 		if (distancePlayer > ASSAULT_DISTANCE)
 		{
-			m_eState = CHARGE;	// "チャージ"状態に遷移
+			m_nMoveState = CHARGE;	// "チャージ"状態に遷移
 			m_nFrame = 0;		// フレームリセット
 		}
 		break;
@@ -277,7 +277,7 @@ void CSlime_Boss_1::Charge(TPos3d<float> playerPos, TPos3d<float> movePos)
 	{
 		m_assaultDistancePlayer = distancePlayer;	// 現状の距離を保存
 		m_assaultMovePos = movePos;					// 移動量を保存
-		m_eState = ASSAULT;							// "突撃"状態へ
+		m_nMoveState = ASSAULT;							// "突撃"状態へ
 		m_nFrame = 0;								// フレームリセット
 	}
 }
@@ -318,7 +318,7 @@ void CSlime_Boss_1::Assault()
 =========================================== */
 void CSlime_Boss_1::ResetAssault()
 {
-	m_eState = NORMAL;	// "ノーマル"状態へ
+	m_nMoveState = NORMAL;	// "ノーマル"状態へ
 	SetNormalSpeed();	// スピードを通常状態に戻す
 	m_nFrame = 0;		//フレームリセット
 }

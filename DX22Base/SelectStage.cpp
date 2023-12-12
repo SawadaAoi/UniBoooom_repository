@@ -70,6 +70,7 @@ void CSelectStage::Update()
 	//!memo(Œ©‚½‚çÁ‚µ‚Ä[)Fconst‚ª×–‚‚É‚È‚Á‚½‚çŠO‚µ‚Ä‚Ë(.h‚Ì•û‚à)
 void CSelectStage::Draw() const
 {
+
 }
 
 /* ========================================

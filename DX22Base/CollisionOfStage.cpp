@@ -216,7 +216,12 @@ void CStage::HammerBossCollision()
 		// スライムとハンマーが衝突した場合
 		if (m_pCollision->CheckCollisionSphere(playerHammer->GetSphere(), pBossNow->GetSphere(), playerHammer->GetPos(), pBossNow->GetPos()))
 		{
-			CHitStop::UpFlag(CHitStop::E_BIT_FLAG_STOP_NORMAL);	//ヒットストップ
+			// 通常移動中にしかヒットストップしない
+			if(pBossNow->GetMoveState() == 0)
+			{ 
+				CHitStop::UpFlag(CHitStop::E_BIT_FLAG_STOP_NORMAL);	//ヒットストップ
+			}
+
 			float fAngleSlime
 				= m_pPlayer->GetTransform().Angle(pBossNow->GetTransform());	// スライムが飛ぶ角度を取得
 

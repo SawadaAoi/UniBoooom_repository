@@ -46,8 +46,12 @@ public:
 	bool IsDead();				// 死んでいるかどうか
 	virtual void SetMaxHp() = 0;
 
+	int GetMoveState();
+
 protected:
 	// ===メンバ変数======
+	int m_nMoveState;	// 継承先の各Bossで列挙型を作って入れる(共通で0は通常)
+
 	int m_nMaxHp;		// 最大HPはボスによって変更したいためprotectedに
 	int m_nHp;			// 現HP
 
@@ -55,10 +59,12 @@ protected:
 	bool m_bDrawFlg;	// 描画を行うかどうかのフラグ
 	bool m_bFlash;		// ダメージを受けて一定時間点滅させるためのフラグ
 
+
 private:
 	bool m_bDead;		// 死んでいるかどうか
 	Texture* m_pBossHpTexture;
 	Texture* m_pHpFrameTexture;
+
 
 };
 

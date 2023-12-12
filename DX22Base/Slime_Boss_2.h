@@ -1,54 +1,60 @@
 /* ========================================
 	HEW/UniBoooom!!
 	------------------------------------
-	ボススライム1.h
+	ボススライム2.h
 	------------------------------------
-	Slime_Boss_1.h
+	Slime_Boss_2.h
 	------------------------------------
-	作成者	鈴村朋也
+	作成者	澤田蒼生
 
 	変更履歴
-	・2023/11/17 クラス作成 Suzumura
-	・2023/11/23 突撃処理の追加 Suzumura
+	・2023/12/11 クラス作成 Sawada
 
 ========================================== */
-#ifndef __SLIME_BOSS_1__H__
-#define __SLIME_BOSS_1__H__
+#ifndef __SLIME_BOSS_2__H__
+#define __SLIME_BOSS_2__H__
 
 // =============== インクルード ===================
 #include "Slime_BossBase.h"
 
-// =============== 列挙定義 ===================
-enum E_BOSS_1_STATE
-{
-	NORMAL = 0,
-	CHARGE,
-	ASSAULT
-};
+
 
 // =============== クラス定義 =====================
-class CSlime_Boss_1 :
+class CSlime_Boss_2 :
 	public CSlime_BossBase
 {
 public:
+	// =============== 列挙定義 ===================
+	enum MOVE_STATE
+	{
+		MOVE_NORMAL = 0,
+		MOVE_JUMP,
+		MOVE_TARGET_SHADOW,
+		MOVE_DROP,
+
+		MOVE_MAX,
+	};
+public:
 	// ===プロトタイプ宣言===
-	CSlime_Boss_1();
-	CSlime_Boss_1(TPos3d<float> pos, VertexShader* pVS, Model* pModel1, Model* pModel2);
-	~CSlime_Boss_1();
+	CSlime_Boss_2();
+	CSlime_Boss_2(TPos3d<float> pos, VertexShader* pVS, Model* pModel1, Model* pModel2);
+	~CSlime_Boss_2();
 
 	void Update(tagTransform3d playerTransform) override;
-
 	void NormalMove(tagTransform3d playerTransform) override;
+
+	void MoveJump();
+	void MoveTargetShadow();
+	void MoveDrop();
+
 	void SetNormalSpeed() override;
 	void SetMaxHp() override;
 
-	void Charge(TPos3d<float> playerPos, TPos3d<float> movePos);	// 溜め関数
-	void Assault();	// 突撃関数
 
 private:
-	void ResetAssault();
 	// ===メンバ変数===
-	int m_nFrame;		// Update内で扱うフレーム
+	int m_nMoveCnt[MOVE_MAX];		// 移動処理のフレーム加算値
+
 
 
 	float m_assaultDistancePlayer;	// 突撃時のプレイヤー間の距離を保存
@@ -57,4 +63,4 @@ private:
 };
 
 
-#endif //__SLIME_BOSS_1__H__
+#endif //__SLIME_BOSS_2__H__

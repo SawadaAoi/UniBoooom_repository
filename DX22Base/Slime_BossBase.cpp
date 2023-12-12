@@ -52,6 +52,7 @@ CSlime_BossBase::CSlime_BossBase()
 	, m_bFlash(false)
 	, m_pBossHpTexture(nullptr)
 	, m_pHpFrameTexture(nullptr)
+	, m_nMoveState(0)	// 0はNormal
 {
 
 	m_pBossHpTexture = new Texture();
@@ -280,6 +281,21 @@ void CSlime_BossBase::Damage(int num)
 bool CSlime_BossBase::IsDead()
 {
 	return m_bDead;
+}
+
+
+/* ========================================
+	移動種類取得関数
+	-------------------------------------
+	内容：ボスの現在の移動の種類を返す
+	-------------------------------------
+	引数1：無し
+	-------------------------------------
+	戻値：移動種類
+=========================================== */
+int CSlime_BossBase::GetMoveState()
+{
+	return m_nMoveState;
 }
 
 
