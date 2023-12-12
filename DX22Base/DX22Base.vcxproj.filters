@@ -393,6 +393,9 @@
     <ClCompile Include="BattleData.cpp">
       <Filter>ソース ファイル\Info</Filter>
     </ClCompile>
+    <ClCompile Include="BossArrow.cpp">
+      <Filter>ソース ファイル\2dObject</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Defines.h">
@@ -652,6 +655,9 @@
     </ClInclude>
     <ClInclude Include="BattleData.h">
       <Filter>ヘッダー ファイル\Info</Filter>
+    </ClInclude>
+    <ClInclude Include="BossArrow.h">
+      <Filter>ヘッダー ファイル\2dObject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

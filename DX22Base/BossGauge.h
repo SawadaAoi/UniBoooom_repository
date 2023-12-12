@@ -37,9 +37,6 @@ public:
 	void FillGaugeDraw(float textureRange);		//ボスゲージ増加量描画関数
 	bool FirstBossGauge();
 	bool SecondBossGauge();
-
-	//void GetBossPos();	//ボス現在の位置を取得(要る？) 画面外に行ったら矢印で表示する
-
 	void SetSlimeManager(CSlimeManager* pSlimeMng);
 
 private:

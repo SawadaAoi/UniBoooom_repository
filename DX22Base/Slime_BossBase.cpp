@@ -209,9 +209,6 @@ void CSlime_BossBase::Draw(const CCamera* pCamera)
 	Sprite::Draw();
 
 
-
-
-
 	float width = (BOSS_HP_SIZEX /2)*(BOSS_HP_POSX - m_nHp);
 
 
@@ -227,12 +224,6 @@ void CSlime_BossBase::Draw(const CCamera* pCamera)
 	Sprite::SetProjection(mat[2]);
 	Sprite::SetTexture(m_pBossHpTexture);
 	Sprite::Draw();
-
-	
-
-	
-
-
 
 }
 
@@ -281,6 +272,5 @@ bool CSlime_BossBase::IsDead()
 {
 	return m_bDead;
 }
-
 
 

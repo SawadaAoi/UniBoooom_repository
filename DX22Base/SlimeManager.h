@@ -62,6 +62,7 @@ public:
 	void Draw();
 	void Create(E_SLIME_LEVEL level);
 	void CreateBoss();
+	bool IsBossPtrExist();
 
 	//-- ノーマル、その他
 	void HitBranch(int HitSlimeArrayNum,int standSlimeArrayNum,CExplosionManager* pExpMng);			// スライムの接触が起きた際の分岐処理
@@ -75,6 +76,7 @@ public:
 	void HitBossSlimeBranch(int HitBossNum, int StandSlimeNum, CExplosionManager* pExpMng);
 	void HitBossBossBranch(int HitBossNum, int StandBossNum, CExplosionManager* pExpMng);
 	void TouchBossExplosion(int BossSlime, CExplosionManager* pExpMng, int ExpNum);
+
 
 
 	E_SLIME_LEVEL GetRandomLevel();																	// ランダムなスライムのレベルを返す(1～3レべル)
@@ -131,6 +133,7 @@ private:
 	
 	int m_nKill;	//被討伐数
 
+	bool m_bBossPtrExist;		// ボスのポインタが存在するかどうか
 	// ===プロトタイプ宣言===
 	void CntKill();	//被討伐数カウンタ
 };
