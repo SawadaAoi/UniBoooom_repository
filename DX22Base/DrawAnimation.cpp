@@ -40,6 +40,7 @@ CDrawAnim::CDrawAnim(const char* textureFile, CCamera* pCamera, int nMax, TDiTyp
 	, m_fUvpos(0.0f, 0.0f)
 	, m_fUvscale(0.0f, 0.0f)
 	, m_nCntSwitch(0)
+	, m_nCntFrame(0)
 	, bRoop(true)
 {
 	SetTexture(textureFile);	// テクスチャをセット
@@ -63,9 +64,9 @@ void CDrawAnim::Update()
 {
 	if (bRoop)
 	{
-		m_nCntSwitch++;	// 描画切り替え用カウントを1進める
+		m_nCntFrame++;	// 描画切り替え用カウントを1進める
 
-		if (m_nCntSwitch > SWITCH_ANIM_START)		// 一定時間経過したら描画を更新する
+		if (m_nCntFrame > m_nCntSwitch)		// 一定時間経過したら描画を更新する
 		{
 			m_nCntSwitch = 0;	// カウントをリセット
 			m_fUvpos.x = (m_fUvscale.x) * (m_nNumAnim % m_NumCut.x);	// 描画するUV座標を計算

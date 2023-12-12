@@ -20,12 +20,9 @@
 #define __DRAW_ANIMATION_H__
 
 // =============== インクルード ===================
-#include "Pos2d.h"
 #include "Texture.h"
 #include "CameraChase.h"
 #include "2dPolygon.h"
-#include "GameParameter.h"
-#include "Transform3d.h"
 
 // =============== クラス定義 =====================
 class CDrawAnim :public C2dPolygon	//平面オブジェ
@@ -45,7 +42,8 @@ protected:
 	TDiType<int> m_NumCut;		// 分割数
 	TDiType<float> m_fUvpos;	// UV座標
 	TDiType<float> m_fUvscale;	// UV分割サイズ格納用
-	int m_nCntSwitch;			// アニメーションの切替間隔
+	int m_nCntFrame;			// アニメーションの切替間隔カウント用用
+	int m_nCntSwitch;			// アニメーションの切替間隔格納用
 	bool bRoop;					// ループ判定フラグ
 };	//UIアニメーション
 
