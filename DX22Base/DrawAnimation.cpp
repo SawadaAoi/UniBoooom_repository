@@ -33,22 +33,23 @@
 	----------------------------------------
 	戻値：なし
 =========================================== */
-CDrawAnim::CDrawAnim(const char* textureFile, CCamera* pCamera, int nMax, TDiType<int> nCut, int nCntSwitch)
+CDrawAnim::CDrawAnim(const char* textureFile, CCamera* pCamera, int nSplitMax, TDiType<int> nSplit, int nCnt)
 	: m_nNumAnim(0)
 	, m_nNumAnimMax(0)
-	, m_NumCut(0, 0)
-	, m_fUvpos(0.0f, 0.0f)
-	, m_fUvscale(0.0f, 0.0f)
-	, m_nCntSwitch(0)
-	, m_nCntFrame(0)
-	, bRoop(true)
+	, m_nSplitNum(0, 0)
+	, m_fUvPos(0.0f, 0.0f)
+	, m_fUvScale(0.0f, 0.0f)
+	, m_nFrameCnt(0)
+	, m_nSwitchCnt(0)
+	, m_bLoop(false)
+	, m_bAnim(true)
 {
 	SetTexture(textureFile);	// テクスチャをセット
 	SetCamera(pCamera);			// カメラをセット
-	m_fUvscale = { 1.0f / m_NumCut.x, 1.0f / m_NumCut.y };	// UV分割サイズを格納
-	m_nNumAnimMax = nMax;		// 分割数の最大値を格納
-	m_NumCut = nCut;			// 縦横の分割数を格納
-	m_nCntSwitch = nCntSwitch;	// アニメーションの切り替え間隔を格納
+	m_fUvScale = { 1.0f / m_nSplitNum.x, 1.0f / m_nSplitNum.y };	// UV分割サイズを格納
+	m_nNumAnimMax = nSplitMax;	// 分割数の最大値を格納
+	m_nSplitNum = nSplit;		// 縦横の分割数を格納
+	m_nSwitchCnt = nCnt;		// アニメーションの切り替え間隔を格納
 }
 
 /* ========================================
@@ -62,25 +63,29 @@ CDrawAnim::CDrawAnim(const char* textureFile, CCamera* pCamera, int nMax, TDiTyp
 =========================================== */
 void CDrawAnim::Update()
 {
-	if (bRoop)
+	if (m_bAnim)
 	{
-		m_nCntFrame++;	// 描画切り替え用カウントを1進める
+		m_nFrameCnt++;	// 描画切り替え用カウントを1進める
 
-		if (m_nCntFrame > m_nCntSwitch)		// 一定時間経過したら描画を更新する
+		if (m_nFrameCnt > m_nSwitchCnt)		// 一定時間経過したら描画を更新する
 		{
-			m_nCntSwitch = 0;	// カウントをリセット
-			m_fUvpos.x = (m_fUvscale.x) * (m_nNumAnim % m_NumCut.x);	// 描画するUV座標を計算
-			m_fUvpos.y = (m_fUvscale.y) * (m_nNumAnim / m_NumCut.x);	// 描画するUV座標を計算
+			m_nSwitchCnt = 0;	// カウントをリセット
+			m_fUvPos.x = (m_fUvScale.x) * (m_nNumAnim % m_nSplitNum.x);	// 描画するUV座標を計算
+			m_fUvPos.y = (m_fUvScale.y) * (m_nNumAnim / m_nSplitNum.x);	// 描画するUV座標を計算
 
 			m_nNumAnim++;			// 描画するアニメーション番号を更新
-			SetUvOffset(m_fUvpos);	// UV座標をセット
-			SetUvScale(m_fUvscale);	// UV分割サイズをセット
+			SetUvOffset(m_fUvPos);	// UV座標をセット
+			SetUvScale(m_fUvScale);	// UV分割サイズをセット
 		}
 
 		if (m_nNumAnim == m_nNumAnimMax)		// 最下段の描画が終わったら
 		{
 			m_nNumAnim = 0;		// カウントをリセット
-			bRoop = false;		// 表示フラグをOFF
+
+			if (!m_bLoop)	// ループ再生フラグがOFFなら
+			{
+				m_bAnim = false;		// 表示フラグをOFF
+			}
 		}
 	}
 }
@@ -96,8 +101,22 @@ void CDrawAnim::Update()
 =========================================== */
 void CDrawAnim::Draw()
 {
-	if (bRoop)	// 描画フラグがONの間は描画する
+	if (m_bAnim)	// 描画フラグがONの間は描画する
 	{
 		C2dPolygon::Draw();		// 描画
 	}
+}
+
+/* ========================================
+	ループ再生フラグセット関数
+	-------------------------------------
+	内容：ループ再生フラグをセット
+	-------------------------------------
+	引数：ループ再生判定フラグ（trueならループする）
+	-------------------------------------
+	戻値：なし
+=========================================== */
+void CDrawAnim::SetLoopFlg(bool bLoop)
+{
+	m_bLoop = bLoop;	// フラグをセット
 }
