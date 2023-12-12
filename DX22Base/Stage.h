@@ -16,6 +16,7 @@
 	・2023/12/05 コメント修正 takagi
 	・2023/12/06 pose→pause修正、ポーズ文字表示 takagi
 	・2023/12/08 シーン遷移用に変数追加 takagi
+	・2023/12/12 Stage1からメンバ変数を移動 yamashita
 
 ========================================== */
 
@@ -96,10 +97,26 @@ protected:
 	CUIStageManager* m_pUIStageManager;
 	BattleData m_Data;	//戦闘データ記録用変数
 
+	int m_nNum;			// ゲームスタート表示カウント用
+	float m_fSize;		// ゲームスタート表示のサイズ
+	float m_fResize;	// ゲームスタート表示のサイズ変更用
+	bool m_bStart;		// ゲームを開始させるか判定
+	const int* m_pPlayerHp;		// プレイヤーHP取得用
+	const int* m_pTimeCnt;		// 制限時間取得用
+
+	TPos2d<float> m_fUVPos;	// UV座標保存用
+	int m_nCntSwitch;	// アニメーション切り替えカウント用
+	int m_nCntW;		// 横カウント用
+	int m_nCntH;		// 縦カウント用
+	bool m_bStartSign;		// スタート合図開始フラ
+
+
 	//サウンド
 	XAUDIO2_BUFFER* m_pSEHitHammer;
 	IXAudio2SourceVoice* m_pSEHitHammerSpeaker;
 
+private:
+	void LoadSE();
 };	//ステージ
 
 #endif	//!__STAGE_H__

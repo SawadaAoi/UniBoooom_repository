@@ -57,7 +57,7 @@ private:
 	const CCamera* m_pCamera;						//カメラ	※参照のみに使用、削除しない
 	XAUDIO2_BUFFER* m_pBGM;							//BGMの音声データ
 	XAUDIO2_BUFFER* m_pSEHitHammer;					//SEの音声データ
-	IXAudio2SourceVoice* m_pSpeaker;				//BGMを聞き取る側
+	IXAudio2SourceVoice* m_pBGMSpeaker;				//BGMを聞き取る側
 	IXAudio2SourceVoice* m_pSEHitHammerSpeaker;		//SEを聞き取る側
 	// ===プロトタイプ宣言===
 	void Boot();									//ポーズモード起動

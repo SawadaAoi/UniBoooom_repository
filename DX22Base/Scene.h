@@ -59,15 +59,12 @@ public:
 	virtual E_TYPE GetNext() const = 0;	//次のシーンゲッタ
 	void Draw2d(float, float, float, float, Texture*);	// 分割なしの2Dテクスチャ表示
 	CCamera* GetCamera();
-	void LoadSound();	//サウンドファイルの読み込み
 protected:
 	// ===メンバ変数宣言=====
 	bool m_bFinish;	//終了予約用(trueで終了)
 	CCamera* m_pCamera;
 	XAUDIO2_BUFFER* m_pBGM;							//BGMの音声データ
-	XAUDIO2_BUFFER* m_pSEHitHammer;					//SEの音声データ
-	IXAudio2SourceVoice* m_pSpeaker;				//BGMを聞き取る側
-	IXAudio2SourceVoice* m_pSEHitHammerSpeaker;		//SEを聞き取る側
+	IXAudio2SourceVoice* m_pBGMSpeaker;				//BGMを聞き取る側
 };	//シーン
 
 #endif	//!__SCENE_H__

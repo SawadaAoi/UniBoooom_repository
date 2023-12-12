@@ -614,3 +614,4 @@ void CStage::BossBossNormalMoveCollision()
 
 	}
 }
+

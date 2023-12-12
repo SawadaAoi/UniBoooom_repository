@@ -24,6 +24,7 @@
 	・2023/12/07 ステージ→リザルト遷移方法切り替え実装 nieda
 	・2023/12/07 ビュー行列取得にカメラ使用 takagi
 	・2023/12/08 リザルトシーン遷移用に処理追加 takagi
+	・2023/12/12 メンバ変数を親クラスに移動 yamashita
 
 	========================================== */
 
@@ -31,7 +32,6 @@
 #include "Stage1.h"	//自身のヘッダ
 #include "CameraChase.h"
 #include "Input.h"
-#include "Line.h"
 #include "HitStop.h"	//ヒットストップ
 #include "Fade.h"
 
@@ -41,33 +41,6 @@ const int STARTSIGN_UV_NUM_Y = 9;	// テクスチャの縦の分割数
 
 const float STARTSIGN_UV_POS_X = 1.0f / STARTSIGN_UV_NUM_X;		// 横のUV座標計算用
 const float STARTSIGN_UV_POS_Y = 1.0f / STARTSIGN_UV_NUM_Y;		// 縦のUV座標計算用
-
-// =============== デバッグモード ===================
-#define USE_CAMERA_VIBRATION (true)
-#define MODE_COORD_AXIS (true)			//座標軸映すかどうか
-#define MODE_GROUND (false)				//座標軸映すかどうか
-#if _DEBUG
-#define TRY_USE_HIT_STOP (true)
-#endif
-#define USE_FADE_GAME (true)	//フェード試す
-#define USE_PAUSE (true)	//ポーズ試す		※現在ポーズ中から戻ってくる手段を用意していないため要注意！
-#define SCENE_TRANSITION(false)		// シーン遷移をボタン押下か自動化を切り替え（trueは自動)
-
-#if USE_FADE_GAME
-#include "Fade.h"
-#endif
-
-#if USE_CAMERA_VIBRATION
-#include "Input.h"
-#endif
-
-#if TRY_USE_HIT_STOP
-#include "Input.h"
-#endif
-
-#if USE_PAUSE	//ポーズ臨時呼び出し
-#include "Input.h"
-#endif
 
 /* ========================================
 	コンストラクタ
@@ -79,94 +52,14 @@ const float STARTSIGN_UV_POS_Y = 1.0f / STARTSIGN_UV_NUM_Y;		// 縦のUV座標計算用
 	戻値：なし
 =========================================== */
 CStage1::CStage1()
-	: m_nNum(0)
-	, m_fSize(0.0f)
-	, m_fResize(10.0f)
-	, m_bStart(false), m_fUVPos(0.0f, 0.0f)
-	, m_nCntSwitch(0)
-	, m_nCntW(0)
-	, m_nCntH(0)
-	, m_bStartSign(false)
 {
-	// 頂点シェーダの読込
-	m_pVs = new VertexShader();
-	if (FAILED(m_pVs->Load("Assets/shader/VS_Model.cso"))) {
-		MessageBox(nullptr, "VS_Model.cso", "Error", MB_OK);
-	}
-
-	m_pTexture = new Texture();
-	if (FAILED(m_pTexture->Create("Assets/Texture/start_sprite.png")))
-	{
-		MessageBox(NULL, "スタートテキスト読み込み", "Error", MB_OK);
-	}
-
-	// レンダーターゲット、深度バッファの設定
-	RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得
-	DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
-	SetRenderTargets(1, &pRTV, pDSV);		//DSVがnullだと2D表示になる
-
-#if MODE_COORD_AXIS
-	// 軸線の表示
-	CLine::Init();
-#endif
-	
-
-	//================3dObject動的確保================
-	m_pPlayer = new CPlayer();							// プレイヤー生成
-	m_pFloor = new CFloor(m_pPlayer->GetPosAddress());	// 床生成
-	m_pExplosionMng = new CExplosionManager();			// 爆発マネージャー生成
-	m_pSlimeMng = new CSlimeManager(m_pPlayer);			// スライムマネージャー生成
-	m_pHealItemMng = new CHealItemManager();			// 回復アイテムマネージャー生成
-
-	//================System動的確保================
-	m_pCamera = new CCameraChase(m_pPlayer->GetPosAddress());	//カメラ生成
-	m_pCollision = new CCOLLISION();							//衝突判定チェック生成
-
-	//================2dObject動的確保================
-	m_pUIStageManager = new CUIStageManager(m_pPlayer, m_pCamera, m_pSlimeMng);	// UIマネージャー生成
-
-	
-	
-#if MODE_GROUND
-	m_pBox = new CBox();
-#endif
-#if USE_FADE_GAME
-	m_pFade = new CFade(m_pCamera);
-#endif
-
-#if USE_PAUSE
-	m_pPause = new CPause(m_pCamera);
-#endif
-
-	//================セット================
-	// カメラ
-	m_pPlayer->SetCamera(m_pCamera);
-	m_pExplosionMng->SetCamera(m_pCamera);
-	m_pSlimeMng->SetCamera(m_pCamera);
-	m_pFloor->SetCamera(m_pCamera);
-	m_pHealItemMng->SetCamera(m_pCamera);
-
-	//スライムマネージャー　←　スコアマネージャー
-	m_pSlimeMng->SetScoreOHMng(m_pUIStageManager->GetScoreMng());
-	
-	//爆発マネージャー　←　コンボ
-	m_pExplosionMng->SetCombo(m_pUIStageManager->GetCombo());
-
-	//スライムマネージャー　←　爆発マネージャー
-	m_pSlimeMng->SetExplosionMng(m_pExplosionMng);
-
-	// スライムマネージャー　←　回復アイテムマネージャ―
-	m_pSlimeMng->SetHealMng(m_pHealItemMng);
-
-	//爆発マネージャー　←　タイマー
-	m_pSlimeMng->SetTimer(m_pUIStageManager->GetTimer());
-
-
 	//================BGMの設定================
-	LoadSound();
+	LoadBGM();
 	//BGMの再生
-	m_pSpeaker = CSound::PlaySound(m_pBGM);		//BGMの再生
-	m_pSpeaker->SetVolume(BGM_VOLUME);			//音量の設定
+	m_pBGMSpeaker = CSound::PlaySound(m_pBGM);		//BGMの再生
+	m_pBGMSpeaker->SetVolume(BGM_VOLUME);			//音量の設定
+	
+	
 }
 
 /* ========================================
@@ -180,33 +73,6 @@ CStage1::CStage1()
 =========================================== */
 CStage1::~CStage1()
 {
-	// =============== セーブ =====================
-	m_Data.Save();	//ステージのデータセーブ
-
-	SAFE_DELETE(m_pPause);
-	if (m_pSpeaker)
-	{
-		m_pSpeaker->Stop();
-		m_pSpeaker->DestroyVoice();
-	}
-	SAFE_DELETE(m_pFade);
-	SAFE_DELETE(m_pHealItemMng);
-	SAFE_DELETE(m_pExplosionMng);
-	SAFE_DELETE(m_pSlimeMng);	// スライムマネージャー削除
-	SAFE_DELETE(m_pFloor);
-	SAFE_DELETE(m_pCamera);
-	SAFE_DELETE(m_pPlayer);
-	SAFE_DELETE(m_pCollision);
-	SAFE_DELETE(m_pUIStageManager);
-
-#if MODE_COORD_AXIS
-	// 軸線の表示
-	CLine::Uninit();
-#endif
-	SAFE_DELETE(m_pVs);
-
-	//SAFE_DELETE(m_pDirectWrite);
-
 }
 
 /* ========================================
@@ -428,4 +294,18 @@ CStage1::E_TYPE CStage1::GetNext() const
 {
 	// =============== 提供 ===================
 	return CStage1::E_TYPE_RESULT;	//遷移先シーンの種類
+}
+
+/* ========================================
+   BGMのサウンドファイル読み込み関数
+   -------------------------------------
+   内容：BGMのサウンドファイルの読み込み
+   -------------------------------------
+   引数1：無し
+   -------------------------------------
+   戻値：無し
+=========================================== */
+void CStage1::LoadBGM()
+{
+	m_pBGM = CSound::LoadSound("Assets/Sound/BGM/BGM_maou.mp3", true);		//BGMの読み込み
 }
