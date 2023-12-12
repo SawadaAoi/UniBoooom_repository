@@ -1,67 +1,68 @@
 /* ========================================
 	HEW/UniBoooom!!
 	---------------------------------------
-	ƒ|[ƒY‰æ–Ê’è‹`
+	ãƒãƒ¼ã‚ºç”»é¢å®šç¾©
 	---------------------------------------
 	Pause.h
 
-	ì¬Ò	takagi
+	ä½œæˆè€…	takagi
 
-	•ÏX—š—ğ
-	E2023/12/01 §ì takagi
-	E2023/12/04 ‘±‚« takagi
-	E2023/12/06 pose¨pauseC³Aƒ|[ƒY•¶š•\¦ takagi
-	E2023/12/08 ƒAƒNƒZƒXw’èqŠÔˆÚ“® takagi
-	E2023/12/09 ƒIƒuƒWƒFƒNƒg•ªŠ„ takagi
-	E2023/12/10 §ìis takagi
-	E2023/12/12 ƒtƒ‰ƒO’Ç‰Á takagi
+	å¤‰æ›´å±¥æ­´
+	ãƒ»2023/12/01 åˆ¶ä½œ takagi
+	ãƒ»2023/12/04 ç¶šã takagi
+	ãƒ»2023/12/06 poseâ†’pauseä¿®æ­£ã€ãƒãƒ¼ã‚ºæ–‡å­—è¡¨ç¤º takagi
+	ãƒ»2023/12/08 ã‚¢ã‚¯ã‚»ã‚¹æŒ‡å®šå­é–“ç§»å‹• takagi
+	ãƒ»2023/12/09 ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆåˆ†å‰² takagi
+	ãƒ»2023/12/10 åˆ¶ä½œé€²è¡Œ takagi
+	ãƒ»2023/12/12 ãƒ•ãƒ©ã‚°è¿½åŠ  takagi
 
 ========================================== */
 
-#ifndef __PAUSE_H__	//Pause.hƒCƒ“ƒNƒ‹[ƒhƒK[ƒh
+#ifndef __PAUSE_H__	//Pause.hã‚¤ãƒ³ã‚¯ãƒ«ãƒ¼ãƒ‰ã‚¬ãƒ¼ãƒ‰
 #define __PAUSE_H__
 
-// =============== ƒCƒ“ƒNƒ‹[ƒh =====================
-#include "Sound.h"		//‰¹
-#include "Camera.h"		//ƒJƒƒ‰
-#include "PauseObj.h"	//ƒƒ“ƒo‚Ìƒwƒbƒ_
-#include <vector>		//”z—ñƒRƒ“ƒeƒi
+// =============== ã‚¤ãƒ³ã‚¯ãƒ«ãƒ¼ãƒ‰ =====================
+#include "Sound.h"		//éŸ³
+#include "Camera.h"		//ã‚«ãƒ¡ãƒ©
+#include "PauseObj.h"	//ãƒ¡ãƒ³ãƒã®ãƒ˜ãƒƒãƒ€
+#include <vector>		//é…åˆ—ã‚³ãƒ³ãƒ†ãƒŠ
 
-// =============== ƒNƒ‰ƒX’è‹` =====================
+// =============== ã‚¯ãƒ©ã‚¹å®šç¾© =====================
 class CPause
 {
 private:
-	// ===—ñ‹“’è‹`==========
+	// ===åˆ—æŒ™å®šç¾©==========
 	enum E_FLAG
 	{
-		E_FLAG_PAUSEMODE = 0x01,		//ƒ|[ƒYƒ‚[ƒh
-		E_FLAG_COMMAND_CONTINUE = 0x02,	//Œp‘±ƒRƒ}ƒ“ƒh
-		E_FLAG_COMMAND_FINISH = 0x04,	//I—¹ƒRƒ}ƒ“ƒh
-		E_FLAG_DECIDE_COMMAND = 0x08,	//ƒRƒ}ƒ“ƒhŒˆ’èó‘Ô
-		E_FLAG_TIDYING_UP = 0x10,		//•Ğ•t‚¯’†
-		E_FLAG_CALL_FINISH = 0x20,		//I—¹—\–ñ
-	};	//ƒtƒ‰ƒO
+		E_FLAG_PAUSEMODE = 0x01,		//ãƒãƒ¼ã‚ºãƒ¢ãƒ¼ãƒ‰
+		E_FLAG_COMMAND_CONTINUE = 0x02,	//ç¶™ç¶šã‚³ãƒãƒ³ãƒ‰
+		E_FLAG_COMMAND_FINISH = 0x04,	//çµ‚äº†ã‚³ãƒãƒ³ãƒ‰
+		E_FLAG_DECIDE_COMMAND = 0x08,	//ã‚³ãƒãƒ³ãƒ‰æ±ºå®šçŠ¶æ…‹
+		E_FLAG_TIDYING_UP = 0x10,		//ç‰‡ä»˜ã‘ä¸­
+		E_FLAG_CALL_FINISH = 0x20,		//çµ‚äº†äºˆç´„
+	};	//ãƒ•ãƒ©ã‚°
 public:
-	// ===ƒvƒƒgƒ^ƒCƒvéŒ¾===
-	CPause(const CCamera* pCamera);						//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
-	~CPause();											//ƒfƒXƒgƒ‰ƒNƒ^
-	void Update();										//XV
-	void Draw();										//•`‰æ
-	bool IsFin() const;									//I—¹Šm”F
-	void SetCamera(const CCamera* pCamera = nullptr);	//ƒJƒƒ‰ƒZƒbƒ^
-	bool IsPause() const;								//ƒ|[ƒY’†‚©
+	// ===ãƒ—ãƒ­ãƒˆã‚¿ã‚¤ãƒ—å®£è¨€===
+	CPause(const CCamera* pCamera);						//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	~CPause();											//ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	void Update();										//æ›´æ–°
+	void Draw();										//æç”»
+	bool IsFin() const;									//çµ‚äº†ç¢ºèª
+	void SetCamera(const CCamera* pCamera = nullptr);	//ã‚«ãƒ¡ãƒ©ã‚»ãƒƒã‚¿
+	bool IsPause() const;								//ãƒãƒ¼ã‚ºä¸­ã‹
 private:
-	// ===ƒƒ“ƒo•Ï”éŒ¾=====
-	unsigned char m_ucFlag;							//ƒtƒ‰ƒO
-	std::vector<CPauseObj*> m_p2dObj;				//•½–Êƒ|ƒŠƒSƒ“
-	const CCamera* m_pCamera;						//ƒJƒƒ‰	¦QÆ‚Ì‚İ‚Ég—pAíœ‚µ‚È‚¢
-	// ===ƒvƒƒgƒ^ƒCƒvéŒ¾===
-	void Boot();									//ƒ|[ƒYƒ‚[ƒh‹N“®
-	void InitObjects();								//‰Šú‰»E“®“IŠm•Û
-	void Destroy();									//ƒ|[ƒYI—¹
-	void UpFlag(const unsigned char& ucBitFlag);	//ƒtƒ‰ƒO‹N‚±‚µ
-	void DownFlag(const unsigned char& ucBitFlag);	//ƒtƒ‰ƒO~‚ë‚µ
-	void SetFlag(const unsigned char& ucBitFlag);	//ƒtƒ‰ƒO”½“]
-};	//ƒŠƒUƒ‹ƒg
+	// ===ãƒ¡ãƒ³ãƒå¤‰æ•°å®£è¨€=====
+	unsigned char m_ucFlag;							//ãƒ•ãƒ©ã‚°
+	std::vector<CPauseObj*> m_p2dObj;				//å¹³é¢ãƒãƒªã‚´ãƒ³
+	const CCamera* m_pCamera;						//ã‚«ãƒ¡ãƒ©	â€»å‚ç…§ã®ã¿ã«ä½¿ç”¨ã€å‰Šé™¤ã—ãªã„
+
+	// ===ãƒ—ãƒ­ãƒˆã‚¿ã‚¤ãƒ—å®£è¨€===
+	void Boot();									//ãƒãƒ¼ã‚ºãƒ¢ãƒ¼ãƒ‰èµ·å‹•
+	void InitObjects();								//åˆæœŸåŒ–ãƒ»å‹•çš„ç¢ºä¿
+	void Destroy();									//ãƒãƒ¼ã‚ºçµ‚äº†
+	void UpFlag(const unsigned char& ucBitFlag);	//ãƒ•ãƒ©ã‚°èµ·ã“ã—
+	void DownFlag(const unsigned char& ucBitFlag);	//ãƒ•ãƒ©ã‚°é™ã‚ã—
+	void SetFlag(const unsigned char& ucBitFlag);	//ãƒ•ãƒ©ã‚°åè»¢
+};	//ãƒªã‚¶ãƒ«ãƒˆ
 
 #endif	//!__PAUSE_H__

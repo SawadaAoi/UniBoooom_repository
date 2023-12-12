@@ -54,6 +54,7 @@ CScene::CScene()
 =========================================== */
 CScene::~CScene()
 {
+	SAFE_DELETE(m_pCamera);
 }
 
 /* ========================================
@@ -158,19 +159,4 @@ void CScene::Draw2d(float posX, float posY, float h, float w, Texture* pTexture)
 CCamera* CScene::GetCamera()
 {
 	return m_pCamera;
-}
-
-/* ========================================
-   サウンドファイル読み込み関数
-   -------------------------------------
-   内容：サウンドファイルの読み込み
-   -------------------------------------
-   引数1：無し
-   -------------------------------------
-   戻値：無し
-=========================================== */
-void CScene::LoadSound()
-{
-	m_pBGM = CSound::LoadSound("Assets/Sound/BGM/BGM_maou.mp3", true);		//BGMの読み込み
-	m_pSEHitHammer = CSound::LoadSound("Assets/Sound/SE/Smash.mp3");		//SEの読み込み
 }
