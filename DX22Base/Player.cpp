@@ -92,7 +92,7 @@ CPlayer::CPlayer()
 	, m_nMoveCnt(0)
 	, m_bIntFlg(false)
 	, m_fIntCnt(0.0f)
-	, m_nTick(0)
+	, m_fTick(1.0f / 60.0f)
 {
 	m_pHammer = new CHammer();								// Hammerクラスをインスタンス
 	m_nHp = PLAYER_HP;										// プレイヤーのHPを決定
@@ -107,13 +107,13 @@ CPlayer::CPlayer()
 	}
 	//プレイヤーのモデル読み込み
 	m_pModel = new AnimeModel();
-	if (!m_pModel->Load("Assets/Model/player/Walk.fbx", 1.0f, AnimeModel::Flip::ZFlipUseAnime)) {		//倍率と反転は省略可
+	if (!m_pModel->Load("Assets/Model/player/Walk2.fbx", 1.0f, AnimeModel::Flip::ZFlipUseAnime)) {		//倍率と反転は省略可
 		MessageBox(NULL, "player", "Error", MB_OK);	//ここでエラーメッセージ表示
 	}
 	m_pModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));
 	//m_pModel->SetPixelShader(ShaderList::GetPS(ShaderList::PS_TOON));
-	AnimeModel::AnimeNo anime = m_pModel->AddAnimation("Assets/Model/player/Walk.fbx");
-	m_pModel->Play(anime, true, 0.002f);
+	AnimeModel::AnimeNo anime = m_pModel->AddAnimation("Assets/Model/player/Walk2.fbx");
+	m_pModel->Play(anime, true);
 	
 	m_pShadow = new CShadow();
 }
@@ -145,11 +145,11 @@ CPlayer::~CPlayer()
 ======================================== */
 void CPlayer::Update()
 {
-	m_nTick++;
-	if (m_nTick > 18000)
-	{
-		m_nTick = 0;
-	}
+	//m_nTick++;
+	//if (m_nTick > 18000)
+	//{
+	//	m_nTick = 0;
+	//}
 	// ハンマー攻撃中
 	if (m_bAttackFlg == true)
 	{
@@ -219,7 +219,7 @@ void CPlayer::Update()
 		
 	}
 	
-	m_pModel->Step(m_nTick);
+	m_pModel->Step(m_fTick);
 
 	SE_Move();	//移動によるSEの処理
 }

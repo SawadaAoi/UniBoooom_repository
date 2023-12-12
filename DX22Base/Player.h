@@ -93,7 +93,7 @@ private:
 	int m_nMoveCnt;						// プレイヤーの移動によるSEの間隔
 	bool m_bIntFlg;						// ハンマー間隔時間フラグ
 	float m_fIntCnt;					// ハンマー間隔時間カウント
-	int m_nTick;						//フレームカウンタ(0to60)
+	float m_fTick;						//フレームカウンタ(0to60)
 	CShadow* m_pShadow;
 
 	XAUDIO2_BUFFER* m_pSESwingHammer;

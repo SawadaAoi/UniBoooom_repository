@@ -1073,31 +1073,14 @@ void AnimeModel::LerpTransform(Transform* pOut, const Transform& a, const Transf
 	DirectX::XMStoreFloat3(&pOut->scale, vec[2][0]);
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 void AnimeModel::MakeMesh(const void* ptr, float scale, Flip flip)
 {
 	// 事前準備
 	aiVector3D zero3(0.0f, 0.0f, 0.0f);
 	aiColor4D one4(1.0f, 1.0f, 1.0f, 1.0f);
 	const aiScene* pScene = reinterpret_cast<const aiScene*>(ptr);
-	//float zflip = flip == Flip::ZFlip ? -1.0f : 1.0f;
 	float zflip = (flip == Flip::ZFlip || flip == Flip::ZFlipUseAnime) ? -1.0f : 1.0f;
-	//int idx1 = flip != Flip::None ? 2 : 1;
-	//int idx2 = flip != Flip::None ? 1 : 2;
-	int idx1 = flip == Flip::None ? 2 : 1;
+	int idx1 = flip != Flip::None ? 1 : 2;
 	int idx2 = flip != Flip::None ? 2 : 1;
 
 	// メッシュの作成
@@ -1122,10 +1105,11 @@ void AnimeModel::MakeMesh(const void* ptr, float scale, Flip flip)
 				DirectX::XMFLOAT3(pos.x * scale * zflip, pos.y * scale, pos.z * scale),
 				DirectX::XMFLOAT3(normal.x, normal.y, normal.z),
 				DirectX::XMFLOAT2(uv.x, uv.y),
-				DirectX::XMFLOAT4(color.r, color.g, color.b, color.a)
+				DirectX::XMFLOAT4(color.r, color.g, color.b, color.a),
 			};
 		}
 
+		//重み付け
 		MakeWeight(pScene, i);
 
 		// インデックスの作成
@@ -1146,10 +1130,10 @@ void AnimeModel::MakeMesh(const void* ptr, float scale, Flip flip)
 		MeshBuffer::Description desc = {};
 		desc.pVtx = m_meshes[i].vertices.data();
 		desc.vtxSize = sizeof(Vertex);
-		desc.vtxCount = m_meshes[i].vertices.size();
+		desc.vtxCount = UINT(m_meshes[i].vertices.size());
 		desc.pIdx = m_meshes[i].indices.data();
 		desc.idxSize = sizeof(unsigned long);
-		desc.idxCount = m_meshes[i].indices.size();
+		desc.idxCount = UINT(m_meshes[i].indices.size());
 		desc.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 		m_meshes[i].pMesh = new MeshBuffer(desc);
 	}
@@ -1164,6 +1148,7 @@ void AnimeModel::MakeMaterial(const void* ptr, std::string directory)
 	for (unsigned int i = 0; i < m_materials.size(); ++i)
 	{
 		// 各種パラメーター
+		//=========================================
 		aiColor3D color(0.0f, 0.0f, 0.0f);
 		float shininess;
 
@@ -1178,6 +1163,8 @@ void AnimeModel::MakeMaterial(const void* ptr, std::string directory)
 		//反射光の取得
 		m_materials[i].specular = pScene->mMaterials[i]->Get(AI_MATKEY_COLOR_SPECULAR, color) == AI_SUCCESS ?
 			DirectX::XMFLOAT4(color.r, color.g, color.b, shininess) : DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, shininess);
+
+		//=========================================
 
 		// テクスチャ
 		HRESULT hr;
