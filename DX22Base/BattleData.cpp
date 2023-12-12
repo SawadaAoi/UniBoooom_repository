@@ -144,7 +144,7 @@ void tagBattleData::Save()
 int tagBattleData::GetMinute()
 {
 	// =============== ’ñ‹Ÿ ===================
-	return (nAliveTime / 3600);
+	return (nAliveTime / 3600);	//•ª(1to60)
 }
 
 /* ========================================
@@ -159,7 +159,7 @@ int tagBattleData::GetMinute()
 int tagBattleData::GetSecond()
 {
 	// =============== ’ñ‹Ÿ ===================
-	return (nAliveTime /60 - nAliveTime / 3600);
+	return ((nAliveTime % 3600) /60);	//•b(1to60)
 }
 
 /* ========================================
@@ -174,5 +174,5 @@ int tagBattleData::GetSecond()
 int tagBattleData::GetCommaSecond()
 {
 	// =============== ’ñ‹Ÿ ===================
-	return (nAliveTime % 60);
+	return (nAliveTime % 60);	//ƒRƒ“ƒ}•b(1to60)
 }
