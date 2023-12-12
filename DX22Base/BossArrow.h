@@ -42,8 +42,9 @@ private:
 	float m_radian;					// 描画の角度
 	CSlimeManager* m_pBoss;			// スライムマネージャーポインタ取得
 	CPlayer* m_pPlayer;				// プレイヤーポインタ取得
-	bool m_bShowArrowFlg;			// 表示終了フラグ
-	
+	bool m_bBossInsideScreen;		// ボスが画面内判定用フラグ
+	float m_fDistanceX;		// ポスとプレイヤーのX座標の差
+	float m_fDistanceZ;		// ポスとプレイヤーのZ座標の差
 };
 
 

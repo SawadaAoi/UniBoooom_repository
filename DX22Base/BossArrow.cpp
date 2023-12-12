@@ -17,10 +17,13 @@
 #include <math.h>
 
 // =============== 定数定義 =======================
-const TPos2d<float> BOSS_ARROW_POS(640.0f, 100.0f);	//ボス方向の位置設定
-const float BOSS_ARROW_SIZE_X = 60.0f;				//ボス方向のXの長さ設定
-const float BOSS_ARROW_SIZE_Y = -60.0f;				//ボス方向のYの長さ設定
-
+const TPos2d<float> BOSS_ARROW_POS(640.0f, 100.0f);		//ボス方向の位置設定
+const float BOSS_ARROW_SIZE_X = 60.0f;					//ボス方向のXの長さ設定
+const float BOSS_ARROW_SIZE_Y = -60.0f;					//ボス方向のYの長さ設定
+const float PLUS_OUT_OF_SCREEN_DISTANCE_X = 23.5f;		//
+const float MINUS_OUT_OF_SCREEN_DISTANCE_X = -23.5f;	//
+const float PLUS_OUT_OF_SCREEN_DISTANCE_Z = 17.5f;		//
+const float MINUS_OUT_OF_SCREEN_DISTANCE_Z = -12.5f;	//
 
 #if MODE_GAME_PARAMETER
 #else
@@ -38,10 +41,12 @@ const float BOSS_ARROW_SIZE_Y = -60.0f;				//ボス方向のYの長さ設定
 	戻値：なし
 =========================================== */
 CBossArrow::CBossArrow()
-	:m_bShowArrowFlg(false)
+	:m_bBossInsideScreen(true)
 	,m_pArrowTex(nullptr)
 	,m_pos(BOSS_ARROW_POS.x, BOSS_ARROW_POS.y)
 	,m_radian(0.0f)
+	,m_fDistanceX(0.0f)
+	,m_fDistanceZ(0.0f)
 {
 
 	m_pArrowTex = new Texture();
@@ -78,16 +83,29 @@ CBossArrow::~CBossArrow()
 =========================================== */
 void CBossArrow::Update()
 {
-	float fDistanceX;		// ポスとプレイヤーのX座標の差
-	float fDistanceZ;		// ポスとプレイヤーのZ座標の差
+	
+	m_bBossInsideScreen = true;
 
 	// ボスが存在したら、プレイヤーとボスの角度を計算
 	if (m_pBoss->IsBossPtrExist())
 	{
-		fDistanceX = m_pBoss->GetBossSlimePtr(0)->GetPos().x - m_pPlayer->GetPos().x;
-		fDistanceZ = m_pBoss->GetBossSlimePtr(0)->GetPos().z - m_pPlayer->GetPos().z;
+		
+		// プレイヤーとボスの距離計算
+		m_fDistanceX = m_pBoss->GetBossSlimePtr(0)->GetPos().x - m_pPlayer->GetPos().x;
+		m_fDistanceZ = m_pBoss->GetBossSlimePtr(0)->GetPos().z - m_pPlayer->GetPos().z;
+		m_radian = atan2(m_fDistanceX, m_fDistanceZ);		// プレイヤーとボスの角度
+		
+		// 画面内判定
+		if ( m_fDistanceX <= MINUS_OUT_OF_SCREEN_DISTANCE_X || PLUS_OUT_OF_SCREEN_DISTANCE_X <= m_fDistanceX)
+		{
+			m_bBossInsideScreen = false;		// 画面外だったらfalse
+		}
+		if (m_fDistanceZ <= MINUS_OUT_OF_SCREEN_DISTANCE_Z || MINUS_OUT_OF_SCREEN_DISTANCE_Z <= m_fDistanceZ)
+		{
+			m_bBossInsideScreen = false;		// 画面外だったらfalse
+		}
+		
 
-		m_radian = atan2(fDistanceX, fDistanceZ);		// プレイヤーとボスの角度
 	}
 	
 }
@@ -103,8 +121,8 @@ void CBossArrow::Update()
 =========================================== */
 void CBossArrow::Draw()
 {
-	//ボスがいなかったら return（表示しません）
-	if (!m_pBoss->IsBossPtrExist()) return;
+	//ボスがいなかったら or 画面内にいる return（表示しません）
+	if (!m_pBoss->IsBossPtrExist() || m_bBossInsideScreen) return;
 
 	//ボスゲージテクスチャ（空）
 	DirectX::XMFLOAT4X4 bossArrow[3];
