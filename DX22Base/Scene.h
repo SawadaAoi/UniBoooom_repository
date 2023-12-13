@@ -19,6 +19,7 @@
 	・2023/11/17 列挙中身追加 takagi
 	・2023/11/22 2D描画関数宣言 nieda
 	・2023/11/23 サウンドファイル読み込み関数用変数追加 nieda
+	・2023/12/14 BGMの管理をSceneManagerに移動 yamashita
 
 ========================================== */
 
@@ -27,8 +28,8 @@
 
 // =============== インクルード ===================
 #include "Texture.h"
-#include "Sound.h"
 #include "Camera.h"
+#include "Fade.h"
 
 // =============== クラス定義 =====================
 class CScene
@@ -63,8 +64,7 @@ protected:
 	// ===メンバ変数宣言=====
 	bool m_bFinish;	//終了予約用(trueで終了)
 	CCamera* m_pCamera;
-	XAUDIO2_BUFFER* m_pBGM;							//BGMの音声データ
-	IXAudio2SourceVoice* m_pBGMSpeaker;				//BGMを聞き取る側
+	CFade* m_pFade;
 };	//シーン
 
 #endif	//!__SCENE_H__

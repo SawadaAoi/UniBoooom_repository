@@ -12,6 +12,7 @@
 	変更履歴
 	・2023/11/16 制作 takagi
 	・2023/12/12 LoadSEをオーバーライド yamashita
+	・2023/12/14 BGMの管理をSceneManagerに移動 yamashita
 
 ========================================== */
 
@@ -32,8 +33,6 @@ public:
 	void Draw();					//描画	
 	E_TYPE GetType() const override;	//自身の種類ゲッタ
 	E_TYPE GetNext() const override;	//次のシーンゲッタ
-private:
-	void LoadBGM() override final;
 };	//ステージ2
 
 #endif	//!__STAGE2_H__

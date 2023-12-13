@@ -16,6 +16,7 @@
 	・2023/12/04 ポーズクラス追加・デストラクタ復活 takagi
 	・2023/12/05 コメント修正 takagi
 	・2023/12/06 pose→pause修正、ポーズ文字表示 takagi
+	・2023/12/14 BGMの管理をSceneManagerに移動 yamashita
 
 ========================================== */
 
@@ -40,7 +41,6 @@ CStage::CStage()
 	, m_pCollision(nullptr)
 	, m_pExplosionMng(nullptr)
 	, m_pFloor(nullptr)
-	, m_pFade(nullptr)
 	, m_pTexture(nullptr)
 	, m_pScoreOHMng(nullptr)
 	, m_pHealItemMng(nullptr)
@@ -209,17 +209,4 @@ CStage::~CStage()
 void CStage::LoadSE()
 {
 	m_pSEHitHammer = CSound::LoadSound("Assets/Sound/SE/Smash.mp3");		//SEの読み込み
-}
-
-/* ========================================
-   BGMのサウンドファイル読み込み関数
-   -------------------------------------
-   内容：BGMのサウンドファイルの読み込み
-   -------------------------------------
-   引数1：無し
-   -------------------------------------
-   戻値：無し
-=========================================== */
-void CStage::LoadBGM()
-{
 }

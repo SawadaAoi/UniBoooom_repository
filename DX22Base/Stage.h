@@ -17,6 +17,7 @@
 	・2023/12/06 pose→pause修正、ポーズ文字表示 takagi
 	・2023/12/08 シーン遷移用に変数追加 takagi
 	・2023/12/12 Stage1からメンバ変数を移動 yamashita
+	・2023/12/14 BGMの管理をSceneManagerに移動 yamashita
 
 ========================================== */
 
@@ -110,7 +111,6 @@ protected:
 	void SlimeBossNormalMoveCollision();		//追加
 	void BossSlimeNormalMoveCollision();		//追加
 	void BossBossNormalMoveCollision();			//追加
-	virtual void LoadBGM();
 	// ===メンバ変数宣言===
 	VertexShader* m_pVs;
 	CPlayer* m_pPlayer;
@@ -121,7 +121,6 @@ protected:
 	//CTimer* m_pTimer;
 	//CCombo* m_pCombo;
 	CFloor* m_pFloor;
-	CFade* m_pFade;
 	//CStageFinish* m_pStageFin;
 	Texture* m_pTexture;
 	CScoreOHManager* m_pScoreOHMng;
