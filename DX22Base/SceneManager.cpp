@@ -359,12 +359,12 @@ void CSceneManager::MakeNewScene()
 =========================================== */
 void CSceneManager::LoadSound()
 {
-	m_pBGM[CScene::E_TYPE_TITLE]		= CSound::LoadSound(BGM_FILE[CScene::E_TYPE_TITLE].c_str,true);			//タイトル用
-	m_pBGM[CScene::E_TYPE_SELECT_STAGE] = CSound::LoadSound(BGM_FILE[CScene::E_TYPE_SELECT_STAGE].c_str, true);	//セレクトステージ用
-	m_pBGM[CScene::E_TYPE_STAGE1]		= CSound::LoadSound(BGM_FILE[CScene::E_TYPE_STAGE1].c_str, true);		//ステージ1用
-	m_pBGM[CScene::E_TYPE_STAGE2]		= CSound::LoadSound(BGM_FILE[CScene::E_TYPE_STAGE2].c_str, true);		//ステージ2用
-	m_pBGM[CScene::E_TYPE_STAGE3]		= CSound::LoadSound(BGM_FILE[CScene::E_TYPE_STAGE3].c_str, true);		//ステージ3用
-	m_pBGM[CScene::E_TYPE_RESULT]		= CSound::LoadSound(BGM_FILE[CScene::E_TYPE_RESULT].c_str, true);		//リザルト用
+	m_pBGM[CScene::E_TYPE_TITLE] = CSound::LoadSound(BGM_FILE[CScene::E_TYPE_TITLE].c_str(), true);			//タイトル用
+	m_pBGM[CScene::E_TYPE_SELECT_STAGE] = CSound::LoadSound(BGM_FILE[CScene::E_TYPE_SELECT_STAGE].c_str(), true);	//セレクトステージ用
+	m_pBGM[CScene::E_TYPE_STAGE1] = CSound::LoadSound(BGM_FILE[CScene::E_TYPE_STAGE1].c_str(), true);		//ステージ1用
+	m_pBGM[CScene::E_TYPE_STAGE2] = CSound::LoadSound(BGM_FILE[CScene::E_TYPE_STAGE2].c_str(), true);		//ステージ2用
+	m_pBGM[CScene::E_TYPE_STAGE3] = CSound::LoadSound(BGM_FILE[CScene::E_TYPE_STAGE3].c_str(), true);		//ステージ3用
+	m_pBGM[CScene::E_TYPE_RESULT] = CSound::LoadSound(BGM_FILE[CScene::E_TYPE_RESULT].c_str(), true);		//リザルト用
 }
 
 void CSceneManager::SoundUpdate()
