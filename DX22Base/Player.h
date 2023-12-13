@@ -60,7 +60,7 @@ public:
 	void MoveController();	// コントローラ用入力移動
 	void MoveSizeInputSet(TPos3d<float> fInput);
 	void DamageAnimation();
-	void SE_Move();
+	void MoveCheck();
 	void LoadSound();	//サウンド読み込み関数
 	void Healing();
 
@@ -76,20 +76,12 @@ public:
 	
 
 private:
+	// ===プロトタイプ宣言===
+	void LoadAnime();	//アニメーション読み込み関数
 
-	// ===列挙===
-	enum MOTION
-	{
-		MOTION_STOP,	//待機
-		MOTION_,		//移動
-		Swing,	//ハンマーを振る
-
-		Max,	//モーションの合計数
-	};
 	// ===メンバ変数宣言=====
 	TPos3d<float> m_fMove;				// 移動量
 	AnimeModel* m_pModel;				//プレイヤーのモデル
-	VertexShader* m_pVS;				//頂点シェーダーのポインタ
 	int m_nHp;							// プレイヤーの体力
 	bool m_bAttackFlg;					// 攻撃中かどうかのフラグ
 	int m_nNoDamageCnt;					// プレイヤーの無敵時間をカウント
@@ -104,12 +96,38 @@ private:
 	float m_fTick;						//フレームカウンタ(0to60)
 	CShadow* m_pShadow;
 
-	XAUDIO2_BUFFER* m_pSESwingHammer;
-	XAUDIO2_BUFFER* m_pSERun;
-	XAUDIO2_BUFFER* m_pSEDamaged;
-	IXAudio2SourceVoice* m_pSESwingHamSpeaker;
-	IXAudio2SourceVoice* m_pSERunSpeaker;
-	IXAudio2SourceVoice* m_pSEDamagedSpeaker;
+	// ===列挙===
+	enum MOTION
+	{
+		MOTION_STOP,	//待機
+		MOTION_MOVE,	//移動
+		MOTION_SWING,	//ハンマーを振る
+
+		MOTION_MAX,	//モーションの総数
+	};
+	enum SE
+	{
+		SE_SWING,	//ハンマーを振るSE
+		SE_RUN,			//移動のSE
+		SE_DAMAGED,		//被ダメージのSE
+
+		SE_MAX			//SEの総数
+	};
+
+	//=====SE関連=====
+	XAUDIO2_BUFFER* m_pSE[SE_MAX];
+	IXAudio2SourceVoice* m_pSESpeaker[SE_MAX];
+	const std::string m_sSEFile[SE_MAX] = {
+		"Assets/Sound/SE/Swing.mp3",			//ハンマーを振る
+		"Assets/Sound/SE/Run.mp3",				//移動のSE
+		"Assets/Sound/SE/PlayerDamage.mp3" };	//被ダメージ
+
+	//=====アニメーション関連=====
+	AnimeModel::AnimeNo m_Anime[MOTION_MAX];	//プレイヤーのアニメーション
+	const std::string m_sAnimeFile[MOTION_MAX] = {	//アニメーションのファイル
+		"Assets/Model/player/Player.FBX",	//待機
+		"Assets/Model/player/Dash.FBX",		//移動
+		"Assets/Model/player/POW.FBX" };	//スイング
 };
 
 
