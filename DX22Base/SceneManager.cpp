@@ -46,6 +46,15 @@
 #include "Input.h"			//キー入力
 #endif
 
+// =============== 定数定義 ===================
+const std::string BGM_FILE[CScene::E_TYPE_MAX] = {	//各ステージのBGMのファイル
+	"Assets/Sound/BGM/BGM_maou.mp3",	//タイトル
+	"Assets/Sound/BGM/BGM_maou.mp3",	//ステージセレクト
+	"Assets/Sound/BGM/BGM_maou.mp3",	//Stage1
+	"Assets/Sound/BGM/BGM_maou.mp3",	//Stage2
+	"Assets/Sound/BGM/BGM_maou.mp3",	//Stage3
+	"Assets/Sound/BGM/BGM_maou.mp3" };	//リザルト
+
 /* ========================================
 	コンストラクタ
 	----------------------------------------
@@ -63,7 +72,11 @@ CSceneManager::CSceneManager()
 	, m_pFade(nullptr)						//フェード
 	, m_bStartFadeOut(false)
 	, m_bFinFadeOut(false)
+	, m_pBGM{nullptr,nullptr,nullptr,nullptr,nullptr,nullptr}
+	, m_pBGMSpeaker(nullptr)
 {
+	// =============== サウンド読み込み ===================
+	LoadSound();
 	// =============== 動的確保 ===================
 	if (!m_pScene)	//ヌルチェック
 	{
@@ -151,8 +164,6 @@ void CSceneManager::Update()
 				}
 			}
 		}
-		//BGMはフェードに左右されずに更新
-		m_pScene->SoundUpdate();
 	}
 
 	// =============== フェード系 ===================
@@ -168,6 +179,8 @@ void CSceneManager::Update()
 			}
 		}
 	}
+	// =============== サウンド ===================
+	SoundUpdate();
 }
 
 /* ========================================
@@ -235,6 +248,13 @@ void CSceneManager::ChangeScene()
 	// =============== シーン削除 =====================
 	if (m_pScene)	//ヌルチェック
 	{
+		//BGMの削除
+		if (m_pScene->GetType() != CScene::E_TYPE_TITLE)	//タイトルからセレクトシーンの時は消さない
+		{
+			m_pBGMSpeaker->Stop();
+			m_pBGMSpeaker->DestroyVoice();	//BGMの削除
+		}
+		//シーンの削除
 		m_ePastScene = m_pScene->GetType();	//現在シーン種退避
 		delete m_pScene;					//メモリ解放
 		m_pScene = nullptr;					//空アドレス
@@ -275,6 +295,7 @@ void CSceneManager::MakeNewScene()
 		// =============== タイトルシーン =====================
 	case CScene::E_TYPE_TITLE:		//遷移先：タイトル
 		m_pScene = new CTitle();	//動的確保
+		PlayBGM(m_eNextScene);		//BGMの再生
 		break;						//分岐処理終了
 
 		// =============== ステージセレクト =====================
@@ -285,21 +306,25 @@ void CSceneManager::MakeNewScene()
 		// =============== ステージ1 =====================
 	case CScene::E_TYPE_STAGE1:		//遷移先：ステージ1
 		m_pScene = new CStage1();	//動的確保
+		PlayBGM(m_eNextScene);		//BGMの再生
 		break;						//分岐処理終了
 
 		// =============== ステージ2 =====================
 	case CScene::E_TYPE_STAGE2:		//遷移先：ステージ2
 		m_pScene = new CStage2();	//動的確保
+		PlayBGM(m_eNextScene);		//BGMの再生
 		break;						//分岐処理終了
 
 		// =============== ステージ3 =====================
 	case CScene::E_TYPE_STAGE3:		//遷移先：ステージ3
 		m_pScene = new CStage3();	//動的確保
+		PlayBGM(m_eNextScene);		//BGMの再生
 		break;						//分岐処理終了
 
 		// =============== リザルトシーン =====================
 	case CScene::E_TYPE_RESULT:		//遷移先：リザルト
 		m_pScene = new CResult();	//動的確保
+		PlayBGM(m_eNextScene);		//BGMの再生
 		break;						//分岐処理終了
 
 		// =============== 前のシーン =====================
@@ -318,4 +343,67 @@ void CSceneManager::MakeNewScene()
 
 	// =============== 遷移先更新 =====================
 	m_eNextScene = CScene::E_TYPE_NONE;	//移動先クリア
+}
+
+/* ========================================
+	BGM読み込み関数
+	----------------------------------------
+	内容：BGMのサウンドファイルを読み込む
+	----------------------------------------
+	引数1：なし
+	----------------------------------------
+	戻値：なし
+=========================================== */
+void CSceneManager::LoadSound()
+{
+	m_pBGM[CScene::E_TYPE_TITLE]		= CSound::LoadSound(BGM_FILE[CScene::E_TYPE_TITLE].c_str,true);			//タイトル用
+	m_pBGM[CScene::E_TYPE_SELECT_STAGE] = CSound::LoadSound(BGM_FILE[CScene::E_TYPE_SELECT_STAGE].c_str, true);	//セレクトステージ用
+	m_pBGM[CScene::E_TYPE_STAGE1]		= CSound::LoadSound(BGM_FILE[CScene::E_TYPE_STAGE1].c_str, true);		//ステージ1用
+	m_pBGM[CScene::E_TYPE_STAGE2]		= CSound::LoadSound(BGM_FILE[CScene::E_TYPE_STAGE2].c_str, true);		//ステージ2用
+	m_pBGM[CScene::E_TYPE_STAGE3]		= CSound::LoadSound(BGM_FILE[CScene::E_TYPE_STAGE3].c_str, true);		//ステージ3用
+	m_pBGM[CScene::E_TYPE_RESULT]		= CSound::LoadSound(BGM_FILE[CScene::E_TYPE_RESULT].c_str, true);		//リザルト用
+}
+
+void CSceneManager::SoundUpdate()
+{
+	SoundFade();	//BGMのフェード
+}
+
+/* ========================================
+	BGMフェード関数
+	----------------------------------------
+	内容：BGMのフェード
+	----------------------------------------
+	引数1：なし
+	----------------------------------------
+	戻値：なし
+=========================================== */
+void CSceneManager::SoundFade()
+{
+	if (!m_pFade || !m_pBGMSpeaker) { return; }	//nullチェック
+	//フェードインだったらだんだん大きくなる
+	if (m_pFade->IsFadeIn())	
+	{
+		m_pBGMSpeaker->SetVolume((1.0f - m_pFade->GetFrameRate()) * BGM_VOLUME);
+	}
+	//フェードアウトだったらだんだん小さくなる
+	else if (m_pFade->IsFadeOut())
+	{
+		m_pBGMSpeaker->SetVolume(m_pFade->GetFrameRate() * BGM_VOLUME);
+	}
+}
+
+/* ========================================
+	BGM再生関数
+	----------------------------------------
+	内容：BGMの再生
+	----------------------------------------
+	引数1：Sceneの種類
+	----------------------------------------
+	戻値：なし
+=========================================== */
+void CSceneManager::PlayBGM(CScene::E_TYPE Scene)
+{
+	m_pBGMSpeaker = CSound::PlaySound(m_pBGM[Scene]);
+	m_pBGMSpeaker->SetVolume(0.0f);
 }

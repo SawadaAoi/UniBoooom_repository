@@ -24,6 +24,7 @@
 // =============== インクルード ===================
 #include "Scene.h"	//メンバのヘッダ
 #include "Fade.h"	//メンバのヘッダ
+#include "Sound.h"	
 
 // =============== クラス定義 =====================
 class CSceneManager	//管理
@@ -44,10 +45,15 @@ private:
 	bool m_bStartFadeOut;			//フェードアウト開始したか
 	bool m_bFinFadeOut;				//フェードアウト終了したか
 	CFade* m_pFade;					//フェード
-
+	XAUDIO2_BUFFER* m_pBGM[CScene::E_TYPE_MAX];		//BGMの音声データ
+	IXAudio2SourceVoice* m_pBGMSpeaker;				//BGMを聞き取る側
 	// ===プロトタイプ宣言===
 	void ChangeScene();		//シーン変更
 	void MakeNewScene();	//新シーン動的確保
+	void LoadSound();		//BGM読み込み
+	void SoundUpdate();		//BGMの更新
+	void SoundFade();		//BGMのフェード
+	void PlayBGM(CScene::E_TYPE Scene);			//BGMの再生
 };	//シーン管理
 
 #endif	//!__SCENE_MANAGER_H__

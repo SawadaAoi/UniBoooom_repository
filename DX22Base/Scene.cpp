@@ -40,8 +40,6 @@
 CScene::CScene()
 	: m_bFinish(false)	//シーン開始
 	, m_pCamera(nullptr)	//カメラ
-	, m_pBGM(nullptr)
-	, m_pBGMSpeaker(nullptr)
 	, m_pFade(nullptr)
 {
 }
@@ -162,29 +160,4 @@ void CScene::Draw2d(float posX, float posY, float h, float w, Texture* pTexture)
 CCamera* CScene::GetCamera()
 {
 	return m_pCamera;
-}
-
-/* ========================================
-   BGMの更新関数
-   -------------------------------------
-   内容：BGMの更新
-   -------------------------------------
-   引数1：無し
-   -------------------------------------
-   戻値：無し
-=========================================== */
-void CScene::SoundUpdate()
-{
-	if (!m_pFade) { return; }	//nullチェック
-	if (m_pFade->IsFadeIn())
-	{
-		m_pBGMSpeaker->SetVolume((1.0f - m_pFade->GetFrameRate()) * BGM_VOLUME);		//音量の設定
-		return;
-	}
-	else if(m_pFade->IsFadeOut())
-	{
-		m_pBGMSpeaker->SetVolume(m_pFade->GetFrameRate() * BGM_VOLUME);		//音量の設定
-		return;
-	}
-
 }

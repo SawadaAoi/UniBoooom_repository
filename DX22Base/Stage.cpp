@@ -167,13 +167,6 @@ CStage::~CStage()
 	SAFE_DELETE(m_pHealItemMng);
 	SAFE_DELETE(m_pPause);
 	SAFE_DELETE(m_pUIStageManager);
-
-	// =============== BGMの消去 ===================
-	if (m_pBGMSpeaker)
-	{
-		m_pBGMSpeaker->Stop();
-		m_pBGMSpeaker->DestroyVoice();
-	}
 }
 
 ///* ========================================
@@ -215,17 +208,4 @@ CStage::~CStage()
 void CStage::LoadSE()
 {
 	m_pSEHitHammer = CSound::LoadSound("Assets/Sound/SE/Smash.mp3");		//SEの読み込み
-}
-
-/* ========================================
-   BGMのサウンドファイル読み込み関数
-   -------------------------------------
-   内容：BGMのサウンドファイルの読み込み
-   -------------------------------------
-   引数1：無し
-   -------------------------------------
-   戻値：無し
-=========================================== */
-void CStage::LoadBGM()
-{
 }

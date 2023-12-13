@@ -110,7 +110,6 @@ protected:
 	void SlimeBossNormalMoveCollision();		//’Ç‰Á
 	void BossSlimeNormalMoveCollision();		//’Ç‰Á
 	void BossBossNormalMoveCollision();			//’Ç‰Á
-	virtual void LoadBGM();
 	// ===ƒƒ“ƒo•Ï”éŒ¾===
 	VertexShader* m_pVs;
 	CPlayer* m_pPlayer;

@@ -35,8 +35,6 @@ public:
 	E_TYPE GetNext() const override;	//次のシーンゲッタ
 private:
 	
-private:
-	void LoadBGM() override final;
 };	//ステージ1
 
 #endif	//!__STAGE1_H__
