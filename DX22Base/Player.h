@@ -76,11 +76,19 @@ public:
 	
 
 private:
-	// ===メンバ変数宣言=====
-	
 
+	// ===列挙===
+	enum MOTION
+	{
+		MOTION_STOP,	//待機
+		MOTION_,		//移動
+		Swing,	//ハンマーを振る
+
+		Max,	//モーションの合計数
+	};
+	// ===メンバ変数宣言=====
 	TPos3d<float> m_fMove;				// 移動量
-	AnimeModel* m_pModel;					//プレイヤーのモデル
+	AnimeModel* m_pModel;				//プレイヤーのモデル
 	VertexShader* m_pVS;				//頂点シェーダーのポインタ
 	int m_nHp;							// プレイヤーの体力
 	bool m_bAttackFlg;					// 攻撃中かどうかのフラグ

@@ -62,7 +62,7 @@ const float HAMMER_INTERVAL_TIME = 0.0f * 60;				// ハンマー振り間隔
 const float PLAYER_SHADOW_SCALE = 1.5f;		// プレイヤーの影の大きさ
 const int	SE_RUN_INTERVAL = static_cast<int>(0.4f * 60);	//プレイヤーの移動によるSE発生の間隔
 const float	SE_RUN_VOLUME = 0.3f;							//移動によるSEの音量
-
+const std::string PLAYER_MOTION_FILE[CPlayer::]
 
 
 /* ========================================
