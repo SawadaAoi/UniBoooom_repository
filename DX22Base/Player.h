@@ -26,6 +26,8 @@
 	・2023/11/27 ハンマー振り間隔用カウント追加 Tei	
 	・2023/11/28 ダメージ処理に受けるダメージ量を追加 Sawada
 	・2023/12/03 カメラの更新を担うため、ポインタのconstを仕方なく除去 takagi
+	・2023/12/14 アニメーション用の列挙を作成 yamashita
+	・2023/12/14 SE用の列挙を作成 yamashita
 
 ========================================== */
 #ifndef __PLAYER_H__
@@ -43,6 +45,7 @@
 #include "Sound.h"
 #include "Model.h"
 #include "Shadow.h"
+#include "AnimeModel.h"
 // =============== クラス定義 =====================
 class CPlayer
 	: public CObject
@@ -59,7 +62,7 @@ public:
 	void MoveController();	// コントローラ用入力移動
 	void MoveSizeInputSet(TPos3d<float> fInput);
 	void DamageAnimation();
-	void SE_Move();
+	void MoveCheck();
 	void LoadSound();	//サウンド読み込み関数
 	void Healing();
 
@@ -75,12 +78,12 @@ public:
 	
 
 private:
-	// ===メンバ変数宣言=====
-	
+	// ===プロトタイプ宣言===
+	void LoadAnime();	//アニメーション読み込み関数
 
+	// ===メンバ変数宣言=====
 	TPos3d<float> m_fMove;				// 移動量
-	Model* m_pModel;					//プレイヤーのモデル
-	VertexShader* m_pVS;				//頂点シェーダーのポインタ
+	AnimeModel* m_pModel;				//プレイヤーのモデル
 	int m_nHp;							// プレイヤーの体力
 	bool m_bAttackFlg;					// 攻撃中かどうかのフラグ
 	int m_nNoDamageCnt;					// プレイヤーの無敵時間をカウント
@@ -92,14 +95,41 @@ private:
 	int m_nMoveCnt;						// プレイヤーの移動によるSEの間隔
 	bool m_bIntFlg;						// ハンマー間隔時間フラグ
 	float m_fIntCnt;					// ハンマー間隔時間カウント
+	float m_fTick;						//フレームカウンタ(0to60)
 	CShadow* m_pShadow;
 
-	XAUDIO2_BUFFER* m_pSESwingHammer;
-	XAUDIO2_BUFFER* m_pSERun;
-	XAUDIO2_BUFFER* m_pSEDamaged;
-	IXAudio2SourceVoice* m_pSESwingHamSpeaker;
-	IXAudio2SourceVoice* m_pSERunSpeaker;
-	IXAudio2SourceVoice* m_pSEDamagedSpeaker;
+	// ===列挙===
+	enum MOTION
+	{
+		MOTION_STOP,	//待機
+		MOTION_MOVE,	//移動
+		MOTION_SWING,	//ハンマーを振る
+
+		MOTION_MAX,	//モーションの総数
+	};
+	enum SE
+	{
+		SE_SWING,	//ハンマーを振るSE
+		SE_RUN,			//移動のSE
+		SE_DAMAGED,		//被ダメージのSE
+
+		SE_MAX			//SEの総数
+	};
+
+	//=====SE関連=====
+	XAUDIO2_BUFFER* m_pSE[SE_MAX];
+	IXAudio2SourceVoice* m_pSESpeaker[SE_MAX];
+	const std::string m_sSEFile[SE_MAX] = {
+		"Assets/Sound/SE/Swing.mp3",			//ハンマーを振る
+		"Assets/Sound/SE/Run.mp3",				//移動のSE
+		"Assets/Sound/SE/PlayerDamage.mp3" };	//被ダメージ
+
+	//=====アニメーション関連=====
+	AnimeModel::AnimeNo m_Anime[MOTION_MAX];	//プレイヤーのアニメーション
+	const std::string m_sAnimeFile[MOTION_MAX] = {	//アニメーションのファイル
+		"Assets/Model/player/Player.FBX",	//待機
+		"Assets/Model/player/Dash.FBX",		//移動
+		"Assets/Model/player/POW.FBX" };	//スイング
 };
 
 

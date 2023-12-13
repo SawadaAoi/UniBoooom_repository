@@ -34,7 +34,8 @@
 	・2023/11/29 ハンマーのインターバル追加 yamamoto
 	・2023/12/03 カメラの更新を担うため、ポインタのconstを仕方なく除去 takagi
 	・2023/12/07 ゲームパラメータから一部定数移動 takagi
-  
+	・2023/12/14 プレイヤーのアニメーション実装 yamashita
+	・2023/12/14 SEの変数を整理 yamashita
 ======================================== */
 
 // =============== インクルード ===================
@@ -44,6 +45,7 @@
 #include "GameParameter.h"		//定数定義用ヘッダー
 #define _USE_MATH_DEFINES		// 円周率
 #include <math.h>				// 円周率
+#include "ShaderList.h"
 
 // =============== 定数定義 =======================
 const float KEYBOARD_INPUT_SIZE = 1.0f;						// キーボードの入力値の大きさ
@@ -61,8 +63,7 @@ const float HAMMER_INTERVAL_TIME = 0.0f * 60;				// ハンマー振り間隔
 const float PLAYER_SHADOW_SCALE = 1.5f;		// プレイヤーの影の大きさ
 const int	SE_RUN_INTERVAL = static_cast<int>(0.4f * 60);	//プレイヤーの移動によるSE発生の間隔
 const float	SE_RUN_VOLUME = 0.3f;							//移動によるSEの音量
-
-
+const float PLAYER_MOVE_ANIME_SPEED = 1.2f;					//プレイヤーの移動アニメーション再生速度
 
 /* ========================================
    関数：コンストラクタ
@@ -82,15 +83,12 @@ CPlayer::CPlayer()
 	, m_bCollide(false)
 	, m_DrawFlg(true)
 	, m_FlashCnt(0)
-	, m_pSESwingHammer(nullptr)
-	, m_pSESwingHamSpeaker(nullptr)
-	, m_pSERun(nullptr)
-	, m_pSERunSpeaker(nullptr)
-	, m_pSEDamaged(nullptr)
-	, m_pSEDamagedSpeaker(nullptr)
+	, m_pSE{nullptr,nullptr ,nullptr }
+	, m_pSESpeaker{ nullptr ,nullptr, nullptr }
 	, m_nMoveCnt(0)
 	, m_bIntFlg(false)
 	, m_fIntCnt(0.0f)
+	, m_fTick(1.0f / 60.0f)
 {
 	m_pHammer = new CHammer();								// Hammerクラスをインスタンス
 	m_nHp = PLAYER_HP;										// プレイヤーのHPを決定
@@ -98,17 +96,14 @@ CPlayer::CPlayer()
 	m_Transform.fScale = PLAYER_SIZE;
 	LoadSound();	//サウンドファイル読み込み
 
-	//頂点シェーダ読み込み
-	m_pVS = new VertexShader();
-	if (FAILED(m_pVS->Load("Assets/Shader/VS_Model.cso"))) {
-		MessageBox(nullptr, "VS_Model.cso", "Error", MB_OK);
-	}
 	//プレイヤーのモデル読み込み
-	m_pModel = new Model;
-	if (!m_pModel->Load("Assets/Model/player/player.FBX", 1.0f, Model::ZFlip)) {		//倍率と反転は省略可
+	m_pModel = new AnimeModel();
+	if (!m_pModel->Load("Assets/Model/player/POW.fbx", 1.0f, AnimeModel::Flip::ZFlipUseAnime)) {		//倍率と反転は省略可
 		MessageBox(NULL, "player", "Error", MB_OK);	//ここでエラーメッセージ表示
 	}
-	m_pModel->SetVertexShader(m_pVS);
+	m_pModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));		//頂点シェーダーをセット
+	//m_pModel->SetPixelShader(ShaderList::GetPS(ShaderList::PS_LAMBERT));	//ピクセルシェーダーをセット
+	LoadAnime();	//アニメーションの読み込み
 	m_pShadow = new CShadow();
 }
 /* ========================================
@@ -124,7 +119,6 @@ CPlayer::~CPlayer()
 {
 	SAFE_DELETE(m_pShadow);
 	SAFE_DELETE(m_pModel);
-	SAFE_DELETE(m_pVS);
 	SAFE_DELETE(m_pHammer);
 }
 
@@ -139,6 +133,11 @@ CPlayer::~CPlayer()
 ======================================== */
 void CPlayer::Update()
 {
+	//m_nTick++;
+	//if (m_nTick > 18000)
+	//{
+	//	m_nTick = 0;
+	//}
 	// ハンマー攻撃中
 	if (m_bAttackFlg == true)
 	{
@@ -181,9 +180,10 @@ void CPlayer::Update()
 		// スペースキーを押した時、またはコントローラのBボタンを押した時 && ハンマー間隔時間経過済み
 		if ((IsKeyTrigger(VK_SPACE) || IsKeyTriggerController(BUTTON_B)) && !m_bIntFlg)
 		{
+			m_pModel->Play(m_Anime[MOTION_SWING], false,0.01f);	//アニメーションの再生
 			m_pHammer->AttackStart(m_Transform.fPos, m_Transform.fRadian.y);	// ハンマー攻撃開始
 			m_bAttackFlg = true;	// 攻撃フラグを有効にする
-			m_pSESwingHamSpeaker = CSound::PlaySound(m_pSESwingHammer);	//ハンマーを振るSEの再生
+			m_pSESpeaker[SE_SWING] = CSound::PlaySound(m_pSE[SE_SWING]);	//ハンマーを振るSEの再生
 
 			//ハンマーのスイング量を減らす
 			m_pHammer->SwingSpeedAdd();
@@ -207,8 +207,12 @@ void CPlayer::Update()
 		}
 		
 	}
+	
+	//移動によるSEとアニメーションの処理
+	MoveCheck();
+	//アニメーションの更新
+	m_pModel->Step(m_fTick);
 
-	SE_Move();	//移動によるSEの処理
 }
 
 /* ========================================
@@ -225,14 +229,14 @@ void CPlayer::Draw()
 	// 描画しない(点滅処理中)
 	if (m_DrawFlg == true)
 	{
-		DirectX::XMFLOAT4X4 mat[3];
+		//DirectX::XMFLOAT4X4 mat[3];
 
-		mat[0] = m_Transform.GetWorldMatrixSRT();
-		mat[1] = m_pCamera->GetViewMatrix();
-		mat[2] = m_pCamera->GetProjectionMatrix();
+		//mat[0] = m_Transform.GetWorldMatrixSRT();
+		//mat[1] = m_pCamera->GetViewMatrix();
+		//mat[2] = m_pCamera->GetProjectionMatrix();
 
-		//-- 行列をシェーダーへ設定
-		m_pVS->WriteBuffer(0, mat);
+		////-- 行列をシェーダーへ設定
+		//m_pVS->WriteBuffer(0, mat);
 
 		//-- モデル表示
 		if (m_pModel) {
@@ -241,16 +245,50 @@ void CPlayer::Draw()
 			DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
 			SetRenderTargets(1, &pRTV, pDSV);		//DSVがnullだと2D表示になる
 
-			m_pModel->Draw();
+			//m_pModel->Draw();
 		}
+
+
+
+		DirectX::XMFLOAT4X4 mat[3] = {
+			m_Transform.GetWorldMatrixSRT(),
+			m_pCamera->GetViewMatrix(),
+			m_pCamera->GetProjectionMatrix()
+		};
+		ShaderList::SetWVP(mat);
+
+		//アニメーション対応したプレイヤーの描画
+		m_pModel->Draw(nullptr, [this](int index)
+		{
+			const AnimeModel::Mesh* pMesh = m_pModel->GetMesh(index);
+			const AnimeModel::Material* pMaterial = m_pModel->GetMaterial(pMesh->materialID);
+			ShaderList::SetMaterial(*pMaterial);
+
+			DirectX::XMFLOAT4X4 bones[200];
+			for (int i = 0; i < pMesh->bones.size() && i < 200; ++i)
+			{
+				// この計算はゲームつくろー「スキンメッシュの仕組み」が参考になる
+				DirectX::XMStoreFloat4x4(&bones[i], DirectX::XMMatrixTranspose(
+					pMesh->bones[i].invOffset *
+					m_pModel->GetBone(pMesh->bones[i].index)
+				));
+			}
+			ShaderList::SetBones(bones);
+		});
+#ifdef _DEBUG
+		//アニメーションの動きが確認できるボーンの描画(中心から動かない)
+		//m_pModel->DrawBone();	
+#endif
 	}
 	
+	//=====アニメーションの調整用に一応残しておく=====
 	if (m_bAttackFlg)
 	{
 		m_pHammer->Draw();		//ハンマーの描画
 	}
 
-	m_pShadow->Draw(m_Transform, PLAYER_SHADOW_SCALE, m_pCamera);	// 影の描画
+
+	//m_pShadow->Draw(m_Transform, PLAYER_SHADOW_SCALE, m_pCamera);	// 影の描画
 }
 
 /* ========================================
@@ -267,7 +305,7 @@ void CPlayer::Damage(int DmgNum)
 	m_nHp -= DmgNum;
 	m_bCollide = true;	//プレイヤーを一定時間、無敵にする
 	m_nNoDamageCnt = 0;	//プレイヤー無敵時間のカウントを0に戻す
-	m_pSEDamagedSpeaker = CSound::PlaySound(m_pSEDamaged);	//被ダメージ時のSE再生
+	m_pSESpeaker[SE_DAMAGED] = CSound::PlaySound(m_pSE[SE_DAMAGED]);	//被ダメージ時のSE再生
 
 	if (m_nHp <= 0)
 	{
@@ -474,6 +512,29 @@ bool CPlayer::GetAttackFlg()
 }
 
 /* ========================================
+   アニメーション読み込み関数
+   ----------------------------------------
+   内容：アニメーションを読み込む
+   ----------------------------------------
+   引数：無し
+   ----------------------------------------
+   戻値：無し
+======================================== */
+void CPlayer::LoadAnime()
+{
+	for (int i = 0; i < MOTION_MAX; i++)
+	{
+		//各アニメーションの読み込み
+		m_Anime[i] = m_pModel->AddAnimation(m_sAnimeFile[i].c_str());
+		//読み込みに失敗したらエラーメッセージ
+		if (!m_pModel->GetAnimation(m_Anime[i]))
+		{
+			MessageBox(NULL, m_sAnimeFile[i].c_str(), "Error", MB_OK);	//ここでエラーメッセージ表示
+		}
+	}
+}
+
+/* ========================================
    プレイヤー点滅関数
    ----------------------------------------
    内容：プレイヤーがダメージを受けたら点滅する
@@ -504,15 +565,15 @@ void CPlayer::DamageAnimation()
 }
 
 /* ========================================
-   プレイヤー点滅関数
+   プレイヤーが移動確認関数
    ----------------------------------------
-   内容：プレイヤーがダメージを受けたら点滅する
+   内容：プレイヤーが移動しているか確認して、それに応じた処理を行う
    ----------------------------------------
    引数：無し
    ----------------------------------------
    戻値：無し
 ======================================== */
-void CPlayer::SE_Move()
+void CPlayer::MoveCheck()
 {
 	m_nMoveCnt++;	//カウントを増やす
 
@@ -520,14 +581,28 @@ void CPlayer::SE_Move()
 	if (m_fMove.x == 0.0f && m_fMove.z == 0.0f)	
 	{
 		m_nMoveCnt = 0;
-	}
 
+		//アニメーションを再生
+		if (m_pModel->GetPlayNo() != m_Anime[MOTION_STOP] && !m_bAttackFlg)
+		{	//待機中のアニメーションを再生してない、なおかつ攻撃中じゃない場合
+			m_pModel->Play(m_Anime[MOTION_STOP],true);	
+		}
+	}
+	
 	//カウントが一定以上になればSEを発生してカウントをリセット
 	if (SE_RUN_INTERVAL <= m_nMoveCnt)	
 	{
-		m_pSERunSpeaker = CSound::PlaySound(m_pSERun);
-		m_pSERunSpeaker->SetVolume(SE_RUN_VOLUME);
-		m_nMoveCnt = 0;
+		//SEの再生
+		m_pSESpeaker[SE_RUN] = CSound::PlaySound(m_pSE[SE_RUN]);
+		m_pSESpeaker[SE_RUN]->SetVolume(SE_RUN_VOLUME);
+
+		//アニメーションを再生
+		if (m_pModel->GetPlayNo() != m_Anime[MOTION_MOVE])
+		{	//移動中のアニメーションを再生してない場合
+			m_pModel->Play(m_Anime[MOTION_MOVE], true,PLAYER_MOVE_ANIME_SPEED);
+		}
+
+		m_nMoveCnt = 0;	//カウントをリセット
 	}
 }
 
@@ -542,9 +617,15 @@ void CPlayer::SE_Move()
 ======================================== */
 void CPlayer::LoadSound()
 {
-	m_pSEDamaged = CSound::LoadSound("Assets/Sound/SE/PlayerDamage.mp3");	//SEの読み込み
-	m_pSESwingHammer = CSound::LoadSound("Assets/Sound/SE/Swing.mp3");		//SEの読み込み
-	m_pSERun = CSound::LoadSound("Assets/Sound/SE/Run.mp3");				//SEの読み込み
+	//SEの読み込み
+	for (int i = 0; i < SE_MAX; i++)
+	{
+		m_pSE[i] = CSound::LoadSound(m_sSEFile[i].c_str());
+		if (!m_pSE[i])
+		{
+			MessageBox(NULL, m_sSEFile[i].c_str(), "Error", MB_OK);	//ここでエラーメッセージ表示
+		}
+	}
 }
 
 /* ========================================

@@ -70,16 +70,16 @@ PixelShader* ShaderList::GetPS(PSKind ps)
 	return m_pPS[ps];
 }
 
-void ShaderList::SetWVP(const DirectX::XMFLOAT4X4* wvp)
+void ShaderList::SetWVP(DirectX::XMFLOAT4X4* wvp)
 {
 	for (int i = 0; i < VS_KIND_MAX; ++i)
 	{
-		m_pVS[i]->WriteBuffer(0, &wvp);
+		m_pVS[i]->WriteBuffer(0, wvp);
 	}
 }
-void ShaderList::SetBones(const DirectX::XMFLOAT4X4* bones200)
+void ShaderList::SetBones(DirectX::XMFLOAT4X4* bones200)
 {
-	m_pVS[VS_ANIME]->WriteBuffer(1, &bones200);
+	m_pVS[VS_ANIME]->WriteBuffer(1, bones200);
 }
 void ShaderList::SetMaterial(const AnimeModel::Material& material)
 {
