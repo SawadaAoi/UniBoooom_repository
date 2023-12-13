@@ -40,7 +40,6 @@ CStage::CStage()
 	, m_pCollision(nullptr)
 	, m_pExplosionMng(nullptr)
 	, m_pFloor(nullptr)
-	, m_pFade(nullptr)
 	, m_pTexture(nullptr)
 	, m_pScoreOHMng(nullptr)
 	, m_pHealItemMng(nullptr)
@@ -168,6 +167,13 @@ CStage::~CStage()
 	SAFE_DELETE(m_pHealItemMng);
 	SAFE_DELETE(m_pPause);
 	SAFE_DELETE(m_pUIStageManager);
+
+	// =============== BGMの消去 ===================
+	if (m_pBGMSpeaker)
+	{
+		m_pBGMSpeaker->Stop();
+		m_pBGMSpeaker->DestroyVoice();
+	}
 }
 
 ///* ========================================

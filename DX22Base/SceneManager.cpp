@@ -151,6 +151,8 @@ void CSceneManager::Update()
 				}
 			}
 		}
+		//BGMはフェードに左右されずに更新
+		m_pScene->SoundUpdate();
 	}
 
 	// =============== フェード系 ===================

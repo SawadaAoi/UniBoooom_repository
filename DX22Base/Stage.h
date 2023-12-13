@@ -121,7 +121,6 @@ protected:
 	//CTimer* m_pTimer;
 	//CCombo* m_pCombo;
 	CFloor* m_pFloor;
-	CFade* m_pFade;
 	//CStageFinish* m_pStageFin;
 	Texture* m_pTexture;
 	CScoreOHManager* m_pScoreOHMng;
