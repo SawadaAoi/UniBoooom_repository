@@ -13,6 +13,7 @@
 	・2023/11/05 制作 takagi
 	・2023/11/07 コメント修正 takagi
 	・2023/11/16 Prot.h→Stage1.h takagi
+	・2023/12/14 BGMの管理をSceneManagerに移動 yamashita
 
 ========================================== */
 
