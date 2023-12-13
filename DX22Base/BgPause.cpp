@@ -14,10 +14,15 @@
 
 // =============== インクルード ===================
 #include "BgPause.h"	//自身のヘッダ
+#include "Defines.h"	//画面情報用
 
 // =============== 定数定義 ===================
-const float AMPITUDE(25.0f);								//振幅
-const float ANGLE_SPEED(DirectX::XMConvertToRadians(1.5f));	//単振動の角速度
+const float AMPITUDE(25.0f);													//振幅
+const float ANGLE_SPEED(DirectX::XMConvertToRadians(1.5f));						//単振動の角速度
+const std::string VTX_SHADER("Assets/Shader/VsPause.cso");						//頂点シェーダー
+const std::string PXL_SHADER("Assets/Shader/PsPause.cso");						//ピクセルシェーダー
+const TPos3d<float> SCALE(
+	static_cast<float>(SCREEN_WIDTH), static_cast<float>(SCREEN_HEIGHT), 0.0f);	//大きさ
 
 /* ========================================
 	コンストラクタ
@@ -29,8 +34,39 @@ const float ANGLE_SPEED(DirectX::XMConvertToRadians(1.5f));	//単振動の角速度
 	戻値：なし
 =========================================== */
 CBgPause::CBgPause(const int& nWaitTime)
-	:m_fMoveAngle(0.0f)		//移動角
+	:m_pBgPs(nullptr)		//背景用ピクセルシェーダ
+	,m_pBgVs(nullptr)		//背景用頂点シェーダ
 {
+	// =============== 動的確保 ===================
+	m_pBgVs = new VertexShader;			//頂点シェーダー
+	m_pBgPs = new PixelShader;			//ピクセルシェーダー
+
+	// =============== 初期化 ===================
+	SetSize(SCALE);	//大きさ初期化
+
+	// =============== シェーダー設定 ===================
+	m_pBgVs->Load(VTX_SHADER.c_str());	//頂点シェーダー作成
+	m_pBgPs->Load(PXL_SHADER.c_str());	//ピクセルシェーダー作成
+
+	// =============== シェーダー登録 ===================
+	SetVertexShader(m_pBgVs);	//頂点シェーダー登録
+	SetPixelShader(m_pBgPs);	//ピクセルシェーダー登録
+}
+
+/* ========================================
+	デストラクタ
+	----------------------------------------
+	内容：破棄時に行う処理
+	----------------------------------------
+	引数1：なし
+	----------------------------------------
+	戻値：なし
+=========================================== */
+CBgPause::~CBgPause()
+{
+	// =============== 終了 ===================
+	SAFE_DELETE(m_pBgPs);	//ピクセルシェーダー削除
+	SAFE_DELETE(m_pBgVs);	//頂点シェーダー削除
 }
 
 /* ========================================
@@ -45,9 +81,6 @@ CBgPause::CBgPause(const int& nWaitTime)
 void CBgPause::CulculatePos(TPos3d<float>& fPos)
 {
 	// =============== 算出 ===================
-	CPauseObj::CulculatePos(fPos);							//親の関数使用
-	fPos.y = m_fReach.y + AMPITUDE * sinf(m_fMoveAngle);	//補完
-
-	// =============== 更新 ===================
-	m_fMoveAngle += ANGLE_SPEED;	//角更新
+	CPauseObj::CulculatePos(fPos);	//親の関数使用
+	fPos = m_fReach;				//補正
 }

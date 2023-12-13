@@ -182,10 +182,12 @@
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="CollisionOfStage.cpp" />
     <ClCompile Include="Combo.cpp" />
+    <ClCompile Include="CommandPause.cpp" />
     <ClCompile Include="Controller.cpp" />
     <ClCompile Include="Cylinder.cpp" />
     <ClCompile Include="DirectX.cpp" />
     <ClCompile Include="DirectWrite.cpp" />
+    <ClCompile Include="DrawAnimation.cpp" />
     <ClCompile Include="Effect.cpp" />
     <ClCompile Include="Emitter.cpp" />
     <ClCompile Include="EmitterManager.cpp" />
@@ -271,9 +273,11 @@
     <ClInclude Include="CharPause.h" />
     <ClInclude Include="Collision.h" />
     <ClInclude Include="Combo.h" />
+    <ClInclude Include="CommandPause.h" />
     <ClInclude Include="Controller.h" />
     <ClInclude Include="Cylinder.h" />
     <ClInclude Include="DirectWrite.h" />
+    <ClInclude Include="DrawAnimation.h" />
     <ClInclude Include="Fade.h" />
     <ClInclude Include="DiType.h" />
     <ClInclude Include="Floor.h" />

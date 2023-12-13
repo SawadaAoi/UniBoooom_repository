@@ -15,10 +15,17 @@
 
 // =============== インクルード ===================
 #include "CharPause.h"	//自身のヘッダ
+#include "GameParameter.h"
 
 // =============== 定数定義 ===================
-const float AMPITUDE(25.0f);								//振幅
-const float ANGLE_SPEED(DirectX::XMConvertToRadians(1.5f));	//単振動の角速度
+const float AMPITUDE(25.0f);											//振幅
+const float ANGLE_SPEED(DirectX::XMConvertToRadians(1.5f));				//単振動の角速度
+#if !MODE_GAME_PARAMETER
+const float CHARA_WIDTH = 100.0f;										//ポーズ表記横幅
+const float CHARA_HEIGHT = 100.0f;										//ポーズ表記縦幅
+#endif // !MODE_GAME_PARAMETER
+const TPos3d<float> SCALE(CHARA_WIDTH, CHARA_HEIGHT, 0.0f);	//大きさ
+
 
 /* ========================================
 	コンストラクタ
@@ -33,6 +40,8 @@ CCharPause::CCharPause(const int& nWaitTime)
 	:m_fMoveAngle(0.0f)		//移動角
 	,CPauseObj(nWaitTime)	//委譲
 {
+	// =============== 初期化 ===================
+	SetSize(SCALE);	//大きさ初期化
 }
 
 /* ========================================

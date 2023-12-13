@@ -128,8 +128,8 @@ SceneGame::SceneGame()
 
 	LoadSound();
 	//BGM‚ÌÄ¶
-	m_pSpeaker = CSound::PlaySound(m_pBGM);		//BGM‚ÌÄ¶
-	m_pSpeaker->SetVolume(BGM_VOLUME);			//‰¹—Ê‚ÌÝ’è
+	m_pBGMSpeaker = CSound::PlaySound(m_pBGM);		//BGM‚ÌÄ¶
+	m_pBGMSpeaker->SetVolume(BGM_VOLUME);			//‰¹—Ê‚ÌÝ’è
 
 
 }
@@ -145,10 +145,10 @@ SceneGame::SceneGame()
 =========================================== */
 SceneGame::~SceneGame()
 {
-	if (m_pSpeaker)
+	if (m_pBGMSpeaker)
 	{
-		m_pSpeaker->Stop();
-		m_pSpeaker->DestroyVoice();
+		m_pBGMSpeaker->Stop();
+		m_pBGMSpeaker->DestroyVoice();
 	}
 	SAFE_DELETE(m_pUIStageMng);
 	SAFE_DELETE(m_pHealItemMng);
