@@ -1,37 +1,37 @@
 /* ========================================
 	HEW/UniBoooom!!
 	---------------------------------------
-	ã‚¹ãƒ†ãƒ¼ã‚¸ç”¨æŠ½è±¡ã‚¯ãƒ©ã‚¹å®Ÿè£…
-	!memoï¼šå½“ãŸã‚Šåˆ¤å®šé–¢é€£ã®å‡¦ç†ã¯CollisionOfStage.cppã«è¨˜è¼‰
+	ƒXƒe[ƒW—p’ŠÛƒNƒ‰ƒXŽÀ‘•
+	!memoF“–‚½‚è”»’èŠÖ˜A‚Ìˆ—‚ÍCollisionOfStage.cpp‚É‹LÚ
 	---------------------------------------
 	Stage.cpp
 
-	ä½œæˆè€…
+	ì¬ŽÒ
 			takagi
 			nieda
 
-	å¤‰æ›´å±¥æ­´
-	ãƒ»2023/11/16 åˆ¶ä½œ takagi
-	ãƒ»2023/12/01 ã‚µã‚¦ãƒ³ãƒ‰ã®èª­ã¿è¾¼ã¿ yamashita
-	ãƒ»2023/12/04 ãƒãƒ¼ã‚ºã‚¯ãƒ©ã‚¹è¿½åŠ ãƒ»ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿å¾©æ´» takagi
-	ãƒ»2023/12/05 ã‚³ãƒ¡ãƒ³ãƒˆä¿®æ­£ takagi
-	ãƒ»2023/12/06 poseâ†’pauseä¿®æ­£ã€ãƒãƒ¼ã‚ºæ–‡å­—è¡¨ç¤º takagi
-	ãƒ»2023/12/14 BGMã®ç®¡ç†ã‚’SceneManagerã«ç§»å‹• yamashita
+	•ÏX—š—ð
+	E2023/11/16 §ì takagi
+	E2023/12/01 ƒTƒEƒ“ƒh‚Ì“Ç‚Ýž‚Ý yamashita
+	E2023/12/04 ƒ|[ƒYƒNƒ‰ƒX’Ç‰ÁEƒfƒXƒgƒ‰ƒNƒ^•œŠˆ takagi
+	E2023/12/05 ƒRƒƒ“ƒgC³ takagi
+	E2023/12/06 pose¨pauseC³Aƒ|[ƒY•¶Žš•\Ž¦ takagi
+	E2023/12/14 BGM‚ÌŠÇ—‚ðSceneManager‚ÉˆÚ“® yamashita
 
 ========================================== */
 
-// =============== ã‚¤ãƒ³ã‚¯ãƒ«ãƒ¼ãƒ‰ ===================
-#include "Stage.h"	//è‡ªèº«ã®ãƒ˜ãƒƒãƒ€
+// =============== ƒCƒ“ƒNƒ‹[ƒh ===================
+#include "Stage.h"	//Ž©g‚Ìƒwƒbƒ_
 #include "Line.h"
 
 ///* ========================================
-//	ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+//	ƒRƒ“ƒXƒgƒ‰ƒNƒ^
 //	----------------------------------------
-//	å†…å®¹ï¼šç”Ÿæˆæ™‚ã«è¡Œã†å‡¦ç†
+//	“à—eF¶¬Žž‚És‚¤ˆ—
 //	----------------------------------------
-//	å¼•æ•°1ï¼šãªã—
+//	ˆø”1F‚È‚µ
 //	----------------------------------------
-//	æˆ»å€¤ï¼šãªã—
+//	–ß’lF‚È‚µ
 //=========================================== */
 CStage::CStage()
 	:m_pVs(nullptr)
@@ -45,7 +45,7 @@ CStage::CStage()
 	, m_pScoreOHMng(nullptr)
 	, m_pHealItemMng(nullptr)
 	, m_pUIStageManager(nullptr)
-	, m_pPause(nullptr)	//ãƒãƒ¼ã‚º
+	, m_pPause(nullptr)	//ƒ|[ƒY
 	, m_pPlayerHp(nullptr)
 	, m_pTimeCnt(nullptr)
 	, m_nNum(0)
@@ -59,7 +59,7 @@ CStage::CStage()
 	, m_pSEHitHammer(nullptr)
 	, m_pSEHitHammerSpeaker(nullptr)
 {
-	// é ‚ç‚¹ã‚·ã‚§ãƒ¼ãƒ€ã®èª­è¾¼
+	// ’¸“_ƒVƒF[ƒ_‚Ì“Çž
 	m_pVs = new VertexShader();
 	if (FAILED(m_pVs->Load("Assets/shader/VS_Model.cso"))) {
 		MessageBox(nullptr, "VS_Model.cso", "Error", MB_OK);
@@ -68,33 +68,33 @@ CStage::CStage()
 	m_pTexture = new Texture();
 	if (FAILED(m_pTexture->Create("Assets/Texture/start_sprite.png")))
 	{
-		MessageBox(NULL, "ã‚¹ã‚¿ãƒ¼ãƒˆãƒ†ã‚­ã‚¹ãƒˆèª­ã¿è¾¼ã¿", "Error", MB_OK);
+		MessageBox(NULL, "ƒXƒ^[ƒgƒeƒLƒXƒg“Ç‚Ýž‚Ý", "Error", MB_OK);
 	}
 
-	// ãƒ¬ãƒ³ãƒ€ãƒ¼ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã€æ·±åº¦ãƒãƒƒãƒ•ã‚¡ã®è¨­å®š
-	RenderTarget* pRTV = GetDefaultRTV();	//ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã§ä½¿ç”¨ã—ã¦ã„ã‚‹RenderTargetViewã®å–å¾—
-	DepthStencil* pDSV = GetDefaultDSV();	//ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã§ä½¿ç”¨ã—ã¦ã„ã‚‹DepthStencilViewã®å–å¾—
-	SetRenderTargets(1, &pRTV, pDSV);		//DSVãŒnullã ã¨2Dè¡¨ç¤ºã«ãªã‚‹
+	// ƒŒƒ“ƒ_[ƒ^[ƒQƒbƒgA[“xƒoƒbƒtƒ@‚ÌÝ’è
+	RenderTarget* pRTV = GetDefaultRTV();	//ƒfƒtƒHƒ‹ƒg‚ÅŽg—p‚µ‚Ä‚¢‚éRenderTargetView‚ÌŽæ“¾
+	DepthStencil* pDSV = GetDefaultDSV();	//ƒfƒtƒHƒ‹ƒg‚ÅŽg—p‚µ‚Ä‚¢‚éDepthStencilView‚ÌŽæ“¾
+	SetRenderTargets(1, &pRTV, pDSV);		//DSV‚ªnull‚¾‚Æ2D•\Ž¦‚É‚È‚é
 
 #if MODE_COORD_AXIS
-	// è»¸ç·šã®è¡¨ç¤º
+	// Ž²ü‚Ì•\Ž¦
 	CLine::Init();
 #endif
 
 
-	//================3dObjectå‹•çš„ç¢ºä¿================
-	m_pPlayer = new CPlayer();							// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ç”Ÿæˆ
-	m_pFloor = new CFloor(m_pPlayer->GetPosAddress());	// åºŠç”Ÿæˆ
-	m_pExplosionMng = new CExplosionManager();			// çˆ†ç™ºãƒžãƒãƒ¼ã‚¸ãƒ£ãƒ¼ç”Ÿæˆ
-	m_pSlimeMng = new CSlimeManager(m_pPlayer);			// ã‚¹ãƒ©ã‚¤ãƒ ãƒžãƒãƒ¼ã‚¸ãƒ£ãƒ¼ç”Ÿæˆ
-	m_pHealItemMng = new CHealItemManager();			// å›žå¾©ã‚¢ã‚¤ãƒ†ãƒ ãƒžãƒãƒ¼ã‚¸ãƒ£ãƒ¼ç”Ÿæˆ
+	//================3dObject“®“IŠm•Û================
+	m_pPlayer = new CPlayer();							// ƒvƒŒƒCƒ„[¶¬
+	m_pFloor = new CFloor(m_pPlayer->GetPosAddress());	// °¶¬
+	m_pExplosionMng = new CExplosionManager();			// ”š”­ƒ}ƒl[ƒWƒƒ[¶¬
+	m_pSlimeMng = new CSlimeManager(m_pPlayer);			// ƒXƒ‰ƒCƒ€ƒ}ƒl[ƒWƒƒ[¶¬
+	m_pHealItemMng = new CHealItemManager();			// ‰ñ•œƒAƒCƒeƒ€ƒ}ƒl[ƒWƒƒ[¶¬
 
-	//================Systemå‹•çš„ç¢ºä¿================
-	m_pCamera = new CCameraChase(m_pPlayer->GetPosAddress());	//ã‚«ãƒ¡ãƒ©ç”Ÿæˆ
-	m_pCollision = new CCOLLISION();							//è¡çªåˆ¤å®šãƒã‚§ãƒƒã‚¯ç”Ÿæˆ
+	//================System“®“IŠm•Û================
+	m_pCamera = new CCameraChase(m_pPlayer->GetPosAddress());	//ƒJƒƒ‰¶¬
+	m_pCollision = new CCOLLISION();							//Õ“Ë”»’èƒ`ƒFƒbƒN¶¬
 
-	//================2dObjectå‹•çš„ç¢ºä¿================
-	m_pUIStageManager = new CUIStageManager(m_pPlayer, m_pCamera, m_pSlimeMng);	// UIãƒžãƒãƒ¼ã‚¸ãƒ£ãƒ¼ç”Ÿæˆ
+	//================2dObject“®“IŠm•Û================
+	m_pUIStageManager = new CUIStageManager(m_pPlayer, m_pCamera, m_pSlimeMng);	// UIƒ}ƒl[ƒWƒƒ[¶¬
 
 
 #if MODE_GROUND
@@ -108,53 +108,53 @@ CStage::CStage()
 	m_pPause = new CPause(m_pCamera);
 #endif
 
-	//================ã‚»ãƒƒãƒˆ================
-	// ã‚«ãƒ¡ãƒ©
+	//================ƒZƒbƒg================
+	// ƒJƒƒ‰
 	m_pPlayer->SetCamera(m_pCamera);
 	m_pExplosionMng->SetCamera(m_pCamera);
 	m_pSlimeMng->SetCamera(m_pCamera);
 	m_pFloor->SetCamera(m_pCamera);
 	m_pHealItemMng->SetCamera(m_pCamera);
 
-	//ã‚¹ãƒ©ã‚¤ãƒ ãƒžãƒãƒ¼ã‚¸ãƒ£ãƒ¼ã€€â†ã€€ã‚¹ã‚³ã‚¢ãƒžãƒãƒ¼ã‚¸ãƒ£ãƒ¼
+	//ƒXƒ‰ƒCƒ€ƒ}ƒl[ƒWƒƒ[@©@ƒXƒRƒAƒ}ƒl[ƒWƒƒ[
 	m_pSlimeMng->SetScoreOHMng(m_pUIStageManager->GetScoreMng());
 
-	//çˆ†ç™ºãƒžãƒãƒ¼ã‚¸ãƒ£ãƒ¼ã€€â†ã€€ã‚³ãƒ³ãƒœ
+	//”š”­ƒ}ƒl[ƒWƒƒ[@©@ƒRƒ“ƒ{
 	m_pExplosionMng->SetCombo(m_pUIStageManager->GetCombo());
 
-	//ã‚¹ãƒ©ã‚¤ãƒ ãƒžãƒãƒ¼ã‚¸ãƒ£ãƒ¼ã€€â†ã€€çˆ†ç™ºãƒžãƒãƒ¼ã‚¸ãƒ£ãƒ¼
+	//ƒXƒ‰ƒCƒ€ƒ}ƒl[ƒWƒƒ[@©@”š”­ƒ}ƒl[ƒWƒƒ[
 	m_pSlimeMng->SetExplosionMng(m_pExplosionMng);
 
-	// ã‚¹ãƒ©ã‚¤ãƒ ãƒžãƒãƒ¼ã‚¸ãƒ£ãƒ¼ã€€â†ã€€å›žå¾©ã‚¢ã‚¤ãƒ†ãƒ ãƒžãƒãƒ¼ã‚¸ãƒ£â€•
+	// ƒXƒ‰ƒCƒ€ƒ}ƒl[ƒWƒƒ[@©@‰ñ•œƒAƒCƒeƒ€ƒ}ƒl[ƒWƒƒ\
 	m_pSlimeMng->SetHealMng(m_pHealItemMng);
 
-	//çˆ†ç™ºãƒžãƒãƒ¼ã‚¸ãƒ£ãƒ¼ã€€â†ã€€ã‚¿ã‚¤ãƒžãƒ¼
+	//”š”­ƒ}ƒl[ƒWƒƒ[@©@ƒ^ƒCƒ}[
 	m_pSlimeMng->SetTimer(m_pUIStageManager->GetTimer());
 
-	//ã‚¹ãƒ†ãƒ¼ã‚¸å†…ã§æ‰±ã†SEã®ãƒ­ãƒ¼ãƒ‰
+	//ƒXƒe[ƒW“à‚Åˆµ‚¤SE‚Ìƒ[ƒh
 	LoadSE();
 }
 
 /* ========================================
-	ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	ƒfƒXƒgƒ‰ƒNƒ^
 	----------------------------------------
-	å†…å®¹ï¼šç ´æ£„æ™‚ã«è¡Œã†å‡¦ç†
+	“à—eF”jŠüŽž‚És‚¤ˆ—
 	----------------------------------------
-	å¼•æ•°1ï¼šãªã—
+	ˆø”1F‚È‚µ
 	----------------------------------------
-	æˆ»å€¤ï¼šãªã—
+	–ß’lF‚È‚µ
 =========================================== */
 CStage::~CStage()
 {
-	// =============== ã‚»ãƒ¼ãƒ– =====================
-	m_Data.Save();	//ã‚¹ãƒ†ãƒ¼ã‚¸ã®ãƒ‡ãƒ¼ã‚¿ã‚»ãƒ¼ãƒ–
+	// =============== ƒZ[ƒu =====================
+	m_Data.Save();	//ƒXƒe[ƒW‚Ìƒf[ƒ^ƒZ[ƒu
 
 #if MODE_COORD_AXIS
-// è»¸ç·šã®è¡¨ç¤º
+// Ž²ü‚Ì•\Ž¦
 	CLine::Uninit();
 #endif
 
-	// =============== çµ‚äº† ===================
+	// =============== I—¹ ===================
 	SAFE_DELETE(m_pVs);
 	SAFE_DELETE(m_pPlayer);
 	SAFE_DELETE(m_pBox);
@@ -171,42 +171,42 @@ CStage::~CStage()
 }
 
 ///* ========================================
-//	æ›´æ–°é–¢æ•°
+//	XVŠÖ”
 //	----------------------------------------
-//	å†…å®¹ï¼šæ›´æ–°å‡¦ç†
+//	“à—eFXVˆ—
 //	----------------------------------------
-//	å¼•æ•°1ï¼šãªã—
+//	ˆø”1F‚È‚µ
 //	----------------------------------------
-//	æˆ»å€¤ï¼šãªã—
+//	–ß’lF‚È‚µ
 //=========================================== */
 //void CStage::Update()
 //{
 //}
 //
 ///* ========================================
-//	æç”»é–¢æ•°
+//	•`‰æŠÖ”
 //	----------------------------------------
-//	å†…å®¹ï¼šæç”»å‡¦ç†
+//	“à—eF•`‰æˆ—
 //	----------------------------------------
-//	å¼•æ•°1ï¼šãªã—
+//	ˆø”1F‚È‚µ
 //	----------------------------------------
-//	æˆ»å€¤ï¼šãªã—
+//	–ß’lF‚È‚µ
 //	======================================== */
-//	//!memo(è¦‹ãŸã‚‰æ¶ˆã—ã¦ãƒ¼)ï¼šconstãŒé‚ªé­”ã«ãªã£ãŸã‚‰å¤–ã—ã¦ã­(.hã®æ–¹ã‚‚)
+//	//!memo(Œ©‚½‚çÁ‚µ‚Ä[)Fconst‚ªŽ×–‚‚É‚È‚Á‚½‚çŠO‚µ‚Ä‚Ë(.h‚Ì•û‚à)
 //void CStage::Draw() const
 //{
 //}
 
 /* ========================================
-   SEã®ã‚µã‚¦ãƒ³ãƒ‰ãƒ•ã‚¡ã‚¤ãƒ«èª­ã¿è¾¼ã¿é–¢æ•°
+   SE‚ÌƒTƒEƒ“ƒhƒtƒ@ƒCƒ‹“Ç‚Ýž‚ÝŠÖ”
    -------------------------------------
-   å†…å®¹ï¼šSEã®ã‚µã‚¦ãƒ³ãƒ‰ãƒ•ã‚¡ã‚¤ãƒ«ã®èª­ã¿è¾¼ã¿
+   “à—eFSE‚ÌƒTƒEƒ“ƒhƒtƒ@ƒCƒ‹‚Ì“Ç‚Ýž‚Ý
    -------------------------------------
-   å¼•æ•°1ï¼šç„¡ã—
+   ˆø”1F–³‚µ
    -------------------------------------
-   æˆ»å€¤ï¼šç„¡ã—
+   –ß’lF–³‚µ
 =========================================== */
 void CStage::LoadSE()
 {
-	m_pSEHitHammer = CSound::LoadSound("Assets/Sound/SE/Smash.mp3");		//SEã®èª­ã¿è¾¼ã¿
+	m_pSEHitHammer = CSound::LoadSound("Assets/Sound/SE/Smash.mp3");		//SE‚Ì“Ç‚Ýž‚Ý
 }
