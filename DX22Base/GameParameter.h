@@ -177,10 +177,6 @@ const int BOSS_GAUGE_FULL_TIME = 45 * 60;		//ボスゲージMAXになる時間(何秒出現) *
 const int SECOND_EMPTY_BOSS_GAUGE = 75 * 60;		//二体目のボス空ゲージ表す時間 * 60フレーム
 const int FADE_TIME = 5 * 60;							//ボスゲージが溜まってから消える時間
 
-// ボス画面外矢印 =====================================================
-const float SCREEN_SIZE_X = 1280.0f;					// 画面の横幅
-const float SCREEN_SIZE_Z = 720.0f;						// 画面の縦幅
-const float ARROW_POS_ADJUST = 100.0f;					// ボス指示矢印を他のUIと被らないようにの調整値
 
 // 床 ====================================
 const float FLOOR_SCALE_X = 3.1f;

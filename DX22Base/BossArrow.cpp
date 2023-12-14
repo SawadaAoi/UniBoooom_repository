@@ -27,14 +27,7 @@ const float OUT_OF_SCREEN_DISTANCE_TOP = 17.5f;			// プレイヤーから上境界の距離
 const float OUT_OF_SCREEN_DISTANCE_BUTTOM = -12.5f;		// プレイヤーから下境界の距離
 const float MULTIPLE_NUM_LEFT_RIGHT = 30.0f;			// ボス指示矢印が真ん中から右左端に行く必要な倍率
 const float MULTIPLE_NUM_TOP_BUTTOM = 20.0f;			// ボス指示矢印が真ん中から上下端に行く必要な倍率
-
-#if MODE_GAME_PARAMETER
-#else
-const float SCREEN_SIZE_X = 1280.0f;					// 画面の横幅
-const float SCREEN_SIZE_Z = 720.0f;						// 画面の縦幅
 const float ARROW_POS_ADJUST = 100.0f;					// ボス指示矢印を他のUIと被らないようにの調整値
-
-#endif
 
 
 /* ========================================
@@ -202,17 +195,17 @@ void CBossArrow::ArrowMove()
 	if (m_fDistanceX >= 0.0f)
 	{
 		m_pos.x = BOSS_ARROW_POS.x + m_fDistanceX * MULTIPLE_NUM_LEFT_RIGHT;
-		if (m_pos.x >= SCREEN_SIZE_X - ARROW_POS_ADJUST)
+		if (m_pos.x >= SCREEN_WIDTH - ARROW_POS_ADJUST)
 		{
-			m_pos.x = SCREEN_SIZE_X - ARROW_POS_ADJUST;
+			m_pos.x = SCREEN_WIDTH - ARROW_POS_ADJUST;
 		}
 		if (m_fDistanceZ <= 0.0f)
 		{
 			m_pos.y = BOSS_ARROW_POS.y - m_fDistanceZ * MULTIPLE_NUM_TOP_BUTTOM;
 
-			if (m_pos.y >= SCREEN_SIZE_Z - ARROW_POS_ADJUST)
+			if (m_pos.y >= SCREEN_HEIGHT - ARROW_POS_ADJUST)
 			{
-				m_pos.y = SCREEN_SIZE_Z - ARROW_POS_ADJUST;
+				m_pos.y = SCREEN_HEIGHT - ARROW_POS_ADJUST;
 			}
 		}
 		else
@@ -236,9 +229,9 @@ void CBossArrow::ArrowMove()
 		{
 			m_pos.y = BOSS_ARROW_POS.y - m_fDistanceZ * MULTIPLE_NUM_TOP_BUTTOM;
 
-			if (m_pos.y >= SCREEN_SIZE_Z - ARROW_POS_ADJUST)
+			if (m_pos.y >= SCREEN_HEIGHT - ARROW_POS_ADJUST)
 			{
-				m_pos.y = SCREEN_SIZE_Z - ARROW_POS_ADJUST;
+				m_pos.y = SCREEN_HEIGHT - ARROW_POS_ADJUST;
 			}
 		}
 		else
