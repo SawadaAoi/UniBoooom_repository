@@ -19,10 +19,10 @@
 #include "Input.h"
 #include "GameParameter.h"
 // =============== 定数定義 =======================
-const float TEXTURE_SELECT_STAGE_POSX = 640.0f;
+const float TEXTURE_SELECT_STAGE_POSX = 900.0f;
 const float TEXTURE_SELECT_STAGE_POSY = 400.0f;
-const float TEXTURE_SELECT_STAGE_WIDTH = 500.0f;
-const float TEXTURE_SELECT_STAGE_HEIGHT = 300.0f;
+const float TEXTURE_SELECT_STAGE_WIDTH = 900.0f;
+const float TEXTURE_SELECT_STAGE_HEIGHT = 700.0f;
 
 /* ========================================
 	コンストラクタ
@@ -104,7 +104,7 @@ void CSelectStage::Draw() //const
 	for (int i = SUTAGE_NUM-1; i > 0-1; i--)
 	{
 		Draw2d(TEXTURE_SELECT_STAGE_POSX+i*100
-			, TEXTURE_SELECT_STAGE_POSY
+			, TEXTURE_SELECT_STAGE_POSY + i * 70
 			, TEXTURE_SELECT_STAGE_WIDTH
 			, TEXTURE_SELECT_STAGE_HEIGHT
 			, mStageNum[i].m_pTexture);
