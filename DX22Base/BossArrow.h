@@ -33,6 +33,7 @@ public:
 	void Draw();
 	void SetSlimeMng(CSlimeManager* mSlimeMng);
 	void SetPlayer(CPlayer* mPlayer);
+	void ArrowMove();
 protected:
 
 private:
