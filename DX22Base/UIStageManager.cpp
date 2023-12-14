@@ -103,6 +103,7 @@ void CUIStageManager::Update()
 =========================================== */
 void CUIStageManager::Draw()
 {
+	m_pBossArrow->Draw();	// ボス方向矢印描画
 	m_pStageFin->Draw();	// ステージ終了描画
 	m_pTimer->Draw();		// タイマー描画
 	m_pCombo->Draw();		// コンボ描画
@@ -110,7 +111,6 @@ void CUIStageManager::Draw()
 	m_pTotalScore->Draw();	// トータルスコア描画
 	m_pBossgauge->Draw();	// ボスゲージ描画
 	m_pScoreOHMng->Draw();	// スコアマネージャー描画
-	m_pBossArrow->Draw();	// ボス方向矢印描画
 }
 
 CScoreOHManager* CUIStageManager::GetScoreMng()
