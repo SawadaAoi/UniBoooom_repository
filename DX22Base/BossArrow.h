@@ -21,6 +21,7 @@
 #include "Camera.h"
 #include "SlimeManager.h"
 #include "Player.h"
+#include "GameParameter.h"
 
 // =============== ƒNƒ‰ƒX’è‹` =====================
 class CBossArrow
