@@ -63,7 +63,7 @@ const float COL_SUB_STAND_TO_SMALL = 0.8f;			// スライム衝突(小→大)の衝突される
 const float COL_SUB_HIT_TO_SMALL = 0.3f;			// スライム衝突(大→小)の衝突側の減算値(移動方向)				//1.0でそのまま
 const float COL_SUB_STAND_TO_BIG = 1.2f;			// スライム衝突(大→小)の衝突される側の減算値(衝突された方向)	//1.0でそのまま
 
-#define DEBUG_BOSS	(true)	// デバッグ用にゲーム開始時ボスを生成するかどうか
+#define DEBUG_BOSS	(false)	// デバッグ用にゲーム開始時ボスを生成するかどうか
 
 
 #if MODE_GAME_PARAMETER
@@ -355,7 +355,7 @@ void CSlimeManager::Create(E_SLIME_LEVEL level)
 	-------------------------------------
 	戻値：無し
 =========================================== */
-void CSlimeManager::CreateBoss()
+void CSlimeManager::CreateBoss(int BossNum)
 {
 	for (int i = 0; i < MAX_BOSS_SLIME_NUM; i++)
 	{
@@ -364,7 +364,18 @@ void CSlimeManager::CreateBoss()
 
 		TPos3d<float> createPos = m_pPlayer->GetPos();
 		createPos.z += ADD_CREATE_BOSS_POS_Z;
-		m_pBoss[i] = new CSlime_Boss_1(createPos, m_pVS, m_pBossModel[0], m_pBossModel[1]);	//動的生成(取り合えず位置は仮)
+
+		switch (BossNum)
+		{
+		case 1:
+			m_pBoss[i] = new CSlime_Boss_1(createPos, m_pVS, m_pBossModel[0], m_pBossModel[1]);	//動的生成(取り合えず位置は仮)
+
+			break;
+		case 2:
+			m_pBoss[i] = new CSlime_Boss_2(createPos, m_pVS, m_pBossModel[0], m_pBossModel[1]);	//動的生成(取り合えず位置は仮)
+
+			break;
+		}
 
 		break;
 	}

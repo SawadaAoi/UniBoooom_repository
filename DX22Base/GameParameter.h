@@ -174,12 +174,15 @@ const float SLM_MOVE_ADD_SPEED[STATE_MAX]		= { 1.0f, 1.1f, 1.2f };			// 移動スピ
 // ボスゲージ =====================================================
 typedef struct
 {
+	int	  BossNum;		// ボスの種類
 	float startTime;	// 開始時間(秒)
 	float maxTime;		// ゲージ経過最大時間(秒)
 
 }BossGaugeSetParam;
 
-const BossGaugeSetParam BOSS_GAUGE_S1[2] = { {0, 45},{75, 45} };	// ステージ1のボスゲージ設定
+const BossGaugeSetParam BOSS_GAUGE_S1[2] = {};	// ステージ1のボスゲージ設定
+const BossGaugeSetParam BOSS_GAUGE_S2[1] = { {1, 0, 45}};	// ステージ2のボスゲージ設定
+const BossGaugeSetParam BOSS_GAUGE_S3[1] = { {2, 0, 45}};	// ステージ3のボスゲージ設定
 
 const int FADE_TIME = 5 * 60;										// ボスゲージが溜まってから消える時間
  

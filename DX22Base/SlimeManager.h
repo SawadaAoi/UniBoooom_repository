@@ -61,7 +61,7 @@ public:
 	void Update(CExplosionManager* pExpMng);
 	void Draw();
 	void Create(E_SLIME_LEVEL level);
-	void CreateBoss();
+	void CreateBoss(int BossNum);
 
 	//-- ノーマル、その他
 	void HitBranch(int HitSlimeArrayNum,int standSlimeArrayNum,CExplosionManager* pExpMng);			// スライムの接触が起きた際の分岐処理

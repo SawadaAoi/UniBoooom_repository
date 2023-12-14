@@ -43,6 +43,7 @@
 #include "Input.h"
 #include "Sphere.h"
 #include "GameParameter.h"		//定数定義用ヘッダー
+#include "ShaderList.h"
 
 // =============== 定数定義 =======================
 const float KEYBOARD_INPUT_SIZE = 1.0f;						// キーボードの入力値の大きさ

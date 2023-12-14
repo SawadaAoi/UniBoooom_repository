@@ -38,6 +38,8 @@ public:
 	CTimer* GetTimer();	//タイマーのポインタを取得
 	CStageFinish* GetStageFinish();
 	int GetTotalScore();	//総スコアゲッタ
+
+	CBossgauge* GetBossGauge();
 	
 private:
 	
