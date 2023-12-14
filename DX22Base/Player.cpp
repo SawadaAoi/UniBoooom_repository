@@ -83,7 +83,7 @@ CPlayer::CPlayer()
 	, m_bCollide(false)
 	, m_DrawFlg(true)
 	, m_FlashCnt(0)
-	, m_pSE{nullptr,nullptr ,nullptr }
+	, m_pSE{ nullptr,nullptr ,nullptr }
 	, m_pSESpeaker{ nullptr ,nullptr, nullptr }
 	, m_nMoveCnt(0)
 	, m_bIntFlg(false)
@@ -98,7 +98,7 @@ CPlayer::CPlayer()
 
 	//プレイヤーのモデル読み込み
 	m_pModel = new AnimeModel();
-	if (!m_pModel->Load("Assets/Model/player/POW.fbx", 1.0f, AnimeModel::Flip::ZFlipUseAnime)) {		//倍率と反転は省略可
+	if (!m_pModel->Load("Assets/Model/player/POW.fbx", 1.0f, AnimeModel::Flip::XFlip)) {		//倍率と反転は省略可
 		MessageBox(NULL, "player", "Error", MB_OK);	//ここでエラーメッセージ表示
 	}
 	m_pModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));		//頂点シェーダーをセット
@@ -180,34 +180,34 @@ void CPlayer::Update()
 		// スペースキーを押した時、またはコントローラのBボタンを押した時 && ハンマー間隔時間経過済み
 		if ((IsKeyTrigger(VK_SPACE) || IsKeyTriggerController(BUTTON_B)) && !m_bIntFlg)
 		{
-			m_pModel->Play(m_Anime[MOTION_SWING], false,0.01f);	//アニメーションの再生
-			m_pHammer->AttackStart(m_Transform.fPos, m_Transform.fRadian.y);	// ハンマー攻撃開始
+			m_pModel->Play(m_Anime[MOTION_SWING], false, 0.01f);	//アニメーションの再生
+			m_pHammer->AttackStart(m_Transform.fPos, m_Transform.fRadian.y + DirectX::g_XMPi[0]);	// ハンマー攻撃開始
 			m_bAttackFlg = true;	// 攻撃フラグを有効にする
 			m_pSESpeaker[SE_SWING] = CSound::PlaySound(m_pSE[SE_SWING]);	//ハンマーを振るSEの再生
 
 			//ハンマーのスイング量を減らす
 			m_pHammer->SwingSpeedAdd();
 		}
-    // ハンマーのスイング量を増やす
-		
+		// ハンマーのスイング量を増やす
+
 		m_pHammer->SwingSpeedSubtract();
 	}
-	
+
 	// 無敵状態になっている場合
-	if (m_bCollide)							
+	if (m_bCollide)
 	{
 		m_nNoDamageCnt++;					// 毎フレームでカウントを追加
 		DamageAnimation();					// プレイヤー点滅関数呼び出す
 
 		// カウントが一定時間を超えたら
-		if (m_nNoDamageCnt >= NO_DAMAGE_TIME)	
+		if (m_nNoDamageCnt >= NO_DAMAGE_TIME)
 		{
 			m_DrawFlg = true;				// 点滅を解除
 			m_bCollide = false;				// 無敵を解除
 		}
-		
+
 	}
-	
+
 	//移動によるSEとアニメーションの処理
 	MoveCheck();
 	//アニメーションの更新
@@ -280,7 +280,7 @@ void CPlayer::Draw()
 		//m_pModel->DrawBone();	
 #endif
 	}
-	
+
 	//=====アニメーションの調整用に一応残しておく=====
 	if (m_bAttackFlg)
 	{
@@ -328,13 +328,13 @@ void CPlayer::MoveKeyboard()
 
 	// キー入力
 	// 上下
-	if		(IsKeyPress('W'))	{ fMoveInput.z =  KEYBOARD_INPUT_SIZE; }	// ↑
-	else if (IsKeyPress('S'))	{ fMoveInput.z = -KEYBOARD_INPUT_SIZE; }	// ↓
-	else						{ fMoveInput.z =  0.0f; }					// 入力無し
+	if (IsKeyPress('W')) { fMoveInput.z = KEYBOARD_INPUT_SIZE; }	// ↑
+	else if (IsKeyPress('S')) { fMoveInput.z = -KEYBOARD_INPUT_SIZE; }	// ↓
+	else { fMoveInput.z = 0.0f; }					// 入力無し
 	// 左右
-	if		(IsKeyPress('D'))	{ fMoveInput.x =  KEYBOARD_INPUT_SIZE; }	// →
-	else if (IsKeyPress('A'))	{ fMoveInput.x = -KEYBOARD_INPUT_SIZE; }	// ←
-	else						{ fMoveInput.x =  0.0f; }					// 入力無し
+	if (IsKeyPress('D')) { fMoveInput.x = KEYBOARD_INPUT_SIZE; }	// →
+	else if (IsKeyPress('A')) { fMoveInput.x = -KEYBOARD_INPUT_SIZE; }	// ←
+	else { fMoveInput.x = 0.0f; }					// 入力無し
 
 
 	MoveSizeInputSet(fMoveInput);	// 入力値から移動量と向きをセット
@@ -343,7 +343,7 @@ void CPlayer::MoveKeyboard()
 	m_Transform.fPos.x += m_fMove.x;
 	m_Transform.fPos.z += m_fMove.z;
 
-	
+
 
 }
 
@@ -396,8 +396,8 @@ void CPlayer::MoveSizeInputSet(TPos3d<float> fInput)
 
 		// 方向セット
 		m_Transform.fRadian.y =
-			atan2(fInput.z * -1, fInput.x)			// DirectXと三角関数で回転方向が逆なので調整
-			+ DirectX::XMConvertToRadians(90.0f);	// DirectXと三角関数で0度の位置が90度ずれている(↑が0)ので調整
+			(atan2(fInput.z * -1, fInput.x)			// DirectXと三角関数で回転方向が逆なので調整
+				- DirectX::XMConvertToRadians(90.0f));	// DirectXと三角関数で0度の位置が90度ずれている(↑が0)ので調整
 	}
 	// キー入力がない場合
 	else
@@ -450,8 +450,8 @@ TPos3d<float>* CPlayer::GetPosAddress()
    戻値：ハンマーポインタ
 ======================================== */
 CHammer* CPlayer::GetHammerPtr()
-{ 
-	return m_pHammer; 
+{
+	return m_pHammer;
 }
 
 /* ========================================
@@ -545,7 +545,7 @@ void CPlayer::LoadAnime()
 ======================================== */
 void CPlayer::DamageAnimation()
 {
-					
+
 	m_FlashCnt++;						//毎フレームでカウントを追加
 	if (m_FlashCnt >= DAMAGE_FLASH_FRAME)
 	{
@@ -553,7 +553,7 @@ void CPlayer::DamageAnimation()
 		if (m_DrawFlg)
 		{
 			m_DrawFlg = false;
-		}	
+		}
 		else
 		{
 			m_DrawFlg = true;
@@ -578,19 +578,19 @@ void CPlayer::MoveCheck()
 	m_nMoveCnt++;	//カウントを増やす
 
 	//移動量が縦横どちらも0の時はカウントをリセット
-	if (m_fMove.x == 0.0f && m_fMove.z == 0.0f)	
+	if (m_fMove.x == 0.0f && m_fMove.z == 0.0f)
 	{
 		m_nMoveCnt = 0;
 
 		//アニメーションを再生
 		if (m_pModel->GetPlayNo() != m_Anime[MOTION_STOP] && !m_bAttackFlg)
 		{	//待機中のアニメーションを再生してない、なおかつ攻撃中じゃない場合
-			m_pModel->Play(m_Anime[MOTION_STOP],true);	
+			m_pModel->Play(m_Anime[MOTION_STOP], true);
 		}
 	}
-	
+
 	//カウントが一定以上になればSEを発生してカウントをリセット
-	if (SE_RUN_INTERVAL <= m_nMoveCnt)	
+	if (SE_RUN_INTERVAL <= m_nMoveCnt)
 	{
 		//SEの再生
 		m_pSESpeaker[SE_RUN] = CSound::PlaySound(m_pSE[SE_RUN]);
@@ -599,7 +599,7 @@ void CPlayer::MoveCheck()
 		//アニメーションを再生
 		if (m_pModel->GetPlayNo() != m_Anime[MOTION_MOVE])
 		{	//移動中のアニメーションを再生してない場合
-			m_pModel->Play(m_Anime[MOTION_MOVE], true,PLAYER_MOVE_ANIME_SPEED);
+			m_pModel->Play(m_Anime[MOTION_MOVE], true, PLAYER_MOVE_ANIME_SPEED);
 		}
 
 		m_nMoveCnt = 0;	//カウントをリセット
