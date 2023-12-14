@@ -381,9 +381,6 @@
     <ClCompile Include="Random.cpp">
       <Filter>ソース ファイル\System\Random</Filter>
     </ClCompile>
-    <ClCompile Include="Shadow.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="UIStageManager.cpp">
       <Filter>ソース ファイル\2dObject</Filter>
     </ClCompile>
@@ -416,6 +413,9 @@
     </ClCompile>
     <ClCompile Include="Slime_Boss_2.cpp">
       <Filter>ソース ファイル\3dObject\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Shadow.cpp">
+      <Filter>ソース ファイル\2dObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -656,9 +656,6 @@
     <ClInclude Include="Random.h">
       <Filter>ヘッダー ファイル\System\Random</Filter>
     </ClInclude>
-    <ClInclude Include="Shadow.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="UIStageManager.h">
       <Filter>ヘッダー ファイル\2dObject</Filter>
     </ClInclude>
@@ -694,6 +691,9 @@
     </ClInclude>
     <ClInclude Include="Slime_Boss_2.h">
       <Filter>ヘッダー ファイル\3dObject\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Shadow.h">
+      <Filter>ヘッダー ファイル\2dObject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

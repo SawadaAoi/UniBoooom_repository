@@ -18,7 +18,6 @@
 #include "Slime_BossBase.h"
 
 
-
 // =============== クラス定義 =====================
 class CSlime_Boss_2 :
 	public CSlime_BossBase
@@ -27,10 +26,11 @@ public:
 	// =============== 列挙定義 ===================
 	enum MOVE_STATE
 	{
-		MOVE_NORMAL = 0,
-		MOVE_JUMP,
-		MOVE_TARGET_SHADOW,
-		MOVE_DROP,
+		NORMAL = 0,
+		JUMP_CHARGE,
+		JUMP,
+		TARGET_SHADOW,
+		DROP,
 
 		MOVE_MAX,
 	};
@@ -41,7 +41,9 @@ public:
 	~CSlime_Boss_2();
 
 	void Update(tagTransform3d playerTransform) override;
-	void NormalMove(tagTransform3d playerTransform) override;
+
+	void MoveSwitch();
+	void MoveNormal();
 
 	void MoveJump();
 	void MoveTargetShadow();
@@ -49,12 +51,13 @@ public:
 
 	void SetNormalSpeed() override;
 	void SetMaxHp() override;
-
+	void SetShadowPos();
 
 private:
 	// ===メンバ変数===
 	int m_nMoveCnt[MOVE_MAX];		// 移動処理のフレーム加算値
-
+	bool m_nMoveFlg[MOVE_MAX];		// 移動処理のフレーム加算値
+	tagTransform3d m_PlayerParam;
 
 
 	float m_assaultDistancePlayer;	// 突撃時のプレイヤー間の距離を保存

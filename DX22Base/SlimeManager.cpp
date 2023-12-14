@@ -48,6 +48,7 @@
 #include "Slime_Flame.h"
 #include "Slime_Heal.h"
 #include "Slime_Boss_1.h"
+#include "Slime_Boss_2.h"
 #include "Input.h"		//後で消す
 #include "GameParameter.h"		//定数定義用ヘッダー
 #include "HitStop.h"
@@ -61,6 +62,10 @@ const float COL_SUB_HIT_TO_BIG = 0.1f;			// スライム衝突(小→大)の衝突側の減算値
 const float COL_SUB_STAND_TO_SMALL = 0.8f;			// スライム衝突(小→大)の衝突される側の減算値(衝突された方向)	//1.0でそのまま
 const float COL_SUB_HIT_TO_SMALL = 0.3f;			// スライム衝突(大→小)の衝突側の減算値(移動方向)				//1.0でそのまま
 const float COL_SUB_STAND_TO_BIG = 1.2f;			// スライム衝突(大→小)の衝突される側の減算値(衝突された方向)	//1.0でそのまま
+
+#define DEBUG_BOSS	(true)	// デバッグ用にゲーム開始時ボスを生成するかどうか
+
+
 #if MODE_GAME_PARAMETER
 #else
 #define DEBUG_BOSS	(false)						// デバッグ用にゲーム開始時ボスを生成するかどうか
@@ -150,7 +155,7 @@ CSlimeManager::CSlimeManager(CPlayer* pPlayer)
 	{
 		// スライムのuseを検索
 		if (m_pBoss[i] != nullptr) continue;
-		m_pBoss[i] = new CSlime_Boss_1(TPos3d<float>(5.0f,0.0f,3.0f), m_pVS, m_pBossModel);	//動的生成
+		m_pBoss[i] = new CSlime_Boss_2(TPos3d<float>(5.0f,0.0f,3.0f), m_pVS, m_pBossModel[0], m_pBossModel[1]);	//動的生成
 
 		break;
 	}

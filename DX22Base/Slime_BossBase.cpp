@@ -65,6 +65,7 @@ CSlime_BossBase::CSlime_BossBase()
 	{
 		MessageBox(NULL, "HPフレーム読み込み", "Error", MB_OK);
 	}
+
 }
 
 
@@ -171,6 +172,9 @@ void CSlime_BossBase::Draw(const CCamera* pCamera)
 		m_pModel->Draw();
 	}
 	
+	//-- 影の描画
+	m_pShadow->Draw(pCamera);
+
 	//HP表示
 	RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得
 	DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得

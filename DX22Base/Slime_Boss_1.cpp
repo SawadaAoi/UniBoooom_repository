@@ -57,8 +57,7 @@ CSlime_Boss_1::CSlime_Boss_1()
 	SetMaxHp();
 	m_nHp = m_nMaxHp;
 	m_nAttack = BOSS_1_ATTACK;
-	m_fScaleShadow = BOSS_1_SHADOW_SCALE;	// 影の大きさを設定
-
+	m_pShadow->SetScale(BOSS_1_SHADOW_SCALE);
 }
 
 /* ========================================
@@ -79,6 +78,8 @@ CSlime_Boss_1::CSlime_Boss_1(TPos3d<float> pos, VertexShader* pVS, Model* pModel
 	m_pVS = pVS;
 	m_StateModels[0] = pModel1;
 	m_StateModels[1] = pModel2;
+	m_pShadow->SetPos(m_Transform.fPos);
+
 }
 
 /* ========================================
@@ -133,6 +134,8 @@ void CSlime_Boss_1::Update(tagTransform3d playerTransform)
 	// -- 座標更新
 	m_Transform.fPos.x += m_move.x;
 	m_Transform.fPos.z += m_move.z;
+
+	m_pShadow->SetPos(m_Transform.fPos);
 
 	// ダメージ発生中じゃないなら点滅処理を行わない
 	if (m_bFlash == false) return;

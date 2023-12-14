@@ -42,8 +42,6 @@
 #include "Input.h"
 #include "Sphere.h"
 #include "GameParameter.h"		//定数定義用ヘッダー
-#define _USE_MATH_DEFINES		// 円周率
-#include <math.h>				// 円周率
 
 // =============== 定数定義 =======================
 const float KEYBOARD_INPUT_SIZE = 1.0f;						// キーボードの入力値の大きさ
