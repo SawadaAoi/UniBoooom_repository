@@ -55,6 +55,7 @@ private:
 	unsigned char m_ucFlag;							//フラグ
 	std::vector<CPauseObj*> m_p2dObj;				//平面ポリゴン
 	const CCamera* m_pCamera;						//カメラ	※参照のみに使用、削除しない
+
 	// ===プロトタイプ宣言===
 	void Boot();									//ポーズモード起動
 	void InitObjects();								//初期化・動的確保
