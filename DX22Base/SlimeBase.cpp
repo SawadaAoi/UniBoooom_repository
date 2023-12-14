@@ -39,8 +39,8 @@
 // =============== 定数定義 =======================
 const float SLIME_BASE_RADIUS = 0.5f;			// スライムの基準の大きさ
 const int	RANDOM_MOVE_SWITCH_TIME = 3 * 60;	// ランダム移動の方向切り替え
-const float SPEED_DOWN_RATIO = 0.6f;			// 吹き飛ぶ際にかかる移動速度の変化の割合    RATIO=>割合
-const float REFLECT_RATIO = 0.1f;				//スライムがスライムを吹き飛ばした際に吹き飛ばした側のスライムの移動量を変える割合
+const float SPEED_DOWN_RATIO = 0.8f;			// 吹き飛ぶ際にかかる移動速度の変化の割合    RATIO=>割合
+const float REFLECT_RATIO = 0.5f;				//スライムがスライムを吹き飛ばした際に吹き飛ばした側のスライムの移動量を変える割合
 const float MOVE_RESIST = 0.05f;				// 吹き飛び移動中のスライムの移動速度に毎フレームかかる減算数値
 #if MODE_GAME_PARAMETER
 #else

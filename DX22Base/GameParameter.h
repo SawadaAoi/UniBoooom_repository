@@ -49,9 +49,9 @@ const int SCREEN_HEIGHT_ = 720;
 
 
 // プレイヤー ================================================
-const float PLAYER_MOVE_SPEED	= 0.12f;			// プレイヤーの移動速度
+const float PLAYER_MOVE_SPEED	= 0.1333f;			// プレイヤーの移動速度
 const int	PLAYER_HP			= 10;			// プレイヤーのHP
-const float PLAYER_RADIUS		= 0.12f;			// プレイヤーの当たり判定の大きさ
+const float PLAYER_RADIUS		= 0.1f;			// プレイヤーの当たり判定の大きさ
 const float PLAYER_SIZE			= PLAYER_RADIUS * 2.0f;			// プレイヤーの大きさ
 const int	NO_DAMAGE_TIME		= 3 * 60;		// プレイヤーの無敵時間
 const int	DAMAGE_FLASH_FRAME	= int(0.1f * 60);	// プレイヤーのダメージ点滅の切り替え間隔
@@ -84,8 +84,8 @@ const int SLIME_LEVEL2_PER = 20;								// スライム_2の生成確立
 const int SLIME_LEVEL3_PER = 5;									// スライム_3の生成確立
 const int SLIME_LEVEL_FLAME_PER = 5;							// スライム_フレイムの生成確率
 const int SLIME_LEVEL_HEAL_PER = 5;								// スライム_ヒールの生成確率
-const float MAX_SIZE_EXPLODE		= 6.0f;						// スライム4同士の爆発の大きさ
-const float EXPLODE_BASE_RATIO		= 1.5f;						// スライムの爆発接触での爆発の大きさのベース
+const float MAX_SIZE_EXPLODE		= 9.0f;						// スライム4同士の爆発の大きさ
+const float EXPLODE_BASE_RATIO		= 1.8f;						// スライムの爆発接触での爆発の大きさのベース
 const float ESCAPE_DISTANCE			= 15.0f;					// 爆発がこの距離より近かったら逃げる範囲
 const int ESCAPE_TIME				= int(60 * 0.8f);			// この間隔で逃げる処理が終了する
 
@@ -93,15 +93,15 @@ const int ESCAPE_TIME				= int(60 * 0.8f);			// この間隔で逃げる処理が終了する
 const float LEAVE_DISTANCE = 29.0f;					// これ以上離れたら対角線上に移動する
 
 // サイズ1
-const float LEVEL1_SCALE = 1.0f;					// スライム＿レベル１の大きさ(当たり判定含む)
+const float LEVEL1_SCALE = 1.7f;					// スライム＿レベル１の大きさ(当たり判定含む)
 const float LEVEL1_SPEED = ENEMY_MOVE_SPEED;		// 移動速度
 
 // サイズ2
-const float LEVEL2_SCALE = 2.0f;					// スライム＿レベル２の大きさ(当たり判定含む)
+const float LEVEL2_SCALE = 3.7f;					// スライム＿レベル２の大きさ(当たり判定含む)
 const float LEVEL2_SPEED = ENEMY_MOVE_SPEED * 0.9f;	// 移動速度
 
 // サイズ3
-const float LEVEL3_SCALE = 4.5f;					// スライム＿レベル３の大きさ(当たり判定含む)
+const float LEVEL3_SCALE = 5.5f;					// スライム＿レベル３の大きさ(当たり判定含む)
 const float LEVEL3_SPEED = ENEMY_MOVE_SPEED * 0.7f;	// 移動速度
 const float LEVEL3_STOP_RANGE = DirectX::XMConvertToRadians(20.0f);	// スライムが止まる角度の範囲
 const int	LEVEL2_ATTACK_INTERVAL = int(60 * 4.0f);		// 攻撃終了から次の攻撃までの間隔
@@ -110,7 +110,7 @@ const int	LEVEL2_ATTACK_TACKLE_CNT = int(60 * 0.45f);	// 突進している時間
 const float	LEVEL2_TACKLE_SPEED = 0.2f;					// 突進の速度
 
 // サイズ4
-const float LEVEL4_SCALE = 5.5f;					// スライム＿レベル４の大きさ(当たり判定含む)
+const float LEVEL4_SCALE = 7.0f;					// スライム＿レベル４の大きさ(当たり判定含む)
 const float LEVEL4_SPEED = ENEMY_MOVE_SPEED * 0.5f;	// 移動速度
 const int	LEVEL4_ATTACK = 2;						// 攻撃力
 
@@ -126,7 +126,7 @@ const int	LEVEL_HEAL_ATTACK = 1;							// 攻撃力 （いる？
 
 // ボススライム
 #define DEBUG_BOSS	(false)	// デバッグ用にゲーム開始時ボスを生成するかどうか
-const float LEVEL_BOSS_1_SCALE = 6.0f;								// ボス１の大きさ
+const float LEVEL_BOSS_1_SCALE = 7.5f;								// ボス１の大きさ
 const float LEVEL_BOSS_1_SPEED = ENEMY_MOVE_SPEED * 0.4f;			// ボス１のスピード
 const int	BOSS_1_MAX_HP = 10;								// ボス１の最大HP
 const int	BOSS_1_ATTACK = 2;								// ボス１の攻撃力
