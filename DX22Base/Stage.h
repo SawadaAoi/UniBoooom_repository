@@ -145,13 +145,6 @@ protected:
 	int m_nCntH;		// 縦カウント用
 	bool m_bStartSign;		// スタート合図開始フラ
 
-
-	//サウンド
-	XAUDIO2_BUFFER* m_pSEHitHammer;
-	IXAudio2SourceVoice* m_pSEHitHammerSpeaker;
-
-private:
-	void LoadSE();
 };	//ステージ
 
 #endif	//!__STAGE_H__

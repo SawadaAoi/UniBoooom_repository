@@ -36,6 +36,7 @@
 	・2023/12/07 ゲームパラメータから一部定数移動 takagi
 	・2023/12/14 プレイヤーのアニメーション実装 yamashita
 	・2023/12/14 SEの変数を整理 yamashita
+	・2023/12/15 SEを外から再生できるように変更 yamashita
 ======================================== */
 
 // =============== インクルード ===================
@@ -183,7 +184,8 @@ void CPlayer::Update()
 			m_pModel->Play(m_Anime[MOTION_SWING], false, 0.01f);	//アニメーションの再生
 			m_pHammer->AttackStart(m_Transform.fPos, m_Transform.fRadian.y + DirectX::g_XMPi[0]);	// ハンマー攻撃開始
 			m_bAttackFlg = true;	// 攻撃フラグを有効にする
-			m_pSESpeaker[SE_SWING] = CSound::PlaySound(m_pSE[SE_SWING]);	//ハンマーを振るSEの再生
+			//SEの再生
+			PlaySE(SE_SWING);
 
 			//ハンマーのスイング量を減らす
 			m_pHammer->SwingSpeedAdd();
@@ -305,7 +307,8 @@ void CPlayer::Damage(int DmgNum)
 	m_nHp -= DmgNum;
 	m_bCollide = true;	//プレイヤーを一定時間、無敵にする
 	m_nNoDamageCnt = 0;	//プレイヤー無敵時間のカウントを0に戻す
-	m_pSESpeaker[SE_DAMAGED] = CSound::PlaySound(m_pSE[SE_DAMAGED]);	//被ダメージ時のSE再生
+	//SEの再生
+	PlaySE(SE_DAMAGED);
 
 	if (m_nHp <= 0)
 	{
@@ -593,8 +596,7 @@ void CPlayer::MoveCheck()
 	if (SE_RUN_INTERVAL <= m_nMoveCnt)
 	{
 		//SEの再生
-		m_pSESpeaker[SE_RUN] = CSound::PlaySound(m_pSE[SE_RUN]);
-		m_pSESpeaker[SE_RUN]->SetVolume(SE_RUN_VOLUME);
+		PlaySE(SE_RUN, SE_RUN_VOLUME);
 
 		//アニメーションを再生
 		if (m_pModel->GetPlayNo() != m_Anime[MOTION_MOVE])
@@ -629,6 +631,24 @@ void CPlayer::LoadSound()
 }
 
 /* ========================================
+	SEの読み込み関数
+	----------------------------------------
+	内容：SEの読み込み
+	----------------------------------------
+	引数1：SEの種類(enum)
+	引数2：音量
+	----------------------------------------
+	戻値：なし
+======================================== */
+void CPlayer::PlaySE(SE se, float volume)
+{
+	m_pSESpeaker[se] = CSound::PlaySound(m_pSE[se]);	//SE再生
+	m_pSESpeaker[se]->SetVolume(volume);				//音量の設定
+}
+
+
+
+/* ========================================
    プレイヤー回復関数
    ----------------------------------------
    内容：プレイヤーのHPを回復する
@@ -639,6 +659,6 @@ void CPlayer::LoadSound()
 ======================================== */
 void CPlayer::Healing()
 {
-	if (m_nHp == PLAYER_HP) { return; }
 	m_nHp += HEAL_NUM;
+	if (m_nHp >= PLAYER_HP) { m_nHp = PLAYER_HP; }
 }

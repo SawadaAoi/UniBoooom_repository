@@ -28,6 +28,7 @@
 	・2023/12/03 カメラの更新を担うため、ポインタのconstを仕方なく除去 takagi
 	・2023/12/14 アニメーション用の列挙を作成 yamashita
 	・2023/12/14 SE用の列挙を作成 yamashita
+	・2023/12/15 SEを外から再生できるように変更 yamashita
 
 ========================================== */
 #ifndef __PLAYER_H__
@@ -51,6 +52,17 @@ class CPlayer
 	: public CObject
 {
 public:
+	// === 列挙 ===
+	enum SE
+	{
+		SE_SWING,	//ハンマーを振るSE
+		SE_RUN,			//移動のSE
+		SE_DAMAGED,		//被ダメージのSE
+		SE_HIT_HAMMER,	//ハンマーとスライムの接触SE
+
+		SE_MAX			//SEの総数
+	};
+
 	// ===プロトタイプ宣言===
 	CPlayer();		//コンストラクタ
 	~CPlayer();		//デストラクタ
@@ -64,6 +76,7 @@ public:
 	void DamageAnimation();
 	void MoveCheck();
 	void LoadSound();	//サウンド読み込み関数
+	void PlaySE(SE se, float volume = 1.0f);
 	void Healing();
 
 	// ゲット関数
@@ -107,14 +120,6 @@ private:
 
 		MOTION_MAX,	//モーションの総数
 	};
-	enum SE
-	{
-		SE_SWING,	//ハンマーを振るSE
-		SE_RUN,			//移動のSE
-		SE_DAMAGED,		//被ダメージのSE
-
-		SE_MAX			//SEの総数
-	};
 
 	//=====SE関連=====
 	XAUDIO2_BUFFER* m_pSE[SE_MAX];
@@ -122,14 +127,15 @@ private:
 	const std::string m_sSEFile[SE_MAX] = {
 		"Assets/Sound/SE/Swing.mp3",			//ハンマーを振る
 		"Assets/Sound/SE/Run.mp3",				//移動のSE
-		"Assets/Sound/SE/PlayerDamage.mp3" };	//被ダメージ
+		"Assets/Sound/SE/PlayerDamage.mp3",
+		"Assets/Sound/SE/Smash.mp3" };			//ハンマーとスライムの接触SE
 
 	//=====アニメーション関連=====
-	AnimeModel::AnimeNo m_Anime[MOTION_MAX];	//プレイヤーのアニメーション
+	AnimeModel::AnimeNo m_Anime[MOTION_MAX];		//プレイヤーのアニメーション
 	const std::string m_sAnimeFile[MOTION_MAX] = {	//アニメーションのファイル
-		"Assets/Model/player/Player.FBX",	//待機
-		"Assets/Model/player/Dash.FBX",		//移動
-		"Assets/Model/player/POW.FBX" };	//スイング
+		"Assets/Model/player/Player.FBX",			//待機
+		"Assets/Model/player/Dash.FBX",				//移動
+		"Assets/Model/player/POW.FBX" };			//スイング
 };
 
 
