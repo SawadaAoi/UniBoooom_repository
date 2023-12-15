@@ -120,6 +120,9 @@ void CTotalScore::Update()
 ======================================== */
 void CTotalScore::Draw()
 {
+	RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得
+	DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
+	SetRenderTargets(1, &pRTV, nullptr);		//DSVがnullだと2D表示になる
 	DrawTotalScoreBG();		// トータルスコアの背景の描画
 
 
@@ -157,21 +160,22 @@ void CTotalScore::Draw()
 		Sprite::Draw();
 	}
 	
-	//加算予定のスコア（トータルの下）の描画設定サイズ以外は同じなので省略
-	Sprite::SetSize(DirectX::XMFLOAT2(PLUSSCORE_SIZE.x, PLUSSCORE_SIZE.y));
-	Sprite::SetUVScale(DirectX::XMFLOAT2(0.2f, 0.333f));
-	Sprite::SetTexture(m_pPlusScoreTexture);
+	
 		
 	for (int i = 0, lineNum=1; i < MAX_COMBO_NUM; i++)
 	{
 		
 		if (m_PlusScore[i].nAddScore == 0)continue;//何もなければスルー
-		DrawPlusScoreBG();
+		
 		if (m_PlusScore[i].bDispTotalScoreFlg == true) 
 		{
-			
+			DrawPlusScoreBG();
  			digitArray = digitsToArray(m_PlusScore[i].nAddScore);	
 			nArraySize = int(digitArray.size());				//何桁か確認
+			//加算予定のスコア（トータルの下）の描画設定サイズ以外は同じなので省略
+			Sprite::SetSize(DirectX::XMFLOAT2(PLUSSCORE_SIZE.x, PLUSSCORE_SIZE.y));
+			Sprite::SetUVScale(DirectX::XMFLOAT2(0.2f, 0.333f));
+			Sprite::SetTexture(m_pPlusScoreTexture);
 			for (int i = 0; i < nArraySize; i++)
 			{
 				
