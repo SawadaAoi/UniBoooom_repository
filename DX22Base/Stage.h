@@ -36,7 +36,6 @@
 #include "Timer.h"
 #include "StageFinishUI.h"
 #include "Combo.h"
-#include "Geometry.h"
 #include "HP_UI.h"
 #include "DirectWrite.h"
 #include "Timer.h"
