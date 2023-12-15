@@ -29,6 +29,7 @@
 	・2023/12/14 アニメーション用の列挙を作成 yamashita
 	・2023/12/14 SE用の列挙を作成 yamashita
 	・2023/12/15 SEを外から再生できるように変更 yamashita
+	・2023/12/15 回復SE追加 yamashita
 
 ========================================== */
 #ifndef __PLAYER_H__
@@ -59,6 +60,7 @@ public:
 		SE_RUN,			//移動のSE
 		SE_DAMAGED,		//被ダメージのSE
 		SE_HIT_HAMMER,	//ハンマーとスライムの接触SE
+		SE_HEAL,
 
 		SE_MAX			//SEの総数
 	};
@@ -127,15 +129,16 @@ private:
 	const std::string m_sSEFile[SE_MAX] = {
 		"Assets/Sound/SE/Swing.mp3",			//ハンマーを振る
 		"Assets/Sound/SE/Run.mp3",				//移動のSE
-		"Assets/Sound/SE/PlayerDamage.mp3",
-		"Assets/Sound/SE/Smash.mp3" };			//ハンマーとスライムの接触SE
+		"Assets/Sound/SE/PlayerDamage.mp3",		//プレイヤーの被ダメージ時
+		"Assets/Sound/SE/Smash.mp3",			//ハンマーとスライムの接触SE
+		"Assets/Sound/SE/Heal.mp3" };			//回復アイテム取得時
 
 	//=====アニメーション関連=====
 	AnimeModel::AnimeNo m_Anime[MOTION_MAX];		//プレイヤーのアニメーション
 	const std::string m_sAnimeFile[MOTION_MAX] = {	//アニメーションのファイル
 		"Assets/Model/player/Player.FBX",			//待機
 		"Assets/Model/player/Dash.FBX",				//移動
-		"Assets/Model/player/POW.FBX" };			//スイング
+		"Assets/Model/player/pow.FBX" };			//スイング
 };
 
 

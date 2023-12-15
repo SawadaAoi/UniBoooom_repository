@@ -13,6 +13,7 @@
 	・2023/11/16 制作 takagi
 	・2023/12/12 Stage1の内容をコピー yamashita
 	・2023/12/14 BGMの管理をSceneManagerに移動 yamashita
+	・2023/12/15 ゲームスタート表示を書き変え nieda
 
 ========================================== */
 
@@ -37,6 +38,7 @@ CStage2::CStage2()
 	m_pFloor = new CFloor(m_pPlayer->GetPosAddress(), CFloor::Stage2);	// 床生成
 	//================セット================
 	m_pFloor->SetCamera(m_pCamera);
+	m_pUIStageManager->GetBossGauge()->AddBossGauge(BOSS_GAUGE_S2[0].BossNum, BOSS_GAUGE_S2[0].startTime, BOSS_GAUGE_S2[0].maxTime);
 }
 
 /* ========================================
@@ -64,42 +66,9 @@ CStage2::~CStage2()
 =========================================== */
 void CStage2::Update()
 {
-	if (!m_bStart)	// シーン遷移後ゲームを開始するか判定
+	if (m_pDrawStart->GetAnimFlg())	// シーン遷移後ゲームを開始するか判定
 	{
-		// タイトルから遷移後すぐゲーム開始にならないようにする処理
-		m_nNum++;
-
-		if (m_nNum > TIME_WAIT_START)	// フェード終了まで待って合図再生
-		{
-			m_bStartSign = true;
-		}
-
-		if (m_bStartSign)	// フェードが終了したらアニメーション再生開始
-		{
-			m_nCntSwitch++;
-		}
-
-		if (m_nCntSwitch > 1)	// 一定の間隔で切り替える
-		{
-			m_nCntSwitch = 0;		// カウントを初期化
-
-			m_fUVPos.x = (STARTSIGN_UV_POS_X)* m_nCntW;		// 横方向のUV座標計算
-			m_fUVPos.y = (STARTSIGN_UV_POS_Y)* m_nCntH;		// 縦方向のUV座標計算
-
-			++m_nCntW;		// 横方向に座標を1つ進める
-			if (m_nCntW == STARTSIGN_UV_NUM_X)	// テクスチャの右端まで行ったら 
-			{
-				m_nCntW = 0;	// カウントを初期化
-				++m_nCntH;		// 縦に1進める
-			}
-
-			if (m_nCntH == STARTSIGN_UV_NUM_Y)		// テクスチャの下端まで行ったら
-			{
-				m_nCntH = 0;	// カウントを初期化
-				m_nCntW = 0;
-				m_bStart = true;	// アニメーション再生をOFF
-			}
-		}
+		m_pDrawStart->Update();
 	}
 	else
 	{
@@ -184,33 +153,6 @@ void CStage2::Draw()
 	DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
 	SetRenderTargets(1, &pRTV, pDSV);		//DSVがnullだと2D表示になる
 
-	// スタート合図描画
-	if (!m_bStart)
-	{
-		DirectX::XMFLOAT4X4 mat[2];
-
-		// ワールド行列はXとYのみを考慮して作成
-		DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(START_POS_X, START_POS_Y, 0.0f);	// ワールド行列（必要に応じて変数を増やしたり、複数処理を記述したりする）
-		DirectX::XMStoreFloat4x4(&mat[0], DirectX::XMMatrixTranspose(world));
-
-		// ビュー行列は2Dだとカメラの位置があまり関係ないので、単位行列を設定する
-		DirectX::XMStoreFloat4x4(&mat[1], DirectX::XMMatrixIdentity());
-
-
-		// スプライトの設定
-		Sprite::SetWorld(mat[0]);
-		Sprite::SetView(mat[1]);
-		if (m_pCamera)	//ヌルチェック
-		{
-			Sprite::SetProjection(m_pCamera->GetProjectionMatrix(CCamera::E_DRAW_TYPE_2D));	// 平行投影行列を設定
-		}
-		Sprite::SetSize(DirectX::XMFLOAT2(START_SCALE_X, START_SCALE_Y));
-		Sprite::SetUVPos(DirectX::XMFLOAT2(m_fUVPos.x, m_fUVPos.y));
-		Sprite::SetUVScale(DirectX::XMFLOAT2(STARTSIGN_UV_POS_X, STARTSIGN_UV_POS_Y));
-		Sprite::SetTexture(m_pTexture);
-		Sprite::Draw();
-	}
-
 	//床の描画
 	m_pFloor->Draw();
 
@@ -233,6 +175,12 @@ void CStage2::Draw()
 
 	//UIマネージャー描画
 	m_pUIStageManager->Draw();
+
+	// スタート合図描画
+	if (m_pDrawStart->GetAnimFlg())
+	{
+		m_pDrawStart->Draw();
+	}
 
 #if USE_FADE_GAME
 	m_pFade->Draw();

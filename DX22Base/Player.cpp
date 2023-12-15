@@ -44,8 +44,6 @@
 #include "Input.h"
 #include "Sphere.h"
 #include "GameParameter.h"		//定数定義用ヘッダー
-#define _USE_MATH_DEFINES		// 円周率
-#include <math.h>				// 円周率
 #include "ShaderList.h"
 
 // =============== 定数定義 =======================
@@ -661,4 +659,5 @@ void CPlayer::Healing()
 {
 	m_nHp += HEAL_NUM;
 	if (m_nHp >= PLAYER_HP) { m_nHp = PLAYER_HP; }
+	PlaySE(SE_HEAL);
 }

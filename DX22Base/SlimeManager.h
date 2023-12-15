@@ -72,7 +72,7 @@ public:
 	void Update(CExplosionManager* pExpMng);
 	void Draw();
 	void Create(E_SLIME_LEVEL level);
-	void CreateBoss();
+	void CreateBoss(int BossNum);
 	bool IsBossPtrExist();
 
 	//-- ƒm[ƒ}ƒ‹A‚»‚Ì‘¼

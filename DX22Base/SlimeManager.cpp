@@ -49,6 +49,7 @@
 #include "Slime_Flame.h"
 #include "Slime_Heal.h"
 #include "Slime_Boss_1.h"
+#include "Slime_Boss_2.h"
 #include "Input.h"		//後で消す
 #include "GameParameter.h"		//定数定義用ヘッダー
 #include "HitStop.h"
@@ -62,6 +63,10 @@ const float COL_SUB_HIT_TO_BIG = 0.1f;			// スライム衝突(小→大)の衝突側の減算値
 const float COL_SUB_STAND_TO_SMALL = 0.8f;			// スライム衝突(小→大)の衝突される側の減算値(衝突された方向)	//1.0でそのまま
 const float COL_SUB_HIT_TO_SMALL = 0.3f;			// スライム衝突(大→小)の衝突側の減算値(移動方向)				//1.0でそのまま
 const float COL_SUB_STAND_TO_BIG = 1.2f;			// スライム衝突(大→小)の衝突される側の減算値(衝突された方向)	//1.0でそのまま
+
+#define DEBUG_BOSS	(false)	// デバッグ用にゲーム開始時ボスを生成するかどうか
+
+
 #if MODE_GAME_PARAMETER
 #else
 #define DEBUG_BOSS	(false)						// デバッグ用にゲーム開始時ボスを生成するかどうか
@@ -92,6 +97,7 @@ const std::map<size_t, int> MAP_KILL_POINT = {
 	{typeid(CSlime_Flame).hash_code(), 1 },
 	{typeid(CSlime_Heal).hash_code(), 1 },
 	{typeid(CSlime_Boss_1).hash_code(), 1 },
+	{typeid(CSlime_Boss_2).hash_code(), 1 },
 };	//スライムの種類に連動した討伐数
 
 /* ========================================
@@ -151,7 +157,7 @@ CSlimeManager::CSlimeManager(CPlayer* pPlayer)
 	{
 		// スライムのuseを検索
 		if (m_pBoss[i] != nullptr) continue;
-		m_pBoss[i] = new CSlime_Boss_1(TPos3d<float>(5.0f,0.0f,3.0f), m_pVS, m_pBossModel);	//動的生成
+		m_pBoss[i] = new CSlime_Boss_2(TPos3d<float>(5.0f,0.0f,3.0f), m_pVS, m_pBossModel[0], m_pBossModel[1]);	//動的生成
 
 		break;
 	}
@@ -344,7 +350,7 @@ void CSlimeManager::Create(E_SLIME_LEVEL level)
 	-------------------------------------
 	戻値：無し
 =========================================== */
-void CSlimeManager::CreateBoss()
+void CSlimeManager::CreateBoss(int BossNum)
 {
 	for (int i = 0; i < MAX_BOSS_SLIME_NUM; i++)
 	{
@@ -353,7 +359,19 @@ void CSlimeManager::CreateBoss()
 
 		TPos3d<float> createPos = m_pPlayer->GetPos();
 		createPos.z += ADD_CREATE_BOSS_POS_Z;
-		m_pBoss[i] = new CSlime_Boss_1(createPos, m_pVS, m_pBossModel[0], m_pBossModel[1]);	//動的生成(取り合えず位置は仮)
+
+		switch (BossNum)
+		{
+		case 1:
+			m_pBoss[i] = new CSlime_Boss_1(createPos, m_pVS, m_pBossModel[0], m_pBossModel[1]);	//動的生成(取り合えず位置は仮)
+
+			break;
+		case 2:
+			m_pBoss[i] = new CSlime_Boss_2(createPos, m_pVS, m_pBossModel[0], m_pBossModel[1]);	//動的生成(取り合えず位置は仮)
+
+			break;
+		}
+
 		m_bBossPtrExist = true;
 		break;
 	}

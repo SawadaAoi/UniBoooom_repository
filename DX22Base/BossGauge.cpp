@@ -119,7 +119,7 @@ void CBossgauge::Update()
 			// フェードフラグがまだオフの場合
 			if ((*itr).bFadeFlg == false)
 			{
-				m_pSlimeMng->CreateBoss();	// ボススライムを生成
+				m_pSlimeMng->CreateBoss((*itr).nBossNum);	// ボススライムを生成
 				(*itr).bFadeFlg = true;		// フェードフラグオン
 			}
 			else
@@ -271,9 +271,10 @@ void CBossgauge::SetSlimeManager(CSlimeManager* pSlimeMng)
 	----------------------------------------
 	戻値：なし
 =========================================== */
-void CBossgauge::AddBossGauge(float fStartTime, float fMaxTime)
+void CBossgauge::AddBossGauge(int BossNum, float fStartTime, float fMaxTime)
 {
 	BossGauge addPram = { 
+		BossNum,
 		false,				// 削除フラグ
 		false,				// フェードフラグ
 		fStartTime * 60,	// 開始時間Frame
