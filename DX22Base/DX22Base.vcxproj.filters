@@ -411,6 +411,9 @@
     <ClCompile Include="DrawAnimation.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="BossArrow.cpp">
+      <Filter>ソース ファイル\2dObject</Filter>
+    </ClCompile>
     <ClCompile Include="Slime_Boss_2.cpp">
       <Filter>ソース ファイル\3dObject\Enemy</Filter>
     </ClCompile>
@@ -688,6 +691,9 @@
     </ClInclude>
     <ClInclude Include="DrawAnimation.h">
       <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="BossArrow.h">
+      <Filter>ヘッダー ファイル\2dObject</Filter>
     </ClInclude>
     <ClInclude Include="Slime_Boss_2.h">
       <Filter>ヘッダー ファイル\3dObject\Enemy</Filter>

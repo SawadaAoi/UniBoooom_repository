@@ -56,8 +56,6 @@ CStage::CStage()
 	, m_nCntW(0)
 	, m_nCntH(0)
 	, m_bStartSign(false)
-	, m_pSEHitHammer(nullptr)
-	, m_pSEHitHammerSpeaker(nullptr)
 {
 	// 頂点シェーダの読込
 	m_pVs = new VertexShader();
@@ -130,9 +128,6 @@ CStage::CStage()
 
 	//爆発マネージャー　←　タイマー
 	m_pSlimeMng->SetTimer(m_pUIStageManager->GetTimer());
-
-	//ステージ内で扱うSEのロード
-	LoadSE();
 }
 
 /* ========================================
@@ -196,17 +191,3 @@ CStage::~CStage()
 //void CStage::Draw() const
 //{
 //}
-
-/* ========================================
-   SEのサウンドファイル読み込み関数
-   -------------------------------------
-   内容：SEのサウンドファイルの読み込み
-   -------------------------------------
-   引数1：無し
-   -------------------------------------
-   戻値：無し
-=========================================== */
-void CStage::LoadSE()
-{
-	m_pSEHitHammer = CSound::LoadSound("Assets/Sound/SE/Smash.mp3");		//SEの読み込み
-}

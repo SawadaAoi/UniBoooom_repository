@@ -15,6 +15,7 @@
 	・2023/11/30 ヒットストップをハンマー激突時に変更 takagi
 	・2023/12/01 ハンマーとスライムの当たり判定持にSEを再生 yamashita
 	・2023/12/07 ゲームパラメータから一部定数移動 takagi
+	・2023/12/15 SEの変数を削除 yamashita
 
 ========================================== */
 
@@ -185,8 +186,7 @@ void CStage::HammerSlimeCollision()
 				= m_pPlayer->GetTransform().Angle(pSlimeNow->GetTransform());	// スライムが飛ぶ角度を取得
 
 			pSlimeNow->HitMoveStart(HAMMER_HIT_MOVE_SPEED, fAngleSlime);	// スライムを飛ばす
-			m_pSEHitHammerSpeaker = CSound::PlaySound(m_pSEHitHammer);		//ハンマーでスライム殴った時のSEの再生
-			m_pSEHitHammerSpeaker->SetVolume(HIT_HAMMER_VOLUME);
+			m_pPlayer->PlaySE(CPlayer::SE_HIT_HAMMER, HIT_HAMMER_VOLUME);	//ハンマーとスライムの接触SEを再生
 		}
 	}
 }

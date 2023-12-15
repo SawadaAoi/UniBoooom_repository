@@ -70,7 +70,6 @@ CSlimeBase::CSlimeBase()
 	, m_nEscapeCnt(0)
 	, m_fScaleShadow(0.0f)
 {
-	
 	m_Transform.fScale = (1.0f, 1.0f, 1.0f);
 	//“–‚½‚è”»’è(©•ª)‰Šú‰»
 	m_Sphere.fRadius = SLIME_BASE_RADIUS;
