@@ -47,7 +47,10 @@
 =========================================== */
 CStage1::CStage1()
 {
-	m_pFloor->SetFloorModel(CFloor::StageKinds::Stage1);
+	m_pFloor = new CFloor(m_pPlayer->GetPosAddress(), CFloor::Stage1);	// °¶¬
+	//================ƒZƒbƒg================
+	m_pFloor->SetCamera(m_pCamera);
+
 }
 
 /* ========================================
@@ -61,6 +64,7 @@ CStage1::CStage1()
 =========================================== */
 CStage1::~CStage1()
 {
+	SAFE_DELETE(m_pFloor);
 }
 
 /* ========================================
