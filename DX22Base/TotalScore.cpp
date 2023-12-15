@@ -31,6 +31,10 @@ const int ROW_HIGHT = 60;			//スコアを複数個表示時一番上からどのくらい下げるか（
 const DirectX::XMFLOAT2 SMALLDECIMAL_SIZE(15.0f, -15.0f);	//小数点の大きさ
 const int MAGNIFICATION = 40;		//倍率表示時の間隔。一番右の数字からどれだけ左にずらすか（小数点を入れるのでそこもケアする）
 const TPos2d<float> SMALLDECIMAL_POS(2.0f, -3.0f);//この値で小数点の位置の微調節
+const TPos2d<float> TOTAL_SCORE_BG_POS(1130.0f, 55.0f);			// トータルスコアの背景位置設定
+const DirectX::XMFLOAT2 TOTAL_SCORE_BG_SIZE(320.0f, -110.0f);	// トータルスコアの背景の表示の大きさ
+const TPos2d<float> PLUS_SCORE_BG_POS(1175.0f, 115.0f);			// トータルスコアの背景位置設定
+const DirectX::XMFLOAT2 PLUS_SCORE_BG_SIZE(225.0f, -50.0f);		// トータルスコアの背景の表示の大きさ
 
 /* ========================================
 	関数：コンストラクタ
@@ -45,6 +49,8 @@ CTotalScore::CTotalScore()
 	: m_nTotalScore(0)
 	, m_pToScoreTexture(nullptr)
 	, m_pPlusScoreTexture(nullptr)
+	, m_pTScoreBGTex(nullptr)
+	, m_pPScoreBGTex(nullptr)
 	, TotalScoreArray{}
 	, digitArray{}
 	, nArraySize(0)
@@ -60,7 +66,16 @@ CTotalScore::CTotalScore()
 	{
 		MessageBox(NULL, "PlusScore数字読み込み", "Error", MB_OK);
 	}
-	
+	m_pTScoreBGTex = new Texture();
+	if (FAILED(m_pTScoreBGTex->Create("Assets/Texture/total_score_back_1.png")))
+	{
+		MessageBox(NULL, "TScoreBack読み込み", "Error", MB_OK);
+	}
+	m_pPScoreBGTex = new Texture();
+	if (FAILED(m_pPScoreBGTex->Create("Assets/Texture/plus_score_back_1.png")))
+	{
+		MessageBox(NULL, "TScoreBack読み込み", "Error", MB_OK);
+	}
 	for (int i = 0; i < TOTALSCORE_DIGIT; i++)//トータルスコアの桁を作る
 	{
 		TotalScoreArray.push_back(0);
@@ -105,13 +120,16 @@ void CTotalScore::Update()
 ======================================== */
 void CTotalScore::Draw()
 {
+	DrawTotalScoreBG();		// トータルスコアの背景の描画
+
+
 	DirectX::XMFLOAT4X4 time[3];
 	//ビュー行列は2Dだとカメラの位置があまり関係ないので、単位行列を設定する（単位行列は後日
 	DirectX::XMStoreFloat4x4(&time[1], DirectX::XMMatrixIdentity());
 
 	//プロジェクション行列には2Dとして表示するための行列を設定する
 	//この行列で2Dのスクリーンの多いさが決まる
-	DirectX::XMMATRIX proj = DirectX::XMMatrixOrthographicOffCenterLH(0.0f, 1280.0f, 720.0f, 0.0f, 0.1f, 10.0f);
+	DirectX::XMMATRIX proj = DirectX::XMMatrixOrthographicOffCenterLH(0.0f, SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f, 0.1f, 10.0f);
 	DirectX::XMStoreFloat4x4(&time[2], DirectX::XMMatrixTranspose(proj));
 	
 	//トータルスコア（一番右上）の描画設定
@@ -138,16 +156,17 @@ void CTotalScore::Draw()
 		Sprite::SetUVPos(DirectX::XMFLOAT2(0.2f*x, 0.5f*y));
 		Sprite::Draw();
 	}
+	
 	//加算予定のスコア（トータルの下）の描画設定サイズ以外は同じなので省略
 	Sprite::SetSize(DirectX::XMFLOAT2(PLUSSCORE_SIZE.x, PLUSSCORE_SIZE.y));
 	Sprite::SetUVScale(DirectX::XMFLOAT2(0.2f, 0.333f));
 	Sprite::SetTexture(m_pPlusScoreTexture);
+		
 	for (int i = 0, lineNum=1; i < MAX_COMBO_NUM; i++)
 	{
 		
 		if (m_PlusScore[i].nAddScore == 0)continue;//何もなければスルー
-
-		
+		DrawPlusScoreBG();
 		if (m_PlusScore[i].bDispTotalScoreFlg == true) 
 		{
 			
@@ -155,6 +174,7 @@ void CTotalScore::Draw()
 			nArraySize = int(digitArray.size());				//何桁か確認
 			for (int i = 0; i < nArraySize; i++)
 			{
+				
 				int width = int(PLUSSCORE_SIZE.x * i);
 				int hight = int(ROW_HIGHT * lineNum);
 				//ワールド行列はXとYのみを考慮して作成(Zは10ぐらいに配置
@@ -167,9 +187,11 @@ void CTotalScore::Draw()
 				int y = digitArray[i] % 5;	//ここ名前募集します
 				int x = digitArray[i] / 5;	//配列に入ってる数字の場所を計算してます
 				Sprite::SetUVPos(DirectX::XMFLOAT2(0.2f*y, 0.333f*x));
+				
 
 				Sprite::Draw();
 			}
+			
 			//+の表示
 			int width = int(PLUSSCORE_SIZE.x * nArraySize);
 			int hight = int(ROW_HIGHT * lineNum);
@@ -193,7 +215,7 @@ void CTotalScore::Draw()
 			m_PlusScore[i].nDispFrame = 0;
 			m_PlusScore[i].bDispFlg = false;
 		}
-	
+
 		m_PlusScore[i].nDispFrame++;
 		if (!m_PlusScore[i].bEndComboFlg)
 		{
@@ -259,8 +281,10 @@ void CTotalScore::Draw()
 		}
 		if (m_PlusScore[i].nDispFrame >= 2 * 60&& m_PlusScore[i].bDispFlg)
 		{
+			
 			m_PlusScore[i].bDispTotalScoreFlg = false;
 		}
+	
 	}
 }
 /* ========================================
@@ -314,7 +338,7 @@ void CTotalScore::ComboCheck(CCombo::ComboInfo comboInfo, int num)
 ======================================== */
 void CTotalScore::AddTotalScore()
 {
-
+	
 	m_nTotalScore += m_PlusScore->nAddScore;
 	if (m_nTotalScore > MAX_TOTALSCORE)
 	{
@@ -334,7 +358,9 @@ void CTotalScore::AddTotalScore()
 		TotalScoreArray[i] = digitArray[i];
 	}
 	digitArray.clear();
+	
 }
+
 /* ========================================
 	トータルスコア取得関数
 	----------------------------------------
@@ -371,4 +397,81 @@ std::vector<int> CTotalScore::digitsToArray(int score)
 	return digits;
 }
 
+/* ========================================
+	トタルスコア背景描画関数
+	-------------------------------------
+	内容：トタルスコアの背景を描画する
+	-------------------------------------
+	引数1：なし
+	-------------------------------------
+	戻値：なし
+=========================================== */
 
+void CTotalScore::DrawTotalScoreBG()
+{
+	//ボスゲージテクスチャ（空）
+	DirectX::XMFLOAT4X4 TScoreBG[3];
+
+	//ワールド行列はXとYのみを考慮して作成
+	DirectX::XMMATRIX worldTscorebg = DirectX::XMMatrixTranslation(TOTAL_SCORE_BG_POS.x, TOTAL_SCORE_BG_POS.y, 0.0f);
+	
+	DirectX::XMStoreFloat4x4(&TScoreBG[0], DirectX::XMMatrixTranspose(worldTscorebg));
+
+	//ビュー行列は2Dだとカメラの位置があまり関係ないので、単位行列を設定する（単位行列は後日
+	DirectX::XMStoreFloat4x4(&TScoreBG[1], DirectX::XMMatrixIdentity());
+
+	//プロジェクション行列には2Dとして表示するための行列を設定する
+	//この行列で2Dのスクリーンの多いさが決まる
+	DirectX::XMMATRIX projTscorebg = DirectX::XMMatrixOrthographicOffCenterLH(0.0f, SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f, 0.1f, 0.0f);
+	DirectX::XMStoreFloat4x4(&TScoreBG[2], DirectX::XMMatrixTranspose(projTscorebg));
+
+	//スプライトの設定
+	Sprite::SetWorld(TScoreBG[0]);
+	Sprite::SetView(TScoreBG[1]);
+	Sprite::SetProjection(TScoreBG[2]);
+	Sprite::SetSize(TOTAL_SCORE_BG_SIZE);
+	Sprite::SetUVPos(DirectX::XMFLOAT2(0.0f, 0.0f));
+	Sprite::SetUVScale(DirectX::XMFLOAT2(1.0f, 1.0f));
+	Sprite::SetColor(DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f));
+	Sprite::SetTexture(m_pTScoreBGTex);
+	Sprite::Draw();
+}
+
+/* ========================================
+	プラススコア背景描画関数
+	-------------------------------------
+	内容：プラススコアの背景を描画する
+	-------------------------------------
+	引数1：なし
+	-------------------------------------
+	戻値：なし
+=========================================== */
+
+void CTotalScore::DrawPlusScoreBG()
+{
+	//ボスゲージテクスチャ（空）
+	DirectX::XMFLOAT4X4 PScoreBG[3];
+
+	//ワールド行列はXとYのみを考慮して作成
+	DirectX::XMMATRIX worldPscorebg = DirectX::XMMatrixTranslation(PLUS_SCORE_BG_POS.x, PLUS_SCORE_BG_POS.y, 0.0f);
+	DirectX::XMStoreFloat4x4(&PScoreBG[0], DirectX::XMMatrixTranspose(worldPscorebg));
+
+	//ビュー行列は2Dだとカメラの位置があまり関係ないので、単位行列を設定する（単位行列は後日
+	DirectX::XMStoreFloat4x4(&PScoreBG[1], DirectX::XMMatrixIdentity());
+
+	//プロジェクション行列には2Dとして表示するための行列を設定する
+	//この行列で2Dのスクリーンの多いさが決まる
+	DirectX::XMMATRIX projPscorebg = DirectX::XMMatrixOrthographicOffCenterLH(0.0f, SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f, 0.1f, 0.0f);
+	DirectX::XMStoreFloat4x4(&PScoreBG[2], DirectX::XMMatrixTranspose(projPscorebg));
+
+	//スプライトの設定
+	Sprite::SetWorld(PScoreBG[0]);
+	Sprite::SetView(PScoreBG[1]);
+	Sprite::SetProjection(PScoreBG[2]);
+	Sprite::SetSize(PLUS_SCORE_BG_SIZE);
+	Sprite::SetUVPos(DirectX::XMFLOAT2(0.0f, 0.0f));
+	Sprite::SetUVScale(DirectX::XMFLOAT2(1.0f, 1.0f));
+	Sprite::SetColor(DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f));
+	Sprite::SetTexture(m_pPScoreBGTex);
+	Sprite::Draw();
+}
