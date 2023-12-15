@@ -18,6 +18,7 @@
 	・2023/12/08 シーン遷移用に変数追加 takagi
 	・2023/12/12 Stage1からメンバ変数を移動 yamashita
 	・2023/12/14 BGMの管理をSceneManagerに移動 yamashita
+	・2023/12/15 フェード削除 takagi
 
 ========================================== */
 
@@ -35,11 +36,9 @@
 #include "Timer.h"
 #include "StageFinishUI.h"
 #include "Combo.h"
-#include "Geometry.h"
 #include "HP_UI.h"
 #include "DirectWrite.h"
 #include "Timer.h"
-#include "Fade.h"
 #include "Pause.h"				//メンバのヘッダ
 #include "BossGauge.h"
 #include "ScoreOHManager.h"
@@ -50,39 +49,16 @@
 #include "DrawGameStart.h"
 
 // =============== デバッグモード ===================
-#define USE_CAMERA_VIBRATION (true)
-#define MODE_COORD_AXIS (true)			//座標軸映すかどうか
-#define MODE_GROUND (false)				//座標軸映すかどうか
 #if _DEBUG
-#define TRY_USE_HIT_STOP (true)
-#endif
-#define USE_FADE_GAME (true)	//フェード試す
-#define USE_PAUSE (true)	//ポーズ試す		※現在ポーズ中から戻ってくる手段を用意していないため要注意！
-#define SCENE_TRANSITION(false)		// シーン遷移をボタン押下か自動化を切り替え（trueは自動)
-
-#if USE_FADE_GAME
-#include "Fade.h"
-#endif
-
-#if USE_CAMERA_VIBRATION
-#include "Input.h"
-#endif
-
-#if TRY_USE_HIT_STOP
-#include "Input.h"
-#endif
-
-#if USE_PAUSE	//ポーズ臨時呼び出し
-#include "Input.h"
+#define MODE_COORD_AXIS (true)	//座標軸映すかどうか
+#define SCENE_TRANSITION(false)	// シーン遷移をボタン押下か自動化を切り替え（trueは自動)
 #endif
 
 // =============== 定数定義 =======================
 const int STARTSIGN_UV_NUM_X = 6;	// テクスチャの横の分割数
 const int STARTSIGN_UV_NUM_Y = 9;	// テクスチャの縦の分割数
-
 const float STARTSIGN_UV_POS_X = 1.0f / STARTSIGN_UV_NUM_X;		// 横のUV座標計算用
 const float STARTSIGN_UV_POS_Y = 1.0f / STARTSIGN_UV_NUM_Y;		// 縦のUV座標計算用
-
 
 // =============== クラス定義 =====================
 class CStage :public CScene	//シーン
@@ -108,7 +84,6 @@ protected:
 	void ExplosionBossCollision();	//追加
 	void ExplosionSlimeCollision();
 	void SlimeSlimeNormalMoveCollision();
-
 	void SlimeBossNormalMoveCollision();		//追加
 	void BossSlimeNormalMoveCollision();		//追加
 	void BossBossNormalMoveCollision();			//追加
