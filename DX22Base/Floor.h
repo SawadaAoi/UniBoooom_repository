@@ -30,6 +30,13 @@ const int FLOOR_NUM = 9;
 class CFloor
 {
 public:
+	enum StageKinds
+	{
+		Stage1,
+		Stage2,
+		Stage3,
+	};
+public:
 	// ===プロトタイプ宣言===
 	CFloor(TPos3d<float>* pPlayerPos);
 	~CFloor();
@@ -38,7 +45,7 @@ public:
 
 	void calculationPosition();				//座標算出関数
 	void SetCamera(const CCamera* pCamera);	//カメラセット関数
-
+	void SetFloorModel(StageKinds stageKind);
 private:
 	// ===メンバ変数宣言=====
 	tagTransform3d m_Transform[FLOOR_NUM];		//ワールド座標系情報

@@ -33,6 +33,7 @@
 =========================================== */
 CStage3::CStage3()
 {
+	m_pFloor->SetFloorModel(CFloor::StageKinds::Stage3);
 }
 
 /* ========================================
