@@ -661,4 +661,5 @@ void CPlayer::Healing()
 {
 	m_nHp += HEAL_NUM;
 	if (m_nHp >= PLAYER_HP) { m_nHp = PLAYER_HP; }
+	PlaySE(SE_HEAL);
 }
