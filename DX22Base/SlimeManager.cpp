@@ -120,6 +120,7 @@ CSlimeManager::CSlimeManager(CPlayer* pPlayer)
 	, m_nKill(0)		//被討伐数
 	, m_pSE{ nullptr,nullptr,nullptr }
 	, m_pSESpeaker{ nullptr,nullptr,nullptr }
+	, m_bBossPtrExist(false)
 {
 	//スライムのモデルと頂点シェーダーの読み込み
 	LoadModel();
@@ -353,9 +354,23 @@ void CSlimeManager::CreateBoss()
 		TPos3d<float> createPos = m_pPlayer->GetPos();
 		createPos.z += ADD_CREATE_BOSS_POS_Z;
 		m_pBoss[i] = new CSlime_Boss_1(createPos, m_pVS, m_pBossModel[0], m_pBossModel[1]);	//動的生成(取り合えず位置は仮)
-
+		m_bBossPtrExist = true;
 		break;
 	}
+}
+
+/* ========================================
+	ボス存在する関数
+	----------------------------------------
+	内容：ボスが存在するかどうかreturnする
+	----------------------------------------
+	引数1：無し
+	----------------------------------------
+	戻値：ボス存在判断フラグ
+======================================== */
+bool CSlimeManager::IsBossPtrExist()
+{
+	return m_bBossPtrExist;
 }
 
 /* ========================================
@@ -872,6 +887,7 @@ void CSlimeManager::TouchBossExplosion(int BossNum, CExplosionManager* pExpMng, 
 	// 死亡処理
 	if (m_pBoss[BossNum]->IsDead() == true)
 	{
+		m_bBossPtrExist = false;
 		CntKill(m_pBoss[BossNum]);		//ぶつかりに来たスライム(ボス)が討伐された
 		SAFE_DELETE(m_pBoss[BossNum]);	//スライム削除
 		
