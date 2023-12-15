@@ -64,7 +64,7 @@ const float COL_SUB_STAND_TO_SMALL = 0.8f;			// スライム衝突(小→大)の衝突される
 const float COL_SUB_HIT_TO_SMALL = 0.3f;			// スライム衝突(大→小)の衝突側の減算値(移動方向)				//1.0でそのまま
 const float COL_SUB_STAND_TO_BIG = 1.2f;			// スライム衝突(大→小)の衝突される側の減算値(衝突された方向)	//1.0でそのまま
 
-#define DEBUG_BOSS	(true)	// デバッグ用にゲーム開始時ボスを生成するかどうか
+#define DEBUG_BOSS	(false)	// デバッグ用にゲーム開始時ボスを生成するかどうか
 
 
 #if MODE_GAME_PARAMETER
@@ -97,6 +97,7 @@ const std::map<size_t, int> MAP_KILL_POINT = {
 	{typeid(CSlime_Flame).hash_code(), 1 },
 	{typeid(CSlime_Heal).hash_code(), 1 },
 	{typeid(CSlime_Boss_1).hash_code(), 1 },
+	{typeid(CSlime_Boss_2).hash_code(), 1 },
 };	//スライムの種類に連動した討伐数
 
 /* ========================================
@@ -371,6 +372,7 @@ void CSlimeManager::CreateBoss(int BossNum)
 			break;
 		}
 
+		m_bBossPtrExist = true;
 		break;
 	}
 }

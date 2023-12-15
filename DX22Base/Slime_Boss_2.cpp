@@ -16,33 +16,27 @@
 
 // =============== インクルード ===================
 #include "Slime_Boss_2.h"
-#include "GameParameter.h"		//定数定義用ヘッダー
 
 
 // =============== 定数定義 =======================
-#if MODE_GAME_PARAMETER
-#else
-
-
-#endif
 const float BOSS_2_SCALE = 6.0f;					// ボス2の大きさ
 const float BOSS_2_SPEED = ENEMY_MOVE_SPEED * 1.5f;	// ボス2のスピード
 const int	BOSS_2_MAX_HP = 10;						// ボス2の最大HP
 const float BOSS_2_SHADOW_SCALE = 12.0f;			// ボス2の影の大きさ
 
-const float STATE_CHANGE_ATTACK_TIME = 5.0f;
-const float JUMP_CHAEGE_SCALE_TIME = 0.5f;
-const float JUMP_CHAEGE_SCALE_ADJUST = 0.01f;
-const float JUMP_CHAEGE_TIME = 1.0f;
-const float JUMP_TIME = 1.5f;
-const float JUMP_SPEED = 1.0f;
-const float JUMP_SHADOW_SIZE_MUL = 0.9f;
-const float TARGET_SHADOW_TIME = 4.0f;
-const float TARGET_SHADOW_PLYR_MOVE_TIME = 3.0f;
-const float DROP_SPEED = 2.0f;
-const float DROP_RIGID_TIME = 3.0f;
-const float DROP_RIGID_SCALE_TIME = 0.5f;
-const float DROP_RIGID_SCALE_ADJUST = 0.01f;
+const float STATE_CHANGE_ATTACK_INTERVAL	= 5.0f;		// 通常→攻撃の切り替え間隔
+const float JUMP_CHAEGE_TIME				= 1.0f;		// ジャンプ前溜めの時間
+const float JUMP_CHAEGE_SCALE_TIME			= 0.2f;		// ジャンプ前溜めの大きさ変更時間
+const float JUMP_CHAEGE_SCALE_ADJUST		= 0.02f;	// ジャンプ前溜めの大きさ変更値
+const float JUMP_TIME						= 1.5f;		// ジャンプ処理時間
+const float JUMP_SPEED						= 1.0f;		// ジャンプスピード
+const float JUMP_SHADOW_SIZE_MUL			= 0.9f;		// ジャンプ中の影の変更量
+const float TARGET_SHADOW_TIME				= 4.0f;		// 影落とし中の時間
+const float TARGET_SHADOW_PLYR_MOVE_TIME	= 3.0f;		// 影落とし中のプレイヤー追従時間
+const float DROP_SPEED						= 2.0f;		// 落下処理スピード
+const float DROP_RIGID_TIME					= 3.0f;		// 落下後硬直時間
+const float DROP_RIGID_SCALE_TIME			= 0.2f;		// 落下後硬直の大きさ変更時間
+const float DROP_RIGID_SCALE_ADJUST			= 0.01f;	// 落下後硬直の大きさ変更値
 
 
 
@@ -268,7 +262,7 @@ void CSlime_Boss_2::MoveNormal()
 		// 攻撃処理に切り替え
 		m_nMoveCnt[MOVE_STATE::NORMAL]++;
 		// 攻撃処理→ジャンプ　切り替え時間
-		if ((STATE_CHANGE_ATTACK_TIME * 60) <= m_nMoveCnt[MOVE_STATE::NORMAL])
+		if ((STATE_CHANGE_ATTACK_INTERVAL * 60) <= m_nMoveCnt[MOVE_STATE::NORMAL])
 		{
 			m_nMoveState = MOVE_STATE::JUMP_CHARGE;		// 状態を切り替え
 			m_nMoveCnt[MOVE_STATE::NORMAL] = 0;		// 加算をリセット
@@ -431,6 +425,10 @@ void CSlime_Boss_2::MoveDropRigid()
 		m_Transform.fScale.z *= 1.0f + DROP_RIGID_SCALE_ADJUST;
 		m_Transform.fScale.y *= 1.0f - DROP_RIGID_SCALE_ADJUST;
 	}
+	else
+	{
+		this->SetScale({ BOSS_2_SCALE, BOSS_2_SCALE, BOSS_2_SCALE });	// 大きさを戻しておく
+	}
 
 
 	// 落下移動 → 通常移動切り替え
@@ -438,7 +436,6 @@ void CSlime_Boss_2::MoveDropRigid()
 	{
 		m_nMoveState = MOVE_STATE::NORMAL;	// 状態を切り替え
 		m_nMoveCnt[MOVE_STATE::DROP_RIGID] = 0; 	// 加算をリセット
-		m_pShadow->SetScale(BOSS_2_SHADOW_SCALE);	// 影の大きさは戻しておく
 
 	}
 }
