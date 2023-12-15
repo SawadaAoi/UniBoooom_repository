@@ -30,6 +30,7 @@
 	・2023/12/14 SE用の列挙を作成 yamashita
 	・2023/12/15 SEを外から再生できるように変更 yamashita
 	・2023/12/15 回復SE追加 yamashita
+	・2023/12/16 チャージショットの実装 yamashita
 
 ========================================== */
 #ifndef __PLAYER_H__
@@ -59,7 +60,7 @@ public:
 		SE_RUN,			//移動のSE
 		SE_DAMAGED,		//被ダメージのSE
 		SE_HIT_HAMMER,	//ハンマーとスライムの接触SE
-		SE_HEAL,
+		SE_HEAL,		//回復
 		SE_CHARGE,		//チャージ完了
 
 		SE_MAX			//SEの総数

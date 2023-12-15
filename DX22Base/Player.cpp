@@ -37,6 +37,7 @@
 	・2023/12/14 プレイヤーのアニメーション実装 yamashita
 	・2023/12/14 SEの変数を整理 yamashita
 	・2023/12/15 SEを外から再生できるように変更 yamashita
+	・2023/12/16 チャージショットの実装 yamashita
 ======================================== */
 
 // =============== インクルード ===================
@@ -187,7 +188,7 @@ void CPlayer::Update()
 
 		// スペースキーを押した時、またはコントローラのBボタンを離した時 && チャージ状態だったら
 		if ((IsKeyRelease(VK_SPACE) || IsKeyReleaseController(BUTTON_B) && m_state == STATE_CHARGE))
-		{
+		{	//=====ハンマーを振る=====
 			bool charge = m_nChargeCnt > HAMMER_CAHRGE_CNT ? true : false;	//チャージが一定以上だったらtrue
 			m_pHammer->AttackStart(m_Transform.fPos, m_Transform.fRadian.y + DirectX::g_XMPi[0],charge);	// ハンマー攻撃開始
 			m_bAttackFlg = true;	// 攻撃フラグを有効にする

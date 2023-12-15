@@ -19,6 +19,7 @@
 	・2023/11/23 ジオメトリーからモデルに差し替え　yamashita
 	・2023/11/29 Intervalの変数、関数追加　yamamoto
 	・2023/12/01 IntervalをSwingSpeedに変更　yamamoto
+	・2023/12/16 チャージショットの実装 yamashita
 ========================================== */
 
 #ifndef __HAMMER_H__

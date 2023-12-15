@@ -27,6 +27,7 @@
 	・2023/11/29 影メモリリーク除去 takagi
 	・2023/11/30 モデルの読み込みが反転したのでradian.yが反対になるように変更 yamashita
 	・2023/12/07 ゲームパラメータから一部定数移動 takagi
+	・2023/12/16 チャージ状態で打たれた場合の処理を追加 yamashita
 
 ========================================== */
 
@@ -278,7 +279,9 @@ void CSlimeBase::HitMove()
 ======================================== */
 void CSlimeBase::HitMoveStart(float speed, float angle,bool charge)
 {
-	if (m_bChargeShot == true) { return; }
+	//チャージ状態で打たれたスライムなら他のスライムの干渉を受けないのでスキップ
+	if (m_bChargeShot == true) { return; }	
+
 	m_fSpeed = speed;		//移動量を入れる
 	m_fVecAngle = angle;	//移動方向を入れる
 	m_bHitMove = true;		//吹き飛び状態をONにする

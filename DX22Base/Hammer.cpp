@@ -22,7 +22,8 @@
 	・2023/11/29 Interval追加　yamamoto
 	・2023/12/01 IntervalをSwingSpeedに変更　yamamoto
 	・2023/12/07 ゲームパラメータから一部定数移動 takagi
-	
+	・2023/12/16 チャージショットの実装 yamashita
+
 ========================================== */
 
 // =============== インクルード ===================
@@ -122,7 +123,7 @@ bool CHammer::Update()
 	if (m_dAddAngleCnt >= m_fSwingSpeed)
 	{
 		m_dAddAngleCnt = 0;		// 角度変更フレームカウントリセット
-		
+		m_bCharge = false;		// チャージ状態をfalseに戻す
 		return false;
 	}
 	// 移動中はtrueを返す
