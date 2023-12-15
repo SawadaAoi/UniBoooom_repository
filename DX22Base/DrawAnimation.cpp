@@ -13,6 +13,7 @@
 	・2023/12/09 続き nieda
 	・2023/12/11 続き nieda
 	・2023/12/12 tkg先生の指導により2dpolygonに対応 nieda
+	・2023/12/15 デフォルトだとサイズが小さすぎたので変更できるよう修正 nieda
 
 ========================================== */
 
@@ -28,15 +29,17 @@
 	引数1：読み込むファイルのパス
 	引数2：カメラクラスのポインタ
 	引数3：分割数の最大数
-	引数4：縦横の分割数の最大数
-	引数5：アニメーションの切り替え間隔
+	引数4：描画サイズ
+	引数5：縦横の分割数の最大数
+	引数6：アニメーションの切り替え間隔
 	----------------------------------------
 	戻値：なし
 =========================================== */
-CDrawAnim::CDrawAnim(const char* textureFile, CCamera* pCamera, int nSplitMax, TDiType<int> nSplit, int nCnt)
+CDrawAnim::CDrawAnim(const char* textureFile, CCamera* pCamera, int nSplitMax, TDiType<float> fSize, TDiType<int> nSplit, int nCnt)
 	: m_nNumAnim(0)
 	, m_nNumAnimMax(0)
 	, m_nSplitNum(0, 0)
+	, m_fSize(0.0f, 0.0f, 0.0f)
 	, m_fUvPos(0.0f, 0.0f)
 	, m_fUvScale(0.0f, 0.0f)
 	, m_nFrameCnt(0)
@@ -46,9 +49,10 @@ CDrawAnim::CDrawAnim(const char* textureFile, CCamera* pCamera, int nSplitMax, T
 {
 	SetTexture(textureFile);	// テクスチャをセット
 	SetCamera(pCamera);			// カメラをセット
-	m_fUvScale = { 1.0f / m_nSplitNum.x, 1.0f / m_nSplitNum.y };	// UV分割サイズを格納
+	m_fSize = { fSize.x, fSize.y, 0.0f };	// 描画サイズ設定
 	m_nNumAnimMax = nSplitMax;	// 分割数の最大値を格納
 	m_nSplitNum = nSplit;		// 縦横の分割数を格納
+	m_fUvScale = { 1.0f / m_nSplitNum.x, 1.0f / m_nSplitNum.y };	// UV分割サイズを格納
 	m_nSwitchCnt = nCnt;		// アニメーションの切り替え間隔を格納
 }
 
@@ -69,11 +73,12 @@ void CDrawAnim::Update()
 
 		if (m_nFrameCnt > m_nSwitchCnt)		// 一定時間経過したら描画を更新する
 		{
-			m_nSwitchCnt = 0;	// カウントをリセット
+			m_nFrameCnt = 0;	// カウントをリセット
 			m_fUvPos.x = (m_fUvScale.x) * (m_nNumAnim % m_nSplitNum.x);	// 描画するUV座標を計算
 			m_fUvPos.y = (m_fUvScale.y) * (m_nNumAnim / m_nSplitNum.x);	// 描画するUV座標を計算
 
 			m_nNumAnim++;			// 描画するアニメーション番号を更新
+			SetSize(m_fSize);		// 描画サイズをセット
 			SetUvOffset(m_fUvPos);	// UV座標をセット
 			SetUvScale(m_fUvScale);	// UV分割サイズをセット
 		}
@@ -119,4 +124,18 @@ void CDrawAnim::Draw()
 void CDrawAnim::SetLoopFlg(bool bLoop)
 {
 	m_bLoop = bLoop;	// フラグをセット
+}
+
+/* ========================================
+	アニメ再生フラグゲット関数
+	-------------------------------------
+	内容：ループ再生フラグをセット
+	-------------------------------------
+	引数：ループ再生判定フラグ（trueならループする）
+	-------------------------------------
+	戻値：なし
+=========================================== */
+bool CDrawAnim::GetAnimFlg()
+{
+	return m_bAnim;
 }
