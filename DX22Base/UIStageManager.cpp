@@ -32,6 +32,7 @@ CUIStageManager::CUIStageManager(CPlayer* pPlayer, const CCamera * pCamera, CSli
 	, m_pStageFin(nullptr)
 	, m_pTimer(nullptr)
 	, m_pTotalScore(nullptr)
+	, m_pBossArrow(nullptr)
 {
 	m_pCombo = new CCombo();
 	m_pTimer = new CTimer();
@@ -40,15 +41,18 @@ CUIStageManager::CUIStageManager(CPlayer* pPlayer, const CCamera * pCamera, CSli
 	m_pTotalScore = new CTotalScore();
 	m_pScoreOHMng = new CScoreOHManager();
 	m_pStageFin = new CStageFinish(pPlayer->GetHpPtr(), m_pTimer->GetTimePtr());
-
+	m_pBossArrow = new CBossArrow();
 
 	m_pCombo->SetTotalScore(m_pTotalScore);
 	m_pTimer->TimeStart();
 	m_pBossgauge->SetSlimeManager(pSlimeMng);
 	m_pScoreOHMng->SetCamera(pCamera);
+	m_pBossArrow->SetSlimeMng(pSlimeMng);
+	m_pBossArrow->SetPlayer(pPlayer);
 
+	/*
 	m_pBossgauge->AddBossGauge(BOSS_GAUGE_S1[0].startTime, BOSS_GAUGE_S1[0].maxTime);
-	m_pBossgauge->AddBossGauge(BOSS_GAUGE_S1[1].startTime, BOSS_GAUGE_S1[1].maxTime);
+	m_pBossgauge->AddBossGauge(BOSS_GAUGE_S1[1].startTime, BOSS_GAUGE_S1[1].maxTime);*/
 
 }
 
@@ -63,6 +67,7 @@ CUIStageManager::CUIStageManager(CPlayer* pPlayer, const CCamera * pCamera, CSli
 =========================================== */
 CUIStageManager::~CUIStageManager()
 {
+	SAFE_DELETE(m_pBossArrow);
 	SAFE_DELETE(m_pStageFin);
 	SAFE_DELETE(m_pHpMng);
 	SAFE_DELETE(m_pTimer);
@@ -89,6 +94,7 @@ void CUIStageManager::Update()
 	m_pHpMng->Update();
 	m_pBossgauge->Update();
 	m_pScoreOHMng->Update();
+	m_pBossArrow->Update();
 }
 
 /* ========================================
@@ -102,6 +108,7 @@ void CUIStageManager::Update()
 =========================================== */
 void CUIStageManager::Draw()
 {
+	m_pBossArrow->Draw();	// ボス方向矢印描画
 	m_pStageFin->Draw();	// ステージ終了描画
 	m_pTimer->Draw();		// タイマー描画
 	m_pCombo->Draw();		// コンボ描画
@@ -131,6 +138,10 @@ CStageFinish * CUIStageManager::GetStageFinish()
 	return m_pStageFin;
 }
 
+
+
+
+
 /* ========================================
    総スコアゲッタ関数
    -------------------------------------
@@ -151,4 +162,9 @@ int CUIStageManager::GetTotalScore()
 	{
 		return 0;	//初期値で対応
 	}
+}
+
+CBossgauge* CUIStageManager::GetBossGauge()
+{
+	return m_pBossgauge;
 }

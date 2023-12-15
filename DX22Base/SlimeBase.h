@@ -134,7 +134,7 @@ protected:
 	CShadow* m_pShadow;				//‰e‚Ìƒ|ƒCƒ“ƒ^
 	float m_fScaleShadow;			//‰e‚Ì‘å‚«‚³
 	
-	DirectX::XMMATRIX m_Ry;				//‰ñ“]
+	DirectX::XMMATRIX m_Ry;			//‰ñ“]
 
 	int m_RanMoveCnt;			// ƒ‰ƒ“ƒ_ƒ€ˆÚ“®‚Ì‰ÁZ’l
 	int m_nAttack;				// UŒ‚—Í
@@ -142,6 +142,4 @@ protected:
 private:
 
 };
-
-
 #endif // __SLIME_BASE_H__

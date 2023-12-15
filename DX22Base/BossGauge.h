@@ -34,6 +34,7 @@ public:
 	// ===列挙定義===========
 	typedef struct
 	{
+		int	 nBossNum;			// 生成ボス種類
 		bool bDelFlg;			// 削除フラグ
 		bool bFadeFlg;			// フェードフラグ
 		int	nStartFrame;		// 開始時間Frame
@@ -56,7 +57,7 @@ public:
 
 	void SetSlimeManager(CSlimeManager* pSlimeMng);
 
-	void AddBossGauge(float fStartTime, float fMaxTime);
+	void AddBossGauge(int BossNum, float fStartTime, float fMaxTime);
 
 private:
 	// ===メンバ変数宣言===

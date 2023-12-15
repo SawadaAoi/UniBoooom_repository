@@ -13,6 +13,7 @@
 	・2023/11/16 カメラのセット関数を作成 yamashita
 	・2023/11/22 床の自動生成機能を追加 yamashita
 	・2023/12/07 ゲームパラメータから一部定数移動 takagi
+	・2023/12/15 ステージ別に床のモデルを設定できるように修正 Sawada
 
 ========================================== */
 #include "Floor.h"
@@ -48,12 +49,7 @@ CFloor::CFloor(TPos3d<float>* pPlayerPos)
 	if (FAILED(m_pVS->Load("Assets/Shader/VS_Model.cso"))) {
 		MessageBox(nullptr, "VS_Model.cso", "Error", MB_OK);
 	}
-	//床のモデル読み込み
-	m_pModel = new Model;
-	if (!m_pModel->Load("Assets/Model/floor/floor_1.5.FBX", 1.0f, Model::XFlip)) {		//倍率と反転は省略可
-		MessageBox(NULL, "floor", "Error", MB_OK);	//ここでエラーメッセージ表示
-	}
-	m_pModel->SetVertexShader(m_pVS);
+	
 
 	//床の位置情報を入れる
 	TTriType<float> pos;
@@ -81,7 +77,7 @@ CFloor::CFloor(TPos3d<float>* pPlayerPos)
 			break;
 		}
 
-		m_Transform[i].fPos		= { pos.x, 0.0f, pos.z };					//ポジションの初期化
+		m_Transform[i].fPos		= { pos.x, -0.1f, pos.z };					//ポジションの初期化
 		m_Transform[i].fScale	= { FLOOR_SCALE_X, 1.0f, FLOOR_SCALE_Z };	//スケールの初期化
 		m_Transform[i].fRadian	= { 0.0f, 0.0f, 0.0f };						//回転角を初期化
 	}	
@@ -195,7 +191,7 @@ void CFloor::calculationPosition()
 			break;
 		}
 
-		m_Transform[i].fPos = { pos.x, 0.0f, pos.z };	//座標を確定
+		m_Transform[i].fPos = { pos.x, -0.1f, pos.z };	//座標を確定
 	}
 }
 
@@ -211,4 +207,41 @@ void CFloor::calculationPosition()
 void CFloor::SetCamera(const CCamera * pCamera)
 {
 	m_pCamera = pCamera;
+}
+
+/* ========================================
+   床モデルセット関数
+   ----------------------------------------
+   内容：ステージ毎に違う見た目の床モデルをセットする
+   ----------------------------------------
+   引数1：ステージの種類
+   ----------------------------------------
+   戻値：なし
+======================================== */
+void CFloor::SetFloorModel(StageKinds stageKind)
+{
+	//床のモデル読み込み
+	m_pModel = new Model;
+	switch (stageKind)
+	{
+	case CFloor::Stage1:
+		if (!m_pModel->Load("Assets/Model/floor/Stage1/floor_grass.fbx", 1.0f, Model::XFlip)) {		//倍率と反転は省略可
+			MessageBox(NULL, "floor", "Error", MB_OK);	//ここでエラーメッセージ表示
+		}
+		break;
+	case CFloor::Stage2:
+		if (!m_pModel->Load("Assets/Model/floor/Stage2/floor_cave.fbx", 1.0f, Model::XFlip)) {		//倍率と反転は省略可
+			MessageBox(NULL, "floor", "Error", MB_OK);	//ここでエラーメッセージ表示
+		}
+		break;
+	case CFloor::Stage3:
+		if (!m_pModel->Load("Assets/Model/floor/Stage3/floor_StainedGlass.FBX", 1.0f, Model::XFlip)) {		//倍率と反転は省略可
+			MessageBox(NULL, "floor", "Error", MB_OK);	//ここでエラーメッセージ表示
+		}
+		break;
+	default:
+		break;
+	}
+
+	m_pModel->SetVertexShader(m_pVS);
 }

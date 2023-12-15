@@ -125,7 +125,6 @@ const float LEVEL_HEAL_SPEED = ENEMY_MOVE_SPEED * 0.3f;		// 移動速度
 const int	LEVEL_HEAL_ATTACK = 1;							// 攻撃力 （いる？
 
 // ボススライム
-#define DEBUG_BOSS	(false)	// デバッグ用にゲーム開始時ボスを生成するかどうか
 const float LEVEL_BOSS_1_SCALE = 6.0f;								// ボス１の大きさ
 const float LEVEL_BOSS_1_SPEED = ENEMY_MOVE_SPEED * 0.4f;			// ボス１のスピード
 const int	BOSS_1_MAX_HP = 10;								// ボス１の最大HP
@@ -175,12 +174,15 @@ const float SLM_MOVE_ADD_SPEED[STATE_MAX]		= { 1.0f, 1.1f, 1.2f };			// 移動スピ
 // ボスゲージ =====================================================
 typedef struct
 {
+	int	  BossNum;		// ボスの種類
 	float startTime;	// 開始時間(秒)
 	float maxTime;		// ゲージ経過最大時間(秒)
 
 }BossGaugeSetParam;
 
-const BossGaugeSetParam BOSS_GAUGE_S1[2] = { {0, 45},{75, 45} };	// ステージ1のボスゲージ設定
+const BossGaugeSetParam BOSS_GAUGE_S1[2] = {};	// ステージ1のボスゲージ設定
+const BossGaugeSetParam BOSS_GAUGE_S2[1] = { {1, 0, 45}};	// ステージ2のボスゲージ設定
+const BossGaugeSetParam BOSS_GAUGE_S3[1] = { {2, 0, 45}};	// ステージ3のボスゲージ設定
 
 const int FADE_TIME = 5 * 60;										// ボスゲージが溜まってから消える時間
  

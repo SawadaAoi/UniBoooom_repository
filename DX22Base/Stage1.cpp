@@ -48,6 +48,7 @@
 =========================================== */
 CStage1::CStage1()
 {
+	m_pFloor->SetFloorModel(CFloor::StageKinds::Stage1);
 }
 
 /* ========================================

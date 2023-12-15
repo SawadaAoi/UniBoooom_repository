@@ -24,6 +24,7 @@
 	・2023/11/26 スライムと爆発の距離を調べ逃げるか判定する関数を作成 yamashita
 	・2023/11/29 プレイヤーのポインタを取得 yamashita
 	・2023/12/08 被討伐数のカウンタを追加 takagi
+	・2023/12/15 SEまわりを整理 yamashita
 
    ======================================== */
 
@@ -42,6 +43,7 @@
 #include "HealItemManager.h"
 #include "Player.h"
 #include "Timer.h"
+#include "Sound.h"
 // =============== 定数定義 =======================
 #if MODE_GAME_PARAMETER
 
@@ -54,6 +56,15 @@ const int MAX_BOSS_SLIME_NUM = 5;		// ボススライムの最大生成数
 class CSlimeManager
 {
 public:
+	enum SE
+	{
+		SE_HIT,				//スライム同士がぶつかるSE
+		SE_UNION,			//スライム同士がくっつくSE
+		SE_BOSS_DAMAGED,	//被ダメージのSE
+
+		SE_MAX				//SEの総数
+	};
+
 	// ===プロトタイプ宣言===
 	CSlimeManager(CPlayer* pPlayer);
 	~CSlimeManager();
@@ -61,7 +72,8 @@ public:
 	void Update(CExplosionManager* pExpMng);
 	void Draw();
 	void Create(E_SLIME_LEVEL level);
-	void CreateBoss();
+	void CreateBoss(int BossNum);
+	bool IsBossPtrExist();
 
 	//-- ノーマル、その他
 	void HitBranch(int HitSlimeArrayNum,int standSlimeArrayNum,CExplosionManager* pExpMng);			// スライムの接触が起きた際の分岐処理
@@ -77,6 +89,7 @@ public:
 	void TouchBossExplosion(int BossSlime, CExplosionManager* pExpMng, int ExpNum);
 
 
+
 	E_SLIME_LEVEL GetRandomLevel();																	// ランダムなスライムのレベルを返す(1～3レべル)
 	void PreventSlimeSlimeOverlap(CSlimeBase* pMoveSlime, CSlimeBase* pStandSlime);							// スライム同士が移動中に接触した時の処理
 	void PreventSlimeBossOverlap(CSlimeBase* pMoveSlime, CSlime_BossBase* pStandBoss);							// スライム同士が移動中に接触した時の処理
@@ -85,6 +98,8 @@ public:
 	void LoadModel();
 	void OutOfRange();
 	void CheckEscape();
+
+	void PlaySE(SE se,float volume = 1.0f);
 
 	//ゲット関数
 	CSlimeBase* GetSlimePtr(int num);
@@ -120,19 +135,24 @@ private:
 	CHealItemManager* m_pHealItemMng;			// 回復アイテムマネージャーポインタ
 	CTimer* m_pTimer;							// タイマーポインタ
 
-	XAUDIO2_BUFFER* m_pSEHitSlime;				//ハンマーでスライムを打った時のSEのデータ
-	XAUDIO2_BUFFER* m_pSEUnion;					//ハンマーでスライムを打った時のSEのデータ
-	IXAudio2SourceVoice* m_pSEHitSlimeSpeaker;	//ハンマーでスライムを打った時のSEを聞き取る側
-	IXAudio2SourceVoice* m_pSEUnionSpeaker;		//ハンマーでスライムを打った時のSEを聞き取る側
-
 	int m_CreateCnt;			// 生成間隔用カウント
 	TPos3d<float> m_oldCreatePos;	//1つ前のスライムの生成場所
 	CExplosionManager* m_pExpMng;
 	
 	int m_nKill;	//被討伐数
 
+	bool m_bBossPtrExist;		// ボスのポインタが存在するかどうか
 	// ===プロトタイプ宣言===
 	void CntKill(const CSlimeBase* pSlime);	//被討伐数カウンタ
+
+	void LoadSE();
+	//========== SE ==========
+	const std::string m_sSEFile[SE_MAX] = {
+		"Assets/Sound/SE/SlimeHitSlime.mp3",	//スライム同士がぶつかるSE
+		"Assets/Sound/SE/Union.mp3",			//スライム同士がくっつくSE
+		"Assets/Sound/SE/BossDamaged.mp3" };	//被ダメージのSE
+	XAUDIO2_BUFFER* m_pSE[SE_MAX];
+	IXAudio2SourceVoice* m_pSESpeaker[SE_MAX];
 };
 
 #endif // __SLIME_MANAGER_H__

@@ -1,9 +1,9 @@
 /* ========================================
 	HEW/UniBoooom!!
 	------------------------------------
-	ボススライム.h
+	ボススライム1.h
 	------------------------------------
-	Slime_Boss.h
+	Slime_Boss_1.h
 	------------------------------------
 	作成者	鈴村朋也
 
@@ -12,7 +12,7 @@
 	・2023/11/23 突撃処理の追加 Suzumura
 
 ========================================== */
-#ifndef __SLIME_BOSS_1__H__a
+#ifndef __SLIME_BOSS_1__H__
 #define __SLIME_BOSS_1__H__
 
 // =============== インクルード ===================
@@ -21,7 +21,7 @@
 // =============== 列挙定義 ===================
 enum E_BOSS_1_STATE
 {
-	NORMAL,
+	NORMAL = 0,
 	CHARGE,
 	ASSAULT
 };
@@ -54,7 +54,6 @@ private:
 	float m_assaultDistancePlayer;	// 突撃時のプレイヤー間の距離を保存
 	TPos3d<float> m_assaultMovePos;	// 突撃時のMovePosを保存
 	Model* m_StateModels[2];
-	E_BOSS_1_STATE m_eState;
 };
 
 

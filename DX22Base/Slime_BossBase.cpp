@@ -52,6 +52,7 @@ CSlime_BossBase::CSlime_BossBase()
 	, m_bFlash(false)
 	, m_pBossHpTexture(nullptr)
 	, m_pHpFrameTexture(nullptr)
+	, m_nMoveState(0)	// 0はNormal
 {
 
 	m_pBossHpTexture = new Texture();
@@ -64,6 +65,7 @@ CSlime_BossBase::CSlime_BossBase()
 	{
 		MessageBox(NULL, "HPフレーム読み込み", "Error", MB_OK);
 	}
+
 }
 
 
@@ -170,6 +172,9 @@ void CSlime_BossBase::Draw(const CCamera* pCamera)
 		m_pModel->Draw();
 	}
 	
+	//-- 影の描画
+	m_pShadow->Draw(pCamera);
+
 	//HP表示
 	RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得
 	DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
@@ -209,9 +214,6 @@ void CSlime_BossBase::Draw(const CCamera* pCamera)
 	Sprite::Draw();
 
 
-
-
-
 	float width = (BOSS_HP_SIZEX /2)*(BOSS_HP_POSX - m_nHp);
 
 
@@ -227,12 +229,6 @@ void CSlime_BossBase::Draw(const CCamera* pCamera)
 	Sprite::SetProjection(mat[2]);
 	Sprite::SetTexture(m_pBossHpTexture);
 	Sprite::Draw();
-
-	
-
-	
-
-
 
 }
 
@@ -280,6 +276,21 @@ void CSlime_BossBase::Damage(int num)
 bool CSlime_BossBase::IsDead()
 {
 	return m_bDead;
+}
+
+
+/* ========================================
+	移動種類取得関数
+	-------------------------------------
+	内容：ボスの現在の移動の種類を返す
+	-------------------------------------
+	引数1：無し
+	-------------------------------------
+	戻値：移動種類
+=========================================== */
+int CSlime_BossBase::GetMoveState()
+{
+	return m_nMoveState;
 }
 
 
