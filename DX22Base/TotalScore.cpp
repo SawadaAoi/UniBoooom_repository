@@ -169,7 +169,7 @@ void CTotalScore::Draw()
 		
 		if (m_PlusScore[i].bDispTotalScoreFlg == true) 
 		{
-			DrawPlusScoreBG();
+			DrawPlusScoreBG(lineNum);
  			digitArray = digitsToArray(m_PlusScore[i].nAddScore);	
 			nArraySize = int(digitArray.size());				//何桁か確認
 			//加算予定のスコア（トータルの下）の描画設定サイズ以外は同じなので省略
@@ -280,8 +280,9 @@ void CTotalScore::Draw()
 				Sprite::SetUVPos(DirectX::XMFLOAT2(0.4f, 0.666f));
 
 				Sprite::Draw();
+				lineNum++;
 			}
-			lineNum++;
+			
 		}
 		if (m_PlusScore[i].nDispFrame >= 2 * 60&& m_PlusScore[i].bDispFlg)
 		{
@@ -451,13 +452,13 @@ void CTotalScore::DrawTotalScoreBG()
 	戻値：なし
 =========================================== */
 
-void CTotalScore::DrawPlusScoreBG()
+void CTotalScore::DrawPlusScoreBG(int lineNum)
 {
 	//ボスゲージテクスチャ（空）
 	DirectX::XMFLOAT4X4 PScoreBG[3];
-
+	int hight = int(ROW_HIGHT * lineNum);
 	//ワールド行列はXとYのみを考慮して作成
-	DirectX::XMMATRIX worldPscorebg = DirectX::XMMatrixTranslation(PLUS_SCORE_BG_POS.x, PLUS_SCORE_BG_POS.y, 0.0f);
+	DirectX::XMMATRIX worldPscorebg = DirectX::XMMatrixTranslation(PLUS_SCORE_BG_POS.x, TOTALSCORE_POS.y+ hight, 0.0f);
 	DirectX::XMStoreFloat4x4(&PScoreBG[0], DirectX::XMMatrixTranspose(worldPscorebg));
 
 	//ビュー行列は2Dだとカメラの位置があまり関係ないので、単位行列を設定する（単位行列は後日

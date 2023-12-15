@@ -45,7 +45,7 @@ public:
 	void ComboCheck(CCombo::ComboInfo comboInfo, int num);
 	void AddTotalScore();
 	void DrawTotalScoreBG();			// トータルスコアの背景描画
-	void DrawPlusScoreBG();		// 加算スコアの背景描画
+	void DrawPlusScoreBG(int lineNum);		// 加算スコアの背景描画
 	int GetTotalScore();
 	std::vector<int> digitsToArray(int score);	//引数の数字を各桁1ずつ配列に入れる
 private:
