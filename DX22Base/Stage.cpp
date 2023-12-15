@@ -17,6 +17,7 @@
 	・2023/12/05 コメント修正 takagi
 	・2023/12/06 pose→pause修正、ポーズ文字表示 takagi
 	・2023/12/14 BGMの管理をSceneManagerに移動 yamashita
+	・2023/12/15 フェード削除 takagi
 
 ========================================== */
 
@@ -79,7 +80,6 @@ CStage::CStage()
 	CLine::Init();
 #endif
 
-
 	//================3dObject動的確保================
 	m_pPlayer = new CPlayer();							// プレイヤー生成
 	m_pFloor = new CFloor(m_pPlayer->GetPosAddress());	// 床生成
@@ -93,18 +93,6 @@ CStage::CStage()
 
 	//================2dObject動的確保================
 	m_pUIStageManager = new CUIStageManager(m_pPlayer, m_pCamera, m_pSlimeMng);	// UIマネージャー生成
-
-
-#if MODE_GROUND
-	m_pBox = new CBox();
-#endif
-#if USE_FADE_GAME
-	m_pFade = new CFade(m_pCamera);
-#endif
-
-#if USE_PAUSE
-	m_pPause = new CPause(m_pCamera);
-#endif
 
 	//================セット================
 	// カメラ
