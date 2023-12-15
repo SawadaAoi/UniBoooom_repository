@@ -27,6 +27,7 @@
 // =============== インクルード ===================
 #include "Slime_3.h"
 #include "GameParameter.h"		//定数定義用ヘッダー
+#include "DirectWrite.h"
 // =============== 定数定義 =======================
 const int	LEVEL3_ATTACK = 1;						// 攻撃力
 #if MODE_GAME_PARAMETER
@@ -143,13 +144,16 @@ void CSlime_3::NormalMove(tagTransform3d playerTransform)
 	if (distancePlayer < MOVE_DISTANCE_PLAYER)
 	{
 		//プレイヤーがスライムの方向を向いているか確認
-	 	float checkRad = playerTransform.Angle(m_Transform);	//プレイヤーからスライムへの角度
-		if (checkRad < 0.0f) { checkRad = checkRad + (DirectX::g_XMTwoPi[0]); }			//角度を正の数に変換
-		float adjustPlayerRad = playerRad.y - DirectX::XMConvertToRadians(90.0f);			//プレイヤーの見ている角度
+	 	float PlayerToSlimeRad = playerTransform.Angle(m_Transform);	//プレイヤーからスライムへの角度
+		if (PlayerToSlimeRad < 0.0f) { PlayerToSlimeRad = PlayerToSlimeRad + (DirectX::g_XMTwoPi[0]); }			//角度を正の数に変換
+		float adjustPlayerRad = playerRad.y + DirectX::XMConvertToRadians(90.0f);			//プレイヤーの見ている角度
 		if(adjustPlayerRad < 0.0f){adjustPlayerRad = adjustPlayerRad + (DirectX::g_XMTwoPi[0]);}	//角度を正の数に変換
-		float sumRad = checkRad + adjustPlayerRad;
+		float sumRad = PlayerToSlimeRad + adjustPlayerRad;
 		//プレイヤーの向いている方向がスライムの止まる角度の中だったら
-		if (abs(sumRad - (DirectX::g_XMTwoPi[0])) < LEVEL3_STOP_RANGE)
+		float checkRad = (abs(sumRad - (DirectX::g_XMTwoPi[0]))) > DirectX::g_XMTwoPi[0] ?
+			(abs(sumRad - (DirectX::g_XMTwoPi[0]))) - DirectX::g_XMTwoPi[0] :
+			(abs(sumRad - (DirectX::g_XMTwoPi[0])));
+		if (checkRad < LEVEL3_STOP_RANGE)
 		{
 			m_move = TTriType<float>(0.0f, 0.0f, 0.0f);	//移動量を0にする
 			m_Transform.fRadian.y = -(m_Transform.Angle(playerTransform) - DirectX::XMConvertToRadians(90.0f));	//角度をDirectX用に変更
