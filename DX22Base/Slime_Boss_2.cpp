@@ -77,15 +77,13 @@ CSlime_Boss_2::CSlime_Boss_2()
 	-------------------------------------
 	戻値：無し
 =========================================== */
-CSlime_Boss_2::CSlime_Boss_2(TPos3d<float> pos, VertexShader * pVS, Model * pModel1, Model * pModel2)
+CSlime_Boss_2::CSlime_Boss_2(TPos3d<float> pos, VertexShader * pVS, Model * pModel)
 	: CSlime_Boss_2()
 {
 	m_Transform.fPos = pos;			// 初期座標を指定
 	m_pVS = pVS;
-	m_StateModels[0] = pModel1;
-	m_StateModels[1] = pModel2;
 
-	m_pModel = m_StateModels[1];
+	m_pModel = pModel;
 	m_pShadow->SetPos(m_Transform.fPos);
 }
 
@@ -101,7 +99,6 @@ CSlime_Boss_2::CSlime_Boss_2(TPos3d<float> pos, VertexShader * pVS, Model * pMod
 =========================================== */
 CSlime_Boss_2::~CSlime_Boss_2()
 {
-	for (int i = 0; i < 2; i++) { SAFE_DELETE(m_StateModels[i]); }
 
 }
 

@@ -71,13 +71,12 @@ CSlime_Boss_1::CSlime_Boss_1()
 	-------------------------------------
 	戻値：無し
 =========================================== */
-CSlime_Boss_1::CSlime_Boss_1(TPos3d<float> pos, VertexShader* pVS, Model* pModel1,Model* pModel2)
+CSlime_Boss_1::CSlime_Boss_1(TPos3d<float> pos, VertexShader* pVS, Model* pModel)
 	: CSlime_Boss_1()
 {
 	m_Transform.fPos = pos;			// 初期座標を指定
 	m_pVS = pVS;
-	m_StateModels[0] = pModel1;
-	m_StateModels[1] = pModel2;
+	m_pModel = pModel;
 	m_pShadow->SetPos(m_Transform.fPos);
 
 }
@@ -93,7 +92,6 @@ CSlime_Boss_1::CSlime_Boss_1(TPos3d<float> pos, VertexShader* pVS, Model* pModel
 =========================================== */
 CSlime_Boss_1::~CSlime_Boss_1()
 {
-	for (int i = 0; i < 2; i++) { SAFE_DELETE(m_StateModels[i]); }
 }
 
 /* ========================================
@@ -209,7 +207,6 @@ void CSlime_Boss_1::NormalMove(tagTransform3d playerTransform)
 		direction = DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&directionVector));
 		// 方向ベクトルから回転行列を計算
 		m_Transform.fRadian.y = atan2(-directionVector.x, -directionVector.z);
-		m_pModel = m_StateModels[0];
 
 		// クールタイムが終わってないならNORMALのまま
 		if (m_nFrame <= ASSAULT_COOL_TIME)	break;
@@ -224,7 +221,6 @@ void CSlime_Boss_1::NormalMove(tagTransform3d playerTransform)
 		
 		//-- チャージ状態
 	case CHARGE:
-		m_pModel = m_StateModels[1];
 		Charge(playerPos, movePos);	// チャージ呼び出し
 		break;
 
