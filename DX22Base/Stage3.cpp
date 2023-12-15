@@ -34,6 +34,8 @@
 CStage3::CStage3()
 {
 	m_pFloor->SetFloorModel(CFloor::StageKinds::Stage3);
+
+	m_pUIStageManager->GetBossGauge()->AddBossGauge(BOSS_GAUGE_S3[0].BossNum, BOSS_GAUGE_S3[0].startTime, BOSS_GAUGE_S3[0].maxTime);
 }
 
 /* ========================================

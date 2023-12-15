@@ -78,6 +78,7 @@ CSlimeBase::CSlimeBase()
 	m_Ry = DirectX::XMMatrixRotationY((float)random);
 
 	m_pShadow = new CShadow();	// âeê∂ê¨
+
 }
 
 /* ========================================

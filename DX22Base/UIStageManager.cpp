@@ -50,8 +50,9 @@ CUIStageManager::CUIStageManager(CPlayer* pPlayer, const CCamera * pCamera, CSli
 	m_pBossArrow->SetSlimeMng(pSlimeMng);
 	m_pBossArrow->SetPlayer(pPlayer);
 
+	/*
 	m_pBossgauge->AddBossGauge(BOSS_GAUGE_S1[0].startTime, BOSS_GAUGE_S1[0].maxTime);
-	m_pBossgauge->AddBossGauge(BOSS_GAUGE_S1[1].startTime, BOSS_GAUGE_S1[1].maxTime);
+	m_pBossgauge->AddBossGauge(BOSS_GAUGE_S1[1].startTime, BOSS_GAUGE_S1[1].maxTime);*/
 
 }
 
@@ -161,4 +162,9 @@ int CUIStageManager::GetTotalScore()
 	{
 		return 0;	//‰Šú’l‚Å‘Î‰
 	}
+}
+
+CBossgauge* CUIStageManager::GetBossGauge()
+{
+	return m_pBossgauge;
 }
