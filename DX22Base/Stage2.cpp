@@ -35,8 +35,9 @@
 =========================================== */
 CStage2::CStage2()
 {
-	m_pFloor->SetFloorModel(CFloor::StageKinds::Stage2);
-
+	m_pFloor = new CFloor(m_pPlayer->GetPosAddress(), CFloor::Stage2);	// °¶¬
+	//================ƒZƒbƒg================
+	m_pFloor->SetCamera(m_pCamera);
 	m_pUIStageManager->GetBossGauge()->AddBossGauge(BOSS_GAUGE_S2[0].BossNum, BOSS_GAUGE_S2[0].startTime, BOSS_GAUGE_S2[0].maxTime);
 }
 
@@ -51,6 +52,7 @@ CStage2::CStage2()
 =========================================== */
 CStage2::~CStage2()
 {
+	SAFE_DELETE(m_pFloor);
 }
 
 /* ========================================

@@ -71,7 +71,6 @@ CStage::CStage()
 
 	//================3dObject動的確保================
 	m_pPlayer = new CPlayer();							// プレイヤー生成
-	m_pFloor = new CFloor(m_pPlayer->GetPosAddress());	// 床生成
 	m_pExplosionMng = new CExplosionManager();			// 爆発マネージャー生成
 	m_pSlimeMng = new CSlimeManager(m_pPlayer);			// スライムマネージャー生成
 	m_pHealItemMng = new CHealItemManager();			// 回復アイテムマネージャー生成
@@ -89,7 +88,6 @@ CStage::CStage()
 	m_pPlayer->SetCamera(m_pCamera);
 	m_pExplosionMng->SetCamera(m_pCamera);
 	m_pSlimeMng->SetCamera(m_pCamera);
-	m_pFloor->SetCamera(m_pCamera);
 	m_pHealItemMng->SetCamera(m_pCamera);
 
 	//スライムマネージャー　←　スコアマネージャー
@@ -134,7 +132,6 @@ CStage::~CStage()
 	SAFE_DELETE(m_pSlimeMng);
 	SAFE_DELETE(m_pExplosionMng);
 	SAFE_DELETE(m_pCollision);
-	SAFE_DELETE(m_pFloor);
 	SAFE_DELETE(m_pFade);
 	SAFE_DELETE(m_pTexture);
 	SAFE_DELETE(m_pScoreOHMng);
