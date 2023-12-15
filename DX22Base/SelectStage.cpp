@@ -19,10 +19,10 @@
 #include "Input.h"
 #include "GameParameter.h"
 // =============== 定数定義 =======================
-const float TEXTURE_SELECT_STAGE_POSX = 640.0f;
-const float TEXTURE_SELECT_STAGE_POSY = 400.0f;
-const float TEXTURE_SELECT_STAGE_WIDTH = 500.0f;
-const float TEXTURE_SELECT_STAGE_HEIGHT = 300.0f;
+const float TEXTURE_SELECT_STAGE_POSX = 900.0f;
+const float TEXTURE_SELECT_STAGE_POSY = 300.0f;
+const float TEXTURE_SELECT_STAGE_WIDTH = 900.0f;
+const float TEXTURE_SELECT_STAGE_HEIGHT =700.0f;
 
 /* ========================================
 	コンストラクタ
@@ -53,6 +53,12 @@ CSelectStage::CSelectStage()
 	if (FAILED(mStageNum[2].m_pTexture->Create("Assets/Texture/tehaisyo3.png")))
 	{
 		MessageBox(NULL, "Title gamstart.png", "Error", MB_OK);
+	}
+
+	for (int i = 0; i < 3; i++)
+	{
+		m_2dObj[i] = new C2dPolygon();
+		m_2dObj[i]->SetCamera(m_pCamera);					//カメラセッタ
 	}
 }	
 
@@ -103,11 +109,20 @@ void CSelectStage::Draw() //const
 {
 	for (int i = SUTAGE_NUM-1; i > 0-1; i--)
 	{
-		Draw2d(TEXTURE_SELECT_STAGE_POSX+i*100
-			, TEXTURE_SELECT_STAGE_POSY
-			, TEXTURE_SELECT_STAGE_WIDTH
-			, TEXTURE_SELECT_STAGE_HEIGHT
-			, mStageNum[i].m_pTexture);
+		
+		m_2dObj[i]->SetTexture(mStageNum[i].m_pTexture);
+		m_2dObj[i]->SetPos({ TEXTURE_SELECT_STAGE_POSX + i * 100,TEXTURE_SELECT_STAGE_POSY-i*70,1.0f });
+		m_2dObj[i]->SetSize({ TEXTURE_SELECT_STAGE_WIDTH, TEXTURE_SELECT_STAGE_HEIGHT ,1.0f});
+		m_2dObj[i]->SetRotate({ 0.0f,0.0f,-0.3f });
+		m_2dObj[i]->Draw();
+			   
+
+
+		//Draw2d(TEXTURE_SELECT_STAGE_POSX+i*100
+		//	, TEXTURE_SELECT_STAGE_POSY+i*70
+		//	, TEXTURE_SELECT_STAGE_WIDTH
+		//	, TEXTURE_SELECT_STAGE_HEIGHT
+		//	, mStageNum[i].m_pTexture);
 	}
 }
 /* ========================================
