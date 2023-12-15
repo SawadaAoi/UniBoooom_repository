@@ -18,6 +18,7 @@
 #include "Slime_Boss_2.h"
 #include "GameParameter.h"		//定数定義用ヘッダー
 
+
 // =============== 定数定義 =======================
 #if MODE_GAME_PARAMETER
 #else
@@ -40,6 +41,10 @@ const float TARGET_SHADOW_TIME = 4.0f;
 const float TARGET_SHADOW_PLYR_MOVE_TIME = 3.0f;
 const float DROP_SPEED = 2.0f;
 const float DROP_RIGID_TIME = 3.0f;
+const float DROP_RIGID_SCALE_TIME = 0.5f;
+const float DROP_RIGID_SCALE_ADJUST = 0.01f;
+
+
 
 
 /* ========================================
@@ -217,7 +222,7 @@ void CSlime_Boss_2::MoveSwitch()
 	
 	// 落下硬直処理
 	case MOVE_STATE::DROP_RIGID:
-		MoveDrop();
+		MoveDropRigid();
 
 		break;
 	}
@@ -397,24 +402,44 @@ void CSlime_Boss_2::MoveDrop()
 		m_move.y = 0.0f;
 		m_move.z = 0.0f;
 
+		// y座標を地面に設置した状態で固定
+		this->SetPos({ m_Transform.fPos.x,	0.0f, m_Transform.fPos.z });
 
 		m_nMoveState = MOVE_STATE::DROP_RIGID;	// 状態を切り替え
 		m_nMoveCnt[MOVE_STATE::DROP] = 0; 	// 加算をリセット
+
 	}
 }
 
+/* ========================================
+	落下硬直処理関数
+	-------------------------------------
+	内容：落下後に暫く硬直する
+	-------------------------------------
+	引数1：無し
+	-------------------------------------
+	戻値：無し
+=========================================== */
 void CSlime_Boss_2::MoveDropRigid()
 {
+	m_nMoveCnt[MOVE_STATE::DROP_RIGID]++;
 
-	// y座標を地面に設置した状態で固定
-	this->SetPos({ m_Transform.fPos.x,	0.0f, m_Transform.fPos.z });
+	// 着地後にボスの見た目が少し潰れる
+	if (m_nMoveCnt[MOVE_STATE::DROP_RIGID] <= (DROP_RIGID_SCALE_TIME * 60))
+	{
+		m_Transform.fScale.x *= 1.0f + DROP_RIGID_SCALE_ADJUST;
+		m_Transform.fScale.z *= 1.0f + DROP_RIGID_SCALE_ADJUST;
+		m_Transform.fScale.y *= 1.0f - DROP_RIGID_SCALE_ADJUST;
+	}
 
-	m_nMoveCnt[MOVE_STATE::DROP]++;
+
 	// 落下移動 → 通常移動切り替え
-	if ((DROP_RIGID_TIME * 60) <= m_nMoveCnt[MOVE_STATE::DROP])
+	if ((DROP_RIGID_TIME * 60) <= m_nMoveCnt[MOVE_STATE::DROP_RIGID])
 	{
 		m_nMoveState = MOVE_STATE::NORMAL;	// 状態を切り替え
-		m_nMoveCnt[MOVE_STATE::DROP] = 0; 	// 加算をリセット
+		m_nMoveCnt[MOVE_STATE::DROP_RIGID] = 0; 	// 加算をリセット
+		m_pShadow->SetScale(BOSS_2_SHADOW_SCALE);	// 影の大きさは戻しておく
+
 	}
 }
 
