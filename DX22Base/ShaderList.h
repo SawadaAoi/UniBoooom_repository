@@ -37,8 +37,8 @@ public:
 	static PixelShader* GetPS(PSKind ps);
 
 	// 定数バッファへの設定
-	static void SetWVP(const DirectX::XMFLOAT4X4* wvp);
-	static void SetBones(const DirectX::XMFLOAT4X4* bones200);
+	static void SetWVP(DirectX::XMFLOAT4X4* wvp);
+	static void SetBones(DirectX::XMFLOAT4X4* bones200);
 	static void SetMaterial(const AnimeModel::Material& material);
 	static void SetLight(DirectX::XMFLOAT4 color, DirectX::XMFLOAT3 dir);
 	static void SetCameraPos(const DirectX::XMFLOAT3 pos);

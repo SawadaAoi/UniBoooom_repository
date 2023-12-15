@@ -21,19 +21,25 @@
 #include "Timer.h"	//STAGE_TIME用
 
 // =============== 定数定義 =======================
-const TPos2d<float> BOSS_GAUGE_EMPTY_POS(765.0f, 45.0f);	//ボスゲージ（空）の位置設定
-const TPos2d<float> BOSS_GAUGE_FULL_POS(765.0f, 46.5f);	//ボスゲージ（満）の位置設定
-const float BOSS_GAUGE_EMPTY_SIZE_X = 60.0f;			//ボスゲージ（空）のXの長さ設定
-const float BOSS_GAUGE_EMPTY_SIZE_Y = -60.0f;			//ボスゲージ（空）のYの長さ設定
-const float BOSS_GAUGE_FULL_SIZE_X = (6.0f / 7.0f) * BOSS_GAUGE_EMPTY_SIZE_X;			//ボスゲージ（満）のXの長さ設定
-const float BOSS_GAUGE_FULL_SIZE_Y = (6.0f / 7.0f) * BOSS_GAUGE_EMPTY_SIZE_Y;			//ボスゲージ（満）のYの長さ設定
-const float BOSS_GAUGE_FULL_POS_Y_ADJUST = BOSS_GAUGE_FULL_SIZE_X / 2;		//ボスゲージ増加時、位置表示するための調整量
-const float BOSS_GAUGE_FULL_SIZE_Y_ADJUST = BOSS_GAUGE_FULL_SIZE_Y;	//ボスゲージ増加時、サイズ計算用（計算して表示したい比率かける元々のサイズ(100.0f)）
+const TPos2d<float> BOSS_GAUGE_FRAME_POS(765.0f, 45.0f);		// ボスゲージ（枠）の位置設定
+const TPos2d<float> BOSS_GAUGE_FULL_POS(765.0f, 46.5f);			// ボスゲージ（中身）の位置設定
+const TPos2d<float> BOSS_GAUGE_FRAME_SIZE = { 60.0f ,-60.0f };	// ボスゲージ（枠）の大きさ
+const TPos2d<float> BOSS_GAUGE_FULL_SIZE = {					// ボスゲージ（中身）の大きさ
+	(6.0f / 7.0f) * BOSS_GAUGE_FRAME_SIZE.x ,
+	(6.0f / 7.0f) * BOSS_GAUGE_FRAME_SIZE.y };			
+const float BOSS_GAUGE_FULL_POS_Y_ADJUST = BOSS_GAUGE_FULL_SIZE.x / 2;		//ボスゲージ（中身）増加時、位置表示するための調整量
+const float BOSS_GAUGE_FULL_SIZE_Y_ADJUST = BOSS_GAUGE_FULL_SIZE.y;			//ボスゲージ（中身）増加時、サイズ計算用（計算して表示したい比率かける元々のサイズ(100.0f)）
 #if MODE_GAME_PARAMETER
 #else
-const int BOSS_GAUGE_FULL_TIME = 45 * 60;		//ボスゲージMAXになる時間(何秒出現) * 60フレーム
-const int SECOND_EMPTY_BOSS_GAUGE = 75 * 60;		//二体目のボス空ゲージ表す時間 * 60フレーム
-const int FADE_TIME = 5 * 60;							//ボスゲージが溜まってから消える時間
+typedef struct
+{
+	float startTime;	// 開始時間(秒)
+	float maxTime;		// ゲージ経過最大時間(秒)
+
+}BossGaugeSetParam;
+
+const BossGaugeSetParam BOSS_GAUGE_S1[2] = { {0, 45},{75, 45} };	// ステージ1のボスゲージ設定
+const int FADE_TIME = 5 * 60;										// ボスゲージが溜まってから消える時間
 #endif
 
 
@@ -46,29 +52,25 @@ const int FADE_TIME = 5 * 60;							//ボスゲージが溜まってから消える時間
 	----------------------------------------
 	戻値：なし
 =========================================== */
-CBossgauge::CBossgauge(int* pTime)
-	:m_pBossGaugeEmpty(nullptr)
-	, m_pBossGaugeFull(nullptr)
-	, m_nGaugeCnt(0)
-	, m_bGaugeFull(false)
-	, m_bShowBossGauge(true)
-	, m_pTime(pTime)
-	, m_nAdjustTime(0)
-	, m_fFillGauge(0.0f)
-	, m_nFadeCnt(0)
+CBossgauge::CBossgauge(CTimer* pTimer)
+	: m_pTexFrame(nullptr)
+	, m_pTexGauge(nullptr)
+	, m_pTimer(pTimer)
 {
 
 	//ボスゲージのテクスチャ読む込み
-	m_pBossGaugeEmpty = new Texture();
-	m_pBossGaugeFull = new Texture();
-	if (FAILED(m_pBossGaugeEmpty->Create("Assets/Texture/bossgauge_empty.png")))
+	m_pTexFrame = new Texture();
+	m_pTexGauge = new Texture();
+	if (FAILED(m_pTexFrame->Create("Assets/Texture/bossgauge_empty.png")))
 	{
 		MessageBox(NULL, "bossgauge_empty.png", "Error", MB_OK);
 	}
-	if (FAILED(m_pBossGaugeFull->Create("Assets/Texture/bossgauge_full.png")))
+	if (FAILED(m_pTexGauge->Create("Assets/Texture/bossgauge_full.png")))
 	{
 		MessageBox(NULL, "bossgauge_full.png", "Error", MB_OK);
 	}
+
+
 }
 
 /* ========================================
@@ -82,8 +84,8 @@ CBossgauge::CBossgauge(int* pTime)
 =========================================== */
 CBossgauge::~CBossgauge()
 {
-	SAFE_DELETE(m_pBossGaugeEmpty);
-	SAFE_DELETE(m_pBossGaugeFull);
+	SAFE_DELETE(m_pTexFrame);
+	SAFE_DELETE(m_pTexGauge);
 }
 
 /* ========================================
@@ -97,18 +99,42 @@ CBossgauge::~CBossgauge()
 =========================================== */
 void CBossgauge::Update()
 {
-	//ボス出現カウント
-	m_nGaugeCnt = STAGE_TIME - *m_pTime;	//ゲージ表示計算用の加算値
-
-
-	if (SecondBossGauge())
+	// ボスゲージ配列数分(表示するボス数分)
+	for (auto itr = m_BossGauges.begin(); itr != m_BossGauges.end(); ++itr)
 	{
-		return;
-	}
+		// ボスゲージ開始時間よりも前の場合
+		if ((*itr).nStartFrame >= m_pTimer->GetErapsedTime()) continue;
+		// 削除済みのボスゲージの場合
+		if ((*itr).bDelFlg == true) continue;
 
-	if (FirstBossGauge())
-	{
-		return;
+		// ゲージ加算値 < 最大加算値(最大までゲージが溜まってない)
+		if ((*itr).nGaugeCnt < (*itr).nMaxGaugeFrame)
+		{
+			(*itr).nGaugeCnt++;
+			(*itr).fGaugeDispPer = (float)((*itr).nGaugeCnt) / (float)(*itr).nMaxGaugeFrame;
+		}
+		//　ゲージが最大までたまった場合
+		else
+		{
+			// フェードフラグがまだオフの場合
+			if ((*itr).bFadeFlg == false)
+			{
+				m_pSlimeMng->CreateBoss();	// ボススライムを生成
+				(*itr).bFadeFlg = true;		// フェードフラグオン
+			}
+			else
+			{
+				(*itr).nFadeCnt++;
+				// フェード時間経過したか
+				if (FADE_TIME <= (*itr).nFadeCnt)
+				{
+					(*itr).bDelFlg = true;	// 削除フラグをオン
+				}
+			}
+		}
+
+
+
 	}
 
 }
@@ -124,14 +150,37 @@ void CBossgauge::Update()
 =========================================== */
 void CBossgauge::Draw()
 {
-	//ゲージ表示フラグfalseだったら return（表示しません）
-	if (m_bShowBossGauge == false) return;
+	// ボスゲージ配列数分(表示するボス数分)
+	for (auto itr = m_BossGauges.begin(); itr != m_BossGauges.end(); ++itr)
+	{
+		// ボスゲージ開始時間よりも前の場合
+		if ((*itr).nStartFrame >= m_pTimer->GetErapsedTime()) continue;
+		// 削除済みのボスゲージの場合
+		if ((*itr).bDelFlg == true) continue;
+		
 
+		DrawFrame(itr);		// 枠の表示
+		DrawGauge(itr);		// ゲージの表示
+
+	}
+}
+
+/* ========================================
+	ボスゲージ枠描画関数
+	----------------------------------------
+	内容：ボスゲージの描画処理
+	----------------------------------------
+	引数1：イテレータ
+	----------------------------------------
+	戻値：なし
+=========================================== */
+void CBossgauge::DrawFrame(std::vector<BossGauge>::iterator itr)
+{
 	//ボスゲージテクスチャ（空）
 	DirectX::XMFLOAT4X4 bossempty[3];
 
 	//ワールド行列はXとYのみを考慮して作成(Zは10ぐらいに配置
-	DirectX::XMMATRIX worldBossempty = DirectX::XMMatrixTranslation(BOSS_GAUGE_EMPTY_POS.x, BOSS_GAUGE_EMPTY_POS.y, 0.0f);
+	DirectX::XMMATRIX worldBossempty = DirectX::XMMatrixTranslation(BOSS_GAUGE_FRAME_POS.x, BOSS_GAUGE_FRAME_POS.y, 0.0f);
 	DirectX::XMStoreFloat4x4(&bossempty[0], DirectX::XMMatrixTranspose(worldBossempty));
 
 	//ビュー行列は2Dだとカメラの位置があまり関係ないので、単位行列を設定する（単位行列は後日
@@ -146,14 +195,12 @@ void CBossgauge::Draw()
 	Sprite::SetWorld(bossempty[0]);
 	Sprite::SetView(bossempty[1]);
 	Sprite::SetProjection(bossempty[2]);
-	Sprite::SetSize(DirectX::XMFLOAT2(BOSS_GAUGE_EMPTY_SIZE_X, BOSS_GAUGE_EMPTY_SIZE_Y));
+	Sprite::SetSize(DirectX::XMFLOAT2(BOSS_GAUGE_FRAME_SIZE.x, BOSS_GAUGE_FRAME_SIZE.y));
 	Sprite::SetUVPos(DirectX::XMFLOAT2(0.0f, 0.0f));
 	Sprite::SetUVScale(DirectX::XMFLOAT2(1.0f, 1.0f));
-	Sprite::SetColor(DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f - ((float)m_nFadeCnt / (float)FADE_TIME)));
-	Sprite::SetTexture(m_pBossGaugeEmpty);
+	Sprite::SetColor(DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f - ((float)(*itr).nFadeCnt / (float)FADE_TIME)));
+	Sprite::SetTexture(m_pTexFrame);
 	Sprite::Draw();
-
-	FillGaugeDraw(m_fFillGauge);
 }
 
 /* ========================================
@@ -161,18 +208,21 @@ void CBossgauge::Draw()
 	----------------------------------------
 	内容：ボスゲージ増加量の描画処理
 	----------------------------------------
-	引数1：ボスゲージ中の部分描く範囲
+	引数1：イテレータ
 	----------------------------------------
 	戻値：なし
 =========================================== */
-void CBossgauge::FillGaugeDraw(float textureRange)
+void CBossgauge::DrawGauge(std::vector<BossGauge>::iterator itr)
 {
 
 	//ボスゲージテクスチャ（満）
 	DirectX::XMFLOAT4X4 bossfull[3];
 
 	//ワールド行列はXとYのみを考慮して作成(Zは10ぐらいに配置
-	DirectX::XMMATRIX worldBossfull = DirectX::XMMatrixTranslation(BOSS_GAUGE_FULL_POS.x, BOSS_GAUGE_FULL_POS.y + (BOSS_GAUGE_FULL_POS_Y_ADJUST - BOSS_GAUGE_FULL_POS_Y_ADJUST * textureRange), 0.0f);
+	DirectX::XMMATRIX worldBossfull = DirectX::XMMatrixTranslation(
+		BOSS_GAUGE_FULL_POS.x, 
+		BOSS_GAUGE_FULL_POS.y + (BOSS_GAUGE_FULL_POS_Y_ADJUST - (BOSS_GAUGE_FULL_POS_Y_ADJUST * (*itr).fGaugeDispPer))
+		, 0.0f);
 	DirectX::XMStoreFloat4x4(&bossfull[0], DirectX::XMMatrixTranspose(worldBossfull));
 
 	//ビュー行列は2Dだとカメラの位置があまり関係ないので、単位行列を設定する（単位行列は後日
@@ -187,106 +237,13 @@ void CBossgauge::FillGaugeDraw(float textureRange)
 	Sprite::SetWorld(bossfull[0]);
 	Sprite::SetView(bossfull[1]);
 	Sprite::SetProjection(bossfull[2]);
-	Sprite::SetSize(DirectX::XMFLOAT2(BOSS_GAUGE_FULL_SIZE_X, (textureRange * BOSS_GAUGE_FULL_SIZE_Y_ADJUST)));		//描画大きさ設定
-	Sprite::SetUVPos(DirectX::XMFLOAT2(0.0f, (1.0f - textureRange)));		//描画のtextureの範囲設定
-	Sprite::SetUVScale(DirectX::XMFLOAT2(1.0f, textureRange));				//表示するtextureの大きさ設定
-	Sprite::SetTexture(m_pBossGaugeFull);
+	Sprite::SetSize(DirectX::XMFLOAT2(BOSS_GAUGE_FULL_SIZE.x, ((*itr).fGaugeDispPer * BOSS_GAUGE_FULL_SIZE_Y_ADJUST)));		//描画大きさ設定
+	Sprite::SetUVPos(DirectX::XMFLOAT2(0.0f, (1.0f - (*itr).fGaugeDispPer)));		//描画のtextureの範囲設定
+	Sprite::SetUVScale(DirectX::XMFLOAT2(1.0f, (*itr).fGaugeDispPer));				//表示するtextureの大きさ設定
+	Sprite::SetTexture(m_pTexGauge);
 	Sprite::Draw();
 	Sprite::SetColor(DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f));
 
-}
-
-/* ========================================
-	一体目ボスゲージ関数
-	----------------------------------------
-	内容：一体目ボスのゲージ表示処理
-	----------------------------------------
-	引数1：なし
-	----------------------------------------
-	戻値：bool表示段階
-=========================================== */
-bool CBossgauge::FirstBossGauge()
-{
-	// 一体目ボスゲージの出現、上昇
-	if (m_nGaugeCnt <= BOSS_GAUGE_FULL_TIME)
-	{
-		m_fFillGauge = (float)(m_nGaugeCnt - m_nAdjustTime) / (float)BOSS_GAUGE_FULL_TIME;
-		return true;
-	}
-	// ゲージフェード処理
-	else if (m_nGaugeCnt <= BOSS_GAUGE_FULL_TIME + FADE_TIME)
-	{
-		if (m_bGaugeFull == false)
-		{
-			m_bGaugeFull = true;		//ゲージ満タン
-
-			//←TODOボス生成ボスの方に持っていくかここで呼ぶか
-			m_pSlimeMng->CreateBoss();
-		}
-		m_nFadeCnt++;	//フェイドカウント
-		return true;
-	}
-
-
-
-	// フェイドで消える
-	if (m_nGaugeCnt >= BOSS_GAUGE_FULL_TIME + FADE_TIME)
-	{
-		m_bShowBossGauge = false;	//ボス出現、ゲージフラグをfalseに、ゲージを消す
-		return true;
-	}
-	return false;
-}
-
-/* ========================================
-	二体目ボスゲージ関数
-	----------------------------------------
-	内容：二体目ボスのゲージ表示処理
-	----------------------------------------
-	引数1：なし
-	----------------------------------------
-	戻値：bool表示段階
-=========================================== */
-bool CBossgauge::SecondBossGauge()
-{
-	// フェイドで消える
-	if (m_nGaugeCnt >= SECOND_EMPTY_BOSS_GAUGE + BOSS_GAUGE_FULL_TIME + FADE_TIME)
-	{
-		m_bShowBossGauge = false;
-		return true;
-	}
-	// ゲージフェード処理
-	else if (m_nGaugeCnt >= SECOND_EMPTY_BOSS_GAUGE + BOSS_GAUGE_FULL_TIME)
-	{
-		if (m_bGaugeFull == false)
-		{
-			m_bGaugeFull = true;		//ゲージ満タン
-
-			//←TODOボス生成ボスの方に持っていくかここで呼ぶか
-			m_pSlimeMng->CreateBoss();
-		}
-		m_nFadeCnt++;
-		return true;
-	}
-	// 二体目のボスゲージ上昇
-	else if (m_nGaugeCnt >= SECOND_EMPTY_BOSS_GAUGE && m_bShowBossGauge == false)
-	{
-		m_bShowBossGauge = true;
-		m_nAdjustTime = m_nGaugeCnt;
-		m_nFadeCnt = 0;
-		m_bGaugeFull = false;
-
-		return true;
-	}
-
-	// 二体目ゲージの上昇
-	else if (m_nGaugeCnt >= SECOND_EMPTY_BOSS_GAUGE && m_bShowBossGauge == true)
-	{
-		m_fFillGauge = (float)(m_nGaugeCnt - m_nAdjustTime) / (float)BOSS_GAUGE_FULL_TIME;
-
-		return true;
-	}
-	return false;
 }
 
 
@@ -299,8 +256,34 @@ bool CBossgauge::SecondBossGauge()
 	----------------------------------------
 	戻値：なし
 =========================================== */
-void CBossgauge::SetSlimeManager(CSlimeManager * pSlimeMng)
+void CBossgauge::SetSlimeManager(CSlimeManager* pSlimeMng)
 {
 	m_pSlimeMng = pSlimeMng;
+}
+
+/* ========================================
+	ボスゲージセット関数
+	----------------------------------------
+	内容：ボスゲージ情報をセットする
+	----------------------------------------
+	引数1：開始時間
+	引数1：最大時間
+	----------------------------------------
+	戻値：なし
+=========================================== */
+void CBossgauge::AddBossGauge(float fStartTime, float fMaxTime)
+{
+	BossGauge addPram = { 
+		false,				// 削除フラグ
+		false,				// フェードフラグ
+		fStartTime * 60,	// 開始時間Frame
+		fMaxTime * 60,		// 最大値Frame
+		0,					// ゲージ加算
+		0,					// フェード加算
+		0.0f,				// 表示割合 
+	};
+
+	m_BossGauges.push_back(addPram);	// 配列に追加
+
 }
 

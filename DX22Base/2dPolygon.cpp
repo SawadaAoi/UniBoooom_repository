@@ -14,6 +14,7 @@
 	・2023/12/01 テクスチャの扱い方を安全化 takagi
 	・2023/12/04 デストラクタの削除対象を修正 takagi
 	・2023/12/05 描画のモード追加 takagi
+	・2023/12/10 静的確保されたものの削除のタイミングを修正 takagi
 
 ========================================== */
 
@@ -88,17 +89,18 @@ float4 main(PS_IN pin) : SV_TARGET {
 })EOT";	//ピクセルシェーダーコンパイル対象
 
 // =============== グローバル変数宣言 =====================
-int C2dPolygon::ms_nCnt2dPolygon;					//自身の生成数
-const void* C2dPolygon::ms_pVtx = nullptr;			//頂点情報
-unsigned int C2dPolygon::ms_unVtxSize;				//頂点サイズ
-unsigned int C2dPolygon::ms_unVtxCount;				//頂点数
-const void* C2dPolygon::ms_pIdx = nullptr;			//頂点のインデックス
-unsigned int C2dPolygon::ms_unIdxSize;				//インデックスサイズ
-unsigned int C2dPolygon::ms_unIdxCount;				//インデックス数
-ID3D11Buffer* C2dPolygon::ms_pVtxBuffer = nullptr;	//頂点バッファ
-ID3D11Buffer* C2dPolygon::ms_pIdxBuffer = nullptr;	//インデックスバッファ 
-VertexShader* C2dPolygon::m_pDefVs;					//頂点シェーダー
-PixelShader* C2dPolygon::m_pDefPs;					//ピクセルシェーダー
+int C2dPolygon::ms_nCnt2dPolygon;								//自身の生成数
+const void* C2dPolygon::ms_pVtx = nullptr;						//頂点情報
+unsigned int C2dPolygon::ms_unVtxSize;							//頂点サイズ
+unsigned int C2dPolygon::ms_unVtxCount;							//頂点数
+const void* C2dPolygon::ms_pIdx = nullptr;						//頂点のインデックス
+unsigned int C2dPolygon::ms_unIdxSize;							//インデックスサイズ
+unsigned int C2dPolygon::ms_unIdxCount;							//インデックス数
+ID3D11Buffer* C2dPolygon::ms_pVtxBuffer = nullptr;				//頂点バッファ
+ID3D11Buffer* C2dPolygon::ms_pIdxBuffer = nullptr;				//インデックスバッファ 
+VertexShader* C2dPolygon::ms_pDefVs;							//頂点シェーダー
+PixelShader* C2dPolygon::ms_pDefPs;								//ピクセルシェーダー
+const CCamera* C2dPolygon::ms_pCameraDef = new CCameraDef();	//疑似カメラ
 
 /* ========================================
 	コンストラクタ関数
@@ -129,11 +131,9 @@ C2dPolygon::C2dPolygon()
 		Make();	//平面ポリゴン作成
 	}
 
-	m_pCameraDef = new CCameraDef();	//疑似カメラ
-	m_pVs = m_pDefVs;
-	m_pPs = m_pDefPs;
-
 	// =============== 初期化 ===================
+	m_pVs = ms_pDefVs;	//頂点シェーダー初期化
+	m_pPs = ms_pDefPs;	//ピクセルシェーダー初期化
 	SetCamera(nullptr);	//カメラ初期化
 
 	// =============== 行列作成 ===================
@@ -173,14 +173,17 @@ C2dPolygon::~C2dPolygon()
 	ms_nCnt2dPolygon--;			//自身の数カウント
 
 	// =============== 解放 ===================
-	SAFE_DELETE(m_pCameraDef);				//疑似カメラ削除
-	SAFE_DELETE(m_pDefVs);			//頂点シェーダー解放
-	SAFE_DELETE(m_pDefPs);			//ピクセルシェーダー解放
 	SAFE_DELETE(m_pTexture);	//テクスチャ解放
 	//SAFE_DELETE(ms_pVtx);		//頂点情報解放
 	//SAFE_DELETE(ms_pIdx);		//頂点インデックス解放
 	//SAFE_DELETE(ms_pVtxBuffer);	//頂点バッファ解放
 	//SAFE_DELETE(ms_pIdxBuffer);	//インデックスバッファ解放
+	if (0 == ms_nCnt2dPolygon)	//静的確保物を解放するか
+	{
+		SAFE_DELETE(ms_pCameraDef);		//疑似カメラ削除
+		SAFE_DELETE(ms_pDefVs);			//頂点シェーダー削除
+		SAFE_DELETE(ms_pDefPs);			//ピクセルシェーダー削除
+	}
 }
 
 /* ========================================
@@ -292,7 +295,7 @@ void C2dPolygon::SetCamera(const CCamera* pCamera)
 	}
 	else
 	{
-		pCameraUse = m_pCameraDef;	//カメラ代用
+		pCameraUse = ms_pCameraDef;	//カメラ代用
 	}
 
 	// =============== カメラ登録 ===================
@@ -530,12 +533,12 @@ void C2dPolygon::SetPixelShader(PixelShader* pPs)
 void C2dPolygon::MakeVertexShader()
 {
 	// =============== 作成 ===================
-	if (m_pDefVs)	//ヌルチェック
+	if (ms_pDefVs)	//ヌルチェック
 	{
-		SAFE_DELETE(m_pDefVs);	//解放
+		SAFE_DELETE(ms_pDefVs);	//解放
 	}
-	m_pDefVs = new VertexShader();	//動的確保
-	m_pDefVs->Compile(VS);			//コンパイル
+	ms_pDefVs = new VertexShader();	//動的確保
+	ms_pDefVs->Compile(VS);			//コンパイル
 }
 
 /* ========================================
@@ -550,12 +553,12 @@ void C2dPolygon::MakeVertexShader()
 void C2dPolygon::MakePixelShader()
 {
 	// =============== 作成 ===================
-	if (m_pDefPs)	//ヌルチェック
+	if (ms_pDefPs)	//ヌルチェック
 	{
-		SAFE_DELETE(m_pDefPs);	//解放
+		SAFE_DELETE(ms_pDefPs);	//解放
 	}
-	m_pDefPs = new PixelShader();	//動的確保
-	m_pDefPs->Compile(PS);			//コンパイル
+	ms_pDefPs = new PixelShader();	//動的確保
+	ms_pDefPs->Compile(PS);			//コンパイル
 }
 
 /* ========================================

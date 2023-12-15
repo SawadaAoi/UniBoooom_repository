@@ -15,17 +15,43 @@
 	・2023/11/23 コントローラーに対応 nieda
 	・2023/11/24 コメント、定数定義、列挙追加 nieda
 	・2023/12/08 シーン遷移用に変数追加 takagi
+	・2023/12/11 成績仮表示 takagi
 
 ========================================== */
 
 // =============== インクルード ===================
 #include "Result.h"	//自身のヘッダ
-#include "DirectXTex/TextureLoad.h"
+#include "DirectXTex/TextureLoad.h"	
 #include "Pos3d.h"
 #include "Sprite.h"
 #include "GameParameter.h"
 #include "Input.h"
+#include <array>					//配列
+#include <map>						//連想型コンテナ
+#include "Defines.h"				//画面サイズ情報
 
+// =============== 列挙定義 ===================
+enum E_CORD
+{
+	//E_CORD_RESULT,	//リザルト
+	E_CORD_ALIVE,	//生存時間
+	E_CORD_KILL,	//討伐数
+	E_CORD_SCORE,	//スコア
+};	//コード
+
+// =============== 定数定義 ===================
+const std::map<E_CORD, std::string> MAP_STRING = {
+	//{E_CORD_RESULT,	"リザルト"},			//リザルト
+	{E_CORD_ALIVE, "生存時間："},			//生存時間
+	{E_CORD_KILL, "スライム総討伐数："},	//討伐数
+	{E_CORD_SCORE, "TOTAL SCORE："},		//スコア
+};	//文字の連想コンテナ
+const std::map<E_CORD, DirectX::XMFLOAT2> MAP_POS = {
+	//{E_CORD_RESULT,	{static_cast<float>SCREEN_WIDTH / 2.0f - MAP_STRING.at(E_CORD_RESULT).length(), 10.0f}},	//リザルト
+	{E_CORD_ALIVE, {0.0f, 360.0f}},		//生存時間
+	{E_CORD_KILL, {0.0f, 410.0f}},		//討伐数
+	{E_CORD_SCORE, {0.0f, 460.0f}},		//スコア
+};	//位置の連想コンテナ
 
 /* ========================================
 	コンストラクタ
@@ -54,6 +80,9 @@ CResult::CResult()
 
 	// データ受け継ぎ
 	m_Data.Load();	//ファイルに上がっている情報を読み込む
+
+	// =============== フォントデータ作成 ===================
+	m_Font.SetFontResult();	//専用初期化
 }
 
 /* ========================================
@@ -116,6 +145,19 @@ void CResult::Draw()
 		, TEXTURE_TITLE_BUTTON_WIDTH
 		, TEXTURE_TITLE_BUTTON_HEIGHT
 		, m_pTexture[E_RESULT_BUTTON]);
+
+	// =============== フォントセット ===================
+	DirectWrite::SetFont(&m_Font);	//専用フォントをセット
+
+	// =============== 描画系 ===============
+	//DirectWrite::DrawString(MAP_STRING.at(E_CORD_RESULT), MAP_POS.at(E_CORD_RESULT));										//リザルト
+	DirectWrite::DrawString(MAP_STRING.at(E_CORD_ALIVE) + std::to_string(m_Data.GetMinute()) + "：" + std::to_string(m_Data.GetSecond()) + "："
+		+ std::to_string(m_Data.GetCommaSecond()), MAP_POS.at(E_CORD_ALIVE));												//生存時間
+	DirectWrite::DrawString(MAP_STRING.at(E_CORD_KILL) + std::to_string(m_Data.nKill), MAP_POS.at(E_CORD_KILL));			//討伐数
+	DirectWrite::DrawString(MAP_STRING.at(E_CORD_SCORE) + std::to_string(m_Data.nTotalScore), MAP_POS.at(E_CORD_SCORE));	//スコア
+
+	// =============== 終了 ===================
+	DirectWrite::SetFont(&m_FontDef);	//デフォルトフォントにリセット
 }
 
 /* ========================================

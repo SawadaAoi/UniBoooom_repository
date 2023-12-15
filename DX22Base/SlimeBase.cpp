@@ -70,7 +70,6 @@ CSlimeBase::CSlimeBase()
 	, m_nEscapeCnt(0)
 	, m_fScaleShadow(0.0f)
 {
-	
 	m_Transform.fScale = (1.0f, 1.0f, 1.0f);
 	//当たり判定(自分)初期化
 	m_Sphere.fRadius = SLIME_BASE_RADIUS;
@@ -310,8 +309,8 @@ void CSlimeBase::Escape()
 	//爆発への角度を取得
 	float rad = atan2f(m_ExpPos.z - m_Transform.fPos.z, m_ExpPos.x - m_Transform.fPos.x);	
 	//爆発と反対方向に移動
-	m_move.x = -(cosf(rad)) * ENEMY_MOVE_SPEED;
-	m_move.z = -(sinf(rad)) * ENEMY_MOVE_SPEED;
+	m_move.x = 0.0f;//-(cosf(rad)) * ENEMY_MOVE_SPEED;
+	m_move.z = 0.0f;//-(sinf(rad)) * ENEMY_MOVE_SPEED;
 	m_Transform.fRadian.y = atan2f(m_move.x,m_move.z);
 
 	m_nEscapeCnt++;	//カウントを増加

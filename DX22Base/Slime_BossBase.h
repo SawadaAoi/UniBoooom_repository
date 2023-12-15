@@ -20,7 +20,6 @@
 // =============== インクルード ===================
 #include "SlimeBase.h"
 #include "GameParameter.h"		//定数定義用ヘッダー
-
 // =============== 定数定義 =======================
 #if MODE_GAME_PARAMETER
 #else
@@ -59,7 +58,6 @@ private:
 	bool m_bDead;		// 死んでいるかどうか
 	Texture* m_pBossHpTexture;
 	Texture* m_pHpFrameTexture;
-
 };
 
 

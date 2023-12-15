@@ -36,6 +36,7 @@
 	・2023/11/30 振動する箇所増設・ヒットストップ除去・火スライムと赤スライム衝突時に振動強化 takagi
 	・2023/12/07 ゲームパラメータから一部定数移動 takagi
 	・2023/12/08 被討伐数のカウンタを追加 takagi
+	・2023/12/15 SEまわりを整理 yamashita
 
 =========================================== */
 
@@ -51,6 +52,8 @@
 #include "Input.h"		//後で消す
 #include "GameParameter.h"		//定数定義用ヘッダー
 #include "HitStop.h"
+#include <map>					//連想型コンテナ
+#include <typeinfo>				//型情報
 
 #include <stdlib.h>
 
@@ -81,6 +84,15 @@ const float LEAVE_DISTANCE = 20.0f;					// これ以上離れたら対角線上に移動する
 
 #endif
 const int MAX_KILL_CNT(999999);	//最大被討伐数
+const std::map<size_t, int> MAP_KILL_POINT = {
+	{typeid(CSlime_1).hash_code(), 1 },
+	{typeid(CSlime_2).hash_code(), 2 },
+	{typeid(CSlime_3).hash_code(), 4 },
+	{typeid(CSlime_4).hash_code(), 8 },
+	{typeid(CSlime_Flame).hash_code(), 1 },
+	{typeid(CSlime_Heal).hash_code(), 1 },
+	{typeid(CSlime_Boss_1).hash_code(), 1 },
+};	//スライムの種類に連動した討伐数
 
 /* ========================================
 	コンストラクタ関数
@@ -101,15 +113,13 @@ CSlimeManager::CSlimeManager(CPlayer* pPlayer)
 	, m_pFlameModel(nullptr)
 	, m_pHealModel(nullptr)
 	, m_pBossModel{nullptr,nullptr}
-	, m_pSEHitSlime(nullptr)
-	, m_pSEUnion(nullptr)
-	, m_pSEHitSlimeSpeaker(nullptr)
-	, m_pSEUnionSpeaker(nullptr)
 	, m_oldCreatePos{ 0.0f,0.0f,0.0f }
 	, m_pPlayer(pPlayer)
 	, m_pExpMng(nullptr)
 	, m_pTimer(nullptr)
 	, m_nKill(0)		//被討伐数
+	, m_pSE{ nullptr,nullptr,nullptr }
+	, m_pSESpeaker{ nullptr,nullptr,nullptr }
 	, m_bBossPtrExist(false)
 {
 	//スライムのモデルと頂点シェーダーの読み込み
@@ -133,7 +143,8 @@ CSlimeManager::CSlimeManager(CPlayer* pPlayer)
 		int ranLv = rand() % 3 + 1;		// 生成するスライムのレベルを乱数で指定
 		Create((E_SLIME_LEVEL)ranLv);	// 生成処理
 	}
-
+	// SEの読み込み
+	LoadSE();
 #if DEBUG_BOSS
 	// 開始時ボス生成
 	for (int i = 0; i < MAX_BOSS_SLIME_NUM; i++)
@@ -145,13 +156,6 @@ CSlimeManager::CSlimeManager(CPlayer* pPlayer)
 		break;
 	}
 #endif
-	
-
-	//サウンドファイルの読み込み
-	m_pSEHitSlime = CSound::LoadSound("Assets/Sound/SE/SlimeHitSlime.mp3");		//ハンマーを振った時のSEの読み込み
-	m_pSEUnion = CSound::LoadSound("Assets/Sound/SE/Union.mp3");		//スライムがくっついた時ののSEの読み込み
-
-
 }
 
 /* ========================================
@@ -416,7 +420,7 @@ void CSlimeManager::HitBranch(int HitSlimeNum, int StandSlimeNum, CExplosionMana
 	{
 		m_pSlime[HitSlimeNum]->HitMoveStart(hitSlimeSpeed * COL_SUB_HIT_TO_BIG, reflectionAngle);	// 衝突するスライムに吹き飛び移動処理
 		m_pSlime[StandSlimeNum]->HitMoveStart(hitSlimeSpeed * COL_SUB_STAND_TO_SMALL, travelAngle);	// 衝突されたスライムに吹き飛び移動処理
-		m_pSEHitSlimeSpeaker = CSound::PlaySound(m_pSEHitSlime);									// SEの再生
+		PlaySE(SE_HIT);									// SEの再生
 	}
 	
 	// 衝突するスライムが大きい場合(大→小)
@@ -424,20 +428,20 @@ void CSlimeManager::HitBranch(int HitSlimeNum, int StandSlimeNum, CExplosionMana
 	{
 		m_pSlime[HitSlimeNum]->HitMoveStart(hitSlimeSpeed * COL_SUB_HIT_TO_SMALL, travelAngle);		// 衝突するスライムに吹き飛び移動処理
 		m_pSlime[StandSlimeNum]->HitMoveStart(hitSlimeSpeed * COL_SUB_STAND_TO_BIG, travelAngle);	// 衝突されたスライムに吹き飛び移動処理
-		m_pSEHitSlimeSpeaker = CSound::PlaySound(m_pSEHitSlime);									// SEの再生
+		PlaySE(SE_HIT);									// SEの再生
 	}
 	//スライムのサイズが同じだった場合
 	else
 	{
 
-		SAFE_DELETE(m_pSlime[HitSlimeNum]);								// 衝突するスライムを削除
-		SAFE_DELETE(m_pSlime[StandSlimeNum]);							// 衝突されたスライムを削除
 
 		if (hitSlimeLevel == MAX_LEVEL)	//スライムのサイズが最大の時
 		{
 			//二体分の削除判定
-			CntKill();	//討伐された
-			CntKill();	//討伐された
+			CntKill(m_pSlime[HitSlimeNum]);			//衝突するスライムが討伐された
+			SAFE_DELETE(m_pSlime[HitSlimeNum]);		//スライム削除
+			CntKill(m_pSlime[StandSlimeNum]);		//衝突されたスライムが討伐された
+			SAFE_DELETE(m_pSlime[StandSlimeNum]);	//スライム削除
 
 			//スライム爆発処理
 			pExpMng->Create(pos, MAX_SIZE_EXPLODE * EXPLODE_BASE_RATIO, LEVEL_4_EXPLODE_TIME, LEVEL_4_EXPLODE_DAMAGE, E_SLIME_LEVEL::LEVEL_4x4);	//衝突されたスライムの位置でレベル４爆発
@@ -448,6 +452,8 @@ void CSlimeManager::HitBranch(int HitSlimeNum, int StandSlimeNum, CExplosionMana
 		}
 		else	//最大サイズじゃない場合は1段階大きいスライムを生成する
 		{
+			SAFE_DELETE(m_pSlime[HitSlimeNum]);								// 衝突するスライムを削除
+			SAFE_DELETE(m_pSlime[StandSlimeNum]);							// 衝突されたスライムを削除
 			UnionSlime(hitSlimeLevel,pos);	//スライムの結合処理
 		}
 	}
@@ -488,7 +494,7 @@ bool CSlimeManager::HitFlameBranch(int HitSlimeNum, int StandSlimeNum, CExplosio
 		// 『衝突するスライムが大きい場合(大→小)』と同じ動きをさせる
 		m_pSlime[HitSlimeNum]->HitMoveStart(hitSlimeSpeed * COL_SUB_HIT_TO_SMALL, travelAngle);		// 衝突するスライムに吹き飛び移動処理
 		m_pSlime[StandSlimeNum]->HitMoveStart(hitSlimeSpeed * COL_SUB_STAND_TO_BIG, travelAngle);	// 衝突されたスライムに吹き飛び移動処理
-		m_pSEHitSlimeSpeaker = CSound::PlaySound(m_pSEHitSlime);									//SEの再生
+		PlaySE(SE_HIT);									//SEの再生
 
 		return true;
 	}
@@ -505,11 +511,10 @@ bool CSlimeManager::HitFlameBranch(int HitSlimeNum, int StandSlimeNum, CExplosio
 		// 回復アイテムドロップ
 		m_pHealItemMng->Create(standSlimeTransform.fPos);
 
-
-		SAFE_DELETE(m_pSlime[HitSlimeNum]);								// 衝突するスライムを削除
-		CntKill();														//討伐された
-		SAFE_DELETE(m_pSlime[StandSlimeNum]);							// 衝突されたスライムを削除
-		CntKill();														//討伐された
+		CntKill(m_pSlime[HitSlimeNum]);			//衝突するスライムが討伐された
+		SAFE_DELETE(m_pSlime[HitSlimeNum]);		//スライム削除
+		CntKill(m_pSlime[StandSlimeNum]);		//衝突されたスライムが討伐された
+		SAFE_DELETE(m_pSlime[StandSlimeNum]);	//スライム削除
 
 		return true;
 	}
@@ -548,10 +553,10 @@ bool CSlimeManager::HitFlameBranch(int HitSlimeNum, int StandSlimeNum, CExplosio
 			m_pCamera->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_WEAK | CCamera::E_BIT_FLAG_VIBRATION_SIDE_WEAK);
 		}
 
-		SAFE_DELETE(m_pSlime[HitSlimeNum]);								// 衝突するスライムを削除
-		CntKill();														//討伐された
-		SAFE_DELETE(m_pSlime[StandSlimeNum]);							// 衝突されたスライムを削除
-		CntKill();														//討伐された
+		CntKill(m_pSlime[HitSlimeNum]);			//衝突するスライムが討伐された
+		SAFE_DELETE(m_pSlime[HitSlimeNum]);		//スライム削除
+		CntKill(m_pSlime[StandSlimeNum]);		//衝突されたスライムが討伐された
+		SAFE_DELETE(m_pSlime[StandSlimeNum]);	//スライム削除
 
 		return true;
 	}
@@ -572,10 +577,10 @@ bool CSlimeManager::HitFlameBranch(int HitSlimeNum, int StandSlimeNum, CExplosio
 			m_pCamera->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_WEAK | CCamera::E_BIT_FLAG_VIBRATION_SIDE_WEAK);
 		}
 
-		SAFE_DELETE(m_pSlime[HitSlimeNum]);								// 衝突するスライムを削除
-		CntKill();														//討伐された
-		SAFE_DELETE(m_pSlime[StandSlimeNum]);							// 衝突されたスライムを削除
-		CntKill();														//討伐された
+		CntKill(m_pSlime[HitSlimeNum]);			//衝突するスライムが討伐された
+		SAFE_DELETE(m_pSlime[HitSlimeNum]);		//スライム削除
+		CntKill(m_pSlime[StandSlimeNum]);		//衝突されたスライムが討伐された
+		SAFE_DELETE(m_pSlime[StandSlimeNum]);	//スライム削除
 
 		return true;
 
@@ -618,7 +623,8 @@ bool CSlimeManager::HitHealBranch(int HitSlimeNum, int StandSlimeNum, CExplosion
 		// 『衝突するスライムが大きい場合(大→小)』と同じ動きをさせる
 		m_pSlime[HitSlimeNum]->HitMoveStart(hitSlimeSpeed * COL_SUB_HIT_TO_SMALL, travelAngle);		// 衝突するスライムに吹き飛び移動処理
 		m_pSlime[StandSlimeNum]->HitMoveStart(hitSlimeSpeed * COL_SUB_STAND_TO_BIG, travelAngle);	// 衝突されたスライムに吹き飛び移動処理
-		m_pSEHitSlimeSpeaker = CSound::PlaySound(m_pSEHitSlime);									// SEの再生
+		PlaySE(SE_HIT);	//SEの再生
+
 
 		return true;
 	}
@@ -660,7 +666,7 @@ void CSlimeManager::UnionSlime(E_SLIME_LEVEL level ,TPos3d<float> pos)
 		}
 
 		m_pSlime[i]->SetCamera(m_pCamera);	//カメラをセット
-		m_pSEUnionSpeaker = CSound::PlaySound(m_pSEUnion);	//SEの再生
+		PlaySE(SE_UNION);	//SEの再生
 
 		break;
 	}
@@ -691,8 +697,8 @@ void CSlimeManager::TouchExplosion(int DelSlime, CExplosionManager * pExpMng, in
 	}
 
 	//トータルスコア（level,combo)
-	SAFE_DELETE(m_pSlime[DelSlime]);					//ぶつかりに来たスライムを削除
-	CntKill();											//討伐された
+	CntKill(m_pSlime[DelSlime]);		//ぶつかりに来たスライムが討伐された
+	SAFE_DELETE(m_pSlime[DelSlime]);	//スライム削除
 
 	m_pCamera->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_WEAK | CCamera::E_BIT_FLAG_VIBRATION_SIDE_WEAK);
 	m_pCamera->ChangeScaleVibrate(10, 1.5f);
@@ -740,8 +746,8 @@ void CSlimeManager::HitSlimeBossBranch(int HitSlimeNum, int StandBossNum, CExplo
 	{
 		// フレイムが爆発してボスは残る
 		pExpMng->SwitchExplode(hitSlimeLevel, hitSlimeTransform.fPos, hitSlimeSize);	//スライムのレベルによって爆発の時間とサイズを分岐
-		SAFE_DELETE(m_pSlime[HitSlimeNum]);												// 衝突するスライムを削除
-		CntKill();																			//討伐された
+		CntKill(m_pSlime[HitSlimeNum]);													//衝突するスライムが討伐された
+		SAFE_DELETE(m_pSlime[HitSlimeNum]);												//スライム削除
 	}
 
 	//-- ノーマルスライムヒット処理
@@ -750,7 +756,7 @@ void CSlimeManager::HitSlimeBossBranch(int HitSlimeNum, int StandBossNum, CExplo
 	{
 		m_pSlime[HitSlimeNum]->HitMoveStart(hitSlimeSpeed * COL_SUB_HIT_TO_BIG, reflectionAngle);			// 衝突するスライムに吹き飛び移動処理
 		m_pBoss[StandBossNum]->HitMoveStart(hitSlimeSpeed * COL_SUB_STAND_TO_SMALL, travelAngle);			// 衝突されたスライムに吹き飛び移動処理
-
+		PlaySE(SE_HIT);	//SEの再生
 	}
 
 }
@@ -797,8 +803,8 @@ void CSlimeManager::HitBossSlimeBranch(int HitSlimeNum, int StandSlimeNum, CExpl
 	{
 		// フレイムが爆発してボスは残る
 		pExpMng->SwitchExplode(standSlimeLevel, standSlimeTransform.fPos, standSlimeSize);	//スライムのレベルによって爆発の時間とサイズを分岐
-		SAFE_DELETE(m_pSlime[StandSlimeNum]);												// 衝突するスライムを削除
-		CntKill();																			//討伐された
+		CntKill(m_pSlime[StandSlimeNum]);													//衝突するスライムが討伐された
+		SAFE_DELETE(m_pSlime[StandSlimeNum]);												//スライム削除
 	}
 
 	//-- ノーマルスライムヒット処理
@@ -874,6 +880,7 @@ void CSlimeManager::TouchBossExplosion(int BossNum, CExplosionManager* pExpMng, 
 	{
 		// 爆発威力分のダメージをボスに与える
 		m_pBoss[BossNum]->Damage(pExpMng->GetExplosionPtr(ExpNum)->GetDamage());
+		PlaySE(SE_BOSS_DAMAGED);									//SEの再生
 		// 一度ダメージを与えたら同じ爆発ではダメージを与えない
 		touchExplosion->BossTouched();
 	}
@@ -881,8 +888,8 @@ void CSlimeManager::TouchBossExplosion(int BossNum, CExplosionManager* pExpMng, 
 	if (m_pBoss[BossNum]->IsDead() == true)
 	{
 		m_bBossPtrExist = false;
-		SAFE_DELETE(m_pBoss[BossNum]);	//ぶつかりに来たスライム(ボス)を削除
-		CntKill();						//討伐された
+		CntKill(m_pBoss[BossNum]);		//ぶつかりに来たスライム(ボス)が討伐された
+		SAFE_DELETE(m_pBoss[BossNum]);	//スライム削除
 		
 		pExpMng->SwitchExplode(level, pos, size, pExpMng->GetExplosionPtr(ExpNum)->GetComboNum());	// 爆発生成
 		m_pScoreOHMng->DisplayOverheadScore(pos, LEVEL_Boss_SCORE, SLIME_SCORE_HEIGHT);
@@ -1323,18 +1330,70 @@ void CSlimeManager::SetHealMng(CHealItemManager * pHealItemMng)
 /* ========================================
 	被討伐数カウント関数
 	----------------------------------------
-	内容：被討伐数のカウンタを1進める
+	内容：被討伐数のカウンタを進め、削除するまで。
+	----------------------------------------
+	引数1：CSlimeBase* pSlime：対象スライム
+	----------------------------------------
+	戻値：なし
+======================================== */
+void CSlimeManager::CntKill(const CSlimeBase* pSlime)
+{
+	// =============== 検査 =====================
+	if (!pSlime)//ヌルチェック
+	{
+		return;	//処理中断
+	}
+
+	// =============== 変数宣言 =====================
+	int nKillPt = MAP_KILL_POINT.at(typeid(*pSlime).hash_code());	//討伐数
+
+	// =============== 検査 =====================
+	if (m_nKill + nKillPt < MAX_KILL_CNT)	//カウンターストップ
+	{
+		// =============== カウンタ =====================
+		m_nKill += nKillPt;	//カウント増加
+	}
+	else
+	{
+		// =============== カウンターストップ =====================
+		m_nKill = MAX_KILL_CNT;	//上限値で登録
+	}
+}
+
+/* ========================================
+	SEの読み込み関数
+	----------------------------------------
+	内容：SEの読み込み
 	----------------------------------------
 	引数1：なし
 	----------------------------------------
 	戻値：なし
 ======================================== */
-void CSlimeManager::CntKill()
+void CSlimeManager::LoadSE()
 {
-	// =============== 検査 =====================
-	if (m_nKill < MAX_KILL_CNT)	//カウンターストップ
+	//SEの読み込み
+	for (int i = 0; i < SE_MAX; i++)
 	{
-		// =============== カウンタ =====================
-		m_nKill++;	//カウント増加
+		m_pSE[i] = CSound::LoadSound(m_sSEFile[i].c_str());
+		if (!m_pSE[i])
+		{
+			MessageBox(NULL, m_sSEFile[i].c_str(), "Error", MB_OK);	//ここでエラーメッセージ表示
+		}
 	}
+}
+
+/* ========================================
+	SEの読み込み関数
+	----------------------------------------
+	内容：SEの読み込み
+	----------------------------------------
+	引数1：SEの種類(enum)
+	引数2：音量
+	----------------------------------------
+	戻値：なし
+======================================== */
+void CSlimeManager::PlaySE(SE se, float volume)
+{
+	m_pSESpeaker[se] = CSound::PlaySound(m_pSE[se]);	//SE再生
+	m_pSESpeaker[se]->SetVolume(volume);				//音量の設定
 }

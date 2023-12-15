@@ -135,6 +135,8 @@ void Controller::SetKeyState()
 	m_keyState[7] = Button8();
 	m_keyState[8] = Button9();
 	m_keyState[9] = Button10();
+	m_keyState[10] = Button11();
+	m_keyState[11] = Button12();
 
 }
 
@@ -258,6 +260,30 @@ bool Controller::Button9()
 bool Controller::Button10()
 {
 	return ((m_joyInfoEx.dwButtons & JOY_BUTTON10) != 0);
+}
+
+/* ========================================
+   ボタン11入力値取得関数
+   ----------------------------------------
+   内容：ボタン11の入力値を取得する
+   ----------------------------------------
+   戻値：true:押されている/false:押されてない
+   ======================================== */
+bool Controller::Button11()
+{
+	return ((m_joyInfoEx.dwButtons & JOY_BUTTON11) != 0);
+}
+
+/* ========================================
+   ボタン12入力値取得関数
+   ----------------------------------------
+   内容：ボタン12の入力値を取得する
+   ----------------------------------------
+   戻値：true:押されている/false:押されてない
+   ======================================== */
+bool Controller::Button12()
+{
+	return ((m_joyInfoEx.dwButtons & JOY_BUTTON12) != 0);
 }
 
 /* ========================================

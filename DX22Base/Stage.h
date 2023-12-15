@@ -16,6 +16,8 @@
 	・2023/12/05 コメント修正 takagi
 	・2023/12/06 pose→pause修正、ポーズ文字表示 takagi
 	・2023/12/08 シーン遷移用に変数追加 takagi
+	・2023/12/12 Stage1からメンバ変数を移動 yamashita
+	・2023/12/14 BGMの管理をSceneManagerに移動 yamashita
 
 ========================================== */
 
@@ -45,6 +47,41 @@
 #include "Sound.h"
 #include "UIStageManager.h"
 #include "BattleData.h"			//メンバのヘッダ
+
+// =============== デバッグモード ===================
+#define USE_CAMERA_VIBRATION (true)
+#define MODE_COORD_AXIS (true)			//座標軸映すかどうか
+#define MODE_GROUND (false)				//座標軸映すかどうか
+#if _DEBUG
+#define TRY_USE_HIT_STOP (true)
+#endif
+#define USE_FADE_GAME (true)	//フェード試す
+#define USE_PAUSE (true)	//ポーズ試す		※現在ポーズ中から戻ってくる手段を用意していないため要注意！
+#define SCENE_TRANSITION(false)		// シーン遷移をボタン押下か自動化を切り替え（trueは自動)
+
+#if USE_FADE_GAME
+#include "Fade.h"
+#endif
+
+#if USE_CAMERA_VIBRATION
+#include "Input.h"
+#endif
+
+#if TRY_USE_HIT_STOP
+#include "Input.h"
+#endif
+
+#if USE_PAUSE	//ポーズ臨時呼び出し
+#include "Input.h"
+#endif
+
+// =============== 定数定義 =======================
+const int STARTSIGN_UV_NUM_X = 6;	// テクスチャの横の分割数
+const int STARTSIGN_UV_NUM_Y = 9;	// テクスチャの縦の分割数
+
+const float STARTSIGN_UV_POS_X = 1.0f / STARTSIGN_UV_NUM_X;		// 横のUV座標計算用
+const float STARTSIGN_UV_POS_Y = 1.0f / STARTSIGN_UV_NUM_Y;		// 縦のUV座標計算用
+
 
 // =============== クラス定義 =====================
 class CStage :public CScene	//シーン
@@ -84,7 +121,6 @@ protected:
 	//CTimer* m_pTimer;
 	//CCombo* m_pCombo;
 	CFloor* m_pFloor;
-	CFade* m_pFade;
 	//CStageFinish* m_pStageFin;
 	Texture* m_pTexture;
 	CScoreOHManager* m_pScoreOHMng;
@@ -96,9 +132,18 @@ protected:
 	CUIStageManager* m_pUIStageManager;
 	BattleData m_Data;	//戦闘データ記録用変数
 
-	//サウンド
-	XAUDIO2_BUFFER* m_pSEHitHammer;
-	IXAudio2SourceVoice* m_pSEHitHammerSpeaker;
+	int m_nNum;			// ゲームスタート表示カウント用
+	float m_fSize;		// ゲームスタート表示のサイズ
+	float m_fResize;	// ゲームスタート表示のサイズ変更用
+	bool m_bStart;		// ゲームを開始させるか判定
+	const int* m_pPlayerHp;		// プレイヤーHP取得用
+	const int* m_pTimeCnt;		// 制限時間取得用
+
+	TPos2d<float> m_fUVPos;	// UV座標保存用
+	int m_nCntSwitch;	// アニメーション切り替えカウント用
+	int m_nCntW;		// 横カウント用
+	int m_nCntH;		// 縦カウント用
+	bool m_bStartSign;		// スタート合図開始フラ
 
 };	//ステージ
 

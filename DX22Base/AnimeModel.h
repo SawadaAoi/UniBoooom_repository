@@ -142,7 +142,7 @@ public:
 	void SetVertexShader(VertexShader* vs);
 	void SetPixelShader(PixelShader* ps);
 	bool Load(const char* file, float scale = 1.0f, Flip flip = Flip::None);
-	void Draw(const std::vector<UINT>* order, std::function<void(int)> func = nullptr);
+	void Draw(const std::vector<UINT>* order = nullptr, std::function<void(int)> func = nullptr);
 
 	//--- Šeíî•ñæ“¾
 	const Mesh* GetMesh(unsigned int index);
