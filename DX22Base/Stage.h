@@ -47,6 +47,7 @@
 #include "Sound.h"
 #include "UIStageManager.h"
 #include "BattleData.h"			//メンバのヘッダ
+#include "DrawGameStart.h"
 
 // =============== デバッグモード ===================
 #define USE_CAMERA_VIBRATION (true)
@@ -131,20 +132,10 @@ protected:
 	CPause* m_pPause;						//ポーズ画面
 	CUIStageManager* m_pUIStageManager;
 	BattleData m_Data;	//戦闘データ記録用変数
+	CDrawStart* m_pDrawStart;	// ゲームスタート描画
 
-	int m_nNum;			// ゲームスタート表示カウント用
-	float m_fSize;		// ゲームスタート表示のサイズ
-	float m_fResize;	// ゲームスタート表示のサイズ変更用
-	bool m_bStart;		// ゲームを開始させるか判定
 	const int* m_pPlayerHp;		// プレイヤーHP取得用
 	const int* m_pTimeCnt;		// 制限時間取得用
-
-	TPos2d<float> m_fUVPos;	// UV座標保存用
-	int m_nCntSwitch;	// アニメーション切り替えカウント用
-	int m_nCntW;		// 横カウント用
-	int m_nCntH;		// 縦カウント用
-	bool m_bStartSign;		// スタート合図開始フラ
-
 
 	//サウンド
 	XAUDIO2_BUFFER* m_pSEHitHammer;
