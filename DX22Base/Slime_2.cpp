@@ -94,11 +94,13 @@ CSlime_2::~CSlime_2()
 
 void CSlime_2::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
 {
+	m_PlayerTran = playerTransform;
+
 	if (!m_bHitMove)	//敵が通常の移動状態の時
 	{
 		if (!m_bEscape  && m_nEscapeCnt == 0)	//逃げるフラグがoffなら
 		{
-			NormalMove(playerTransform);	//通常異動
+			NormalMove();	//通常異動
 		}
 		else
 		{
@@ -125,10 +127,10 @@ void CSlime_2::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
 	----------------------------------------
 	戻値：なし
 ======================================== */
-void CSlime_2::NormalMove(tagTransform3d playerTransform)
+void CSlime_2::NormalMove()
 {
 
-	TPos3d<float> playerPos = playerTransform.fPos;
+	TPos3d<float> playerPos = m_PlayerTran.fPos;
 
 	// 敵からエネミーの距離、角度を計算
 	float distancePlayer = m_Transform.fPos.Distance(playerPos);
@@ -149,7 +151,7 @@ void CSlime_2::NormalMove(tagTransform3d playerTransform)
 	{
 	case(ATTACK_NONE):	//通常状態の時
 		m_nAtkInterval++;
-		CSlimeBase::NormalMove(playerTransform);
+		CSlimeBase::NormalMove();
 
 		return;
 	case (ATTACK_CHARGE):
@@ -161,7 +163,7 @@ void CSlime_2::NormalMove(tagTransform3d playerTransform)
 		else 
 		{ //まだだったらカウントを溜める
 			m_nChargeCnt++; 
-			CSlimeBase::NormalMove(playerTransform);
+			CSlimeBase::NormalMove();
 
 		}	
 
@@ -194,7 +196,7 @@ void CSlime_2::NormalMove(tagTransform3d playerTransform)
 		{
 			m_AtcMoveType = ATTACK_NONE;
 			m_nTackleCnt = 0;
-			CSlimeBase::NormalMove(playerTransform);
+			CSlimeBase::NormalMove();
 		}
 		break;
 	}

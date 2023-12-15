@@ -27,7 +27,7 @@ public:
 	CSlime_Heal();
 	CSlime_Heal(TPos3d<float> pos, VertexShader* pVS, Model* pModel);
 	~CSlime_Heal();
-	void NormalMove(tagTransform3d playerTransform) override;
+	void NormalMove() override;
 	void SetNormalSpeed() override;
 
 private:

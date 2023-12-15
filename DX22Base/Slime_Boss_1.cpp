@@ -107,10 +107,11 @@ CSlime_Boss_1::~CSlime_Boss_1()
 =========================================== */
 void CSlime_Boss_1::Update(tagTransform3d playerTransform)
 {
+	m_PlayerTran = playerTransform;
 	
 	if (!m_bHitMove)	//敵が通常の移動状態の時
 	{
-		NormalMove(playerTransform);	// 通常行動処理
+		NormalMove();	// 通常行動処理
 	}
 	else
 	{
@@ -173,10 +174,10 @@ void CSlime_Boss_1::Update(tagTransform3d playerTransform)
 	----------------------------------------
 	戻値：無し
 ======================================== */
-void CSlime_Boss_1::NormalMove(tagTransform3d playerTransform)
+void CSlime_Boss_1::NormalMove()
 {
 	TPos3d<float> movePos;
-	TPos3d<float> playerPos = playerTransform.fPos;
+	TPos3d<float> playerPos = m_PlayerTran.fPos;
 
 	// フレーム加算
 	m_nFrame++;

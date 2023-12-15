@@ -86,7 +86,7 @@ CSlime_Heal::~CSlime_Heal()
 	-------------------------------------
 	–ß’lF‚È‚µ
 =========================================== */
-void CSlime_Heal::NormalMove(tagTransform3d playerTransform)
+void CSlime_Heal::NormalMove()
 {
 	RandomMove();	// ƒ‰ƒ“ƒ_ƒ€ˆÚ“®
 }
