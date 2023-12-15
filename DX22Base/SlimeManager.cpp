@@ -219,7 +219,6 @@ void CSlimeManager::Update(CExplosionManager* pExpMng)
 	{
 		if (m_pSlime[i] == nullptr) continue;
 		m_pSlime[i]->Update(m_pPlayer->GetTransform(), m_pTimer->GetSlimeMoveSpeed());
-
 	}
 
 	OutOfRange();	//スライムがプレイヤーから一定距離離れたら対角線に移動
@@ -229,7 +228,6 @@ void CSlimeManager::Update(CExplosionManager* pExpMng)
 	{
 		if (m_pBoss[i] == nullptr) continue;
 		m_pBoss[i]->Update(m_pPlayer->GetTransform());
-
 	}
 
 	//---敵生成---

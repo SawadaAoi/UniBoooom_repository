@@ -173,6 +173,8 @@ void CStage::HammerSlimeCollision()
 		// スライムとハンマーが衝突した場合
 		if (m_pCollision->CheckCollisionSphere(playerHammer->GetSphere(), pSlimeNow->GetSphere(), playerHammer->GetPos(), pSlimeNow->GetPos()))
 		{
+			bool charge = playerHammer->GetCharge();			// ハンマーのチャージ状態を取得
+
 			//赤スライムと激突したときだけヒットストップの時間を長くする
 			if (typeid(CSlime_4) == typeid(*pSlimeNow))
 			{
@@ -185,7 +187,7 @@ void CStage::HammerSlimeCollision()
 			float fAngleSlime
 				= m_pPlayer->GetTransform().Angle(pSlimeNow->GetTransform());	// スライムが飛ぶ角度を取得
 
-			pSlimeNow->HitMoveStart(HAMMER_HIT_MOVE_SPEED, fAngleSlime);	// スライムを飛ばす
+			pSlimeNow->HitMoveStart(HAMMER_HIT_MOVE_SPEED, fAngleSlime,charge);	// スライムを飛ばす
 			m_pPlayer->PlaySE(CPlayer::SE_HIT_HAMMER, HIT_HAMMER_VOLUME);	//ハンマーとスライムの接触SEを再生
 		}
 	}

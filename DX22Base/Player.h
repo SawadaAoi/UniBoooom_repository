@@ -54,13 +54,13 @@ class CPlayer
 {
 public:
 	// === 列挙 ===
-	enum SE
-	{
+	enum SE{
 		SE_SWING,	//ハンマーを振るSE
 		SE_RUN,			//移動のSE
 		SE_DAMAGED,		//被ダメージのSE
 		SE_HIT_HAMMER,	//ハンマーとスライムの接触SE
 		SE_HEAL,
+		SE_CHARGE,		//チャージ完了
 
 		SE_MAX			//SEの総数
 	};
@@ -113,9 +113,17 @@ private:
 	float m_fTick;						//フレームカウンタ(0to60)
 	CShadow* m_pShadow;
 
-	// ===列挙===
-	enum MOTION
-	{
+	// === 攻撃状態の列挙 ===
+	enum STATE{
+		STATE_NONE,		//通常状態
+		STATE_CHARGE,	//チャージ状態
+		STATE_ATACK,	//攻撃状態
+	};
+	STATE m_state;
+	int m_nChargeCnt;
+
+	// === モーション列挙 ===
+	enum MOTION{
 		MOTION_STOP,	//待機
 		MOTION_MOVE,	//移動
 		MOTION_SWING,	//ハンマーを振る
@@ -131,7 +139,8 @@ private:
 		"Assets/Sound/SE/Run.mp3",				//移動のSE
 		"Assets/Sound/SE/PlayerDamage.mp3",		//プレイヤーの被ダメージ時
 		"Assets/Sound/SE/Smash.mp3",			//ハンマーとスライムの接触SE
-		"Assets/Sound/SE/Heal.mp3" };			//回復アイテム取得時
+		"Assets/Sound/SE/Heal.mp3",				//回復アイテム取得時
+		"Assets/Sound/SE/charge.mp3" };			//ハンマーチャージ完了時
 
 	//=====アニメーション関連=====
 	AnimeModel::AnimeNo m_Anime[MOTION_MAX];		//プレイヤーのアニメーション

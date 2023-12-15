@@ -63,7 +63,7 @@ const float PLAYER_SHADOW_SCALE = 1.5f;		// プレイヤーの影の大きさ
 const int	SE_RUN_INTERVAL = static_cast<int>(0.4f * 60);	//プレイヤーの移動によるSE発生の間隔
 const float	SE_RUN_VOLUME = 0.3f;							//移動によるSEの音量
 const float PLAYER_MOVE_ANIME_SPEED = 1.2f;					//プレイヤーの移動アニメーション再生速度
-
+const int HAMMER_CAHRGE_CNT = int(60 * 1.0f);				//チャージ状態になるまでのカウント
 /* ========================================
    関数：コンストラクタ
    ----------------------------------------
@@ -88,6 +88,8 @@ CPlayer::CPlayer()
 	, m_bIntFlg(false)
 	, m_fIntCnt(0.0f)
 	, m_fTick(1.0f / 60.0f)
+	, m_state(STATE_NONE)
+	, m_nChargeCnt(0)
 {
 	m_pHammer = new CHammer();								// Hammerクラスをインスタンス
 	m_nHp = PLAYER_HP;										// プレイヤーのHPを決定
@@ -145,6 +147,7 @@ void CPlayer::Update()
 		{
 			m_bAttackFlg = false;	// 攻撃中フラグをオフにする
 			m_bIntFlg = true;		// ハンマー振り間隔フラグオン
+			m_state = STATE_NONE;
 		}
 
 	}
@@ -175,13 +178,21 @@ void CPlayer::Update()
 		// カメラ更新
 		m_pCamera->Update();	//位置更新後、それを即座にカメラに反映させる
 
-
 		// スペースキーを押した時、またはコントローラのBボタンを押した時 && ハンマー間隔時間経過済み
-		if ((IsKeyTrigger(VK_SPACE) || IsKeyTriggerController(BUTTON_B)) && !m_bIntFlg)
-		{
+		if ((IsKeyTrigger(VK_SPACE)) || IsKeyTriggerController(BUTTON_B) && !m_bIntFlg)
+		{	//チャージ状態に遷移
+			m_state = STATE_CHARGE;
 			m_pModel->Play(m_Anime[MOTION_SWING], false, 0.01f);	//アニメーションの再生
-			m_pHammer->AttackStart(m_Transform.fPos, m_Transform.fRadian.y + DirectX::g_XMPi[0]);	// ハンマー攻撃開始
+		}
+
+		// スペースキーを押した時、またはコントローラのBボタンを離した時 && チャージ状態だったら
+		if ((IsKeyRelease(VK_SPACE) || IsKeyReleaseController(BUTTON_B) && m_state == STATE_CHARGE))
+		{
+			bool charge = m_nChargeCnt > HAMMER_CAHRGE_CNT ? true : false;	//チャージが一定以上だったらtrue
+			m_pHammer->AttackStart(m_Transform.fPos, m_Transform.fRadian.y + DirectX::g_XMPi[0],charge);	// ハンマー攻撃開始
 			m_bAttackFlg = true;	// 攻撃フラグを有効にする
+			m_state = STATE_ATACK;
+			m_nChargeCnt = 0;
 			//SEの再生
 			PlaySE(SE_SWING);
 
@@ -208,10 +219,18 @@ void CPlayer::Update()
 
 	}
 
+	//チャージ状態の時にカウントを追加
+	if (m_state == STATE_CHARGE) { m_nChargeCnt++; }	
+	if (m_nChargeCnt == HAMMER_CAHRGE_CNT) { PlaySE(SE_CHARGE); }	//チャージが貯まったらSE再生
+
 	//移動によるSEとアニメーションの処理
 	MoveCheck();
-	//アニメーションの更新
-	m_pModel->Step(m_fTick);
+
+	//チャージ状態以外はアニメーションの更新
+	if (m_state != STATE_CHARGE)
+	{
+		m_pModel->Step(m_fTick);
+	}
 
 }
 

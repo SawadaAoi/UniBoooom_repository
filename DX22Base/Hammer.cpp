@@ -199,7 +199,7 @@ void CHammer::Swing()
    ----------------------------------------
    戻値：なし
    ======================================== */
-void CHammer::AttackStart(TPos3d<float>pPos, float angle)
+void CHammer::AttackStart(TPos3d<float>pPos, float angle, bool bCharge)
 {
 	float StartAngle =
 		  angle						// プレイヤーの向き
@@ -213,7 +213,8 @@ void CHammer::AttackStart(TPos3d<float>pPos, float angle)
 	// 角度から座標を取得(プレイヤーの位置＋距離＋プレイヤーの周りの円状の位置)
 	m_Transform.fPos.x = m_tPlayerPos.x + ROTATE_RADIUS * -cosf(m_fAngleNow);
 	m_Transform.fPos.z = m_tPlayerPos.z + ROTATE_RADIUS * sinf(m_fAngleNow);
-
+	// チャージショットか確認
+	m_bCharge = bCharge;
 }
 /* ========================================
    ハンマーのスイングスピードを遅くする関数
@@ -279,4 +280,18 @@ float CHammer::GetInterval()
 void CHammer::SetCamera(const CCamera * pCamera)
 {
 	m_pCamera = pCamera;
+}
+
+/* ========================================
+   チャージ状態ゲット関数
+   ----------------------------------------
+   内容：チャージ状態を取得
+   ----------------------------------------
+   引数1：なし
+   ----------------------------------------
+   戻値：チャージ状態(bool)
+   ======================================== */
+bool CHammer::GetCharge()
+{
+	return m_bCharge;
 }

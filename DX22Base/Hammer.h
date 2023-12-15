@@ -46,11 +46,12 @@ public:
 	bool Update();			// 更新関数
 	void Draw();			// 描画関数
 	void Swing();											// 移動による回転移動
-	void AttackStart(TPos3d<float>pPos, float angle);		// 攻撃開始処理
+	void AttackStart(TPos3d<float>pPos, float angle,bool bCharge);		// 攻撃開始処理
 	void SwingSpeedAdd();
 	void SwingSpeedSubtract();
 	float GetInterval();
 	void SetCamera(const CCamera* pCamera);
+	bool GetCharge();
 private:
 	// ===メンバ変数宣言=====
 	Model* m_pModel;				//プレイヤーのモデル
@@ -61,6 +62,7 @@ private:
 	const CCamera* m_pCamera;		//	
 	float m_fSwingSpeed;			//ハンマーを振る時間
 	float m_fAddAngle;				// 1フレームで移動する角度量
+	bool m_bCharge;					//チャージ状態かどうか
 };
 
 #endif // !__HAMMER_H__

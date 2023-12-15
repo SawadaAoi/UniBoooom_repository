@@ -99,9 +99,9 @@ public:
 
 	virtual void NormalMove(tagTransform3d playerTransform);	// 通常時の移動処理
 	void RandomMove();
-	void HitMove();									//スライムが吹き飛び移動状態の時に毎フレーム呼び出して移動させる
-	void HitMoveStart(float speed, float angle);	//スライムが吹き飛ばされたときに速度と角度を決める
-	void Reflect();									//スライムとぶつかって吹き飛ばした際に自分の移動量を減らす
+	void HitMove();												//スライムが吹き飛び移動状態の時に毎フレーム呼び出して移動させる
+	void HitMoveStart(float speed, float angle, bool charge = false);	//スライムが吹き飛ばされたときに速度と角度を決める
+	void Reflect();												//スライムとぶつかって吹き飛ばした際に自分の移動量を減らす
 	void Escape();
 
 	// ゲット関数
@@ -111,6 +111,7 @@ public:
 	TPos3d<float> GetPos();
 	bool GetEscapeFlag();
 	int GetAttack();
+	bool GetSlimeChargeShot();
 
 	//セット関数
 	virtual void SetNormalSpeed() = 0;
@@ -127,6 +128,7 @@ protected:
 	float m_fSpeed;					//スライムの移動速度
 	bool m_bHitMove;				//吹っ飛び中かどうか
 	int m_nEscapeCnt;				//逃げる状態になった時
+	bool m_bChargeShot;				//チャージ状態のハンマーで打たれたかどうか
 
 	E_SLIME_LEVEL m_eSlimeSize;		//スライムの大きさの列挙
 	const CCamera* m_pCamera;		//カメラのポインタ

@@ -69,6 +69,7 @@ CSlimeBase::CSlimeBase()
 	, m_bEscape(false)
 	, m_nEscapeCnt(0)
 	, m_fScaleShadow(0.0f)
+	, m_bChargeShot(false)
 {
 	m_Transform.fScale = (1.0f, 1.0f, 1.0f);
 	//当たり判定(自分)初期化
@@ -256,11 +257,12 @@ void CSlimeBase::HitMove()
 	m_move.z = sin(m_fVecAngle) * (m_fSpeed * SPEED_DOWN_RATIO);
 
 	m_fSpeed -= MOVE_RESIST;	//毎フレームの速度の減算処理
-	if (m_fSpeed <= 0)	//速度が0以下になったら
+	if (m_fSpeed <= 0)			//速度が0以下になったら
 	{
-		m_bHitMove = false;				//吹き飛び状態のフラグをOFFにする
-		SetNormalSpeed();	// 継承した関数を使用して大きさごとのスピードをセットする
+		m_bHitMove = false;		//吹き飛び状態のフラグをOFFにする
+		SetNormalSpeed();		// 継承した関数を使用して大きさごとのスピードをセットする
 		m_RanMoveCnt = RANDOM_MOVE_SWITCH_TIME;
+		m_bChargeShot = false;
 	}
 }
 
@@ -274,11 +276,13 @@ void CSlimeBase::HitMove()
 	----------------------------------------
 	戻値：なし
 ======================================== */
-void CSlimeBase::HitMoveStart(float speed, float angle)
+void CSlimeBase::HitMoveStart(float speed, float angle,bool charge)
 {
+	if (m_bChargeShot == true) { return; }
 	m_fSpeed = speed;		//移動量を入れる
-	m_fVecAngle = angle;		//移動方向を入れる
+	m_fVecAngle = angle;	//移動方向を入れる
 	m_bHitMove = true;		//吹き飛び状態をONにする
+	m_bChargeShot = charge;	//チャージ状態のハンマーに打たれたか
 }
 
 /* ========================================
@@ -432,6 +436,20 @@ bool CSlimeBase::GetEscapeFlag()
 int CSlimeBase::GetAttack()
 {
 	return m_nAttack;
+}
+
+/* ========================================
+	スライムチャージショット取得関数
+	----------------------------------------
+	内容：スライムがチャージ状態
+	----------------------------------------
+	引数1：なし
+	----------------------------------------
+	戻値：チャージショット状態(bool)
+======================================== */
+bool CSlimeBase::GetSlimeChargeShot()
+{
+	return m_bChargeShot;
 }
 
 /* ========================================
