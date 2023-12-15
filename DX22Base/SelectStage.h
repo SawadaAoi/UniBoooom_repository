@@ -19,7 +19,7 @@
 
 // =============== インクルード ===================
 #include "Scene.h"	//親のヘッダ
-
+#include "2dPolygon.h"
 // =============== 定数定義 =======================
 const int SUTAGE_NUM = 3;						// ステージの数
 
@@ -46,7 +46,7 @@ public:
 protected:
 	StageSelect mStageNum[SUTAGE_NUM];
 private:
-	
+	C2dPolygon* m_2dObj[3];
 	StageSelect EscapeStageNum;
 };	//ステージセレクト
 

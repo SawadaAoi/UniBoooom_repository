@@ -420,6 +420,9 @@
     <ClCompile Include="Shadow.cpp">
       <Filter>ソース ファイル\2dObject</Filter>
     </ClCompile>
+    <ClCompile Include="DrawGameStart.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Defines.h">
@@ -700,6 +703,9 @@
     </ClInclude>
     <ClInclude Include="Shadow.h">
       <Filter>ヘッダー ファイル\2dObject</Filter>
+    </ClInclude>
+    <ClInclude Include="DrawGameStart.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
