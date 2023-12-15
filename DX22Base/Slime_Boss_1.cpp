@@ -93,6 +93,7 @@ CSlime_Boss_1::CSlime_Boss_1(TPos3d<float> pos, VertexShader* pVS, Model* pModel
 =========================================== */
 CSlime_Boss_1::~CSlime_Boss_1()
 {
+	for (int i = 0; i < 2; i++) { SAFE_DELETE(m_StateModels[i]); }
 }
 
 /* ========================================

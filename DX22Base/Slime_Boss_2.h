@@ -31,6 +31,7 @@ public:
 		JUMP,
 		TARGET_SHADOW,
 		DROP,
+		DROP_RIGID,
 
 		MOVE_MAX,
 	};
@@ -42,18 +43,21 @@ public:
 
 	void Update(tagTransform3d playerTransform) override;
 
-	void MoveSwitch();
-	void MoveNormal();
 
-	void MoveJump();
-	void MoveTargetShadow();
-	void MoveDrop();
 
 	void SetNormalSpeed() override;
 	void SetMaxHp() override;
-	void SetShadowPos();
 
 private:
+	// ===プロトタイプ宣言===
+	void MoveSwitch();
+	void MoveNormal();
+	void MoveJumpCharge();
+	void MoveJump();
+	void MoveTargetShadow();
+	void MoveDrop();
+	void MoveDropRigid();
+
 	// ===メンバ変数===
 	int m_nMoveCnt[MOVE_MAX];		// 移動処理のフレーム加算値
 	bool m_nMoveFlg[MOVE_MAX];		// 移動処理のフレーム加算値

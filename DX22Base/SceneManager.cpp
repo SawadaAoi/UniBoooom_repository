@@ -70,7 +70,7 @@ const std::string BGM_FILE[CScene::E_TYPE_MAX] = {	//各ステージのBGMのファイル
 CSceneManager::CSceneManager()
 	: m_pScene(nullptr)						//シーン
 	, m_ePastScene(CScene::E_TYPE_NONE)		//前のシーン
-	, m_eNextScene(CScene::E_TYPE_TITLE)	//シーン遷移先
+	, m_eNextScene(CScene::E_TYPE_STAGE3)	//シーン遷移先
 	, m_bFinish(false)						//シーン管理を開始
 	, m_pFade(nullptr)						//フェード
 	, m_bStartFadeOut(false)
