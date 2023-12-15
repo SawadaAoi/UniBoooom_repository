@@ -49,7 +49,7 @@ const int SCREEN_HEIGHT_ = 720;
 
 
 // プレイヤー ================================================
-const float PLAYER_MOVE_SPEED	= 0.32f;			// プレイヤーの移動速度
+const float PLAYER_MOVE_SPEED	= 0.12f;			// プレイヤーの移動速度
 const int	PLAYER_HP			= 10;			// プレイヤーのHP
 const float PLAYER_RADIUS		= 0.12f;			// プレイヤーの当たり判定の大きさ
 const float PLAYER_SIZE			= PLAYER_RADIUS * 2.0f;			// プレイヤーの大きさ
