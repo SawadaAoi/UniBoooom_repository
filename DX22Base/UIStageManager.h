@@ -32,7 +32,7 @@ class CUIStageManager
 {
 public:
 	// ===ƒƒ“ƒoŠÖ”éŒ¾===
-	CUIStageManager(CPlayer* pPlayer, const CCamera* pCamera, CSlimeManager* pSlimeMng);
+	CUIStageManager(CPlayer* pPlayer,CCamera* pCamera, CSlimeManager* pSlimeMng);
 	~CUIStageManager();
 	void Update();
 	void Draw();

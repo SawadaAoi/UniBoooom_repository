@@ -11,6 +11,7 @@
 	・2023/11/20 h,作成 Yamashita
 	・2023/11/20 ゲームのプレイ状態を列挙 yamashita
 	・2023/12/07 自動でシーン遷移させるためのフラグ取得関数追加 nieda
+	・2023/12/16 不要な変数など削除 nieda
 
 ========================================== */
 #ifndef __STAGE_FINISH_UI_H__
@@ -19,6 +20,7 @@
 // =============== インクルード ===================
 #include "Texture.h"
 #include "GameParameter.h"
+#include "DrawAnimation.h"
 
 class CStageFinish
 {
@@ -34,7 +36,7 @@ public:
 		MAX_STATE
 	};
 
-	CStageFinish(int* pPlayerHp,int* pTimeCnt);
+	CStageFinish(CCamera* pCamera, int* pPlayerHp,int* pTimeCnt);
 	~CStageFinish();
 	void Update();
 	void Draw();
@@ -42,21 +44,14 @@ public:
 	bool GetDeleteDispFlg();	// 画面遷移フラグ取得用
 
 private:
-	void EditSprite(int);
-
 	bool m_bDispFlg;
 	GAME_STATE m_eGameState;
 	const int* m_pPlayerHp;
 	const int* m_pTimeCnt;
 	bool m_bDeleteDisp;
 
-	Texture* m_pTexGameClear;
-	Texture* m_pTexGameOver;
-
-	TPos2d<float> m_fUVPos;	// UV座標保存用
-	int m_nCntSwitch;		// アニメーション切り替えカウント用
-	int m_nCntW;			// 横カウント用
-	int m_nCntH;			// 縦カウント用
+	CDrawAnim* m_pClear;
+	CDrawAnim* m_pOver;
 };
 
 #endif // !__STAGE_FINISH_UI_H__
