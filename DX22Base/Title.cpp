@@ -20,6 +20,7 @@
 	・2023/12/12 遷移先シーンをステージセレクトに変更 yamamoto
 	・2023/12/16 描画物改善 takagi
 	・2023/12/17 コマンドが表示されていないときは決定キーを受け付けないように takagi
+	・2023/12/18 画像差し替え・コマンド位置調整 takagi
 	
 ========================================== */
 
@@ -47,7 +48,7 @@ enum E_2D	//更新順
 const float START_RADIUS_CAMERA = 0.5f;		//初期カメラ距離
 const float END_RADIUS_CAMERA = 15.0f;		//最終カメラ距離
 const int ZOOMOUT_FRAME = 90;				//ズームアウトにかけるフレーム数
-const float COMMAND_SPACE = 80.0f;			//コマンド同士の縦の間
+const float COMMAND_SPACE = 120.0f;			//コマンド同士の縦の間
 const float COMMAND_DOWN = 160.0f;			//コマンドを中心からどれだけ下げるか
 const std::map<int, int> MAP_WAIT_START = {
 	{E_2D_BACK, 0},	//背景
@@ -63,16 +64,16 @@ const std::map<int, int> MAP_WAIT_FIN = {
 	{E_2D_LOGO, 15},	//タイトルロゴ
 };	//ポリゴンと表示終了待機時間の対応表
 const std::map<int, std::string> MAP_TEXTURE = {
-	{E_2D_BACK, "Assets/Texture//Title/titlelogo_kari.png"},		//背景
+	{E_2D_BACK, "Assets/Texture//Title/TitleBg.png"},				//背景
 	{E_2D_START, "Assets/Texture/Title/Title_Start.png"},			//開始コマンド
 	{E_2D_FINISH, "Assets/Texture/Pause/Pause_Finish.png"},			//終了コマンド
-	{E_2D_LOGO, "Assets/Texture/Title/Title_Logo.png"},				//タイトルロゴ
+	{E_2D_LOGO, "Assets/Texture/Title/TitleLogo.png"},				//タイトルロゴ
 	{E_2D_OPENING, "Assets/Texture/Title/titleopening_kari.png"},	//開始映像
 };	//ポリゴンとテクスチャの対応表
 const std::map<int, TPos3d<float>> MAP_POS = {
 	{E_2D_BACK, {static_cast<float>(SCREEN_WIDTH) / 2.0f, static_cast<float>(SCREEN_HEIGHT) / 2.0f, 0.0f}},		//背景
-	{E_2D_START, {static_cast<float>(SCREEN_WIDTH) / 2.0f, 300.0f, 0.0f}},										//開始コマンド
-	{E_2D_FINISH, {static_cast<float>(SCREEN_WIDTH) / 2.0f, 300.0f - COMMAND_SPACE, 0.0f}},						//終了コマンド
+	{E_2D_START, {static_cast<float>(SCREEN_WIDTH) / 2.0f, 260.0f, 0.0f}},										//開始コマンド
+	{E_2D_FINISH, {static_cast<float>(SCREEN_WIDTH) / 2.0f, 260.0f - COMMAND_SPACE, 0.0f}},						//終了コマンド
 	//{E_2D_LOGO, {static_cast<float>(SCREEN_WIDTH) / 2.0f, 450.0f, 0.0f}},										//タイトルロゴ
 	{E_2D_OPENING, {static_cast<float>(SCREEN_WIDTH) / 2.0f, static_cast<float>(SCREEN_HEIGHT) / 2.0f, 0.0f}},	//オープニング
 };	//ポリゴンと初期座標の対応表
