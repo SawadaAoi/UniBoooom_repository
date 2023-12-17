@@ -65,9 +65,9 @@ CStage3::~CStage3()
 =========================================== */
 void CStage3::Update()
 {
-	if (m_pDrawStart->GetAnimFlg())	// シーン遷移後ゲームを開始するか判定
+	if (m_pStartText->GetAnimFlg())	// シーン遷移後ゲームを開始するか判定
 	{
-		m_pDrawStart->Update();
+		m_pStartText->Update();
 	}
 	else
 	{
@@ -176,9 +176,9 @@ void CStage3::Draw()
 	m_pUIStageManager->Draw();
 
 	// スタート合図描画
-	if (m_pDrawStart->GetAnimFlg())
+	if (m_pStartText->GetAnimFlg())
 	{
-		m_pDrawStart->Draw();
+		m_pStartText->Draw();
 	}
 
 #if USE_FADE_GAME

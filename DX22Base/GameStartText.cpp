@@ -3,7 +3,7 @@
 	---------------------------------------
 	ゲームスタート描画
 	---------------------------------------
-	DrawAnimation.h
+	GameStartText.h
 
 	作成者
 			nieda
@@ -13,11 +13,12 @@
 	・2023/12/15 ゲームスタートのテクスチャを新規のものに変更 nieda
 	・2023/12/16 描画位置追加 nieda
 	・2023/12/16 DrawAnimationの変更を反映 takagi
+	・2023/12/17 名前変更 nieda
 
 ========================================== */
 
 // =============== インクルード ===================
-#include "DrawGameStart.h"	// 自身のヘッダ
+#include "GameStartText.h"	// 自身のヘッダ
 #include "Defines.h"
 
 // =============== 定数定義 ===================
@@ -37,7 +38,7 @@ const int START_SWITCH_CNT = 1;					// アニメーション切り替え間隔
 	----------------------------------------
 	戻値：なし
 =========================================== */
-CDrawStart::CDrawStart(CCamera* pCamera)
+CStartText::CStartText(CCamera* pCamera)
 	: CDrawAnim(START_SPLIT_NUM_MAX, START_SPLIT_NUM, START_SWITCH_CNT)
 {
 	SetTexture("Assets/Texture/Start_sprit.png");		//テクスチャ初期化

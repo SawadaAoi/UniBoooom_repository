@@ -24,19 +24,6 @@
 #include "GameParameter.h"
 #include "Input.h"
 
-// =============== 定数定義 =======================
-const int CLEAR_SPLIT_NUM_MAX = 45;				// スタートのUIアニメーションの分割数の最大数
-const TDiType<int> CLEAR_SPLIT_NUM = { 5, 9 };	// スタートのUIアニメーションの縦横分割数の最大数
-const TPos2d<float> CLEAR_POS = { SCREEN_WIDTH_ / 2.0f, SCREEN_HEIGHT_ / 2.0f };		// 描画位置
-const TDiType<float> CLEAR_SCALE = { (float)SCREEN_WIDTH_, (float)SCREEN_HEIGHT_ };		// 描画サイズ
-const int CLEAR_SWITCH_CNT = 1;					// アニメーション切り替え間隔
-
-const int OVER_SPLIT_NUM_MAX = 54;				// スタートのUIアニメーションの分割数の最大数
-const TDiType<int> OVER_SPLIT_NUM = { 6, 9 };	// スタートのUIアニメーションの縦横分割数の最大数
-const TPos2d<float> OVER_POS = { SCREEN_WIDTH_ / 2.0f, SCREEN_HEIGHT_ / 2.0f };		// 描画位置
-const TDiType<float> OVER_SCALE = { (float)SCREEN_WIDTH_, (float)SCREEN_HEIGHT_ };		// 描画サイズ
-const int OVER_SWITCH_CNT = 1;					// アニメーション切り替え間隔
-
 
 /* ========================================
 	コンストラクタ
@@ -58,25 +45,8 @@ CStageFinish::CStageFinish(CCamera* pCamera, int* pPlayerHp, int* pTimeCnt)
 	m_pPlayerHp = pPlayerHp;	//プレイヤーのHPのポインタを取得
 	m_pTimeCnt = pTimeCnt;		//制限時間のポインタを取得
 
-	//ゲームクリアの描画準備
-	m_pClear = new CDrawAnim(
-		CLEAR_SPLIT_NUM_MAX,
-		CLEAR_SPLIT_NUM,
-		CLEAR_SWITCH_CNT);
-	m_pClear->SetTexture("Assets/Texture/StageFinish/finish.png");
-	m_pClear->SetCamera(pCamera);
-	m_pClear->SetPos({ CLEAR_POS.x, CLEAR_POS.y, 0.0f });
-	m_pClear->SetSize({ CLEAR_SCALE.x, CLEAR_SCALE.y, 0.0f });
-
-	//ゲームオーバーの描画準備
-	m_pOver = new CDrawAnim(
-		OVER_SPLIT_NUM_MAX,
-		OVER_SPLIT_NUM,
-		OVER_SWITCH_CNT);
-	m_pOver->SetTexture("Assets/Texture/StageFinish/GameOver.png");
-	m_pOver->SetCamera(pCamera);
-	m_pOver->SetPos({ OVER_POS.x, OVER_POS.y, 0.0f });
-	m_pOver->SetSize({ OVER_SCALE.x, OVER_SCALE.y, 0.0f });
+	m_pClear = new CClearText(pCamera);
+	m_pOver = new COverText(pCamera);
 }
 
 /* ========================================
