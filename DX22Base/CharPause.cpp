@@ -10,20 +10,18 @@
 	変更履歴
 	・2023/12/09 制作 takagi
 	・2023/12/10 制作進行 takagi
+	・2023/12/17 ゲームパラメータ無効化 takagi
 
 ========================================== */
 
 // =============== インクルード ===================
 #include "CharPause.h"	//自身のヘッダ
-#include "GameParameter.h"
 
 // =============== 定数定義 ===================
-const float AMPITUDE(25.0f);											//振幅
-const float ANGLE_SPEED(DirectX::XMConvertToRadians(1.5f));				//単振動の角速度
-#if !MODE_GAME_PARAMETER
-const float CHARA_WIDTH = 100.0f;										//ポーズ表記横幅
-const float CHARA_HEIGHT = 100.0f;										//ポーズ表記縦幅
-#endif // !MODE_GAME_PARAMETER
+const float AMPITUDE(25.0f);								//振幅
+const float ANGLE_SPEED(DirectX::XMConvertToRadians(1.5f));	//単振動の角速度
+const float CHARA_WIDTH = 100.0f;							//ポーズ表記横幅
+const float CHARA_HEIGHT = 100.0f;							//ポーズ表記縦幅
 const TPos3d<float> SCALE(CHARA_WIDTH, CHARA_HEIGHT, 0.0f);	//大きさ
 
 

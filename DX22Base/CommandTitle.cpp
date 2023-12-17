@@ -1,28 +1,24 @@
 /* ========================================
 	HEW/UniBoooom!!
 	---------------------------------------
-	ポーズコマンド実装
+	ポーズ文字実装
 	---------------------------------------
-	CommandPause.cpp
+	CommandTitle.cpp
 
 	作成者	takagi
 
 	変更履歴
-	・2023/12/10 制作 takagi
-	・2023/12/16 コメント追加 takagi
-	・2023/12/17 ゲームパラメータ無効化 takagi
+	・2023/12/16 制作 takagi
 
 ========================================== */
 
 // =============== インクルード ===================
-#include "CommandPause.h"	//自身のヘッダ
+#include "CommandTitle.h"	//自身のヘッダ
 
 // =============== 定数定義 ===================
-const float AMPITUDE(25.0f);										//振幅
-const float ANGLE_SPEED(DirectX::XMConvertToRadians(1.5f));			//単振動の角速度
 const TDiType<float> UV_SCALE(1.0f / 3.0f, 1.0f);					//UV拡縮
-const float COMMAND_WIDTH = 360.0f;									//コマンド縦幅
-const float COMMAND_HEIGHT = 78.0f;									//コマンド横幅
+const float COMMAND_WIDTH(120.0f * 2.0f);							//コマンド縦幅
+const float COMMAND_HEIGHT(26.0f * 2.0f);							//コマンド横幅
 const TDiType<float> SCALE_UNSELECT(COMMAND_WIDTH, COMMAND_HEIGHT);	//非選択時の最大拡縮率
 const TDiType<float> SCALE_SELECT(SCALE_UNSELECT * 1.1f);			//選択時の最小拡縮率
 const TDiType<float> SCALE_DESIDE(SCALE_UNSELECT * 1.2f);			//決定時の拡大率
@@ -38,11 +34,11 @@ const int DISPLAY_DECIDE(15);										//決定テクスチャを表示する時間
 	----------------------------------------
 	戻値：なし
 =========================================== */
-CCommandPause::CCommandPause(const int& nWaitTime)
-	:m_eTexNo(E_TEXTURE_UNSELECTED)	//テクスチャ番号
+CCommandTitle::CCommandTitle(const int& nWaitTime)
+	:CTitleObj(nWaitTime)			//委譲
+	,m_eTexNo(E_TEXTURE_UNSELECTED)	//テクスチャ番号
 	,m_fScale(SCALE_UNSELECT)		//拡縮
 	,m_pnTimer(nullptr)				//タイマー
-	,CPauseObj(nWaitTime)			//委譲
 {
 	// =============== 初期化 ===================
 	SetSize({ m_fScale.x, m_fScale.y, 0.0f });	//大きさ初期化
@@ -58,7 +54,7 @@ CCommandPause::CCommandPause(const int& nWaitTime)
 	----------------------------------------
 	戻値：なし
 =========================================== */
-CCommandPause::~CCommandPause()
+CCommandTitle::~CCommandTitle()
 {
 	// =============== 終了 ===================
 	SAFE_DELETE(m_pnTimer);	//タイマー削除
@@ -73,10 +69,17 @@ CCommandPause::~CCommandPause()
 	----------------------------------------
 	戻値：なし
 =========================================== */
-void CCommandPause::Update()
+void CCommandTitle::Update()
 {
 	// =============== 更新 ===================
-	CPauseObj::Update();	//親の関数使用
+	CTitleObj::Update();	//親の関数使用
+
+	// =============== 検査 ===================
+	if (m_pnTimer)	//ヌルチェック
+	{
+		// =============== 終了 ===================
+		return;	//処理中断
+	}
 
 	// =============== UV移動 ===================
 	SetUvOffset({ static_cast<float>(m_eTexNo) / static_cast<float>(E_TEXTURE_MAX), 0.0f });	//UV座標移動
@@ -114,7 +117,7 @@ void CCommandPause::Update()
 				m_fScale.y = SCALE_SELECT.y;	//補正
 			}
 		}
-		else 
+		else
 		{
 			if (E_TEXTURE_UNSELECTED == m_eTexNo)	//決定状態
 			{
@@ -144,7 +147,7 @@ void CCommandPause::Update()
 	----------------------------------------
 	戻値：なし
 =========================================== */
-void CCommandPause::Selected()
+void CCommandTitle::Selected()
 {
 	// =============== 状態遷移 ===================
 	m_eTexNo = E_TEXTURE_SELECTED;	//テクスチャ番号切換
@@ -159,7 +162,7 @@ void CCommandPause::Selected()
 	----------------------------------------
 	戻値：なし
 =========================================== */
-void CCommandPause::UnSelected()
+void CCommandTitle::UnSelected()
 {
 	// =============== 状態遷移 ===================
 	m_eTexNo = E_TEXTURE_UNSELECTED;	//テクスチャ番号切換
@@ -174,7 +177,7 @@ void CCommandPause::UnSelected()
 	----------------------------------------
 	戻値：なし
 =========================================== */
-void CCommandPause::Decide()
+void CCommandTitle::Decide()
 {
 	// =============== 状態遷移 ===================
 	m_eTexNo = E_TEXTURE_DECIDE;	//テクスチャ番号切換

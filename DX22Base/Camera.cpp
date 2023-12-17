@@ -104,20 +104,23 @@ const std::vector<float> TABLE_AMPITUDE_STRONG[E_DIRECT_VIBRATE_MAX] = {
 =========================================== */
 CCamera::CCamera()
 	:m_ucFlag(0x00)												//フラグ
-	, m_fPos(INIT_POS)											//位置
-	, m_fLook(INIT_LOOK)										//注視点
-	, m_fUp(INIT_UP_VECTOR)										//上方ベクトル
-	, m_fAngle(INIT_ANGLE)										//角度
-	, m_fNear(INIT_NEAR)										//画面手前
-	, m_fFar(INIT_FAR)											//画面奥
-	, m_fRadius(INIT_RADIUS)									//注視点とカメラの距離
-	, m_fOffsetVibrateEye(0.0f)									//カメラ位置振動
-	, m_fOffsetVibrateLook(0.0f)								//注視点振動
-	, m_nFrameWeak(INIT_FRAME_WEAK)								//フレーム数：弱振動	x:横, y:縦
-	, m_nFrameStrong(INIT_FRAME_STRONG)							//フレーム数：強振動	x:横, y:縦
-	, m_fChangeRateAmplitudeWeak(INIT_CHANGE_RATE_AMPLITUDE)	//振幅変動率：弱		x:横, y:縦
-	, m_fChangeRateAmplitudeStrong(INIT_CHANGE_RATE_AMPLITUDE)	//振幅変動率：強		x:横, y:縦
-	, m_nCntChangeVibrate(0)									//振動回数カウンタ
+	,m_fPos(INIT_POS)											//位置
+	,m_fLook(INIT_LOOK)											//注視点
+	,m_fUp(INIT_UP_VECTOR)										//上方ベクトル
+	,m_fAngle(INIT_ANGLE)										//角度
+	,m_fNear(INIT_NEAR)											//画面手前
+	,m_fFar(INIT_FAR)											//画面奥
+	,m_fRadius(INIT_RADIUS)										//注視点とカメラの距離
+	,m_fOffsetVibrateEye(0.0f)									//カメラ位置振動
+	,m_fOffsetVibrateLook(0.0f)									//注視点振動
+	,m_nFrameWeak(INIT_FRAME_WEAK)								//フレーム数：弱振動	x:横, y:縦
+	,m_nFrameStrong(INIT_FRAME_STRONG)							//フレーム数：強振動	x:横, y:縦
+	,m_fChangeRateAmplitudeWeak(INIT_CHANGE_RATE_AMPLITUDE)		//振幅変動率：弱		x:横, y:縦
+	,m_fChangeRateAmplitudeStrong(INIT_CHANGE_RATE_AMPLITUDE)	//振幅変動率：強		x:横, y:縦
+	,m_nCntChangeVibrate(0)										//振動回数カウンタ
+	,m_pZoomCnt(nullptr)										//ズーム機能用カウンタ
+	,m_pfGoalRadius(nullptr)									//ズーム目標距離
+	,m_pfStartRadius(nullptr)									//ズーム開始距離
 {
 }
 
@@ -131,7 +134,23 @@ CCamera::CCamera()
 	戻値：なし
 =========================================== */
 CCamera::~CCamera()
-{
+{	
+	// =============== 削除 ===================
+	if (m_pfStartRadius)	//ヌルチェック
+	{
+		delete m_pfStartRadius;		//メモリ解放
+		m_pfStartRadius = nullptr;	//空アドレス代入
+	}
+	if (m_pfGoalRadius)	//ヌルチェック
+	{
+		delete m_pfGoalRadius;		//メモリ解放
+		m_pfGoalRadius = nullptr;	//空アドレス代入
+	}
+	if (m_pZoomCnt)	//ヌルチェック
+	{
+		delete m_pZoomCnt;		//メモリ解放
+		m_pZoomCnt = nullptr;	//空アドレス代入
+	}
 }
 
 /* ========================================
@@ -320,12 +339,12 @@ TPos3d<float> CCamera::GetPos() const
 	-------------------------------------
 	内容：振動している時のみ、振動に関する変数に干渉
 	-------------------------------------
-	引数1：int nChangeFrame：振動しているm_nFrameに足す引数。正の値なら持続時間が延び、負なら縮む
-	引数2：float fChangegRateAmp：振動しているm_fChangeRateAmplitudeに掛ける引数。正の値なら持続時間が延び、負なら縮む
+	引数1：const int & nChangeFrame：振動しているm_nFrameに足す引数。正の値なら持続時間が延び、負なら縮む
+	引数2：const float & fChangegRateAmp：振動しているm_fChangeRateAmplitudeに掛ける引数。正の値なら持続時間が延び、負なら縮む
 	-------------------------------------
 	戻値：なし
 =========================================== */
-void CCamera::ChangeScaleVibrate(int nChangeFrame, float fChangegRateAmp)	//TODO:任意の振動に絞った拡張
+void CCamera::ChangeScaleVibrate(const int & nChangeFrame, const float & fChangegRateAmp)	//TODO:任意の振動に絞った拡張
 {
 	// =============== 振動フラグ ===================
 	if (m_nCntChangeVibrate > MAX_CNT_CHANGE_VIBRATE)
@@ -361,6 +380,46 @@ void CCamera::ChangeScaleVibrate(int nChangeFrame, float fChangegRateAmp)	//TODO
 		m_fChangeRateAmplitudeStrong.y *= fChangegRateAmp;	//補正率干渉
 		m_nCntChangeVibrate++;								//振動回数カウント
 	}
+}
+
+/* ========================================
+	ズーム機能起動関数
+	-------------------------------------
+	内容：ズーム機能を起動する
+	-------------------------------------
+	引数1：const float & fFinRadius：最終的に到達したい距離
+	引数2：const int & nFrame：ズームにかける時間
+	引数3：const bool & bDefMode：true:最初は距離を変更しない, false:最初に距離を引数4の値にする
+	引数4：const float& fStartRadius：引数3がtrueのとき、最初に設定したい距離
+	-------------------------------------
+	戻値：なし
+=========================================== */
+void CCamera::BootZoom(const float & fFinRadius, const int & nFrame, const bool & bDefMode, const float& fStartRadius)
+{
+	// =============== 動的確保 ===================
+	m_pfGoalRadius = new float(fFinRadius);	//目標値設定
+	m_pZoomCnt = new CFrameCnt(nFrame);		//フレームカウント開始
+
+	// =============== 初期化 ===================
+	if (!bDefMode)	//最初に距離を変更するか
+	{
+		m_fRadius = fStartRadius;	//距離初期化
+	}
+}
+
+/* ========================================
+	距離設定関数
+	-------------------------------------
+	内容：カメラの距離を登録する
+	-------------------------------------
+	引数1：const float & fRadius：登録したい値
+	-------------------------------------
+	戻値：なし
+=========================================== */
+void CCamera::SetRadius(const float & fRadius)
+{
+	// =============== 初期化 ===================
+	m_fRadius = fRadius;	//距離初期化
 }
 
 /* ========================================
@@ -480,5 +539,74 @@ void CCamera::HandleFlag()
 			m_fChangeRateAmplitudeStrong.y = INIT_CHANGE_RATE_AMPLITUDE;	//振幅補正初期化
 			m_nFrameStrong.y = INIT_FRAME_STRONG.y;
 		}
+	}
+}
+
+/* ========================================
+	ズーム関数
+	-------------------------------------
+	内容：ズーム機能を実行する
+	-------------------------------------
+	引数1：なし
+	-------------------------------------
+	戻値：なし
+=========================================== */
+void CCamera::Zoom()
+{
+	// =============== 検査 ===================
+	if (!m_pZoomCnt)	//カウンタ存在チェック
+	{
+		// =============== 終了 ===================
+		return;	//処理中断
+	}
+	if (!m_pfGoalRadius)	//ヌルチェック
+	{
+		// =============== 終了 ===================
+		delete m_pZoomCnt;		//カウンタの存在がおかしいので削除する
+		m_pZoomCnt = nullptr;	//空アドレス代入
+		if (m_pfStartRadius)	//ヌルチェック
+		{
+			delete m_pfStartRadius;		//存在がおかしいので削除する
+			m_pfStartRadius = nullptr;	//空アドレス代入
+		}
+		return;					//処理中断
+	}
+	if (!m_pfStartRadius)	//ヌルチェック
+	{
+		// =============== 終了 ===================
+		delete m_pZoomCnt;			//カウンタの存在がおかしいので削除する
+		m_pZoomCnt = nullptr;		//空アドレス代入
+		delete m_pfGoalRadius;		//目標値の存在がおかしいので削除する
+		m_pfGoalRadius = nullptr;	//空アドレス代入
+		return;					//処理中断
+	}
+
+	// =============== タイマ ===================
+	--*m_pZoomCnt;	//カウント進行
+
+	// =============== 検査 ===================
+	if (m_pZoomCnt->IsFin())	//カウント終了
+	{
+		// =============== 削除 ===================
+		if (m_pfStartRadius)	//ヌルチェック
+		{
+			delete m_pfStartRadius;		//メモリ解放
+			m_pfStartRadius = nullptr;	//空アドレス代入
+		}
+		if (m_pfGoalRadius)	//ヌルチェック
+		{
+			delete m_pfGoalRadius;		//メモリ解放
+			m_pfGoalRadius = nullptr;	//空アドレス代入
+		}
+		if (m_pZoomCnt)	//ヌルチェック
+		{
+			delete m_pZoomCnt;		//メモリ解放
+			m_pZoomCnt = nullptr;	//空アドレス代入
+		}
+	}
+	else
+	{
+		// =============== 更新 ===================
+		m_fRadius = (*m_pfGoalRadius - *m_pfStartRadius) * (1.0f - m_pZoomCnt->GetRate()) + *m_pfStartRadius;	//進行度を元に0.0f→1.0fの割合演算する
 	}
 }
