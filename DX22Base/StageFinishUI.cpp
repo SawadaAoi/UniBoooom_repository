@@ -91,10 +91,18 @@ void CStageFinish::Update()
 	if (m_eGameState == GAME_OVER)
 	{
 		m_pOver->Update();
+		if (!m_pOver->GetAnimFlg())
+		{
+			m_bDeleteDisp ^= true;
+		}
 	}
 	else if (m_eGameState == GAME_CLEAR)
 	{
 		m_pClear->Update();
+		if (!m_pClear->GetAnimFlg())
+		{
+			m_bDeleteDisp ^= true;
+		}
 	}
 
 	//•\¦‚ª×–‚‚È‚ÉÁ‚¹‚é‚æ‚¤‚É‚·‚é	<=TODO@ÅŒã‚É‚ÍÁ‹‚·‚é

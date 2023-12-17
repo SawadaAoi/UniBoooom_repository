@@ -52,7 +52,7 @@
 // =============== デバッグモード ===================
 #if _DEBUG
 #define MODE_COORD_AXIS (true)	//座標軸映すかどうか
-#define SCENE_TRANSITION(true)	// シーン遷移をボタン押下か自動化を切り替え（trueは自動)
+#define SCENE_TRANSITION(false)	// シーン遷移をボタン押下か自動化を切り替え（trueは自動)
 #endif
 
 // =============== クラス定義 =====================
