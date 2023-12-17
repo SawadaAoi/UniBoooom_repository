@@ -33,8 +33,8 @@ const int MAGNIFICATION = 40;		//”{—¦•\Ž¦Žž‚ÌŠÔŠuBˆê”Ô‰E‚Ì”Žš‚©‚ç‚Ç‚ê‚¾‚¯¶‚É‚
 const TPos2d<float> SMALLDECIMAL_POS(2.0f, -3.0f);//‚±‚Ì’l‚Å¬”“_‚ÌˆÊ’u‚Ì”÷’²ß
 const TPos2d<float> TOTAL_SCORE_BG_POS(1130.0f, 55.0f);			// ƒg[ƒ^ƒ‹ƒXƒRƒA‚Ì”wŒiˆÊ’uÝ’è
 const DirectX::XMFLOAT2 TOTAL_SCORE_BG_SIZE(320.0f, -110.0f);	// ƒg[ƒ^ƒ‹ƒXƒRƒA‚Ì”wŒi‚Ì•\Ž¦‚Ì‘å‚«‚³
-const TPos2d<float> PLUS_SCORE_BG_POS(1175.0f, 115.0f);			// ƒg[ƒ^ƒ‹ƒXƒRƒA‚Ì”wŒiˆÊ’uÝ’è
-const DirectX::XMFLOAT2 PLUS_SCORE_BG_SIZE(225.0f, -50.0f);		// ƒg[ƒ^ƒ‹ƒXƒRƒA‚Ì”wŒi‚Ì•\Ž¦‚Ì‘å‚«‚³
+const TPos2d<float> PLUS_SCORE_BG_POS(1175.0f, 60.0f);			// ƒg[ƒ^ƒ‹ƒXƒRƒA‚Ì”wŒiˆÊ’uÝ’è
+const DirectX::XMFLOAT2 PLUS_SCORE_BG_SIZE(200.0f, -50.0f);		// ƒg[ƒ^ƒ‹ƒXƒRƒA‚Ì”wŒi‚Ì•\Ž¦‚Ì‘å‚«‚³
 
 /* ========================================
 	ŠÖ”FƒRƒ“ƒXƒgƒ‰ƒNƒ^
@@ -238,6 +238,7 @@ void CTotalScore::Draw()
 				nArraySize = int(digitArray.size());				//‰½Œ…‚©Šm”F
 				for (int i = 0; i < nArraySize; i++)
 				{
+					
 					int width = MAGNIFICATION * i;
 					int hight = ROW_HIGHT * lineNum;
 					//ƒ[ƒ‹ƒhs—ñ‚ÍX‚ÆY‚Ì‚Ý‚ðl—¶‚µ‚Äì¬(Z‚Í10‚®‚ç‚¢‚É”z’u
@@ -458,7 +459,7 @@ void CTotalScore::DrawPlusScoreBG(int lineNum)
 	DirectX::XMFLOAT4X4 PScoreBG[3];
 	int hight = int(ROW_HIGHT * lineNum);
 	//ƒ[ƒ‹ƒhs—ñ‚ÍX‚ÆY‚Ì‚Ý‚ðl—¶‚µ‚Äì¬
-	DirectX::XMMATRIX worldPscorebg = DirectX::XMMatrixTranslation(PLUS_SCORE_BG_POS.x, TOTALSCORE_POS.y+ hight, 0.0f);
+	DirectX::XMMATRIX worldPscorebg = DirectX::XMMatrixTranslation(PLUS_SCORE_BG_POS.x, PLUS_SCORE_BG_POS.y+ hight, 0.0f);
 	DirectX::XMStoreFloat4x4(&PScoreBG[0], DirectX::XMMatrixTranspose(worldPscorebg));
 
 	//ƒrƒ…[s—ñ‚Í2D‚¾‚ÆƒJƒƒ‰‚ÌˆÊ’u‚ª‚ ‚Ü‚èŠÖŒW‚È‚¢‚Ì‚ÅA’PˆÊs—ñ‚ðÝ’è‚·‚éi’PˆÊs—ñ‚ÍŒã“ú
