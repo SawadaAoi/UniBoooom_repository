@@ -23,6 +23,7 @@
 	・2023/12/03 位置ゲッタ作成 takagi
 	・2023/12/04 GetViewWithoutTranspose,GetProjectionWithoutTransposeの戻り値を変更 yamashita
 	・2023/12/05 揺れのカウンタ追加 takagi
+	・2023/12/16 ズーム機能追加 takagi
 
 ========================================== */
 
@@ -34,6 +35,7 @@
 #include "Pos3d.h"			//メンバのヘッダ
 #include "TriType.h"		//メンバのヘッダ
 #include "DiType.h"			//メンバのヘッダ
+#include "FrameCnt.h"		//メンバのヘッダ
 #include <DirectXMath.h>	//マトリックス型使用
 #include "Defines.h"		//画面情報
 
@@ -60,20 +62,23 @@ public:
 	};	//フラグ
 public:
 	// ===プロトタイプ宣言===
-	CCamera();															//コンストラクタ
-	virtual~CCamera();													//デストラクタ
-	virtual void Update() = 0;											//更新
-	void UpFlag(const unsigned char& ucBitFlag);						//OR							00:0,01:1,10:1,11:1
-	void DownFlag(const unsigned char& ucBitFlag);						//A AND !B						00:0,01:0,10:1,11:0
-	void SetFlag(const unsigned char& ucBitFlag);						//XOR：上げ下げどっちもできる	00:0,01:1,10:1,11:0
-	DirectX::XMFLOAT4X4 GetViewMatrix() const;							//ビュー行列変換
-	DirectX::XMMATRIX GetInverseViewMatrix() const;						//ビュー行列の逆行列取得
+	CCamera();																		//コンストラクタ
+	virtual~CCamera();																//デストラクタ
+	virtual void Update() = 0;														//更新
+	void UpFlag(const unsigned char& ucBitFlag);									//OR							00:0,01:1,10:1,11:1
+	void DownFlag(const unsigned char& ucBitFlag);									//A AND !B						00:0,01:0,10:1,11:0
+	void SetFlag(const unsigned char& ucBitFlag);									//XOR：上げ下げどっちもできる	00:0,01:1,10:1,11:0
+	DirectX::XMFLOAT4X4 GetViewMatrix() const;										//ビュー行列変換
+	DirectX::XMMATRIX GetInverseViewMatrix() const;									//ビュー行列の逆行列取得
 	DirectX::XMFLOAT4X4 GetProjectionMatrix(
-		const E_DRAW_TYPE& eDraw = E_DRAW_TYPE_3D) const;				//プロジェクション行列変換
-	virtual DirectX::XMFLOAT4X4 GetViewWithoutTranspose() const;		//転置無しビュー行列取得
-	DirectX::XMFLOAT4X4 GetProjectionWithoutTranspose() const;			//転置無しプロジェクション行列取得
-	TPos3d<float> GetPos() const;										//カメラ位置提供
-	void ChangeScaleVibrate(int nChangeFrame, float fChangegRateAmp);	//振動の規模を変更する
+		const E_DRAW_TYPE& eDraw = E_DRAW_TYPE_3D) const;							//プロジェクション行列変換
+	virtual DirectX::XMFLOAT4X4 GetViewWithoutTranspose() const;					//転置無しビュー行列取得
+	DirectX::XMFLOAT4X4 GetProjectionWithoutTranspose() const;						//転置無しプロジェクション行列取得
+	TPos3d<float> GetPos() const;													//カメラ位置提供
+	void ChangeScaleVibrate(const int& nChangeFrame, const float& fChangegRateAmp);	//振動の規模を変更する
+	void BootZoom(const float& fFinRadius, const int& nFrame = 0,
+		const bool& bDefMode = true, const float& fStartRadius = 1.0f);				//ズーム/インアウト起動
+	void SetRadius(const float& fRadius);											//距離セッタ
 protected:
 	// ===メンバ変数宣言=====
 	TPos3d<float> m_fPos;					//ワールド座標における自身の位置
@@ -85,10 +90,9 @@ protected:
 	float m_fRadius;						//距離
 	TDiType<float> m_fOffsetVibrateEye;		//カメラ位置振動(x,z)
 	TDiType<float> m_fOffsetVibrateLook;	//注視点振動(x,z)
-
 	// ===プロトタイプ宣言===
 	void HandleFlag();	//フラグ別処理
-
+	void Zoom();		//ズーム/インアウト機能
 private:
 	// ===メンバ変数宣言=====
 	unsigned char m_ucFlag;							//フラグ	char:1バイト(8ビット)
@@ -97,6 +101,9 @@ private:
 	TDiType<float> m_fChangeRateAmplitudeWeak;		//振幅補正率：弱			x:横, y:縦
 	TDiType<float> m_fChangeRateAmplitudeStrong;	//振幅補正率：強			x:横, y:縦
 	int m_nCntChangeVibrate;						//カメラ揺れ変更回数
+	CFrameCnt* m_pZoomCnt;							//ズーム機能用カウンター
+	float* m_pfGoalRadius;							//ズーム目標距離
+	float* m_pfStartRadius;							//ズーム開始距離
 };	//カメラ
 
 #endif // !___CAMERA_H___

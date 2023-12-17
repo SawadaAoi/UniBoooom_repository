@@ -14,6 +14,8 @@
 	・2023/12/05 描画のモード追加 takagi
 	・2023/12/06 Draw()関数のデフォルト引数変更 takagi
 	・2023/12/10 静的変数の名前を修正・デフォルトのカメラも静的関数化。 takagi
+	・2023/12/15 空の更新関数追加 takagi
+	・2023/12/17 引数参照化 takagi
 
 ========================================== */
 
@@ -54,25 +56,26 @@ private:
 	}Param;	//シェーダーに送る情報
 public:
 	// ===プロトタイプ宣言===
-	C2dPolygon();													//コンストラクタ
-	C2dPolygon(const C2dPolygon& Obj);								//コピーコンストラクタ
-	virtual ~C2dPolygon();											//デストラクタ
-	virtual void Draw(E_DRAW_MODE eMode = E_DRAW_MODE_NORMAL);		//描画
-	virtual void SetCamera(const CCamera* pCamera);					//カメラセッタ
-	virtual void SetPos(TPos3d<float> fPos);						//位置セッタ
-	virtual void SetSize(TTriType<float> fScale);					//大きさセッタ
-	virtual void SetRotate(TTriType<float> fRotate);				//回転セッタ
-	virtual void SetTransform(tagTransform3d Transform);			//ワールド座標セッタ
-	virtual void SetUvOffset(TDiType<float> fUvOffset);				//UVずれセッタ
-	virtual void SetUvScale(TDiType<float> fUvScale);				//UV拡縮セッタ
-	virtual void SetColor(TTriType<float> fRGB, float fAlpha);		//色セッタRGBA
-	virtual void SetColor(TTriType<float> fRGB);					//色セッタRGB
-	virtual void SetColor(float fColor);							//色セッタ(同一値)
-	virtual void SetAlpha(float fAlpha);							//透明度セッタ
-	virtual void SetTexture(const char* pcTexPass);					//テクスチャ登録
-	virtual void SetTexture(Texture* pTexture);						//テクスチャ登録
-	virtual void SetVertexShader(VertexShader* pVs);				//頂点シェーダセッタ
-	virtual void SetPixelShader(PixelShader* pPs);					//ピクセルシェーダセッタ
+	C2dPolygon();																//コンストラクタ
+	C2dPolygon(const C2dPolygon& Obj);											//コピーコンストラクタ
+	virtual ~C2dPolygon();														//デストラクタ
+	virtual void Update();														//更新
+	virtual void Draw(const E_DRAW_MODE& eMode = E_DRAW_MODE_NORMAL);			//描画
+	virtual void SetCamera(const CCamera* pCamera);								//カメラセッタ
+	virtual void SetPos(const TPos3d<float>& fPos);								//位置セッタ
+	virtual void SetSize(const TTriType<float>& fScale);						//大きさセッタ
+	virtual void SetRotate(const TTriType<float>& fRotate);						//回転セッタ
+	virtual void SetTransform(const tagTransform3d& Transform);					//ワールド座標セッタ
+	virtual void SetUvOffset(const TDiType<float>& fUvOffset);					//UVずれセッタ
+	virtual void SetUvScale(const TDiType<float>& fUvScale);					//UV拡縮セッタ
+	virtual void SetColor(const TTriType<float>& fRGB, const float& fAlpha);	//色セッタRGBA
+	virtual void SetColor(const TTriType<float>& fRGB);							//色セッタRGB
+	virtual void SetColor(const float& fColor);									//色セッタ(同一値)
+	virtual void SetAlpha(const float& fAlpha);									//透明度セッタ
+	virtual void SetTexture(const char* pcTexPass);								//テクスチャ登録
+	virtual void SetTexture(Texture* pTexture);									//テクスチャ登録
+	virtual void SetVertexShader(VertexShader* pVs);							//頂点シェーダセッタ
+	virtual void SetPixelShader(PixelShader* pPs);								//ピクセルシェーダセッタ
 private:
 	// ===メンバ変数宣言=====
 	tagTransform3d m_Transform;				//ワールド座標

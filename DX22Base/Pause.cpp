@@ -17,6 +17,7 @@
 	・2023/12/10 制作進行 takagi
 	・2023/12/12 スタートボタンの入力反映 sawada
 	・2023/12/12 型チェック修正 takagi
+	・2023/12/17 ゲームパラメータ無効化 takagi
 
 ========================================== */
 
@@ -55,17 +56,11 @@ enum E_SHADER_TYPE
 };	//シェーダーの種類
 
 // =============== 定数定義 ===================
-///<summary>ゲームパラメータ用
-///<para>定数の一部をいじれるように切り出したもの</para>
-///</summary>
-#include "GameParameter.h"
-#if GAME_PARAMETER
 const float COMMAND_SPACE_HALF = 85.0f;	//コマンド同士の縦の間
-const float PAUSE_Y = 520.0f;			//ポーズ表示部中心y位置
-const float PAUSE_SPACE = 85.0f;		//ポーズ表記の横の間
-const float COMMAND_WIDTH = 320.0f;		//コマンド縦幅
-const float COMMAND_HEIGHT = 70.0f;		//コマンド横幅
-#endif // !GAME_PARAMETER
+const float CHARA_Y = 620.0f;			//ポーズ表記部中心y位置
+const float CHARA_SPACE = 85.0f;		//ポーズ表記の横の間
+const float CHARA_WIDTH = 100.0f;		//ポーズ表記横幅
+const float CHARA_HEIGHT = 100.0f;		//ポーズ表記縦幅
 const std::map<int, int> MAP_WAIT_START = {	//更新順
 	{E_2D_BACK, 0},		//背景
 	{E_2D_PA, 0},		//ポーズの”ポ”

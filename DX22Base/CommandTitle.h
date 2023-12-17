@@ -1,26 +1,25 @@
 /* ========================================
 	HEW/UniBoooom!!
 	---------------------------------------
-	ポーズコマンド定義
+	タイトル用コマンド定義
 	---------------------------------------
-	CommandPause.h
+	CommandTitle.h
 
 	作成者	takagi
 
 	変更履歴
-	・2023/12/10 制作 takagi
-	・2023/12/16 コメント修正 takagi
+	・2023/12/16 制作 takagi
 
 ========================================== */
 
-#ifndef __COMMAND_PAUSE_H__	//CommandPause.hインクルードガード
-#define __COMMAND_PAUSE_H__
+#ifndef __COMMAND_TITLE_H__	//CommandTitle.hインクルードガード
+#define __COMMAND_TITLE_H__
 
 // =============== インクルード =====================
-#include "PauseObj.h"	//親のヘッダ
+#include "TitleObj.h"	//親のヘッダ
 
 // =============== クラス定義 =====================
-class CCommandPause :public CPauseObj	//平面オブジェ
+class CCommandTitle :public CTitleObj	//平面オブジェ
 {
 private:
 	enum E_TEXTURE
@@ -32,8 +31,8 @@ private:
 	};	//テクスチャ情報
 public:
 	// ===プロトタイプ宣言===
-	CCommandPause(const int& nWaitTime);	//コンストラクタ
-	~CCommandPause();						//デストラクタ
+	CCommandTitle(const int& nWaitTime);	//コンストラクタ
+	~CCommandTitle();						//デストラクタ
 	void Update() override;					//更新
 	void Selected();						//選択状態化
 	void UnSelected();						//非選択状態化
@@ -43,6 +42,6 @@ private:
 	E_TEXTURE m_eTexNo;			//テクスチャ列挙
 	TDiType<float> m_fScale;	//拡縮率
 	int* m_pnTimer;				//決定テクスチャ表示時間計測用
-};	//ポーズ用コマンド
+};	//タイトル用コマンド
 
-#endif	//!__COMMAND_PAUSE_H__
+#endif	//!__COMMAND_TITLE_H__

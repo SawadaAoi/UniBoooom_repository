@@ -12,6 +12,7 @@
 	・2023/11/09 一部微修正 takagi
 	・2023/11/14 角度演算 takagi
 	・2023/12/05 ビルボードに対応 takagi
+	・2023/12/17 引数参照化 takagi
 
 ========================================== */
 
@@ -90,11 +91,11 @@ tagTransform3d::~tagTransform3d()
 	-------------------------------------
 	内容：TRS変換したワールド行列を提供
 	-------------------------------------
-	引数1：DirectX::XMMATRIX Inverse：ビルボード時の逆行列	デフォルト引数は掛けても値が変わらない単位行列(=ビルボードを使用しない)
+	引数1：const DirectX::XMMATRIX  & Inverse：ビルボード時の逆行列	デフォルト引数は掛けても値が変わらない単位行列(=ビルボードを使用しない)
 	-------------------------------------
 	戻値：作成した行列
 =========================================== */
-DirectX::XMFLOAT4X4 tagTransform3d::GetWorldMatrixTRS(DirectX::XMMATRIX Inverse)
+DirectX::XMFLOAT4X4 tagTransform3d::GetWorldMatrixTRS(const DirectX::XMMATRIX & Inverse)
 {
 	// =============== 変数宣言 ===================
 	DirectX::XMFLOAT4X4 mat;	//行列格納用
@@ -117,11 +118,11 @@ DirectX::XMFLOAT4X4 tagTransform3d::GetWorldMatrixTRS(DirectX::XMMATRIX Inverse)
 	-------------------------------------
 	内容：SRT変換したワールド行列を提供
 	-------------------------------------
-	引数1：DirectX::XMMATRIX Inverse：ビルボード時の逆行列	デフォルト引数は掛けても値が変わらない単位行列(=ビルボードを使用しない)
+	引数1：const DirectX::XMMATRIX & Inverse：ビルボード時の逆行列	デフォルト引数は掛けても値が変わらない単位行列(=ビルボードを使用しない)
 	-------------------------------------
 	戻値：作成した行列
 =========================================== */
-DirectX::XMFLOAT4X4 tagTransform3d::GetWorldMatrixSRT(DirectX::XMMATRIX Inverse)
+DirectX::XMFLOAT4X4 tagTransform3d::GetWorldMatrixSRT(const DirectX::XMMATRIX & Inverse)
 {
 	// =============== 変数宣言 ===================
 	DirectX::XMFLOAT4X4 mat;	//行列格納用

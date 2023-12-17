@@ -21,6 +21,7 @@
 	・2023/12/14 BGMの管理をScene毎から移動 yamashita
 	・2023/12/14 BGM用の定数定義 yamashita
 	・2023/12/14 BGMをフェードするように変更 yamashita
+	・2023/12/15 アプリ終了実装 takagi 
 
 ========================================== */
 
@@ -140,6 +141,18 @@ void CSceneManager::Update()
 	// =============== ヒットストップ ===================
 	CHitStop::Update();	//ヒットストップ更新
 
+	// =============== シーン切換 ===================
+	if (m_pFade)	//ヌルチェック
+	{
+		if (!m_pFade->IsFade())	//フェード検査
+		{
+			if (m_bStartFadeOut)
+			{
+				ChangeScene();
+				m_bStartFadeOut = false;
+			}
+		}
+	}
 
 	// =============== 更新 ===================
 	if (m_pScene)	//ヌルチェック
@@ -173,15 +186,8 @@ void CSceneManager::Update()
 	if (m_pFade)	//ヌルチェック
 	{
 		m_pFade->Update();	//フェード更新
-		if (!m_pFade->IsFade())	//フェード検査
-		{
- 			if (m_bStartFadeOut)
-			{
-				ChangeScene();
-				m_bStartFadeOut = false;
-			}
-		}
 	}
+
 	// =============== サウンド ===================
 	SoundUpdate();
 }
@@ -272,7 +278,10 @@ void CSceneManager::ChangeScene()
 		delete m_pFade;		//メモリ開放
 		m_pFade = nullptr;	//空アドレス代入
 	}
-	m_pFade = new CFade(m_pScene->GetCamera());	//動的確保
+	if (m_pScene)	//新規シーンが作られている
+	{
+		m_pFade = new CFade(m_pScene->GetCamera());	//動的確保
+	}
 }
 
 /* ========================================
@@ -334,6 +343,11 @@ void CSceneManager::MakeNewScene()
 	case CScene::E_TYPE_PAST:			//遷移：戻る
 		m_eNextScene = m_ePastScene;	//過去シーンを次シーンに登録
 		MakeNewScene();					//処理をやり直す
+		break;							//分岐処理終了
+
+		// =============== 新規シーンは作らない =====================
+	case CScene::E_TYPE_FINISH_ALL:		//遷移：アプリ終了
+		m_bFinish = true;				//シーン管理終了予約
 		break;							//分岐処理終了
 
 		// =============== その他 =====================
