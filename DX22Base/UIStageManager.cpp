@@ -24,7 +24,7 @@
 	-------------------------------------
 	–ß’lF–³‚µ
 =========================================== */
-CUIStageManager::CUIStageManager(CPlayer* pPlayer, const CCamera * pCamera, CSlimeManager* pSlimeMng)
+CUIStageManager::CUIStageManager(CPlayer* pPlayer,CCamera * pCamera, CSlimeManager* pSlimeMng)
 	: m_pBossgauge(nullptr)
 	, m_pCombo(nullptr)
 	, m_pHpMng(nullptr)
@@ -40,7 +40,7 @@ CUIStageManager::CUIStageManager(CPlayer* pPlayer, const CCamera * pCamera, CSli
 	m_pHpMng = new CHP_UI(pPlayer->GetHpPtr());
 	m_pTotalScore = new CTotalScore();
 	m_pScoreOHMng = new CScoreOHManager();
-	m_pStageFin = new CStageFinish(pPlayer->GetHpPtr(), m_pTimer->GetTimePtr());
+	m_pStageFin = new CStageFinish(pCamera, pPlayer->GetHpPtr(), m_pTimer->GetTimePtr());
 	m_pBossArrow = new CBossArrow();
 
 	m_pCombo->SetTotalScore(m_pTotalScore);

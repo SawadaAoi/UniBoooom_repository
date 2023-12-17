@@ -25,6 +25,7 @@
 	E2023/12/05 ƒpƒ‰ƒ[ƒ^[’Ç‰Á(// ƒ|[ƒY) Takagi
 	E2023/12/06 ƒpƒ‰ƒ[ƒ^[•ÒW(// ƒ|[ƒY) Takagi
 	E2023/12/07 ƒpƒ‰ƒ[ƒ^[íœ(// •s•K—v) Takagi
+	E2023/12/16 ƒpƒ‰ƒ[ƒ^[íœ(// ƒQ[ƒ€ƒXƒ^[ƒg•`‰æ) nieda
 	E2023/12/17 ƒpƒ‰ƒ[ƒ^[íœ(// ƒ|[ƒY) Takagi
 
 =========================================== */
@@ -209,15 +210,6 @@ const float TEXTURE_TITLE_BUTTON_HEIGHT = 100.0f;			// ƒ^ƒCƒgƒ‹‰æ–Êƒ{ƒ^ƒ“‰Ÿ‰ºŽwŽ
 // ƒqƒbƒgƒXƒgƒbƒv =========================================================
 const int FRAME_STOP_SOFT = 2;		//ƒXƒgƒbƒvFŒy@‚ÌƒtƒŒ[ƒ€”	// Œ»ÝŽg—p‚µ‚Ä‚¢‚é•¨
 const int FRAME_STOP_NORMAL = 4;	//ƒXƒgƒbƒvF’†@‚ÌƒtƒŒ[ƒ€”
-
-
-// ƒQ[ƒ€ŠJŽnŽžƒXƒ^[ƒg•\Ž¦ ==================================================
-const float TIME_WAIT_START = 75;				// ƒQ[ƒ€ŠJŽn‡}•\Ž¦‘Ò‚¿ŽžŠÔ
-const int SWITCH_ANIM_START = 1;				// ƒXƒ^[ƒgƒAƒjƒ[ƒVƒ‡ƒ“Ø‚è‘Ö‚¦ŽžŠÔ
-const int START_SCALE_X = SCREEN_WIDTH_;		// UI‚Ì‰¡•
-const int START_SCALE_Y = SCREEN_HEIGHT_;		// UI‚Ìc•
-const float START_POS_X = SCREEN_WIDTH_ / 2;	// •\Ž¦ˆÊ’u‚ÌXÀ•W
-const float START_POS_Y = SCREEN_HEIGHT_ / 2;	// •\Ž¦ˆÊ’u‚ÌYÀ•W
 
 
 // ƒQ[ƒ€ƒNƒŠƒAAƒQ[ƒ€ƒI[ƒo[•\Ž¦ ==================================================
