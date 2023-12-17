@@ -17,6 +17,7 @@
 	・2023/11/27 疑似カメラ実装 takagi
 	・2023/12/01 フェードの仕様変更 takagi 
 	・2023/12/04 カメラのファイル改名適用 takagi
+	・2023/12/17 フェード完了判定がずれ、最小・最大状態にならないことがある問題を修正・ブラックアウト対応 takagi
 
 ========================================== */
 
@@ -236,7 +237,16 @@ void CFade::Draw()
 	// =============== 検査 ===================
 	if (!ms_pTexture || !(m_ucFlag & FLAG_FADE_ALL))	//描画できない時
 	{
-		return;	//処理中断
+		if (m_ucFlag & E_BIT_FLAG_BLACKOUT)
+		{
+			// =============== 処理変更 ===================
+			m_UvParam.fUvOffset = 1000.0f;	//テクスチャ位置をずらしフェードを隠す
+		}
+		else
+		{
+			// =============== 終了 ===================
+			return;	//処理中断
+		}
 	}
 
 	// =============== 変数宣言 ===================
@@ -669,12 +679,12 @@ void CFade::FadeOut()
 	}
 #endif
 		// =============== 状態分岐 ===================
-		if (m_nFrame <= FRAME_MIN)	//フェードアウト終了
+		if (m_nFrame < FRAME_MIN)	//フェードアウト終了
 		{
-			m_UvParam.fUvOffset = 3000.0f;	//テクスチャ位置をずらしフェードを隠す
 			DownFlag(E_BIT_FLAG_FADE_OUT);	//フェードアウト終了
 			//m_nFrame = FRAME_FADE_MAX.y;	//フェードストップのフレーム数登録
 			//UpFlag(E_BIT_FLAG_FADE_STOP);	//フェードストップ開始
+			UpFlag(E_BIT_FLAG_BLACKOUT);	//フェードストップ開始
 		}
 		else
 		{
@@ -768,7 +778,7 @@ void CFade::FadeIn()
 	}
 #endif
 	// =============== 状態分岐 ===================
-	if (m_nFrame <= FRAME_MIN)	//フェードイン終了
+	if (m_nFrame < FRAME_MIN)	//フェードイン終了
 	{
 		DownFlag(E_BIT_FLAG_FADE_IN);	//フェードイン終了
 	}

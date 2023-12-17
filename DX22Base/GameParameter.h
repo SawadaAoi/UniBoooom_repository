@@ -26,6 +26,7 @@
 	・2023/12/06 パラメーター編集(// ポーズ) Takagi
 	・2023/12/07 パラメーター削除(// 不必要) Takagi
 	・2023/12/16 パラメーター削除(// ゲームスタート描画) nieda
+	・2023/12/17 パラメーター削除(// ポーズ) Takagi
 
 =========================================== */
 #ifndef __GAME_PARAMETER_H__
@@ -189,8 +190,10 @@ const int FADE_TIME = 5 * 60;										// ボスゲージが溜まってから消える時間
  
 
 // 床 ====================================
-const float FLOOR_SCALE_X = 3.1f;
-const float FLOOR_SCALE_Z = 3.1f;
+const TDiType<float> FLOOR_SCALE[3] = {	//ステージ毎の床の大きさ
+	{1.0f ,1.0f},		//ステージ1
+	{1.0f ,1.0f},		//ステージ2
+	{3.1f ,3.1f} };		//ステージ3
 
 
 // タイトル画面 =========================================================
@@ -216,16 +219,6 @@ const int STATE_SCALE_X = SCREEN_WIDTH_;		// UIの横幅
 const int STATE_SCALE_Y = SCREEN_HEIGHT_;		// UIの縦幅
 const float STATE_POS_X = SCREEN_WIDTH_ / 2;	// 表示位置のX座標
 const float STATE_POS_Y = SCREEN_HEIGHT_ / 2;	// 表示位置のY座標
-
-
-// ポーズ ====================================================================
-const float COMMAND_SPACE_HALF = 85.0f;	//コマンド同士の縦の間
-const float CHARA_Y = 620.0f;			//ポーズ表記部中心y位置
-const float CHARA_SPACE = 85.0f;		//ポーズ表記の横の間
-const float CHARA_WIDTH = 100.0f;		//ポーズ表記横幅
-const float CHARA_HEIGHT = 100.0f;		//ポーズ表記縦幅
-const float COMMAND_WIDTH = 360.0f;		//コマンド縦幅
-const float COMMAND_HEIGHT = 78.0f;		//コマンド横幅
 
 #endif // !MODE_GAME_PARAMETER
 #endif // !__GAME_PARAMETER_H__

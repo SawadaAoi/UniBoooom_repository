@@ -15,6 +15,8 @@
 	・2023/12/12 tkg先生の指導により2dpolygonに対応 nieda
 	・2023/12/15 デフォルトだとサイズが小さすぎたので変更できるよう修正 nieda
 	・2023/12/16 描画位置を変更できるよう修正 nieda
+	・2023/12/16 コンストラクタの引数を最小化・不要なポインタ削除 takagi
+	・2023/12/17 一部引数参照化 takagi
 
 ========================================== */
 
@@ -27,21 +29,16 @@
 	----------------------------------------
 	内容：生成時に行う処理
 	----------------------------------------
-	引数1：読み込むファイルのパス
-	引数2：カメラクラスのポインタ
-	引数3：分割数の最大数
-	引数4：描画サイズ
-	引数5：縦横の分割数の最大数
-	引数6：アニメーションの切り替え間隔
+	引数1：分割数の最大数
+	引数2：縦横の分割数の最大数
+	引数3：アニメーションの切り替え間隔
 	----------------------------------------
 	戻値：なし
 =========================================== */
-CDrawAnim::CDrawAnim(const char* textureFile, CCamera* pCamera, int nSplitMax, TPos2d<float> fPos, TDiType<float> fSize, TDiType<int> nSplit, int nCnt)
+CDrawAnim::CDrawAnim(int nSplitMax, TDiType<int> nSplit, int nCnt)
 	: m_nNumAnim(0)
 	, m_nNumAnimMax(0)
 	, m_nSplitNum(0, 0)
-	, m_fPos(0.0f, 0.0f, 0.0f)
-	, m_fSize(0.0f, 0.0f, 0.0f)
 	, m_fUvPos(0.0f, 0.0f)
 	, m_fUvScale(0.0f, 0.0f)
 	, m_nFrameCnt(0)
@@ -49,10 +46,6 @@ CDrawAnim::CDrawAnim(const char* textureFile, CCamera* pCamera, int nSplitMax, T
 	, m_bLoop(false)
 	, m_bAnim(true)
 {
-	SetTexture(textureFile);	// テクスチャをセット
-	SetCamera(pCamera);			// カメラをセット
-	m_fPos = { fPos.x, fPos.y, 0.0f };		// 描画位置設定
-	m_fSize = { fSize.x, fSize.y, 0.0f };	// 描画サイズ設定
 	m_nNumAnimMax = nSplitMax;	// 分割数の最大値を格納
 	m_nSplitNum = nSplit;		// 縦横の分割数を格納
 	m_fUvScale = { 1.0f / m_nSplitNum.x, 1.0f / m_nSplitNum.y };	// UV分割サイズを格納
@@ -81,8 +74,6 @@ void CDrawAnim::Update()
 			m_fUvPos.y = (m_fUvScale.y) * (m_nNumAnim / m_nSplitNum.x);	// 描画するUV座標を計算
 
 			m_nNumAnim++;			// 描画するアニメーション番号を更新
-			SetPos(m_fPos);			// 描画位置をセット
-			SetSize(m_fSize);		// 描画サイズをセット
 			SetUvOffset(m_fUvPos);	// UV座標をセット
 			SetUvScale(m_fUvScale);	// UV分割サイズをセット
 		}
@@ -104,15 +95,15 @@ void CDrawAnim::Update()
 	-------------------------------------
 	内容：2Dアニメーションの描画処理
 	-------------------------------------
-	引数：なし
+	引数：const E_DRAW_MODE & eMode：描画モード
 	-------------------------------------
 	戻値：なし
 =========================================== */
-void CDrawAnim::Draw()
+void CDrawAnim::Draw(const E_DRAW_MODE& eMode)
 {
 	if (m_bAnim)	// 描画フラグがONの間は描画する
 	{
-		C2dPolygon::Draw();		// 描画
+		C2dPolygon::Draw(eMode);		// 描画
 	}
 }
 

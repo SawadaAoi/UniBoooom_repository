@@ -10,6 +10,7 @@
 	変更履歴
 	・2023/12/09 制作 takagi
 	・2023/12/10 制作進行 takagi
+	・2023/12/16 コメント修正 takagi
 
 ========================================== */
 
@@ -30,6 +31,6 @@ private:
 	float m_fMoveAngle;	//単振動における回転角[rad]
 	// ===プロトタイプ宣言===
 	void CulculatePos(TPos3d<float>& fPos) override;	//位置算出
-};	//ポーズ用オブジェクト
+};	//ポーズ用の文字
 
 #endif	//!__CHAR_PAUSE_H__

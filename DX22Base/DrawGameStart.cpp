@@ -12,6 +12,7 @@
 	・2023/12/12 新規作成 nieda
 	・2023/12/15 ゲームスタートのテクスチャを新規のものに変更 nieda
 	・2023/12/16 描画位置追加 nieda
+	・2023/12/16 DrawAnimationの変更を反映 takagi
 
 ========================================== */
 
@@ -37,7 +38,11 @@ const int START_SWITCH_CNT = 1;					// アニメーション切り替え間隔
 	戻値：なし
 =========================================== */
 CDrawStart::CDrawStart(CCamera* pCamera)
-	: CDrawAnim("Assets/Texture/Start_sprit.png", pCamera, START_SPLIT_NUM_MAX, START_POS, START_SCALE, START_SPLIT_NUM, START_SWITCH_CNT)
+	: CDrawAnim(START_SPLIT_NUM_MAX, START_SPLIT_NUM, START_SWITCH_CNT)
 {
+	SetTexture("Assets/Texture/Start_sprit.png");		//テクスチャ初期化
+	SetCamera(pCamera);									//カメラ登録
+	SetPos({ START_POS.x, START_POS.y, 0.0f });			//位置初期化
+	SetSize({ START_SCALE.x, START_SCALE.y, 0.0f });	//サイズ初期化
 }
 

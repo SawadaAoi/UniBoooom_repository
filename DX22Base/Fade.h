@@ -14,6 +14,7 @@
 	・2023/11/23 IsFade()関数追加・細かい書き換え takagi
 	・2023/11/24 定数定義修正・定数バッファにUvOffset追加 takagi
 	・2023/12/01 フェードの仕様変更 takagi 
+	・2023/12/17 ブラックアウト用の列挙追加 takagi
 
 ========================================== */
 
@@ -49,7 +50,7 @@ private:
 		E_BIT_FLAG_FADE_OUT = 0x01,		//フェードアウトフラグ
 		E_BIT_FLAG_FADE_STOP = 0x02,	//フェードストップフラグ
 		E_BIT_FLAG_FADE_IN = 0x04,		//フェードインフラグ
-		E_BIT_FLAG_4 = 0x08,			//
+		E_BIT_FLAG_BLACKOUT = 0x08,		//一度だけブラックアウトするためのフラグ
 		E_BIT_FLAG_5 = 0x10,			//
 		E_BIT_FLAG_6 = 0x20,			//
 		E_BIT_FLAG_7 = 0x40,			//

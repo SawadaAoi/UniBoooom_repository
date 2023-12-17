@@ -148,6 +148,24 @@
     <Filter Include="ソース ファイル\2dObject\PauseObj">
       <UniqueIdentifier>{29c1bb85-2c64-4540-a5c5-435f2ba90f1c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\2dObject\TitleObj">
+      <UniqueIdentifier>{dcef6da3-8b1f-4085-b25f-f4fc4461d3d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\2dObject\TitleObj">
+      <UniqueIdentifier>{228e780c-784e-48a4-932c-24c6226d2742}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\2dObject\TitleObj\TitleAnime">
+      <UniqueIdentifier>{cc408150-3ef6-4a8b-be89-def16511cd28}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\2dObject\TitleObj\TitleObj">
+      <UniqueIdentifier>{ca9b1b92-9244-44c9-934c-55ac16989745}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\2dObject\TitleObj\TitleObj">
+      <UniqueIdentifier>{bbdcebc3-fc02-4d89-b5bb-483bbfd1ae04}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\2dObject\TitleObj\TitleAnime">
+      <UniqueIdentifier>{3556d641-6391-4274-8832-782f464f2b39}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -321,9 +339,6 @@
     <ClCompile Include="TotalScore.cpp">
       <Filter>ソース ファイル\2dObject\Score</Filter>
     </ClCompile>
-    <ClCompile Include="2dPolygon.cpp">
-      <Filter>ソース ファイル\Geometry</Filter>
-    </ClCompile>
     <ClCompile Include="HP_UI.cpp">
       <Filter>ソース ファイル\2dObject</Filter>
     </ClCompile>
@@ -408,9 +423,6 @@
     <ClCompile Include="CommandPause.cpp">
       <Filter>ソース ファイル\2dObject\PauseObj</Filter>
     </ClCompile>
-    <ClCompile Include="DrawAnimation.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="BossArrow.cpp">
       <Filter>ソース ファイル\2dObject</Filter>
     </ClCompile>
@@ -422,6 +434,36 @@
     </ClCompile>
     <ClCompile Include="DrawGameStart.cpp">
       <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="DrawAnimation.cpp">
+      <Filter>ソース ファイル\2dObject</Filter>
+    </ClCompile>
+    <ClCompile Include="2dPolygon.cpp">
+      <Filter>ソース ファイル\2dObject</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandTitle.cpp">
+      <Filter>ソース ファイル\2dObject\TitleObj</Filter>
+    </ClCompile>
+    <ClCompile Include="BgTitle.cpp">
+      <Filter>ソース ファイル\2dObject\TitleObj</Filter>
+    </ClCompile>
+    <ClCompile Include="TitleLogo.cpp">
+      <Filter>ソース ファイル\2dObject\TitleObj</Filter>
+    </ClCompile>
+    <ClCompile Include="OpeninigTitle.cpp">
+      <Filter>ソース ファイル\2dObject\TitleObj</Filter>
+    </ClCompile>
+    <ClCompile Include="TitleObj.cpp">
+      <Filter>ソース ファイル\2dObject\TitleObj\TitleObj</Filter>
+    </ClCompile>
+    <ClCompile Include="TitleAnime.cpp">
+      <Filter>ソース ファイル\2dObject\TitleObj\TitleAnime</Filter>
+    </ClCompile>
+    <ClCompile Include="FrameCnt.cpp">
+      <Filter>ソース ファイル\System</Filter>
+    </ClCompile>
+    <ClCompile Include="FixedCamera.cpp">
+      <Filter>ソース ファイル\System\Camera</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -608,9 +650,6 @@
     <ClInclude Include="TotalScore.h">
       <Filter>ヘッダー ファイル\2dObject\Score</Filter>
     </ClInclude>
-    <ClInclude Include="2dPolygon.h">
-      <Filter>ヘッダー ファイル\Geometry</Filter>
-    </ClInclude>
     <ClInclude Include="HP_UI.h">
       <Filter>ヘッダー ファイル\2dObject</Filter>
     </ClInclude>
@@ -692,9 +731,6 @@
     <ClInclude Include="CommandPause.h">
       <Filter>ヘッダー ファイル\2dObject\PauseObj</Filter>
     </ClInclude>
-    <ClInclude Include="DrawAnimation.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="BossArrow.h">
       <Filter>ヘッダー ファイル\2dObject</Filter>
     </ClInclude>
@@ -706,6 +742,36 @@
     </ClInclude>
     <ClInclude Include="DrawGameStart.h">
       <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="DrawAnimation.h">
+      <Filter>ヘッダー ファイル\2dObject</Filter>
+    </ClInclude>
+    <ClInclude Include="2dPolygon.h">
+      <Filter>ヘッダー ファイル\2dObject</Filter>
+    </ClInclude>
+    <ClInclude Include="CommandTitle.h">
+      <Filter>ヘッダー ファイル\2dObject\TitleObj</Filter>
+    </ClInclude>
+    <ClInclude Include="BgTitle.h">
+      <Filter>ヘッダー ファイル\2dObject\TitleObj</Filter>
+    </ClInclude>
+    <ClInclude Include="TitleLogo.h">
+      <Filter>ヘッダー ファイル\2dObject\TitleObj</Filter>
+    </ClInclude>
+    <ClInclude Include="OpeningTitle.h">
+      <Filter>ヘッダー ファイル\2dObject\TitleObj</Filter>
+    </ClInclude>
+    <ClInclude Include="TitleObj.h">
+      <Filter>ヘッダー ファイル\2dObject\TitleObj\TitleObj</Filter>
+    </ClInclude>
+    <ClInclude Include="TitleAnime.h">
+      <Filter>ヘッダー ファイル\2dObject\TitleObj\TitleAnime</Filter>
+    </ClInclude>
+    <ClInclude Include="FrameCnt.h">
+      <Filter>ヘッダー ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="FixedCamera.h">
+      <Filter>ヘッダー ファイル\System\Camera</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

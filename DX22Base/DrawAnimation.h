@@ -15,6 +15,8 @@
 	・2023/12/12 tkg先生の指導により2dpolygonに対応 nieda
 	・2023/12/15 描画サイズ関連の変数追加、コンストラクタ修正 nieda
 	・2023/12/16 描画位置追加 nieda
+	・2023/12/16 コンストラクタの引数を最小化・不要なポインタ削除 takagi
+	・2023/12/17 一部引数参照化 takagi
 
 ========================================== */
 
@@ -32,21 +34,18 @@ class CDrawAnim :public C2dPolygon	//平面オブジェ
 {
 public:
 	// ===プロトタイプ宣言===
-	CDrawAnim(const char*, CCamera*, int, TPos2d<float>, TDiType<float>, TDiType<int>, int);	// コンストラクタ
+	CDrawAnim(int, TDiType<int>, int = 1);	// コンストラクタ
 	~CDrawAnim() {};	// デストラクタ
 	void Update();		// 更新関数
-	void Draw();		// 描画関数
+	void Draw(const E_DRAW_MODE& = E_DRAW_MODE_NORMAL) override;	// 描画関数
 	void SetLoopFlg(bool);	// ループ再生フラグをセット
 	bool GetAnimFlg();	// フラグ取得
 
 protected:
 	// ===メンバ変数宣言=====
-	Texture* m_pTexture;		// テクスチャクラスのポインタ
 	int m_nNumAnim;				// アニメーション番号
 	int m_nNumAnimMax;			// アニメーションの最大数
 	TDiType<int> m_nSplitNum;	// 分割数
-	TPos3d<float> m_fPos;		// 描画位置
-	TTriType<float> m_fSize;	// 描画サイズ
 	TDiType<float> m_fUvPos;	// UV座標
 	TDiType<float> m_fUvScale;	// UV分割サイズ格納用
 	int m_nFrameCnt;			// アニメーションの切替間隔カウント用用

@@ -38,14 +38,14 @@ public:
 	};
 public:
 	// ===プロトタイプ宣言===
-	CFloor(TPos3d<float>* pPlayerPos);
+	CFloor(TPos3d<float>* pPlayerPos,StageKinds stageKind);
 	~CFloor();
 	void Update();
 	void Draw();
 
 	void calculationPosition();				//座標算出関数
 	void SetCamera(const CCamera* pCamera);	//カメラセット関数
-	void SetFloorModel(StageKinds stageKind);
+	void SetFloorModel();
 private:
 	// ===メンバ変数宣言=====
 	tagTransform3d m_Transform[FLOOR_NUM];		//ワールド座標系情報
@@ -54,6 +54,7 @@ private:
 	const CCamera* m_pCamera;		//カメラのポインタ
 	TPos3d<float>* m_pPlayePos;		//プレイヤーのポジションのポインタ
 	TPos3d<int> m_pPlayerFloor;		//プレイヤーが現在いる座標にある床が何枚目の床なのか
+	StageKinds m_stage;
 };
 
 
