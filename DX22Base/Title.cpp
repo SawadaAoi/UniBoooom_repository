@@ -20,9 +20,12 @@
 	・2023/12/12 遷移先シーンをステージセレクトに変更 yamamoto
 	・2023/12/16 描画物改善 takagi
 	・2023/12/17 コマンドが表示されていないときは決定キーを受け付けないように takagi
-	・2023/12/18 画像差し替え・コマンド位置調整 takagi
+	・2023/12/18 画像差し替え・コマンド位置調整・オープニング使用切換作成 takagi
 	
 ========================================== */
+
+// =============== デバッグモード ===================
+#define USE_OPENING (false)	//オープニングが存在するか
 
 // =============== インクルード ===================
 #include "Title.h"			//自身のヘッダ
@@ -100,7 +103,9 @@ CTitle::CTitle()
 		{E_2D_START,new CCommandTitle(MAP_WAIT_START.at(E_2D_START))},		//継続コマンド用
 		{E_2D_FINISH,new CCommandTitle(MAP_WAIT_START.at(E_2D_FINISH))},	//終了コマンド用
 		{E_2D_LOGO,new CTitleLogo(MAP_WAIT_START.at(E_2D_LOGO))},			//タイトルロゴ用
+#if USE_OPENING
 		{E_2D_OPENING,new COpeningTitle()},									//開始映像用
+#endif
 	};	//平面ポリゴン
 	m_pCamera = new CFixedCamera();	//固定カメラ
 
@@ -133,6 +138,19 @@ CTitle::CTitle()
 	{
 		static_cast<CCommandTitle*>(m_p2dObj[E_2D_START])->Selected();	//選択状態遷移
 	}
+#if !USE_OPENING	//開始映像がない場合かわりに縮小を呼ぶ
+	// =============== 縮小 ===================
+	if (m_p2dObj.find(E_2D_BACK) != m_p2dObj.end() && m_p2dObj.at(E_2D_BACK)
+		&& typeid(CBgTitle) == typeid(*m_p2dObj.at(E_2D_BACK)))	//アクセスチェック・ヌルチェック・型チェック
+	{
+		static_cast<CBgTitle*>(m_p2dObj[E_2D_BACK])->ChangeLtoS(ZOOMOUT_FRAME);	//背景縮小開始
+	}
+	if (m_p2dObj.find(E_2D_LOGO) != m_p2dObj.end() && m_p2dObj.at(E_2D_LOGO)
+		&& typeid(CTitleLogo) == typeid(*m_p2dObj.at(E_2D_LOGO)))	//アクセスチェック・ヌルチェック・型チェック
+	{
+		static_cast<CTitleLogo*>(m_p2dObj[E_2D_LOGO])->ChangeLtoS(ZOOMOUT_FRAME);	//ロゴ縮小開始
+	}
+#endif
 }
 
 /* ========================================
