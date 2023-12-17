@@ -18,13 +18,13 @@
 
 // =============== インクルード ===================
 #include "DrawGameStart.h"	// 自身のヘッダ
-#include "GameParameter.h"
+#include "Defines.h"
 
 // =============== 定数定義 ===================
 const int START_SPLIT_NUM_MAX = 60;				// スタートのUIアニメーションの分割数の最大数
 const TDiType<int> START_SPLIT_NUM = {5, 12};	// スタートのUIアニメーションの縦横分割数の最大数
-const TPos2d<float> START_POS = { SCREEN_WIDTH_ / 2.0f + 50.0f, SCREEN_HEIGHT_ / 2.0f + 150.0f };		// 描画位置
-const TDiType<float> START_SCALE = { (float)SCREEN_WIDTH_, (float)SCREEN_HEIGHT_ };		// 描画サイズ
+const TPos2d<float> START_POS = {SCREEN_WIDTH / 2.0f + 50.0f, SCREEN_HEIGHT / 2.0f + 150.0f };		// 描画位置
+const TDiType<float> START_SCALE = { (float)SCREEN_WIDTH, (float)SCREEN_HEIGHT };					// 描画サイズ
 const int START_SWITCH_CNT = 1;					// アニメーション切り替え間隔
 
 
@@ -45,4 +45,3 @@ CDrawStart::CDrawStart(CCamera* pCamera)
 	SetPos({ START_POS.x, START_POS.y, 0.0f });			//位置初期化
 	SetSize({ START_SCALE.x, START_SCALE.y, 0.0f });	//サイズ初期化
 }
-

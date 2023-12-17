@@ -59,22 +59,24 @@ CStageFinish::CStageFinish(CCamera* pCamera, int* pPlayerHp, int* pTimeCnt)
 	m_pTimeCnt = pTimeCnt;		//制限時間のポインタを取得
 
 	//ゲームクリアの描画準備
-	m_pClear = new CDrawAnim("Assets/Texture/StageFinish/finish.png",
-		pCamera,
+	m_pClear = new CDrawAnim(
 		CLEAR_SPLIT_NUM_MAX,
-		CLEAR_POS,
-		CLEAR_SCALE,
 		CLEAR_SPLIT_NUM,
 		CLEAR_SWITCH_CNT);
+	m_pClear->SetTexture("Assets/Texture/StageFinish/finish.png");
+	m_pClear->SetCamera(pCamera);
+	m_pClear->SetPos({ CLEAR_POS.x, CLEAR_POS.y, 0.0f });
+	m_pClear->SetSize({ CLEAR_SCALE.x, CLEAR_SCALE.y, 0.0f });
 
 	//ゲームオーバーの描画準備
-	m_pOver = new CDrawAnim("Assets/Texture/StageFinish/GameOver.png",
-		pCamera,
+	m_pOver = new CDrawAnim(
 		OVER_SPLIT_NUM_MAX,
-		OVER_POS,
-		OVER_SCALE,
 		OVER_SPLIT_NUM,
 		OVER_SWITCH_CNT);
+	m_pOver->SetTexture("Assets/Texture/StageFinish/GameOver.png");
+	m_pOver->SetCamera(pCamera);
+	m_pOver->SetPos({ OVER_POS.x, OVER_POS.y, 0.0f });
+	m_pOver->SetSize({ OVER_SCALE.x, OVER_SCALE.y, 0.0f });
 }
 
 /* ========================================
