@@ -17,6 +17,7 @@
 	・2023/12/16 描画位置を変更できるよう修正 nieda
 	・2023/12/16 コンストラクタの引数を最小化・不要なポインタ削除 takagi
 	・2023/12/17 一部引数参照化 takagi
+	・2023/12/18 最初に分割前の画像が表示される不具合を修正 nieda
 
 ========================================== */
 
@@ -50,6 +51,8 @@ CDrawAnim::CDrawAnim(int nSplitMax, TDiType<int> nSplit, int nCnt)
 	m_nSplitNum = nSplit;		// 縦横の分割数を格納
 	m_fUvScale = { 1.0f / m_nSplitNum.x, 1.0f / m_nSplitNum.y };	// UV分割サイズを格納
 	m_nSwitchCnt = nCnt;		// アニメーションの切り替え間隔を格納
+	SetUvOffset(m_fUvPos);	// UV座標をセット
+	SetUvScale(m_fUvScale);	// UV分割サイズをセット
 }
 
 /* ========================================
