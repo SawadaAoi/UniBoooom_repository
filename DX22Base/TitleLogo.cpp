@@ -10,6 +10,7 @@
 	変更履歴
 	・2023/12/16 制作 takagi
 	・2023/12/17 引数参照化 takagi
+	・2023/12/18 素材変更に伴うサイズ調整 takagi
 
 ========================================== */
 
@@ -20,9 +21,9 @@
 // =============== 定数定義 ===================
 const TPos3d<float> POS_L{ static_cast<float>(SCREEN_WIDTH) / 2.0f,
 	static_cast<float>(SCREEN_HEIGHT) / 2.0f, 0.0f };								//大きいときの位置
-const TPos3d<float> POS_S{ static_cast<float>(SCREEN_WIDTH) / 2.0f, 450.0f, 0.0f };	//小さいときの位置
-const TPos3d<float> SCALE_L(3094.0f * 0.428f, 2039.0f * 0.428f, 0.0f);				//大きいときの大きさ
-const TPos3d<float> SCALE_S(3094.0f * 0.2f, 2039.0f * 0.2f, 0.0f);					//小さいときの大きさ
+const TPos3d<float> POS_S{ static_cast<float>(SCREEN_WIDTH) / 2.0f, 502.0f, 0.0f };	//小さいときの位置
+const TPos3d<float> SCALE_L(3594.0f * 0.37f, 2190.0f * 0.37f, 0.0f);				//大きいときの大きさ
+const TPos3d<float> SCALE_S(3594.0f * 0.235f, 2190.0f * 0.235f, 0.0f);				//小さいときの大きさ
 const int MAX_ANIM(1);																//アニメーション数
 const TDiType<int> MAX_SEAT(1);														//1x1
 

@@ -9,6 +9,7 @@
 
 	変更履歴
 	・2023/12/16 制作 takagi
+	・2023/12/18 サイズ変更*2.0f→*3.5f takagi
 
 ========================================== */
 
@@ -17,8 +18,8 @@
 
 // =============== 定数定義 ===================
 const TDiType<float> UV_SCALE(1.0f / 3.0f, 1.0f);					//UV拡縮
-const float COMMAND_WIDTH(120.0f * 2.0f);							//コマンド縦幅
-const float COMMAND_HEIGHT(26.0f * 2.0f);							//コマンド横幅
+const float COMMAND_WIDTH(120.0f * 3.5f);							//コマンド縦幅
+const float COMMAND_HEIGHT(26.0f * 3.5f);							//コマンド横幅
 const TDiType<float> SCALE_UNSELECT(COMMAND_WIDTH, COMMAND_HEIGHT);	//非選択時の最大拡縮率
 const TDiType<float> SCALE_SELECT(SCALE_UNSELECT * 1.1f);			//選択時の最小拡縮率
 const TDiType<float> SCALE_DESIDE(SCALE_UNSELECT * 1.2f);			//決定時の拡大率
