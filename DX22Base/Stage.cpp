@@ -19,6 +19,7 @@
 	・2023/12/14 BGMの管理をSceneManagerに移動 yamashita
 	・2023/12/15 ゲームスタート表示書き変えに伴い必要なくなった変数削除 nieda
 	・2023/12/15 フェード削除 takagi
+	・2023/12/18 ポーズ動的確保 takagi
 
 ========================================== */
 
@@ -89,6 +90,7 @@ CStage::CStage()
 	m_pExplosionMng->SetCamera(m_pCamera);
 	m_pSlimeMng->SetCamera(m_pCamera);
 	m_pHealItemMng->SetCamera(m_pCamera);
+	m_pPause = new CPause(m_pCamera);
 
 	//スライムマネージャー　←　スコアマネージャー
 	m_pSlimeMng->SetScoreOHMng(m_pUIStageManager->GetScoreMng());
