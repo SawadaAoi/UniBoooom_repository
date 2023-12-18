@@ -148,7 +148,7 @@ private:
 	const std::string m_sAnimeFile[MOTION_MAX] = {	//アニメーションのファイル
 		"Assets/Model/player/Player.FBX",			//待機
 		"Assets/Model/player/Dash.FBX",				//移動
-		"Assets/Model/player/pow.FBX" };			//スイング
+		"Assets/Model/player/Pow (1).FBX" };			//スイング
 };
 
 

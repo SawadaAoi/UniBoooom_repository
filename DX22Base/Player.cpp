@@ -100,7 +100,7 @@ CPlayer::CPlayer()
 
 	//プレイヤーのモデル読み込み
 	m_pModel = new AnimeModel();
-	if (!m_pModel->Load("Assets/Model/player/POW.fbx", 1.0f, AnimeModel::Flip::XFlip)) {		//倍率と反転は省略可
+	if (!m_pModel->Load("Assets/Model/player/Pow (1).fbx", 1.0f, AnimeModel::Flip::XFlip)) {		//倍率と反転は省略可
 		MessageBox(NULL, "player", "Error", MB_OK);	//ここでエラーメッセージ表示
 	}
 	m_pModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));		//頂点シェーダーをセット
@@ -183,7 +183,8 @@ void CPlayer::Update()
 		if ((IsKeyTrigger(VK_SPACE)) || IsKeyTriggerController(BUTTON_B) && !m_bIntFlg)
 		{	//チャージ状態に遷移
 			m_state = STATE_CHARGE;
-			m_pModel->Play(m_Anime[MOTION_SWING], false, 0.01f);	//アニメーションの再生
+			m_pModel->Play(m_Anime[MOTION_SWING], false,1.4f);	//アニメーションの再生
+			m_pModel->SetAnimationTime(m_Anime[MOTION_SWING],0.0f);
 		}
 
 		// スペースキーを押した時、またはコントローラのBボタンを離した時 && チャージ状態だったら
@@ -228,7 +229,7 @@ void CPlayer::Update()
 	MoveCheck();
 
 	//チャージ状態以外はアニメーションの更新
-	if (m_state != STATE_CHARGE)
+	//if (m_state != STATE_CHARGE)
 	{
 		m_pModel->Step(m_fTick);
 	}
@@ -604,7 +605,7 @@ void CPlayer::MoveCheck()
 		m_nMoveCnt = 0;
 
 		//アニメーションを再生
-		if (m_pModel->GetPlayNo() != m_Anime[MOTION_STOP] && !m_bAttackFlg)
+		if (m_pModel->GetPlayNo() != m_Anime[MOTION_STOP] && !m_bAttackFlg && !m_pModel->IsPlay(m_Anime[MOTION_SWING]))
 		{	//待機中のアニメーションを再生してない、なおかつ攻撃中じゃない場合
 			m_pModel->Play(m_Anime[MOTION_STOP], true);
 		}
@@ -617,7 +618,7 @@ void CPlayer::MoveCheck()
 		PlaySE(SE_RUN, SE_RUN_VOLUME);
 
 		//アニメーションを再生
-		if (m_pModel->GetPlayNo() != m_Anime[MOTION_MOVE])
+		if (m_pModel->GetPlayNo() != m_Anime[MOTION_MOVE] && !m_pModel->IsPlay(m_Anime[MOTION_SWING]))
 		{	//移動中のアニメーションを再生してない場合
 			m_pModel->Play(m_Anime[MOTION_MOVE], true, PLAYER_MOVE_ANIME_SPEED);
 		}
