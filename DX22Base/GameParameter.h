@@ -97,7 +97,7 @@ const float LEVEL1_SCALE = 1.7f;					// ƒXƒ‰ƒCƒ€QƒŒƒxƒ‹‚P‚Ì‘å‚«‚³(“–‚½‚è”»’èŠÜ‚
 const float LEVEL1_SPEED = ENEMY_MOVE_SPEED;		// ˆÚ“®‘¬“x
 
 // ƒTƒCƒY2
-const float LEVEL2_SCALE = 3.7f;					// ƒXƒ‰ƒCƒ€QƒŒƒxƒ‹‚Q‚Ì‘å‚«‚³(“–‚½‚è”»’èŠÜ‚Þ)
+const float LEVEL2_SCALE = 3.0f;					// ƒXƒ‰ƒCƒ€QƒŒƒxƒ‹‚Q‚Ì‘å‚«‚³(“–‚½‚è”»’èŠÜ‚Þ)
 const float LEVEL2_SPEED = ENEMY_MOVE_SPEED * 0.9f;	// ˆÚ“®‘¬“x
 
 // ƒTƒCƒY3
