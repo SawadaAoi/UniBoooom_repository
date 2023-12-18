@@ -20,7 +20,8 @@
 // =============== インクルード ===================
 #include "Texture.h"
 #include "GameParameter.h"
-#include "DrawAnimation.h"
+#include "GameClearText.h"
+#include "GameOverText.h"
 
 class CStageFinish
 {
@@ -50,8 +51,8 @@ private:
 	const int* m_pTimeCnt;
 	bool m_bDeleteDisp;
 
-	CDrawAnim* m_pClear;
-	CDrawAnim* m_pOver;
+	CClearText* m_pClear;
+	COverText* m_pOver;
 };
 
 #endif // !__STAGE_FINISH_UI_H__

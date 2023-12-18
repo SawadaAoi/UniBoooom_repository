@@ -190,7 +190,9 @@
     <ClCompile Include="DirectX.cpp" />
     <ClCompile Include="DirectWrite.cpp" />
     <ClCompile Include="DrawAnimation.cpp" />
-    <ClCompile Include="DrawGameStart.cpp" />
+    <ClCompile Include="GameClearText.cpp" />
+    <ClCompile Include="GameOverText.cpp" />
+    <ClCompile Include="GameStartText.cpp" />
     <ClCompile Include="Effect.cpp" />
     <ClCompile Include="Emitter.cpp" />
     <ClCompile Include="EmitterManager.cpp" />
@@ -291,7 +293,9 @@
     <ClInclude Include="Cylinder.h" />
     <ClInclude Include="DirectWrite.h" />
     <ClInclude Include="DrawAnimation.h" />
-    <ClInclude Include="DrawGameStart.h" />
+    <ClInclude Include="GameClearText.h" />
+    <ClInclude Include="GameOverText.h" />
+    <ClInclude Include="GameStartText.h" />
     <ClInclude Include="Fade.h" />
     <ClInclude Include="DiType.h" />
     <ClInclude Include="FixedCamera.h" />

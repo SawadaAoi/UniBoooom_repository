@@ -81,7 +81,7 @@ CStage::CStage()
 
 	//================2dObject動的確保================
 	m_pUIStageManager = new CUIStageManager(m_pPlayer, m_pCamera, m_pSlimeMng);	// UIマネージャー生成
-	m_pDrawStart = new CDrawStart(m_pCamera);
+	m_pStartText = new CStartText(m_pCamera);
 
 	//================セット================
 	// カメラ
@@ -138,7 +138,7 @@ CStage::~CStage()
 	SAFE_DELETE(m_pHealItemMng);
 	SAFE_DELETE(m_pPause);
 	SAFE_DELETE(m_pUIStageManager);
-	SAFE_DELETE(m_pDrawStart);
+	SAFE_DELETE(m_pStartText);
 }
 
 ///* ========================================

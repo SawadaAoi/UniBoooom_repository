@@ -432,9 +432,6 @@
     <ClCompile Include="Shadow.cpp">
       <Filter>ソース ファイル\2dObject</Filter>
     </ClCompile>
-    <ClCompile Include="DrawGameStart.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="DrawAnimation.cpp">
       <Filter>ソース ファイル\2dObject</Filter>
     </ClCompile>
@@ -464,6 +461,15 @@
     </ClCompile>
     <ClCompile Include="FixedCamera.cpp">
       <Filter>ソース ファイル\System\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="GameStartText.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="GameClearText.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="GameOverText.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -740,9 +746,6 @@
     <ClInclude Include="Shadow.h">
       <Filter>ヘッダー ファイル\2dObject</Filter>
     </ClInclude>
-    <ClInclude Include="DrawGameStart.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="DrawAnimation.h">
       <Filter>ヘッダー ファイル\2dObject</Filter>
     </ClInclude>
@@ -772,6 +775,15 @@
     </ClInclude>
     <ClInclude Include="FixedCamera.h">
       <Filter>ヘッダー ファイル\System\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="GameStartText.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="GameOverText.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="GameClearText.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
