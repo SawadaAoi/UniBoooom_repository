@@ -25,6 +25,7 @@
 	・2023/11/29 プレイヤーのポインタを取得 yamashita
 	・2023/12/08 被討伐数のカウンタを追加 takagi
 	・2023/12/15 SEまわりを整理 yamashita
+	・2023/12/20 UNION追加 takagi
 
    ======================================== */
 
@@ -41,17 +42,17 @@
 #include "Sound.h"
 #include "ScoreOHManager.h"
 #include "HealItemManager.h"
+#include "UnionManager.h"		//UNION
 #include "Player.h"
 #include "Timer.h"
 #include "Sound.h"
 // =============== 定数定義 =======================
 #if MODE_GAME_PARAMETER
-
 #else
 const int MAX_SLIME_NUM = 50;			// スライムの最大生成数
 const int MAX_BOSS_SLIME_NUM = 5;		// ボススライムの最大生成数
-
 #endif
+
 // =============== クラス定義 =====================
 class CSlimeManager
 {
@@ -61,7 +62,6 @@ public:
 		SE_HIT,				//スライム同士がぶつかるSE
 		SE_UNION,			//スライム同士がくっつくSE
 		SE_BOSS_DAMAGED,	//被ダメージのSE
-
 		SE_MAX				//SEの総数
 	};
 
@@ -87,8 +87,6 @@ public:
 	void HitBossSlimeBranch(int HitBossNum, int StandSlimeNum, CExplosionManager* pExpMng);
 	void HitBossBossBranch(int HitBossNum, int StandBossNum, CExplosionManager* pExpMng);
 	void TouchBossExplosion(int BossSlime, CExplosionManager* pExpMng, int ExpNum);
-
-
 
 	E_SLIME_LEVEL GetRandomLevel();																	// ランダムなスライムのレベルを返す(1～3レべル)
 	void PreventSlimeSlimeOverlap(CSlimeBase* pMoveSlime, CSlimeBase* pStandSlime);							// スライム同士が移動中に接触した時の処理
@@ -132,9 +130,10 @@ private:
 	Model* m_pBossModel;
 	Model* m_pBossRockModel;
 
-	CScoreOHManager* m_pScoreOHMng;				// スコアマネージャ―ポインタ
-	CHealItemManager* m_pHealItemMng;			// 回復アイテムマネージャーポインタ
-	CTimer* m_pTimer;							// タイマーポインタ
+	CScoreOHManager* m_pScoreOHMng;		// スコアマネージャ―ポインタ
+	CHealItemManager* m_pHealItemMng;	// 回復アイテムマネージャーポインタ
+	CUnionManager* m_pUnionMng;			// UNION管理
+	CTimer* m_pTimer;					// タイマーポインタ
 
 	int m_CreateCnt;			// 生成間隔用カウント
 	TPos3d<float> m_oldCreatePos;	//1つ前のスライムの生成場所

@@ -18,6 +18,7 @@
 	・2023/12/15 空の更新関数追加・警告文追加・改修
 					・コンストラクタでカメラが作られない問題修正 takagi
 	・2023/12/17 引数参照化 takagi
+	・2023/12/20 ビルボードの処理修正 takagi
 
 ========================================== */
 
@@ -240,14 +241,17 @@ void C2dPolygon::Draw(const E_DRAW_MODE & eMode)
 		// =============== 通常描画 ===================
 	case E_DRAW_MODE_NORMAL:	//通常時
 		m_aMatrix[0] = m_Transform.GetWorldMatrixSRT();	//ワールド行列更新
+		DirectX::XMStoreFloat4x4(&m_aMatrix[1], DirectX::XMMatrixIdentity());	//ビュー行列：単位行列
+		m_aMatrix[2] = m_pCamera->GetProjectionMatrix(CCamera::E_DRAW_TYPE_2D);	//プロジェクション行列更新
 		break;											//分岐処理終了
 		
 		// =============== ビルボード描画 ===================
 	case E_DRAW_MODE_BILLBOARD:	//ビルボード仕様
 		m_aMatrix[0] = m_Transform.GetWorldMatrixSRT(m_pCamera->GetInverseViewMatrix());	//ビルボードの行列変換
+		m_aMatrix[1] = m_pCamera->GetViewMatrix();
+		m_aMatrix[2] = m_pCamera->GetProjectionMatrix(CCamera::E_DRAW_TYPE_3D);	//プロジェクション行列更新
 		break;																				//分岐処理終了
 	}
-	m_aMatrix[2] = m_pCamera->GetProjectionMatrix(CCamera::E_DRAW_TYPE_2D);	//プロジェクション行列更新
 
 	// =============== 変数宣言 ===================
 	float Param[8] = { m_Param.fUvOffset.x, m_Param.fUvOffset.y, m_Param.fUvScale.x, m_Param.fUvScale.y,

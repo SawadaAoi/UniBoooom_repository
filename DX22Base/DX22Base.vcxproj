@@ -269,6 +269,8 @@
     <ClCompile Include="Transform2d.cpp" />
     <ClCompile Include="Transform3d.cpp" />
     <ClCompile Include="UIStageManager.cpp" />
+    <ClCompile Include="Union.cpp" />
+    <ClCompile Include="UnionManager.cpp" />
     <ClCompile Include="_model.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -376,6 +378,8 @@
     <ClInclude Include="Transform3d.h" />
     <ClInclude Include="TriType.h" />
     <ClInclude Include="UIStageManager.h" />
+    <ClInclude Include="Union.h" />
+    <ClInclude Include="UnionManager.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="PsFade.hlsl">
