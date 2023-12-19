@@ -31,12 +31,35 @@ class CResult :public CScene	//シーン
 {
 public:
 	// ===列挙定義===========
-	enum E_RESULT
+	//enum E_RESULT
+	//{
+	//	E_RESULT_RESULT,		//リザルト画像
+	//	E_RESULT_BUTTON,		//ボタン押下指示
+	//	E_RESULT_MAX,			//要素数
+	//};	//タイトルシーンのテクスチャの種類
+
+
+
+	enum E_TEXTURE
 	{
-		E_RESULT_RESULT,		//リザルト画像
-		E_RESULT_BUTTON,		//ボタン押下指示
-		E_RESULT_MAX,			//要素数
-	};	//タイトルシーンのテクスチャの種類
+		BG_SCREEN,
+		BG_TEXT,
+		TEXT_RESULT,
+		TEXT_SVL_TIME,
+		TEXT_HUNT_NUM,
+		TEXT_SCORE,
+		TEXT_NUM,
+		TEXT_COLON,
+
+		STAGE,
+		STAGE_1,
+		STAGE_2,
+		STAGE_3,
+		STAMP,
+
+		TEXTURE_MAX,
+
+	};
 public:
 	// =============== プロトタイプ宣言 ===============
 	CResult();							//コンストラクタ
@@ -46,8 +69,10 @@ public:
 	E_TYPE GetType() const override;	//自身の種類ゲッタ
 	E_TYPE GetNext() const override;	//次のシーンゲッタ
 private:
+
+
 	// =============== メンバ変数定義 ===============
-	Texture* m_pTexture[E_RESULT_MAX];
+	Texture* m_pTexture[TEXTURE_MAX];
 	BattleData m_Data;					//戦闘結果
 	FontData m_Font;					//フォントデータ
 	FontData m_FontDef;					//デフォルトフォント

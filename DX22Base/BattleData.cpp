@@ -36,7 +36,7 @@ const std::string DATAFILE("BattleData.bin");	//データ読み書き用のファイル名
 	戻値：なし
 =========================================== */
 tagBattleData::tagBattleData()
-	:tagBattleData(0, 0, 0)
+	:tagBattleData(0, 0, 0, 1)
 {
 }
 
@@ -51,13 +51,14 @@ tagBattleData::tagBattleData()
 	-------------------------------------
 	戻値：なし
 =========================================== */
-tagBattleData::tagBattleData(const int & nAliveTime, const int & nKill, const int & nTotalScore)
+tagBattleData::tagBattleData(const int & nAliveTime, const int & nKill, const int & nTotalScore, const int & nStageNum)
 	:sName(NAME)	//名前
 {
 	// =============== 初期化 ===================
 	this->nAliveTime = nAliveTime;		//生存時間初期化
 	this->nKill = nKill;				//討伐数初期化
 	this->nTotalScore = nTotalScore;	//総スコア初期化
+	this->nStageNum = nStageNum;	//総スコア初期化
 }
 
 /* ========================================
@@ -75,6 +76,7 @@ tagBattleData::tagBattleData(const tagBattleData & Obj)
 	this->nAliveTime = Obj.nAliveTime;		//生存時間初期化
 	this->nKill = Obj.nKill;				//討伐数初期化
 	this->nTotalScore = Obj.nTotalScore;	//総スコア初期化
+	this->nStageNum = Obj.nStageNum;	//総スコア初期化
 }
 
 /* ========================================

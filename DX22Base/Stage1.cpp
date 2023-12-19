@@ -141,6 +141,8 @@ void CStage1::Update()
 		{
 			m_Data.nKill = m_pSlimeMng->GetKillCnt();						//“¢”°”‘Ş”ğ
 		}
+
+		m_Data.nStageNum = 1;
 	}
 #endif
 }
