@@ -63,6 +63,7 @@ const float PLAYER_SHADOW_SCALE = 1.5f;		// プレイヤーの影の大きさ
 const int	SE_RUN_INTERVAL = static_cast<int>(0.4f * 60);	//プレイヤーの移動によるSE発生の間隔
 const float	SE_RUN_VOLUME = 0.3f;							//移動によるSEの音量
 const float PLAYER_MOVE_ANIME_SPEED = 1.2f;					//プレイヤーの移動アニメーション再生速度
+const float PLAYER_SWING_ANIME_SPEED = 5.0f;					//プレイヤーの移動アニメーション再生速度
 
 /* ========================================
    関数：コンストラクタ
@@ -179,7 +180,8 @@ void CPlayer::Update()
 		// スペースキーを押した時、またはコントローラのBボタンを押した時 && ハンマー間隔時間経過済み
 		if ((IsKeyTrigger(VK_SPACE) || IsKeyTriggerController(BUTTON_B)) && !m_bIntFlg)
 		{
-			m_pModel->Play(m_Anime[MOTION_SWING], false, 0.01f);	//アニメーションの再生
+			m_pModel->Play(m_Anime[MOTION_SWING], false, PLAYER_SWING_ANIME_SPEED + (SwingSpeed_MIN - m_pHammer->GetInterval()) * 0.092f);	//アニメーションの再生
+			m_pModel->SetAnimationTime(m_Anime[MOTION_SWING],0.0f);					//アニメーションタイムをスタート位置にセット
 			m_pHammer->AttackStart(m_Transform.fPos, m_Transform.fRadian.y + DirectX::g_XMPi[0]);	// ハンマー攻撃開始
 			m_bAttackFlg = true;	// 攻撃フラグを有効にする
 			//SEの再生
@@ -189,7 +191,6 @@ void CPlayer::Update()
 			m_pHammer->SwingSpeedAdd();
 		}
 		// ハンマーのスイング量を増やす
-
 		m_pHammer->SwingSpeedSubtract();
 	}
 
@@ -284,7 +285,7 @@ void CPlayer::Draw()
 	//=====アニメーションの調整用に一応残しておく=====
 	if (m_bAttackFlg)
 	{
-		m_pHammer->Draw();		//ハンマーの描画
+		//m_pHammer->Draw();		//ハンマーの描画
 	}
 
 
@@ -584,7 +585,7 @@ void CPlayer::MoveCheck()
 		m_nMoveCnt = 0;
 
 		//アニメーションを再生
-		if (m_pModel->GetPlayNo() != m_Anime[MOTION_STOP] && !m_bAttackFlg)
+		if (m_pModel->GetPlayNo() != m_Anime[MOTION_STOP] && !m_bAttackFlg && !m_pModel->IsPlay(m_Anime[MOTION_SWING]))
 		{	//待機中のアニメーションを再生してない、なおかつ攻撃中じゃない場合
 			m_pModel->Play(m_Anime[MOTION_STOP], true);
 		}
@@ -597,7 +598,7 @@ void CPlayer::MoveCheck()
 		PlaySE(SE_RUN, SE_RUN_VOLUME);
 
 		//アニメーションを再生
-		if (m_pModel->GetPlayNo() != m_Anime[MOTION_MOVE])
+		if (m_pModel->GetPlayNo() != m_Anime[MOTION_MOVE] && !m_pModel->IsPlay(m_Anime[MOTION_SWING]))
 		{	//移動中のアニメーションを再生してない場合
 			m_pModel->Play(m_Anime[MOTION_MOVE], true, PLAYER_MOVE_ANIME_SPEED);
 		}
