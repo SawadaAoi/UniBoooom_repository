@@ -46,8 +46,12 @@ public:
 protected:
 	StageSelect mStageNum[SUTAGE_NUM];
 private:
-	C2dPolygon* m_2dObj[3];
+	int Num;
+	C2dPolygon* m_2dObj[5];
 	StageSelect EscapeStageNum;
+	Texture* m_pStageSelectBG;
+	Texture* m_pStageSelectUI;
+
 };	//ステージセレクト
 
 #endif	//!__SELECT_STAGE_H__
