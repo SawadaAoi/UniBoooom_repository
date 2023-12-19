@@ -16,6 +16,7 @@
 	・2023/12/10 静的変数の名前を修正・デフォルトのカメラも静的関数化。 takagi
 	・2023/12/15 空の更新関数追加 takagi
 	・2023/12/17 引数参照化 takagi
+	・2023/12/20 継承先がやりにくかったのでワールド変数をprotected化 takagi
 
 ========================================== */
 
@@ -76,9 +77,11 @@ public:
 	virtual void SetTexture(Texture* pTexture);									//テクスチャ登録
 	virtual void SetVertexShader(VertexShader* pVs);							//頂点シェーダセッタ
 	virtual void SetPixelShader(PixelShader* pPs);								//ピクセルシェーダセッタ
+protected:
+	// ===メンバ変数宣言=====
+	tagTransform3d m_Transform;	//ワールド座標
 private:
 	// ===メンバ変数宣言=====
-	tagTransform3d m_Transform;				//ワールド座標
 	DirectX::XMFLOAT4X4 m_aMatrix[3];		//行列
 	Param m_Param;							//シェーダーに書き込む情報
 	static VertexShader* ms_pDefVs;			//頂点シェーダー
