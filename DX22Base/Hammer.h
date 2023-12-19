@@ -33,6 +33,7 @@
 #include "Camera.h"
 #include "Object.h"
 #include "Model.h"
+#include "Sphere.h"
 
 // =============== 定数定義 =======================
 const float SwingSpeed_MIN = 9.0f;								//ハンマーのフ振りの最速値
@@ -66,6 +67,8 @@ private:
 	const CCamera* m_pCamera;		//	
 	float m_fSwingSpeed;			//ハンマーを振る時間
 	float m_fAddAngle;				// 1フレームで移動する角度量
+
+	CSphere* m_pSphere;
 };
 
 #endif // !__HAMMER_H__
