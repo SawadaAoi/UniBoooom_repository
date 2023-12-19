@@ -246,9 +246,9 @@ void CHammer::SwingSpeedAdd()
 void CHammer::SwingSpeedSubtract()
 {
 	m_fSwingSpeed *= SwingSpeed_MINUS;
-	if (m_fSwingSpeed <= 9.0f)
+	if (m_fSwingSpeed <= SwingSpeed_MIN)
 	{
-		m_fSwingSpeed = 9.0f;
+		m_fSwingSpeed = SwingSpeed_MIN;
 	}
 	
 }

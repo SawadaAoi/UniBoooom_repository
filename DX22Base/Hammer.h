@@ -33,6 +33,11 @@
 #include "Camera.h"
 #include "Object.h"
 #include "Model.h"
+
+// =============== 定数定義 =======================
+const float SwingSpeed_MIN = 9.0f;								//ハンマーのフ振りの最速値
+
+
 // =============== クラス定義 =====================
 class CHammer
 	: public CObject
