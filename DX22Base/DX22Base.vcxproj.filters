@@ -166,6 +166,12 @@
     <Filter Include="ソース ファイル\2dObject\TitleObj\TitleAnime">
       <UniqueIdentifier>{3556d641-6391-4274-8832-782f464f2b39}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\2dObject\Union">
+      <UniqueIdentifier>{ffebea4f-a2e3-4636-9822-1cac3c09d57b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\2dObject\Union">
+      <UniqueIdentifier>{4a70b38c-3cba-4672-941f-61058e8777ff}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -470,6 +476,12 @@
     </ClCompile>
     <ClCompile Include="GameOverText.cpp">
       <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="UnionManager.cpp">
+      <Filter>ソース ファイル\2dObject\Union</Filter>
+    </ClCompile>
+    <ClCompile Include="Union.cpp">
+      <Filter>ソース ファイル\2dObject\Union</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -784,6 +796,12 @@
     </ClInclude>
     <ClInclude Include="GameClearText.h">
       <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="UnionManager.h">
+      <Filter>ヘッダー ファイル\2dObject\Union</Filter>
+    </ClInclude>
+    <ClInclude Include="Union.h">
+      <Filter>ヘッダー ファイル\2dObject\Union</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
