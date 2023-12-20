@@ -44,6 +44,8 @@ public:
 	bool GetDispFlg();
 	bool GetDeleteDispFlg();	// ‰æ–Ê‘JˆÚƒtƒ‰ƒOŽæ“¾—p
 
+	
+
 private:
 	bool m_bDispFlg;
 	GAME_STATE m_eGameState;

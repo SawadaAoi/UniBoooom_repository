@@ -58,6 +58,7 @@ const std::map<int, DirectX::XMFLOAT2> MAP_SIZE = {
 	{CResult::TEXT_NUM,		{75.0f, 75.0f}},
 	{CResult::TEXT_COLON,	{80.0f, 80.0f}},
 	{CResult::STAGE,		{480.0f, 600.0f}},
+	{CResult::STAMP,		{400.0f, 400.0f}},
 };
 
 
@@ -69,6 +70,7 @@ const std::map<int, DirectX::XMFLOAT2> MAP_POS = {
 	{CResult::TEXT_HUNT_NUM, {800.0f, 400.0f}},
 	{CResult::TEXT_SCORE,	{750.0f, 560.0f}},
 	{CResult::STAGE,	{300.0f, 360.0f}},
+	{CResult::STAMP,	{300.0f, 360.0f}},
 };
 
 const std::map<int, DirectX::XMFLOAT2> MAP_POS_BG_TEXT = {
@@ -174,6 +176,18 @@ void CResult::Draw()
 		MAP_SIZE.at(E_TEXTURE::STAGE).x,
 		MAP_SIZE.at(E_TEXTURE::STAGE).y,
 		m_pTexture[E_TEXTURE::STAGE + m_Data.nStageNum]);
+
+
+	if (m_Data.GetMinute() >= 3)
+	{
+		Draw2d(
+			MAP_POS.at(E_TEXTURE::STAMP).x,
+			MAP_POS.at(E_TEXTURE::STAMP).y,
+			MAP_SIZE.at(E_TEXTURE::STAMP).x,
+			MAP_SIZE.at(E_TEXTURE::STAMP).y,
+			m_pTexture[E_TEXTURE::STAMP]);
+	}
+
 
 	for (int i = CResult::TEXT_SVL_TIME; i <= CResult::TEXT_SCORE; i++)
 	{
