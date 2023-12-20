@@ -30,28 +30,56 @@
 #include <map>						//連想型コンテナ
 #include "Defines.h"				//画面サイズ情報
 
-// =============== 列挙定義 ===================
-enum E_CORD
-{
-	//E_CORD_RESULT,	//リザルト
-	E_CORD_ALIVE,	//生存時間
-	E_CORD_KILL,	//討伐数
-	E_CORD_SCORE,	//スコア
-};	//コード
 
 // =============== 定数定義 ===================
-const std::map<E_CORD, std::string> MAP_STRING = {
-	//{E_CORD_RESULT,	"リザルト"},			//リザルト
-	{E_CORD_ALIVE, "生存時間："},			//生存時間
-	{E_CORD_KILL, "スライム総討伐数："},	//討伐数
-	{E_CORD_SCORE, "TOTAL SCORE："},		//スコア
-};	//文字の連想コンテナ
-const std::map<E_CORD, DirectX::XMFLOAT2> MAP_POS = {
-	//{E_CORD_RESULT,	{static_cast<float>SCREEN_WIDTH / 2.0f - MAP_STRING.at(E_CORD_RESULT).length(), 10.0f}},	//リザルト
-	{E_CORD_ALIVE, {0.0f, 360.0f}},		//生存時間
-	{E_CORD_KILL, {0.0f, 410.0f}},		//討伐数
-	{E_CORD_SCORE, {0.0f, 460.0f}},		//スコア
-};	//位置の連想コンテナ
+const std::map<int, std::string> MAP_TEX_PATH = {
+	{CResult::BG_SCREEN,	"Assets/Texture/Result/ResultBG.png"},			//
+	{CResult::BG_TEXT,		"Assets/Texture/Result/result_waku.png"},		//
+	{CResult::TEXT_RESULT,	"Assets/Texture/Result/result.png"},			//
+	{CResult::TEXT_SVL_TIME, "Assets/Texture/Result/SurvivalTime.png"},		//
+	{CResult::TEXT_HUNT_NUM, "Assets/Texture/Result/TotalHunt.png"},			//
+	{CResult::TEXT_SCORE,	"Assets/Texture/Result/SCORE.png"},				//
+	{CResult::TEXT_NUM,		"Assets/Texture/Result/ResultSpliteSheet.png"},	//
+	{CResult::TEXT_COLON,	"Assets/Texture/Result/Colon.png"},				//
+	{CResult::STAGE,	"Assets/Texture/Result/Lv1.png"},				//
+	{CResult::STAGE_1,	"Assets/Texture/Result/Lv1.png"},				//
+	{CResult::STAGE_2,	"Assets/Texture/Result/Lv2.png"},				//
+	{CResult::STAGE_3,	"Assets/Texture/Result/Lv3.png"},				//
+	{CResult::STAMP,	"Assets/Texture/Result/stamp.png"},				//
+};	
+
+const std::map<int, DirectX::XMFLOAT2> MAP_SIZE = {
+	{CResult::BG_SCREEN,	{SCREEN_WIDTH, SCREEN_HEIGHT}},
+	{CResult::BG_TEXT,		{750.0f, 140.0f}},
+	{CResult::TEXT_RESULT,	{320.0f, 85.0f}},
+	{CResult::TEXT_SVL_TIME, {300.0f, 100.0f}},
+	{CResult::TEXT_HUNT_NUM, {300.0f, 100.0f}},
+	{CResult::TEXT_SCORE,	{300.0f, 100.0f}},
+	{CResult::TEXT_NUM,		{75.0f, 75.0f}},
+	{CResult::TEXT_COLON,	{80.0f, 80.0f}},
+	{CResult::STAGE,		{480.0f, 600.0f}},
+};
+
+
+
+const std::map<int, DirectX::XMFLOAT2> MAP_POS = {
+	{CResult::BG_SCREEN,	{SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2}},
+	{CResult::TEXT_RESULT,	{970.0f, 120.0f}},
+	{CResult::TEXT_SVL_TIME, {850.0f, 240.0f}},
+	{CResult::TEXT_HUNT_NUM, {800.0f, 400.0f}},
+	{CResult::TEXT_SCORE,	{750.0f, 560.0f}},
+	{CResult::STAGE,	{300.0f, 360.0f}},
+};
+
+const std::map<int, DirectX::XMFLOAT2> MAP_POS_BG_TEXT = {
+	{CResult::TEXT_SVL_TIME,	{1030.0f, 280.0f}},
+	{CResult::TEXT_HUNT_NUM,	{980.0f, 440.0f}},
+	{CResult::TEXT_SCORE, {930.0f, 600.0f}},
+};
+
+const float NUM_SPACE = 55.0f;
+const TDiType<int> NUM_SPLIT = { 5, 2 };
+const TDiType<float> NUM_UVSCALE = { (1.0f / 5) ,(1.0f / 2) };
 
 /* ========================================
 	コンストラクタ
@@ -64,19 +92,19 @@ const std::map<E_CORD, DirectX::XMFLOAT2> MAP_POS = {
 =========================================== */
 CResult::CResult()
 {
-	// リザルト画像読込
-	m_pTexture[E_RESULT_RESULT] = new Texture();
-	if (FAILED(m_pTexture[E_RESULT_RESULT]->Create("Assets/Texture/gamestart.png")))
-	{
-		MessageBox(NULL, "Result gamestart.png", "Error", MB_OK);
-	}
 
-	// リザルト画面押下ボタン指示画像読込
-	m_pTexture[E_RESULT_BUTTON] = new Texture();
-	if (FAILED(m_pTexture[E_RESULT_BUTTON]->Create("Assets/Texture/pre_result.png")))
+	for (int i = 0; i < E_TEXTURE::TEXTURE_MAX; i++)
 	{
-		MessageBox(NULL, "Result pre_result.png", "Error", MB_OK);
+		// リザルト画像読込
+		m_pTexture[i] = new Texture();
+		if (FAILED(m_pTexture[i]->Create(MAP_TEX_PATH.at(i).c_str())))
+		{
+			MessageBox(NULL, "Result Texture", "Error", MB_OK);
+		}
 	}
+	
+
+	
 
 	// データ受け継ぎ
 	m_Data.Load();	//ファイルに上がっている情報を読み込む
@@ -97,7 +125,7 @@ CResult::CResult()
 CResult::~CResult()
 {
 	// 破棄処理
-	for (int i = 0; i >= E_RESULT_MAX; ++i)
+	for (int i = 0; i < E_TEXTURE::TEXTURE_MAX; i++)
 	{
 		SAFE_DELETE(m_pTexture[i]);
 	}
@@ -132,32 +160,56 @@ void CResult::Update()
 	======================================== */
 void CResult::Draw()
 {
-	// タイトル画像表示
-	Draw2d(TEXTURE_TITLE_TITLE_POSX
-		, TEXTURE_TITLE_TITLE_POSY
-		, TEXTURE_TITLE_TITLE_WIDTH
-		, TEXTURE_TITLE_TITLE_HEIGHT
-		, m_pTexture[E_RESULT_RESULT]);
 
-	// タイトル画面押下ボタン指示画像表示
-	Draw2d(TEXTURE_TITLE_BUTTON_POSX
-		, TEXTURE_TITLE_BUTTON_POSY
-		, TEXTURE_TITLE_BUTTON_WIDTH
-		, TEXTURE_TITLE_BUTTON_HEIGHT
-		, m_pTexture[E_RESULT_BUTTON]);
+	Draw2d(
+		MAP_POS.at(E_TEXTURE::BG_SCREEN).x,
+		MAP_POS.at(E_TEXTURE::BG_SCREEN).y,
+		MAP_SIZE.at(E_TEXTURE::BG_SCREEN).x,
+		MAP_SIZE.at(E_TEXTURE::BG_SCREEN).y,
+		m_pTexture[E_TEXTURE::BG_SCREEN]);
 
-	// =============== フォントセット ===================
-	DirectWrite::SetFont(&m_Font);	//専用フォントをセット
+	Draw2d(
+		MAP_POS.at(E_TEXTURE::STAGE).x,
+		MAP_POS.at(E_TEXTURE::STAGE).y,
+		MAP_SIZE.at(E_TEXTURE::STAGE).x,
+		MAP_SIZE.at(E_TEXTURE::STAGE).y,
+		m_pTexture[E_TEXTURE::STAGE + m_Data.nStageNum]);
 
-	// =============== 描画系 ===============
-	//DirectWrite::DrawString(MAP_STRING.at(E_CORD_RESULT), MAP_POS.at(E_CORD_RESULT));										//リザルト
-	DirectWrite::DrawString(MAP_STRING.at(E_CORD_ALIVE) + std::to_string(m_Data.GetMinute()) + "：" + std::to_string(m_Data.GetSecond()) + "："
-		+ std::to_string(m_Data.GetCommaSecond()), MAP_POS.at(E_CORD_ALIVE));												//生存時間
-	DirectWrite::DrawString(MAP_STRING.at(E_CORD_KILL) + std::to_string(m_Data.nKill), MAP_POS.at(E_CORD_KILL));			//討伐数
-	DirectWrite::DrawString(MAP_STRING.at(E_CORD_SCORE) + std::to_string(m_Data.nTotalScore), MAP_POS.at(E_CORD_SCORE));	//スコア
+	for (int i = CResult::TEXT_SVL_TIME; i <= CResult::TEXT_SCORE; i++)
+	{
 
-	// =============== 終了 ===================
-	DirectWrite::SetFont(&m_FontDef);	//デフォルトフォントにリセット
+		// タイトル画面押下ボタン指示画像表示
+		Draw2d(
+			MAP_POS_BG_TEXT.at(i).x,
+			MAP_POS_BG_TEXT.at(i).y,
+			MAP_SIZE.at(E_TEXTURE::BG_TEXT).x,
+			MAP_SIZE.at(E_TEXTURE::BG_TEXT).y,
+			m_pTexture[E_TEXTURE::BG_TEXT]);
+	}
+
+
+	for (int i = TEXT_RESULT; i < E_TEXTURE::TEXT_SCORE + 1; i++)
+	{
+
+		// タイトル画面押下ボタン指示画像表示
+		Draw2d(
+			MAP_POS.at(i).x, 
+			MAP_POS.at(i).y, 
+			MAP_SIZE.at(i).x,
+			MAP_SIZE.at(i).y, 
+			m_pTexture[i]);
+	}
+
+
+	
+	DispTime(m_Data.GetSecond(), m_Data.GetMinute(), TDiType<float>(1200, 300));
+
+
+	DispNum(m_Data.nKill, TDiType < float>(1200, 470));
+
+	DispNum(m_Data.nTotalScore, TDiType < float>( 1200,630 ));
+
+
 }
 
 /* ========================================
@@ -188,4 +240,155 @@ CResult::E_TYPE CResult::GetNext() const
 {
 	// =============== 提供 ===================
 	return CResult::E_TYPE_TITLE;	//遷移先シーンの種類
+}
+
+void CResult::DispTime(int second, int minutes, TDiType<float> pos)
+{
+	std::vector<int> digitArray;
+	DirectX::XMFLOAT4X4 mat;
+	int Num = second;
+	digitArray.clear();
+
+	if (0 < Num)
+	{
+		while (Num > 0) {
+			digitArray.push_back(Num % 10);
+			Num /= 10;
+		}
+
+		if (digitArray.size() == 1)
+		{
+			digitArray.push_back(0);
+		}
+	}
+	else
+	{
+		digitArray.push_back(0);
+		digitArray.push_back(0);
+	}
+
+
+
+
+	for (int i = 0; i < digitArray.size(); i++)
+	{
+
+		int width = NUM_SPACE * i;
+		//ワールド行列はXとYのみを考慮して作成(Zは10ぐらいに配置
+		DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(pos.x - width, pos.y, 0.0f);
+		DirectX::XMStoreFloat4x4(&mat, DirectX::XMMatrixTranspose(world));
+
+		//スプライトの設定
+		Sprite::SetWorld(mat);
+
+		int x = digitArray[i] % NUM_SPLIT.x;	//ここ名前募集します
+		int y = digitArray[i] / NUM_SPLIT.x;	//配列に入ってる数字の場所を計算してます
+
+		Sprite::SetSize(DirectX::XMFLOAT2(MAP_SIZE.at(E_TEXTURE::TEXT_NUM).x, -MAP_SIZE.at(E_TEXTURE::TEXT_NUM).y));
+		Sprite::SetUVPos(DirectX::XMFLOAT2(NUM_UVSCALE.x * x, NUM_UVSCALE.y * y));
+		Sprite::SetUVScale(DirectX::XMFLOAT2(NUM_UVSCALE.x, NUM_UVSCALE.y));
+		Sprite::SetTexture(m_pTexture[E_TEXTURE::TEXT_NUM]);
+		Sprite::Draw();
+	}
+
+	DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(pos.x - (NUM_SPACE * 2), pos.y, 0.0f);
+	DirectX::XMStoreFloat4x4(&mat, DirectX::XMMatrixTranspose(world));
+
+	Sprite::SetWorld(mat);
+
+	Sprite::SetSize(DirectX::XMFLOAT2(80.0f, -80.0f));
+	Sprite::SetUVPos(DirectX::XMFLOAT2(0.0f, 0.0f));
+	Sprite::SetUVScale(DirectX::XMFLOAT2(1.0f, 1.0f));
+	Sprite::SetTexture(m_pTexture[E_TEXTURE::TEXT_COLON]);
+	Sprite::Draw();
+
+
+	Num = minutes;
+	digitArray.clear();
+
+	if (0 < Num)
+	{
+		while (Num > 0) {
+			digitArray.push_back(Num % 10);
+			Num /= 10;
+		}
+
+		if (digitArray.size() == 1)
+		{
+			digitArray.push_back(0);
+		}
+	}
+	else
+	{
+		digitArray.push_back(0);
+		digitArray.push_back(0);
+	}
+
+	for (int i = 0; i < digitArray.size(); i++)
+	{
+
+		int width = NUM_SPACE * i;
+		//ワールド行列はXとYのみを考慮して作成(Zは10ぐらいに配置
+		DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(pos.x - (NUM_SPACE * 3) - width, pos.y, 0.0f);
+		DirectX::XMStoreFloat4x4(&mat, DirectX::XMMatrixTranspose(world));
+
+		//スプライトの設定
+		Sprite::SetWorld(mat);
+
+		int x = digitArray[i] % NUM_SPLIT.x;	//ここ名前募集します
+		int y = digitArray[i] / NUM_SPLIT.x;	//配列に入ってる数字の場所を計算してます
+
+		Sprite::SetSize(DirectX::XMFLOAT2(MAP_SIZE.at(E_TEXTURE::TEXT_NUM).x, -MAP_SIZE.at(E_TEXTURE::TEXT_NUM).y));
+		Sprite::SetUVPos(DirectX::XMFLOAT2(NUM_UVSCALE.x * x, NUM_UVSCALE.y * y));
+		Sprite::SetUVScale(DirectX::XMFLOAT2(NUM_UVSCALE.x, NUM_UVSCALE.y));
+		Sprite::SetTexture(m_pTexture[E_TEXTURE::TEXT_NUM]);
+		Sprite::Draw();
+	}
+}
+
+void CResult::DispNum(int dispNum, TDiType<float> pos)
+{
+
+	std::vector<int> digitArray;
+	DirectX::XMFLOAT4X4 mat;
+	int Num = dispNum;
+
+
+	digitArray.clear();
+
+	if (0 < Num)
+	{
+		while (Num > 0) {
+			digitArray.push_back(Num % 10);
+			Num /= 10;
+		}
+	}
+	else
+	{
+		digitArray.push_back(0);
+	}
+
+
+	
+
+	for (int i = 0; i < digitArray.size(); i++)
+	{
+
+		int width = NUM_SPACE * i;
+		//ワールド行列はXとYのみを考慮して作成(Zは10ぐらいに配置
+		DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(pos.x - width, pos.y, 0.0f);
+		DirectX::XMStoreFloat4x4(&mat, DirectX::XMMatrixTranspose(world));
+
+		//スプライトの設定
+		Sprite::SetWorld(mat);
+
+		int x = digitArray[i] % NUM_SPLIT.x;	//ここ名前募集します
+		int y = digitArray[i] / NUM_SPLIT.x;	//配列に入ってる数字の場所を計算してます
+
+		Sprite::SetSize(DirectX::XMFLOAT2(MAP_SIZE.at(E_TEXTURE::TEXT_NUM).x, -MAP_SIZE.at(E_TEXTURE::TEXT_NUM).y));
+		Sprite::SetUVPos(DirectX::XMFLOAT2(NUM_UVSCALE.x * x, NUM_UVSCALE.y * y));
+		Sprite::SetUVScale(DirectX::XMFLOAT2(NUM_UVSCALE.x, NUM_UVSCALE.y));
+		Sprite::SetTexture(m_pTexture[E_TEXTURE::TEXT_NUM]);
+		Sprite::Draw();
+	}
 }
