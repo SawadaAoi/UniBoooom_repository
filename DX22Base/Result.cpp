@@ -30,15 +30,6 @@
 #include <map>						//連想型コンテナ
 #include "Defines.h"				//画面サイズ情報
 
-// =============== 列挙定義 ===================
-enum E_CORD
-{
-	//E_CORD_RESULT,	//リザルト
-	E_CORD_ALIVE,	//生存時間
-	E_CORD_KILL,	//討伐数
-	E_CORD_SCORE,	//スコア
-};	//コード
-
 
 // =============== 定数定義 ===================
 const std::map<int, std::string> MAP_TEX_PATH = {
@@ -64,6 +55,8 @@ const std::map<int, DirectX::XMFLOAT2> MAP_SIZE = {
 	{CResult::TEXT_SVL_TIME, {300.0f, 100.0f}},
 	{CResult::TEXT_HUNT_NUM, {300.0f, 100.0f}},
 	{CResult::TEXT_SCORE,	{300.0f, 100.0f}},
+	{CResult::TEXT_NUM,		{75.0f, 75.0f}},
+	{CResult::TEXT_COLON,	{80.0f, 80.0f}},
 	{CResult::STAGE,		{480.0f, 600.0f}},
 };
 
@@ -79,12 +72,14 @@ const std::map<int, DirectX::XMFLOAT2> MAP_POS = {
 };
 
 const std::map<int, DirectX::XMFLOAT2> MAP_POS_BG_TEXT = {
-	{0,	{1030.0f, 280.0f}},
-	{1,	{980.0f, 440.0f}},
-	{2, {930.0f, 600.0f}},
+	{CResult::TEXT_SVL_TIME,	{1030.0f, 280.0f}},
+	{CResult::TEXT_HUNT_NUM,	{980.0f, 440.0f}},
+	{CResult::TEXT_SCORE, {930.0f, 600.0f}},
 };
 
-
+const float NUM_SPACE = 55.0f;
+const TDiType<int> NUM_SPLIT = { 5, 2 };
+const TDiType<float> NUM_UVSCALE = { (1.0f / 5) ,(1.0f / 2) };
 
 /* ========================================
 	コンストラクタ
@@ -166,8 +161,6 @@ void CResult::Update()
 void CResult::Draw()
 {
 
-
-
 	Draw2d(
 		MAP_POS.at(E_TEXTURE::BG_SCREEN).x,
 		MAP_POS.at(E_TEXTURE::BG_SCREEN).y,
@@ -182,7 +175,7 @@ void CResult::Draw()
 		MAP_SIZE.at(E_TEXTURE::STAGE).y,
 		m_pTexture[E_TEXTURE::STAGE + m_Data.nStageNum]);
 
-	for (int i = 0; i < 3; i++)
+	for (int i = CResult::TEXT_SVL_TIME; i <= CResult::TEXT_SCORE; i++)
 	{
 
 		// タイトル画面押下ボタン指示画像表示
@@ -208,139 +201,13 @@ void CResult::Draw()
 	}
 
 
-
-
-
-	std::vector<int> digitArray;
-	DirectX::XMFLOAT4X4 mat;
-
-	int score0 = m_Data.GetSecond();
-	digitArray.clear();
-	while (score0 > 0) {
-		digitArray.push_back(score0 % 10);
-		score0 /= 10;
-	}
-
-	for (int i = 0; i < digitArray.size(); i++)
-	{
-
-		int width = 60 * i;
-		//ワールド行列はXとYのみを考慮して作成(Zは10ぐらいに配置
-		DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(1200 - width, 300, 0.0f);
-		DirectX::XMStoreFloat4x4(&mat, DirectX::XMMatrixTranspose(world));
-
-		//スプライトの設定
-		Sprite::SetWorld(mat);
-
-		int y = digitArray[i] % 5;	//ここ名前募集します
-		int x = digitArray[i] / 5;	//配列に入ってる数字の場所を計算してます
-
-		Sprite::SetSize(DirectX::XMFLOAT2(80.0f, -80.0f));
-		Sprite::SetUVPos(DirectX::XMFLOAT2(0.2f*y, 0.5*x));
-		Sprite::SetUVScale(DirectX::XMFLOAT2(0.2f, 0.5f));
-		Sprite::SetTexture(m_pTexture[E_TEXTURE::TEXT_NUM]);
-		Sprite::Draw();
-	}
 	
-
-	DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(1200 - 100, 300, 0.0f);
-	DirectX::XMStoreFloat4x4(&mat, DirectX::XMMatrixTranspose(world));
-
-	Sprite::SetWorld(mat);
-
-	Sprite::SetSize(DirectX::XMFLOAT2(80.0f, -80.0f));
-	Sprite::SetUVPos(DirectX::XMFLOAT2(0.0f, 0.0f));
-	Sprite::SetUVScale(DirectX::XMFLOAT2(1.0f, 1.0f));
-	Sprite::SetTexture(m_pTexture[E_TEXTURE::TEXT_COLON]);
-	Sprite::Draw();
-
-	int score1 = m_Data.GetMinute();
-	digitArray.clear();
-	while (score1 > 0) {
-		digitArray.push_back(score1 % 10);
-		score1 /= 10;
-	}
-
-	for (int i = 0; i < digitArray.size(); i++)
-	{
-
-		int width = 60 * i;
-		//ワールド行列はXとYのみを考慮して作成(Zは10ぐらいに配置
-		DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(1040 - width, 300, 0.0f);
-		DirectX::XMStoreFloat4x4(&mat, DirectX::XMMatrixTranspose(world));
-
-		//スプライトの設定
-		Sprite::SetWorld(mat);
-
-		int y = digitArray[i] % 5;	//ここ名前募集します
-		int x = digitArray[i] / 5;	//配列に入ってる数字の場所を計算してます
-
-		Sprite::SetSize(DirectX::XMFLOAT2(80.0f, -80.0f));
-		Sprite::SetUVPos(DirectX::XMFLOAT2(0.2f*y, 0.5*x));
-		Sprite::SetUVScale(DirectX::XMFLOAT2(0.2f, 0.5f));
-		Sprite::SetTexture(m_pTexture[E_TEXTURE::TEXT_NUM]);
-		Sprite::Draw();
-	}
-
-	//int score = m_Data.nTotalScore;
-	int score2 = m_Data.nKill;
-	digitArray.clear();
-	while (score2 > 0) {
-		digitArray.push_back(score2 % 10);
-		score2 /= 10;
-	}
-
-	for (int i = 0; i < digitArray.size(); i++)
-	{
-
-		int width = 60 * i;
-		//ワールド行列はXとYのみを考慮して作成(Zは10ぐらいに配置
-		DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(1200 - width, 470, 0.0f);
-		DirectX::XMStoreFloat4x4(&mat, DirectX::XMMatrixTranspose(world));
-
-		//スプライトの設定
-		Sprite::SetWorld(mat);
-
-		int y = digitArray[i] % 5;	//ここ名前募集します
-		int x = digitArray[i] / 5;	//配列に入ってる数字の場所を計算してます
-
-		Sprite::SetSize(DirectX::XMFLOAT2(80.0f, -80.0f));
-		Sprite::SetUVPos(DirectX::XMFLOAT2(0.2f*y, 0.5*x));
-		Sprite::SetUVScale(DirectX::XMFLOAT2(0.2f, 0.5f));
-		Sprite::SetTexture(m_pTexture[E_TEXTURE::TEXT_NUM]);
-		Sprite::Draw();
-	}
-
-	int score = m_Data.nTotalScore;
-	digitArray.clear();
-	while (score > 0) {
-		digitArray.push_back(score % 10);
-		score /= 10;
-	}
-
-	for (int i = 0; i < digitArray.size(); i++)
-	{
-
-		int width = 60 * i;
-		//ワールド行列はXとYのみを考慮して作成(Zは10ぐらいに配置
-		DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(1200 - width, 630, 0.0f);
-		DirectX::XMStoreFloat4x4(&mat, DirectX::XMMatrixTranspose(world));
-
-		//スプライトの設定
-		Sprite::SetWorld(mat);
-
-		int y = digitArray[i] % 5;	//ここ名前募集します
-		int x = digitArray[i] / 5;	//配列に入ってる数字の場所を計算してます
-
-		Sprite::SetSize(DirectX::XMFLOAT2(80.0f, -80.0f));
-		Sprite::SetUVPos(DirectX::XMFLOAT2(0.2f*y, 0.5*x));
-		Sprite::SetUVScale(DirectX::XMFLOAT2(0.2f, 0.5f));
-		Sprite::SetTexture(m_pTexture[E_TEXTURE::TEXT_NUM]);
-		Sprite::Draw();
-	}
-	
+	DispTime(m_Data.GetSecond(), m_Data.GetMinute(), TDiType<float>(1200, 300));
 
 
+	DispNum(m_Data.nKill, TDiType < float>(1200, 470));
+
+	DispNum(m_Data.nTotalScore, TDiType < float>( 1200,630 ));
 
 
 }
@@ -373,4 +240,155 @@ CResult::E_TYPE CResult::GetNext() const
 {
 	// =============== 提供 ===================
 	return CResult::E_TYPE_TITLE;	//遷移先シーンの種類
+}
+
+void CResult::DispTime(int second, int minutes, TDiType<float> pos)
+{
+	std::vector<int> digitArray;
+	DirectX::XMFLOAT4X4 mat;
+	int Num = second;
+	digitArray.clear();
+
+	if (0 < Num)
+	{
+		while (Num > 0) {
+			digitArray.push_back(Num % 10);
+			Num /= 10;
+		}
+
+		if (digitArray.size() == 1)
+		{
+			digitArray.push_back(0);
+		}
+	}
+	else
+	{
+		digitArray.push_back(0);
+		digitArray.push_back(0);
+	}
+
+
+
+
+	for (int i = 0; i < digitArray.size(); i++)
+	{
+
+		int width = NUM_SPACE * i;
+		//ワールド行列はXとYのみを考慮して作成(Zは10ぐらいに配置
+		DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(pos.x - width, pos.y, 0.0f);
+		DirectX::XMStoreFloat4x4(&mat, DirectX::XMMatrixTranspose(world));
+
+		//スプライトの設定
+		Sprite::SetWorld(mat);
+
+		int x = digitArray[i] % NUM_SPLIT.x;	//ここ名前募集します
+		int y = digitArray[i] / NUM_SPLIT.x;	//配列に入ってる数字の場所を計算してます
+
+		Sprite::SetSize(DirectX::XMFLOAT2(MAP_SIZE.at(E_TEXTURE::TEXT_NUM).x, -MAP_SIZE.at(E_TEXTURE::TEXT_NUM).y));
+		Sprite::SetUVPos(DirectX::XMFLOAT2(NUM_UVSCALE.x * x, NUM_UVSCALE.y * y));
+		Sprite::SetUVScale(DirectX::XMFLOAT2(NUM_UVSCALE.x, NUM_UVSCALE.y));
+		Sprite::SetTexture(m_pTexture[E_TEXTURE::TEXT_NUM]);
+		Sprite::Draw();
+	}
+
+	DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(pos.x - (NUM_SPACE * 2), pos.y, 0.0f);
+	DirectX::XMStoreFloat4x4(&mat, DirectX::XMMatrixTranspose(world));
+
+	Sprite::SetWorld(mat);
+
+	Sprite::SetSize(DirectX::XMFLOAT2(80.0f, -80.0f));
+	Sprite::SetUVPos(DirectX::XMFLOAT2(0.0f, 0.0f));
+	Sprite::SetUVScale(DirectX::XMFLOAT2(1.0f, 1.0f));
+	Sprite::SetTexture(m_pTexture[E_TEXTURE::TEXT_COLON]);
+	Sprite::Draw();
+
+
+	Num = minutes;
+	digitArray.clear();
+
+	if (0 < Num)
+	{
+		while (Num > 0) {
+			digitArray.push_back(Num % 10);
+			Num /= 10;
+		}
+
+		if (digitArray.size() == 1)
+		{
+			digitArray.push_back(0);
+		}
+	}
+	else
+	{
+		digitArray.push_back(0);
+		digitArray.push_back(0);
+	}
+
+	for (int i = 0; i < digitArray.size(); i++)
+	{
+
+		int width = NUM_SPACE * i;
+		//ワールド行列はXとYのみを考慮して作成(Zは10ぐらいに配置
+		DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(pos.x - (NUM_SPACE * 3) - width, pos.y, 0.0f);
+		DirectX::XMStoreFloat4x4(&mat, DirectX::XMMatrixTranspose(world));
+
+		//スプライトの設定
+		Sprite::SetWorld(mat);
+
+		int x = digitArray[i] % NUM_SPLIT.x;	//ここ名前募集します
+		int y = digitArray[i] / NUM_SPLIT.x;	//配列に入ってる数字の場所を計算してます
+
+		Sprite::SetSize(DirectX::XMFLOAT2(MAP_SIZE.at(E_TEXTURE::TEXT_NUM).x, -MAP_SIZE.at(E_TEXTURE::TEXT_NUM).y));
+		Sprite::SetUVPos(DirectX::XMFLOAT2(NUM_UVSCALE.x * x, NUM_UVSCALE.y * y));
+		Sprite::SetUVScale(DirectX::XMFLOAT2(NUM_UVSCALE.x, NUM_UVSCALE.y));
+		Sprite::SetTexture(m_pTexture[E_TEXTURE::TEXT_NUM]);
+		Sprite::Draw();
+	}
+}
+
+void CResult::DispNum(int dispNum, TDiType<float> pos)
+{
+
+	std::vector<int> digitArray;
+	DirectX::XMFLOAT4X4 mat;
+	int Num = dispNum;
+
+
+	digitArray.clear();
+
+	if (0 < Num)
+	{
+		while (Num > 0) {
+			digitArray.push_back(Num % 10);
+			Num /= 10;
+		}
+	}
+	else
+	{
+		digitArray.push_back(0);
+	}
+
+
+	
+
+	for (int i = 0; i < digitArray.size(); i++)
+	{
+
+		int width = NUM_SPACE * i;
+		//ワールド行列はXとYのみを考慮して作成(Zは10ぐらいに配置
+		DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(pos.x - width, pos.y, 0.0f);
+		DirectX::XMStoreFloat4x4(&mat, DirectX::XMMatrixTranspose(world));
+
+		//スプライトの設定
+		Sprite::SetWorld(mat);
+
+		int x = digitArray[i] % NUM_SPLIT.x;	//ここ名前募集します
+		int y = digitArray[i] / NUM_SPLIT.x;	//配列に入ってる数字の場所を計算してます
+
+		Sprite::SetSize(DirectX::XMFLOAT2(MAP_SIZE.at(E_TEXTURE::TEXT_NUM).x, -MAP_SIZE.at(E_TEXTURE::TEXT_NUM).y));
+		Sprite::SetUVPos(DirectX::XMFLOAT2(NUM_UVSCALE.x * x, NUM_UVSCALE.y * y));
+		Sprite::SetUVScale(DirectX::XMFLOAT2(NUM_UVSCALE.x, NUM_UVSCALE.y));
+		Sprite::SetTexture(m_pTexture[E_TEXTURE::TEXT_NUM]);
+		Sprite::Draw();
+	}
 }

@@ -69,7 +69,8 @@ public:
 	E_TYPE GetType() const override;	//自身の種類ゲッタ
 	E_TYPE GetNext() const override;	//次のシーンゲッタ
 private:
-
+	void DispTime(int second, int minutes, TDiType<float> pos);
+	void DispNum(int dispNum, TDiType<float> pos);
 
 	// =============== メンバ変数定義 ===============
 	Texture* m_pTexture[TEXTURE_MAX];
