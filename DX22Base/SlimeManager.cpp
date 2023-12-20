@@ -704,7 +704,7 @@ void CSlimeManager::UnionSlime(E_SLIME_LEVEL level ,TPos3d<float> pos)
 		// =============== UNIONセット ===================
 		if (m_pSlime[i])	//ヌルチェック
 		{
-			//pos.y += m_pSlime[i]->GetScale().y;	//頭上位置	TODO:モデル読み込みサイズを直した後にコメントを戻す
+			pos.y += m_pSlime[i]->GetScale().y;	//頭上位置	TODO:モデル読み込みサイズを直した後にコメントを戻す
 		}
 		if (m_pUnionMng)	//ヌルチェック
 		{
