@@ -28,7 +28,7 @@ public:
 	CSlime_Flame();
 	CSlime_Flame(TPos3d<float> pos, VertexShader* pVS, Model* pModel);
 	~CSlime_Flame();
-	void NormalMove(tagTransform3d playerTransform) override;
+	void NormalMove() override;
 	void SetNormalSpeed() override;
 
 private:

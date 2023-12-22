@@ -87,7 +87,7 @@ CSlime_Flame::~CSlime_Flame()
 	-------------------------------------
 	–ß’lF‚È‚µ
 =========================================== */
-void CSlime_Flame::NormalMove(tagTransform3d playerTransform)
+void CSlime_Flame::NormalMove()
 {
 	RandomMove();	// ƒ‰ƒ“ƒ_ƒ€ˆÚ“®
 

@@ -100,11 +100,13 @@ CSlime_3::~CSlime_3()
 =========================================== */
 void CSlime_3::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
 {
+	m_PlayerTran = playerTransform;
+
 	if (!m_bHitMove)	//敵が通常の移動状態の時
 	{
 		if (!m_bEscape  && m_nEscapeCnt == 0)	//逃げるフラグがoffなら
 		{
-			NormalMove(playerTransform);	//通常異動
+			NormalMove();	//通常異動
 		}
 		else
 		{
@@ -132,10 +134,11 @@ void CSlime_3::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
 	----------------------------------------
 	戻値：なし
 ======================================== */
-void CSlime_3::NormalMove(tagTransform3d playerTransform)
+void CSlime_3::NormalMove()
 {
-	TPos3d<float> playerPos = playerTransform.fPos;
-	TTriType<float> playerRad = playerTransform.fRadian;
+
+	TPos3d<float> playerPos = m_PlayerTran.fPos;
+	TTriType<float> playerRad = m_PlayerTran.fRadian;
 
 	// 敵からエネミーの距離、角度を計算
 	float distancePlayer = m_Transform.fPos.Distance(playerPos);
@@ -144,7 +147,7 @@ void CSlime_3::NormalMove(tagTransform3d playerTransform)
 	if (distancePlayer < MOVE_DISTANCE_PLAYER)
 	{
 		//プレイヤーがスライムの方向を向いているか確認
-	 	float PlayerToSlimeRad = playerTransform.Angle(m_Transform);	//プレイヤーからスライムへの角度
+	 	float PlayerToSlimeRad = m_PlayerTran.Angle(m_Transform);	//プレイヤーからスライムへの角度
 		if (PlayerToSlimeRad < 0.0f) { PlayerToSlimeRad = PlayerToSlimeRad + (DirectX::g_XMTwoPi[0]); }			//角度を正の数に変換
 		float adjustPlayerRad = playerRad.y + DirectX::XMConvertToRadians(90.0f);			//プレイヤーの見ている角度
 		if(adjustPlayerRad < 0.0f){adjustPlayerRad = adjustPlayerRad + (DirectX::g_XMTwoPi[0]);}	//角度を正の数に変換
@@ -156,7 +159,7 @@ void CSlime_3::NormalMove(tagTransform3d playerTransform)
 		if (checkRad < LEVEL3_STOP_RANGE)
 		{
 			m_move = TTriType<float>(0.0f, 0.0f, 0.0f);	//移動量を0にする
-			m_Transform.fRadian.y = -(m_Transform.Angle(playerTransform) - DirectX::XMConvertToRadians(90.0f));	//角度をDirectX用に変更
+			m_Transform.fRadian.y = -(m_Transform.Angle(m_PlayerTran) - DirectX::XMConvertToRadians(90.0f));	//角度をDirectX用に変更
 			return;
 		}
 		else	//プレイヤーがスライムと別の方向を向いていたら

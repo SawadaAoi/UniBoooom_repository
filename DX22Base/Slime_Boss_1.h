@@ -38,7 +38,7 @@ public:
 
 	void Update(tagTransform3d playerTransform) override;
 
-	void NormalMove(tagTransform3d playerTransform) override;
+	void NormalMove() override;
 	void SetNormalSpeed() override;
 	void SetMaxHp() override;
 

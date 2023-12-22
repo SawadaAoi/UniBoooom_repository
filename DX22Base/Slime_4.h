@@ -30,7 +30,7 @@ public:
 	~CSlime_4();
 	void Update(tagTransform3d playerTransform, float fSlimeMoveSpeed) override;
 
-	void NormalMove(tagTransform3d playerTransform) override;
+	void NormalMove() override;
 
 	void SetNormalSpeed() override;
 private:

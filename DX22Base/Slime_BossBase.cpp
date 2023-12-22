@@ -98,11 +98,11 @@ CSlime_BossBase::~CSlime_BossBase()
 =========================================== */
 void CSlime_BossBase::Update(tagTransform3d playerTransform)
 {
-	
-	
+	m_PlayerTran = playerTransform;
+
 	if (!m_bHitMove)	//“G‚ª’Êí‚ÌˆÚ“®ó‘Ô‚Ì
 	{
-		NormalMove(playerTransform);
+		NormalMove();
 	}
 	else
 	{

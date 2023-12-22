@@ -97,7 +97,7 @@ public:
 	virtual void Update(tagTransform3d playerTransform, float fSlimeMoveSpeed); 
 	virtual void Draw(const CCamera* pCamera);
 
-	virtual void NormalMove(tagTransform3d playerTransform);	// 通常時の移動処理
+	virtual void NormalMove();	// 通常時の移動処理
 	void RandomMove();
 	void HitMove();									//スライムが吹き飛び移動状態の時に毎フレーム呼び出して移動させる
 	void HitMoveStart(float speed, float angle);	//スライムが吹き飛ばされたときに速度と角度を決める
@@ -122,10 +122,11 @@ protected:
 	VertexShader* m_pVS;			//バーテックスシェーダーのポインタ
 	TTriType<float> m_move;			//移動量
 	TPos3d<float> m_ExpPos;			//最も近い爆発の座標
-	bool m_bEscape;					//スライムが逃げる状態かどうか
-	float m_fVecAngle;				//敵の吹き飛ぶ方向
 	float m_fSpeed;					//スライムの移動速度
+
 	bool m_bHitMove;				//吹っ飛び中かどうか
+	float m_fVecAngle;				//敵の吹き飛ぶ方向
+	bool m_bEscape;					//スライムが逃げる状態かどうか
 	int m_nEscapeCnt;				//逃げる状態になった時
 
 	E_SLIME_LEVEL m_eSlimeSize;		//スライムの大きさの列挙
@@ -136,10 +137,10 @@ protected:
 	
 	DirectX::XMMATRIX m_Ry;			//回転
 
-	int m_RanMoveCnt;			// ランダム移動の加算値
-	int m_nAttack;				// 攻撃力
+	int m_RanMoveCnt;				// ランダム移動の加算値
+	int m_nAttack;					// 攻撃力
 
-private:
+	tagTransform3d m_PlayerTran;	// プレイヤーの変形情報
 
 };
 #endif // __SLIME_BASE_H__

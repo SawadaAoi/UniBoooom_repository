@@ -87,12 +87,13 @@ CSlime_4::~CSlime_4()
 
 void CSlime_4::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
 {
+	m_PlayerTran = playerTransform;
 
 	if (!m_bHitMove)	//敵が通常の移動状態の時
 	{
 		if (!m_bEscape  && m_nEscapeCnt == 0)	//逃げるフラグがoffなら
 		{
-			NormalMove(playerTransform);	//通常異動
+			NormalMove();	//通常異動
 		}
 		else
 		{
@@ -110,9 +111,9 @@ void CSlime_4::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
 	m_Transform.fPos.z += m_move.z * fSlimeMoveSpeed;
 }
 
-void CSlime_4::NormalMove(tagTransform3d playerTransform)
+void CSlime_4::NormalMove()
 {
-	TPos3d<float> playerPos = playerTransform.fPos;
+	TPos3d<float> playerPos = m_PlayerTran.fPos;
 
 	// 敵からエネミーの距離、角度を計算
 	float distancePlayer = m_Transform.fPos.Distance(playerPos);
