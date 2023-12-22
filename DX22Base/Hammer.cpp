@@ -54,7 +54,6 @@ const float SwingSpeed_SIOW = 50.0f;								//毎フレームハンマーを振る間隔を短く
 const float ADJUST_DIRECTX_TO_COSINE = DirectX::XMConvertToRadians(90.0f);	// 三角関数とDirectX角度の差分(DirectXの角度は↑が0度、三角関数は→が0度)
 const float ONE_FRAME_ADD_ANGLE = SWING_ANGLE / SWING_TIME_FRAME;			// 1フレームで移動する角度量
 
-
 /* ========================================
    コンストラクタ関数
    ----------------------------------------
@@ -89,6 +88,8 @@ CHammer::CHammer()
 		MessageBox(NULL, "hammer", "Error", MB_OK);	//ここでエラーメッセージ表示
 	}
 	m_pModel->SetVertexShader(m_pVS);
+
+	m_pSphere = new CSphere();
 }
 
 /* ========================================
@@ -102,6 +103,8 @@ CHammer::CHammer()
    ======================================== */
 CHammer::~CHammer()
 {
+	SAFE_DELETE(m_pSphere);
+
 	SAFE_DELETE(m_pModel);
 	SAFE_DELETE(m_pVS);
 }
@@ -130,8 +133,6 @@ bool CHammer::Update()
 	{
 		return true;
 	}
-
-	
 }
 
 /* ========================================
@@ -164,6 +165,26 @@ void CHammer::Draw()
 		SetRenderTargets(1, &pRTV, pDSV);		//DSVがnullだと2D表示になる
 
 		m_pModel->Draw();
+	}
+
+	if (m_pSphere)
+	{
+		DirectX::XMFLOAT4X4 mat;
+		DirectX::XMStoreFloat4x4(&mat, DirectX::XMMatrixTranspose(DirectX::XMMatrixScaling(3.0f, 3.0f, 3.0f) *
+			DirectX::XMMatrixRotationY(m_Transform.fRadian.y) *
+			DirectX::XMMatrixTranslation(m_Transform.fPos.x, m_Transform.fPos.y, m_Transform.fPos.z)));
+
+		m_pSphere->SetWorld(mat);
+		m_pSphere->SetView(m_pCamera->GetViewMatrix());
+		m_pSphere->SetProjection(m_pCamera->GetProjectionMatrix());
+
+
+		// レンダーターゲット、深度バッファの設定
+		RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得
+		DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
+		SetRenderTargets(1, &pRTV, pDSV);		//DSVがnullだと2D表示になる
+
+		m_pSphere->Draw();
 	}
 }
 
@@ -246,9 +267,9 @@ void CHammer::SwingSpeedAdd()
 void CHammer::SwingSpeedSubtract()
 {
 	m_fSwingSpeed *= SwingSpeed_MINUS;
-	if (m_fSwingSpeed <= 9.0f)
+	if (m_fSwingSpeed <= SwingSpeed_MIN)
 	{
-		m_fSwingSpeed = 9.0f;
+		m_fSwingSpeed = SwingSpeed_MIN;
 	}
 	
 }

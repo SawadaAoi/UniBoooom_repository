@@ -29,10 +29,11 @@ public:
 	int nAliveTime;		//生存時間[s]
 	int nKill;			//倒した数
 	int nTotalScore;	//スコア合計値
+	int nStageNum;		//プレイしたステージ番号
 	std::string	sName;	//プレイヤー名
 	// ===プロトタイプ宣言===
 	tagBattleData();																//コンストラクタ
-	tagBattleData(const int& nAliveTime, const int& nKill, const int& nTotalScore);	//引数付きコンストラクタ
+	tagBattleData(const int& nAliveTime, const int& nKill, const int& nTotalScore, const int & nStageNum);	//引数付きコンストラクタ
 	tagBattleData(const tagBattleData& Obj);										//コピーコンストラクタ
 	~tagBattleData();																//デストラクタ
 	void Load();																	//データ読み込み
@@ -56,7 +57,7 @@ template<typename CharT, typename Traits>	//テンプレート関数実装
 std::basic_fstream<CharT, Traits>& operator>>(std::basic_fstream<CharT, Traits>& FileStream, BattleData& Data)
 {
 	// =============== 読み込み ===================
-	FileStream >> Data.nAliveTime >> Data.nKill >> Data.nTotalScore;	//宣言順に読み込み
+	FileStream >> Data.nAliveTime >> Data.nKill >> Data.nTotalScore >> Data.nStageNum;	//宣言順に読み込み
 
 	// =============== 提供 ===================
 	return FileStream;	//入力元ストリーム
@@ -76,7 +77,7 @@ template<typename CharT, typename Traits>	//テンプレート関数実装
 std::basic_fstream<CharT, Traits>& operator<<(std::basic_fstream<CharT, Traits>& FileStream, const BattleData& Data)
 {
 	// =============== 書き出し ===================
-	FileStream << Data.nAliveTime << ' ' << Data.nKill << ' ' << Data.nTotalScore << std::endl;	//宣言順に書き出し
+	FileStream << Data.nAliveTime << ' ' << Data.nKill << ' ' << Data.nTotalScore << ' ' << Data.nStageNum << std::endl;	//宣言順に書き出し
 
 	// =============== 提供 ===================
 	return FileStream;	//出力先ストリーム

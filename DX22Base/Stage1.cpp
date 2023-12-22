@@ -27,6 +27,7 @@
 	・2023/12/12 メンバ変数を親クラスに移動 yamashita
 	・2023/12/14 BGMの管理をSceneManagerに移動 yamashita
 	・2023/12/15 ゲームスタート表示を書き変え nieda
+	・2023/12/18 デバッグモード削除反映 takagi
 
 	========================================== */
 
@@ -79,9 +80,9 @@ CStage1::~CStage1()
 =========================================== */
 void CStage1::Update()
 {
-	if (m_pDrawStart->GetAnimFlg())	// シーン遷移後ゲームを開始するか判定
+	if (m_pStartText->GetAnimFlg())	// シーン遷移後ゲームを開始するか判定
 	{
-		m_pDrawStart->Update();
+		m_pStartText->Update();
 	}
 	else
 	{
@@ -89,7 +90,6 @@ void CStage1::Update()
 		m_pCamera->Update();
 
 		//ポーズ更新
-#if USE_PAUSE
 		if (m_pPause)	//ヌルチェック
 		{
 			m_pPause->Update();	//ポーズ更新
@@ -99,7 +99,6 @@ void CStage1::Update()
 			}
 			m_bFinish = m_pPause->IsFin();	//終了判定
 		}
-#endif
 
 		// =============== ヒットストップ検査 ===================
 		if (!CHitStop::IsStop())	//ヒットストップ時処理しない
@@ -120,10 +119,6 @@ void CStage1::Update()
 
 		
 	}
-
-#if USE_FADE_GAME
-	m_pFade->Update();
-#endif
 
 #if SCENE_TRANSITION
 	if (m_pUIStageManager->GetStageFinish()->GetDispFlg())
@@ -146,6 +141,8 @@ void CStage1::Update()
 		{
 			m_Data.nKill = m_pSlimeMng->GetKillCnt();						//討伐数退避
 		}
+
+		m_Data.nStageNum = 1;
 	}
 #endif
 }
@@ -189,20 +186,16 @@ void CStage1::Draw()
 	m_pUIStageManager->Draw();
 
 	// スタート合図描画
-	if (m_pDrawStart->GetAnimFlg())
+	if (m_pStartText->GetAnimFlg())
 	{
-		m_pDrawStart->Draw();
+		m_pStartText->Draw();
 	}
 
-#if USE_FADE_GAME
-	m_pFade->Draw();
-#endif
-#if USE_PAUSE
+	// ポーズ描画
 	if (m_pPause)
 	{
 		m_pPause->Draw();
 	}
-#endif
 }
 
 /* ========================================

@@ -38,6 +38,7 @@
 	・2023/12/08 被討伐数のカウンタを追加 takagi
 	・2023/12/15 SEまわりを整理 yamashita
 	・2023/12/15 ボス1のモデルを修正 Sawada
+	・2023/12/20 UNION追加 takagi
 
 =========================================== */
 
@@ -124,8 +125,9 @@ CSlimeManager::CSlimeManager(CPlayer* pPlayer)
 	, m_oldCreatePos{ 0.0f,0.0f,0.0f }
 	, m_pPlayer(pPlayer)
 	, m_pExpMng(nullptr)
+	, m_pUnionMng(nullptr)	//UNION管理
 	, m_pTimer(nullptr)
-	, m_nKill(0)		//被討伐数
+	, m_nKill(0)			//被討伐数
 	, m_pSE{ nullptr,nullptr,nullptr }
 	, m_pSESpeaker{ nullptr,nullptr,nullptr }
 	, m_bBossPtrExist(false)
@@ -143,8 +145,7 @@ CSlimeManager::CSlimeManager(CPlayer* pPlayer)
 	{
 		m_pBoss[i] = nullptr;
 	}
-
-	
+		
 	// ゲーム開始時に敵キャラを生成する
 	for (int i = 0; i < START_ENEMY_NUM; i++)
 	{
@@ -164,6 +165,9 @@ CSlimeManager::CSlimeManager(CPlayer* pPlayer)
 		break;
 	}
 #endif
+
+	// =============== UNION ===================
+	m_pUnionMng = new CUnionManager;	//UNION管理
 }
 
 /* ========================================
@@ -177,6 +181,7 @@ CSlimeManager::CSlimeManager(CPlayer* pPlayer)
 =========================================== */
 CSlimeManager::~CSlimeManager()
 {
+	SAFE_DELETE(m_pUnionMng);	//UNION削除
 	SAFE_DELETE(m_pVS);
 	SAFE_DELETE(m_pHealModel);
 	SAFE_DELETE(m_pFlameModel);
@@ -229,7 +234,6 @@ void CSlimeManager::Update(CExplosionManager* pExpMng)
 	{
 		if (m_pBoss[i] == nullptr) continue;
 		m_pBoss[i]->Update(m_pPlayer->GetTransform());
-
 	}
 
 	//---敵生成---
@@ -239,6 +243,12 @@ void CSlimeManager::Update(CExplosionManager* pExpMng)
 		// 敵 生成
 		Create(GetRandomLevel());	//スライムのレベルをランダムに選んで生成する
 		m_CreateCnt = 0;				//カウントをリセット
+	}
+
+	// =============== UNION更新 ===================
+	if (m_pUnionMng)	//ヌルチェック
+	{
+		m_pUnionMng->Update();	//更新
 	}
 }
 
@@ -266,6 +276,12 @@ void CSlimeManager::Draw()
 		if (m_pBoss[i] == nullptr) continue;
 		m_pBoss[i]->Draw(m_pCamera);
 
+	}
+
+	// =============== UNION描画 ===================
+	if (m_pUnionMng)	//ヌルチェック
+	{
+		m_pUnionMng->Draw();	//描画
 	}
 }
 
@@ -683,6 +699,16 @@ void CSlimeManager::UnionSlime(E_SLIME_LEVEL level ,TPos3d<float> pos)
 			//サイズ4のスライムを生成
 			m_pSlime[i] = new CSlime_4(pos, m_pVS, m_pRedModel);
 			break;
+		}
+
+		// =============== UNIONセット ===================
+		if (m_pSlime[i])	//ヌルチェック
+		{
+			pos.y += m_pSlime[i]->GetScale().y * UINION_TEXT_POS_Y_ADJUST;	//頭上位置	TODO:モデル読み込みサイズを直した後にコメントを戻す
+		}
+		if (m_pUnionMng)	//ヌルチェック
+		{
+			m_pUnionMng->MakeUnion(typeid(*m_pSlime[i]).hash_code(), pos);	//UNION生成
 		}
 
 		m_pSlime[i]->SetCamera(m_pCamera);	//カメラをセット
@@ -1259,6 +1285,12 @@ CSlime_BossBase* CSlimeManager::GetBossSlimePtr(int num)
 void CSlimeManager::SetCamera(CCamera * pCamera)
 {
 	m_pCamera = pCamera;
+
+	// =============== UNION ===================
+	if (m_pUnionMng)	//ヌルチェック
+	{
+		m_pUnionMng->SetCamera(pCamera);	//カメラ登録
+	}
 }
 
 /* ========================================

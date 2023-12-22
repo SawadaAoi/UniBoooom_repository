@@ -20,6 +20,7 @@
 #include <Texture.h>
 #include"Combo.h"
 #include <vector>
+#include "Defines.h"
 // =============== クラス定義 =====================
 class CTotalScore
 {
@@ -28,9 +29,9 @@ public:
 	typedef struct
 	{
 		int   nAddScore;				// スコア
-		float fComboMagnification;	//コンボ倍率
-		bool  bEndComboFlg;			// コンボ表示終了フラグ
-		bool  bDispTotalScoreFlg;	// スコア表示終了フラグ
+		float fComboMagnification;		// コンボ倍率
+		bool  bEndComboFlg;				// コンボ表示終了フラグ
+		bool  bDispTotalScoreFlg;		// スコア表示終了フラグ
 		int   nDispFrame;				// 残描画用加算値
 		bool  bDispFlg;				
 	}PlusScore;	// スコア処理情報まとめ
@@ -43,6 +44,8 @@ public:
 	void AddScore(CCombo::ComboInfo comboInfo,int num);
 	void ComboCheck(CCombo::ComboInfo comboInfo, int num);
 	void AddTotalScore();
+	void DrawTotalScoreBG();			// トータルスコアの背景描画
+	void DrawPlusScoreBG(int lineNum);		// 加算スコアの背景描画
 	int GetTotalScore();
 	std::vector<int> digitsToArray(int score);	//引数の数字を各桁1ずつ配列に入れる
 private:
@@ -52,6 +55,8 @@ private:
 	CCombo::ComboInfo* m_pComboInfo;
 	Texture* m_pToScoreTexture;
 	Texture* m_pPlusScoreTexture;
+	Texture* m_pTScoreBGTex;	// TotalScoreテクスチャ
+	Texture* m_pPScoreBGTex;	// PlusScoreテクスチャ
 	CCombo* m_pCombo;
 	int nArraySize;
 	std::vector<int> TotalScoreArray;	//各桁1ずつ入れるための配列

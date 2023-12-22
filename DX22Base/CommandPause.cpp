@@ -1,7 +1,7 @@
 /* ========================================
 	HEW/UniBoooom!!
 	---------------------------------------
-	ポーズ文字実装
+	ポーズコマンド実装
 	---------------------------------------
 	CommandPause.cpp
 
@@ -9,21 +9,20 @@
 
 	変更履歴
 	・2023/12/10 制作 takagi
+	・2023/12/16 コメント追加 takagi
+	・2023/12/17 ゲームパラメータ無効化 takagi
 
 ========================================== */
 
 // =============== インクルード ===================
 #include "CommandPause.h"	//自身のヘッダ
-#include "GameParameter.h"
 
 // =============== 定数定義 ===================
 const float AMPITUDE(25.0f);										//振幅
 const float ANGLE_SPEED(DirectX::XMConvertToRadians(1.5f));			//単振動の角速度
 const TDiType<float> UV_SCALE(1.0f / 3.0f, 1.0f);					//UV拡縮
-#if !MODE_GAME_PARAMETER
 const float COMMAND_WIDTH = 360.0f;									//コマンド縦幅
 const float COMMAND_HEIGHT = 78.0f;									//コマンド横幅
-#endif // !MODE_GAME_PARAMETER
 const TDiType<float> SCALE_UNSELECT(COMMAND_WIDTH, COMMAND_HEIGHT);	//非選択時の最大拡縮率
 const TDiType<float> SCALE_SELECT(SCALE_UNSELECT * 1.1f);			//選択時の最小拡縮率
 const TDiType<float> SCALE_DESIDE(SCALE_UNSELECT * 1.2f);			//決定時の拡大率
@@ -65,6 +64,15 @@ CCommandPause::~CCommandPause()
 	SAFE_DELETE(m_pnTimer);	//タイマー削除
 }
 
+/* ========================================
+	更新関数
+	----------------------------------------
+	内容：更新処理
+	----------------------------------------
+	引数1：なし
+	----------------------------------------
+	戻値：なし
+=========================================== */
 void CCommandPause::Update()
 {
 	// =============== 更新 ===================

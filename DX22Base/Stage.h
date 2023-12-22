@@ -19,6 +19,7 @@
 	・2023/12/12 Stage1からメンバ変数を移動 yamashita
 	・2023/12/14 BGMの管理をSceneManagerに移動 yamashita
 	・2023/12/15 フェード削除 takagi
+	・2023/12/16 不要な変数など削除 nieda
 
 ========================================== */
 
@@ -46,19 +47,13 @@
 #include "Sound.h"
 #include "UIStageManager.h"
 #include "BattleData.h"			//メンバのヘッダ
-#include "DrawGameStart.h"
+#include "GameStartText.h"
 
 // =============== デバッグモード ===================
 #if _DEBUG
 #define MODE_COORD_AXIS (true)	//座標軸映すかどうか
 #define SCENE_TRANSITION(false)	// シーン遷移をボタン押下か自動化を切り替え（trueは自動)
 #endif
-
-// =============== 定数定義 =======================
-const int STARTSIGN_UV_NUM_X = 6;	// テクスチャの横の分割数
-const int STARTSIGN_UV_NUM_Y = 9;	// テクスチャの縦の分割数
-const float STARTSIGN_UV_POS_X = 1.0f / STARTSIGN_UV_NUM_X;		// 横のUV座標計算用
-const float STARTSIGN_UV_POS_Y = 1.0f / STARTSIGN_UV_NUM_Y;		// 縦のUV座標計算用
 
 // =============== クラス定義 =====================
 class CStage :public CScene	//シーン
@@ -107,7 +102,7 @@ protected:
 	CPause* m_pPause;						//ポーズ画面
 	CUIStageManager* m_pUIStageManager;
 	BattleData m_Data;	//戦闘データ記録用変数
-	CDrawStart* m_pDrawStart;	// ゲームスタート描画
+	CStartText* m_pStartText;	// ゲームスタート描画
 
 	const int* m_pPlayerHp;		// プレイヤーHP取得用
 	const int* m_pTimeCnt;		// 制限時間取得用

@@ -59,10 +59,11 @@ const int	DAMAGE_FLASH_FRAME = 0.1f * 60;	// ƒvƒŒƒCƒ„[‚Ìƒ_ƒ[ƒW“_–Å‚ÌØ‚è‘Ö‚¦Š
 #endif
 const int	HEAL_NUM = 2;									//ƒvƒŒƒCƒ„[‚Ì‰ñ•œ—Ê
 const float HAMMER_INTERVAL_TIME = 0.0f * 60;				// ƒnƒ“ƒ}[U‚èŠÔŠu
-const float PLAYER_SHADOW_SCALE = 1.5f;		// ƒvƒŒƒCƒ„[‚Ì‰e‚Ì‘å‚«‚³
+const float PLAYER_SHADOW_SCALE = 2.5f;		// ƒvƒŒƒCƒ„[‚Ì‰e‚Ì‘å‚«‚³
 const int	SE_RUN_INTERVAL = static_cast<int>(0.4f * 60);	//ƒvƒŒƒCƒ„[‚ÌˆÚ“®‚É‚æ‚éSE”­¶‚ÌŠÔŠu
 const float	SE_RUN_VOLUME = 0.3f;							//ˆÚ“®‚É‚æ‚éSE‚Ì‰¹—Ê
 const float PLAYER_MOVE_ANIME_SPEED = 1.2f;					//ƒvƒŒƒCƒ„[‚ÌˆÚ“®ƒAƒjƒ[ƒVƒ‡ƒ“Ä¶‘¬“x
+const float PLAYER_SWING_ANIME_SPEED = 5.0f;					//ƒvƒŒƒCƒ„[‚ÌˆÚ“®ƒAƒjƒ[ƒVƒ‡ƒ“Ä¶‘¬“x
 
 /* ========================================
    ŠÖ”FƒRƒ“ƒXƒgƒ‰ƒNƒ^
@@ -179,7 +180,8 @@ void CPlayer::Update()
 		// ƒXƒy[ƒXƒL[‚ð‰Ÿ‚µ‚½ŽžA‚Ü‚½‚ÍƒRƒ“ƒgƒ[ƒ‰‚ÌBƒ{ƒ^ƒ“‚ð‰Ÿ‚µ‚½Žž && ƒnƒ“ƒ}[ŠÔŠuŽžŠÔŒo‰ßÏ‚Ý
 		if ((IsKeyTrigger(VK_SPACE) || IsKeyTriggerController(BUTTON_B)) && !m_bIntFlg)
 		{
-			m_pModel->Play(m_Anime[MOTION_SWING], false, 0.01f);	//ƒAƒjƒ[ƒVƒ‡ƒ“‚ÌÄ¶
+			m_pModel->Play(m_Anime[MOTION_SWING], false, PLAYER_SWING_ANIME_SPEED + (SwingSpeed_MIN - m_pHammer->GetInterval()) * 0.092f);	//ƒAƒjƒ[ƒVƒ‡ƒ“‚ÌÄ¶
+			m_pModel->SetAnimationTime(m_Anime[MOTION_SWING],0.0f);					//ƒAƒjƒ[ƒVƒ‡ƒ“ƒ^ƒCƒ€‚ðƒXƒ^[ƒgˆÊ’u‚ÉƒZƒbƒg
 			m_pHammer->AttackStart(m_Transform.fPos, m_Transform.fRadian.y + DirectX::g_XMPi[0]);	// ƒnƒ“ƒ}[UŒ‚ŠJŽn
 			m_bAttackFlg = true;	// UŒ‚ƒtƒ‰ƒO‚ð—LŒø‚É‚·‚é
 			//SE‚ÌÄ¶
@@ -189,7 +191,6 @@ void CPlayer::Update()
 			m_pHammer->SwingSpeedAdd();
 		}
 		// ƒnƒ“ƒ}[‚ÌƒXƒCƒ“ƒO—Ê‚ð‘‚â‚·
-
 		m_pHammer->SwingSpeedSubtract();
 	}
 
@@ -284,11 +285,10 @@ void CPlayer::Draw()
 	//=====ƒAƒjƒ[ƒVƒ‡ƒ“‚Ì’²®—p‚Éˆê‰žŽc‚µ‚Ä‚¨‚­=====
 	if (m_bAttackFlg)
 	{
-		m_pHammer->Draw();		//ƒnƒ“ƒ}[‚Ì•`‰æ
+		//m_pHammer->Draw();		//ƒnƒ“ƒ}[‚Ì•`‰æ
 	}
 
-
-	//m_pShadow->Draw(m_Transform, PLAYER_SHADOW_SCALE, m_pCamera);	// ‰e‚Ì•`‰æ
+	m_pShadow->Draw(m_Transform, PLAYER_SHADOW_SCALE, m_pCamera);	// ‰e‚Ì•`‰æ
 }
 
 /* ========================================
@@ -584,7 +584,7 @@ void CPlayer::MoveCheck()
 		m_nMoveCnt = 0;
 
 		//ƒAƒjƒ[ƒVƒ‡ƒ“‚ðÄ¶
-		if (m_pModel->GetPlayNo() != m_Anime[MOTION_STOP] && !m_bAttackFlg)
+		if (m_pModel->GetPlayNo() != m_Anime[MOTION_STOP] && !m_bAttackFlg && !m_pModel->IsPlay(m_Anime[MOTION_SWING]))
 		{	//‘Ò‹@’†‚ÌƒAƒjƒ[ƒVƒ‡ƒ“‚ðÄ¶‚µ‚Ä‚È‚¢A‚È‚¨‚©‚ÂUŒ‚’†‚¶‚á‚È‚¢ê‡
 			m_pModel->Play(m_Anime[MOTION_STOP], true);
 		}
@@ -597,7 +597,7 @@ void CPlayer::MoveCheck()
 		PlaySE(SE_RUN, SE_RUN_VOLUME);
 
 		//ƒAƒjƒ[ƒVƒ‡ƒ“‚ðÄ¶
-		if (m_pModel->GetPlayNo() != m_Anime[MOTION_MOVE])
+		if (m_pModel->GetPlayNo() != m_Anime[MOTION_MOVE] && !m_pModel->IsPlay(m_Anime[MOTION_SWING]))
 		{	//ˆÚ“®’†‚ÌƒAƒjƒ[ƒVƒ‡ƒ“‚ðÄ¶‚µ‚Ä‚È‚¢ê‡
 			m_pModel->Play(m_Anime[MOTION_MOVE], true, PLAYER_MOVE_ANIME_SPEED);
 		}

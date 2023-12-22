@@ -25,6 +25,8 @@
 	・2023/12/05 パラメーター追加(// ポーズ) Takagi
 	・2023/12/06 パラメーター編集(// ポーズ) Takagi
 	・2023/12/07 パラメーター削除(// 不必要) Takagi
+	・2023/12/16 パラメーター削除(// ゲームスタート描画) nieda
+	・2023/12/17 パラメーター削除(// ポーズ) Takagi
 
 =========================================== */
 #ifndef __GAME_PARAMETER_H__
@@ -49,22 +51,22 @@ const int SCREEN_HEIGHT_ = 720;
 
 
 // プレイヤー ================================================
-const float PLAYER_MOVE_SPEED	= 0.12f;			// プレイヤーの移動速度
-const int	PLAYER_HP			= 10;			// プレイヤーのHP
-const float PLAYER_RADIUS		= 0.12f;			// プレイヤーの当たり判定の大きさ
-const float PLAYER_SIZE			= PLAYER_RADIUS * 2.0f;			// プレイヤーの大きさ
-const int	NO_DAMAGE_TIME		= 3 * 60;		// プレイヤーの無敵時間
-const int	DAMAGE_FLASH_FRAME	= int(0.1f * 60);	// プレイヤーのダメージ点滅の切り替え間隔
+const float PLAYER_MOVE_SPEED	= 0.12f;				// プレイヤーの移動速度
+const int	PLAYER_HP			= 10;					// プレイヤーのHP
+const float PLAYER_RADIUS		= 0.12f;				// プレイヤーの当たり判定の大きさ
+const float PLAYER_SIZE			= PLAYER_RADIUS * 2.0f;	// プレイヤーの大きさ
+const int	NO_DAMAGE_TIME		= 3 * 60;				// プレイヤーの無敵時間
+const int	DAMAGE_FLASH_FRAME	= int(0.1f * 60);		// プレイヤーのダメージ点滅の切り替え間隔
 
 
 // ハンマー
-const float SWING_TIME_FRAME	= 0.15f * 60;							// ハンマーを振る時間(フレーム単位)
-const float ROTATE_RADIUS		= 2.0f;									// ハンマーが回転するプレイヤーからの距離
-const float HAMMER_COL_SIZE		= 2.0f;								//ハンマーの当たり判定の大きさ
-const float HAMMER_SIZE			= HAMMER_COL_SIZE * 0.26666f;									//ハンマーの大きさ
-const float INTERVAL_INITIAL = 0.2f;								//ハンマー初期間隔
-const float SwingSpeed_PLUS = 1.4f;									//ハンマーを一回振るときに乗算される値
-const float SwingSpeed_MINUS = 0.99f;									//毎フレームハンマーを振る間隔を短くさせる値
+const float SWING_TIME_FRAME	= 0.15f * 60;			// ハンマーを振る時間(フレーム単位)
+const float ROTATE_RADIUS = 2.5f;						// ハンマーが回転するプレイヤーからの距離
+const float HAMMER_COL_SIZE = 1.5f;						//ハンマーの当たり判定の大きさ
+const float HAMMER_SIZE = HAMMER_COL_SIZE * 0.26666f;	//ハンマーの大きさ
+const float INTERVAL_INITIAL = 0.2f;					//ハンマー初期間隔
+const float SwingSpeed_PLUS = 1.4f;						//ハンマーを一回振るときに乗算される値
+const float SwingSpeed_MINUS = 0.99f;					//毎フレームハンマーを振る間隔を短くさせる値
 const float SwingSpeed_SIOW = 50.0f;
 
 
@@ -88,6 +90,7 @@ const float MAX_SIZE_EXPLODE		= 6.0f;						// スライム4同士の爆発の大きさ
 const float EXPLODE_BASE_RATIO		= 1.5f;						// スライムの爆発接触での爆発の大きさのベース
 const float ESCAPE_DISTANCE			= 15.0f;					// 爆発がこの距離より近かったら逃げる範囲
 const int ESCAPE_TIME				= int(60 * 0.8f);			// この間隔で逃げる処理が終了する
+const float UINION_TEXT_POS_Y_ADJUST = 0.6f;					// 表示高さ(各スライムのSCALE)に掛ける調整用割合
 
 // スライム同士の反射の減算値
 const float LEAVE_DISTANCE = 29.0f;					// これ以上離れたら対角線上に移動する
@@ -210,15 +213,6 @@ const int FRAME_STOP_SOFT = 2;		//ストップ：軽　のフレーム数	// 現在使用している
 const int FRAME_STOP_NORMAL = 4;	//ストップ：中　のフレーム数
 
 
-// ゲーム開始時スタート表示 ==================================================
-const float TIME_WAIT_START = 75;				// ゲーム開始合図表示待ち時間
-const int SWITCH_ANIM_START = 1;				// スタートアニメーション切り替え時間
-const int START_SCALE_X = SCREEN_WIDTH_;		// UIの横幅
-const int START_SCALE_Y = SCREEN_HEIGHT_;		// UIの縦幅
-const float START_POS_X = SCREEN_WIDTH_ / 2;	// 表示位置のX座標
-const float START_POS_Y = SCREEN_HEIGHT_ / 2;	// 表示位置のY座標
-
-
 // ゲームクリア、ゲームオーバー表示 ==================================================
 const int SWITCH_ANIM_CLEAR = 1;				// 成功アニメーション切り替え時間
 const int SWITCH_ANIM_OVER = 1;					// 失敗アニメーション切り替え時間
@@ -226,16 +220,6 @@ const int STATE_SCALE_X = SCREEN_WIDTH_;		// UIの横幅
 const int STATE_SCALE_Y = SCREEN_HEIGHT_;		// UIの縦幅
 const float STATE_POS_X = SCREEN_WIDTH_ / 2;	// 表示位置のX座標
 const float STATE_POS_Y = SCREEN_HEIGHT_ / 2;	// 表示位置のY座標
-
-
-// ポーズ ====================================================================
-const float COMMAND_SPACE_HALF = 85.0f;	//コマンド同士の縦の間
-const float CHARA_Y = 620.0f;			//ポーズ表記部中心y位置
-const float CHARA_SPACE = 85.0f;		//ポーズ表記の横の間
-const float CHARA_WIDTH = 100.0f;		//ポーズ表記横幅
-const float CHARA_HEIGHT = 100.0f;		//ポーズ表記縦幅
-const float COMMAND_WIDTH = 360.0f;		//コマンド縦幅
-const float COMMAND_HEIGHT = 78.0f;		//コマンド横幅
 
 #endif // !MODE_GAME_PARAMETER
 #endif // !__GAME_PARAMETER_H__
