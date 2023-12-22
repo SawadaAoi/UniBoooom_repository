@@ -59,7 +59,7 @@ const int	DAMAGE_FLASH_FRAME = 0.1f * 60;	// ƒvƒŒƒCƒ„[‚Ìƒ_ƒ[ƒW“_–Å‚ÌØ‚è‘Ö‚¦Š
 #endif
 const int	HEAL_NUM = 2;									//ƒvƒŒƒCƒ„[‚Ì‰ñ•œ—Ê
 const float HAMMER_INTERVAL_TIME = 0.0f * 60;				// ƒnƒ“ƒ}[U‚èŠÔŠu
-const float PLAYER_SHADOW_SCALE = 1.5f;		// ƒvƒŒƒCƒ„[‚Ì‰e‚Ì‘å‚«‚³
+const float PLAYER_SHADOW_SCALE = 2.5f;		// ƒvƒŒƒCƒ„[‚Ì‰e‚Ì‘å‚«‚³
 const int	SE_RUN_INTERVAL = static_cast<int>(0.4f * 60);	//ƒvƒŒƒCƒ„[‚ÌˆÚ“®‚É‚æ‚éSE”­¶‚ÌŠÔŠu
 const float	SE_RUN_VOLUME = 0.3f;							//ˆÚ“®‚É‚æ‚éSE‚Ì‰¹—Ê
 const float PLAYER_MOVE_ANIME_SPEED = 1.2f;					//ƒvƒŒƒCƒ„[‚ÌˆÚ“®ƒAƒjƒ[ƒVƒ‡ƒ“Ä¶‘¬“x
@@ -288,8 +288,7 @@ void CPlayer::Draw()
 		//m_pHammer->Draw();		//ƒnƒ“ƒ}[‚Ì•`‰æ
 	}
 
-
-	//m_pShadow->Draw(m_Transform, PLAYER_SHADOW_SCALE, m_pCamera);	// ‰e‚Ì•`‰æ
+	m_pShadow->Draw(m_Transform, PLAYER_SHADOW_SCALE, m_pCamera);	// ‰e‚Ì•`‰æ
 }
 
 /* ========================================
