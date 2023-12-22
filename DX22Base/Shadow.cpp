@@ -113,7 +113,9 @@ void CShadow::Draw(tagTransform3d m_Pos, float fScale, const CCamera* pCamera)
 		Sprite::SetUVPos(DirectX::XMFLOAT2(0.0f, 0.0f));		// UVの位置
 		Sprite::SetUVScale(DirectX::XMFLOAT2(1.0f, 1.0f));		// UVの分割数
 		Sprite::SetTexture(m_pTextureShadow);					// テクスチャを設定
+		Sprite::SetColor(DirectX::XMFLOAT4(1.0f,1.0f,1.0f,0.6f));// 透明度を下げる
 		Sprite::Draw();											// スプライトを描画
+		Sprite::SetColor(DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f));// 透明度を戻す(他に影響を出さないため)
 	}
 }
 
