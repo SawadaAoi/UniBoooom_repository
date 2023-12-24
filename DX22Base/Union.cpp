@@ -9,36 +9,34 @@
 
 	変更履歴
 	・2023/12/20 制作 takagi
+	・2023/12/24 サイズ・フレーム変更をマネージャへ takagi
 
 ========================================== */
 
 // =============== インクルード ===================
-#include "Union.h"	//自身のヘッダ
+#include "Union.h"		//自身のヘッダ
 #include "Defines.h"	//画面情報用
 
 // =============== 定数定義 ===================
-const TTriType<float> SCALE(1272.0f * 0.005f, 636.0f * 0.005f, 0.0f);	//大きさ
-const int FRAME(120);													//フレーム数
-const float MAX_MOVE(0.04f);											//高さ減少量
-const int MAX_ANIM(1);													//アニメーション数
-const TDiType<int> MAX_SEAT(1);											//1x1
+const float MAX_MOVE(0.04f);	//高さ減少量
+const int MAX_ANIM(1);			//アニメーション数
+const TDiType<int> MAX_SEAT(1);	//1x1
 
 /* ========================================
 	コンストラクタ
 	----------------------------------------
 	内容：生成時に行う処理
 	----------------------------------------
-	引数1：なし
+	引数1：const int & nFrame：存在するフレーム数
 	----------------------------------------
 	戻値：なし
 =========================================== */
-CUnion::CUnion()
+CUnion::CUnion(const int & nFrame)
 	:CTitleAnime(MAX_ANIM, MAX_SEAT)	//委譲
 	,m_pCnt(nullptr)					//縮小用カウンタ
 {
 	// =============== 初期化 ===================
-	SetSize(SCALE);	//大きさ初期化
-	m_pCnt = new CFrameCnt(FRAME);	//カウント開始
+	m_pCnt = new CFrameCnt(nFrame);	//カウント開始
 }
 
 /* ========================================

@@ -9,6 +9,7 @@
 
 	変更履歴
 	・2023/12/20 制作 takagi
+	・2023/12/24 フレーム変更をマネージャへ takagi
 
 ========================================== */
 
@@ -24,7 +25,7 @@ class CUnion :public CTitleAnime	//アニメーション
 {
 public:
 	// ===プロトタイプ宣言===
-	CUnion();															//コンストラクタ
+	CUnion(const int& nFrame);											//コンストラクタ
 	~CUnion();															//デストラクタ
 	void Update() override;												//更新
 	void Draw(const E_DRAW_MODE & eMode = E_DRAW_MODE_NORMAL) override;	//描画
