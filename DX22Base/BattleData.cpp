@@ -11,6 +11,7 @@
 	・2023/12/07 制作 takagi
 	・2023/12/11 分秒取得追加 takagi
 	・2023/12/12 分秒取得修正 takagi
+	・2023/12/28 保存する項目を追加 Sawada
 
 ========================================== */
 
@@ -36,7 +37,7 @@ const std::string DATAFILE("BattleData.bin");	//データ読み書き用のファイル名
 	戻値：なし
 =========================================== */
 tagBattleData::tagBattleData()
-	:tagBattleData(0, 0, 0, 1)
+	:tagBattleData(0, 0, 0, 0, 0)
 {
 }
 
@@ -46,19 +47,23 @@ tagBattleData::tagBattleData()
 	内容：生成時に行う処理
 	-------------------------------------
 	引数1：const int & nAliveTime：生存時間
-	引数2：const int & nKill：討伐数
+	引数2：const int & nTotalKill：討伐数
 	引数3：const int & nTotalScore：総スコア
+	引数3：const int & nMaxCombo：最大コンボ数
+	引数3：const int & nStageNum：プレイステージ番号
 	-------------------------------------
 	戻値：なし
 =========================================== */
-tagBattleData::tagBattleData(const int & nAliveTime, const int & nKill, const int & nTotalScore, const int & nStageNum)
+tagBattleData::tagBattleData(const int& nAliveTime, const int& nTotalKill, 
+	const int& nTotalScore, const int& nMaxCombo, const int & nStageNum)
 	:sName(NAME)	//名前
 {
 	// =============== 初期化 ===================
-	this->nAliveTime = nAliveTime;		//生存時間初期化
-	this->nKill = nKill;				//討伐数初期化
-	this->nTotalScore = nTotalScore;	//総スコア初期化
-	this->nStageNum = nStageNum;	//総スコア初期化
+	this->nAliveTime = nAliveTime;		// 生存時間初期化
+	this->nTotalKill = nTotalKill;		// 討伐数初期化
+	this->nTotalScore = nTotalScore;	// 総スコア初期化
+	this->nMaxCombo = nMaxCombo;		// 最大コンボ数
+	this->nStageNum = nStageNum;		// プレイステージ番号
 }
 
 /* ========================================
@@ -73,11 +78,25 @@ tagBattleData::tagBattleData(const int & nAliveTime, const int & nKill, const in
 tagBattleData::tagBattleData(const tagBattleData & Obj)
 {
 	// =============== 複製 ===================
-	this->nAliveTime = Obj.nAliveTime;		//生存時間初期化
-	this->nKill = Obj.nKill;				//討伐数初期化
-	this->nTotalScore = Obj.nTotalScore;	//総スコア初期化
-	this->nStageNum = Obj.nStageNum;	//総スコア初期化
-}
+	this->nAliveTime = Obj.nAliveTime;		// 生存時間初期化
+	this->nTotalKill = Obj.nTotalKill;		// 討伐数初期化
+	
+	// スライム種類数分格納する
+	for (int i = 0; i < 5; i++)
+	{
+		this->nKill[i] = Obj.nKill[i];		// 討伐数初期化
+	}
+	this->nTotalScore = Obj.nTotalScore;	// 総スコア初期化
+	
+	// ステージ数分格納する
+	for (int i = 0; i < 3; i++)
+	{
+		this->nHighScore[i] = Obj.nHighScore[i];	// 総スコア初期化
+	}
+	this->nMaxCombo = Obj.nMaxCombo;		// 総スコア初期化
+	this->nStageNum = Obj.nStageNum;		// 総スコア初期化
+	this->bClearFlg = Obj.bClearFlg;		// 総スコア初期化
+}											   
 
 /* ========================================
 	デストラクタ

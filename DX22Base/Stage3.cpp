@@ -115,21 +115,7 @@ void CStage3::Update()
 		}
 	}
 #else
-	if (m_pUIStageManager->GetStageFinish()->GetDeleteDispFlg())
-	{
-		// =============== フラグ管理 =====================
-		m_bFinish = true;	// タイトルシーン終了フラグON
-
-		// =============== 退避 =====================
-		m_Data.nTotalScore = m_pUIStageManager->GetTotalScore();			//スコア退避
-		m_Data.nAliveTime = m_pUIStageManager->GetTimer()->GetErapsedTime();	//経過時間退避
-		if (m_pSlimeMng)	//ヌルチェック
-		{
-			m_Data.nKill = m_pSlimeMng->GetKillCnt();						//討伐数退避
-		}
-
-		m_Data.nStageNum = 3;
-	}
+	CStage::GameFinish(3);	// ステージ終了処理
 #endif
 }
 

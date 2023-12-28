@@ -132,7 +132,7 @@ void CTimer::Update()
 	//ŠÔ‚ª0‚É‚È‚Á‚½‚çI—¹ˆ—‚É
 	if (m_nTimeCnt <= 0)
 	{
-		// TODOƒQ[ƒ€I—¹ˆ—
+		m_nTimeCnt = 0;
 	}
 
 	ChangeSlimeParam();
