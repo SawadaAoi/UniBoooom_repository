@@ -55,11 +55,14 @@ public:
 	void DrawTexture(float posX, float posY, float h, float w, Texture* pTexture);
 	void SetTotalScore(CTotalScore* pTotalScore);
 
+	int GetMaxCombo();
 private:
 	// ===メンバ変数宣言===
 	Texture* m_pTextureNum[3];		// 数字画像
 	ComboInfo m_dComboInfo[MAX_COMBO_NUM];	// コンボ用情報まとめ
 	CTotalScore* m_pTotalScore;	
+
+	int m_nMaxComboNum;
 
 	float m_fSizeX;		// 横UV座標格納用
 	float m_fSizeY;		// 縦UV座標格納用

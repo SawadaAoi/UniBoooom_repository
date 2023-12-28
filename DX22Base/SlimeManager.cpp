@@ -39,6 +39,7 @@
 	・2023/12/15 SEまわりを整理 yamashita
 	・2023/12/15 ボス1のモデルを修正 Sawada
 	・2023/12/20 UNION追加 takagi
+	・2023/12/28 スライム討伐配列番号追加 Sawada
 
 =========================================== */
 
@@ -101,6 +102,17 @@ const std::map<size_t, int> MAP_KILL_POINT = {
 	{typeid(CSlime_Boss_1).hash_code(), 1 },
 	{typeid(CSlime_Boss_2).hash_code(), 1 },
 };	//スライムの種類に連動した討伐数
+
+const std::map<size_t, int> MAP_SLIME_KILL_NUM = {
+	{typeid(CSlime_1).hash_code(), 0 },
+	{typeid(CSlime_2).hash_code(), 1 },
+	{typeid(CSlime_3).hash_code(), 2 },
+	{typeid(CSlime_4).hash_code(), 3 },
+	{typeid(CSlime_Flame).hash_code(), 0 },
+	{typeid(CSlime_Heal).hash_code(), 0 },
+	{typeid(CSlime_Boss_1).hash_code(), 4 },
+	{typeid(CSlime_Boss_2).hash_code(), 4 },
+};	//スライムの種類に連動した討伐配列番号
 
 /* ========================================
 	コンストラクタ関数
@@ -168,6 +180,8 @@ CSlimeManager::CSlimeManager(CPlayer* pPlayer)
 
 	// =============== UNION ===================
 	m_pUnionMng = new CUnionManager;	//UNION管理
+
+	for (int i = 0; i < 5; i++) m_nKills[i] = 0;
 }
 
 /* ========================================
@@ -1330,10 +1344,27 @@ void CSlimeManager::SetTimer(CTimer * pTimer)
 	----------------------------------------
 	戻値：被討伐数
 =========================================== */
-int CSlimeManager::GetKillCnt()
+int CSlimeManager::GetTotalKillCnt()
 {
 	// =============== 提供 ===================
 	return m_nKill;	//被討伐数
+}
+
+/* ========================================
+	スライム別討伐数ゲッタ関数
+	----------------------------------------
+	内容：スライム別討伐数提供
+	----------------------------------------
+	引数1：なし
+	----------------------------------------
+	戻値：スライム別討伐数
+=========================================== */
+void CSlimeManager::GetKillCntArray(int* nKillCnt)
+{
+	for (int i = 0; i < 5; i++)
+	{
+		nKillCnt[i] = m_nKills[i];
+	}
 }
 
 /* ========================================
@@ -1409,6 +1440,9 @@ void CSlimeManager::CntKill(const CSlimeBase* pSlime)
 		// =============== カウンターストップ =====================
 		m_nKill = MAX_KILL_CNT;	//上限値で登録
 	}
+
+	m_nKills[MAP_SLIME_KILL_NUM.at(typeid(*pSlime).hash_code())]++;	//討伐数
+
 }
 
 /* ========================================

@@ -55,6 +55,7 @@ CCombo::CCombo()
 	,m_nCntWidth(0)
 	,m_nCntHeight(0)
 	,m_nCnt(0)
+	, m_nMaxComboNum(0)
 {
 	// 数字画像を読み込む
 	m_pTextureNum[0] = new Texture();
@@ -188,6 +189,8 @@ void CCombo::Draw()
 			// 指定時間表示したらコンボ数の表示を消す
 			if (m_dComboInfo[i].dDispFrame >= COMBO_UI_DISP_DILAY_TIME)
 			{
+				if (m_nMaxComboNum < m_dComboInfo[i].dCnt) m_nMaxComboNum = m_dComboInfo[i].dCnt;
+
 				m_dComboInfo[i].dCnt = 0;
 				m_dComboInfo[i].dDispFrame = 0;
 				m_dComboInfo[i].bEndFlg = false;
@@ -371,6 +374,19 @@ int CCombo::GetCombo(int num)
 	return m_dComboInfo[num].dCnt;
 }
 
+/* ========================================
+	最大コンボ数取得関数
+	----------------------------------------
+	内容：最大コンボ数を取得する
+	----------------------------------------
+	引数：無し
+	----------------------------------------
+	戻値：最大コンボ数
+======================================== */
+int CCombo::GetMaxCombo()
+{
+	return m_nMaxComboNum;
+}
 
 /* ========================================
 	コンボ終了関数
@@ -387,6 +403,7 @@ void CCombo::EndCombo(int num)
 	
 	m_pTotalScore->ComboCheck(m_dComboInfo[num], num);	//倍率を決める
 }
+
 /* ========================================
 	トータルスコア情報セット関数
 	----------------------------------------
@@ -400,6 +417,7 @@ void CCombo::SetTotalScore(CTotalScore* pTotalScore)
 {
 	m_pTotalScore = pTotalScore;
 }
+
 
 
 

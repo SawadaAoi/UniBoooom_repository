@@ -36,11 +36,10 @@
 	戻値：なし
 =========================================== */
 CStageFinish::CStageFinish(CCamera* pCamera, int* pPlayerHp, int* pTimeCnt)
-	: m_bDispFlg(false)
-	, m_eGameState(GAME_PLAY)
+	: m_eGameState(GAME_PLAY)
 	, m_pPlayerHp(nullptr)
 	, m_pTimeCnt(nullptr)
-	, m_bDeleteDisp(false)
+	, m_bGameEnd(false)
 {
 	m_pPlayerHp = pPlayerHp;	//プレイヤーのHPのポインタを取得
 	m_pTimeCnt = pTimeCnt;		//制限時間のポインタを取得
@@ -79,36 +78,32 @@ void CStageFinish::Update()
 	//※ゲーム終了後にクリアとゲームオーバーが勝手に切り替わらないように「&&」で「GAME_PLAY」状態だったらを入れた
 	if (0 >= *m_pPlayerHp && m_eGameState == GAME_PLAY)
 	{	//タイマーが0になったらクリア状態に遷移
-		m_bDispFlg = true;
 		m_eGameState = GAME_OVER;
 	}
 	else if (0 >= *m_pTimeCnt && m_eGameState == GAME_PLAY)
 	{	//体力が0になったらゲームオーバー状態に遷移
-		m_bDispFlg = true;
 		m_eGameState = GAME_CLEAR;
 	}
 
+	// ゲームオーバー
 	if (m_eGameState == GAME_OVER)
 	{
 		m_pOver->Update();
+		// アニメーションが終了したら
 		if (!m_pOver->GetAnimFlg())
 		{
-			m_bDeleteDisp ^= true;
+			m_bGameEnd = true;
 		}
 	}
+	// ゲームクリア
 	else if (m_eGameState == GAME_CLEAR)
 	{
 		m_pClear->Update();
+		// アニメーションが終了したら
 		if (!m_pClear->GetAnimFlg())
 		{
-			m_bDeleteDisp ^= true;
+			m_bGameEnd = true;
 		}
-	}
-
-	//表示が邪魔な時に消せるようにする	<=TODO　最後には消去する
-	if (IsKeyTrigger(VK_RSHIFT))
-	{
-		m_bDeleteDisp ^= true;
 	}
 }
 
@@ -123,20 +118,11 @@ void CStageFinish::Update()
 =========================================== */
 void CStageFinish::Draw()
 {
-	//UI表示時に案内を表示
-	if (m_eGameState != GAME_PLAY)
-	{
-		std::string txt = "右SHIFTで クリア／ゲームオーバーのUI表示を切り替え";	// TODO	謎のエラーが発生したためコメント内容を変更
-		DirectWrite::DrawString(txt, DirectX::XMFLOAT2(0.0f, 0.0f));
-	}
-	if (m_bDeleteDisp) { return; }	//邪魔な時にUIを表示せずに終了
-
 	// レンダーターゲット、深度バッファの設定
 	RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得
 	DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
 	SetRenderTargets(1, &pRTV, nullptr);	//DSVがnullだと2D表示になる
 
-	std::string txt;
 	switch (m_eGameState)	//ゲームの状態によって分岐
 	{
 	case (GAME_PLAY):	//ゲームをプレイ中の描画
@@ -151,20 +137,6 @@ void CStageFinish::Draw()
 }
 
 /* ========================================
-	表示フラグ取得関数
-	----------------------------------------
-	内容：UIの表示フラグの取得
-	----------------------------------------
-	引数1：なし
-	----------------------------------------
-	戻値：true:表示する / false:表示しない
-=========================================== */
-bool CStageFinish::GetDispFlg()
-{
-	return m_bDispFlg;
-}
-
-/* ========================================
 	画面遷移フラグ取得関数
 	----------------------------------------
 	内容：画面遷移フラグの取得
@@ -173,7 +145,30 @@ bool CStageFinish::GetDispFlg()
 	----------------------------------------
 	戻値：true:シーン遷移する / false:シーン遷移しない
 =========================================== */
-bool CStageFinish::GetDeleteDispFlg()
+bool CStageFinish::GetGameEndFlg()
 {
-	return m_bDeleteDisp;
+	return m_bGameEnd;
+}
+
+/* ========================================
+	ゲームクリアフラグ取得関数
+	----------------------------------------
+	内容：ゲームクリアフラグの取得
+	----------------------------------------
+	引数1：なし
+	----------------------------------------
+	戻値：true:ゲームクリア / false:ゲームクリアしていない
+=========================================== */
+bool CStageFinish::GetClearFlg()
+{
+	// ゲーム状態がゲームクリアになっているか
+	if (m_eGameState == CStageFinish::GAME_CLEAR)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+	
 }

@@ -26,6 +26,7 @@
 	・2023/12/08 被討伐数のカウンタを追加 takagi
 	・2023/12/15 SEまわりを整理 yamashita
 	・2023/12/20 UNION追加 takagi
+	・2023/12/28 スライム討伐配列番号追加 Sawada
 
    ======================================== */
 
@@ -109,7 +110,8 @@ public:
 	void SetHealMng(CHealItemManager* pHealItemMng);
 	void SetExplosionMng(CExplosionManager* pExpMng);
 	void SetTimer(CTimer* pTimer);
-	int GetKillCnt();									//被討伐数ゲッタ
+	int GetTotalKillCnt();									//被討伐数ゲッタ
+	void GetKillCntArray(int* nKillCnt);									//被討伐数ゲッタ
 private:
 	// ===メンバ変数宣言=====
 	int GetRandom(int min, int max);
@@ -140,6 +142,7 @@ private:
 	CExplosionManager* m_pExpMng;
 	
 	int m_nKill;	//被討伐数
+	int m_nKills[5];	//被討伐数
 
 	bool m_bBossPtrExist;		// ボスのポインタが存在するかどうか
 	// ===プロトタイプ宣言===

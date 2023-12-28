@@ -20,6 +20,7 @@
 	・2023/12/14 BGMの管理をSceneManagerに移動 yamashita
 	・2023/12/15 フェード削除 takagi
 	・2023/12/16 不要な変数など削除 nieda
+	・2023/12/28 BattleData格納処理をまとめた関数を追加	Sawada
 
 ========================================== */
 
@@ -67,6 +68,7 @@ public:
 	//virtual E_TYPE GetType() const = 0;	//自身の種類ゲッタ
 	void Collision();
 protected:
+	void GameFinish(int StageNum);
 	void PlayerSlimeCollision();
 	void PlayerBossCollision();		//追加
 	void PlayerHealItemCollision();
@@ -89,15 +91,9 @@ protected:
 	CSlimeManager* m_pSlimeMng;
 	CCOLLISION* m_pCollision;
 	CExplosionManager* m_pExplosionMng;
-	//CTimer* m_pTimer;
-	//CCombo* m_pCombo;
 	CFloor* m_pFloor;
-	//CStageFinish* m_pStageFin;
 	Texture* m_pTexture;
 	CScoreOHManager* m_pScoreOHMng;
-	////CTotalScore* m_pTotalScore;
-	//CHP_UI* m_pHpMng;
-	//CBossgauge* m_pBossgauge;
 	CHealItemManager* m_pHealItemMng;
 	CPause* m_pPause;						//ポーズ画面
 	CUIStageManager* m_pUIStageManager;

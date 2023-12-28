@@ -41,17 +41,15 @@ public:
 	~CStageFinish();
 	void Update();
 	void Draw();
-	bool GetDispFlg();
-	bool GetDeleteDispFlg();	// 画面遷移フラグ取得用
+	bool GetGameEndFlg();	// 画面遷移フラグ取得用
 
-	
+	bool GetClearFlg();
 
 private:
-	bool m_bDispFlg;
 	GAME_STATE m_eGameState;
 	const int* m_pPlayerHp;
 	const int* m_pTimeCnt;
-	bool m_bDeleteDisp;
+	bool m_bGameEnd;
 
 	CClearText* m_pClear;
 	COverText* m_pOver;

@@ -20,6 +20,7 @@
 	・2023/12/15 ゲームスタート表示書き変えに伴い必要なくなった変数削除 nieda
 	・2023/12/15 フェード削除 takagi
 	・2023/12/18 ポーズ動的確保 takagi
+	・2023/12/28 BattleData格納処理をまとめた関数を追加	Sawada
 
 ========================================== */
 
@@ -106,6 +107,9 @@ CStage::CStage()
 
 	//爆発マネージャー　←　タイマー
 	m_pSlimeMng->SetTimer(m_pUIStageManager->GetTimer());
+
+	// データ受け継ぎ
+	m_Data.Load();	//ファイルに上がっている情報を読み込む
 }
 
 /* ========================================
@@ -143,29 +147,42 @@ CStage::~CStage()
 	SAFE_DELETE(m_pStartText);
 }
 
-///* ========================================
-//	更新関数
-//	----------------------------------------
-//	内容：更新処理
-//	----------------------------------------
-//	引数1：なし
-//	----------------------------------------
-//	戻値：なし
-//=========================================== */
-//void CStage::Update()
-//{
-//}
-//
-///* ========================================
-//	描画関数
-//	----------------------------------------
-//	内容：描画処理
-//	----------------------------------------
-//	引数1：なし
-//	----------------------------------------
-//	戻値：なし
-//	======================================== */
-//	//!memo(見たら消してー)：constが邪魔になったら外してね(.hの方も)
-//void CStage::Draw() const
-//{
-//}
+/* ========================================
+	ゲーム終了処理
+	----------------------------------------
+	内容：ゲーム終了時の処理
+	----------------------------------------
+	引数1：ステージ番号
+	----------------------------------------
+	戻値：なし
+=========================================== */
+void CStage::GameFinish(int StageNum)
+{
+	// ゲームが終了したか？
+	if (m_pUIStageManager->GetStageFinish()->GetGameEndFlg())
+	{
+		// =============== フラグ管理 =====================
+		m_bFinish = true;	// タイトルシーン終了フラグON
+
+		// =============== 退避 =====================
+		m_Data.nTotalScore = m_pUIStageManager->GetTotalScore();				// スコア退避
+
+		// ハイスコアを更新しているか？
+		if (m_Data.nHighScore[StageNum - 1] < m_Data.nTotalScore)
+		{
+			m_Data.nHighScore[StageNum - 1] = m_Data.nTotalScore;	// ハイスコアを更新
+		}
+
+		m_Data.nAliveTime = m_pUIStageManager->GetTimer()->GetErapsedTime();	// 経過時間退避
+		m_Data.nMaxCombo = m_pUIStageManager->GetCombo()->GetMaxCombo();		// 最大コンボ数退避
+		m_Data.bClearFlg = m_pUIStageManager->GetStageFinish()->GetClearFlg();	// ゲームクリアしたか
+		if (m_pSlimeMng)	//ヌルチェック
+		{
+			m_Data.nTotalKill = m_pSlimeMng->GetTotalKillCnt();					// 総討伐数退避
+			m_pSlimeMng->GetKillCntArray(m_Data.nKill);							// スライム別討伐数退避
+
+		}
+
+		m_Data.nStageNum = StageNum;	// プレイしたステージ番号
+	}
+}
