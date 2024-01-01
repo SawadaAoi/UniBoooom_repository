@@ -261,6 +261,9 @@
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="SceneGame.cpp" />
     <ClCompile Include="Timer.cpp" />
+    <ClCompile Include="TimerStage1.cpp" />
+    <ClCompile Include="TimerStage2.cpp" />
+    <ClCompile Include="TimerStage3.cpp" />
     <ClCompile Include="Title.cpp" />
     <ClCompile Include="CommandTitle.cpp" />
     <ClCompile Include="TitleAnime.cpp" />
@@ -370,6 +373,9 @@
     <ClInclude Include="StripeParticle.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Timer.h" />
+    <ClInclude Include="TimerStage1.h" />
+    <ClInclude Include="TimerStage2.h" />
+    <ClInclude Include="TimerStage3.h" />
     <ClInclude Include="Title.h" />
     <ClInclude Include="CommandTitle.h" />
     <ClInclude Include="TitleAnime.h" />

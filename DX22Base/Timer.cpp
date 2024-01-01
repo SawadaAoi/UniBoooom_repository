@@ -15,6 +15,7 @@
 	・2023/12/01 時間経過でスライムのパラメータを変更する処理を修正 Sawada
 	・2023/12/07 ゲームパラメータから一部定数移動・暗黙の型キャスト除去 takagi
 	・2023/12/08 GetErapsedTime()関数追加 takagi
+	・2024/01/01 継承用書き換え Takagi
 
 ========================================== */
 
@@ -24,22 +25,20 @@
 #include "GameParameter.h"
 
 // =============== 定数定義 =======================
-const TPos2d<float> MINUTE_POS(565.0f, 45.0f);			//分の位置設定
-const TPos2d<float> SECOND_TENS_POS(640.0f, 45.0f);	//十の桁秒の位置設定
-const TPos2d<float> SECOND_ONE_POS(690.0f, 45.0f);		//一の桁秒の位置設定
-const TPos2d<float> TIME_BACKGROUND_POS(630.0f, 45.0f);	//バックグラウンド位置設定
-const TPos2d<float> TIME_COLON_POS(602.5f, 45.0f);		//コロンの位置設定
-const float TIME_BACK_GROUND_SIZE_X = 200.0f;			//タイマーのバックグランドのXの長さ設定
-const float TIME_BACK_GROUND_SIZE_Y = -75.0f;			//タイマーのバックグランドのYの長さ設定
-const float TIME_COLON_SIZE_X = 35.0f;					//タイマーのコロンのXの長さ設定
-const float TIME_COLON_SIZE_Y = -35.0f;					//タイマーのコロンのYの長さ設定
-#if MODE_GAME_PARAMETER
-#else
-const float SLM_PARAM_CHANGE_TIME[STATE_MAX] = { 60.0f, 120.0f, 180.0f };	// 経過時間の秒数
-const int	SLM_CREATE_NUM[STATE_MAX] = { 20, 25, MAX_SLIME_NUM };	// 最大生成数
-const int SLM_CREATE_INTERVAL_TIME[STATE_MAX] = { 1.0f, 1.5f, 1.5f };			// 生成間隔
-const float SLM_MOVE_ADD_SPEED[STATE_MAX] = { 1.0f, 1.1f, 1.2f };			// 移動スピード
-#endif
+const TPos2d<float> MINUTE_POS(565.0f, 45.0f);								//分の位置設定
+const TPos2d<float> SECOND_TENS_POS(640.0f, 45.0f);							//十の桁秒の位置設定
+const TPos2d<float> SECOND_ONE_POS(690.0f, 45.0f);							//一の桁秒の位置設定
+const TPos2d<float> TIME_BACKGROUND_POS(630.0f, 45.0f);						//バックグラウンド位置設定
+const TPos2d<float> TIME_COLON_POS(602.5f, 45.0f);							//コロンの位置設定
+const float TIME_BACK_GROUND_SIZE_X = 200.0f;								//タイマーのバックグランドのXの長さ設定
+const float TIME_BACK_GROUND_SIZE_Y = -75.0f;								//タイマーのバックグランドのYの長さ設定
+const float TIME_COLON_SIZE_X = 35.0f;										//タイマーのコロンのXの長さ設定
+const float TIME_COLON_SIZE_Y = -35.0f;										//タイマーのコロンのYの長さ設定
+
+//const float SLM_PARAM_CHANGE_TIME[STATE_MAX] = { 60.0f, 120.0f, 180.0f };	// 経過時間の秒数
+//const int	SLM_CREATE_NUM[STATE_MAX] = { 20, 25, MAX_SLIME_NUM };			// 最大生成数
+//const float SLM_CREATE_INTERVAL_TIME[STATE_MAX] = { 1.0f, 1.5f, 1.5f };		// 生成間隔
+//const float SLM_MOVE_ADD_SPEED[STATE_MAX] = { 1.0f, 1.1f, 1.2f };			// 移動スピード
 
 
 
@@ -60,9 +59,13 @@ CTimer::CTimer()
 	, m_pTextureBG(nullptr)
 	, m_pTextureColon(nullptr)
 	, m_pTextureNum(nullptr)
-	, m_nMaxSlimeNum(SLM_CREATE_NUM[STATE_FIRST])
-	, m_nSlimeCreateInterval(static_cast<int>(SLM_CREATE_INTERVAL_TIME[STATE_FIRST]))
-	, m_fSlimeMoveSpeed(SLM_MOVE_ADD_SPEED[STATE_FIRST])
+	, m_nMaxSlimeNum(0)
+	, m_nSlimeCreateInterval(0)
+	, m_fSlimeMoveSpeed(0.0f)
+	, m_anMaxSlimeNum{ {0} }				// 段階別スライムの最大生成数
+	, m_afSlimeCreateInterval{ {0.0f} }		// 段階別スライム生成間隔
+	, m_afSlimeMoveSpeed{ {0.0f} }			// 段階別スライムスピード
+	, m_afSlimeParamChangeTime{ {0.0f} }	// 段階別スライム形態変化時間
 {
 	//数字のテクスチャ読む込み
 
@@ -87,7 +90,7 @@ CTimer::CTimer()
 	}
 }
 /* ========================================
-	コンストラクタ
+	デストラクタ
 	----------------------------------------
 	内容：破棄時に行う処理
 	----------------------------------------
@@ -384,28 +387,28 @@ void CTimer::ChangeSlimeParam()
 	int elapsedTimeFrame = STAGE_TIME - m_nTimeCnt;
 
 	// 第一段階
-	if (elapsedTimeFrame < SLM_PARAM_CHANGE_TIME[STATE_FIRST] * 60)
+	if (elapsedTimeFrame < m_afSlimeParamChangeTime[STATE_FIRST] * 60)
 	{
-		m_nMaxSlimeNum			= SLM_CREATE_NUM[STATE_FIRST];
-		m_nSlimeCreateInterval	= static_cast<int>(SLM_CREATE_INTERVAL_TIME[STATE_FIRST] * 60);
-		m_fSlimeMoveSpeed		= SLM_MOVE_ADD_SPEED[STATE_FIRST];
+		m_nMaxSlimeNum			= m_anMaxSlimeNum[STATE_FIRST];
+		m_nSlimeCreateInterval	= static_cast<int>(m_afSlimeCreateInterval[STATE_FIRST] * 60);
+		m_fSlimeMoveSpeed		= m_afSlimeMoveSpeed[STATE_FIRST];
 
 	}
 	// 第二段階
-	else if (elapsedTimeFrame < SLM_PARAM_CHANGE_TIME[STATE_SECOND] * 60)
+	else if (elapsedTimeFrame < m_afSlimeParamChangeTime[STATE_SECOND] * 60)
 	{
-		m_nMaxSlimeNum			= SLM_CREATE_NUM[STATE_SECOND];
-		m_nSlimeCreateInterval	= static_cast<int>(SLM_CREATE_INTERVAL_TIME[STATE_SECOND] * 60);
-		m_fSlimeMoveSpeed = SLM_MOVE_ADD_SPEED[STATE_SECOND];
+		m_nMaxSlimeNum			= m_anMaxSlimeNum[STATE_SECOND];
+		m_nSlimeCreateInterval	= static_cast<int>(m_afSlimeCreateInterval[STATE_SECOND] * 60);
+		m_fSlimeMoveSpeed = m_afSlimeMoveSpeed[STATE_SECOND];
 
 
 	}
 	// 第三段階
 	else
 	{
-		m_nMaxSlimeNum			= SLM_CREATE_NUM[STATE_THIRD];
-		m_nSlimeCreateInterval	= static_cast<int>(SLM_CREATE_INTERVAL_TIME[STATE_THIRD] * 60);
-		m_fSlimeMoveSpeed		= SLM_MOVE_ADD_SPEED[STATE_THIRD];
+		m_nMaxSlimeNum			= m_anMaxSlimeNum[STATE_THIRD];
+		m_nSlimeCreateInterval	= static_cast<int>(m_afSlimeCreateInterval[STATE_THIRD] * 60);
+		m_fSlimeMoveSpeed		= m_afSlimeMoveSpeed[STATE_THIRD];
 
 
 	}

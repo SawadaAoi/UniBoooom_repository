@@ -21,6 +21,7 @@
 	・2023/11/23 トータルスコア表示追加　yamamoto
 	・2023/11/27 回復アイテムの追加 Sawada
 	・2023/11/29 UIを1つのオブジェクトにまとめた Sawada
+	・2024/01/01 ステージ1として動くように Takagi
 
 ========================================== */
 
@@ -105,7 +106,7 @@ SceneGame::SceneGame()
 	m_pExplosionMng		= new CExplosionManager();	// 爆発マネージャー生成
 	m_pSlimeMng			= new CSlimeManager(m_pPlayer);
 
-	m_pUIStageMng		= new CUIStageManager(m_pPlayer, m_pCamera, m_pSlimeMng);	// UIマネージャー生成
+	m_pUIStageMng		= new CUIStageManager(m_pPlayer, m_pCamera, m_pSlimeMng, CUIStageManager::E_STAGE_1);	// UIマネージャー生成
 
 
 	

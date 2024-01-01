@@ -40,6 +40,7 @@
 	・2023/12/15 ボス1のモデルを修正 Sawada
 	・2023/12/20 UNION追加 takagi
 	・2023/12/28 スライム討伐配列番号追加 Sawada
+	・2024/01/01 スライム生成数の代わりを訂正 takagi
 
 =========================================== */
 
@@ -62,10 +63,11 @@
 #include <stdlib.h>
 
 // =============== 定数定義 =======================
-const float COL_SUB_HIT_TO_BIG = 0.1f;			// スライム衝突(小→大)の衝突側の減算値(反射する移動)				//1.0でそのまま
-const float COL_SUB_STAND_TO_SMALL = 0.8f;			// スライム衝突(小→大)の衝突される側の減算値(衝突された方向)	//1.0でそのまま
-const float COL_SUB_HIT_TO_SMALL = 0.3f;			// スライム衝突(大→小)の衝突側の減算値(移動方向)				//1.0でそのまま
-const float COL_SUB_STAND_TO_BIG = 1.2f;			// スライム衝突(大→小)の衝突される側の減算値(衝突された方向)	//1.0でそのまま
+const float COL_SUB_HIT_TO_BIG = 0.1f;		// スライム衝突(小→大)の衝突側の減算値(反射する移動)				//1.0でそのまま
+const float COL_SUB_STAND_TO_SMALL = 0.8f;	// スライム衝突(小→大)の衝突される側の減算値(衝突された方向)	//1.0でそのまま
+const float COL_SUB_HIT_TO_SMALL = 0.3f;	// スライム衝突(大→小)の衝突側の減算値(移動方向)				//1.0でそのまま
+const float COL_SUB_STAND_TO_BIG = 1.2f;	// スライム衝突(大→小)の衝突される側の減算値(衝突された方向)	//1.0でそのまま
+const int	REPLACE_SLM_CREATE_NUM = 20;	// スライム最大生成数代わりの定数
 
 #define DEBUG_BOSS	(false)	// デバッグ用にゲーム開始時ボスを生成するかどうか
 
@@ -316,7 +318,7 @@ void CSlimeManager::Create(E_SLIME_LEVEL level)
 	int mMaxNum;
 	if (m_pTimer == nullptr)
 	{
-		mMaxNum = SLM_CREATE_NUM[STATE_FIRST];
+		mMaxNum = REPLACE_SLM_CREATE_NUM;
 	}
 	else
 	{

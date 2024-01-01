@@ -178,6 +178,12 @@
     <Filter Include="ヘッダー ファイル\2dObject\Text">
       <UniqueIdentifier>{84971194-0cb9-4bd2-80a3-31c79e07f89b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\2dObject\Timer">
+      <UniqueIdentifier>{68548d60-f9a6-4f63-a5fd-87f054be6d1d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\2dObject\Timer">
+      <UniqueIdentifier>{87981910-2080-4eb9-98a8-b2c6f9dc57ff}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -287,9 +293,6 @@
     </ClCompile>
     <ClCompile Include="Transform2d.cpp">
       <Filter>ソース ファイル\Info</Filter>
-    </ClCompile>
-    <ClCompile Include="Timer.cpp">
-      <Filter>ソース ファイル\2dObject</Filter>
     </ClCompile>
     <ClCompile Include="Object.cpp">
       <Filter>ソース ファイル\3dObject</Filter>
@@ -492,6 +495,18 @@
     <ClCompile Include="NumberText.cpp">
       <Filter>ソース ファイル\2dObject\Text</Filter>
     </ClCompile>
+    <ClCompile Include="Timer.cpp">
+      <Filter>ソース ファイル\2dObject\Timer</Filter>
+    </ClCompile>
+    <ClCompile Include="TimerStage1.cpp">
+      <Filter>ソース ファイル\2dObject\Timer</Filter>
+    </ClCompile>
+    <ClCompile Include="TimerStage2.cpp">
+      <Filter>ソース ファイル\2dObject\Timer</Filter>
+    </ClCompile>
+    <ClCompile Include="TimerStage3.cpp">
+      <Filter>ソース ファイル\2dObject\Timer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Defines.h">
@@ -616,9 +631,6 @@
     </ClInclude>
     <ClInclude Include="DirectWrite.h">
       <Filter>ヘッダー ファイル\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Timer.h">
-      <Filter>ヘッダー ファイル\2dObject</Filter>
     </ClInclude>
     <ClInclude Include="Object.h">
       <Filter>ヘッダー ファイル\3dObject</Filter>
@@ -814,6 +826,18 @@
     </ClInclude>
     <ClInclude Include="NumberText.h">
       <Filter>ヘッダー ファイル\2dObject\Text</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer.h">
+      <Filter>ヘッダー ファイル\2dObject\Timer</Filter>
+    </ClInclude>
+    <ClInclude Include="TimerStage1.h">
+      <Filter>ヘッダー ファイル\2dObject\Timer</Filter>
+    </ClInclude>
+    <ClInclude Include="TimerStage2.h">
+      <Filter>ヘッダー ファイル\2dObject\Timer</Filter>
+    </ClInclude>
+    <ClInclude Include="TimerStage3.h">
+      <Filter>ヘッダー ファイル\2dObject\Timer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

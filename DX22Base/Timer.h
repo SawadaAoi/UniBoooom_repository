@@ -12,6 +12,7 @@
 	・2023/11/17 開始処理を複数種類追加、タイマーストップ実装 Sawada
 	・2023/12/07 ゲームパラメータに依存していたので修正・不足インクルード解消・ゲームパラメータから一部定数移動 takagi
 	・2023/12/08 GetErapsedTime()関数追加 takagi
+	・2024/01/01 継承用書き換え Takagi
 
 ========================================== */
 #ifndef __TIMER_H__
@@ -28,6 +29,15 @@ const int STAGE_TIME = 180 * 60;	//ステージ制限時間（秒*フレーム）
 // =============== クラス定義 =====================
 class CTimer
 {
+protected:
+	// ===列挙定義 ==========
+	const enum TIME_STATE
+	{
+		STATE_FIRST = 0,
+		STATE_SECOND,
+		STATE_THIRD,
+		STATE_MAX,
+	};
 public:
 	// ===プロトタイプ宣言===
 	CTimer();
@@ -49,8 +59,15 @@ public:
 	int GetSlimeCreateInterval();					// スライム生成間隔を取得
 	float GetSlimeMoveSpeed();						// スライムスピードを取得
 	int GetErapsedTime();							//経過時間を取得
+protected:
+	// ===メンバ変数宣言===
+	int m_anMaxSlimeNum[STATE_MAX];				// 段階別スライムの最大生成数
+	float m_afSlimeCreateInterval[STATE_MAX];	// 段階別スライム生成間隔
+	float m_afSlimeMoveSpeed[STATE_MAX];		// 段階別スライムスピード
+	float m_afSlimeParamChangeTime[STATE_MAX];	// 段階別スライム形態変化時間
 
 private:
+	// ===プロトタイプ宣言===
 	void WaitTimeCheck();
 	void ChangeSlimeParam();
 
