@@ -21,6 +21,7 @@
 	・2023/12/15 フェード削除 takagi
 	・2023/12/16 不要な変数など削除 nieda
 	・2023/12/28 BattleData格納処理をまとめた関数を追加	Sawada
+	・2024/01/01 ステージ分岐 Takagi
 
 ========================================== */
 
@@ -61,8 +62,8 @@ class CStage :public CScene	//シーン
 {
 public:
 	// =============== プロトタイプ宣言 ===============
-	CStage();							//コンストラクタ
-	virtual ~CStage();					//デストラクタ
+	CStage(CUIStageManager::E_STAGE_NUM eStage);	//コンストラクタ
+	virtual ~CStage();								//デストラクタ
 	//virtual void Update();				//更新
 	//virtual void Draw() const;			//描画	
 	//virtual E_TYPE GetType() const = 0;	//自身の種類ゲッタ

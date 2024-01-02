@@ -15,6 +15,7 @@
 	・2023/12/14 BGMの管理をSceneManagerに移動 yamashita
 	・2023/12/15 ゲームスタート表示を書き変え nieda
 	・2023/12/18 デバッグモード削除反映 takagi
+	・2024/01/01 親コンストラクタ呼び出し takagi
 
 ========================================== */
 
@@ -34,6 +35,7 @@
 	戻値：なし
 =========================================== */
 CStage3::CStage3()
+	:CStage(CUIStageManager::E_STAGE_3)	//親関数呼び出し
 {
 	m_pFloor = new CFloor(m_pPlayer->GetPosAddress(), CFloor::Stage3);	// 床生成
 	m_pUIStageManager->GetBossGauge()->AddBossGauge(BOSS_GAUGE_S3[0].BossNum, BOSS_GAUGE_S3[0].startTime, BOSS_GAUGE_S3[0].maxTime);

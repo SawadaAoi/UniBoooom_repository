@@ -21,23 +21,27 @@
 	・2023/12/15 フェード削除 takagi
 	・2023/12/18 ポーズ動的確保 takagi
 	・2023/12/28 BattleData格納処理をまとめた関数を追加	Sawada
+	・2024/01/01 ステージ分岐 Takagi
 
 ========================================== */
 
 // =============== インクルード ===================
 #include "Stage.h"	//自身のヘッダ
 #include "Line.h"
+#include "Stage1.h"	//ステージ1
+#include "Stage2.h"	//ステージ2
+#include "Stage3.h"	//ステージ3
 
 //* ========================================
 //	コンストラクタ
 //	----------------------------------------
 //	内容：生成時に行う処理
 //	----------------------------------------
-//	引数1：なし
+//	引数1：CUIStageManager::E_STAGE_NUM eStage：ステージ番号
 //	----------------------------------------
 //	戻値：なし
 //=========================================== */
-CStage::CStage()
+CStage::CStage(CUIStageManager::E_STAGE_NUM eStage)
 	:m_pVs(nullptr)
 	, m_pPlayer(nullptr)
 	, m_pBox(nullptr)
@@ -82,7 +86,7 @@ CStage::CStage()
 	m_pCollision = new CCOLLISION();							//衝突判定チェック生成
 
 	//================2dObject動的確保================
-	m_pUIStageManager = new CUIStageManager(m_pPlayer, m_pCamera, m_pSlimeMng);	// UIマネージャー生成
+	m_pUIStageManager = new CUIStageManager(m_pPlayer, m_pCamera, m_pSlimeMng, eStage);	// UIマネージャー生成
 	m_pStartText = new CStartText(m_pCamera);
 
 	//================セット================

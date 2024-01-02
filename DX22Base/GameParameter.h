@@ -27,6 +27,7 @@
 	・2023/12/07 パラメーター削除(// 不必要) Takagi
 	・2023/12/16 パラメーター削除(// ゲームスタート描画) nieda
 	・2023/12/17 パラメーター削除(// ポーズ) Takagi
+	・2024/01/01 パラメーター削除(// タイマー) Takagi
 
 =========================================== */
 #ifndef __GAME_PARAMETER_H__
@@ -155,23 +156,6 @@ const float LEVEL_3_EXPLODE_TIME = 2.0f * 60.0f;	// スライム_3の爆発総時間
 const float LEVEL_4_EXPLODE_TIME = 3.0f * 60.0f;	// スライム_4の爆発総時間
 const float LEVEL_BOSS_EXPLODE_TIME = 4.0f * 60.0f;	// スライム_ボスの爆発総時間
 const int	DELAY_TIME = int(0.2f * 60);			// 遅延秒数
-
-
-// スライム時間差生成 =====================================================
-const enum TIME_STATE
-{
-	STATE_FIRST = 0,
-	STATE_SECOND,
-	STATE_THIRD,
-	STATE_MAX,
-};
-
-
-// タイマー =====================================================
-const float SLM_PARAM_CHANGE_TIME[STATE_MAX]	= { 60.0f, 120.0f, 180.0f };	// 経過時間の秒数
-const int	SLM_CREATE_NUM[STATE_MAX]			= { 20, 25, MAX_SLIME_NUM };	// 最大生成数
-const float SLM_CREATE_INTERVAL_TIME[STATE_MAX] = { 1.0f, 1.5f, 1.5f };			// 生成間隔
-const float SLM_MOVE_ADD_SPEED[STATE_MAX]		= { 1.0f, 1.1f, 1.2f };			// 移動スピード
 
 
 // ボスゲージ =====================================================

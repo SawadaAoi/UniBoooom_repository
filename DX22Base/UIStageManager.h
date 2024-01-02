@@ -11,6 +11,7 @@
 	・2023/11/28 ヘッダ作成UI用ヘッダ、メンバポインタを入れます Tei
 	・2023/12/08 シーン遷移用に関数追加 takagi
 	・2023/12/15 ボスゲージの取得処理追加 Sawada
+	・2024/01/01 シーン番号列挙 takagi
 
 ========================================== */
 
@@ -31,8 +32,16 @@
 class CUIStageManager
 {
 public:
+	enum E_STAGE_NUM
+	{
+		E_STAGE_1,
+		E_STAGE_2,
+		E_STAGE_3,
+		E_STAGE_MAX,
+	};
+public:
 	// ===メンバ関数宣言===
-	CUIStageManager(CPlayer* pPlayer,CCamera* pCamera, CSlimeManager* pSlimeMng);
+	CUIStageManager(CPlayer* pPlayer,CCamera* pCamera, CSlimeManager* pSlimeMng, E_STAGE_NUM eStage);
 	~CUIStageManager();
 	void Update();
 	void Draw();
