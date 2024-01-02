@@ -26,6 +26,7 @@
 	・2023/12/08 被討伐数のカウンタを追加 takagi
 	・2023/12/15 SEまわりを整理 yamashita
 	・2023/12/20 UNION追加 takagi
+	・2024/01/01 ボス落下のスライム硬直てょり追加 Tei
 
    ======================================== */
 
@@ -98,6 +99,7 @@ public:
 	void CheckEscape();
 
 	void PlaySE(SE se,float volume = 1.0f);
+	void SlimeRigid();
 
 	//ゲット関数
 	CSlimeBase* GetSlimePtr(int num);
@@ -140,6 +142,8 @@ private:
 	CExplosionManager* m_pExpMng;
 	
 	int m_nKill;	//被討伐数
+	int m_nRigidCnt;	//硬直時間カウント
+	bool m_bIsRigid;	//硬直かどうかフラグ
 
 	bool m_bBossPtrExist;		// ボスのポインタが存在するかどうか
 	// ===プロトタイプ宣言===

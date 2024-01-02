@@ -39,6 +39,7 @@
 	・2023/12/15 SEまわりを整理 yamashita
 	・2023/12/15 ボス1のモデルを修正 Sawada
 	・2023/12/20 UNION追加 takagi
+	・2024/01/01 ボス落下のスライム硬直処理追加 Tei
 
 =========================================== */
 
@@ -131,6 +132,8 @@ CSlimeManager::CSlimeManager(CPlayer* pPlayer)
 	, m_pSE{ nullptr,nullptr,nullptr }
 	, m_pSESpeaker{ nullptr,nullptr,nullptr }
 	, m_bBossPtrExist(false)
+	, m_nRigidCnt(0)
+	, m_bIsRigid(false)
 {
 	//スライムのモデルと頂点シェーダーの読み込み
 	LoadModel();
@@ -222,9 +225,9 @@ void CSlimeManager::Update(CExplosionManager* pExpMng)
 	// スライム更新
 	for (int i = 0; i <MAX_SLIME_NUM; i++)
 	{
-		if (m_pSlime[i] == nullptr) continue;
+		if (m_pSlime[i] == nullptr || m_bIsRigid == true) continue;
 		m_pSlime[i]->Update(m_pPlayer->GetTransform(), m_pTimer->GetSlimeMoveSpeed());
-
+		
 	}
 
 	OutOfRange();	//スライムがプレイヤーから一定距離離れたら対角線に移動
@@ -234,7 +237,9 @@ void CSlimeManager::Update(CExplosionManager* pExpMng)
 	{
 		if (m_pBoss[i] == nullptr) continue;
 		m_pBoss[i]->Update(m_pPlayer->GetTransform());
+		
 	}
+	SlimeRigid();
 
 	//---敵生成---
 	m_CreateCnt++;
@@ -250,6 +255,8 @@ void CSlimeManager::Update(CExplosionManager* pExpMng)
 	{
 		m_pUnionMng->Update();	//更新
 	}
+
+	
 }
 
 /* ========================================
@@ -1433,6 +1440,8 @@ void CSlimeManager::LoadSE()
 	}
 }
 
+
+
 /* ========================================
 	SEの読み込み関数
 	----------------------------------------
@@ -1447,4 +1456,33 @@ void CSlimeManager::PlaySE(SE se, float volume)
 {
 	m_pSESpeaker[se] = CSound::PlaySound(m_pSE[se]);	//SE再生
 	m_pSESpeaker[se]->SetVolume(volume);				//音量の設定
+}
+
+/* ========================================
+	スライム硬直関数
+	----------------------------------------
+	内容：ボス落下後他のスライムに硬直させる
+	----------------------------------------
+	引数1：なし
+	----------------------------------------
+	戻値：なし
+======================================== */
+void CSlimeManager::SlimeRigid()
+{
+	for (int i = 0; i < MAX_BOSS_SLIME_NUM; i++)
+	{
+		if (m_pBoss[i] == nullptr) continue;
+
+		// ボス落下硬直時他のスライムも硬直処理
+		if (m_pBoss[i]->GetMoveState() == 5)
+		{
+			m_bIsRigid = true;
+		}
+
+		else
+		{
+			m_bIsRigid = false;
+		}
+	}
+
 }
