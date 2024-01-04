@@ -223,8 +223,28 @@ void CSlimeManager::Update(CExplosionManager* pExpMng)
 	for (int i = 0; i <MAX_SLIME_NUM; i++)
 	{
 		if (m_pSlime[i] == nullptr) continue;
-		m_pSlime[i]->Update(m_pPlayer->GetTransform(), m_pTimer->GetSlimeMoveSpeed());
+		// 火炎ハンマーに殴られたスライムが停止していたら爆発する
+		if (m_pSlime[i]->GetPreExplode() && !m_pSlime[i]->GetHitMove())
+		{	
+			// スライムの座標を取得
+			TTriType<float> pos = m_pSlime[i]->GetPos();
+			// 爆発してからデリート＆スコア表示
+			m_pExpMng->SwitchExplode(m_pSlime[i]->GetSlimeLevel(), m_pSlime[i]->GetPos(), m_pSlime[i]->GetScale());
+			m_pScoreOHMng->DisplayOverheadScore(pos,m_pSlime[i]->GetSlimeLevel());
 
+			// 回復スライムだった場合回復アイテムを生成する
+			if(m_pSlime[i]->GetSlimeLevel() == LEVEL_HEAL)
+			{
+				m_pHealItemMng->Create(pos);
+			}
+
+			SAFE_DELETE(m_pSlime[i]);
+		}
+		else	// 火炎ハンマーに叩かれていない場合は通常の更新を行う
+		{
+			// スライムの更新
+			m_pSlime[i]->Update(m_pPlayer->GetTransform(), m_pTimer->GetSlimeMoveSpeed());
+		}
 	}
 
 	OutOfRange();	//スライムがプレイヤーから一定距離離れたら対角線に移動
@@ -450,6 +470,23 @@ void CSlimeManager::HitBranch(int HitSlimeNum, int StandSlimeNum, CExplosionMana
 		return;	//回復スライム接触が行われたなら処理が重ならないようにreturnする
 	}
 	
+	// ノーマルスライムが火炎ハンマーに殴られていた場合
+	if (m_pSlime[HitSlimeNum]->GetPreExplode())
+	{	// 衝突先のスライムを爆発させる
+		m_pExpMng->SwitchExplode(standSlimeLevel, standSlimeTransform.fPos, standSlimeTransform.fScale);
+		m_pScoreOHMng->DisplayOverheadScore(m_pSlime[StandSlimeNum]->GetPos(), standSlimeLevel);
+		SAFE_DELETE(m_pSlime[StandSlimeNum]);
+
+		return;
+	}
+	else if (m_pSlime[StandSlimeNum]->GetPreExplode())
+	{	// 衝突先のスライムを爆発させる
+		m_pExpMng->SwitchExplode(hitSlimeLevel, hitSlimeTransform.fPos, hitSlimeTransform.fScale);
+		m_pScoreOHMng->DisplayOverheadScore(m_pSlime[HitSlimeNum]->GetPos(), hitSlimeLevel);
+		SAFE_DELETE(m_pSlime[HitSlimeNum]);
+		return;
+	}
+
 	//-- ノーマルスライムヒット処理
 	// 衝突するスライムが小さい場合(小→大)
 	if (hitSlimeLevel < standSlimeLevel)
@@ -480,6 +517,7 @@ void CSlimeManager::HitBranch(int HitSlimeNum, int StandSlimeNum, CExplosionMana
 			SAFE_DELETE(m_pSlime[StandSlimeNum]);	//スライム削除
 
 			//スライム爆発処理
+			m_pPlayer->ChargeSpecial(int(E_SLIME_LEVEL::LEVEL_4x4));	// プレイヤーの火炎ハンマーのチャージを増加
 			pExpMng->Create(pos, MAX_SIZE_EXPLODE * EXPLODE_BASE_RATIO, LEVEL_4_EXPLODE_TIME, LEVEL_4_EXPLODE_DAMAGE, E_SLIME_LEVEL::LEVEL_4x4);	//衝突されたスライムの位置でレベル４爆発
 			m_pScoreOHMng->DisplayOverheadScore(pos, LEVEL_4_SCORE * 2, SLIME_SCORE_HEIGHT);
 			pExpMng->CreateUI(pos, LEVEL_4_EXPLODE_TIME);		//レベル４爆発した位置boooomUI表示

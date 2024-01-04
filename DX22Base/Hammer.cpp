@@ -69,6 +69,7 @@ CHammer::CHammer()
 	, m_dAddAngleCnt(0)
 	, m_pCamera(nullptr)
 	, m_fSwingSpeed(9.0f)
+	, m_bSpecial(false)
 {
 	m_fAddAngle = SWING_ANGLE / m_fSwingSpeed;
 	m_Sphere.fRadius = HAMMER_COL_SIZE;
@@ -300,4 +301,32 @@ float CHammer::GetInterval()
 void CHammer::SetCamera(const CCamera * pCamera)
 {
 	m_pCamera = pCamera;
+}
+
+/* ========================================
+   火炎ハンマーのセット関数
+   ----------------------------------------
+   内容：火炎ハンマー状態をセット
+   ----------------------------------------
+   引数1：火炎ハンマーの状態(bool)
+   ----------------------------------------
+   戻値：なし
+   ======================================== */
+void CHammer::SetBoolSpecial(bool bSpecial)
+{
+	m_bSpecial = bSpecial;
+}
+
+/* ========================================
+   火炎ハンマーの取得関数
+   ----------------------------------------
+   内容：火炎ハンマー状態を取得
+   ----------------------------------------
+   引数1：なし
+   ----------------------------------------
+   戻値：火炎ハンマーの状態(bool)
+   ======================================== */
+bool CHammer::GetBoolSpecial()
+{
+	return m_bSpecial;
 }

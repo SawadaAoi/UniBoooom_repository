@@ -30,6 +30,7 @@
 #include "Sound.h"
 #include "Combo.h"
 #include "BoooomUI.h"
+#include "Player.h"
 
 // =============== 定数定義 =======================
 const int	MAX_EXPLOSION_NUM = 20;			// 最大爆発数
@@ -67,7 +68,7 @@ public:
 	void DeleteCheck();							   				// 時間より爆発を削除関数
 	void ComboEndCheck();										// 爆発の連鎖が途切れたかチェックする
 	void SwitchExplode(E_SLIME_LEVEL slimeLevel, TPos3d<float> pos, TTriType<float> slimeSize);					//スライムのレベルに応じて爆発を変更
-	void SwitchExplode(E_SLIME_LEVEL slimeLevel, TPos3d<float> pos, TTriType<float> slimeSize, int comboNum);					//スライムのレベルに応じて爆発を変更
+	void SwitchExplode(E_SLIME_LEVEL slimeLevel, TPos3d<float> pos, TTriType<float> slimeSize, int comboNum);	//スライムのレベルに応じて爆発を変更
 
 
 	void CreateUI(TPos3d<float> pos, float fTime);				//BoooomUI生成関数
@@ -76,7 +77,7 @@ public:
 
 	void SetCamera(const CCamera* pCamera);	//他のオブジェクトと同一のカメラをセット
 	void SetCombo(CCombo* pCombo);
-
+	void SetPlayer(CPlayer* pPlayer);
 
 private:
 	// ===メンバ変数宣言===
@@ -84,6 +85,7 @@ private:
 	CBoooomUI* m_pBoooomUI[MAX_BOOOOM_NUM];			//Boooom表示用の配列
 	CCombo* m_pCombo;								// コンボ処理用
 	const CCamera* m_pCamera;
+	CPlayer* m_pPlayer;			// プレイヤークラス
 private:
 	Texture* m_pTexUI;	//Boooom用テクスチャ
 	XAUDIO2_BUFFER* m_pSEExplode;

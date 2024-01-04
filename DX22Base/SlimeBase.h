@@ -111,12 +111,15 @@ public:
 	TPos3d<float> GetPos();
 	bool GetEscapeFlag();
 	int GetAttack();
+	bool GetPreExplode();
+	bool GetHitMove();
 
 	//セット関数
 	virtual void SetNormalSpeed() = 0;
 	void SetCamera(const CCamera* pCamera);
 	void SetExplosionPos(TPos3d<float> expPos);
 	void SetEscapeFlag(bool bEscape);
+	void SetPreExplode(bool bExplode);
 protected:
 	Model* m_pModel;				//3Dモデル
 	VertexShader* m_pVS;			//バーテックスシェーダーのポインタ
@@ -128,6 +131,7 @@ protected:
 	float m_fVecAngle;				//敵の吹き飛ぶ方向
 	bool m_bEscape;					//スライムが逃げる状態かどうか
 	int m_nEscapeCnt;				//逃げる状態になった時
+	bool m_bPreExplode;				//火炎ハンマーに殴られた状態
 
 	E_SLIME_LEVEL m_eSlimeSize;		//スライムの大きさの列挙
 	const CCamera* m_pCamera;		//カメラのポインタ

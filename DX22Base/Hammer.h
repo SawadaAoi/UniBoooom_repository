@@ -57,6 +57,8 @@ public:
 	void SwingSpeedSubtract();
 	float GetInterval();
 	void SetCamera(const CCamera* pCamera);
+	void SetBoolSpecial(bool bSpecial);
+	bool GetBoolSpecial();
 private:
 	// ===メンバ変数宣言=====
 	Model* m_pModel;				//プレイヤーのモデル
@@ -67,6 +69,7 @@ private:
 	const CCamera* m_pCamera;		//	
 	float m_fSwingSpeed;			//ハンマーを振る時間
 	float m_fAddAngle;				// 1フレームで移動する角度量
+	bool m_bSpecial;
 
 	CSphere* m_pSphere;
 };

@@ -89,6 +89,8 @@ CPlayer::CPlayer()
 	, m_bIntFlg(false)
 	, m_fIntCnt(0.0f)
 	, m_fTick(1.0f / 60.0f)
+	, m_nSpecialCharge(0)
+	, m_state(STATE_NONE)
 {
 	m_pHammer = new CHammer();								// Hammerクラスをインスタンス
 	m_nHp = PLAYER_HP;										// プレイヤーのHPを決定
@@ -133,11 +135,6 @@ CPlayer::~CPlayer()
 ======================================== */
 void CPlayer::Update()
 {
-	//m_nTick++;
-	//if (m_nTick > 18000)
-	//{
-	//	m_nTick = 0;
-	//}
 	// ハンマー攻撃中
 	if (m_bAttackFlg == true)
 	{
@@ -192,6 +189,24 @@ void CPlayer::Update()
 		}
 		// ハンマーのスイング量を増やす
 		m_pHammer->SwingSpeedSubtract();
+
+		// 「Q」を押したら火炎ハンマーを使用
+		if (IsKeyTrigger('Q') && m_state == STATE_CHARGE_MAX)
+		{	// 火炎ハンマー使用状態に変更
+			m_state = STATE_USE_SPECIAL;
+			m_nSpecialCharge = 0;	// カウントをリセット
+		}
+		// デバッグ用 (後で消す)
+		if (IsKeyTrigger('E'))
+		{
+			m_state = STATE_CHARGE_MAX;
+		}
+	}
+
+	// 火炎ハンマー使用状態ならハンマーの使用状態もONにする
+	if (m_state == STATE_USE_SPECIAL)
+	{
+		m_pHammer->SetBoolSpecial(true);
 	}
 
 	// 無敵状態になっている場合
@@ -499,6 +514,21 @@ void CPlayer::SetCamera(CCamera * pCamera)
 }
 
 /* ========================================
+   プレイヤーの状態セット関数
+   ----------------------------------------
+   内容：プレイヤーの状態をセットする
+   ----------------------------------------
+   引数：状態(STATE)
+   ----------------------------------------
+   戻値：なし
+======================================== */
+void CPlayer::SetState(STATE state)
+{
+	// プレイヤーの状態をセットする
+	m_state = state;
+}
+
+/* ========================================
    ハンマー攻撃フラグ取得関数
    ----------------------------------------
    内容：ハンマー攻撃フラグ取得する
@@ -660,4 +690,23 @@ void CPlayer::Healing()
 	m_nHp += HEAL_NUM;
 	if (m_nHp >= PLAYER_HP) { m_nHp = PLAYER_HP; }
 	PlaySE(SE_HEAL);
+}
+
+/* ========================================
+   火炎ハンマーチャージ関数
+   ----------------------------------------
+   内容：火炎ハンマーのカウントをチャージ
+   ----------------------------------------
+   引数：チャージ量(int)
+   ----------------------------------------
+   戻値：無し
+======================================== */
+void CPlayer::ChargeSpecial(int chargeCnt)
+{
+	m_nSpecialCharge += chargeCnt;
+	if (SPECIAL_MAX >= m_nSpecialCharge)
+	{
+		m_nSpecialCharge = SPECIAL_MAX;
+		m_state = STATE_CHARGE_MAX;
+	}
 }

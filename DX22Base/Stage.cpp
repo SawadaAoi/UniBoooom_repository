@@ -97,6 +97,8 @@ CStage::CStage()
 
 	//爆発マネージャー　←　コンボ
 	m_pExplosionMng->SetCombo(m_pUIStageManager->GetCombo());
+	//爆発マネージャー　←　プレイヤー
+	m_pExplosionMng->SetPlayer(m_pPlayer);
 
 	//スライムマネージャー　←　爆発マネージャー
 	m_pSlimeMng->SetExplosionMng(m_pExplosionMng);

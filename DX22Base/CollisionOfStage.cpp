@@ -185,11 +185,18 @@ void CStage::HammerSlimeCollision()
 			float fAngleSlime
 				= m_pPlayer->GetTransform().Angle(pSlimeNow->GetTransform());	// スライムが飛ぶ角度を取得
 
+			// ハンマーの状態を取得してスライムにセットする
+			pSlimeNow->SetPreExplode(playerHammer->GetBoolSpecial());
+			// 火炎ハンマー状態を解除
+			playerHammer->SetBoolSpecial(false);
+			m_pPlayer->SetState(CPlayer::STATE_NONE);
+
 			pSlimeNow->HitMoveStart(HAMMER_HIT_MOVE_SPEED, fAngleSlime);	// スライムを飛ばす
 			m_pPlayer->PlaySE(CPlayer::SE_HIT_HAMMER, HIT_HAMMER_VOLUME);	//ハンマーとスライムの接触SEを再生
 		}
 	}
 }
+
 /* ========================================
    ハンマーボス当たり判定関数
    ----------------------------------------

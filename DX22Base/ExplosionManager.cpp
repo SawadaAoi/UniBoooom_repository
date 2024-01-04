@@ -352,6 +352,20 @@ void CExplosionManager::SetCombo(CCombo * pCombo)
 }
 
 /* ========================================
+	プレイヤークラスセット関数
+	----------------------------------------
+	内容：プレイヤークラスセット
+	----------------------------------------
+	引数1：プレイヤークラスポインタ
+	----------------------------------------
+	戻値：なし
+======================================== */
+void CExplosionManager::SetPlayer(CPlayer * pPlayer)
+{
+	m_pPlayer = pPlayer;
+}
+
+/* ========================================
 	爆発配列取得関数
 	----------------------------------------
 	内容：爆発配列の取得
@@ -394,6 +408,7 @@ void CExplosionManager::SwitchExplode(E_SLIME_LEVEL slimeLevel, TPos3d<float> po
 	case LEVEL_BOSS:	ExplodeTime = LEVEL_BOSS_EXPLODE_TIME;	ExplodeDamage = LEVEL_4_EXPLODE_DAMAGE; break;
 	}
 
+	m_pPlayer->ChargeSpecial(int(slimeLevel));	// プレイヤーの火炎ハンマーのカウントを増加
 	Create(pos, ExplosionSize, ExplodeTime, ExplodeDamage, slimeLevel);	// 爆発生成
 
 }
@@ -426,7 +441,7 @@ void CExplosionManager::SwitchExplode(E_SLIME_LEVEL slimeLevel, TPos3d<float> po
 	case LEVEL_BOSS:	ExplodeTime = LEVEL_BOSS_EXPLODE_TIME;	ExplodeDamage = LEVEL_4_EXPLODE_DAMAGE; break;
 
 	}
-
+	m_pPlayer->ChargeSpecial(int(slimeLevel));	// プレイヤーの火炎ハンマーのカウントを増加
 	Create(pos, ExplosionSize, ExplodeTime, comboNum, ExplodeDamage, slimeLevel);	// 爆発生成
 //	m_pCombo->AddScore(slimeLevel, comboNum);
 

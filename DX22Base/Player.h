@@ -65,6 +65,15 @@ public:
 		SE_MAX			//SEの総数
 	};
 
+	enum STATE {
+		STATE_NONE,
+
+		STATE_CHARGE_MAX,
+		STATE_USE_SPECIAL,
+
+		STATE_MAX,
+	};
+
 	// ===プロトタイプ宣言===
 	CPlayer();		//コンストラクタ
 	~CPlayer();		//デストラクタ
@@ -80,6 +89,7 @@ public:
 	void LoadSound();	//サウンド読み込み関数
 	void PlaySE(SE se, float volume = 1.0f);
 	void Healing();
+	void ChargeSpecial(int chargeCnt);
 
 	// ゲット関数
 	tagSphereInfo GetHammerSphere();	//当たり判定を取るためゲッター
@@ -87,9 +97,10 @@ public:
 	CHammer* GetHammerPtr();
 	bool GetCollide();							//当たり判定があるかの確認
 	int* GetHpPtr();
+	bool GetAttackFlg();
 	// セット関数
 	void SetCamera(CCamera* pCamera);
-	bool GetAttackFlg();
+	void SetState(STATE state);
 	
 
 private:
@@ -97,21 +108,24 @@ private:
 	void LoadAnime();	//アニメーション読み込み関数
 
 	// ===メンバ変数宣言=====
-	TPos3d<float> m_fMove;				// 移動量
-	AnimeModel* m_pModel;				//プレイヤーのモデル
-	int m_nHp;							// プレイヤーの体力
-	bool m_bAttackFlg;					// 攻撃中かどうかのフラグ
-	int m_nNoDamageCnt;					// プレイヤーの無敵時間をカウント
-	bool m_bCollide;					// プレイヤーの無敵状態のフラグ(当たり判定をOFF)
-	CHammer* m_pHammer;					// ハンマークラスのポインタ(プレイヤーが管理する)
-	CCamera* m_pCamera;					// プレイヤーを追従するカメラ
-	bool m_DrawFlg;						// プレイヤーがダメージを受けたら点滅するフラグ
-	int m_FlashCnt;						// 点滅の時間の長さ
-	int m_nMoveCnt;						// プレイヤーの移動によるSEの間隔
-	bool m_bIntFlg;						// ハンマー間隔時間フラグ
-	float m_fIntCnt;					// ハンマー間隔時間カウント
-	float m_fTick;						//フレームカウンタ(0to60)
-	CShadow* m_pShadow;
+	TPos3d<float> m_fMove;		// 移動量
+	AnimeModel* m_pModel;		//プレイヤーのモデル
+	int m_nHp;					// プレイヤーの体力
+	bool m_bAttackFlg;			// 攻撃中かどうかのフラグ
+	int m_nNoDamageCnt;			// プレイヤーの無敵時間をカウント
+	bool m_bCollide;			// プレイヤーの無敵状態のフラグ(当たり判定をOFF)
+	CHammer* m_pHammer;			// ハンマークラスのポインタ(プレイヤーが管理する)
+	CCamera* m_pCamera;			// プレイヤーを追従するカメラ
+	bool m_DrawFlg;				// プレイヤーがダメージを受けたら点滅するフラグ
+	int m_FlashCnt;				// 点滅の時間の長さ
+	int m_nMoveCnt;				// プレイヤーの移動によるSEの間隔
+	bool m_bIntFlg;				// ハンマー間隔時間フラグ
+	float m_fIntCnt;			// ハンマー間隔時間カウント
+	float m_fTick;				// フレームカウンタ(0to60)
+	CShadow* m_pShadow;			// 影用クラス
+	int m_nSpecialCharge;			// 火炎ハンマー使用可能までのチャージ量
+	STATE m_state;				// プレイヤの状態
+
 
 	// ===列挙===
 	enum MOTION

@@ -182,6 +182,10 @@ void SceneGame::HammerSlimeCollision()
 				= m_pPlayer->GetTransform().Angle(pSlimeNow->GetTransform());	// スライムが飛ぶ角度を取得
 
 			pSlimeNow->HitMoveStart(HAMMER_HIT_MOVE_SPEED,fAngleSlime);	// スライムを飛ばす
+			// ハンマーの状態を取得してスライムにセットする
+			pSlimeNow->SetPreExplode(playerHammer->GetBoolSpecial());
+			// 火炎ハンマー状態を解除
+			playerHammer->SetBoolSpecial(false);
 
 			m_pSEHitHammerSpeaker = CSound::PlaySound(m_pSEHitHammer);	//SEの再生
 			m_pSEHitHammerSpeaker->SetVolume(SE_HAMMER_HIT_VOLUME);
