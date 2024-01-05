@@ -52,7 +52,7 @@ const int SCREEN_HEIGHT_ = 720;
 
 
 // ƒvƒŒƒCƒ„[ ================================================
-const float PLAYER_MOVE_SPEED	= 0.12f;				// ƒvƒŒƒCƒ„[‚ÌˆÚ“®‘¬“x
+const float PLAYER_MOVE_SPEED	= 0.1333f;				// ƒvƒŒƒCƒ„[‚ÌˆÚ“®‘¬“x
 const int	PLAYER_HP			= 10;					// ƒvƒŒƒCƒ„[‚ÌHP
 const float PLAYER_RADIUS		= 0.12f;				// ƒvƒŒƒCƒ„[‚Ì“–‚½‚è”»’è‚Ì‘å‚«‚³
 const float PLAYER_SIZE			= PLAYER_RADIUS * 2.0f;	// ƒvƒŒƒCƒ„[‚Ì‘å‚«‚³
@@ -62,8 +62,8 @@ const int	DAMAGE_FLASH_FRAME	= int(0.1f * 60);		// ƒvƒŒƒCƒ„[‚Ìƒ_ƒ[ƒW“_–Å‚ÌØ‚
 
 // ƒnƒ“ƒ}[
 const float SWING_TIME_FRAME	= 0.15f * 60;			// ƒnƒ“ƒ}[‚ðU‚éŽžŠÔ(ƒtƒŒ[ƒ€’PˆÊ)
-const float ROTATE_RADIUS = 2.5f;						// ƒnƒ“ƒ}[‚ª‰ñ“]‚·‚éƒvƒŒƒCƒ„[‚©‚ç‚Ì‹——£
-const float HAMMER_COL_SIZE = 1.5f;						//ƒnƒ“ƒ}[‚Ì“–‚½‚è”»’è‚Ì‘å‚«‚³
+const float ROTATE_RADIUS = 2.0f;						// ƒnƒ“ƒ}[‚ª‰ñ“]‚·‚éƒvƒŒƒCƒ„[‚©‚ç‚Ì‹——£
+const float HAMMER_COL_SIZE = 2.0f;						//ƒnƒ“ƒ}[‚Ì“–‚½‚è”»’è‚Ì‘å‚«‚³
 const float HAMMER_SIZE = HAMMER_COL_SIZE * 0.26666f;	//ƒnƒ“ƒ}[‚Ì‘å‚«‚³
 const float INTERVAL_INITIAL = 0.2f;					//ƒnƒ“ƒ}[‰ŠúŠÔŠu
 const float SwingSpeed_PLUS = 1.4f;						//ƒnƒ“ƒ}[‚ðˆê‰ñU‚é‚Æ‚«‚ÉæŽZ‚³‚ê‚é’l
@@ -87,25 +87,25 @@ const int SLIME_LEVEL2_PER = 20;								// ƒXƒ‰ƒCƒ€_2‚Ì¶¬Šm—§
 const int SLIME_LEVEL3_PER = 5;									// ƒXƒ‰ƒCƒ€_3‚Ì¶¬Šm—§
 const int SLIME_LEVEL_FLAME_PER = 5;							// ƒXƒ‰ƒCƒ€_ƒtƒŒƒCƒ€‚Ì¶¬Šm—¦
 const int SLIME_LEVEL_HEAL_PER = 5;								// ƒXƒ‰ƒCƒ€_ƒq[ƒ‹‚Ì¶¬Šm—¦
-const float MAX_SIZE_EXPLODE		= 6.0f;						// ƒXƒ‰ƒCƒ€4“¯Žm‚Ì”š”­‚Ì‘å‚«‚³
-const float EXPLODE_BASE_RATIO		= 1.5f;						// ƒXƒ‰ƒCƒ€‚Ì”š”­ÚG‚Å‚Ì”š”­‚Ì‘å‚«‚³‚Ìƒx[ƒX
+const float MAX_SIZE_EXPLODE		= 8.0f;						// ƒXƒ‰ƒCƒ€4“¯Žm‚Ì”š”­‚Ì‘å‚«‚³
+const float EXPLODE_BASE_RATIO		= 1.8f;						// ƒXƒ‰ƒCƒ€‚Ì”š”­ÚG‚Å‚Ì”š”­‚Ì‘å‚«‚³‚Ìƒx[ƒX
 const float ESCAPE_DISTANCE			= 15.0f;					// ”š”­‚ª‚±‚Ì‹——£‚æ‚è‹ß‚©‚Á‚½‚ç“¦‚°‚é”ÍˆÍ
 const int ESCAPE_TIME				= int(60 * 0.8f);			// ‚±‚ÌŠÔŠu‚Å“¦‚°‚éˆ—‚ªI—¹‚·‚é
-const float UINION_TEXT_POS_Y_ADJUST = 0.6f;					// •\Ž¦‚‚³(ŠeƒXƒ‰ƒCƒ€‚ÌSCALE)‚ÉŠ|‚¯‚é’²®—pŠ„‡
+const float UINION_TEXT_POS_Y_ADJUST = 0.4f;					// •\Ž¦‚‚³(ŠeƒXƒ‰ƒCƒ€‚ÌSCALE)‚ÉŠ|‚¯‚é’²®—pŠ„‡
 
 // ƒXƒ‰ƒCƒ€“¯Žm‚Ì”½ŽË‚ÌŒ¸ŽZ’l
 const float LEAVE_DISTANCE = 29.0f;					// ‚±‚êˆÈã—£‚ê‚½‚ç‘ÎŠpüã‚ÉˆÚ“®‚·‚é
 
 // ƒTƒCƒY1
-const float LEVEL1_SCALE = 1.0f;					// ƒXƒ‰ƒCƒ€QƒŒƒxƒ‹‚P‚Ì‘å‚«‚³(“–‚½‚è”»’èŠÜ‚Þ)
+const float LEVEL1_SCALE = 1.7f;					// ƒXƒ‰ƒCƒ€QƒŒƒxƒ‹‚P‚Ì‘å‚«‚³(“–‚½‚è”»’èŠÜ‚Þ)
 const float LEVEL1_SPEED = ENEMY_MOVE_SPEED;		// ˆÚ“®‘¬“x
 
 // ƒTƒCƒY2
-const float LEVEL2_SCALE = 2.0f;					// ƒXƒ‰ƒCƒ€QƒŒƒxƒ‹‚Q‚Ì‘å‚«‚³(“–‚½‚è”»’èŠÜ‚Þ)
+const float LEVEL2_SCALE = 3.5f;					// ƒXƒ‰ƒCƒ€QƒŒƒxƒ‹‚Q‚Ì‘å‚«‚³(“–‚½‚è”»’èŠÜ‚Þ)
 const float LEVEL2_SPEED = ENEMY_MOVE_SPEED * 0.9f;	// ˆÚ“®‘¬“x
 
 // ƒTƒCƒY3
-const float LEVEL3_SCALE = 4.5f;					// ƒXƒ‰ƒCƒ€QƒŒƒxƒ‹‚R‚Ì‘å‚«‚³(“–‚½‚è”»’èŠÜ‚Þ)
+const float LEVEL3_SCALE = 5.5f;					// ƒXƒ‰ƒCƒ€QƒŒƒxƒ‹‚R‚Ì‘å‚«‚³(“–‚½‚è”»’èŠÜ‚Þ)
 const float LEVEL3_SPEED = ENEMY_MOVE_SPEED * 0.7f;	// ˆÚ“®‘¬“x
 const float LEVEL3_STOP_RANGE = DirectX::XMConvertToRadians(20.0f);	// ƒXƒ‰ƒCƒ€‚ªŽ~‚Ü‚éŠp“x‚Ì”ÍˆÍ
 const int	LEVEL2_ATTACK_INTERVAL = int(60 * 4.0f);		// UŒ‚I—¹‚©‚çŽŸ‚ÌUŒ‚‚Ü‚Å‚ÌŠÔŠu
@@ -114,7 +114,7 @@ const int	LEVEL2_ATTACK_TACKLE_CNT = int(60 * 0.45f);	// “Ëi‚µ‚Ä‚¢‚éŽžŠÔ
 const float	LEVEL2_TACKLE_SPEED = 0.2f;					// “Ëi‚Ì‘¬“x
 
 // ƒTƒCƒY4
-const float LEVEL4_SCALE = 5.5f;					// ƒXƒ‰ƒCƒ€QƒŒƒxƒ‹‚S‚Ì‘å‚«‚³(“–‚½‚è”»’èŠÜ‚Þ)
+const float LEVEL4_SCALE = 7.0f;					// ƒXƒ‰ƒCƒ€QƒŒƒxƒ‹‚S‚Ì‘å‚«‚³(“–‚½‚è”»’èŠÜ‚Þ)
 const float LEVEL4_SPEED = ENEMY_MOVE_SPEED * 0.5f;	// ˆÚ“®‘¬“x
 const int	LEVEL4_ATTACK = 2;						// UŒ‚—Í
 
@@ -129,7 +129,7 @@ const float LEVEL_HEAL_SPEED = ENEMY_MOVE_SPEED * 0.3f;		// ˆÚ“®‘¬“x
 const int	LEVEL_HEAL_ATTACK = 1;							// UŒ‚—Í i‚¢‚éH
 
 // ƒ{ƒXƒXƒ‰ƒCƒ€
-const float LEVEL_BOSS_1_SCALE = 6.0f;								// ƒ{ƒX‚P‚Ì‘å‚«‚³
+const float LEVEL_BOSS_1_SCALE = 7.5f;								// ƒ{ƒX‚P‚Ì‘å‚«‚³
 const float LEVEL_BOSS_1_SPEED = ENEMY_MOVE_SPEED * 0.4f;			// ƒ{ƒX‚P‚ÌƒXƒs[ƒh
 const int	BOSS_1_MAX_HP = 10;								// ƒ{ƒX‚P‚ÌÅ‘åHP
 const int	BOSS_1_ATTACK = 2;								// ƒ{ƒX‚P‚ÌUŒ‚—Í
