@@ -41,6 +41,7 @@
 	・2023/12/20 UNION追加 takagi
 	・2023/12/28 スライム討伐配列番号追加 Sawada
 	・2024/01/01 スライム生成数の代わりを訂正 takagi
+	・2024/01/03 UnionSlime関数に移動速度と角度の引数を追加 nieda
 
 =========================================== */
 
@@ -506,7 +507,7 @@ void CSlimeManager::HitBranch(int HitSlimeNum, int StandSlimeNum, CExplosionMana
 		{
 			SAFE_DELETE(m_pSlime[HitSlimeNum]);								// 衝突するスライムを削除
 			SAFE_DELETE(m_pSlime[StandSlimeNum]);							// 衝突されたスライムを削除
-			UnionSlime(hitSlimeLevel,pos);	//スライムの結合処理
+			UnionSlime(hitSlimeLevel,pos, hitSlimeSpeed, travelAngle);		//スライムの結合処理
 		}
 	}
 }
@@ -692,10 +693,13 @@ bool CSlimeManager::HitHealBranch(int HitSlimeNum, int StandSlimeNum, CExplosion
 	内容：1段階上のスライムを生成する関数
 	----------------------------------------
 	引数1：スライムのレベル
+	引数2：スライムの位置情報（←書いてなかったので書いときましたが合ってるかわかんないです nieda）
+	引数3：衝突直前の衝突する側のスライムの移動速度
+	引数4：衝突直前の衝突する側のスライムの角度
 	----------------------------------------
 	戻値：なし
 ======================================== */
-void CSlimeManager::UnionSlime(E_SLIME_LEVEL level ,TPos3d<float> pos)
+void CSlimeManager::UnionSlime(E_SLIME_LEVEL level ,TPos3d<float> pos, float speed, float angle)
 {
 	for (int i = 0; i <MAX_SLIME_NUM; i++)
 	{
@@ -706,14 +710,17 @@ void CSlimeManager::UnionSlime(E_SLIME_LEVEL level ,TPos3d<float> pos)
 		case LEVEL_1:
 			//サイズ2のスライムを生成
 			m_pSlime[i] = new CSlime_2(pos, m_pVS, m_pGreenModel);
+			m_pSlime[i]->HitMoveStart(speed, angle);
 			break;
 		case LEVEL_2:
 			//サイズ3のスライムを生成
 			m_pSlime[i] = new CSlime_3(pos, m_pVS, m_pYellowModel);
+			m_pSlime[i]->HitMoveStart(speed, angle);
 			break;
 		case LEVEL_3:
 			//サイズ4のスライムを生成
 			m_pSlime[i] = new CSlime_4(pos, m_pVS, m_pRedModel);
+			m_pSlime[i]->HitMoveStart(speed, angle);
 			break;
 		}
 
