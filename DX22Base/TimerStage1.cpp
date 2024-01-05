@@ -29,7 +29,7 @@
 CTimerStage1::CTimerStage1()
 {
 	// =============== 初期化 ===================
-	for (int nCnt = STATE_FIRST; nCnt < STATE_SECOND; nCnt++)
+	for (int nCnt = STATE_FIRST; nCnt <= STATE_THIRD; nCnt++)
 	{
 		m_anMaxSlimeNum[nCnt] = SLM_CREATE_NUM[nCnt];						// 段階別スライムの最大生成数
 		m_afSlimeCreateInterval[nCnt] = SLM_CREATE_INTERVAL_TIME[nCnt];		// 段階別スライム生成間隔

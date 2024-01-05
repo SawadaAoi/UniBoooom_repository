@@ -46,6 +46,9 @@ const int DELAY_TIME = 0.5f * 60;
 const float EXPLODE_STANDARD_SIZE = 0.15f;
 const float EXPLODE_STANDARD_ONE_FRAME = 1.38f * 60.0f;
 
+const int	SE_DELAY_TIME = int(0.1f * 60);			// 遅延秒数
+
+
 /* ========================================
 	コンストラクタ関数
 	-------------------------------------
@@ -67,7 +70,9 @@ CExplosion::CExplosion(TPos3d<float> fPos, float fSize, float fTime, int comboNu
 	, m_fMaxSize(fSize)		// 最大サイズをセットする
 	, m_dComboNum(comboNum)
 	, m_bDelayFlg(delayFlg)
-	, m_dDelayCnt(0)
+	, m_nDelayCnt(0)
+	, m_bSeFlg(false)
+	, m_nSeCnt(0)
 	, m_fDamage(0)
 	, m_pCamera(nullptr)
 	, m_bBossTouched(false)
@@ -80,7 +85,7 @@ CExplosion::CExplosion(TPos3d<float> fPos, float fSize, float fTime, int comboNu
 	m_fDamage = (float)nDamage;		// 与えるダメージ量をセットする
 	m_pCamera = pCamera;		//カメラをセット
 	m_explodeEffect = explodeEffect;	//エフェクトをセット
-	m_efcHnadle = LibEffekseer::GetManager()->Play(m_explodeEffect, fPos.x, fPos.y, fPos.z);	//エフェクトの開始
+	m_efcHnadle = LibEffekseer::GetManager()->Play(m_explodeEffect, m_Transform.fPos.x, m_Transform.fPos.y, m_Transform.fPos.z);	//エフェクトの開始
 	LibEffekseer::GetManager()->SetScale(m_efcHnadle,EXPLODE_STANDARD_SIZE * fSize, EXPLODE_STANDARD_SIZE * fSize, EXPLODE_STANDARD_SIZE * fSize);	//エフェクトのサイズを設定
 	LibEffekseer::GetManager()->SetSpeed(m_efcHnadle, EXPLODE_STANDARD_ONE_FRAME / fTime);		//エフェクトの再生速度を設定
 }
@@ -118,6 +123,15 @@ void CExplosion::Update()
 		return;
 	}
 
+	if (m_nSeCnt < SE_DELAY_TIME)
+	{
+		m_nSeCnt++;
+		if(SE_DELAY_TIME <= m_nSeCnt)
+		{
+			m_bSeFlg = true;
+		}
+	}
+
 	DisplayTimeAdd();
 }
 
@@ -134,11 +148,15 @@ void CExplosion::Update()
 =========================================== */
 void CExplosion::Draw()
 {
-	//エフェクトの描画
-	TPos3d<float> cameraPos = m_pCamera->GetPos();							//カメラ座標を取得
-	DirectX::XMFLOAT3 fCameraPos(cameraPos.x, cameraPos.y, cameraPos.z);	//XMFLOAT3に変換
-	LibEffekseer::SetViewPosition(fCameraPos);								//カメラ座標をセット
-	LibEffekseer::SetCameraMatrix(m_pCamera->GetViewWithoutTranspose(), m_pCamera->GetProjectionWithoutTranspose());	//転置前のviewとprojectionをセット
+	if (m_bDelayFlg == false)
+	{
+		//エフェクトの描画
+		TPos3d<float> cameraPos = m_pCamera->GetPos();							//カメラ座標を取得
+		DirectX::XMFLOAT3 fCameraPos(cameraPos.x, cameraPos.y, cameraPos.z);	//XMFLOAT3に変換
+		LibEffekseer::SetViewPosition(fCameraPos);								//カメラ座標をセット
+		LibEffekseer::SetCameraMatrix(m_pCamera->GetViewWithoutTranspose(), m_pCamera->GetProjectionWithoutTranspose());	//転置前のviewとprojectionをセット
+
+	}
 }
 
 
@@ -204,10 +222,10 @@ void CExplosion::BossTouched()
 =========================================== */
 void CExplosion::Delay()
 {
-	m_dDelayCnt++;
+	m_nDelayCnt++;
 
 	// 遅延秒数が経ったら
-	if (m_dDelayCnt >= DELAY_TIME)
+	if (m_nDelayCnt >= DELAY_TIME)
 	{
 		m_bDelayFlg = false;	// 遅延フラグをオフにする
 	}
@@ -227,6 +245,11 @@ bool CExplosion::GetDelFlg()
 	return m_bDelFlg;
 }
 
+bool CExplosion::GetDelayFlg()
+{
+	return m_bDelayFlg;
+}
+
 /* ========================================
 	コンボ配列番号取得処理関数
 	-------------------------------------
@@ -239,6 +262,11 @@ bool CExplosion::GetDelFlg()
 int CExplosion::GetComboNum()
 {
 	return m_dComboNum;
+}
+
+bool CExplosion::GetSeFlg()
+{
+	return m_bSeFlg;
 }
 
 /* ========================================
@@ -282,6 +310,11 @@ void CExplosion::SetCamera(const CCamera * pCamera)
 {
 	m_pCamera = pCamera;
 }
+
+	void CExplosion::SetSeFlg(bool flg)
+	{
+		m_bSeFlg = flg;
+	}
 
 
 
