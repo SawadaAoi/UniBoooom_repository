@@ -10,6 +10,7 @@
 	変更履歴
 	・2023/12/20 制作 takagi
 	・2023/12/24 サイズ・フレーム変更をマネージャへ takagi
+	・2024/01/11 ブレンドステート修正に伴う透明度調整 takagi
 
 ========================================== */
 
@@ -75,7 +76,8 @@ void CUnion::Update()
 		}
 		else
 		{
-			m_Transform.fPos.y += MAX_MOVE * m_pCnt->GetRate();
+			m_Transform.fPos.y += MAX_MOVE * m_pCnt->GetRate();	//位置更新
+			SetAlpha(m_pCnt->GetRate());					//透明度更新
 		}
 	}
 }
