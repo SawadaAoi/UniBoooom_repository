@@ -66,7 +66,7 @@ const float COL_SUB_HIT_TO_BIG = 0.1f;			// スライム衝突(小→大)の衝突側の減算値
 const float COL_SUB_STAND_TO_SMALL = 0.8f;			// スライム衝突(小→大)の衝突される側の減算値(衝突された方向)	//1.0でそのまま
 const float COL_SUB_HIT_TO_SMALL = 0.3f;			// スライム衝突(大→小)の衝突側の減算値(移動方向)				//1.0でそのまま
 const float COL_SUB_STAND_TO_BIG = 1.2f;			// スライム衝突(大→小)の衝突される側の減算値(衝突された方向)	//1.0でそのまま
-
+const float RIGID_DISTANCE = 20.0f;				// ボス落下後他のスライムの硬直させる範囲
 #define DEBUG_BOSS	(false)	// デバッグ用にゲーム開始時ボスを生成するかどうか
 
 
@@ -132,7 +132,6 @@ CSlimeManager::CSlimeManager(CPlayer* pPlayer)
 	, m_pSE{ nullptr,nullptr,nullptr }
 	, m_pSESpeaker{ nullptr,nullptr,nullptr }
 	, m_bBossPtrExist(false)
-	, m_nRigidCnt(0)
 	, m_bIsRigid(false)
 {
 	//スライムのモデルと頂点シェーダーの読み込み
@@ -225,9 +224,12 @@ void CSlimeManager::Update(CExplosionManager* pExpMng)
 	// スライム更新
 	for (int i = 0; i <MAX_SLIME_NUM; i++)
 	{
-		if (m_pSlime[i] == nullptr || m_bIsRigid == true) continue;
-		m_pSlime[i]->Update(m_pPlayer->GetTransform(), m_pTimer->GetSlimeMoveSpeed());
-		
+		if (m_pSlime[i] == nullptr) continue;
+		if (!RigidCheck())
+		{
+			m_pSlime[i]->Update(m_pPlayer->GetTransform(), m_pTimer->GetSlimeMoveSpeed());
+		}
+
 	}
 
 	OutOfRange();	//スライムがプレイヤーから一定距離離れたら対角線に移動
@@ -239,7 +241,7 @@ void CSlimeManager::Update(CExplosionManager* pExpMng)
 		m_pBoss[i]->Update(m_pPlayer->GetTransform());
 		
 	}
-	SlimeRigid();
+
 
 	//---敵生成---
 	m_CreateCnt++;
@@ -1459,30 +1461,40 @@ void CSlimeManager::PlaySE(SE se, float volume)
 }
 
 /* ========================================
-	スライム硬直関数
+	スライム硬直範囲関数
 	----------------------------------------
-	内容：ボス落下後他のスライムに硬直させる
+	内容：ボス落下後他のスライムに硬直させる範囲判断
 	----------------------------------------
 	引数1：なし
 	----------------------------------------
-	戻値：なし
+	戻値：m_bIsRigid,硬直範囲内かどうか
 ======================================== */
-void CSlimeManager::SlimeRigid()
+
+
+bool CSlimeManager::RigidCheck()
 {
-	for (int i = 0; i < MAX_BOSS_SLIME_NUM; i++)
+	for (int j = 0; j < MAX_SLIME_NUM; j++)
 	{
-		if (m_pBoss[i] == nullptr) continue;
+		if (m_pSlime[j] == nullptr) { continue; }		//nullptrならスキップ
 
-		// ボス落下硬直時他のスライムも硬直処理
-		if (m_pBoss[i]->GetMoveState() == 5)
+		TPos3d<float> slimePos = m_pSlime[j]->GetPos();	//スライムの座標をゲット
+		float distance = RIGID_DISTANCE;				//硬直の範囲をセット
+		//範囲内にボスがあれば硬直するためのフラグをセット
+		for (int i = 0; i < MAX_BOSS_SLIME_NUM; i++)
 		{
-			m_bIsRigid = true;
-		}
-
-		else
-		{
-			m_bIsRigid = false;
+			if (m_pBoss[i] == nullptr) { continue; }			//nullptrならスキップ
+			TPos3d<float> bossPos = m_pBoss[i]->GetPos();		//ボスの座標をゲット
+			float slimeBossDistance = slimePos.Distance(bossPos);
+			if (distance > slimeBossDistance && m_pBoss[i]->GetMoveState() == 5)	
+			{
+				m_bIsRigid = true;
+			}
+			else
+			{
+				m_bIsRigid = false;
+			}
 		}
 	}
 
+	return m_bIsRigid;
 }

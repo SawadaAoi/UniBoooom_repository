@@ -99,7 +99,7 @@ public:
 	void CheckEscape();
 
 	void PlaySE(SE se,float volume = 1.0f);
-	void SlimeRigid();
+	bool RigidCheck();	//ボススライムと他のスライムの距離計算
 
 	//ゲット関数
 	CSlimeBase* GetSlimePtr(int num);
@@ -142,7 +142,6 @@ private:
 	CExplosionManager* m_pExpMng;
 	
 	int m_nKill;	//被討伐数
-	int m_nRigidCnt;	//硬直時間カウント
 	bool m_bIsRigid;	//硬直かどうかフラグ
 
 	bool m_bBossPtrExist;		// ボスのポインタが存在するかどうか
