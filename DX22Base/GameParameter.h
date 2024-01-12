@@ -74,7 +74,7 @@ const float SwingSpeed_SIOW = 50.0f;
 // 敵キャラ ==================================================
 
 // 共通
-const int	MAX_SLIME_NUM = 30;					// スライムの最大生成数
+const int	MAX_SLIME_NUM = 35;					// スライムの最大生成数
 const int	MAX_BOSS_SLIME_NUM = 1;				// ボススライムの最大生成数
 const int	START_ENEMY_NUM = 6;				// ゲーム開始時の敵キャラの数
 const float ENEMY_MOVE_SPEED = 0.035f;			// 敵の通常移動速度
