@@ -66,7 +66,7 @@ const float COL_SUB_HIT_TO_BIG = 0.1f;			// スライム衝突(小→大)の衝突側の減算値
 const float COL_SUB_STAND_TO_SMALL = 0.8f;		// スライム衝突(小→大)の衝突される側の減算値(衝突された方向)	//1.0でそのまま
 const float COL_SUB_HIT_TO_SMALL = 0.3f;		// スライム衝突(大→小)の衝突側の減算値(移動方向)				//1.0でそのまま
 const float COL_SUB_STAND_TO_BIG = 1.2f;		// スライム衝突(大→小)の衝突される側の減算値(衝突された方向)	//1.0でそのまま
-const float RIGID_DISTANCE = 17.5f;				// ボス落下後他のスライムの硬直させる範囲
+const float RIGID_DISTANCE = 20.0f;				// ボス落下後他のスライムの硬直させる範囲
 #define DEBUG_BOSS	(false)	// デバッグ用にゲーム開始時ボスを生成するかどうか
 
 
@@ -220,13 +220,12 @@ CSlimeManager::~CSlimeManager()
 void CSlimeManager::Update(CExplosionManager* pExpMng)
 {
 	CheckEscape();	//Updateの前に近くに爆発があるか確認する
-
+	ScreenShake();	//更新する前、ボスが落下したかどうか判断する
 	// スライム更新
 	for (int i = 0; i <MAX_SLIME_NUM; i++)
 	{
 		if (m_pSlime[i] == nullptr) continue;
 		if (RigidCheck()) continue;
-
 		m_pSlime[i]->Update(m_pPlayer->GetTransform(), m_pTimer->GetSlimeMoveSpeed());
 	}
 
@@ -1485,14 +1484,39 @@ bool CSlimeManager::RigidCheck()
 			float slimeBossDistance = slimePos.Distance(bossPos);
 			if (distance > slimeBossDistance && m_pBoss[i]->GetMoveState() == 5)	
 			{
+				
 				m_bIsRigid = true;
 			}
 			else
 			{
 				m_bIsRigid = false;
 			}
+			
 		}
 	}
 
 	return m_bIsRigid;
+}
+
+/* ========================================
+	スライム落下画面揺れ
+	----------------------------------------
+	内容：ボス落下後画面が振動する処理
+	----------------------------------------
+	引数1：なし
+	----------------------------------------
+	戻値：なし
+======================================== */
+void CSlimeManager::ScreenShake()
+{
+	for (int i = 0; i < MAX_BOSS_SLIME_NUM; i++)
+	{
+		if (m_pBoss[i] == nullptr)continue;
+		if (m_pBoss[i]->GetMoveState() == 5)
+		{
+			m_pCamera->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_WEAK);
+			m_pCamera->ChangeScaleVibrate(10, 1.5f);
+		}
+	}
+	
 }

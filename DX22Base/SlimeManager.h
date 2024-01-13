@@ -100,7 +100,7 @@ public:
 
 	void PlaySE(SE se,float volume = 1.0f);
 	bool RigidCheck();	//ボススライムと他のスライムの距離計算
-
+	void ScreenShake();
 	//ゲット関数
 	CSlimeBase* GetSlimePtr(int num);
 	CSlime_BossBase* GetBossSlimePtr(int num);
