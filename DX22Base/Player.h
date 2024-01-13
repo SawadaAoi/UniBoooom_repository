@@ -130,8 +130,8 @@ private:
 		"Assets/Sound/SE/Swing.mp3",			//ハンマーを振る
 		"Assets/Sound/SE/Run.mp3",				//移動のSE
 		"Assets/Sound/SE/PlayerDamage.mp3",		//プレイヤーの被ダメージ時
-		"Assets/Sound/SE/Smash.mp3",			//ハンマーとスライムの接触SE
-		"Assets/Sound/SE/Heal.mp3" };			//回復アイテム取得時
+		"Assets/Sound/SE/maou_se_battle03.mp3",			//ハンマーとスライムの接触SE
+		"Assets/Sound/SE/回復1.mp3" };			//回復アイテム取得時
 
 	//=====アニメーション関連=====
 	AnimeModel::AnimeNo m_Anime[MOTION_MAX];		//プレイヤーのアニメーション

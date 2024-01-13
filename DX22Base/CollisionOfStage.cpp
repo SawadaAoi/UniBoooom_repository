@@ -28,7 +28,7 @@
 
 // =============== 定数定義 =======================
 const float HAMMER_HIT_MOVE_SPEED = 1.0f;		// ハンマーに吹き飛ばされた時のスピード
-const float HIT_HAMMER_VOLUME = 0.3f;
+const float HIT_HAMMER_VOLUME = 1.0f;
 
 /* ========================================
    当たり判定まとめ関数
