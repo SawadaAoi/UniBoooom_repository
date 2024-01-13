@@ -63,10 +63,10 @@
 
 // =============== 定数定義 =======================
 const float COL_SUB_HIT_TO_BIG = 0.1f;			// スライム衝突(小→大)の衝突側の減算値(反射する移動)				//1.0でそのまま
-const float COL_SUB_STAND_TO_SMALL = 0.8f;			// スライム衝突(小→大)の衝突される側の減算値(衝突された方向)	//1.0でそのまま
-const float COL_SUB_HIT_TO_SMALL = 0.3f;			// スライム衝突(大→小)の衝突側の減算値(移動方向)				//1.0でそのまま
-const float COL_SUB_STAND_TO_BIG = 1.2f;			// スライム衝突(大→小)の衝突される側の減算値(衝突された方向)	//1.0でそのまま
-const float RIGID_DISTANCE = 20.0f;				// ボス落下後他のスライムの硬直させる範囲
+const float COL_SUB_STAND_TO_SMALL = 0.8f;		// スライム衝突(小→大)の衝突される側の減算値(衝突された方向)	//1.0でそのまま
+const float COL_SUB_HIT_TO_SMALL = 0.3f;		// スライム衝突(大→小)の衝突側の減算値(移動方向)				//1.0でそのまま
+const float COL_SUB_STAND_TO_BIG = 1.2f;		// スライム衝突(大→小)の衝突される側の減算値(衝突された方向)	//1.0でそのまま
+const float RIGID_DISTANCE = 17.5f;				// ボス落下後他のスライムの硬直させる範囲
 #define DEBUG_BOSS	(false)	// デバッグ用にゲーム開始時ボスを生成するかどうか
 
 
@@ -225,11 +225,9 @@ void CSlimeManager::Update(CExplosionManager* pExpMng)
 	for (int i = 0; i <MAX_SLIME_NUM; i++)
 	{
 		if (m_pSlime[i] == nullptr) continue;
-		if (!RigidCheck())
-		{
-			m_pSlime[i]->Update(m_pPlayer->GetTransform(), m_pTimer->GetSlimeMoveSpeed());
-		}
+		if (RigidCheck()) continue;
 
+		m_pSlime[i]->Update(m_pPlayer->GetTransform(), m_pTimer->GetSlimeMoveSpeed());
 	}
 
 	OutOfRange();	//スライムがプレイヤーから一定距離離れたら対角線に移動
