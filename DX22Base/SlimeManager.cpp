@@ -134,6 +134,7 @@ CSlimeManager::CSlimeManager(CPlayer* pPlayer)
 	, m_pSESpeaker{ nullptr,nullptr,nullptr }
 	, m_bBossPtrExist(false)
 	, m_bIsRigid(false)
+	, m_nVibrateCnt(0)
 {
 	//スライムのモデルと頂点シェーダーの読み込み
 	LoadModel();
@@ -221,12 +222,12 @@ CSlimeManager::~CSlimeManager()
 void CSlimeManager::Update(CExplosionManager* pExpMng)
 {
 	CheckEscape();	//Updateの前に近くに爆発があるか確認する
-	ScreenShake();	//更新する前、ボスが落下したかどうか判断する
+
 	// スライム更新
 	for (int i = 0; i <MAX_SLIME_NUM; i++)
 	{
-		if (m_pSlime[i] == nullptr) continue;
-		if (RigidCheck()) continue;
+		if (m_pSlime[i] == nullptr) { continue; }
+		if (RigidCheck()) { continue; }
 		m_pSlime[i]->Update(m_pPlayer->GetTransform(), m_pTimer->GetSlimeMoveSpeed());
 	}
 
@@ -237,6 +238,8 @@ void CSlimeManager::Update(CExplosionManager* pExpMng)
 	{
 		if (m_pBoss[i] == nullptr) continue;
 		m_pBoss[i]->Update(m_pPlayer->GetTransform());
+		ScreenShake();	//ボス落下の振動処理
+		m_nVibrateCnt = 0;
 		
 	}
 
@@ -1513,10 +1516,11 @@ void CSlimeManager::ScreenShake()
 	for (int i = 0; i < MAX_BOSS_SLIME_NUM; i++)
 	{
 		if (m_pBoss[i] == nullptr)continue;
-		if (m_pBoss[i]->GetMoveState() == 5)
+		if (m_pBoss[i]->GetMoveState() == 5 && m_nVibrateCnt <= 90)
 		{
+			m_nVibrateCnt++;
 			m_pCamera->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_WEAK);
-			m_pCamera->ChangeScaleVibrate(10, 1.5f);
+			m_pCamera->ChangeScaleVibrate(12, 1.2f);
 		}
 	}
 	
