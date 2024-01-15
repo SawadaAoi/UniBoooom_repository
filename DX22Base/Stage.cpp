@@ -160,33 +160,12 @@ CStage::~CStage()
 	----------------------------------------
 	戻値：なし
 =========================================== */
-void CStage::GameFinish(int StageNum)
+void CStage::GameFinish()
 {
 	// ゲームが終了したか？
 	if (m_pUIStageManager->GetStageFinish()->GetGameEndFlg())
 	{
 		// =============== フラグ管理 =====================
 		m_bFinish = true;	// タイトルシーン終了フラグON
-
-		// =============== 退避 =====================
-		m_Data.nTotalScore = m_pUIStageManager->GetTotalScore();				// スコア退避
-
-		// ハイスコアを更新しているか？
-		if (m_Data.nHighScore[StageNum - 1] < m_Data.nTotalScore)
-		{
-			m_Data.nHighScore[StageNum - 1] = m_Data.nTotalScore;	// ハイスコアを更新
-		}
-
-		m_Data.nAliveTime = m_pUIStageManager->GetTimer()->GetErapsedTime();	// 経過時間退避
-		m_Data.nMaxCombo = m_pUIStageManager->GetCombo()->GetMaxCombo();		// 最大コンボ数退避
-		m_Data.bClearFlg = m_pUIStageManager->GetStageFinish()->GetClearFlg();	// ゲームクリアしたか
-		if (m_pSlimeMng)	//ヌルチェック
-		{
-			m_Data.nTotalKill = m_pSlimeMng->GetTotalKillCnt();					// 総討伐数退避
-			m_pSlimeMng->GetKillCntArray(m_Data.nKill);							// スライム別討伐数退避
-
-		}
-
-		m_Data.nStageNum = StageNum;	// プレイしたステージ番号
 	}
 }
