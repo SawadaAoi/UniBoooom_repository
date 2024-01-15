@@ -22,6 +22,7 @@
 	・2023/12/16 不要な変数など削除 nieda
 	・2023/12/28 BattleData格納処理をまとめた関数を追加	Sawada
 	・2024/01/01 ステージ分岐 Takagi
+	・2024/01/15 GameFinish()関数の引数修正・RecordData()関数追加 Takagi
 
 ========================================== */
 
@@ -69,7 +70,8 @@ public:
 	//virtual E_TYPE GetType() const = 0;	//自身の種類ゲッタ
 	void Collision();
 protected:
-	void GameFinish(int StageNum);
+	virtual void RecordData() = 0;	//データ記録
+	void GameFinish();
 	void PlayerSlimeCollision();
 	void PlayerBossCollision();		//追加
 	void PlayerHealItemCollision();
