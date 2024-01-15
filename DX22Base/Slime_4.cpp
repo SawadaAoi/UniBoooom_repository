@@ -64,7 +64,7 @@ CSlime_4::CSlime_4()
 	-------------------------------------
 	戻値：無し
 =========================================== */
-CSlime_4::CSlime_4(TPos3d<float> pos, VertexShader* pVS, Model* pModel)
+CSlime_4::CSlime_4(TPos3d<float> pos, VertexShader* pVS, AnimeModel* pModel)
 	: CSlime_4()
 {
 	m_Transform.fPos = pos;			// 初期座標を指定

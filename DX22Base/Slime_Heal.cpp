@@ -55,7 +55,7 @@ CSlime_Heal::CSlime_Heal()
 	-------------------------------------
 	戻値：無し
 =========================================== */
-CSlime_Heal::CSlime_Heal(TPos3d<float> pos, VertexShader * pVS, Model * pModel)
+CSlime_Heal::CSlime_Heal(TPos3d<float> pos, VertexShader * pVS, AnimeModel * pModel)
 	:CSlime_Heal()
 {
 	m_Transform.fPos = pos;			// 初期座標を指定

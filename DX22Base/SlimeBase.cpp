@@ -113,7 +113,7 @@ void CSlimeBase::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
 	{
 		if (!m_bEscape  && m_nEscapeCnt == 0)	//“¦‚°‚éƒtƒ‰ƒO‚ªoff‚È‚ç
 		{
-			NormalMove();	//’ÊíˆÙ“®
+			NormalMove();	//’ÊíˆÚ“®
 		}
 		else
 		{
@@ -130,8 +130,6 @@ void CSlimeBase::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
 	m_Transform.fPos.x += m_move.x * fSlimeMoveSpeed;
 	m_Transform.fPos.z += m_move.z * fSlimeMoveSpeed;
 }
-
-	
 
 /* ========================================
 	•`‰æˆ—ŠÖ”

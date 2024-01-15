@@ -71,7 +71,7 @@ CSlime_2::CSlime_2()
 	-------------------------------------
 	戻値：無し
 =========================================== */
-CSlime_2::CSlime_2(TPos3d<float> pos,VertexShader* pVS,Model* pModel)
+CSlime_2::CSlime_2(TPos3d<float> pos,VertexShader* pVS, AnimeModel* pModel)
 	: CSlime_2()
 {
 	m_Transform.fPos = pos;			// 初期座標を指定

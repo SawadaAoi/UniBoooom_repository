@@ -53,6 +53,10 @@
 #include "Object.h"
 #include "Shadow.h"		// 影表示用ヘッダ
 #include "Timer.h"
+#include "AnimeModel.h"
+#include "ShaderList.h"
+
+using namespace std;
 
 // =============== 列挙定義 =======================
 enum E_SLIME_LEVEL
@@ -79,6 +83,7 @@ const int LEVEL_3_SCORE = 100;				// スライム_3のスコア
 const int LEVEL_4_SCORE = 500;				// スライム_4のスコア
 const int LEVEL_4x4_SCORE = 1000;			// 赤々の爆発のスコア
 const int LEVEL_Boss_SCORE = 3000;			// 赤々の爆発のスコア
+const float ADD_ANIME = 1.0f / 60.0f;		// 1フレームごとのアニメーションの進む量
 #if MODE_GAME_PARAMETER
 #else
 const float ENEMY_MOVE_SPEED = 0.01f;	//敵の移動速度
@@ -91,6 +96,15 @@ class CSlimeBase
 	: public CObject 
 {
 public:
+	// === 列挙 ===
+	enum LEVEL1_MOTION {
+		MOTION_LEVEL1_MOVE,	// レベル1の移動
+		MOTION_LEVEL1_HIT,	// レベル1がハンマーに殴られる挙動
+
+		MOTION_MAX,
+	};
+
+
 	// ===プロトタイプ宣言===
 	CSlimeBase();
 	~CSlimeBase();
@@ -118,7 +132,7 @@ public:
 	void SetExplosionPos(TPos3d<float> expPos);
 	void SetEscapeFlag(bool bEscape);
 protected:
-	Model* m_pModel;				//3Dモデル
+	AnimeModel* m_pModel;			//3Dモデル
 	VertexShader* m_pVS;			//バーテックスシェーダーのポインタ
 	TTriType<float> m_move;			//移動量
 	TPos3d<float> m_ExpPos;			//最も近い爆発の座標
@@ -141,6 +155,8 @@ protected:
 	int m_nAttack;					// 攻撃力
 
 	tagTransform3d m_PlayerTran;	// プレイヤーの変形情報
+
+	vector<AnimeModel::AnimeNo>* m_Anime;		// レベル1スライムのアニメーション
 
 };
 #endif // __SLIME_BASE_H__

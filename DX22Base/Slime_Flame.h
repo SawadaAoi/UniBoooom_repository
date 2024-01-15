@@ -18,7 +18,7 @@
 
 // =============== インクルード ===================
 #include "SlimeBase.h"
-
+#include "AnimeModel.h"
 // =============== クラス定義 =====================
 class CSlime_Flame :
 	public CSlimeBase
@@ -26,7 +26,7 @@ class CSlime_Flame :
 public:
 	// ===プロトタイプ宣言===
 	CSlime_Flame();
-	CSlime_Flame(TPos3d<float> pos, VertexShader* pVS, Model* pModel);
+	CSlime_Flame(TPos3d<float> pos, VertexShader* pVS, AnimeModel* pModel);
 	~CSlime_Flame();
 	void NormalMove() override;
 	void SetNormalSpeed() override;

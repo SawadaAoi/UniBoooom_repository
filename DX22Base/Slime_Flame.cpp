@@ -57,7 +57,7 @@ CSlime_Flame::CSlime_Flame()
 	-------------------------------------
 	戻値：無し
 =========================================== */
-CSlime_Flame::CSlime_Flame(TPos3d<float> pos, VertexShader* pVS, Model* pModel)
+CSlime_Flame::CSlime_Flame(TPos3d<float> pos, VertexShader* pVS, AnimeModel* pModel)
 	: CSlime_Flame()
 {
 	m_Transform.fPos = pos;			// 初期座標を指定
