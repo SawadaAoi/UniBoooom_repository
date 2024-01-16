@@ -1170,14 +1170,14 @@ void CSlimeManager::LoadModel()
 	m_pRedModel->SetVertexShader(m_pVS);
 	//フレイムスライムのモデル読み込み
 	m_pFlameModel = new Model;
-	if (!m_pFlameModel->Load("Assets/Model/Golem/Golem.FBX", 0.015f, Model::ZFlip)) {		//倍率と反転は省略可
+	if (!m_pFlameModel->Load("Assets/Model/slime/slime_fire1.FBX", 0.15f, Model::ZFlip)) {		//倍率と反転は省略可
 		MessageBox(NULL, "Flame_Slime", "Error", MB_OK);	//ここでエラーメッセージ表示
 	}
 	m_pFlameModel->SetVertexShader(m_pVS);
 	//ヒールスライムのモデル読み込み
 	m_pHealModel = new Model;
 	if (!m_pHealModel->Load("Assets/Model/eyeBat/eyebat.FBX", 0.15f, Model::ZFlip)) {		//倍率と反転は省略可
-		MessageBox(NULL, "Flame_Slime", "Error", MB_OK);	//ここでエラーメッセージ表示
+		MessageBox(NULL, "Heal_Slime", "Error", MB_OK);	//ここでエラーメッセージ表示
 	}
 	m_pHealModel->SetVertexShader(m_pVS);
 	//ボススライムのモデル読み込み
