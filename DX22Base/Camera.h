@@ -24,11 +24,12 @@
 	・2023/12/04 GetViewWithoutTranspose,GetProjectionWithoutTransposeの戻り値を変更 yamashita
 	・2023/12/05 揺れのカウンタ追加 takagi
 	・2023/12/16 ズーム機能追加 takagi
+	・2024/01/16 統一のため、インクルードガードの___を__に変更	takagi
 
 ========================================== */
 
-#ifndef ___CAMERA_H___
-#define ___CAMERA_H___
+#ifndef __CAMERA_H__
+#define __CAMERA_H__
 
 // =============== インクルード ===================
 //#include "System.h"		//親のヘッダ
@@ -106,4 +107,4 @@ private:
 	float* m_pfStartRadius;							//ズーム開始距離
 };	//カメラ
 
-#endif // !___CAMERA_H___
+#endif // !__CAMERA_H__

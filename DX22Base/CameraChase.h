@@ -14,12 +14,13 @@
 	・2023/11/08 TPos修正 takagi
 	・2023/11/10 パラメタ修正 takagi
 	・2023/12/03 位置ゲッタ用調整 takagi
-	・2023/12/04 GetViewWithoutTransposeの戻り値を変更 ymaashita
+	・2023/12/04 GetViewWithoutTransposeの戻り値を変更 yamashita
+	・2024/01/16 統一のため、インクルードガードの___を__に変更	takagi
 
 ========================================== */
 
-#ifndef ___CAMERA_CHASE_H___
-#define ___CAMERA_CHASE_H___
+#ifndef __CAMERA_CHASE_H__
+#define __CAMERA_CHASE_H__
 
 // =============== インクルード ===================
 #include "Camera.h"	//親のヘッダ
@@ -40,4 +41,4 @@ private:
 	void UpdatePos();	//位置更新
 };	//追跡カメラ
 
-#endif // !___CAMERA_CHASE_H___
+#endif // !__CAMERA_CHASE_H__
