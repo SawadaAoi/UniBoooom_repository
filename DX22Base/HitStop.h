@@ -10,11 +10,12 @@
 	変更履歴
 	・2023/11/17 作成 takagi
 	・2023/11/21 静的に変更・コメント追加 takagi
+	・2024/01/16 統一のため、インクルードガードの___を__に変更	takagi
 
 ========================================== */
 
-#ifndef ___HIT_STOP_H___	//HitStop.hインクルードガード
-#define ___HIT_STOP_H___
+#ifndef __HIT_STOP_H__	//HitStop.hインクルードガード
+#define __HIT_STOP_H__
 
 // =============== クラス定義 =====================
 class CHitStop	//システム
@@ -52,4 +53,4 @@ private:
 	static void CallHitStop(int(*CallBack)(const int&));	//ヒットストップ判定
 };	//ヒットストップ
 
-#endif // !___HIT_STOP_H___
+#endif // !__HIT_STOP_H__

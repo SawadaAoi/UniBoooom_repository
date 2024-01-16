@@ -17,11 +17,12 @@
 	・2023/12/15 空の更新関数追加 takagi
 	・2023/12/17 引数参照化 takagi
 	・2023/12/20 継承先がやりにくかったのでワールド変数をprotected化 takagi
+	・2024/01/16 統一のため、インクルードガードの___を__に変更	takagi
 
 ========================================== */
 
-#ifndef ___2D_POLYGON_H___	//2dPolygon.hインクルードガード
-#define ___2D_POLYGON_H___
+#ifndef __2D_POLYGON_H__	//2dPolygon.hインクルードガード
+#define __2D_POLYGON_H__
 
 // =============== インクルード ===================
 #include "Shader.h"			//メンバのヘッダ
@@ -109,4 +110,4 @@ private:
 	static void CreateIdxBuffer();	//インデックスバッファ作成
 };	//フェード
 
-#endif // !___2D_POLYGON_H___
+#endif // !__2D_POLYGON_H__
