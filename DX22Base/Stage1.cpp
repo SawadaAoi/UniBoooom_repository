@@ -39,6 +39,8 @@
 #include "Input.h"
 #include "HitStop.h"	//ヒットストップ
 #include "Fade.h"
+#include "Obj.h"
+#include <algorithm>
 
 // =============== 定数・マクロ定義 ===================
 const int STAGE_NUM = 1;	//ステージ番号
@@ -158,11 +160,29 @@ void CStage1::Draw()
 	DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
 	SetRenderTargets(1, &pRTV, pDSV);		//DSVがnullだと2D表示になる
 
-	//床の描画
-	m_pFloor->Draw();
+	std::vector<CObject*> dcObj;
+	dcObj.push_back(m_pFloor);
+	dcObj.push_back(m_pSlimeMng);
+	dcObj.push_back(m_pFloor);
+	dcObj.push_back(m_pFloor);
+	dcObj.push_back(m_pFloor);
+	dcObj.push_back(m_pFloor);
+	dcObj.push_back(m_pFloor);
+	dcObj.push_back(m_pFloor);
+	dcObj.push_back(m_pFloor);
+	dcObj.push_back(m_pFloor);
+	dcObj.push_back(m_pFloor);
+	dcObj.push_back(m_pFloor);
+	dcObj.push_back(m_pFloor);
+	dcObj.push_back(m_pFloor);
+	dcObj.push_back(m_pFloor);
+
+
+
+	std::sort(dcObj.begin(), dcObj.end());
 
 	// スライムマネージャー描画
-	m_pSlimeMng->Draw();
+	->Draw();
 
 	// プレイヤー描画
 	m_pPlayer->Draw();

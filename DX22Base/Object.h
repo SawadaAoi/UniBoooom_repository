@@ -7,19 +7,21 @@
 	------------------------------------
 	作成者
 		山本凱翔
+
 	変更履歴
 	・2023/11/14 作成	yamamoto
+	・2024/01/16 リネーム、継承 takagi
 
 ========================================== */
 
-#ifndef __OBJECT_H__
+#ifndef __OBJECT_H__	//
 #define __OBJECT_H__
 // =============== インクルード ===================
+#include "Obj.h"
 #include "SphereInfo.h"
-#include "Transform3d.h"
 
 // =============== クラス定義 =====================
-class CObject
+class CObject	:public CObj
 {
 public:
 	// ===プロトタイプ宣言===
@@ -46,7 +48,6 @@ public:
 
 protected:
 	// ===メンバ変数宣言=====
-	tagTransform3d m_Transform;	//ワールド座標系情報
 	tagSphereInfo m_Sphere;		//当たり判定用の球体
 };
 

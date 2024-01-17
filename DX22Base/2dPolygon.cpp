@@ -19,13 +19,9 @@
 					・コンストラクタでカメラが作られない問題修正 takagi
 	・2023/12/17 引数参照化 takagi
 	・2023/12/20 ビルボードの処理修正 takagi
+	・2024/01/16 リネーム・継承・不要箇所削除 takagi
 
 ========================================== */
-
-// =============== デバッグモード ===================
-#if _DEBUG
-#define USE_2D_POLYGON (true)	//フェード試運転
-#endif
 
 // =============== インクルード ===================
 #include "2dPolygon.h"	//自身のヘッダ
@@ -36,9 +32,6 @@
 #endif
 
 // =============== 定数定義 =====================
-const TPos3d<float> INIT_POS(640.0f, 360.0f, 0.0f);	//位置初期化
-const TTriType<float> INIT_SCALE(1.0f, 1.0f, 0.0f);	//初期拡縮
-const TTriType<float> INIT_RADIAN(0.0f);			//初期回転
 const int FRAME_MIN(0);								//フェード時間の最小
 const int FRAME_TURNING_1(50);						//拡縮反転１反転
 const int FRAME_TURNING_2(100);						//拡縮反転２反転
@@ -116,8 +109,7 @@ const CCamera* C2dPolygon::ms_pCameraDef;						//疑似カメラ
 	戻値：なし
 =========================================== */
 C2dPolygon::C2dPolygon()
-	:m_Transform(INIT_POS, INIT_SCALE, INIT_RADIAN)	//ワールド座標
-	,m_Param{{0.0f}, {1.0f, 1.0f}, {1.0f}, 1.0f}	//シェーダーに書き込む情報
+	:m_Param{{0.0f}, {1.0f, 1.0f}, {1.0f}, 1.0f}	//シェーダーに書き込む情報
 	,m_pVs(nullptr)									//頂点シェーダー
 	,m_pPs(nullptr)									//ピクセルシェーダー
 	,m_pTexture(nullptr)							//テクスチャ

@@ -210,6 +210,7 @@
     <ClCompile Include="LibEffekseer.cpp" />
     <ClCompile Include="ModelParticle.cpp" />
     <ClCompile Include="NumberText.cpp" />
+    <ClCompile Include="Obj.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="OpeninigTitle.cpp" />
     <ClCompile Include="Particle.cpp" />
@@ -322,6 +323,7 @@
     <ClInclude Include="Item.h" />
     <ClInclude Include="LibEffekseer.h" />
     <ClInclude Include="NumberText.h" />
+    <ClInclude Include="Obj.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="HP_UI.h" />
     <ClInclude Include="OpeningTitle.h" />

@@ -31,10 +31,10 @@
 #include "Transform3d.h"	//メンバのヘッダ
 #include "DiType.h"			//メンバのヘッダ
 #include "TriType.h"		//メンバのヘッダ
-#include "Transform3d.h"	//メンバのヘッダ
+#include "Obj.h"
 
 // =============== クラス定義 =====================
-class C2dPolygon
+class C2dPolygon	:public CObj
 {
 public:
 	enum E_DRAW_MODE
@@ -78,9 +78,6 @@ public:
 	virtual void SetTexture(Texture* pTexture);									//テクスチャ登録
 	virtual void SetVertexShader(VertexShader* pVs);							//頂点シェーダセッタ
 	virtual void SetPixelShader(PixelShader* pPs);								//ピクセルシェーダセッタ
-protected:
-	// ===メンバ変数宣言=====
-	tagTransform3d m_Transform;	//ワールド座標
 private:
 	// ===メンバ変数宣言=====
 	DirectX::XMFLOAT4X4 m_aMatrix[3];		//行列
