@@ -69,6 +69,7 @@ CSlimeBase::CSlimeBase()
 	, m_bEscape(false)
 	, m_nEscapeCnt(0)
 	, m_fScaleShadow(0.0f)
+	, m_fAnimeTime(0.0f)
 {
 	m_Transform.fScale = (1.0f, 1.0f, 1.0f);
 	//“–‚½‚è”»’è(©•ª)‰Šú‰»

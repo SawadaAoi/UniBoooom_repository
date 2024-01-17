@@ -65,16 +65,16 @@ CSlime_1::CSlime_1()
 	-------------------------------------
 	戻値：無し
 =========================================== */
-CSlime_1::CSlime_1(TPos3d<float> pos,VertexShader* pVS, AnimeModel* pModel, vector<AnimeModel::AnimeNo>* anime)
+CSlime_1::CSlime_1(TPos3d<float> pos,VertexShader* pVS, AnimeModel* pModel, vector<AnimeModel::AnimeNo> anime)
 	: CSlime_1()
 {
 	m_Transform.fPos = pos;			// 初期座標を指定
 	m_pVS = pVS;
 	m_pModel = pModel;
-	pModel->SetVertexShader(m_pVS);
+	pModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));
 	// アニメーションの受け渡し
 	m_Anime = anime;
-	m_pModel->Play((*m_Anime)[MOTION_LEVEL1_MOVE],true);
+	m_pModel->Play(m_Anime[MOTION_LEVEL1_MOVE],true);
 }
 
 /* ========================================
@@ -102,10 +102,13 @@ CSlime_1::~CSlime_1()
 void CSlime_1::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
 {
 	m_PlayerTran = playerTransform;	// プレイヤーの最新パラメータを取得
-	m_pModel->Step(ADD_ANIME);
+	// m_pModel->Step(ADD_ANIME);
+	m_fAnimeTime += ADD_ANIME;		// アニメーションを進行
+
+
 	if (!m_bHitMove)	//敵が通常の移動状態の時
 	{
-		if (!m_bEscape  && m_nEscapeCnt == 0)	//逃げるフラグがoffなら
+		if (!m_bEscape  && m_nEscapeCnt == 0)	// 逃げるフラグがoffなら
 		{
 			NormalMove();	//通常移動
 		}
@@ -118,9 +121,9 @@ void CSlime_1::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
 	else
 	{
 		// 吹き飛びアニメーション再生
-		if (m_pModel->GetPlayNo() == (*m_Anime)[MOTION_LEVEL1_MOVE])
+		if (m_pModel->GetPlayNo() == m_Anime[MOTION_LEVEL1_MOVE])
 		{
-			//m_pModel->Play((*m_Anime)[MOTION_LEVEL1_HIT],false);
+			//m_pModel->Play(m_Anime[MOTION_LEVEL1_HIT],false);
 		}
 
 		//敵の吹き飛び移動
@@ -154,6 +157,9 @@ void CSlime_1::Draw(const CCamera * pCamera)
 	m_pVS->WriteBuffer(0, mat);
 
 	ShaderList::SetWVP(mat);
+
+	// アニメーションの現在時間をセット
+	m_pModel->SetAnimationTime(m_pModel->GetPlayNo(), m_fAnimeTime);
 
 	//-- モデル表示
 	if (m_pModel) {

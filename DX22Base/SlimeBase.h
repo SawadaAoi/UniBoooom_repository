@@ -156,7 +156,9 @@ protected:
 
 	tagTransform3d m_PlayerTran;	// プレイヤーの変形情報
 
-	vector<AnimeModel::AnimeNo>* m_Anime;		// レベル1スライムのアニメーション
+	vector<AnimeModel::AnimeNo> m_Anime;	// レベル1スライムのアニメーション
+	float m_fAnimeTime;						// アニメーションの現在の時間
+
 
 };
 #endif // __SLIME_BASE_H__

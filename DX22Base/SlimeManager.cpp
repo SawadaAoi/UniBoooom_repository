@@ -351,7 +351,7 @@ void CSlimeManager::Create(E_SLIME_LEVEL level)
 		switch (level)
 		{
 		case LEVEL_1:
-			m_pSlime[i] = new CSlime_1(CreatePos,m_pVS,m_pBlueModel,&m_level1Anime);	// “®“I¶¬
+			m_pSlime[i] = new CSlime_1(CreatePos,m_pVS,m_pBlueModel,m_level1Anime);	// “®“I¶¬
 			break;
 		case LEVEL_2:
 			m_pSlime[i] = new CSlime_2(CreatePos, m_pVS, m_pGreenModel);	// “®“I¶¬
