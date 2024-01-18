@@ -143,6 +143,7 @@ private:
 	
 	int m_nKill;	//被討伐数
 	bool m_bIsRigid;	//硬直かどうかフラグ
+	int m_nVibrateCnt;	//振動時間カウント
 
 	bool m_bBossPtrExist;		// ボスのポインタが存在するかどうか
 	// ===プロトタイプ宣言===
