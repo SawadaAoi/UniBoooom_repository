@@ -1467,8 +1467,6 @@ void CSlimeManager::PlaySE(SE se, float volume)
 	----------------------------------------
 	–ß’lFm_bIsRigid,d’¼”ÍˆÍ“à‚©‚Ç‚¤‚©
 ======================================== */
-
-
 bool CSlimeManager::RigidCheck()
 {
 	for (int j = 0; j < MAX_SLIME_NUM; j++)

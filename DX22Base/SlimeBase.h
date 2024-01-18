@@ -102,7 +102,8 @@ public:
 	void HitMove();									//スライムが吹き飛び移動状態の時に毎フレーム呼び出して移動させる
 	void HitMoveStart(float speed, float angle);	//スライムが吹き飛ばされたときに速度と角度を決める
 	void Reflect();									//スライムとぶつかって吹き飛ばした際に自分の移動量を減らす
-	void Escape();
+	void EscapeMove();
+	void MoveStop();
 
 	// ゲット関数
 	float GetSpeed();					// スライムの移動速度を取得
@@ -118,16 +119,20 @@ public:
 	void SetExplosionPos(TPos3d<float> expPos);
 	void SetEscapeFlag(bool bEscape);
 protected:
-	Model* m_pModel;				//3Dモデル
-	VertexShader* m_pVS;			//バーテックスシェーダーのポインタ
-	TTriType<float> m_move;			//移動量
-	TPos3d<float> m_ExpPos;			//最も近い爆発の座標
-	float m_fSpeed;					//スライムの移動速度
+	Model* m_pModel;				// 3Dモデル
+	VertexShader* m_pVS;			// バーテックスシェーダーのポインタ
+	TTriType<float> m_move;			// 移動量
+	TPos3d<float> m_ExpPos;			// 最も近い爆発の座標
+	float m_fSpeed;					// スライムの移動速度
+									   
+	bool m_bHitMove;				// 吹っ飛び中かどうか
+	float m_fVecAngle;				// 敵の吹き飛ぶ方向
+									   
+	bool m_bEscape;					// スライムが逃げる状態かどうか
+	int m_nEscapeCnt;				// 逃げる状態になった時
 
-	bool m_bHitMove;				//吹っ飛び中かどうか
-	float m_fVecAngle;				//敵の吹き飛ぶ方向
-	bool m_bEscape;					//スライムが逃げる状態かどうか
-	int m_nEscapeCnt;				//逃げる状態になった時
+	bool m_bMoveStop;				// 移動停止状態かどうか
+	int m_nMvStpCnt;				// 移動停止フレーム数
 
 	E_SLIME_LEVEL m_eSlimeSize;		//スライムの大きさの列挙
 	const CCamera* m_pCamera;		//カメラのポインタ

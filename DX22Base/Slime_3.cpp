@@ -110,7 +110,7 @@ void CSlime_3::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
 		}
 		else
 		{
-			Escape();	//”š”­‚©‚ç“¦‚°‚é
+			EscapeMove();	//”š”­‚©‚ç“¦‚°‚é
 		}
 	}
 	else

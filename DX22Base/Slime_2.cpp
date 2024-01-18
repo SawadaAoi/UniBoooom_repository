@@ -92,6 +92,15 @@ CSlime_2::~CSlime_2()
 {
 }
 
+/* ========================================
+	更新処理関数
+	-------------------------------------
+	内容：更新処理
+	-------------------------------------
+	引数1：プレイヤーのtransform
+	-------------------------------------
+	戻値：無し
+=========================================== */
 void CSlime_2::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
 {
 	m_PlayerTran = playerTransform;
@@ -104,7 +113,7 @@ void CSlime_2::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
 		}
 		else
 		{
-			Escape();	//爆発から逃げる
+			EscapeMove();	//爆発から逃げる
 		}
 	}
 	else

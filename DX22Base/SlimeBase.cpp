@@ -68,6 +68,8 @@ CSlimeBase::CSlimeBase()
 	, m_ExpPos{ 0.0f,0.0f,0.0f }
 	, m_bEscape(false)
 	, m_nEscapeCnt(0)
+	, m_bMoveStop(false)
+	, m_nMvStpCnt(0)
 	, m_fScaleShadow(0.0f)
 {
 	m_Transform.fScale = (1.0f, 1.0f, 1.0f);
@@ -117,7 +119,7 @@ void CSlimeBase::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
 		}
 		else
 		{
-			Escape();	//爆発から逃げる
+			EscapeMove();	//爆発から逃げる
 		}
 	}
 	else
@@ -306,7 +308,7 @@ void CSlimeBase::Reflect()
 	----------------------------------------
 	戻値：なし
 ======================================== */
-void CSlimeBase::Escape()
+void CSlimeBase::EscapeMove()
 {
 	//爆発への角度を取得
 	float rad = atan2f(m_ExpPos.z - m_Transform.fPos.z, m_ExpPos.x - m_Transform.fPos.x);	
@@ -320,6 +322,29 @@ void CSlimeBase::Escape()
 	{ 
 		m_bEscape = false; 
 		m_nEscapeCnt = 0;
+	}
+}
+
+/* ========================================
+	停止動作関数
+	----------------------------------------
+	内容：スライムを暫く硬直させる
+	----------------------------------------
+	引数1：なし
+	----------------------------------------
+	戻値：なし
+======================================== */
+void CSlimeBase::MoveStop()
+{
+	// 動きを止める
+	m_move.x = 0.0f;
+	m_move.z = 0.0f;
+
+	m_nMvStpCnt++;	//カウントを増加
+	if (m_nMvStpCnt > ESCAPE_TIME)
+	{
+		m_nMvStpCnt = false;
+		m_nMvStpCnt = 0;
 	}
 }
 
