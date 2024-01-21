@@ -51,6 +51,8 @@ private:
 	StageSelect EscapeStageNum;
 	Texture* m_pStageSelectBG;
 	Texture* m_pStageSelectUI;
+	bool m_bSelect;
+	int m_nCount;
 
 };	//ステージセレクト
 

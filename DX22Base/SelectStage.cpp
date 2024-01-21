@@ -23,6 +23,7 @@ const float TEXTURE_SELECT_STAGE_POSX = 900.0f;
 const float TEXTURE_SELECT_STAGE_POSY = 300.0f;
 const float TEXTURE_SELECT_STAGE_WIDTH = 400.0f;
 const float TEXTURE_SELECT_STAGE_HEIGHT =500.0f;
+const float SELECT_CONTOROLLER_INTERVAL =60.0f;	//スティック入力の間隔
 
 /* ========================================
 	コンストラクタ
@@ -36,7 +37,9 @@ const float TEXTURE_SELECT_STAGE_HEIGHT =500.0f;
 CSelectStage::CSelectStage()
 	: m_pStageSelectBG(nullptr)
 	, m_pStageSelectUI(nullptr)
-	,Num(0)
+	, Num(0)
+	, m_bSelect(false)
+	, m_nCount(0)
 {
 	mStageNum[0].Type = E_TYPE_STAGE1;
 	mStageNum[0].m_pTexture= new Texture();
@@ -200,45 +203,52 @@ void CSelectStage::Draw() //const
 	======================================== */
 void CSelectStage::Select()
 {
-	if (IsKeyTrigger('A'))
-	{
+	//キーボード入力
+	if (IsKeyTrigger('A')){
 		Num -= 1;
 		if (Num < 0) Num = 0;
-	//EscapeStageNum = mStageNum[2];
-	//mStageNum[2] = mStageNum[1];
-	//mStageNum[1] = mStageNum[0];
-	//mStageNum[0] = EscapeStageNum;
 	}
-	if (IsKeyTrigger('D'))
-	{
+	if (IsKeyTrigger('D')){
 		Num += 1;
 		if (Num > 2)Num = 2;
-		//EscapeStageNum = mStageNum[0];
-		//mStageNum[0] = mStageNum[1];
-		//mStageNum[1] = mStageNum[2];
-		//mStageNum[2] = EscapeStageNum;
 	}
-	TPos3d<float> fMoveInput;	// スティックの入力値を入れる変数
 
-	//if (GetUseVController())
-	//{// コントローラーの左スティックの傾きを取得
-	//	fMoveInput.x = IsStickLeft().x;
-	//	//fMoveInput.z = IsStickLeft().y * -1;	// 上下逆(↑が－1)
-	//	if (fMoveInput.x < 0.0f)
-	//	{
-	//		EscapeStageNum = mStageNum[2];
-	//		mStageNum[2] = mStageNum[1];
-	//		mStageNum[1] = mStageNum[0];
-	//		mStageNum[0] = EscapeStageNum;
-	//	}
-	//	if (fMoveInput.x > 0.0f)
-	//	{
-	//		EscapeStageNum = mStageNum[0];
-	//		mStageNum[0] = mStageNum[1];
-	//		mStageNum[1] = mStageNum[2];
-	//		mStageNum[2] = EscapeStageNum;
-	//	}
-	//}
+	
+
+	if (!m_bSelect)
+	{
+		TPos3d<float> fMoveInput;	// スティックの入力値を入れる変数
+		if (GetUseVController())
+		{// コントローラーの左スティックの傾きを取得
+			fMoveInput.x = IsStickLeft().x;
+			if (fMoveInput.x < 0.0f)
+			{
+				EscapeStageNum = mStageNum[2];
+				mStageNum[2] = mStageNum[1];
+				mStageNum[1] = mStageNum[0];
+				mStageNum[0] = EscapeStageNum;
+			}
+			if (fMoveInput.x > 0.0f)
+			{
+				EscapeStageNum = mStageNum[0];
+				mStageNum[0] = mStageNum[1];
+				mStageNum[1] = mStageNum[2];
+				mStageNum[2] = EscapeStageNum;
+			}
+			
+			m_bSelect = true;	
+		}
+	}
+	else
+	{
+		m_nCount += 1;
+		if (m_nCount >= SELECT_CONTOROLLER_INTERVAL)
+		{
+			m_bSelect = false;
+			m_nCount = 0;
+		}
+	}
+
 	if (IsKeyTrigger(VK_SPACE) || IsKeyTriggerController(BUTTON_B))
 	{
 		m_bFinish = true;	// タイトルシーン終了フラグON
