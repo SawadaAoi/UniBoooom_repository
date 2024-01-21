@@ -27,6 +27,7 @@
 	・2023/11/29 影メモリリーク除去 takagi
 	・2023/11/30 モデルの読み込みが反転したのでradian.yが反対になるように変更 yamashita
 	・2023/12/07 ゲームパラメータから一部定数移動 takagi
+	・2024/01/18 炎スライムのエフェクト追加 Tei
 
 ========================================== */
 
@@ -79,6 +80,7 @@ CSlimeBase::CSlimeBase()
 
 	m_pShadow = new CShadow();	// 影生成
 
+
 }
 
 /* ========================================
@@ -129,6 +131,13 @@ void CSlimeBase::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
 	// -- 座標更新
 	m_Transform.fPos.x += m_move.x * fSlimeMoveSpeed;
 	m_Transform.fPos.z += m_move.z * fSlimeMoveSpeed;
+
+	if (GetSlimeLevel() == LEVEL_FLAME)
+	{
+		//エフェクト更新
+		LibEffekseer::GetManager()->SetLocation(m_efcslimeHnadle, m_Transform.fPos.x, m_Transform.fPos.y, m_Transform.fPos.z);
+	}
+	
 }
 
 	
@@ -161,6 +170,16 @@ void CSlimeBase::Draw(const CCamera* pCamera)
 
 	//-- 影の描画
 	m_pShadow->Draw(m_Transform, m_fScaleShadow, pCamera);
+
+	if (GetSlimeLevel() == LEVEL_FLAME)
+	{
+		//エフェクトの描画
+		TPos3d<float> cameraPos = m_pCamera->GetPos();							//カメラ座標を取得
+		DirectX::XMFLOAT3 fCameraPos(cameraPos.x, cameraPos.y, cameraPos.z);	//XMFLOAT3に変換
+		LibEffekseer::SetViewPosition(fCameraPos);								//カメラ座標をセット
+		LibEffekseer::SetCameraMatrix(m_pCamera->GetViewWithoutTranspose(), m_pCamera->GetProjectionWithoutTranspose());	//転置前のviewとprojectionをセット
+	}
+	
 }
 
 

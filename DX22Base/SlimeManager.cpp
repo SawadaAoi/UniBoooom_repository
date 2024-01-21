@@ -42,6 +42,7 @@
 	・2023/12/28 スライム討伐配列番号追加 Sawada
 	・2024/01/01 スライム生成数の代わりを訂正 takagi
 	・2024/01/03 UnionSlime関数に移動速度と角度の引数を追加 nieda
+	・2024/01/18 炎スライムエフェクト追加 Tei
 
 =========================================== */
 
@@ -169,7 +170,11 @@ CSlimeManager::CSlimeManager(CPlayer* pPlayer)
 	}
 	// SEの読み込み
 	LoadSE();
-#if DEBUG_BOSS
+
+	//エフェクト初期化
+	m_flameSlimeEffect = LibEffekseer::Create("Assets/Effect/mega/slime_fire_effect.efkefc");
+
+	#if DEBUG_BOSS
 	// 開始時ボス生成
 	for (int i = 0; i < MAX_BOSS_SLIME_NUM; i++)
 	{
@@ -300,6 +305,7 @@ void CSlimeManager::Draw()
 	{
 		m_pUnionMng->Draw();	//描画
 	}
+
 }
 
 
@@ -363,7 +369,7 @@ void CSlimeManager::Create(E_SLIME_LEVEL level)
 			m_pSlime[i] = new CSlime_4(CreatePos, m_pVS, m_pRedModel);	// 動的生成
 			break;
 		case LEVEL_FLAME:
-			m_pSlime[i] = new CSlime_Flame(CreatePos,m_pVS,m_pFlameModel);	// 動的生成
+			m_pSlime[i] = new CSlime_Flame(CreatePos,1.5f,m_flameSlimeEffect, m_pVS,m_pFlameModel);	// 動的生成
 			break;
 		case LEVEL_HEAL:
 			m_pSlime[i] = new CSlime_Heal(CreatePos, m_pVS, m_pHealModel);	//動的生成
@@ -1170,13 +1176,13 @@ void CSlimeManager::LoadModel()
 	m_pRedModel->SetVertexShader(m_pVS);
 	//フレイムスライムのモデル読み込み
 	m_pFlameModel = new Model;
-	if (!m_pFlameModel->Load("Assets/Model/slime/slime_fire1.FBX", 0.15f, Model::ZFlip)) {		//倍率と反転は省略可
+	if (!m_pFlameModel->Load("Assets/Model/slime/slime_fire1.FBX", 0.30f, Model::ZFlip)) {		//倍率と反転は省略可
 		MessageBox(NULL, "Flame_Slime", "Error", MB_OK);	//ここでエラーメッセージ表示
 	}
 	m_pFlameModel->SetVertexShader(m_pVS);
 	//ヒールスライムのモデル読み込み
 	m_pHealModel = new Model;
-	if (!m_pHealModel->Load("Assets/Model/eyeBat/eyebat.FBX", 0.15f, Model::ZFlip)) {		//倍率と反転は省略可
+	if (!m_pHealModel->Load("Assets/Model/slime/slime_heal_mesh.FBX", 0.45f, Model::ZFlip)) {		//倍率と反転は省略可
 		MessageBox(NULL, "Heal_Slime", "Error", MB_OK);	//ここでエラーメッセージ表示
 	}
 	m_pHealModel->SetVertexShader(m_pVS);

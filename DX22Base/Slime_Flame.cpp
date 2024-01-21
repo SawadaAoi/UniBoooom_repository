@@ -13,6 +13,7 @@
 	・2023/11/15 スライムのモデルと頂点シェーダーをmanagerから受け取るように変更 yamashita
 	・2023/11/28 影の大きさを設定する変数追加 nieda
 	・2023/12/07 ゲームパラメータから一部定数移動 takagi
+	・2024/01/18 炎スライムエフェクト追加 Tei
 
 ========================================== */
 
@@ -57,12 +58,17 @@ CSlime_Flame::CSlime_Flame()
 	-------------------------------------
 	戻値：無し
 =========================================== */
-CSlime_Flame::CSlime_Flame(TPos3d<float> pos, VertexShader* pVS, Model* pModel)
+CSlime_Flame::CSlime_Flame(TPos3d<float> pos, float fSize, Effekseer::EffectRef flameSlimeEffect, VertexShader* pVS, Model* pModel)
 	: CSlime_Flame()
 {
 	m_Transform.fPos = pos;			// 初期座標を指定
 	m_pVS = pVS;
 	m_pModel = pModel;
+	// エフェクト初期化
+	m_flameSlimeEffect = flameSlimeEffect;	//エフェクトをセット
+	m_efcslimeHnadle = LibEffekseer::GetManager()->Play(m_flameSlimeEffect, pos.x, pos.y, pos.z);	//エフェクトの開始
+	LibEffekseer::GetManager()->SetScale(m_efcslimeHnadle, LEVEL_FLAME_SCALE* fSize, LEVEL_FLAME_SCALE * fSize, LEVEL_FLAME_SCALE * fSize);	//エフェクトのサイズを設定
+	LibEffekseer::GetManager()->SetLocation(m_efcslimeHnadle, pos.x, pos.y, pos.z);
 }
 
 /* ========================================
@@ -77,6 +83,21 @@ CSlime_Flame::CSlime_Flame(TPos3d<float> pos, VertexShader* pVS, Model* pModel)
 CSlime_Flame::~CSlime_Flame()
 {
 }
+
+//void CSlime_Flame::Draw()
+//{
+//	//エフェクトの描画
+//	TPos3d<float> cameraPos = m_pCamera->GetPos();							//カメラ座標を取得
+//	DirectX::XMFLOAT3 fCameraPos(cameraPos.x, cameraPos.y, cameraPos.z);	//XMFLOAT3に変換
+//	LibEffekseer::SetViewPosition(fCameraPos);								//カメラ座標をセット
+//	LibEffekseer::SetCameraMatrix(m_pCamera->GetViewWithoutTranspose(), m_pCamera->GetProjectionWithoutTranspose());	//転置前のviewとprojectionをセット
+//}
+//
+//void CSlime_Flame::Update()
+//{
+//	LibEffekseer::GetManager()->SetLocation(m_efcslimeHnadle, m_Transform.fPos.x, m_Transform.fPos.y, m_Transform.fPos.z);
+//
+//}
 
 /* ========================================
 	通常移動関数
