@@ -1,15 +1,17 @@
 /* ========================================
 	HEW/UniBoooom!!
 	---------------------------------------
-	影表示用cpp
+	影表示用ソース
 	---------------------------------------
 	Shadow.cpp
-
+	---------------------------------------
 	作成者 nieda
 
 	変更履歴
 	・2023/11/27 制作 nieda
 	・2023/12/07 ゲームパラメータから一部定数移動 takagi
+	・2024/01/20 リファクタリング takagi
+	・2024/01/21 コメント改修 takagi
 
 ========================================== */
 
@@ -86,62 +88,4 @@ void CShadow::Update()
 {
 	// 一旦作ってみた
 	m_bDisp ^= 1;	// 表示、非表示の切り替え
-}
-
-/* ========================================
-   描画処理関数
-   ----------------------------------------
-   内容：描画処理
-   ----------------------------------------
-   引数1：プレイヤーの現在位置
-   引数2：表示するテクスチャの大きさ
-   引数3：カメラクラスのポインタ
-   ----------------------------------------
-   戻値：なし
-======================================== */
-void CShadow::Draw(tagTransform3d m_Pos, float fScale, const CCamera* pCamera)
-{
-	if (m_bDisp)	// 表示フラグがONの場合
-	{		
-		DirectX::XMMATRIX mat_shadow = DirectX::XMMatrixTranslation(m_Pos.fPos.x, m_Pos.fPos.z, m_Pos.fPos.y) * DirectX::XMMatrixRotationX(PI / 2);	// 移動行列を求める
-		DirectX::XMFLOAT4X4 world;	// 読み取り用の行列の宣言
-		DirectX::XMStoreFloat4x4(&world, DirectX::XMMatrixTranspose(mat_shadow));	// 格納する
-		Sprite::SetWorld(world);								// ワールド行列の設定
-		Sprite::SetView(pCamera->GetViewMatrix());				// ビュー行列の設定
-		Sprite::SetProjection(pCamera->GetProjectionMatrix());	// プロジェクション行列の設定
-		Sprite::SetSize(DirectX::XMFLOAT2(fScale, fScale));		// サイズを設定
-		Sprite::SetUVPos(DirectX::XMFLOAT2(0.0f, 0.0f));		// UVの位置
-		Sprite::SetUVScale(DirectX::XMFLOAT2(1.0f, 1.0f));		// UVの分割数
-		Sprite::SetTexture(m_pTextureShadow);					// テクスチャを設定
-		Sprite::SetColor(DirectX::XMFLOAT4(1.0f,1.0f,1.0f,0.6f));// 透明度を下げる
-		Sprite::Draw();											// スプライトを描画
-		Sprite::SetColor(DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f));// 透明度を戻す(他に影響を出さないため)
-	}
-}
-
-/* ========================================
-   描画処理関数
-   ----------------------------------------
-   内容：描画処理
-   ----------------------------------------
-   引数1：カメラクラスのポインタ
-   ----------------------------------------
-   戻値：なし
-======================================== */
-void CShadow::Draw(const CCamera* pCamera)
-{
-	if (m_bDisp)	// 表示フラグがONの場合
-	{
-		DirectX::XMMATRIX mat_shadow = DirectX::XMMatrixTranslation(m_Transform.fPos.x, m_Transform.fPos.z, m_Transform.fPos.y) * DirectX::XMMatrixRotationX(PI / 2);	// 移動行列を求める
-		DirectX::XMFLOAT4X4 world;	// 読み取り用の行列の宣言
-		DirectX::XMStoreFloat4x4(&world, DirectX::XMMatrixTranspose(mat_shadow));	// 格納する
-		Sprite::SetWorld(world);								// ワールド行列の設定
-		Sprite::SetView(pCamera->GetViewMatrix());				// ビュー行列の設定
-		Sprite::SetProjection(pCamera->GetProjectionMatrix());	// プロジェクション行列の設定
-		Sprite::SetSize(DirectX::XMFLOAT2(m_Transform.fScale.x, m_Transform.fScale.z));		// サイズを設定
-		Sprite::SetUVPos(DirectX::XMFLOAT2(0.0f, 0.0f));		// UVの位置
-		Sprite::SetUVScale(DirectX::XMFLOAT2(1.0f, 1.0f));		// UVの分割数
-		Sprite::SetTexture(m_pTextureShadow);					// テクスチャを設定
-		Sprite::Draw();											// スプライトを描画
-	}
 }

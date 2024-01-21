@@ -1,5 +1,20 @@
-#ifndef __DIRECTWRITE_H__
-#define __DIRECTWRITE_H__
+/* ========================================
+	HEW/UniBoooom!!
+	------------------------------------
+	文字出力定義
+	------------------------------------
+	DirectWrite.h
+	------------------------------------
+	作成者	yamashita
+
+	変更履歴
+	・2024/01/20 コメント改修 takagi
+	・2024/01/21 コメント改修 takagi
+
+========================================== */
+
+#ifndef __DIRECT_WRITE_H__	//DirectWrite.hインクルードガード
+#define __DIRECT_WRITE_H__
 
 #include <dwrite.h>
 #include <d2d1.h>
@@ -86,7 +101,7 @@ private:
 };
 
 
-#endif // !__DIRECTWRITE_H__
+#endif // !__DIRECT_WRITE_H__
 
 //＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝使い方＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
 //std::string str = "ABCDEFG";		//表示したい文字列を定義

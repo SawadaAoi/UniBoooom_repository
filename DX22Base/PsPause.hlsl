@@ -11,7 +11,7 @@
 	・2023/11/18 制作 takagi
 	・2023/11/19 18の続き takagi
 	・2023/11/20 整理 takagi
-	・2023/12/01 2dPolygonに適する形に変更 takagi
+	・2023/12/01 2dObjectに適する形に変更 takagi
 	・2023/12/06 pose→pause修正、ポーズ文字表示 takagi
 	・2024/01/11 ブレンドステート修正に伴う透明度調整 takagi
 

@@ -8,11 +8,12 @@
 	作成者
 
 	変更履歴
-	・XXXX/XX/XX 変更内容 変更者名
+	・2024/01/20 コメント改修 takagi
+	・2024/01/21 コメント改修 takagi
 
 ========================================== */
 
-#ifndef __INPUT_H__
+#ifndef __INPUT_H__	//Input.hインクルードガード
 #define __INPUT_H__
 
 // =============== インクルード ===================
@@ -58,4 +59,4 @@ TTriType<float> IsStickLeft();
 
 bool GetUseVController();
 
-#endif // __INPUT_H__
+#endif	//!__INPUT_H__

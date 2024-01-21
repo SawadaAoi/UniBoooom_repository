@@ -1,17 +1,19 @@
 /* ========================================
 	HEW/UniBoooom!!
 	------------------------------------
-	ボススライム1.cpp
+	ボススライム1ソース
 	------------------------------------
 	Slime_Boss_1.cpp
 	------------------------------------
-	作成者	鈴村朋也
+	作成者	suzumura
 
 	変更履歴
-	・2023/11/17 クラス作成 Suzumura
-	・2023/11/23 突撃処理の追加 Suzumura
+	・2023/11/17 クラス作成 suzumura
+	・2023/11/23 突撃処理の追加 suzumura
 	・2023/11/28 影の大きさを設定する変数追加 nieda
 	・2023/12/07 ゲームパラメータから一部定数移動 takagi
+	・2024/01/20 リファクタリング takagi
+	・2024/01/21 コメント改修 takagi
 
 ========================================== */
 
@@ -57,7 +59,7 @@ CSlime_Boss_1::CSlime_Boss_1()
 	SetMaxHp();
 	m_nHp = m_nMaxHp;
 	m_nAttack = BOSS_1_ATTACK;
-	m_pShadow->SetScale(BOSS_1_SHADOW_SCALE);
+	m_pShadow->SetSize(BOSS_1_SHADOW_SCALE);
 }
 
 /* ========================================
@@ -103,10 +105,8 @@ CSlime_Boss_1::~CSlime_Boss_1()
 	-------------------------------------
 	戻値：無し
 =========================================== */
-void CSlime_Boss_1::Update(tagTransform3d playerTransform)
-{
-	m_PlayerTran = playerTransform;
-	
+void CSlime_Boss_1::Update()
+{	
 	if (!m_bHitMove)	//敵が通常の移動状態の時
 	{
 		NormalMove();	// 通常行動処理
@@ -175,7 +175,7 @@ void CSlime_Boss_1::Update(tagTransform3d playerTransform)
 void CSlime_Boss_1::NormalMove()
 {
 	TPos3d<float> movePos;
-	TPos3d<float> playerPos = m_PlayerTran.fPos;
+	TPos3d<float> playerPos = m_PlayerTran->fPos;
 
 	// フレーム加算
 	m_nFrame++;

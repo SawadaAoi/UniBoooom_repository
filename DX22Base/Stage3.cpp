@@ -4,7 +4,7 @@
 	ステージ3実装
 	---------------------------------------
 	Stage3.cpp
-
+	---------------------------------------
 	作成者
 			takagi
 			nieda
@@ -17,6 +17,8 @@
 	・2023/12/18 デバッグモード削除反映 takagi
 	・2024/01/01 親コンストラクタ呼び出し takagi
 	・2024/01/15 GameFinish()関数修正・RecordData()関数追加 takagi
+	・2024/01/20 リファクタリング takagi
+	・2024/01/21 コメント改修 takagi
 
 ========================================== */
 
@@ -38,7 +40,7 @@ const int STAGE_NUM = 3;	//ステージ番号
 	戻値：なし
 =========================================== */
 CStage3::CStage3()
-	:CStage(CUIStageManager::E_STAGE_3)	//親関数呼び出し
+	:CStage()	//親関数呼び出し
 {
 	m_pFloor = new CFloor(m_pPlayer->GetPosAddress(), CFloor::Stage3);	// 床生成
 	m_pUIStageManager->GetBossGauge()->AddBossGauge(BOSS_GAUGE_S3[0].BossNum, BOSS_GAUGE_S3[0].startTime, BOSS_GAUGE_S3[0].maxTime);
@@ -75,6 +77,8 @@ CStage3::~CStage3()
 =========================================== */
 void CStage3::Update()
 {
+	CStage::Update();	// ステージ終了処理
+
 	if (m_pStartText->GetAnimFlg())	// シーン遷移後ゲームを開始するか判定
 	{
 		m_pStartText->Update();
@@ -109,23 +113,10 @@ void CStage3::Update()
 		m_pExplosionMng->Update();		// 爆発マネージャー更新
 		m_pHealItemMng->Update();		// 回復アイテム更新
 		m_pUIStageManager->Update();	// UIマネージャー更新
-		PlayerHealItemCollision();		// 回復アイテム取る判定
 		Collision();					// 当たり判定更新
 
 
 	}
-
-#if SCENE_TRANSITION
-	if (m_pUIStageManager->GetStageFinish()->GetDispFlg())
-	{
-		if (IsKeyTrigger(VK_RETURN) || IsKeyTriggerController(BUTTON_A))
-		{
-			m_bFinish = true;	// タイトルシーン終了フラグON
-		}
-	}
-#else
-	CStage::GameFinish();	// ステージ終了処理
-#endif
 }
 
 /* ========================================
@@ -178,21 +169,6 @@ void CStage3::Draw()
 	{
 		m_pPause->Draw();
 	}
-}
-
-/* ========================================
-	種類ゲッタ
-	----------------------------------------
-	内容：自身がステージ3であることを示す
-	----------------------------------------
-	引数1：なし
-	----------------------------------------
-	戻値：自身の種類
-=========================================== */
-CStage3::E_TYPE CStage3::GetType() const
-{
-	// =============== 提供 ===================
-	return CStage3::E_TYPE_STAGE3;	//自身の種類
 }
 
 /* ========================================

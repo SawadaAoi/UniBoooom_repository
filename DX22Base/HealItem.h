@@ -1,26 +1,27 @@
 /* ========================================
 	HEW/UniBoooom!!
 	------------------------------------
-	HealItem用ヘッダ
+	回復アイテム用ヘッダ
 	------------------------------------
 	HealItem.h
 	------------------------------------
-	作成者
-		yamashita
+	作成者	yamashita
+
 	変更履歴
 	・2023/11/27 h作成 yamashita
 	・2023/11/27 Itemクラスを継承 yamashita
+	・2024/01/20 コメント改修 takagi
+	・2024/01/21 コメント改修 takagi
 
 ========================================== */
 
+#ifndef __HEAL_ITEM_H__	//HealItem.hインクルードガード
+#define __HEAL_ITEM_H__
 
 // =============== インクルード部 =====================
 #include "Item.h"
 #include "Model.h"
 #include "Shader.h"
-
-#ifndef __HEART_ITEM_H__
-#define __HEART_ITEM_H__
 
 class CHealItem
 	:public CItem
@@ -39,6 +40,6 @@ private:
 
 
 
-#endif // !__HEART_ITEM_H__
+#endif	//!__HEAL_ITEM_H__
 
 

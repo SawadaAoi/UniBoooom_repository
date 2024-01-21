@@ -20,6 +20,8 @@
 	・2023/11/14 角度演算 takagi
 	・2023/12/05 ビルボードに対応 takagi
 	・2023/12/17 引数参照化 takagi
+	・2024/01/20 リファクタリング takagi
+	・2024/01/21 コメント改修 takagi
 
 ========================================== */
 
@@ -50,7 +52,7 @@ public:
 		= DirectX::XMMatrixIdentity());						//ワールド行列(TRS変換)
 	DirectX::XMFLOAT4X4 GetWorldMatrixSRT(const DirectX::XMMATRIX& Inverse
 		= DirectX::XMMatrixIdentity());						//ワールド行列(SRT変換)
-	float Angle(const tagTransform3d& Obj);					//角度演算
+	float Angle(const tagTransform3d& Obj) const;					//角度演算
 	tagTransform3d& operator=(const tagTransform3d& Obj);	//"="演算子のオーバーロード
 	tagTransform3d operator+(const tagTransform3d& Obj);	//"+"演算子のオーバーロード
 	tagTransform3d& operator+=(const tagTransform3d& Obj);	//"+="演算子のオーバーロード
@@ -62,4 +64,4 @@ public:
 	tagTransform3d& operator/=(const tagTransform3d& Obj);	//"/="演算子のオーバーロード
 };	//型テンプレート
 
-#endif //!__TRANSFORM_3D_H__
+#endif	//!__TRANSFORM_3D_H__

@@ -4,26 +4,30 @@
 	爆発処理クラス定義ヘッダ
 	---------------------------------------
 	Expplosion.h
-
-	作成者 鄭 宇恩
+	---------------------------------------
+	作成者 tei
 
 	変更履歴
-	・2023/11/03 ヘッダー作成 Tei
-	・2023/11/05 パラメータ設定 Tei
-	・2023/11/07 変数型TriType→CSphereに Tei
-	・2023/11/08 変数、関数の変更 Sawada
-	・2023/11/10 カメラポインタを追加 Ymashita
-	・2023/11/13 コンストラクタにtimeを追加 Suzumura
-	・2023/11/13 爆発総時間の変数を追加 Suzumura
-	・2023/11/14 SphereInfoの変更に対応 Takagi
+	・2023/11/03 ヘッダー作成 tei
+	・2023/11/05 パラメータ設定 tei
+	・2023/11/07 変数型TriType→CSphereに tei
+	・2023/11/08 変数、関数の変更 sawada
+	・2023/11/10 カメラポインタを追加 ymashita
+	・2023/11/13 コンストラクタにtimeを追加 suzumura
+	・2023/11/13 爆発総時間の変数を追加 suzumura
+	・2023/11/14 SphereInfoの変更に対応 takagi
 	・2023/11/15 Objectクラスを継承したので修正　yamamoto
-	・2023/11/19 ボスに与えるダメージ変数を追加 Suzumura
-	・2023/11/20 コンボ数配列添え字の追加 Sawada
-	・2023/11/21 初期値の設定と、遅延処理の追加 Sawada
-	・2023/11/21 ボスに一度触ったかを判定用の関数、変数追加 Suzumura
-	・2023/12/04 爆発のエフェクトを実装 yamasita
-	・2023/12/04 爆発の仮表示3Dモデルを削除 yamasita
+	・2023/11/19 ボスに与えるダメージ変数を追加 suzumura
+	・2023/11/20 コンボ数配列添え字の追加 sawada
+	・2023/11/21 初期値の設定と、遅延処理の追加 sawada
+	・2023/11/21 ボスに一度触ったかを判定用の関数、変数追加 suzumura
+	・2023/12/04 爆発のエフェクトを実装 yamashita
+	・2023/12/04 爆発の仮表示3Dモデルを削除 yamashita
+	・2024/01/20 リファクタリング takagi
+	・2024/01/21 コメント改修 takagi
+
 ======================================== */
+
 #ifndef __EXPLOSION_H__	//Explosion.hインクルードガード
 #define __EXPLOSION_H__
 
@@ -32,13 +36,13 @@
 #include "Sphereinfo.h"		//球体情報用ヘッダー
 #include "Transform3d.h"	//ワールド座標系情報ヘッダー
 #include "CameraChase.h"	//カメラ定義ヘッダー
-#include "Object.h"			//
+#include "3dObject.h"			//
 #include "BoooomUI.h"
 #include "LibEffekseer.h"
 
 //=============== クラス定義 =====================
 class CExplosion
-	:public CObject
+	:public C3dObject
 {
 public:
 	// ===メンバ関数宣言===
@@ -79,4 +83,4 @@ private:
 	Effekseer::Handle m_efcHnadle;
 };
 
-#endif // __EXPLOSION_H__
+#endif	//!__EXPLOSION_H__

@@ -13,10 +13,12 @@
 	・2023/11/07 コメント修正 takagi
 	・2023/11/10 変数追加 takagi
 	・2024/01/16 統一のため、インクルードガードの___を__に変更	takagi
+	・2024/01/20 コメント改修 takagi
+	・2024/01/21 コメント改修 takagi
 
 ========================================== */
 
-#ifndef __CAMERA_DEBUG_H__
+#ifndef __CAMERA_DEBUG_H__	//CameraDebug.hインクルードガード
 #define __CAMERA_DEBUG_H__
 
 // =============== インクルード ===================
@@ -36,4 +38,4 @@ private:
 	float m_fRadY;			//Y-XZ座標の回転角(rad)
 };	//デバッグ用カメラ
 
-#endif // !__CAMERA_DEBUG_H__
+#endif	//!__CAMERA_DEBUG_H__

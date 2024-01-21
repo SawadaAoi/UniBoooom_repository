@@ -4,7 +4,7 @@
 	ステージの当たり判定処理実装
 	---------------------------------------
 	CollisionOfStage.cpp
-
+	---------------------------------------
 	作成者
 			takagi
 			nieda
@@ -16,6 +16,8 @@
 	・2023/12/01 ハンマーとスライムの当たり判定持にSEを再生 yamashita
 	・2023/12/07 ゲームパラメータから一部定数移動 takagi
 	・2023/12/15 SEの変数を削除 yamashita
+	・2024/01/20 リファクタリング takagi
+	・2024/01/21 コメント改修 takagi
 
 ========================================== */
 
@@ -59,6 +61,7 @@ void CStage::Collision()
 	SlimeBossNormalMoveCollision();
 	BossSlimeNormalMoveCollision();
 	SlimeSlimeNormalMoveCollision();
+	PlayerHealItemCollision();
 }
 
 /* ========================================
@@ -82,7 +85,7 @@ void CStage::PlayerSlimeCollision()
 		if (pSlimeNow == nullptr)				continue;	// 無効なスライムはスルー
 
 		// スライムとハンマーが衝突した場合
-		if (m_pCollision->CheckCollisionSphere(m_pPlayer->GetSphere(), pSlimeNow->GetSphere(), m_pPlayer->GetPos(), pSlimeNow->GetPos()))
+		if (CCollision::CheckCollisionSphere(m_pPlayer->GetSphere(), pSlimeNow->GetSphere(), m_pPlayer->GetPos(), pSlimeNow->GetPos()))
 		{
 			m_pPlayer->Damage(pSlimeNow->GetAttack());
 			return;
@@ -110,7 +113,7 @@ void CStage::PlayerBossCollision()
 		if (pBossNow == nullptr)				continue;	// 無効なスライムはスルー
 
 		// ボスとハンマーが衝突した場合
-		if (m_pCollision->CheckCollisionSphere(m_pPlayer->GetSphere(), pBossNow->GetSphere(), m_pPlayer->GetPos(), pBossNow->GetPos()))
+		if (CCollision::CheckCollisionSphere(m_pPlayer->GetSphere(), pBossNow->GetSphere(), m_pPlayer->GetPos(), pBossNow->GetPos()))
 		{
 			m_pPlayer->Damage(pBossNow->GetAttack());
 			return;
@@ -134,7 +137,7 @@ void CStage::PlayerHealItemCollision()
 
 	for (auto i = pHealItemList->begin(); i != pHealItemList->end();)
 	{
-		if (m_pCollision->CheckCollisionSphere(m_pPlayer->GetSphere(), (*i)->GetSphere(), m_pPlayer->GetPos(), (*i)->GetPos()))
+		if (CCollision::CheckCollisionSphere(m_pPlayer->GetSphere(), (*i)->GetSphere(), m_pPlayer->GetPos(), (*i)->GetPos()))
 		{
 			delete (*i);
 			i = pHealItemList->erase(i);	//アイテムの消去
@@ -171,7 +174,7 @@ void CStage::HammerSlimeCollision()
 		if (pSlimeNow->GetHitMoveFlg() == true)	continue; 	// 吹飛状態のスライムはスルー
 
 		// スライムとハンマーが衝突した場合
-		if (m_pCollision->CheckCollisionSphere(playerHammer->GetSphere(), pSlimeNow->GetSphere(), playerHammer->GetPos(), pSlimeNow->GetPos()))
+		if (CCollision::CheckCollisionSphere(playerHammer->GetSphere(), pSlimeNow->GetSphere(), playerHammer->GetPos(), pSlimeNow->GetPos()))
 		{
 			//赤スライムと激突したときだけヒットストップの時間を長くする
 			if (typeid(CSlime_4) == typeid(*pSlimeNow))
@@ -214,7 +217,7 @@ void CStage::HammerBossCollision()
 		if (pBossNow->GetHitMoveFlg() == true)	continue; 	// 吹飛状態のスライムはスルー
 
 		// スライムとハンマーが衝突した場合
-		if (m_pCollision->CheckCollisionSphere(playerHammer->GetSphere(), pBossNow->GetSphere(), playerHammer->GetPos(), pBossNow->GetPos()))
+		if (CCollision::CheckCollisionSphere(playerHammer->GetSphere(), pBossNow->GetSphere(), playerHammer->GetPos(), pBossNow->GetPos()))
 		{
 			// 通常移動中にしかヒットストップしない
 			if(pBossNow->GetMoveState() != 0)
@@ -263,7 +266,7 @@ void CStage::SlimeSlimeCollision()
 
 
 			// スライム同士が衝突した場合
-			if (m_pCollision->CheckCollisionSphere(pSlimeFly->GetSphere(), pSlimeTarget->GetSphere(), pSlimeFly->GetPos(), pSlimeTarget->GetPos()))
+			if (CCollision::CheckCollisionSphere(pSlimeFly->GetSphere(), pSlimeTarget->GetSphere(), pSlimeFly->GetPos(), pSlimeTarget->GetPos()))
 			{
 
 				m_pSlimeMng->HitBranch(i, j, m_pExplosionMng);	// 爆発処理、結合処理(スライム同士の情報によって処理を変える)
@@ -301,7 +304,7 @@ void CStage::SlimeBossCollision()
 			if (pBossTarget->GetHitMoveFlg() == true)	continue; 	// 通常状態のスライムはスルー
 
 			// スライム同士が衝突した場合
-			if (m_pCollision->CheckCollisionSphere(pSlimeFly->GetSphere(), pBossTarget->GetSphere(), pSlimeFly->GetPos(), pBossTarget->GetPos()))
+			if (CCollision::CheckCollisionSphere(pSlimeFly->GetSphere(), pBossTarget->GetSphere(), pSlimeFly->GetPos(), pBossTarget->GetPos()))
 			{
 
 				m_pSlimeMng->HitSlimeBossBranch(i, j, m_pExplosionMng);	// 爆発処理、結合処理(スライム同士の情報によって処理を変える)
@@ -339,7 +342,7 @@ void CStage::BossSlimeCollision()
 
 
 			// スライム同士が衝突した場合
-			if (m_pCollision->CheckCollisionSphere(pBossFly->GetSphere(), pSlimeTarget->GetSphere(), pBossFly->GetPos(), pSlimeTarget->GetPos()))
+			if (CCollision::CheckCollisionSphere(pBossFly->GetSphere(), pSlimeTarget->GetSphere(), pBossFly->GetPos(), pSlimeTarget->GetPos()))
 			{
 
 				m_pSlimeMng->HitBossSlimeBranch(i, j, m_pExplosionMng);	// 爆発処理、結合処理(スライム同士の情報によって処理を変える)
@@ -379,7 +382,7 @@ void CStage::BossBossCollision()
 
 
 			// スライム同士が衝突した場合
-			if (m_pCollision->CheckCollisionSphere(pBossFly->GetSphere(), pBossTarget->GetSphere(), pBossFly->GetPos(), pBossTarget->GetPos()))
+			if (CCollision::CheckCollisionSphere(pBossFly->GetSphere(), pBossTarget->GetSphere(), pBossFly->GetPos(), pBossTarget->GetPos()))
 			{
 
 				m_pSlimeMng->HitBossBossBranch(i, j, m_pExplosionMng);	// 爆発処理、結合処理(スライム同士の情報によって処理を変える)
@@ -411,7 +414,7 @@ void CStage::ExplosionBossCollision()
 
 			if (pBossTarget == nullptr)    continue;    // 無効なスライムはスルー
 
-			if (m_pCollision->CheckCollisionSphere(pExplosion->GetSphere(), pBossTarget->GetSphere(), pExplosion->GetPos(), pBossTarget->GetPos()))
+			if (CCollision::CheckCollisionSphere(pExplosion->GetSphere(), pBossTarget->GetSphere(), pExplosion->GetPos(), pBossTarget->GetPos()))
 			{
 				m_pSlimeMng->TouchBossExplosion(j, m_pExplosionMng, i);// スライムの爆発処理
 				break;
@@ -443,7 +446,7 @@ void CStage::ExplosionSlimeCollision()
 
 			if (pSlimeTarget == nullptr)	continue;	// 無効なスライムはスルー
 
-			if (m_pCollision->CheckCollisionSphere(pExplosion->GetSphere(), pSlimeTarget->GetSphere(), pExplosion->GetPos(), pSlimeTarget->GetPos()))
+			if (CCollision::CheckCollisionSphere(pExplosion->GetSphere(), pSlimeTarget->GetSphere(), pExplosion->GetPos(), pSlimeTarget->GetPos()))
 			{
 				m_pSlimeMng->TouchExplosion(j, m_pExplosionMng, pExplosion->GetComboNum());// スライムの爆発処理
 				break;
@@ -484,7 +487,7 @@ void CStage::SlimeSlimeNormalMoveCollision()
 			// スライム同士が衝突した場合(青、緑、炎)
 			if (int(pStandSlime->GetSlimeLevel()) <= 3 && int(pMoveSlime->GetSlimeLevel()) <= 3)
 			{
-				if (m_pCollision->CheckCollisionSphere(pMoveSlime->GetSphere(), pStandSlime->GetSphere(), pMoveSlime->GetPos(), pStandSlime->GetPos()))
+				if (CCollision::CheckCollisionSphere(pMoveSlime->GetSphere(), pStandSlime->GetSphere(), pMoveSlime->GetPos(), pStandSlime->GetPos()))
 				{
 					m_pSlimeMng->PreventSlimeSlimeOverlap(pMoveSlime, pStandSlime);	//スライムの位置を押し戻す処理
 
@@ -494,7 +497,7 @@ void CStage::SlimeSlimeNormalMoveCollision()
 			else
 			{//（黄色または赤のどちらかがはいってたらこっち）
 				if (int(pStandSlime->GetSlimeLevel()) < int(pMoveSlime->GetSlimeLevel())) continue;
-				if (m_pCollision->CheckCollisionSphere(pMoveSlime->GetSphere(), pStandSlime->GetSphere(), pMoveSlime->GetPos(), pStandSlime->GetPos()))
+				if (CCollision::CheckCollisionSphere(pMoveSlime->GetSphere(), pStandSlime->GetSphere(), pMoveSlime->GetPos(), pStandSlime->GetPos()))
 				{
 					m_pSlimeMng->PreventSlimeSlimeOverlap(pMoveSlime, pStandSlime);	//スライムの位置を押し戻す処理
 
@@ -532,7 +535,7 @@ void CStage::SlimeBossNormalMoveCollision()
 			if (pMoveSlime->GetHitMoveFlg() == true)	continue;	// 吹き飛び中のスライムはスルー
 
 			// スライム同士が衝突した場合
-			if (m_pCollision->CheckCollisionSphere(pMoveSlime->GetSphere(), pStandBoss->GetSphere(), pMoveSlime->GetPos(), pStandBoss->GetPos()))
+			if (CCollision::CheckCollisionSphere(pMoveSlime->GetSphere(), pStandBoss->GetSphere(), pMoveSlime->GetPos(), pStandBoss->GetPos()))
 			{
 				m_pSlimeMng->PreventSlimeBossOverlap(pMoveSlime, pStandBoss);	//スライムの位置を押し戻す処理
 
@@ -571,7 +574,7 @@ void CStage::BossSlimeNormalMoveCollision()
 			if (pMoveBoss->GetHitMoveFlg() == true)		continue;	// 吹き飛び中のスライムはスルー
 
 			// スライム同士が衝突した場合
-			if (m_pCollision->CheckCollisionSphere(pMoveBoss->GetSphere(), pStandSlime->GetSphere(), pMoveBoss->GetPos(), pStandSlime->GetPos()))
+			if (CCollision::CheckCollisionSphere(pMoveBoss->GetSphere(), pStandSlime->GetSphere(), pMoveBoss->GetPos(), pStandSlime->GetPos()))
 			{
 				m_pSlimeMng->PreventBossSlimeOverlap(pMoveBoss, pStandSlime);	//スライムの位置を押し戻す処理
 
@@ -611,7 +614,7 @@ void CStage::BossBossNormalMoveCollision()
 			if (i == j)									continue;	// 自分と同じスライムはスルー
 
 			// スライム同士が衝突した場合
-			if (m_pCollision->CheckCollisionSphere(pMoveBoss->GetSphere(), pStandBoss->GetSphere(), pMoveBoss->GetPos(), pStandBoss->GetPos()))
+			if (CCollision::CheckCollisionSphere(pMoveBoss->GetSphere(), pStandBoss->GetSphere(), pMoveBoss->GetPos(), pStandBoss->GetPos()))
 			{
 				m_pSlimeMng->PreventBossBossOverlap(pMoveBoss, pStandBoss);	//スライムの位置を押し戻す処理
 

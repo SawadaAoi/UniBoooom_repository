@@ -4,17 +4,17 @@
 	ゲームスタート描画用ヘッダ
 	---------------------------------------
 	GameStartText.h
-
-	作成者
-			nieda
+	---------------------------------------
+	作成者	nieda
 
 	変更履歴
 	・2023/12/12 新規作成 nieda
 	・2023/12/17 名前変更 nieda
+	・2024/01/21 コメント改修 takagi
 
 ========================================== */
 
-#ifndef __GAMESTART_TEXT_H__	//DrawAnimation.hインクルードガード
+#ifndef __GAMESTART_TEXT_H__	//GameStartText.hインクルードガード
 #define __GAMESTART_TEXT_H__
 
 // =============== インクルード ===================
@@ -32,5 +32,3 @@ protected:
 };	//ゲームスタートUIアニメーション
 
 #endif	//!__GAMESTART_TEXT_H__
-
-

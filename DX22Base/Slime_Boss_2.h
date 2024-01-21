@@ -1,18 +1,21 @@
 /* ========================================
 	HEW/UniBoooom!!
 	------------------------------------
-	ボススライム2.h
+	ボススライム2定義
 	------------------------------------
 	Slime_Boss_2.h
 	------------------------------------
-	作成者	澤田蒼生
+	作成者	sawada
 
 	変更履歴
-	・2023/12/11 クラス作成 Sawada
+	・2023/12/11 クラス作成 sawada
+	・2024/01/20 リファクタリング takagi
+	・2024/01/21 コメント改修 takagi
 
 ========================================== */
-#ifndef __SLIME_BOSS_2__H__
-#define __SLIME_BOSS_2__H__
+
+#ifndef __SLIME_BOSS_2_H__	//Slime_Boss_2.h定義
+#define __SLIME_BOSS_2_H__
 
 // =============== インクルード ===================
 #include "Slime_BossBase.h"
@@ -41,7 +44,7 @@ public:
 	CSlime_Boss_2(TPos3d<float> pos, VertexShader* pVS, Model* pModel);
 	~CSlime_Boss_2();
 
-	void Update(tagTransform3d playerTransform) override;
+	void Update() override;
 
 
 
@@ -69,4 +72,4 @@ private:
 };
 
 
-#endif //__SLIME_BOSS_2__H__
+#endif	//!__SLIME_BOSS_2_H__

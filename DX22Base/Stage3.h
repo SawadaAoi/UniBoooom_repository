@@ -4,7 +4,7 @@
 	ステージ3定義
 	---------------------------------------
 	Stage3.h
-
+	---------------------------------------
 	作成者
 			takagi
 			nieda
@@ -14,6 +14,7 @@
 	・2023/12/12 LoadSEをオーバーライド yamashita
 	・2023/12/14 BGMの管理をSceneManagerに移動 yamashita
 	・2024/01/15 GameFinish()関数の引数修正・RecordData()関数追加 takagi
+	・2024/01/20 リファクタリング takagi
 
 ========================================== */
 
@@ -31,8 +32,7 @@ public:
 	CStage3();							//コンストラクタ
 	~CStage3();							//デストラクタ
 	void Update();						//更新
-	void Draw();					//描画	
-	E_TYPE GetType() const override;	//自身の種類ゲッタ
+	void Draw();					//描画
 	E_TYPE GetNext() const override;	//次のシーンゲッタ
 private:
 	// ===プロトタイプ宣言===

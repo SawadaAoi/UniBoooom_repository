@@ -1,4 +1,19 @@
-#ifndef __LIB_EFFEKSEER_H__
+/* ========================================
+	HEW/UniBoooom!!
+	------------------------------------
+	エフェクシア定義
+	------------------------------------
+	LibEffekseer.h
+	------------------------------------
+	作成者　佐々木先生
+
+	変更履歴
+	・2024/01/20 コメント改修 takagi
+	・2024/01/21 コメント改修 takagi
+
+========================================== */
+
+#ifndef __LIB_EFFEKSEER_H__	//LibEffekseer.hインクルードガード
 #define __LIB_EFFEKSEER_H__
 
 #include <Effekseer/Effekseer.h>
@@ -69,4 +84,4 @@ private:
 };
 
 
-#endif // __LIB_EFFEKSEER_H__
+#endif	//!__LIB_EFFEKSEER_H__

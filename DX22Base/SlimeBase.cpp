@@ -1,32 +1,34 @@
 /* ========================================
 	HEW/UniBoooom!!
 	---------------------------------------
-	スライムベース クラス実装
+	スライムベースクラス実装
 	---------------------------------------
 	SlimeBase.cpp
-	
-	作成者：鈴村 朋也
+	---------------------------------------	
+	作成者：suzumura
 	
 	変更履歴
-	・2023/11/04 スライムベースクラス作成 Suzumura
-	・2023/11/06 ハンマーもしくは敵により吹っ飛ばされる関数を追加 Yamashita
-	・2023/11/06 インクルード誤字の修正 Tei
-	・2023/11/08 GetPos→GetSphereに名前を変更 Yamashita
-	・2023/11/08 定数定義がヘッダーにあったのでcppに移動 Yamashita
-	・2023/11/08 コメントを追加 Sawada
-	・2023/11/09 プレイヤー追跡移動変更 Sawada
-	・2023/11/09 Update,NormalMoveの引数変更 Sawada
-	・2023/11/11 parameter用ヘッダ追加 Suzumura
-	・2023/11/12 プレイヤーの方向を向きながら進むように変更  Yamamoto
-	・2023/11/12 ランダム移動を追加  Sawada
-	・2023/11/13 GetScale関数を追加 Suzumura
-	・2023/11/14 SphereInfoの変更に対応 Takagi
-	・2023/11/15 Objectクラスを継承したので修正　yamamoto
-	・2023/11/26 スライムが爆発から逃げる処理を作成　yamashita
-	・2023/11/28 攻撃力を追加 Sawada
+	・2023/11/04 スライムベースクラス作成 suzumura
+	・2023/11/06 ハンマーもしくは敵により吹っ飛ばされる関数を追加 yamashita
+	・2023/11/06 インクルード誤字の修正 tei
+	・2023/11/08 GetPos→GetSphereに名前を変更 yamashita
+	・2023/11/08 定数定義がヘッダーにあったのでcppに移動 yamashita
+	・2023/11/08 コメントを追加 sawada
+	・2023/11/09 プレイヤー追跡移動変更 sawada
+	・2023/11/09 Update,NormalMoveの引数変更 sawada
+	・2023/11/11 parameter用ヘッダ追加 suzumura
+	・2023/11/12 プレイヤーの方向を向きながら進むように変更 yamamoto
+	・2023/11/12 ランダム移動を追加 sawada
+	・2023/11/13 GetScale関数を追加 suzumura
+	・2023/11/14 SphereInfoの変更に対応 takagi
+	・2023/11/15 Objectクラスを継承したので修正 yamamoto
+	・2023/11/26 スライムが爆発から逃げる処理を作成 yamashita
+	・2023/11/28 攻撃力を追加 sawada
 	・2023/11/29 影メモリリーク除去 takagi
 	・2023/11/30 モデルの読み込みが反転したのでradian.yが反対になるように変更 yamashita
 	・2023/12/07 ゲームパラメータから一部定数移動 takagi
+	・2024/01/20 リファクタリング takagi
+	・2024/01/21 コメント改修 takagi
 
 ========================================== */
 
@@ -105,10 +107,8 @@ CSlimeBase::~CSlimeBase()
 	-------------------------------------
 	戻値：無し
 =========================================== */
-void CSlimeBase::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
+void CSlimeBase::Update()
 {
-	m_PlayerTran = playerTransform;	// プレイヤーの最新パラメータを取得
-
 	if (!m_bHitMove)	//敵が通常の移動状態の時
 	{
 		if (!m_bEscape  && m_nEscapeCnt == 0)	//逃げるフラグがoffなら
@@ -127,8 +127,8 @@ void CSlimeBase::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
 	}
 
 	// -- 座標更新
-	m_Transform.fPos.x += m_move.x * fSlimeMoveSpeed;
-	m_Transform.fPos.z += m_move.z * fSlimeMoveSpeed;
+	m_Transform.fPos.x += m_move.x;// *fSlimeMoveSpeed;
+	m_Transform.fPos.z += m_move.z;// *fSlimeMoveSpeed;
 }
 
 	
@@ -142,14 +142,14 @@ void CSlimeBase::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
 	-------------------------------------
 	戻値：無し
 =========================================== */
-void CSlimeBase::Draw(const CCamera* pCamera)
+void CSlimeBase::Draw()
 {
 
 	DirectX::XMFLOAT4X4 mat[3];
 
 	mat[0] = m_Transform.GetWorldMatrixSRT();
-	mat[1] = pCamera->GetViewMatrix();
-	mat[2] = pCamera->GetProjectionMatrix();
+	mat[1] = m_pCamera->GetViewMatrix();
+	mat[2] = m_pCamera->GetProjectionMatrix();
 	
 	//-- 行列をシェーダーへ設定
 	m_pVS->WriteBuffer(0, mat);
@@ -160,7 +160,7 @@ void CSlimeBase::Draw(const CCamera* pCamera)
 	}
 
 	//-- 影の描画
-	m_pShadow->Draw(m_Transform, m_fScaleShadow, pCamera);
+	m_pShadow->Draw();
 }
 
 
@@ -175,7 +175,7 @@ void CSlimeBase::Draw(const CCamera* pCamera)
 ======================================== */
 void CSlimeBase::NormalMove()
 {
-	TPos3d<float> playerPos = m_PlayerTran.fPos;
+	TPos3d<float> playerPos = m_PlayerTran->fPos;
 
 	// 敵からエネミーの距離、角度を計算
 	float distancePlayer	= m_Transform.fPos.Distance(playerPos);
@@ -363,6 +363,11 @@ void CSlimeBase::SetExplosionPos(TPos3d<float> expPos)
 void CSlimeBase::SetEscapeFlag(bool bEscape)
 {
 	m_bEscape = bEscape;
+}
+
+void CSlimeBase::SetPlPos(const tagTransform3d * plpos)
+{
+	m_PlayerTran = plpos;
 }
 
 /* ========================================

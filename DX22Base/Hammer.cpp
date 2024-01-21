@@ -1,12 +1,12 @@
 /* ========================================
 	HEW/UniBoooom!!
 	------------------------------------
-	Hammer用cpp
+	ハンマー用ソース
 	------------------------------------
 	Hammer.cpp
 	------------------------------------
-	作成者
-		山本凱翔
+	作成者	yamamoto
+
 	変更履歴
 	・2023/11/08 コメント追加 yamashita
 	・2023/11/08 できる限りの変数はメンバイニシャライザで初期化 yamashita
@@ -15,13 +15,15 @@
 	・2023/11/08 動的確保したポインタをdeleteからSAFE_DELETEに変更　yamashita
 	・2023/11/09 当たり判定用のSphereのゲット関数を追加 yamashita
 	・2023/11/11 parameter用ヘッダ追加 suzumura
-	・2023/11/14 SphereInfoの変更に対応 Takagi
-	・2023/11/14 全体的に処理の流れが分かりづらかったので修正 Sawada
+	・2023/11/14 SphereInfoの変更に対応 takagi
+	・2023/11/14 全体的に処理の流れが分かりづらかったので修正 sawada
 	・2023/11/15 Objectクラスを継承したので修正　yamamoto
 	・2023/11/23 ジオメトリーからモデルに差し替え　yamashita
 	・2023/11/29 Interval追加　yamamoto
 	・2023/12/01 IntervalをSwingSpeedに変更　yamamoto
 	・2023/12/07 ゲームパラメータから一部定数移動 takagi
+	・2024/01/20 リファクタリング takagi
+	・2024/01/21 コメント改修 takagi
 	
 ========================================== */
 
@@ -69,6 +71,7 @@ CHammer::CHammer()
 	, m_dAddAngleCnt(0)
 	, m_pCamera(nullptr)
 	, m_fSwingSpeed(9.0f)
+	,m_bExist(false)
 {
 	m_fAddAngle = SWING_ANGLE / m_fSwingSpeed;
 	m_Sphere.fRadius = HAMMER_COL_SIZE;
@@ -118,7 +121,7 @@ CHammer::~CHammer()
    ----------------------------------------
    戻値：ハンマーの有効無効
    ======================================== */
-bool CHammer::Update()
+void CHammer::Update()
 {
 	Swing();		//回転による移動関数
 	// 設定値まで移動しきったら
@@ -126,12 +129,12 @@ bool CHammer::Update()
 	{
 		m_dAddAngleCnt = 0;		// 角度変更フレームカウントリセット
 		
-		return false;
+		m_bExist = false;
 	}
 	// 移動中はtrueを返す
 	else
 	{
-		return true;
+		m_bExist = true;
 	}
 }
 
@@ -285,6 +288,11 @@ void CHammer::SwingSpeedSubtract()
 float CHammer::GetInterval()
 {
 	return m_fSwingSpeed;
+}
+//TODO
+bool CHammer::IsExist()
+{
+	return m_bExist;
 }
 
 

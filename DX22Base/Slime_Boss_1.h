@@ -1,19 +1,22 @@
 /* ========================================
 	HEW/UniBoooom!!
 	------------------------------------
-	ボススライム1.h
+	ボススライム1定義
 	------------------------------------
 	Slime_Boss_1.h
 	------------------------------------
-	作成者	鈴村朋也
+	作成者	suzumura
 
 	変更履歴
-	・2023/11/17 クラス作成 Suzumura
-	・2023/11/23 突撃処理の追加 Suzumura
+	・2023/11/17 クラス作成 suzumura
+	・2023/11/23 突撃処理の追加 suzumura
+	・2024/01/20 リファクタリング takagi
+	・2024/01/21 コメント改修 takagi
 
 ========================================== */
-#ifndef __SLIME_BOSS_1__H__
-#define __SLIME_BOSS_1__H__
+
+#ifndef __SLIME_BOSS_1_H__	//Slime_Boss_1.hインクルードガード
+#define __SLIME_BOSS_1_H__
 
 // =============== インクルード ===================
 #include "Slime_BossBase.h"
@@ -36,7 +39,7 @@ public:
 	CSlime_Boss_1(TPos3d<float> pos, VertexShader* pVS, Model* pModel);
 	~CSlime_Boss_1();
 
-	void Update(tagTransform3d playerTransform) override;
+	void Update() override;
 
 	void NormalMove() override;
 	void SetNormalSpeed() override;
@@ -56,4 +59,4 @@ private:
 };
 
 
-#endif //__SLIME_BOSS_1__H__
+#endif	//!__SLIME_BOSS_1_H__

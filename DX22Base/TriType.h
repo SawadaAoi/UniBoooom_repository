@@ -19,6 +19,7 @@
 	・2023/11/09 不要物除去・クラスよりstructのほうが機能の意味として正しいので修正 takagi
 	・2023/11/14 １つの値だけのコンストラクタを実装 takagi
 	・2024/01/16 統一のため、インクルードガードの___を__に変更	takagi
+	・2024/01/21 コメント改修 takagi
 
 ========================================== */
 
@@ -372,61 +373,4 @@ TTriType<TriType> & TTriType<TriType>::operator^=(const double & dIndex)
 	return (*this = *this ^ dIndex);	//実装済演算子を使用して処理を行い、自身の参照を返す
 }
 
-#endif // !__TRI_TYPE_H__
-
-
-
-//--- ここから下は試運転(cppにかかないと動かないので、試したい場合このヘッダをallコピーしてcppに貼り付けてください) ---//
-	//！： 既存のmain関数がある場合は別プロジェクトで試すか、一時的にコメントアウトしてください。
-//#include <iostream>
-//#include <string>
-//
-//int main()
-//{
-//	TTriType<int> a;
-//	std::cout << std::to_string(a.x) << "," << std::to_string(a.y) << "," << std::to_string(a.z) << std::endl;	//0,0,0のハズ
-//
-//	a = TTriType<int>(1, 1, 1);
-//	std::cout << std::to_string(a.x) << "," << std::to_string(a.y) << "," << std::to_string(a.z) << std::endl;
-//
-//	a = { 2, 2, 2 };
-//	std::cout << std::to_string(a.x) << "," << std::to_string(a.y) << "," << std::to_string(a.z) << std::endl;
-//
-//	a.x = 3;
-//	a.y = 3;
-//	a.z = 3;
-//	std::cout << std::to_string(a.x) << "," << std::to_string(a.y) << "," << std::to_string(a.z) << std::endl;
-//
-//	TTriType<int> b(4, 4, 4);
-//	std::cout << std::to_string(b.x) << "," << std::to_string(b.y) << "," << std::to_string(b.z) << std::endl;
-//
-//	a + b;
-//	std::cout << std::to_string(a.x) << "," << std::to_string(a.y) << "," << std::to_string(a.z) << std::endl;	//3,3,3のハズ
-//	std::cout << std::to_string(b.x) << "," << std::to_string(b.y) << "," << std::to_string(b.z) << std::endl;	//4,4,4のハズ
-//
-//	a = b;
-//	std::cout << std::to_string(a.x) << "," << std::to_string(a.y) << "," << std::to_string(a.z) << std::endl;	//4,4,4のハズ
-//	std::cout << std::to_string(b.x) << "," << std::to_string(b.y) << "," << std::to_string(b.z) << std::endl;	//4,4,4のハズ
-//
-//	a += b;
-//	std::cout << std::to_string(a.x) << "," << std::to_string(a.y) << "," << std::to_string(a.z) << std::endl;	//8,8,8のハズ
-//	std::cout << std::to_string(b.x) << "," << std::to_string(b.y) << "," << std::to_string(b.z) << std::endl;	//4,4,4のハズ
-//
-//
-//	a %= b;
-//	std::cout << std::to_string(a.x) << "," << std::to_string(a.y) << "," << std::to_string(a.z) << std::endl;	//0,0,0のハズ
-//	std::cout << std::to_string(b.x) << "," << std::to_string(b.y) << "," << std::to_string(b.z) << std::endl;	//4,4,4のハズ
-//
-//	b ^= 2.0;
-//	std::cout << std::to_string(b.x) << "," << std::to_string(b.y) << "," << std::to_string(b.z) << std::endl;	//16,16,16のハズ
-//
-//	b ^= 0.5;
-//	std::cout << std::to_string(b.x) << "," << std::to_string(b.y) << "," << std::to_string(b.z) << std::endl;	//4,4,4のハズ
-//
-//	b ^= 0.25;
-//	std::cout << std::to_string(b.x) << "," << std::to_string(b.y) << "," << std::to_string(b.z) << std::endl;	//1,1,1のハズ
-//
-//	std::cin.get();
-//
-//	return 0;
-//}
+#endif	//!__TRI_TYPE_H__

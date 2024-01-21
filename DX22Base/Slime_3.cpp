@@ -1,11 +1,11 @@
 /* ========================================
 	HEW/UniBoooom!!
 	------------------------------------
-	スライムサイズ3用cpp
+	スライムサイズ3用ソース
 	------------------------------------
 	Slime_3.cpp
 	------------------------------------
-	作成者	山下凌佑
+	作成者	yamashita
 
 	変更履歴
 	・2023/11/08 作成 yamashita
@@ -14,13 +14,15 @@
 	・2023/11/08 スライムの移動速度を大きさごとに変更する関数を作成	yamashita
 	・2023/11/08 コンストラクタでレベルごとのパラメータをセット	yamashita
 	・2023/11/11 parameter用ヘッダ追加 suzumura
-	・2023/11/14 Baseからモデル、シェーダの読み込みを移動 Suzumura
+	・2023/11/14 Baseからモデル、シェーダの読み込みを移動 suzumura
 	・2023/11/14 SphereInfoの変更に対応 takagi
 	・2023/11/15 スライムのモデルと頂点シェーダーをmanagerから受け取るように変更 yamashita
-	・2023/11/16 引数付きコンストラクタの引数に頂点シェーダーとモデルのポインタを追加 山下凌佑
+	・2023/11/16 引数付きコンストラクタの引数に頂点シェーダーとモデルのポインタを追加 yamashita
 	・2023/11/28 影の大きさを設定する変数追加 nieda
 	・2023/11/30 プレイヤーに見られていたら止まる処理を追加 yamashita
 	・2023/12/07 ゲームパラメータから一部定数移動 takagi
+	・2024/01/20 リファクタリング takagi
+	・2024/01/21 コメント改修 takagi
 
 ========================================== */
 
@@ -98,9 +100,8 @@ CSlime_3::~CSlime_3()
 	-------------------------------------
 	戻値：無し
 =========================================== */
-void CSlime_3::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
+void CSlime_3::Update()
 {
-	m_PlayerTran = playerTransform;
 
 	if (!m_bHitMove)	//敵が通常の移動状態の時
 	{
@@ -120,8 +121,8 @@ void CSlime_3::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
 	}
 
 	// -- 座標更新
-	m_Transform.fPos.x += m_move.x * fSlimeMoveSpeed;
-	m_Transform.fPos.z += m_move.z * fSlimeMoveSpeed;
+	m_Transform.fPos.x += m_move.x;// *fSlimeMoveSpeed;
+	m_Transform.fPos.z += m_move.z;// *fSlimeMoveSpeed;
 }
 
 /* ========================================
@@ -137,8 +138,8 @@ void CSlime_3::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
 void CSlime_3::NormalMove()
 {
 
-	TPos3d<float> playerPos = m_PlayerTran.fPos;
-	TTriType<float> playerRad = m_PlayerTran.fRadian;
+	TPos3d<float> playerPos = m_PlayerTran->fPos;
+	TTriType<float> playerRad = m_PlayerTran->fRadian;
 
 	// 敵からエネミーの距離、角度を計算
 	float distancePlayer = m_Transform.fPos.Distance(playerPos);
@@ -147,7 +148,7 @@ void CSlime_3::NormalMove()
 	if (distancePlayer < MOVE_DISTANCE_PLAYER)
 	{
 		//プレイヤーがスライムの方向を向いているか確認
-	 	float PlayerToSlimeRad = m_PlayerTran.Angle(m_Transform);	//プレイヤーからスライムへの角度
+	 	float PlayerToSlimeRad = m_PlayerTran->Angle(m_Transform);	//プレイヤーからスライムへの角度
 		if (PlayerToSlimeRad < 0.0f) { PlayerToSlimeRad = PlayerToSlimeRad + (DirectX::g_XMTwoPi[0]); }			//角度を正の数に変換
 		float adjustPlayerRad = playerRad.y + DirectX::XMConvertToRadians(90.0f);			//プレイヤーの見ている角度
 		if(adjustPlayerRad < 0.0f){adjustPlayerRad = adjustPlayerRad + (DirectX::g_XMTwoPi[0]);}	//角度を正の数に変換
@@ -159,7 +160,7 @@ void CSlime_3::NormalMove()
 		if (checkRad < LEVEL3_STOP_RANGE)
 		{
 			m_move = TTriType<float>(0.0f, 0.0f, 0.0f);	//移動量を0にする
-			m_Transform.fRadian.y = -(m_Transform.Angle(m_PlayerTran) - DirectX::XMConvertToRadians(90.0f));	//角度をDirectX用に変更
+			m_Transform.fRadian.y = -(m_Transform.Angle(*m_PlayerTran) - DirectX::XMConvertToRadians(90.0f));	//角度をDirectX用に変更
 			return;
 		}
 		else	//プレイヤーがスライムと別の方向を向いていたら

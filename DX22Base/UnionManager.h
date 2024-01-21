@@ -10,6 +10,7 @@
 	変更履歴
 	・2023/12/19 制作 takagi
 	・2024/01/16 統一のため、インクルードガードの___を__に変更	takagi
+	・2024/01/21 コメント改修 takagi
 
 ========================================== */
 
@@ -26,7 +27,7 @@
 #include <map>				//連想コンテナ
 #include <vector>			//配列コンテナ
 #include <typeinfo>			//メンバのヘッダ
-#include "2dPolygon.h"		//メンバのヘッダ
+#include "2dObject.h"		//メンバのヘッダ
 #include "Union.h"			//メンバのヘッダ
 
 // =============== クラス定義 =====================
@@ -50,4 +51,4 @@ private:
 	const CCamera* m_pCamera;						//カメラ(貰い専)
 };	//フェード
 
-#endif // !__UNION_MANAGER_H__
+#endif	//!__UNION_MANAGER_H__

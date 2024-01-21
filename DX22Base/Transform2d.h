@@ -11,6 +11,7 @@
 	・2023/11/07 制作 takagi
 	・2023/11/09 一部演算子をオーバーロード takagi
 	・2023/11/16 使用しないヘッダファイルを削除 takagi
+	・2024/01/21 コメント改修 takagi
 
 ========================================== */
 
@@ -48,4 +49,4 @@ public:
 	tagTransform2d& operator/=(const tagTransform2d& Obj);		//"/="演算子のオーバーロード
 };	//型テンプレート
 
-#endif //!__TRANSFORM_2D_H__
+#endif	//!__TRANSFORM_2D_H__

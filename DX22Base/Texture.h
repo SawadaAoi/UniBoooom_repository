@@ -1,4 +1,18 @@
-#ifndef __TEXTURE_H__
+/* ========================================
+	HEW/UniBoooom!!
+	------------------------------------
+	テクスチャ定義
+	------------------------------------
+	Texture.h
+	------------------------------------
+	作成者　佐々木先生
+
+	変更履歴
+	・2024/01/21 コメント改修 takagi
+
+========================================== */
+
+#ifndef __TEXTURE_H__	//Texture.hインクルードガード
 #define __TEXTURE_H__
 
 #include "DirectX.h"
@@ -69,4 +83,4 @@ private:
 	ID3D11DepthStencilView* m_pDSV;
 };
 
-#endif // __TEXTURE_H__
+#endif	//!__TEXTURE_H__

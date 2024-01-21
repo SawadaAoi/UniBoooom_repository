@@ -5,16 +5,18 @@
 	------------------------------------
 	BossGauge.h
 	------------------------------------
-	作成者
-		鄭宇恩
+	作成者	tei
+
 	変更履歴
-	・2023/11/17 h,作成 Tei
-	・2023/11/19 ボスゲージ増加する変数、関数を作成 Tei
-	・2023/11/22 ボスゲージフェード用変数追加 Tei
-	・2023/11/26 スライム管理メンバ変数追加	Sawada
+	・2023/11/17 h,作成 tei
+	・2023/11/19 ボスゲージ増加する変数、関数を作成 tei
+	・2023/11/22 ボスゲージフェード用変数追加 tei
+	・2023/11/26 スライム管理メンバ変数追加	sawada
+	・2024/01/21 コメント改修 takagi
 
 ========================================== */
-#ifndef __BOSS_GAUGE_H__
+
+#ifndef __BOSS_GAUGE_H__	//BossGauge.hインクルードガード
 #define __BOSS_GAUGE_H__
 
 // =============== インクルード ===================
@@ -23,7 +25,7 @@
 #include "Pos3d.h"
 #include "Timer.h"
 #include "SlimeManager.h"
-#include "2dPolygon.h"	//平面ポリゴン
+#include "2dObject.h"	//平面ポリゴン
 #include <vector>
 #include "Camera.h"
 
@@ -69,4 +71,4 @@ private:
 };
 
 
-#endif // __BOSS_GAUGE_H__
+#endif	//!__BOSS_GAUGE_H__

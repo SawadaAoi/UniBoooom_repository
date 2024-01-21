@@ -16,10 +16,12 @@
 	・2023/12/03 位置ゲッタ用調整 takagi
 	・2023/12/04 GetViewWithoutTransposeの戻り値を変更 yamashita
 	・2024/01/16 統一のため、インクルードガードの___を__に変更	takagi
+	・2024/01/20 コメント改修 takagi
+	・2024/01/21 コメント改修 takagi
 
 ========================================== */
 
-#ifndef __CAMERA_CHASE_H__
+#ifndef __CAMERA_CHASE_H__	//CameraChase.hインクルードガード
 #define __CAMERA_CHASE_H__
 
 // =============== インクルード ===================
@@ -41,4 +43,4 @@ private:
 	void UpdatePos();	//位置更新
 };	//追跡カメラ
 
-#endif // !__CAMERA_CHASE_H__
+#endif	//!__CAMERA_CHASE_H__

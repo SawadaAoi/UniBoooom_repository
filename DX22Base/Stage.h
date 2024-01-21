@@ -4,7 +4,7 @@
 	ステージ用抽象クラス定義
 	---------------------------------------
 	Stage.h
-
+	---------------------------------------
 	作成者
 			takagi
 			nieda
@@ -20,9 +20,12 @@
 	・2023/12/14 BGMの管理をSceneManagerに移動 yamashita
 	・2023/12/15 フェード削除 takagi
 	・2023/12/16 不要な変数など削除 nieda
-	・2023/12/28 BattleData格納処理をまとめた関数を追加	Sawada
-	・2024/01/01 ステージ分岐 Takagi
-	・2024/01/15 GameFinish()関数の引数修正・RecordData()関数追加 Takagi
+	・2023/12/28 BattleData格納処理をまとめた関数を追加	sawada
+	・2024/01/01 ステージ分岐 takagi
+	・2024/01/15 GameFinish()関数の引数修正・RecordData()関数追加 takagi
+	・2024/01/19 GetType()関数削除・その他リファクタリング takagi
+	・2024/01/20 リファクタリング続き takagi
+	・2024/01/21 コメント改修 takagi
 
 ========================================== */
 
@@ -52,66 +55,53 @@
 #include "BattleData.h"			//メンバのヘッダ
 #include "GameStartText.h"
 
-// =============== デバッグモード ===================
-#if _DEBUG
-#define MODE_COORD_AXIS (true)	//座標軸映すかどうか
-#define SCENE_TRANSITION(false)	// シーン遷移をボタン押下か自動化を切り替え（trueは自動)
-#endif
-
 // =============== クラス定義 =====================
 class CStage :public CScene	//シーン
 {
 public:
-	// =============== プロトタイプ宣言 ===============
-	CStage(CUIStageManager::E_STAGE_NUM eStage);	//コンストラクタ
-	virtual ~CStage();								//デストラクタ
-	//virtual void Update();				//更新
-	//virtual void Draw() const;			//描画	
-	//virtual E_TYPE GetType() const = 0;	//自身の種類ゲッタ
-	void Collision();
+	// ===プロトタイプ宣言===
+	CStage();				//コンストラクタ
+	virtual ~CStage();		//デストラクタ
+	virtual void Update();	//更新
+	void Collision();		//当たり判定
 protected:
+	// ===プロトタイプ宣言===
 	virtual void RecordData() = 0;	//データ記録
-	void GameFinish();
-	void PlayerSlimeCollision();
-	void PlayerBossCollision();		//追加
-	void PlayerHealItemCollision();
-	void HammerSlimeCollision();
-	void HammerBossCollision();		//追加
-	void SlimeSlimeCollision();
-	void SlimeBossCollision();		//追加
-	void BossSlimeCollision();		//追加
-	void BossBossCollision();		//追加
-	void ExplosionBossCollision();	//追加
-	void ExplosionSlimeCollision();
-	void SlimeSlimeNormalMoveCollision();
-	void SlimeBossNormalMoveCollision();		//追加
-	void BossSlimeNormalMoveCollision();		//追加
-	void BossBossNormalMoveCollision();			//追加
 	// ===メンバ変数宣言===
-	VertexShader* m_pVs;
+	CPause* m_pPause;							//ポーズ画面
+	BattleData m_Data;							//戦闘データ記録用変数
+	XAUDIO2_BUFFER* m_pSEHitHammer;				//ハンマーヒット音データ
+	IXAudio2SourceVoice* m_pSEHitHammerSpeaker;	//ハンマーヒット音再生機構
+
+
 	CPlayer* m_pPlayer;
-	CGeometry* m_pBox;
-	CSlimeManager* m_pSlimeMng;
-	CCOLLISION* m_pCollision;
-	CExplosionManager* m_pExplosionMng;
 	CFloor* m_pFloor;
-	Texture* m_pTexture;
-	CScoreOHManager* m_pScoreOHMng;
-	CHealItemManager* m_pHealItemMng;
-	CPause* m_pPause;						//ポーズ画面
-	CUIStageManager* m_pUIStageManager;
-	BattleData m_Data;	//戦闘データ記録用変数
-	CStartText* m_pStartText;	// ゲームスタート描画
 
-	const int* m_pPlayerHp;		// プレイヤーHP取得用
-	const int* m_pTimeCnt;		// 制限時間取得用
 
-	//サウンド
-	XAUDIO2_BUFFER* m_pSEHitHammer;
-	IXAudio2SourceVoice* m_pSEHitHammerSpeaker;
-
+	CSlimeManager* m_pSlimeMng;			//
+	CExplosionManager* m_pExplosionMng;	//
+	CScoreOHManager* m_pScoreOHMng;		//
+	CHealItemManager* m_pHealItemMng;	//
+	CUIStageManager* m_pUIStageManager;	//
+	CStartText* m_pStartText;			//ゲームスタート描画
 private:
-	void LoadSE();
+	// ===プロトタイプ宣言===
+	void PlayerSlimeCollision();			//プレイヤーとスライムの当たり判定
+	void PlayerBossCollision();				//プレイヤーとボスの当たり判定
+	void PlayerHealItemCollision();			//プレイヤーと回復アイテムの当たり判定
+	void HammerSlimeCollision();			//ハンマーと回復アイテムの当たり判定
+	void HammerBossCollision();				//ハンマーとボスの当たり判定
+	void SlimeSlimeCollision();				//スライムとスライムの当たり判定
+	void SlimeBossCollision();				//スライムとボスの当たり判定
+	void BossSlimeCollision();				//ボスとスライムの当たり判定
+	void BossBossCollision();				//ボスとボスの当たり判定
+	void ExplosionBossCollision();			//爆発とボスの当たり判定
+	void ExplosionSlimeCollision();			//爆発とスライムの当たり判定
+	void SlimeSlimeNormalMoveCollision();	//スライムとスライムの重複判定
+	void SlimeBossNormalMoveCollision();	//スライムからボスへの重複判定
+	void BossSlimeNormalMoveCollision();	//ボスからスライムへの重複判定
+	void BossBossNormalMoveCollision();		//ボスからボスへの重複判定
+	void LoadSE();							//SE読み込み
 };	//ステージ
 
 #endif	//!__STAGE_H__

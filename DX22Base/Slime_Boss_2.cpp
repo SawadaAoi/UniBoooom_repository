@@ -1,15 +1,17 @@
 /* ========================================
 	HEW/UniBoooom!!
 	------------------------------------
-	ボススライム2.cpp
+	ボススライム2ソース
 	------------------------------------
 	Slime_Boss_2.cpp
 	------------------------------------
-	作成者	澤田蒼生
+	作成者	sawada
 
 	変更履歴
-	・2023/12/12 クラス作成 Sawada
-	・2023/12/14 攻撃動作を追加 Sawada
+	・2023/12/12 クラス作成 sawada
+	・2023/12/14 攻撃動作を追加 sawada
+	・2024/01/20 リファクタリング takagi
+	・2024/01/21 コメント改修 takagi
 
 ========================================== */
 
@@ -60,7 +62,7 @@ CSlime_Boss_2::CSlime_Boss_2()
 	SetMaxHp();
 	m_nHp = m_nMaxHp;
 	m_nAttack = BOSS_1_ATTACK;
-	m_pShadow->SetScale(BOSS_2_SHADOW_SCALE);	// 影の大きさを設定
+	m_pShadow->SetSize(BOSS_2_SHADOW_SCALE);	// 影の大きさを設定
 
 	for (int i = 0; i < MOVE_STATE::MOVE_MAX; i++)m_nMoveCnt[i] = 0;
 }
@@ -112,9 +114,8 @@ CSlime_Boss_2::~CSlime_Boss_2()
 	-------------------------------------
 	戻値：無し
 =========================================== */
-void CSlime_Boss_2::Update(tagTransform3d playerTransform)
+void CSlime_Boss_2::Update()
 {
-	m_PlayerParam = playerTransform;	// プレイヤーの最新transformをメンバ変数にセット
 
 	// 通常の移動状態の時
 	if (!m_bHitMove)	
@@ -304,7 +305,7 @@ void CSlime_Boss_2::MoveJumpCharge()
 		m_nMoveState = MOVE_STATE::JUMP;			// 状態を切り替え
 		m_nMoveCnt[MOVE_STATE::JUMP_CHARGE] = 0;	// 加算をリセット
 
-		this->SetScale({ BOSS_2_SCALE, BOSS_2_SCALE, BOSS_2_SCALE });	// 大きさを戻しておく
+		this->SetSize({ BOSS_2_SCALE, BOSS_2_SCALE, BOSS_2_SCALE });	// 大きさを戻しておく
 	}
 
 	m_pShadow->SetPos(m_Transform.fPos);	// 影の座標を移動	
@@ -329,7 +330,7 @@ void CSlime_Boss_2::MoveJump()
 
 	// 上昇に合わせて影を小さくする
 	m_fScaleShadow *= JUMP_SHADOW_SIZE_MUL;
-	m_pShadow->SetScale({ m_fScaleShadow ,m_fScaleShadow ,m_fScaleShadow });
+	m_pShadow->SetSize({ m_fScaleShadow ,m_fScaleShadow ,m_fScaleShadow });
 	m_pShadow->SetPos({ m_Transform.fPos.x,	m_pShadow->GetPos().y,m_Transform.fPos.z });	// ボスに合わせて上に行かない様にY座標の位置はそのまま
 
 	m_nMoveCnt[MOVE_STATE::JUMP]++;
@@ -338,7 +339,7 @@ void CSlime_Boss_2::MoveJump()
 	{
 		m_nMoveState = MOVE_STATE::TARGET_SHADOW;	// 状態を切り替え
 		m_nMoveCnt[MOVE_STATE::JUMP] = 0;		 	// 加算をリセット
-		m_pShadow->SetScale(BOSS_2_SHADOW_SCALE);	// 影の大きさは戻しておく
+		m_pShadow->SetSize(BOSS_2_SHADOW_SCALE);	// 影の大きさは戻しておく
 	}
 
 }
@@ -424,7 +425,7 @@ void CSlime_Boss_2::MoveDropRigid()
 	}
 	else
 	{
-		this->SetScale({ BOSS_2_SCALE, BOSS_2_SCALE, BOSS_2_SCALE });	// 大きさを戻しておく
+		this->SetSize({ BOSS_2_SCALE, BOSS_2_SCALE, BOSS_2_SCALE });	// 大きさを戻しておく
 	}
 
 

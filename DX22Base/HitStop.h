@@ -11,6 +11,7 @@
 	・2023/11/17 作成 takagi
 	・2023/11/21 静的に変更・コメント追加 takagi
 	・2024/01/16 統一のため、インクルードガードの___を__に変更	takagi
+	・2024/01/21 コメント改修 takagi
 
 ========================================== */
 
@@ -53,4 +54,4 @@ private:
 	static void CallHitStop(int(*CallBack)(const int&));	//ヒットストップ判定
 };	//ヒットストップ
 
-#endif // !__HIT_STOP_H__
+#endif	//!__HIT_STOP_H__

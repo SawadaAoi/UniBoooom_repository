@@ -13,6 +13,7 @@
 	・2023/11/14 角度演算 takagi
 	・2023/12/05 ビルボードに対応 takagi
 	・2023/12/17 引数参照化 takagi
+	・2024/01/20 リファクタリング takagi
 
 ========================================== */
 
@@ -149,7 +150,7 @@ DirectX::XMFLOAT4X4 tagTransform3d::GetWorldMatrixSRT(const DirectX::XMMATRIX & 
 	----------------------------------------
 	戻値：角度
 ======================================== */
-float tagTransform3d::Angle(const tagTransform3d& Obj)
+float tagTransform3d::Angle(const tagTransform3d& Obj) const
 {
 	// =============== 提供 =============
 	return static_cast<float>(atan2((Obj.fPos.z - this->fPos.z) , (Obj.fPos.x - this->fPos.x)));	//求めた角度

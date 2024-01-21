@@ -4,17 +4,19 @@
    トータルスコアヘッダー
    ---------------------------------------
    TotalScore.h
-
-   作成者 山本凱翔
+   ---------------------------------------
+   作成者	yamamoto
 
    変更履歴
 	・2023/11/22　作成 yamamoto
 	・2023/11/23　score構造体、comboの構造体の情報取得処理追加 yamamoto
 	・2023/12/07 ゲームパラメータに依存していたので修正 takagi
+	・2024/01/21 リファクタリング takagi
 
 ========================================== */
-#ifndef __TOTALSCORE_H__
-#define __TOTALSCORE_H__
+
+#ifndef __TOTAL_SCORE_H__	//TotalScore.hインクルードガード
+#define __TOTAL_SCORE_H__
 
 // =============== インクルード ===================
 #include <Texture.h>
@@ -69,5 +71,5 @@ private:
 
 
 
-#endif // !__TOTALSCORE_H__
+#endif	//!__TOTAL_SCORE_H__
 

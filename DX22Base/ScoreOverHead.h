@@ -3,15 +3,19 @@
    ---------------------------------------
    スコアヘッダー
    ---------------------------------------
-   Score.h
-
-   作成者 山本　凱翔
+   ScoreOverHead.h
+   ---------------------------------------
+   作成者	yamamoto
 
    変更履歴
 	・2023/11/17　作成 yamamoto
+	・2024/01/21 リファクタリング takagi
+
 ========================================== */
-#ifndef __SCORE_H__
-#define __SCORE_H__
+
+#ifndef __SCORE_OVER_HEAD_H__	//ScoreOverHead.hインクルードガード
+#define __SCORE_OVER_HEAD_H__
+
 // =============== インクルード ===================
 #include "Transform3d.h"	//ワールド座標系情報ヘッダー
 #include <Texture.h>
@@ -55,4 +59,4 @@ private:
 
 
 
-#endif // __SCORE_H__
+#endif	//!__SCORE_OVER_HEAD_H__

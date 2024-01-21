@@ -3,20 +3,22 @@
 	------------------------------------
 	UI管理用ヘッダ
 	------------------------------------
-	UIManager.h
+	UIStageManager.h
 	------------------------------------
-	作成者 Tei
+	作成者	tei
 
 	変更履歴
-	・2023/11/28 ヘッダ作成UI用ヘッダ、メンバポインタを入れます Tei
+	・2023/11/28 ヘッダ作成UI用ヘッダ、メンバポインタを入れます tei
 	・2023/12/08 シーン遷移用に関数追加 takagi
-	・2023/12/15 ボスゲージの取得処理追加 Sawada
+	・2023/12/15 ボスゲージの取得処理追加 sawada
 	・2024/01/01 シーン番号列挙 takagi
+	・2024/01/20 コメント改修 takagi
+	・2024/01/21 コメント改修 takagi
 
 ========================================== */
 
-#ifndef __UI_MANAGER_H__
-#define __UI_MANAGER_H__
+#ifndef __UI_STAGE_MANAGER_H__	//UIStageManager.hインクルードガード
+#define __UI_STAGE_MANAGER_H__
 
 // =============== インクルード ===================
 #include "TotalScore.h"
@@ -70,4 +72,4 @@ private:
 
 };
 
-#endif // __UI_MANAGER_H__
+#endif	//!__UI_STAGE_MANAGER_H__

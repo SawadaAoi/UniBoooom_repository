@@ -4,7 +4,7 @@
 	ポーズオブジェ実装
 	---------------------------------------
 	PauseObj.cpp
-
+	---------------------------------------
 	作成者	takagi
 
 	変更履歴
@@ -12,6 +12,8 @@
 	・2023/12/10 制作進行 takagi
 	・2023/12/17 引数参照化 takagi
 	・2024/01/11 ブレンドステート修正に伴う透明度調整 takagi
+	・2024/01/20 リファクタリング takagi
+	・2024/01/21 コメント改修 takagi
 
 ========================================== */
 
@@ -101,8 +103,8 @@ void CPauseObj::Update()
 	TPos3d<float> fTemp;		//位置退避用
 
 	// =============== 移動 ===================
-	CulculatePos(fTemp);		//位置計算
-	SetPos(fTemp);				//位置更新
+	CulculatePos(fTemp);						//位置計算
+	SetPos(fTemp);								//位置更新
 	SetAlpha(1.0f - (m_fOffset / MAX_OFFSET));	//透明度更新
 }
 
@@ -111,11 +113,11 @@ void CPauseObj::Update()
 	----------------------------------------
 	内容：描画処理
 	----------------------------------------
-	引数1：const E_DRAW_MODE & eMode：描画モード
+	引数1：なし
 	----------------------------------------
 	戻値：なし
 =========================================== */
-void CPauseObj::Draw(const E_DRAW_MODE & eMode)
+void CPauseObj::Draw()
 {
 	// =============== 検査 ===================
 	if (m_pnWaitTime)	//ヌルチェック
@@ -125,7 +127,7 @@ void CPauseObj::Draw(const E_DRAW_MODE & eMode)
 	}
 
 	// =============== 描画 ===================
-	C2dPolygon::Draw(eMode);	//委譲
+	C2dObject::Draw();	//委譲
 }
 
 /* ========================================
@@ -165,7 +167,7 @@ void CPauseObj::Destroy(const int& nWaitTime)
 	}
 
 	// =============== 動的確保 ===================
-	m_pnRemoveTime = new int(MOVE_TIME);	//移動時間初期化
+	m_pnRemoveTime = new int(MOVE_TIME);		//移動時間初期化
 	if (nWaitTime > 0)	//待機時間がある
 	{
 		m_pnRewaitTime = new int(nWaitTime);	//待機時間初期化

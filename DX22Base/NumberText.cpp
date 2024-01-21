@@ -70,7 +70,7 @@ void CNumberText::NumStorage()
 		{
 			m_DigitArray.push_back(m_nDispNum % 10);	// nNumber‚Ì‰º1Œ…‚ðŠi”[‚·‚é
 			m_nDispNum /= 10;							// nNumber‚ð1Œ…ƒXƒ‰ƒCƒh‚³‚¹‚é
-			m_p2dPoly.push_back(new C2dPolygon());
+			m_p2dPoly.push_back(new C2dObject());
 		}
 
 	}
@@ -79,7 +79,7 @@ void CNumberText::NumStorage()
 	while (m_DigitArray.size() < m_nDigits)
 	{
 		m_DigitArray.push_back(0);
-		m_p2dPoly.push_back(new C2dPolygon());
+		m_p2dPoly.push_back(new C2dObject());
 
 	}
 }

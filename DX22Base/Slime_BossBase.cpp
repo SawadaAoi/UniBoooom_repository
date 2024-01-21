@@ -1,18 +1,20 @@
 /* ========================================
 	HEW/UniBoooom!!
 	------------------------------------
-	ボススライム.cpp
+	ボススライムソース
 	------------------------------------
-	Slime_Boss.cpp
+	Slime_BossBase.cpp
 	------------------------------------
-	作成者	鈴村朋也
+	作成者	suzumura
 
 	変更履歴
-	・2023/11/17 クラス作成 Suzumura
-	・2023/11/23 Damage,IsDead関数を追加 Suzumura
+	・2023/11/17 クラス作成 suzumura
+	・2023/11/23 Damage,IsDead関数を追加 suzumura
 	・2023/11/27 HP表示追加 yamamoto
 	・2023/11/28 影の描画を追加 nieda
 	・2023/11/30 メモリリーク除去 takagi
+	・2024/01/20 リファクタリング takagi
+	・2024/01/21 コメント改修 takagi
 
 ========================================== */
 
@@ -96,10 +98,8 @@ CSlime_BossBase::~CSlime_BossBase()
 	-------------------------------------
 	戻値：無し
 =========================================== */
-void CSlime_BossBase::Update(tagTransform3d playerTransform)
+void CSlime_BossBase::Update()
 {
-	m_PlayerTran = playerTransform;
-
 	if (!m_bHitMove)	//敵が通常の移動状態の時
 	{
 		NormalMove();
@@ -149,7 +149,7 @@ void CSlime_BossBase::Update(tagTransform3d playerTransform)
 	-------------------------------------
 	戻値：無し
 =========================================== */
-void CSlime_BossBase::Draw(const CCamera* pCamera)
+void CSlime_BossBase::Draw()
 {
 	// DrawFlgがtrueなら描画処理を行う
 	if (m_bDrawFlg == false) return;
@@ -157,8 +157,8 @@ void CSlime_BossBase::Draw(const CCamera* pCamera)
 	DirectX::XMFLOAT4X4 mat[3];
 
 	mat[0] = m_Transform.GetWorldMatrixSRT();
-	mat[1] = pCamera->GetViewMatrix();
-	mat[2] = pCamera->GetProjectionMatrix();
+	mat[1] = m_pCamera->GetViewMatrix();
+	mat[2] = m_pCamera->GetProjectionMatrix();
 
 	//-- 行列をシェーダーへ設定
 	m_pVS->WriteBuffer(0, mat);
@@ -173,17 +173,17 @@ void CSlime_BossBase::Draw(const CCamera* pCamera)
 	}
 	
 	//-- 影の描画
-	m_pShadow->Draw(pCamera);
+	m_pShadow->Draw();
 
 	//HP表示
 	RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得
 	DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
 	SetRenderTargets(1, &pRTV, nullptr);		//DSVがnullだと2D表示になる
 
-	mat[1] = pCamera->GetViewMatrix();
-	mat[2] = pCamera->GetProjectionMatrix();
+	mat[1] = m_pCamera->GetViewMatrix();
+	mat[2] = m_pCamera->GetProjectionMatrix();
 	DirectX::XMFLOAT4X4 inv;//逆行列の格納先
-	inv = pCamera->GetViewMatrix();
+	inv = m_pCamera->GetViewMatrix();
 
 	//カメラの行列はGPUに渡す際に転置されているため、逆行列のために一度元に戻す
 	DirectX::XMMATRIX matInv = DirectX::XMLoadFloat4x4(&inv);

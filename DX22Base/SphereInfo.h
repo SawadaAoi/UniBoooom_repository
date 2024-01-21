@@ -4,20 +4,22 @@
 	スフィア用ヘッダ
 	---------------------------------------
 	SphereInfo.h
-	
-	作成者	山下凌佑
+	---------------------------------------
+	作成者	yamashita
 	
 	変更履歴
-	・2023/11/04 変更内容：CSphereInfoクラス作成 変更者名：山下凌佑
-	・2023/11/04 変更内容：Sphere構造体を作成 変更者名：山下凌佑
-	・2023/11/04 変更内容：距離を返す関数を作成 変更者名：山下凌佑
-	・2023/11/04 変更内容：角度を返す関数を作成を作成 変更者名：山下凌佑
-	・2023/11/07 変更内容：コンストラクタとデストラクタの説明を追加
-	・2023/11/14 変更内容：継承・当たり判定のズレ追加・class→struct：高木駿輔
+	・2023/11/04 CSphereInfoクラス作成 yamashita
+	・2023/11/04 Sphere構造体を作成 yamashita
+	・2023/11/04 距離を返す関数を作成 yamashita
+	・2023/11/04 角度を返す関数を作成を作成 yamashita
+	・2023/11/07 コンストラクタとデストラクタの説明を追加 yamashita
+	・2023/11/14 継承・当たり判定のズレ追加・class→struct takagi
+	・2024/01/21 コメント改修 takagi
 
 =========================================== */
-#ifndef __SPHEREINFO_H__
-#define __SPHEREINFO_H__
+
+#ifndef __SPHERE_INFO_H__	//SphereInfo.hインクルードガード
+#define __SPHERE_INFO_H__
 
 // =============== インクルード ===================
 //#include "TriType.h"
@@ -59,4 +61,4 @@ public:
 	TPos3d<float> GetCollisionPos(TPos3d<float> fPos) ;	//当たり判定位置取得
 };
 
-#endif // !__SPHEREINFO_H__
+#endif // !__SPHERE_INFO_H__

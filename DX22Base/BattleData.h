@@ -10,7 +10,8 @@
 	変更履歴
 	・2023/12/07 制作 takagi
 	・2023/12/11 分秒取得追加 takagi
-	・2023/12/28 保存する項目を追加 Sawada
+	・2023/12/28 保存する項目を追加 sawada
+	・2024/01/21 コメント改修 takagi
 
 ========================================== */
 //TODO:同じようにランキング用とかも作る
@@ -122,4 +123,4 @@ std::basic_fstream<CharT, Traits>& operator<<(std::basic_fstream<CharT, Traits>&
 	return FileStream;	//出力先ストリーム
 }
 
-#endif //!__BATTLE_DATA_H__
+#endif	//!__BATTLE_DATA_H__

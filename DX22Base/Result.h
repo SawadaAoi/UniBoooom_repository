@@ -4,7 +4,7 @@
 	リザルトシーン定義
 	---------------------------------------
 	Result.h
-
+	---------------------------------------
 	作成者
 			takagi
 			nieda
@@ -13,7 +13,9 @@
 	・2023/11/16 制作 takagi
 	・2023/12/08 シーン遷移用に変数追加 takagi
 	・2023/12/11 成績仮表示 takagi
-	・2023/12/25 表示内容の変更 Sawada
+	・2023/12/25 表示内容の変更 sawada
+	・2024/01/20 リファクタリング takagi
+	・2024/01/21 コメント改修 takagi
 
 ========================================== */
 
@@ -25,7 +27,7 @@
 #include "Texture.h"
 #include "BattleData.h"	//メンバのヘッダ
 #include <vector>		//配列型コンテナ
-#include "2dPolygon.h"	// 2Dオブジェクト用
+#include "2dObject.h"	// 2Dオブジェクト用
 #include "NumberText.h"
 
 // =============== クラス定義 =====================
@@ -73,7 +75,6 @@ public:
 	~CResult();							//デストラクタ
 	void Update();						//更新
 	void Draw();					//描画	
-	E_TYPE GetType() const override;	//自身の種類ゲッタ
 	E_TYPE GetNext() const override;	//次のシーンゲッタ
 private:
 	void DrawBgScreen();

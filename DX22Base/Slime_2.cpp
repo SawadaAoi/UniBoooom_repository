@@ -1,11 +1,11 @@
 /* ========================================
 	HEW/UniBoooom!!
 	------------------------------------
-	スライムサイズ2用cpp
+	スライムサイズ2用ソース
 	------------------------------------
 	Slime_2.cpp
 	------------------------------------
-	作成者	山下凌佑
+	作成者	yamashita
 
 	変更履歴
 	・2023/11/08 作成 yamashita
@@ -14,12 +14,14 @@
 	・2023/11/08 スライムの移動速度を大きさごとに変更する関数を作成	yamashita
 	・2023/11/08 コンストラクタでレベルごとのパラメータをセット	yamashita
 	・2023/11/11 parameter用ヘッダ追加 suzumura
-	・2023/11/14 Baseからモデル、シェーダの読み込みを移動 Suzumura
+	・2023/11/14 Baseからモデル、シェーダの読み込みを移動 suzumura
 	・2023/11/14 SphereInfoの変更に対応 takagi
 	・2023/11/15 スライムのモデルと頂点シェーダーをmanagerから受け取るように変更 yamashita
 	・2023/11/28 影の大きさを設定する変数追加 nieda
 	・2023/12/01 タックルの挙動を追加 yamashita
 	・2023/12/07 ゲームパラメータから一部定数移動 takagi
+	・2024/01/20 リファクタリング takagi
+	・2024/01/21 コメント改修 takagi
 
 ========================================== */
 
@@ -92,10 +94,8 @@ CSlime_2::~CSlime_2()
 {
 }
 
-void CSlime_2::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
+void CSlime_2::Update()
 {
-	m_PlayerTran = playerTransform;
-
 	if (!m_bHitMove)	//敵が通常の移動状態の時
 	{
 		if (!m_bEscape  && m_nEscapeCnt == 0)	//逃げるフラグがoffなら
@@ -114,8 +114,8 @@ void CSlime_2::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
 	}
 
 	// -- 座標更新
-	m_Transform.fPos.x += m_move.x * fSlimeMoveSpeed;
-	m_Transform.fPos.z += m_move.z * fSlimeMoveSpeed;
+	m_Transform.fPos.x += m_move.x;// *fSlimeMoveSpeed;
+	m_Transform.fPos.z += m_move.z;// *fSlimeMoveSpeed;
 }
 
 /* ========================================
@@ -130,7 +130,7 @@ void CSlime_2::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
 void CSlime_2::NormalMove()
 {
 
-	TPos3d<float> playerPos = m_PlayerTran.fPos;
+	TPos3d<float> playerPos = m_PlayerTran->fPos;
 
 	// 敵からエネミーの距離、角度を計算
 	float distancePlayer = m_Transform.fPos.Distance(playerPos);

@@ -1,16 +1,16 @@
 /* ========================================
 	HEW/UniBoooom!!
 	------------------------------------
-	平面ポリゴン実装
+	2Dオブジェクト実装
 	------------------------------------
-	2dPolygon.cpp
+	2dObject.cpp
 	------------------------------------
 	作成者	takagi
 
 	変更履歴
 	・2023/11/21 作成 takagi
 	・2023/11/22 メッシュサイズを1x1に修正 takagi
-	・2023/11/28 TextureSet関数にポインタ指定できる物を追加
+	・2023/11/28 TextureSet関数にポインタ指定できる物を追加 takagi
 	・2023/12/01 テクスチャの扱い方を安全化 takagi
 	・2023/12/04 デストラクタの削除対象を修正 takagi
 	・2023/12/05 描画のモード追加 takagi
@@ -20,27 +20,21 @@
 	・2023/12/17 引数参照化 takagi
 	・2023/12/20 ビルボードの処理修正 takagi
 	・2024/01/16 リネーム・継承・不要箇所削除 takagi
+	・2024/01/18 リファクタリング及びコメント追加 takagi
+	・2024/01/19 switch文break抜け修正 takagi
+	・2024/01/20 GetPos()関数追加 takagi
+	・2024/01/21 コメント改修 takagi
 
 ========================================== */
 
 // =============== インクルード ===================
-#include "2dPolygon.h"	//自身のヘッダ
+#include "2dObject.h"	//自身のヘッダ
 #include "CameraDef.h"	//疑似カメラ
-
 #if _DEBUG
 #include <Windows.h>	//メッセージボックス用
 #endif
 
-// =============== 定数定義 =====================
-const int FRAME_MIN(0);								//フェード時間の最小
-const int FRAME_TURNING_1(50);						//拡縮反転１反転
-const int FRAME_TURNING_2(100);						//拡縮反転２反転
-const int FRAME_MAX(150);							//フェード時間の最大
-const float SCALE_MIN(0.0f);						//最小サイズ
-const float SCALE_TURNINIG_2(30.0f);				//サイズ反転２反転
-const float SCALE_TURNINIG_1(100.0f);				//サイズ反転１反転
-const float SCALE_MAX(1000.0f);						//最大サイズ
-const float ROTATE_ACCEL_RATE(4.0f);				//角速度増加割合
+// =============== 定数定義 =====================	//コンパイルするプログラムを書いているのでここに記載
 const char* VS = R"EOT(
 struct VS_IN {
 	float3 pos : POSITION0;
@@ -72,7 +66,7 @@ VS_OUT main(VS_IN vin) {
 	vout.uv += uvPos;
 	vout.color = color;
 	return vout;
-})EOT";	//頂点シェーダーコンパイル対象
+})EOT";	//頂点シェーダーコンパイル文
 const char* PS = R"EOT(
 struct PS_IN {
 	float4 pos : SV_POSITION;
@@ -83,21 +77,21 @@ Texture2D tex : register(t0);
 SamplerState samp : register(s0);
 float4 main(PS_IN pin) : SV_TARGET {
 	return tex.Sample(samp, pin.uv) * pin.color;
-})EOT";	//ピクセルシェーダーコンパイル対象
+})EOT";	//ピクセルシェーダーコンパイル文
 
 // =============== グローバル変数宣言 =====================
-int C2dPolygon::ms_nCnt2dPolygon;								//自身の生成数
-const void* C2dPolygon::ms_pVtx = nullptr;						//頂点情報
-unsigned int C2dPolygon::ms_unVtxSize;							//頂点サイズ
-unsigned int C2dPolygon::ms_unVtxCount;							//頂点数
-const void* C2dPolygon::ms_pIdx = nullptr;						//頂点のインデックス
-unsigned int C2dPolygon::ms_unIdxSize;							//インデックスサイズ
-unsigned int C2dPolygon::ms_unIdxCount;							//インデックス数
-ID3D11Buffer* C2dPolygon::ms_pVtxBuffer = nullptr;				//頂点バッファ
-ID3D11Buffer* C2dPolygon::ms_pIdxBuffer = nullptr;				//インデックスバッファ 
-VertexShader* C2dPolygon::ms_pDefVs;							//頂点シェーダー
-PixelShader* C2dPolygon::ms_pDefPs;								//ピクセルシェーダー
-const CCamera* C2dPolygon::ms_pCameraDef;						//疑似カメラ
+int C2dObject::ms_nCnt2dObject;						//自身の生成数
+const void* C2dObject::ms_pVtx = nullptr;			//頂点情報
+unsigned int C2dObject::ms_unVtxSize;				//頂点サイズ
+unsigned int C2dObject::ms_unVtxCount;				//頂点数
+const void* C2dObject::ms_pIdx = nullptr;			//頂点のインデックス
+unsigned int C2dObject::ms_unIdxSize;				//インデックスサイズ
+unsigned int C2dObject::ms_unIdxCount;				//インデックス数
+ID3D11Buffer* C2dObject::ms_pVtxBuffer = nullptr;	//頂点バッファ
+ID3D11Buffer* C2dObject::ms_pIdxBuffer = nullptr;	//インデックスバッファ 
+VertexShader* C2dObject::ms_pDefVs;					//デフォルト頂点シェーダー
+PixelShader* C2dObject::ms_pDefPs;					//デフォルトピクセルシェーダー
+const CCamera* C2dObject::ms_pCameraDef;			//疑似カメラ
 
 /* ========================================
 	コンストラクタ関数
@@ -108,16 +102,17 @@ const CCamera* C2dPolygon::ms_pCameraDef;						//疑似カメラ
 	-------------------------------------
 	戻値：なし
 =========================================== */
-C2dPolygon::C2dPolygon()
+C2dObject::C2dObject()
 	:m_Param{{0.0f}, {1.0f, 1.0f}, {1.0f}, 1.0f}	//シェーダーに書き込む情報
 	,m_pVs(nullptr)									//頂点シェーダー
 	,m_pPs(nullptr)									//ピクセルシェーダー
 	,m_pTexture(nullptr)							//テクスチャ
 	,m_pTextureLoad(nullptr)						//テクスチャアドレス格納専用
+	,m_eMode(DEFAULT_DRAW_MODE)						//描画方法
 	,m_pCamera(nullptr)								//カメラ
 {
 	// =============== 静的作成 ===================
-	if (0 == ms_nCnt2dPolygon)	//現在、他にこのクラスが作成されていない時
+	if (0 == ms_nCnt2dObject)	//現在、他にこのクラスが作成されていない時
 	{
 		// =============== シェーダー作成 ===================
 		MakeVertexShader();	//頂点シェーダー作成
@@ -136,12 +131,12 @@ C2dPolygon::C2dPolygon()
 	SetCamera(nullptr);	//カメラ初期化
 
 	// =============== 行列作成 ===================
-	m_aMatrix[0] = m_Transform.GetWorldMatrixSRT();							//ワールド行列
-	DirectX::XMStoreFloat4x4(&m_aMatrix[1], DirectX::XMMatrixIdentity());	//ビュー行列：単位行列
-	DirectX::XMStoreFloat4x4(&m_aMatrix[2], DirectX::XMMatrixIdentity());	//プロジェクション行列
+	m_aMatrix[E_MATRIX_WORLD] = m_Transform.GetWorldMatrixSRT();							//ワールド行列
+	DirectX::XMStoreFloat4x4(&m_aMatrix[E_MATRIX_VIEW], DirectX::XMMatrixIdentity());		//ビュー行列：単位行列
+	DirectX::XMStoreFloat4x4(&m_aMatrix[E_MATRIX_PROJECTION], DirectX::XMMatrixIdentity());	//プロジェクション行列
 
 	// =============== カウンタ ===================
-	ms_nCnt2dPolygon++;	//自身の数カウント
+	ms_nCnt2dObject++;	//自身の数カウント
 }
 
 /* ========================================
@@ -149,12 +144,54 @@ C2dPolygon::C2dPolygon()
 	-------------------------------------
 	内容：コピー時に行う処理
 	-------------------------------------
-	引数1：const C2dPolygon & Obj：コピー元の参照
+	引数1：const C2dObject & Obj：コピー元の参照
 	-------------------------------------
 	戻値：なし
 =========================================== */
-C2dPolygon::C2dPolygon(const C2dPolygon & Obj)
+C2dObject::C2dObject(const C2dObject & Obj)
+	:m_Param(Obj.m_Param)				//シェーダーに書き込む情報
+	,m_eMode(Obj.m_eMode)				//描画方法
+	,m_pTextureLoad(Obj.m_pTextureLoad)	//テクスチャアドレス格納専用
 {
+	// =============== 初期化 ===================
+	for (int nIdx = 0; nIdx < E_MATRIX_MAX; nIdx++)
+	{
+		m_aMatrix[nIdx] = Obj.m_aMatrix[nIdx];	//行列初期化
+	}
+
+	// =============== 動的確保 ===================
+	if (Obj.m_pVs)	//ヌルチェック
+	{
+		m_pVs = new VertexShader(*Obj.m_pVs);	//頂点シェーダー
+	}
+	else
+	{
+		m_pVs = nullptr;	//空アドレス代入
+	}
+	if (Obj.m_pPs)	//ヌルチェック
+	{
+		m_pPs = new PixelShader(*Obj.m_pPs);	//ピクセルシェーダー
+	}
+	else
+	{
+		m_pPs = nullptr;	//空アドレス代入
+	}
+	if (Obj.m_pTexture)	//ヌルチェック
+	{
+		m_pTexture = new Texture(*Obj.m_pTexture);	//テクスチャ
+	}
+	else
+	{
+		m_pTexture = nullptr;	//空アドレス代入
+	}
+	if (Obj.m_pCamera)	//ヌルチェック
+	{	//TODO:臨時処置！子クラスの型で動的確保できるようにする
+		m_pCamera = Obj.m_pCamera;	//カメラ
+	}
+	else
+	{
+		m_pCamera = nullptr;	//空アドレス代入
+	}
 }
 
 /* ========================================
@@ -166,19 +203,19 @@ C2dPolygon::C2dPolygon(const C2dPolygon & Obj)
 	-------------------------------------
 	戻値：なし
 =========================================== */
-C2dPolygon::~C2dPolygon()
+C2dObject::~C2dObject()
 {
 	// =============== カウンタ ===================
-	ms_nCnt2dPolygon--;			//自身の数カウント
+	ms_nCnt2dObject--;			//自身の数カウント
 
 	// =============== 解放 ===================
 	SAFE_DELETE(m_pTexture);	//テクスチャ解放
-	//SAFE_DELETE(ms_pVtx);		//頂点情報解放
-	//SAFE_DELETE(ms_pIdx);		//頂点インデックス解放
-	//SAFE_DELETE(ms_pVtxBuffer);	//頂点バッファ解放
-	//SAFE_DELETE(ms_pIdxBuffer);	//インデックスバッファ解放
-	if (0 == ms_nCnt2dPolygon)	//静的確保物を解放するか
+	if (0 == ms_nCnt2dObject)	//静的確保物を解放するか
 	{
+		//SAFE_DELETE(ms_pVtx);		//頂点情報解放
+		//SAFE_DELETE(ms_pIdx);		//頂点インデックス解放
+		//SAFE_DELETE(ms_pVtxBuffer);	//頂点バッファ解放
+		//SAFE_DELETE(ms_pIdxBuffer);	//インデックスバッファ解放
 		SAFE_DELETE(ms_pCameraDef);		//疑似カメラ削除
 		SAFE_DELETE(ms_pDefVs);			//頂点シェーダー削除
 		SAFE_DELETE(ms_pDefPs);			//ピクセルシェーダー削除
@@ -194,7 +231,7 @@ C2dPolygon::~C2dPolygon()
 	-------------------------------------
 	戻値：なし
 =========================================== */
-void C2dPolygon::Update()
+void C2dObject::Update()
 {
 }
 
@@ -203,46 +240,53 @@ void C2dPolygon::Update()
 	-------------------------------------
 	内容：描画処理
 	-------------------------------------
-	引数1：const E_DRAW_MODE & eMode：描画モード
+	引数1：なし
 	-------------------------------------
 	戻値：なし
 =========================================== */
-void C2dPolygon::Draw(const E_DRAW_MODE & eMode)
+void C2dObject::Draw()
 {
 	// =============== 検査 ===================
 	if (!m_pTextureLoad)	//ヌルチェック
 	{
 #if _DEBUG
-		std::string ErrorSpot = typeid(*this).name(); ErrorSpot += "->Error";				//エラー箇所
-		MessageBox(nullptr, "テクスチャが登録されていません", ErrorSpot.c_str(), MB_OK);	//エラー通知
+		std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+		MessageBox(nullptr, (ErrorSpot + "テクスチャが登録されていません\n").c_str(), "Error", MB_OK | MB_ICONERROR);						//エラー通知
 #endif
 		return;	//処理中断
 	}
 	if (!m_pCamera)	//ヌルチェック
 	{
 #if _DEBUG
-		std::string ErrorSpot = typeid(*this).name(); ErrorSpot += "->Error";				//エラー箇所
-		MessageBox(nullptr, "カメラが登録されていません", ErrorSpot.c_str(), MB_OK);	//エラー通知
+		std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + ' ' + __FUNCTION__ + "()->Error";	//エラー箇所
+		MessageBox(nullptr, "カメラが登録されていません", ErrorSpot.c_str(), MB_OK);														//エラー通知
 #endif
 		return;	//処理中断
 	}
 
 	// =============== 行列更新 ===================
-	switch (eMode)
+	switch (m_eMode)	//描画状態分岐
 	{
 		// =============== 通常描画 ===================
 	case E_DRAW_MODE_NORMAL:	//通常時
-		m_aMatrix[0] = m_Transform.GetWorldMatrixSRT();	//ワールド行列更新
-		DirectX::XMStoreFloat4x4(&m_aMatrix[1], DirectX::XMMatrixIdentity());	//ビュー行列：単位行列
-		m_aMatrix[2] = m_pCamera->GetProjectionMatrix(CCamera::E_DRAW_TYPE_2D);	//プロジェクション行列更新
-		break;											//分岐処理終了
+		m_aMatrix[E_MATRIX_WORLD] = m_Transform.GetWorldMatrixSRT();								//ワールド行列更新
+		DirectX::XMStoreFloat4x4(&m_aMatrix[E_MATRIX_VIEW], DirectX::XMMatrixIdentity());			//ビュー行列：単位行列
+		m_aMatrix[E_MATRIX_PROJECTION] = m_pCamera->GetProjectionMatrix(CCamera::E_DRAW_TYPE_2D);	//プロジェクション行列更新
+		break;																						//分岐処理終了
 		
 		// =============== ビルボード描画 ===================
 	case E_DRAW_MODE_BILLBOARD:	//ビルボード仕様
-		m_aMatrix[0] = m_Transform.GetWorldMatrixSRT(m_pCamera->GetInverseViewMatrix());	//ビルボードの行列変換
-		m_aMatrix[1] = m_pCamera->GetViewMatrix();
-		m_aMatrix[2] = m_pCamera->GetProjectionMatrix(CCamera::E_DRAW_TYPE_3D);	//プロジェクション行列更新
-		break;																				//分岐処理終了
+		m_aMatrix[E_MATRIX_WORLD] = m_Transform.GetWorldMatrixSRT(m_pCamera->GetInverseViewMatrix());	//ビルボードの行列変換
+		m_aMatrix[E_MATRIX_VIEW] = m_pCamera->GetViewMatrix();											//ビュー行列更新
+		m_aMatrix[E_MATRIX_PROJECTION] = m_pCamera->GetProjectionMatrix(CCamera::E_DRAW_TYPE_3D);		//プロジェクション行列更新
+		break;																							//分岐処理終了
+#if _DEBUG
+		// =============== 例外 ===================
+	default:	//上記以外
+		std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + ' ' + __FUNCTION__ + "()->Error";	//エラー箇所
+		MessageBox(nullptr, "想定外の描画法が指定されました", ErrorSpot.c_str(), MB_OK);													//エラー通知
+		break;																																//分岐処理終了
+#endif
 	}
 
 	// =============== 変数宣言 ===================
@@ -269,12 +313,28 @@ void C2dPolygon::Draw(const E_DRAW_MODE & eMode)
 	// =============== インデックスの有無 ===================
 	if (ms_unIdxCount > 0)	//インデックスがある時
 	{
-		// =============== サイズ違い ===================
+		// =============== 変数宣言 ===================
 		DXGI_FORMAT Format;	//リソースデータフォーマット
+
+		// =============== サイズ違い ===================
 		switch (ms_unIdxSize)	//インデックスサイズ
 		{
-		case 4: Format = DXGI_FORMAT_R32_UINT; break;	//1成分32ビット符号なし整数(unsigned int (新しいやつ))
-		case 2: Format = DXGI_FORMAT_R16_UINT; break;	//1成分16ビット符号なし整数(unsigned int (古いやつ))
+			// =============== int型=4バイト ===================
+		case 4:	//intが4バイトの大きさ
+			Format = DXGI_FORMAT_R32_UINT;	//1成分32ビット符号なし整数(unsigned int (新しいやつ))
+			break;							//処理中断
+
+			// =============== int型=2バイト ===================
+		case 2:	//intが2バイトの大きさ
+			Format = DXGI_FORMAT_R16_UINT;	//1成分16ビット符号なし整数(unsigned int (古いやつ))
+			break;							//処理中断
+#if _DEBUG
+		// =============== 例外 ===================
+		default:	//上記以外
+			std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + ' ' + __FUNCTION__ + "()->Error";	//エラー箇所
+			MessageBox(nullptr, "型のサイズがint型と一致しません", ErrorSpot.c_str(), MB_OK);													//エラー通知
+			break;	//分岐処理終了
+#endif
 		}
 
 		// =============== インデックスバッファ登録 ===================
@@ -291,6 +351,21 @@ void C2dPolygon::Draw(const E_DRAW_MODE & eMode)
 }
 
 /* ========================================
+	描画方法セッタ関数
+	-------------------------------------
+	内容：描画方法登録
+	-------------------------------------
+	引数1：const E_DRAW_MODE & eMode：描画モード
+	-------------------------------------
+	戻値：なし
+=========================================== */
+void C2dObject::SetDrawMode(const E_DRAW_MODE & eMode)
+{
+	// =============== 格納 ===================
+	m_eMode = eMode;	//描画モード格納
+}
+
+/* ========================================
 	カメラセッタ関数
 	-------------------------------------
 	内容：カメラ登録
@@ -299,7 +374,7 @@ void C2dPolygon::Draw(const E_DRAW_MODE & eMode)
 	-------------------------------------
 	戻値：なし
 =========================================== */
-void C2dPolygon::SetCamera(const CCamera* pCamera)
+void C2dObject::SetCamera(const CCamera* pCamera)
 {
 	// =============== 変数宣言 ===================
 	int nCnt = 0;				//ループカウント用
@@ -320,66 +395,6 @@ void C2dPolygon::SetCamera(const CCamera* pCamera)
 }
 
 /* ========================================
-	位置セッタ関数
-	-------------------------------------
-	内容：位置登録
-	-------------------------------------
-	引数1：const TPos3d<float> & fPos：新規位置情報
-	-------------------------------------
-	戻値：なし
-=========================================== */
-void C2dPolygon::SetPos(const TPos3d<float> & fPos)
-{
-	// =============== 格納 ===================
-	m_Transform.fPos = fPos;	//位置情報格納
-}
-
-/* ========================================
-	大きさセッタ関数
-	-------------------------------------
-	内容：大きさ登録
-	-------------------------------------
-	引数1：const TTriType<float> & fScale：新規拡縮情報
-	-------------------------------------
-	戻値：なし
-=========================================== */
-void C2dPolygon::SetSize(const TTriType<float> & fScale)
-{
-	// =============== 格納 ===================
-	m_Transform.fScale = fScale;	//拡縮格納
-}
-
-/* ========================================
-	回転セッタ関数
-	-------------------------------------
-	内容：回転登録
-	-------------------------------------
-	引数1：const TTriType<float> & fRotate：新規回転情報
-	-------------------------------------
-	戻値：なし
-=========================================== */
-void C2dPolygon::SetRotate(const TTriType<float> & fRotate)
-{
-	// =============== 格納 ===================
-	m_Transform.fRadian = fRotate;	//回転格納
-}
-
-/* ========================================
-	ワールド行列セッタ関数
-	-------------------------------------
-	内容：ワールド行列登録
-	-------------------------------------
-	引数1：const TPos3d<float> & fPos：新規ワールド系情報
-	-------------------------------------
-	戻値：なし
-=========================================== */
-void C2dPolygon::SetTransform(const tagTransform3d & Transform)
-{
-	// =============== 格納 ===================
-	m_Transform = Transform;	//ワールド行列格納
-}
-
-/* ========================================
 	UVずれセッタ関数
 	-------------------------------------
 	内容：UVずれ登録
@@ -388,7 +403,7 @@ void C2dPolygon::SetTransform(const tagTransform3d & Transform)
 	-------------------------------------
 	戻値：なし
 =========================================== */
-void C2dPolygon::SetUvOffset(const TDiType<float> & fUvOffset)
+void C2dObject::SetUvOffset(const TDiType<float> & fUvOffset)
 {
 	// =============== 格納 ===================
 	m_Param.fUvOffset = fUvOffset;	//UVずれ情報格納
@@ -403,7 +418,7 @@ void C2dPolygon::SetUvOffset(const TDiType<float> & fUvOffset)
 	-------------------------------------
 	戻値：なし
 =========================================== */
-void C2dPolygon::SetUvScale(const TDiType<float> & fUvScale)
+void C2dObject::SetUvScale(const TDiType<float> & fUvScale)
 {
 	// =============== 格納 ===================
 	m_Param.fUvScale = fUvScale;	//UV拡縮情報格納
@@ -419,7 +434,7 @@ void C2dPolygon::SetUvScale(const TDiType<float> & fUvScale)
 	-------------------------------------
 	戻値：なし
 =========================================== */
-void C2dPolygon::SetColor(const TTriType<float> & fRGB, const float & fAlpha)
+void C2dObject::SetColor(const TTriType<float> & fRGB, const float & fAlpha)
 {
 	// =============== 格納 ===================
 	m_Param.fColor = fRGB;		//RGB情報格納
@@ -435,7 +450,7 @@ void C2dPolygon::SetColor(const TTriType<float> & fRGB, const float & fAlpha)
 	-------------------------------------
 	戻値：なし
 =========================================== */
-void C2dPolygon::SetColor(const TTriType<float> & fRGB)
+void C2dObject::SetColor(const TTriType<float> & fRGB)
 {
 	// =============== 格納 ===================
 	m_Param.fColor = fRGB;	//RGB情報格納
@@ -450,7 +465,7 @@ void C2dPolygon::SetColor(const TTriType<float> & fRGB)
 	-------------------------------------
 	戻値：なし
 =========================================== */
-void C2dPolygon::SetColor(const float & fColor)
+void C2dObject::SetColor(const float & fColor)
 {
 	// =============== 格納 ===================
 	m_Param.fColor = 0.0f;	//RGB情報格納
@@ -466,7 +481,7 @@ void C2dPolygon::SetColor(const float & fColor)
 	-------------------------------------
 	戻値：なし
 =========================================== */
-void C2dPolygon::SetAlpha(const float & fAlpha)
+void C2dObject::SetAlpha(const float & fAlpha)
 {
 	// =============== 格納 ===================
 	m_Param.fAlpha = fAlpha;	//透明度格納
@@ -482,22 +497,20 @@ void C2dPolygon::SetAlpha(const float & fAlpha)
 	-------------------------------------
 	戻値：なし
 =========================================== */
-void C2dPolygon::SetTexture(const char* pcTexPass)
+void C2dObject::SetTexture(const char* pcTexPass)
 {
 	// =============== 解放 ===================
 	SAFE_DELETE(m_pTexture);	//テクスチャ解放
 
 	// =============== 作成 ===================
 	m_pTexture = new Texture;		//動的確保
-#if _DEBUG
 	if (FAILED(m_pTexture->Create(pcTexPass)))	//新規テクスチャ登録
 	{
-		std::string ErrorSpot = typeid(*this).name(); ErrorSpot += "->Error";					//エラー箇所
-		MessageBox(nullptr, "テクスチャの読み込みに失敗しました", ErrorSpot.c_str(), MB_OK);	//エラー通知
-	}
-#else
-	m_pTexture->Create(pcTexPass);	//新規テクスチャ登録
+#if _DEBUG
+		std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + ' ' + __FUNCTION__ + "()->Error";	//エラー箇所
+		MessageBox(nullptr, "テクスチャの読み込みに失敗しました", ErrorSpot.c_str(), MB_OK);												//エラー通知
 #endif
+	}
 	m_pTextureLoad = m_pTexture;	//アドレス格納
 }
 
@@ -510,7 +523,7 @@ void C2dPolygon::SetTexture(const char* pcTexPass)
 	-------------------------------------
 	戻値：なし
 =========================================== */
-void C2dPolygon::SetTexture(Texture* pTexture)
+void C2dObject::SetTexture(Texture* pTexture)
 {
 	// =============== 登録 ===================
 	m_pTextureLoad = pTexture;	//アドレス格納
@@ -525,9 +538,9 @@ void C2dPolygon::SetTexture(Texture* pTexture)
 	-------------------------------------
 	戻値：なし
 =========================================== */
-void C2dPolygon::SetVertexShader(VertexShader* pVs)
+void C2dObject::SetVertexShader(VertexShader* pVs)
 {
-	//ポインタ初期化
+	// =============== ポインタ初期化 ===================
 	m_pVs = pVs;	//ピクセルシェーダ登録
 }
 
@@ -540,9 +553,9 @@ void C2dPolygon::SetVertexShader(VertexShader* pVs)
 	-------------------------------------
 	戻値：なし
 =========================================== */
-void C2dPolygon::SetPixelShader(PixelShader* pPs)
+void C2dObject::SetPixelShader(PixelShader* pPs)
 {
-	//ポインタ初期化
+	// =============== ポインタ初期化 ===================
 	m_pPs = pPs;	//ピクセルシェーダ登録
 }
 
@@ -555,7 +568,7 @@ void C2dPolygon::SetPixelShader(PixelShader* pPs)
 	-------------------------------------
 	戻値：なし
 =========================================== */
-void C2dPolygon::MakeVertexShader()
+void C2dObject::MakeVertexShader()
 {
 	// =============== 作成 ===================
 	if (ms_pDefVs)	//ヌルチェック
@@ -575,7 +588,7 @@ void C2dPolygon::MakeVertexShader()
 	-------------------------------------
 	戻値：なし
 =========================================== */
-void C2dPolygon::MakePixelShader()
+void C2dObject::MakePixelShader()
 {
 	// =============== 作成 ===================
 	if (ms_pDefPs)	//ヌルチェック
@@ -595,7 +608,7 @@ void C2dPolygon::MakePixelShader()
 	-------------------------------------
 	戻値：なし
 =========================================== */
-void C2dPolygon::Make()
+void C2dObject::Make()
 {
 	// =============== 変数宣言 ===================
 	Vertex aVtx[] = {
@@ -630,7 +643,7 @@ void C2dPolygon::Make()
 	-------------------------------------
 	戻値：なし
 =========================================== */
-void C2dPolygon::CreateVtxBuffer()
+void C2dObject::CreateVtxBuffer()
 {
 	// =============== バッファ情報設定 ===================
 	D3D11_BUFFER_DESC BufDesc;							//バッファ情報
@@ -639,7 +652,7 @@ void C2dPolygon::CreateVtxBuffer()
 	BufDesc.Usage = D3D11_USAGE_DEFAULT;				//メモリ上での管理方法
 	BufDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;		//GPU上での利用方法
 
-	//＞バッファ初期データ設定
+	// =============== バッファ初期データ設定 ===================
 	D3D11_SUBRESOURCE_DATA SubResource;				//サブリソース
 	ZeroMemory(&SubResource, sizeof(SubResource));	//データ初期化
 	SubResource.pSysMem = ms_pVtx;					//バッファに入れ込むデータ
@@ -662,22 +675,26 @@ void C2dPolygon::CreateVtxBuffer()
 	-------------------------------------
 	戻値：なし
 =========================================== */
-void C2dPolygon::CreateIdxBuffer()
+void C2dObject::CreateIdxBuffer()
 {
 	// =============== インデックスサイズの確認 ===================
 	switch (ms_unIdxSize)
 	{
-		// =============== サイズ違い ===================
-	default:	//下記以外
+		// =============== int型=4バイト ===================
+	case 4:	//intが4バイトの大きさ
+		break;							//処理中断
+
+		// =============== int型=2バイト ===================
+	case 2:	//intが2バイトの大きさ
+		break;							//処理中断
+
+		// =============== 例外 ===================
+		default:	//上記以外
 #if _DEBUG
-		MessageBox(nullptr, "型のサイズがint型と一致しません", "2dPolygon.cpp->Error", MB_OK);	//エラー通知
+			std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + ' ' + __FUNCTION__ + "()->Error";	//エラー箇所
+			MessageBox(nullptr, "型のサイズがint型と一致しません", ErrorSpot.c_str(), MB_OK);													//エラー通知
 #endif
 		return;	//処理中断
-
-		// =============== int型と同一 ===================
-	case 2:	//古いint型のサイズ
-	case 4:	//今のint型のサイズ
-		break;	//分岐処理終了
 	}
 
 	// =============== バッファの情報を設定 ===================

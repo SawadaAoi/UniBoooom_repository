@@ -1,4 +1,19 @@
-#ifndef __SPRITE_H__
+/* ========================================
+	HEW/UniBoooom!!
+	------------------------------------
+	2d描画定義
+	------------------------------------
+	Sprite.h
+	------------------------------------
+	作成者　佐々木先生
+
+	変更履歴
+	・↓まで 学校の配布物
+	・2024/01/21 コメント改修 takagi
+
+========================================== */
+
+#ifndef	__SPRITE_H__	//Sprite.hインクルードガード
 #define __SPRITE_H__
 
 #include <DirectXMath.h>
@@ -43,4 +58,4 @@ private:
 	static std::shared_ptr<PixelShader> m_defPS;
 };
 
-#endif // __SPRITE_H__
+#endif	//!__SPRITE_H__

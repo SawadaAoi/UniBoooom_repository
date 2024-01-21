@@ -4,42 +4,45 @@
 	スライムベース クラス定義
 	---------------------------------------
 	SlimeBase.h
-	
-	作成者 鈴村 朋也
+	---------------------------------------
+	作成者 suzumura
 	
 	変更履歴
-	・2023/11/04 スライムベースクラス作成 Suzumura
-	・2023/11/06 吹き飛び移動と吹き飛び移動関数を作成 Yamashita
-	・2023/11/06 m_fSpped(敵の移動速度)とm_fVecAngle(敵の吹き飛ぶ方向)のメンバ変数を追加 Yamashita
-	・2023/11/06 定数SPEED_DOWN_RATIO(ぶつかった先のスライムに速度を渡す際に減少する割合)を追加 Yamashita
-	・2023/11/06 定数MOVE_RESIST(吹き飛び移動中のスライムの移動速度に毎フレームかかる減算数値)を追加 Yamashita
-	・2023/11/07 HitBranch関数(スライムとの接触分岐処理)をSlimeManagerに移動するために削除 Yamashita
-	・2023/11/08 スライムのサイズを表す列挙を定義 Yamashita
-	・2023/11/08 スライムのサイズを返す関数を作成 Yamashita
-	・2023/11/08 GetPos→GetSphereに名前を変更 Yamashita
-	・2023/11/08 スライムの移動速度を取得する関数を作成 Yamashita
-	・2023/11/08 定数定義がヘッダーにあったのでcppに移動 Yamashita
-	・2023/11/08 UnionとExplosionを削除(マネージャーに移動させたので) Yamashita
-	・2023/11/08 m_bUse、n_playerDistance、m_playerAngleを削除(一か所でしか使用していない為) Yamashita
-	・2023/11/08 m_Playerを追加 Yamashita
-	・2023/11/08 座標をTPos<Pos>に変更 Yamashita
-	・2023/11/09 Update,NormalMoveの引数変更 Yamashita
-	・2023/11/08 スライムの移動速度の定数をcppからhに移動 Yamashita
-	・2023/11/10 カメラポインタを追加 Yamashita
-	・2023/11/10 他のオブジェクトと同一のカメラをセットするようにした Yamashita
-	・2023/11/12 m_Ryを追加（スライムの向きを変える時に使用） Yamamoto
-	・2023/11/13 GetScale関数の追加 Suzumura
-	・2023/11/14 列挙にFLAMEを追加、NormalMoveを仮想関数に Suzumura
-	・2023/11/14 SphereInfoの変更に対応 Takagi
+	・2023/11/04 スライムベースクラス作成 suzumura
+	・2023/11/06 吹き飛び移動と吹き飛び移動関数を作成 yamashita
+	・2023/11/06 m_fSpped(敵の移動速度)とm_fVecAngle(敵の吹き飛ぶ方向)のメンバ変数を追加 yamashita
+	・2023/11/06 定数SPEED_DOWN_RATIO(ぶつかった先のスライムに速度を渡す際に減少する割合)を追加 yamashita
+	・2023/11/06 定数MOVE_RESIST(吹き飛び移動中のスライムの移動速度に毎フレームかかる減算数値)を追加 yamashita
+	・2023/11/07 HitBranch関数(スライムとの接触分岐処理)をSlimeManagerに移動するために削除 yamashita
+	・2023/11/08 スライムのサイズを表す列挙を定義 yamashita
+	・2023/11/08 スライムのサイズを返す関数を作成 yamashita
+	・2023/11/08 GetPos→GetSphereに名前を変更 yamashita
+	・2023/11/08 スライムの移動速度を取得する関数を作成 yamashita
+	・2023/11/08 定数定義がヘッダーにあったのでcppに移動 yamashita
+	・2023/11/08 UnionとExplosionを削除(マネージャーに移動させたので) yamashita
+	・2023/11/08 m_bUse、n_playerDistance、m_playerAngleを削除(一か所でしか使用していない為) yamashita
+	・2023/11/08 m_Playerを追加 yamashita
+	・2023/11/08 座標をTPos<Pos>に変更 yamashita
+	・2023/11/09 Update,NormalMoveの引数変更 yamashita
+	・2023/11/08 スライムの移動速度の定数をcppからhに移動 yamashita
+	・2023/11/10 カメラポインタを追加 yamashita
+	・2023/11/10 他のオブジェクトと同一のカメラをセットするようにした yamashita
+	・2023/11/12 m_Ryを追加（スライムの向きを変える時に使用） yamamoto
+	・2023/11/13 GetScale関数の追加 suzumura
+	・2023/11/14 列挙にFLAMEを追加、NormalMoveを仮想関数に suzumura
+	・2023/11/14 SphereInfoの変更に対応 takagi
 	・2023/11/15 Objectクラスを継承したので修正　yamamoto
 	・2023/11/26 爆発から逃げるフラグ、最も近い爆発を入れる変数を作成　yamashita
 	・2023/11/26 スライムが爆発から逃げる処理を作成　yamashita
 	・2023/11/28 影の描画追加 nieda
-	・2023/12/04 列挙にヒールスライムを追加 Tei
+	・2023/12/04 列挙にヒールスライムを追加 tei
 	・2023/12/07 ゲームパラメータから一部定数移動 takagi
+	・2024/01/20 リファクタリング takagi
+	・2024/01/21 コメント改修 takagi
 
 ========================================== */
-#ifndef __SLIME_BASE_H__
+
+#ifndef __SLIME_BASE_H__	//SlimeBase.hインクルードガード
 #define __SLIME_BASE_H__
 
 // =============== インクルード ===================
@@ -50,7 +53,7 @@
 #include "Pos3d.h"
 #include "Camera.h"
 #include "GameParameter.h"		//定数定義用ヘッダー
-#include "Object.h"
+#include "3dObject.h"
 #include "Shadow.h"		// 影表示用ヘッダ
 #include "Timer.h"
 
@@ -88,14 +91,14 @@ const int FIRST_EXPLOSION_SCORE = 1000;		//赤同士の最初の爆発のスコア
 // =============== クラス定義 =====================
 
 class CSlimeBase
-	: public CObject 
+	: public C3dObject 
 {
 public:
 	// ===プロトタイプ宣言===
 	CSlimeBase();
 	~CSlimeBase();
-	virtual void Update(tagTransform3d playerTransform, float fSlimeMoveSpeed); 
-	virtual void Draw(const CCamera* pCamera);
+	virtual void Update(); 
+	virtual void Draw();
 
 	virtual void NormalMove();	// 通常時の移動処理
 	void RandomMove();
@@ -117,6 +120,7 @@ public:
 	void SetCamera(const CCamera* pCamera);
 	void SetExplosionPos(TPos3d<float> expPos);
 	void SetEscapeFlag(bool bEscape);
+	void SetPlPos(const tagTransform3d* plpos);
 protected:
 	Model* m_pModel;				//3Dモデル
 	VertexShader* m_pVS;			//バーテックスシェーダーのポインタ
@@ -140,7 +144,6 @@ protected:
 	int m_RanMoveCnt;				// ランダム移動の加算値
 	int m_nAttack;					// 攻撃力
 
-	tagTransform3d m_PlayerTran;	// プレイヤーの変形情報
-
+	const tagTransform3d* m_PlayerTran;	// プレイヤーの変形情報
 };
-#endif // __SLIME_BASE_H__
+#endif	//!__SLIME_BASE_H__

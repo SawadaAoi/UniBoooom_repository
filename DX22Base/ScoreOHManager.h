@@ -3,18 +3,20 @@
    ---------------------------------------
    スコア管理ヘッダー
    ---------------------------------------
-   ScoreManager.h
-
-   作成者 山本　凱翔
+   ScoreOHManager.h
+   ---------------------------------------
+   作成者	yamamoto
 
    変更履歴
 	・2023/11/17　作成 yamamoto
 	・2023/11/25　使っていない関数を削除 yamamoto
 	・2023/12/07 ゲームパラメータに依存していたので修正・不要箇所削除・定数定義 takagi
+	・2024/01/21 コメント改修 takagi
 
 ========================================== */
-#ifndef __SCORE_MANAGER_H__
-#define __SCORE_MANAGER_H__
+
+#ifndef __SCORE_OH_MANAGER_H__	//ScoreOHManager.hインクルードガード
+#define __SCORE_OH_MANAGER_H__
 
 // =============== インクルード ===================
 #include "ScoreOverHead.h"
@@ -46,4 +48,4 @@ protected:
 };
 
 
-#endif // !__SCORE_MANAGER_H__
+#endif	//!__SCORE_OH_MANAGER_H__

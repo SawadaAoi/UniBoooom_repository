@@ -52,9 +52,6 @@
     <Filter Include="ヘッダー ファイル\Scene">
       <UniqueIdentifier>{ad1d9d81-304b-41ce-affd-6a0141f600c9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ヘッダー ファイル\3DObject">
-      <UniqueIdentifier>{dd4cea9d-ae9d-4976-8b5b-79b3a5c68b64}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\System\Camera">
       <UniqueIdentifier>{e89c5f9b-42c3-44f9-bcd6-662379c7102a}</UniqueIdentifier>
     </Filter>
@@ -87,21 +84,6 @@
     </Filter>
     <Filter Include="ソース ファイル\Object\2dObject">
       <UniqueIdentifier>{956544a7-603e-42b3-bfab-932cff43106c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\Object\2dObject\Effect">
-      <UniqueIdentifier>{b95ca52c-d424-4e4d-a919-7649217b5a00}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\Object\2dObject\Effect\Particle">
-      <UniqueIdentifier>{33698c5e-3fce-4b89-9016-51917eb872e4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\Object\2dObject\Effect\Particle\ModelParticle">
-      <UniqueIdentifier>{238e6673-495f-4451-ac17-72d2157c3e52}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\Object\2dObject\Effect\Particle\QuadParticle">
-      <UniqueIdentifier>{6ac34c7d-649c-43ac-8773-34ff50f91da9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\Object\2dObject\Effect\Particle\StripeParticle">
-      <UniqueIdentifier>{293c03dd-1393-402a-b929-8df7c7ad51b3}</UniqueIdentifier>
     </Filter>
     <Filter Include="ソース ファイル\Object\2dObject\Score">
       <UniqueIdentifier>{eae8711d-a654-42a1-ae55-453fd38bb610}</UniqueIdentifier>
@@ -142,21 +124,6 @@
     <Filter Include="ヘッダー ファイル\Object\2dObject">
       <UniqueIdentifier>{982c9d7b-0d17-4703-af32-cc77a4f51dd8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ヘッダー ファイル\Object\2dObject\Effect">
-      <UniqueIdentifier>{0b69555e-5e2c-4067-ab76-5084adc00263}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\Object\2dObject\Effect\Particle">
-      <UniqueIdentifier>{18baf731-5081-4dd1-89e7-6e6a4249d38c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\Object\2dObject\Effect\Particle\ModelParticle">
-      <UniqueIdentifier>{6701af9f-d1d6-4b3c-ad2c-24846fb42fc9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\Object\2dObject\Effect\Particle\QuadParticle">
-      <UniqueIdentifier>{aac39599-ed75-4b87-89a9-2a720d143484}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\Object\2dObject\Effect\Particle\StripeParticle">
-      <UniqueIdentifier>{bfe0c776-3581-417b-8745-139a05bf0db7}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ヘッダー ファイル\Object\2dObject\Score">
       <UniqueIdentifier>{b494978e-34ae-4e90-89fa-26c0e26f02ff}</UniqueIdentifier>
     </Filter>
@@ -190,6 +157,12 @@
     <Filter Include="ヘッダー ファイル\Object\3dObject\Item">
       <UniqueIdentifier>{0bb8e1c9-598a-4c56-b27a-cda84d126e8c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\System\Flag">
+      <UniqueIdentifier>{82e12164-2dbd-42b0-bd53-20ddf18a5404}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\System\Flag">
+      <UniqueIdentifier>{49f8e49a-6103-4d1f-86a3-313c3aee6649}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -214,9 +187,6 @@
       <Filter>ソース ファイル\System</Filter>
     </ClCompile>
     <ClCompile Include="Startup.cpp">
-      <Filter>ソース ファイル\System</Filter>
-    </ClCompile>
-    <ClCompile Include="_model.cpp">
       <Filter>ソース ファイル\System</Filter>
     </ClCompile>
     <ClCompile Include="Model.cpp">
@@ -273,35 +243,11 @@
     <ClCompile Include="Controller.cpp">
       <Filter>ソース ファイル\System</Filter>
     </ClCompile>
-    <ClCompile Include="Effect.cpp">
-      <Filter>ソース ファイル\Object\2dObject\Effect</Filter>
-    </ClCompile>
-    <ClCompile Include="Emitter.cpp">
-      <Filter>ソース ファイル\Object\2dObject\Effect\Particle</Filter>
-    </ClCompile>
-    <ClCompile Include="EmitterManager.cpp">
-      <Filter>ソース ファイル\Object\2dObject\Effect\Particle</Filter>
-    </ClCompile>
-    <ClCompile Include="Particle.cpp">
-      <Filter>ソース ファイル\Object\2dObject\Effect\Particle</Filter>
-    </ClCompile>
-    <ClCompile Include="ModelParticle.cpp">
-      <Filter>ソース ファイル\Object\2dObject\Effect\Particle\ModelParticle</Filter>
-    </ClCompile>
-    <ClCompile Include="QuadParticle.cpp">
-      <Filter>ソース ファイル\Object\2dObject\Effect\Particle\QuadParticle</Filter>
-    </ClCompile>
-    <ClCompile Include="StripeParticle.cpp">
-      <Filter>ソース ファイル\Object\2dObject\Effect\Particle\StripeParticle</Filter>
-    </ClCompile>
     <ClCompile Include="Transform3d.cpp">
       <Filter>ソース ファイル\Info</Filter>
     </ClCompile>
     <ClCompile Include="Transform2d.cpp">
       <Filter>ソース ファイル\Info</Filter>
-    </ClCompile>
-    <ClCompile Include="Object.cpp">
-      <Filter>ソース ファイル\Object\3dObject</Filter>
     </ClCompile>
     <ClCompile Include="Floor.cpp">
       <Filter>ソース ファイル\Object\3dObject</Filter>
@@ -365,12 +311,6 @@
     </ClCompile>
     <ClCompile Include="BoooomUI.cpp">
       <Filter>ソース ファイル\Object\2dObject</Filter>
-    </ClCompile>
-    <ClCompile Include="SceneGame.cpp">
-      <Filter>ソース ファイル\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="SceneGameCollision.cpp">
-      <Filter>ソース ファイル\Scene</Filter>
     </ClCompile>
     <ClCompile Include="Slime_1.cpp">
       <Filter>ソース ファイル\Object\3dObject\Enemy</Filter>
@@ -456,9 +396,6 @@
     <ClCompile Include="DrawAnimation.cpp">
       <Filter>ソース ファイル\Object\2dObject</Filter>
     </ClCompile>
-    <ClCompile Include="2dPolygon.cpp">
-      <Filter>ソース ファイル\Object\2dObject</Filter>
-    </ClCompile>
     <ClCompile Include="CommandTitle.cpp">
       <Filter>ソース ファイル\Object\2dObject\TitleObj</Filter>
     </ClCompile>
@@ -513,8 +450,17 @@
     <ClCompile Include="TimerStage3.cpp">
       <Filter>ソース ファイル\Object\2dObject\Timer</Filter>
     </ClCompile>
-    <ClCompile Include="Obj.cpp">
+    <ClCompile Include="3dObject.cpp">
+      <Filter>ソース ファイル\Object\3dObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Object.cpp">
       <Filter>ソース ファイル\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="2dObject.cpp">
+      <Filter>ソース ファイル\Object\2dObject</Filter>
+    </ClCompile>
+    <ClCompile Include="UcFlag.cpp">
+      <Filter>ソース ファイル\System\Flag</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -614,35 +560,11 @@
     <ClInclude Include="Controller.h">
       <Filter>ヘッダー ファイル\System</Filter>
     </ClInclude>
-    <ClInclude Include="Effect.h">
-      <Filter>ヘッダー ファイル\Object\2dObject\Effect</Filter>
-    </ClInclude>
-    <ClInclude Include="Emitter.h">
-      <Filter>ヘッダー ファイル\Object\2dObject\Effect\Particle</Filter>
-    </ClInclude>
-    <ClInclude Include="EmitterManager.h">
-      <Filter>ヘッダー ファイル\Object\2dObject\Effect\Particle</Filter>
-    </ClInclude>
-    <ClInclude Include="Particle.h">
-      <Filter>ヘッダー ファイル\Object\2dObject\Effect\Particle</Filter>
-    </ClInclude>
-    <ClInclude Include="ModelParticle.h">
-      <Filter>ヘッダー ファイル\Object\2dObject\Effect\Particle\ModelParticle</Filter>
-    </ClInclude>
-    <ClInclude Include="QuadParticle.h">
-      <Filter>ヘッダー ファイル\Object\2dObject\Effect\Particle\QuadParticle</Filter>
-    </ClInclude>
-    <ClInclude Include="StripeParticle.h">
-      <Filter>ヘッダー ファイル\Object\2dObject\Effect\Particle\StripeParticle</Filter>
-    </ClInclude>
     <ClInclude Include="GameParameter.h">
       <Filter>ヘッダー ファイル\Info</Filter>
     </ClInclude>
     <ClInclude Include="DirectWrite.h">
       <Filter>ヘッダー ファイル\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Object.h">
-      <Filter>ヘッダー ファイル\Object\3dObject</Filter>
     </ClInclude>
     <ClInclude Include="Floor.h">
       <Filter>ヘッダー ファイル\Object\3dObject</Filter>
@@ -703,9 +625,6 @@
     </ClInclude>
     <ClInclude Include="BoooomUI.h">
       <Filter>ヘッダー ファイル\Object\2dObject</Filter>
-    </ClInclude>
-    <ClInclude Include="SceneGame.h">
-      <Filter>ヘッダー ファイル\Scene</Filter>
     </ClInclude>
     <ClInclude Include="Slime_1.h">
       <Filter>ヘッダー ファイル\Object\3dObject\Enemy</Filter>
@@ -791,9 +710,6 @@
     <ClInclude Include="DrawAnimation.h">
       <Filter>ヘッダー ファイル\Object\2dObject</Filter>
     </ClInclude>
-    <ClInclude Include="2dPolygon.h">
-      <Filter>ヘッダー ファイル\Object\2dObject</Filter>
-    </ClInclude>
     <ClInclude Include="CommandTitle.h">
       <Filter>ヘッダー ファイル\Object\2dObject\TitleObj</Filter>
     </ClInclude>
@@ -851,8 +767,17 @@
     <ClInclude Include="Delete.h">
       <Filter>ヘッダー ファイル\Info</Filter>
     </ClInclude>
-    <ClInclude Include="Obj.h">
+    <ClInclude Include="3dObject.h">
+      <Filter>ヘッダー ファイル\Object\3dObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Object.h">
       <Filter>ヘッダー ファイル\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="2dObject.h">
+      <Filter>ヘッダー ファイル\Object\2dObject</Filter>
+    </ClInclude>
+    <ClInclude Include="UcFlag.h">
+      <Filter>ヘッダー ファイル\System\Flag</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

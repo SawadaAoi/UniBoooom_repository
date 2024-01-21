@@ -1,20 +1,23 @@
 /* ========================================
 	HEW/UniBoooom!!
 	------------------------------------
-	Sound用ヘッダ
+	音操作用ヘッダ
 	------------------------------------
 	Sound.h
 	------------------------------------
-	作成者
-		yamashita
+	作成者	yamashita
+
 	変更履歴
 	・2023/11/18 h,作成 yamashita
 	・2023/11/18 先生のSound.hからコピーしてクラス化 yamashita
 	・2023/11/18 コメント追加 yamashita
 	・2023/11/18 クラスを静的に変更 yamashita
+	・2024/01/20 音を読み込んだスピーカーが所持する音を手放す工程をマクロ定義 takagi
+	・2024/01/21 コメント改修 takagi
 
 ========================================== */
-#ifndef __SOUND_H__
+
+#ifndef __SOUND_H__	//Sound.hインクルードガード
 #define __SOUND_H__
 
 // =============== インクルード ===================
@@ -33,8 +36,9 @@
 #pragma comment(lib, "shlwapi.lib")
 
 
-// =============== 定数定義 =======================
+// =============== 定数・マクロ定義 =======================
 const BYTE CMP_MATCH = 0;	//後でcppに移動
+#define UNLOAD_SOUND(pSpeaker)	do{if(pSpeaker){pSpeaker->Stop(); pSpeaker->DestroyVoice();}}while(0)	//音読み込み解除
 
 // =============== クラス定義 =====================
 class CSound
@@ -88,4 +92,4 @@ private:
 };
 
 
-#endif // !__SOUND_H__
+#endif	//!__SOUND_H__

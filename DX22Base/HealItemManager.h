@@ -1,19 +1,22 @@
 /* ========================================
 	HEW/UniBoooom!!
 	------------------------------------
-	HealItem管理用ヘッダ
+	回復アイテム管理用ヘッダ
 	------------------------------------
 	HealItemManager.h
 	------------------------------------
-	作成者
-		yamashita
+	作成者	yamashita
+
 	変更履歴
 	・2023/11/27 h作成 yamashita
 	・2023/11/28 vectorでリストを作成 yamashita
+	・2024/01/20 コメント改修 takagi
+	・2024/01/21 コメント改修 takagi
 
 ========================================== */
-#ifndef __HEALITEM_MANAGER_H__
-#define __HEALITEM_MANAGER_H__
+
+#ifndef __HEAL_ITEM_MANAGER_H__	//HealItemManager.hインクルードガード
+#define __HEAL_ITEM_MANAGER_H__
 
 // =============== インクルード部 =====================
 #include "HealItem.h"
@@ -40,4 +43,4 @@ private:
 	const CCamera* m_pCamera;
 };
 
-#endif // !__HEALITEM_MANAGER_H__
+#endif	//!__HEAL_ITEM_MANAGER_H__

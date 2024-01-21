@@ -1,7 +1,7 @@
 // –¢Š®¬
 
 #pragma once
-#include "2dPolygon.h"
+#include "2dObject.h"
 #include "Texture.h"
 #include "DiType.h"	//‚R‚Â‚Ì“¯‚¶Œ^‚ğ‚ÂŒ^
 
@@ -21,7 +21,7 @@ private:
 
 	Texture* m_pTexture;
 	CCamera* m_pCamera;
-	std::vector<C2dPolygon*> m_p2dPoly;
+	std::vector<C2dObject*> m_p2dPoly;
 	std::vector<int> m_DigitArray;
 	int m_nDispNum;
 	int m_nDigits;

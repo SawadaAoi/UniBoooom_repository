@@ -4,22 +4,25 @@
    爆発管理ヘッダー
    ---------------------------------------
    ExplosionManager.h
-
-   作成者 鄭 宇恩
+	------------------------------------
+   作成者 tei
 
    変更履歴
 	・2023/11/06 爆発マネージャークラス作成 tei
 	・2023/11/09 爆発配列を返す処理の追加 sawada
 	・2023/11/10 他のオブジェクトと同一のカメラをセットするようにした yamashita
-	・2023/11/13 Create関数の引数にtimeを追加 Suzumura
+	・2023/11/13 Create関数の引数にtimeを追加 suzumura
 	・2023/11/18 サウンド用のメンバ変数を追加 yamashita
-	・2023/11/19 Create関数の引数にdamageを追加 Suzumura
-	・2023/11/20 コンボ数機能追加 Sawada
-	・2023/11/21 コンボ数機能の一部をコンボクラスに移動 Sawada
-	・2023/11/21 BoooomUI用のメンバ変数を追加 Tei
+	・2023/11/19 Create関数の引数にdamageを追加 suzumura
+	・2023/11/20 コンボ数機能追加 sawada
+	・2023/11/21 コンボ数機能の一部をコンボクラスに移動 sawada
+	・2023/11/21 BoooomUI用のメンバ変数を追加 tei
 	・2023/12/07 ゲームパラメータから一部定数移動・Effekseer.hのインクルードをcppに移動 takagi
+	・2024/01/20 コメント改修 takagi
+	・2024/01/21 コメント改修 takagi
 
 ========================================== */
+
 #ifndef __EXPLOSION_MANAGER_H__	//ExplosionManager.hインクルードガード
 #define __EXPLOSION_MANAGER_H__
 
@@ -91,4 +94,4 @@ private:
 	Effekseer::EffectRef m_explodeEffect;		//爆発のエフェクト
 };
 
-#endif // __EXPLOSION_MANAGER_H__
+#endif	//!__EXPLOSION_MANAGER_H__

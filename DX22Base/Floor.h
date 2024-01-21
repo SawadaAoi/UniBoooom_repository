@@ -1,19 +1,23 @@
 /* ========================================
 	HEW/UniBoooom!!
 	------------------------------------
-	Floor用ヘッダ
+	床用ヘッダ
 	------------------------------------
 	Floor.h
 	------------------------------------
-	作成者
-		yamashita
+	作成者	yamashita
+
 	変更履歴
 	・2023/11/16 h,作成 yamashita
 	・2023/11/16 モデル、頂点シェーダー、カメラのポインタをメンバ変数に追加 yamashita
 	・2023/11/16 カメラのセット関数を作成 yamashita
 	・2023/11/22 座標算出関数を作成 yamashita
+	・2024/01/20 リファクタリング takagi
+	・2024/01/21 コメント改修 takagi
+
 ========================================== */
-#ifndef __FLOOR_H__
+
+#ifndef __FLOOR_H__	//Floor.hインクルードガード
 #define __FLOOR_H__
 
 #include "Camera.h"
@@ -22,12 +26,13 @@
 #include "Shader.h"
 #include "Model.h"
 #include "GameParameter.h"		//定数定義用ヘッダー
+#include "3dObject.h"
 
 // =============== 定数定義 =====================
 const int FLOOR_NUM = 9;
 
 // =============== クラス定義 =====================
-class CFloor
+class CFloor :public C3dObject
 {
 public:
 	enum StageKinds
@@ -57,7 +62,4 @@ private:
 	StageKinds m_stage;
 };
 
-
-
-
-#endif // !__FLOOR_H__
+#endif	//!__FLOOR_H__

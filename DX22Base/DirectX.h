@@ -1,5 +1,19 @@
-#ifndef __DIRECTX_H__
-#define __DIRECTX_H__
+/* ========================================
+	HEW/UniBoooom!!
+	------------------------------------
+	DirectX定義
+	------------------------------------
+	DirectX.h
+	------------------------------------
+	作成者　佐々木先生
+
+	変更履歴
+	・2024/01/21 コメント改修 takagi
+
+========================================== */
+
+#ifndef __DIRECT_X_H__	//DirectX.hインクルードガード
+#define __DIRECT_X_H__
 
 #include <d3d11.h>
 
@@ -50,4 +64,4 @@ void SetDepthTest(bool enable);
 void SetBlendMode(BlendMode blend);
 void SetSamplerState(SamplerState state);
 
-#endif
+#endif	//!__DIRECT_X_H__

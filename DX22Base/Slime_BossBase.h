@@ -1,21 +1,25 @@
 /* ========================================
 	HEW/UniBoooom!!
 	------------------------------------
-	ボススライム.h
+	ボススライム定義
 	------------------------------------
-	Slime_Boss.h
+	Slime_BossBase.h
 	------------------------------------
-	作成者	鈴村朋也
+	作成者	suzumura
 
 	変更履歴
-	・2023/11/17 クラス作成 Suzumura
-	・2023/11/20 Damage、IsDead関数を追加 Suzumura
-	・2023/11/23 Hp関係を追加 Suzumura
-	・2023/11/23 点滅処理実装 Suzumura
-	・2023/11/27 HPテクスチャ追加 Suzumura
+	・2023/11/17 クラス作成 suzumura
+	・2023/11/20 Damage、IsDead関数を追加 suzumura
+	・2023/11/23 Hp関係を追加 suzumura
+	・2023/11/23 点滅処理実装 suzumura
+	・2023/11/27 HPテクスチャ追加 suzumura
+	・2024/01/20 リファクタリング takagi
+	・2024/01/21 リファクタリング takagi
+
 ========================================== */
-#ifndef __SLIME_BOSS_BASE__H__
-#define __SLIME_BOSS_BASE__H__
+
+#ifndef __SLIME_BOSS_BASE_H__	//Slime_BossBase.hインクルードガード
+#define __SLIME_BOSS_BASE_H__
 
 // =============== インクルード ===================
 #include "SlimeBase.h"
@@ -36,8 +40,8 @@ public:
 	CSlime_BossBase();
 	~CSlime_BossBase();
 
-	virtual void Update(tagTransform3d playerTransform);
-	void Draw(const CCamera* pCamera) override;
+	virtual void Update();
+	void Draw() override;
 
 	void Warp(TPos3d<float> playerPos);	// ワープ関数 TODO:未実装
 
@@ -66,4 +70,4 @@ private:
 };
 
 
-#endif //__SLIME_BOSS_BASE__H__
+#endif	//!__SLIME_BOSS_BASE_H__

@@ -1,11 +1,11 @@
 /* ========================================
    HEW/UniBoooom!!
    ---------------------------------------
-   スライムマネージャー クラス実装
+   スライムマネージャークラス実装
    ---------------------------------------
    SlimeManager.cpp
-
-   作成者：鈴村 朋也
+   ---------------------------------------
+   作成者	suzumura
 
    変更履歴
 	・2023/11/05 スライムマネージャークラス作成 suzumura
@@ -15,21 +15,21 @@
 	・2023/11/09 コメントの追加 sawada
 	・2023/11/11 parameter用ヘッダ追加 suzumura
 	・2023/11/11 スライム同士が重ならない関数を追加 yamashita
-	・2023/11/13 スライムレベルごとに爆発時間を設定できるように変更 Suzumura
-	・2023/11/14 炎スライムの処理を実装 Suzumura
-	・2023/11/14 SphereInfoの変更に対応 Takagi
+	・2023/11/13 スライムレベルごとに爆発時間を設定できるように変更 suzumura
+	・2023/11/14 炎スライムの処理を実装 suzumura
+	・2023/11/14 SphereInfoの変更に対応 takagi
 	・2023/11/15 各モデルの読み込みをbaseから移動 yamashita
 	・2023/11/15 各モデルの読み込みを関数化 yamashita
 	・2023/11/20 ボス用の配列を追加
 	・2023/11/21 ボス用の当たり判定時の処理(HitSlimeBossBranch...etc)を追加
 	・2023/11/21 ボス用の通常時の処理(PreventSlimeBossOverlap...etc)を追加
-	・2023/11/21 BoooomUi表示する関数を呼び出す Tei
+	・2023/11/21 BoooomUi表示する関数を呼び出す tei
 	・2023/11/23 スライムの生成位置をプレイヤー中心に変更 yamashita
 	・2023/11/23 スライムの生成位置が前回の生成位置から一定以上離れるように変更	yamashita
 	・2023/11/23 スライムがプレイヤーから一定以上離れると対角線上に移動するように変更 yamashita
-	・2023/11/26 ボス生成用関数追加	Sawada
+	・2023/11/26 ボス生成用関数追加	sawada
 	・2023/11/26 スライムと爆発の距離を調べ逃げるか判定する関数を作成 yamashita
-	・2023/11/27 赤赤の爆発生成時にヒットストップと画面揺れするように修正	Sawada
+	・2023/11/27 赤赤の爆発生成時にヒットストップと画面揺れするように修正	sawada
 	・2023/11/29 画面揺れを横強→縦強に変更 takagi
 	・2023/11/29 プレイヤーのポインタを取得 yamashita
 	・2023/11/30 モデルの読み込みをMaya準拠からDirectX準拠に変更 yamashita
@@ -37,11 +37,13 @@
 	・2023/12/07 ゲームパラメータから一部定数移動 takagi
 	・2023/12/08 被討伐数のカウンタを追加 takagi
 	・2023/12/15 SEまわりを整理 yamashita
-	・2023/12/15 ボス1のモデルを修正 Sawada
+	・2023/12/15 ボス1のモデルを修正 sawada
 	・2023/12/20 UNION追加 takagi
-	・2023/12/28 スライム討伐配列番号追加 Sawada
+	・2023/12/28 スライム討伐配列番号追加 sawada
 	・2024/01/01 スライム生成数の代わりを訂正 takagi
 	・2024/01/03 UnionSlime関数に移動速度と角度の引数を追加 nieda
+	・2024/01/20 リファクタリング takagi
+	・2024/01/21 コメント改修 takagi
 
 =========================================== */
 
@@ -240,7 +242,8 @@ void CSlimeManager::Update(CExplosionManager* pExpMng)
 	for (int i = 0; i <MAX_SLIME_NUM; i++)
 	{
 		if (m_pSlime[i] == nullptr) continue;
-		m_pSlime[i]->Update(m_pPlayer->GetTransform(), m_pTimer->GetSlimeMoveSpeed());
+		m_pSlime[i]->SetPlPos(&m_pPlayer->GetTransform());
+		m_pSlime[i]->Update();
 
 	}
 
@@ -250,7 +253,8 @@ void CSlimeManager::Update(CExplosionManager* pExpMng)
 	for (int i = 0; i < MAX_BOSS_SLIME_NUM; i++)
 	{
 		if (m_pBoss[i] == nullptr) continue;
-		m_pBoss[i]->Update(m_pPlayer->GetTransform());
+		m_pBoss[i]->SetPlPos(&m_pPlayer->GetTransform());
+		m_pBoss[i]->Update();
 	}
 
 	//---敵生成---
@@ -284,14 +288,14 @@ void CSlimeManager::Draw()
 	for (int i = 0; i <MAX_SLIME_NUM; i++)
 	{
 		if (m_pSlime[i] == nullptr) continue;
-		m_pSlime[i]->Draw(m_pCamera);
+		m_pSlime[i]->Draw();
 	}
 				
 	// ボススライム更新
 	for (int i = 0; i < MAX_BOSS_SLIME_NUM; i++)
 	{
 		if (m_pBoss[i] == nullptr) continue;
-		m_pBoss[i]->Draw(m_pCamera);
+		m_pBoss[i]->Draw();
 
 	}
 
@@ -728,10 +732,10 @@ void CSlimeManager::UnionSlime(E_SLIME_LEVEL level ,TPos3d<float> pos, float spe
 		if (m_pSlime[i])	//ヌルチェック
 		{
 			pos.y += m_pSlime[i]->GetScale().y * UINION_TEXT_POS_Y_ADJUST;	//頭上位置	TODO:モデル読み込みサイズを直した後にコメントを戻す
-		}
-		if (m_pUnionMng)	//ヌルチェック
-		{
-			m_pUnionMng->MakeUnion(typeid(*m_pSlime[i]).hash_code(), pos);	//UNION生成
+			if (m_pUnionMng)	//ヌルチェック
+			{
+				m_pUnionMng->MakeUnion(typeid(*m_pSlime[i]).hash_code(), pos);	//UNION生成
+			}
 		}
 
 		m_pSlime[i]->SetCamera(m_pCamera);	//カメラをセット

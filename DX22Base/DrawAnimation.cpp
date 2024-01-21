@@ -1,12 +1,11 @@
 /* ========================================
 	HEW/UniBoooom!!
 	---------------------------------------
-	UIアニメーション描画用cpp
+	UIアニメーション描画用ソース
 	---------------------------------------
-	DrawAnimation.h
-
-	作成者
-			nieda
+	DrawAnimation.cpp
+	---------------------------------------
+	作成者	nieda
 
 	変更履歴
 	・2023/12/08 新規作成 nieda
@@ -18,12 +17,13 @@
 	・2023/12/16 コンストラクタの引数を最小化・不要なポインタ削除 takagi
 	・2023/12/17 一部引数参照化 takagi
 	・2023/12/18 最初に分割前の画像が表示される不具合を修正 nieda
+	・2024/01/20 リファクタリング takagi
+	・2024/01/21 コメント改修 takagi
 
 ========================================== */
 
 // =============== インクルード ===================
 #include "DrawAnimation.h"	// 自身のヘッダ
-
 
 /* ========================================
 	コンストラクタ
@@ -68,26 +68,26 @@ void CDrawAnim::Update()
 {
 	if (m_bAnim)
 	{
-		m_nFrameCnt++;	// 描画切り替え用カウントを1進める
+		m_nFrameCnt++;	//描画切り替え用カウントを1進める
 
-		if (m_nFrameCnt > m_nSwitchCnt)		// 一定時間経過したら描画を更新する
+		if (m_nFrameCnt > m_nSwitchCnt)	//一定時間経過したら描画を更新する
 		{
-			m_nFrameCnt = 0;	// カウントをリセット
-			m_fUvPos.x = (m_fUvScale.x) * (m_nNumAnim % m_nSplitNum.x);	// 描画するUV座標を計算
-			m_fUvPos.y = (m_fUvScale.y) * (m_nNumAnim / m_nSplitNum.x);	// 描画するUV座標を計算
+			m_nFrameCnt = 0;											//カウントをリセット
+			m_fUvPos.x = (m_fUvScale.x) * (m_nNumAnim % m_nSplitNum.x);	//描画するUV座標を計算
+			m_fUvPos.y = (m_fUvScale.y) * (m_nNumAnim / m_nSplitNum.x);	//描画するUV座標を計算
 
-			m_nNumAnim++;			// 描画するアニメーション番号を更新
-			SetUvOffset(m_fUvPos);	// UV座標をセット
-			SetUvScale(m_fUvScale);	// UV分割サイズをセット
+			m_nNumAnim++;			//描画するアニメーション番号を更新
+			SetUvOffset(m_fUvPos);	//UV座標をセット
+			SetUvScale(m_fUvScale);	//UV分割サイズをセット
 		}
 
-		if (m_nNumAnim == m_nNumAnimMax)		// 最下段の描画が終わったら
+		if (m_nNumAnim == m_nNumAnimMax)	//最下段の描画が終わったら
 		{
-			m_nNumAnim = 0;		// カウントをリセット
+			m_nNumAnim = 0;	//カウントをリセット
 
-			if (!m_bLoop)	// ループ再生フラグがOFFなら
+			if (!m_bLoop)	//ループ再生フラグがOFFなら
 			{
-				m_bAnim = false;		// 表示フラグをOFF
+				m_bAnim = false;		//表示フラグをOFF
 			}
 		}
 	}
@@ -102,11 +102,11 @@ void CDrawAnim::Update()
 	-------------------------------------
 	戻値：なし
 =========================================== */
-void CDrawAnim::Draw(const E_DRAW_MODE& eMode)
+void CDrawAnim::Draw()
 {
-	if (m_bAnim)	// 描画フラグがONの間は描画する
+	if (m_bAnim)	//描画フラグがONの間は描画する
 	{
-		C2dPolygon::Draw(eMode);		// 描画
+		C2dObject::Draw();	//描画
 	}
 }
 
@@ -121,7 +121,7 @@ void CDrawAnim::Draw(const E_DRAW_MODE& eMode)
 =========================================== */
 void CDrawAnim::SetLoopFlg(bool bLoop)
 {
-	m_bLoop = bLoop;	// フラグをセット
+	m_bLoop = bLoop;	//フラグをセット
 }
 
 /* ========================================

@@ -4,7 +4,7 @@
 	シーン用抽象クラス実装
 	---------------------------------------
 	Scene.cpp
-
+	---------------------------------------
 	作成者
 			takagi
 			nieda
@@ -20,14 +20,17 @@
 	・2023/12/07 ビュー行列取得にカメラ使用 takagi
 	・2023/12/08 カメラがない時にUIが表示できない問題を修正
 	・2023/12/14 BGMの管理をSceneManagerに移動 yamashita
+	・2024/01/19 GetType()関数削除・その他リファクタリング takagi
+	・2024/01/20 細かな修正 takagi
+	・2024/01/21 コメント改修 takagi
 
 ========================================== */
 
 // =============== インクルード ===================
-#include "Scene.h"	//自身のヘッダ
-#include "Sprite.h"
-#include "GameParameter.h"
-
+#include "Scene.h"		//自身のヘッダ
+#include "Delete.h"		//削除マクロ
+#include <vector>		//配列コンテナ
+#include <algorithm>	//ソート用
 
 /* ========================================
 	コンストラクタ
@@ -39,9 +42,8 @@
 	戻値：なし
 =========================================== */
 CScene::CScene()
-	: m_bFinish(false)	//シーン開始
-	, m_pCamera(nullptr)	//カメラ
-	, m_pFade(nullptr)
+	:m_bFinish(false)	//シーン開始
+	,m_pCamera(nullptr)	//カメラ
 {
 }
 
@@ -56,7 +58,10 @@ CScene::CScene()
 =========================================== */
 CScene::~CScene()
 {
-	SAFE_DELETE(m_pCamera);
+	// =============== 終了 =====================
+	SAFE_DELETE(m_pCamera);				//カメラ削除
+	SAFE_DELETE_POINTER_MAP(m_p3dObject);	//オブジェクト削除
+	SAFE_DELETE_POINTER_MAP(m_p2dObject);	//オブジェクト削除
 }
 
 /* ========================================
@@ -70,6 +75,19 @@ CScene::~CScene()
 =========================================== */
 void CScene::Update()
 {
+	// =============== 更新 =====================
+	for_each(m_p3dObject.begin(), m_p3dObject.end(), [](std::pair<int, CObject*> pObject)->void {
+		if (pObject.second)	//ヌルチェック
+		{
+			pObject.second->Update();	//オブジェクト更新
+		}
+	});	//非ヌル時更新
+	for_each(m_p2dObject.begin(), m_p2dObject.end(), [](std::pair<int, CObject*> pObject)->void {
+		if (pObject.second)	//ヌルチェック
+		{
+			pObject.second->Update();	//オブジェクト更新
+		}
+	});	//非ヌル時更新
 }
 
 /* ========================================
@@ -81,9 +99,38 @@ void CScene::Update()
 	----------------------------------------
 	戻値：なし
 =========================================== */
-//!memo(見たら消してー)：constが邪魔になったら外してね(.hの方も)
 void CScene::Draw()
 {
+	// =============== 変数宣言 =====================
+	std::vector<CObject*> Subject;	//被写体
+
+	// =============== 初期化 =====================
+	for_each(m_p3dObject.begin(), m_p3dObject.end(), [&Subject](std::pair<int, CObject*> pObject)->void {
+		if (pObject.second)	//ヌルチェック
+		{
+			Subject.emplace_back(pObject.second);	//オブジェクト追加
+		}
+	});	//被写体3Dオブジェクトアドレスコピー
+	for_each(m_p2dObject.begin(), m_p2dObject.end(), [&Subject](std::pair<int, CObject*> pObject)->void {
+		if (pObject.second)	//ヌルチェック
+		{
+			Subject.emplace_back(pObject.second);	//オブジェクト追加
+		}
+	});	//被写体2Dオブジェクトアドレスコピー
+	// =============== Zソート =====================
+	std::sort(Subject.begin(), Subject.end(), [](CObject* pFirst, CObject* pSecond)->bool {
+		return pFirst && pSecond					//ヌルチェック
+			? pFirst->GetPosZ() < pFirst->GetPosZ()	//Z座標で比較(等価の場合は入れ替えない)
+			: false;								//片方はnullなので比較する必要がない
+	});	//オブジェクトのソート
+
+	// =============== 描画 =====================
+	for_each(Subject.begin(), Subject.end(), [](CObject* pObject)->void {
+		if (pObject)	//ヌルチェック
+		{
+			pObject->Draw();	//描画
+		}
+	});	//ソート順に描画
 }
 
 /* ========================================
@@ -102,54 +149,6 @@ bool CScene::IsFin() const
 }
 
 /* ========================================
-	2D描画関数
-	-------------------------------------
-	内容：テクスチャの描画処理
-	-------------------------------------
-	引数1：表示位置のX座標
-	-------------------------------------
-	引数2：表示位置のY座標
-	-------------------------------------
-	引数3：表示するテクスチャの縦幅
-	-------------------------------------
-	引数4：表示するテクスチャの横幅
-	-------------------------------------
-	引数5：表示するテクスチャのポインタ
-	-------------------------------------
-	戻値：なし
-========================================== = */
-void CScene::Draw2d(float posX, float posY, float h, float w, Texture* pTexture)
-{
-	DirectX::XMFLOAT4X4 mat[3];
-
-	// ワールド行列はXとYのみを考慮して作成
-	DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(posX, posY, 0.0f);	// ワールド行列（必要に応じて変数を増やしたり、複数処理を記述したりする）
-	DirectX::XMStoreFloat4x4(&mat[0], DirectX::XMMatrixTranspose(world));
-
-	// ビュー行列は2Dだとカメラの位置があまり関係ないので、単位行列を設定する
-	DirectX::XMStoreFloat4x4(&mat[1], DirectX::XMMatrixIdentity());
-
-	// スプライトの設定
-	Sprite::SetWorld(mat[0]);
-	Sprite::SetView(mat[1]);
-	if (m_pCamera)	//ヌルチェック
-	{
-		Sprite::SetProjection(m_pCamera->GetProjectionMatrix(CCamera::E_DRAW_TYPE_2D));	// 平行投影行列を設定
-		Sprite::SetSize(DirectX::XMFLOAT2(h, w));
-	}
-	else
-	{
-		DirectX::XMStoreFloat4x4(&mat[2], DirectX::XMMatrixTranspose(DirectX::XMMatrixOrthographicOffCenterLH(0.0f, 1280.0f, 720.0f, 0.0f, 0.1f, 10.0f)));
-		Sprite::SetProjection(mat[2]);	// 平行投影行列を設定
-		Sprite::SetSize(DirectX::XMFLOAT2(h, -w));
-	}
-	Sprite::SetUVScale(DirectX::XMFLOAT2(1.0f, 1.0f));
-	Sprite::SetUVPos(DirectX::XMFLOAT2(0.0f, 0.0f));
-	Sprite::SetTexture(pTexture);
-	Sprite::Draw();
-}
-
-/* ========================================
    カメラポインタ取得関数
    -------------------------------------
    内容：カメラクラスのポインタ取得
@@ -158,7 +157,8 @@ void CScene::Draw2d(float posX, float posY, float h, float w, Texture* pTexture)
    -------------------------------------
    戻値：無し
 =========================================== */
-CCamera* CScene::GetCamera()
+CCamera* CScene::GetCamera() const
 {
-	return m_pCamera;
+	// =============== 提供 =====================
+	return m_pCamera;	//カメラ提供
 }

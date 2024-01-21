@@ -13,10 +13,11 @@
 	・2023/11/09 コメント揃え takagi
 	・2023/11/17 １つの値だけのコンストラクタを実装 takagi
 	・2024/01/16 統一のため、インクルードガードの___を__に変更	takagi
+	・2024/01/21 コメント改修 takagi
 
 ========================================== */
 
-#ifndef __DI_TYPE_H__
+#ifndef __DI_TYPE_H__	//DiType.hインクルードガード
 #define __DI_TYPE_H__
 
 // =============== インクルード ===================
@@ -361,47 +362,4 @@ TDiType<DiType> & TDiType<DiType>::operator^=(const double & dIndex)
 	return (*this = *this ^ dIndex);	//実装済演算子を使用して処理を行い、自身の参照を返す
 }
 
-#endif // !__DI_TYPE_H__
-
-
-
-
-//--- ここから下は試運転(cppにかかないと動かないので、試したい場合このヘッダをallコピーしてcppに貼り付けてください) ---//
-	//！： 既存のmain関数がある場合は別プロジェクトで試すか、一時的にコメントアウトしてください。
-//#include <iostream>
-//#include <string>
-//
-//int main()
-//{
-//	TDiType<int> a;
-//	std::cout << std::to_string(a.x) << "," << std::to_string(a.y) << std::endl;	//0,0のハズ
-//
-//	a = TDiType<int>(1, 1);
-//	std::cout << std::to_string(a.x) << "," << std::to_string(a.y) << std::endl;
-//
-//	a = { 2, 2 };
-//	std::cout << std::to_string(a.x) << "," << std::to_string(a.y) << std::endl;
-//
-//	a.x = 3;
-//	a.y = 3;
-//	std::cout << std::to_string(a.x) << "," << std::to_string(a.y) << std::endl;
-//
-//	TDiType<int> b(4, 4);
-//	std::cout << std::to_string(b.x) << "," << std::to_string(b.y) << std::endl;
-//
-//	a + b;
-//	std::cout << std::to_string(a.x) << "," << std::to_string(a.y) << std::endl;	//3,3のハズ
-//	std::cout << std::to_string(b.x) << "," << std::to_string(b.y) << std::endl;	//4,4のハズ
-//
-//	a = b;
-//	std::cout << std::to_string(a.x) << "," << std::to_string(a.y) << std::endl;	//4,4のハズ
-//	std::cout << std::to_string(b.x) << "," << std::to_string(b.y) << std::endl;	//4,4のハズ
-//
-//	a += b;
-//	std::cout << std::to_string(a.x) << "," << std::to_string(a.y) << std::endl;	//8,8のハズ
-//	std::cout << std::to_string(b.x) << "," << std::to_string(b.y) << std::endl;	//4,4のハズ
-//	std::cin.get();
-//
-//
-//	return 0;
-//}
+#endif	//!__DI_TYPE_H__
