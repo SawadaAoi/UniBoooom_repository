@@ -26,6 +26,7 @@
 	・2023/12/04 GetViewWithoutTranspose,GetProjectionWithoutTransposeの戻り値を変更 yamashita
 	・2023/12/06 ゲームパラメータ対応 takagi
 	・2023/12/07 ゲームパラメータから定数移動・不要物除去 takagi
+	・2024/01/21 リファクタリング takagi
 
 ========================================== */
 
@@ -259,26 +260,26 @@ DirectX::XMMATRIX CCamera::GetInverseViewMatrix() const
 DirectX::XMFLOAT4X4 CCamera::GetProjectionMatrix(const E_DRAW_TYPE& eDraw) const
 {
 	// =============== 変数宣言 ===================
-	DirectX::XMFLOAT4X4 mat;	//行列格納用
+	DirectX::XMFLOAT4X4 Mat;	//行列格納用
 
 	// =============== プロジェクション行列の計算 ===================
 	switch (eDraw)	//投影選択
 	{
 		// =============== 2D表示 ===================
 	case E_DRAW_TYPE_2D:	//2Dのプロジェクション座標作成
-		DirectX::XMStoreFloat4x4(&mat, DirectX::XMMatrixTranspose(
+		DirectX::XMStoreFloat4x4(&Mat, DirectX::XMMatrixTranspose(
 			DirectX::XMMatrixOrthographicOffCenterLH(0.0f, SCREEN_WIDTH, 0.0f, SCREEN_HEIGHT, m_fNear, m_fFar)));	//左下を原点(0,0)とした座標系
 		break;	//分岐処理終了
 
-	// =============== 3D表示 ===================
+		// =============== 3D表示 ===================
 	case E_DRAW_TYPE_3D:	//3Dのプロジェクション座標作成
-		DirectX::XMStoreFloat4x4(&mat, DirectX::XMMatrixTranspose(
+		DirectX::XMStoreFloat4x4(&Mat, DirectX::XMMatrixTranspose(
 			DirectX::XMMatrixPerspectiveFovLH(m_fAngle, ASPECT, m_fNear, m_fFar)));	//3Dプロジェクション変換
 		break;	//分岐処理終了
 	}
 
 	// =============== 提供 ===================
-	return mat;	//行列提供
+	return Mat;	//行列提供
 }
 
 /* ========================================
@@ -292,13 +293,18 @@ DirectX::XMFLOAT4X4 CCamera::GetProjectionMatrix(const E_DRAW_TYPE& eDraw) const
 =========================================== */
 DirectX::XMFLOAT4X4 CCamera::GetViewWithoutTranspose() const
 {
-	DirectX::XMFLOAT4X4 view;
-	DirectX::XMStoreFloat4x4(&view, DirectX::XMMatrixLookAtLH(
+	// =============== 変数宣言 ===================
+	DirectX::XMFLOAT4X4 View;	//行列格納用
+
+	// =============== ビュー行列の計算 ===================
+	DirectX::XMStoreFloat4x4(&View, DirectX::XMMatrixLookAtLH(
 		DirectX::XMVectorSet(m_fPos.x, m_fPos.y, m_fPos.z, 0.0f),		//カメラ位置
 		DirectX::XMVectorSet(m_fLook.x, m_fLook.y, m_fLook.z, 0.0f),	//注視点
-		DirectX::XMVectorSet(m_fUp.x, m_fUp.y, m_fUp.z, 0.0f)));			//アップベクトル
+		DirectX::XMVectorSet(m_fUp.x, m_fUp.y, m_fUp.z, 0.0f)		//アップベクトル
+	));//行列初期化
+
 	// =============== 提供 ===================
-	return view;	//ビュー座標系
+	return View;	//ビュー座標系
 }
 
 /* ========================================
@@ -312,12 +318,15 @@ DirectX::XMFLOAT4X4 CCamera::GetViewWithoutTranspose() const
 =========================================== */
 DirectX::XMFLOAT4X4 CCamera::GetProjectionWithoutTranspose() const
 {
-	DirectX::XMFLOAT4X4 projection;
-	DirectX::XMStoreFloat4x4(&projection, DirectX::XMMatrixPerspectiveFovLH(m_fAngle, ASPECT, m_fNear, m_fFar));
-	// =============== 提供 ===================
-	return projection;
-}
+	// =============== 変数宣言 ===================
+	DirectX::XMFLOAT4X4 Projection;	//行列格納用
 
+	// =============== プロジェクション行列の計算 ===================
+	DirectX::XMStoreFloat4x4(&Projection, DirectX::XMMatrixPerspectiveFovLH(m_fAngle, ASPECT, m_fNear, m_fFar));	//行列初期化
+
+	// =============== 提供 ===================
+	return Projection;	//プロジェクション座標系
+}
 
 /* ========================================
 	位置ゲッタ関数

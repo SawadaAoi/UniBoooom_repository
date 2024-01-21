@@ -76,6 +76,10 @@ CScene::~CScene()
 void CScene::Update()
 {
 	// =============== 更新 =====================
+	if (m_pCamera)	//ヌルチェック
+	{
+		m_pCamera->Update();	//カメラ更新
+	}
 	for_each(m_p3dObject.begin(), m_p3dObject.end(), [](std::pair<int, CObject*> pObject)->void {
 		if (pObject.second)	//ヌルチェック
 		{

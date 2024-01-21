@@ -66,7 +66,8 @@ CStage::CStage()
 	m_pHealItemMng = new CHealItemManager();			// 回復アイテムマネージャー生成
 
 	//================System動的確保================
-	m_pCamera = new CCameraChase(m_pPlayer->GetPosAddress());	//カメラ生成
+	m_pCamera = new CCameraChase();													//カメラ生成
+	static_cast<CCameraChase*>(m_pCamera)->SetTarget(m_pPlayer->GetPosAddress());	//注視点登録
 
 	//================2dObject動的確保================
 	m_pUIStageManager = new CUIStageManager(m_pPlayer, m_pCamera, m_pSlimeMng, CUIStageManager::E_STAGE_1);	// UIマネージャー生成

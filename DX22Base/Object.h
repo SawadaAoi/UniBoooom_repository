@@ -9,7 +9,7 @@
 
 	変更履歴
 	・2024/01/18 作成 takagi
-	・2024/01/21 コメント改修・継承先で関数定義しないでほしい関数にfinal付与 takagi
+	・2024/01/21 コメント改修・リファクタリング・汎化作業 takagi
 
 ========================================== */
 
@@ -18,6 +18,7 @@
 
 // =============== インクルード ===================
 #include "Transform3d.h"	//メンバのヘッダ
+#include "Camera.h"			//メンバのヘッダ
 
 // =============== クラス定義 =====================
 class CObject
@@ -40,9 +41,13 @@ public:
 	virtual void SetSize(const TTriType<float>& fScale) final;			//大きさセッタ
 	virtual void SetRotate(const TTriType<float>& fRotate) final;		//回転セッタ
 	virtual void SetTransform(const tagTransform3d& Transform) final;	//ワールド座標セッタ
+	virtual void SetCamera(const CCamera* pCamera) final;				//カメラセッタ
 protected:
 	// ===メンバ変数宣言=====
-	tagTransform3d m_Transform;	//ワールド座標
+	tagTransform3d m_Transform;				//ワールド座標
+	static int ms_nCntObject;				//自身の生成数
+	const CCamera* m_pCamera;				//カメラ追跡
+	static const CCamera* ms_pCameraDef;	//疑似カメラ
 };	//オブジェクト
 
 #endif	//!__OBJECT_H__

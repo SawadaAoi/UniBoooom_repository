@@ -24,7 +24,7 @@
 	・2023/12/04 爆発のエフェクトを実装 yamashita
 	・2023/12/04 爆発の仮表示3Dモデルを削除 yamashita
 	・2024/01/20 リファクタリング takagi
-	・2024/01/21 コメント改修 takagi
+	・2024/01/21 コメント改修・汎化作業 takagi
 
 ======================================== */
 
@@ -53,9 +53,6 @@ public:
 	void DisplayTimeAdd();										// 爆発表示カウント加算処理関数
 	void Delay();
 	void BossTouched();											//ボスに触ったときに呼び出す関数
-
-	// セット関数
-	void SetCamera(const CCamera* m_pCamera);	// 他のオブジェクトと同一のカメラをセット
 
 	// ゲット関数
 	bool GetDelFlg();				// 削除フラグ取得処理関数

@@ -9,11 +9,18 @@
 
 	変更履歴
 	・2024/01/18 作成 takagi
+	・2024/01/21 リファクタリング・汎化作業 takagi
 
 ========================================== */
 
 // =============== インクルード ===================
-#include "Object.h"	//自身のヘッダ
+#include "Object.h"		//自身のヘッダ
+#include "Delete.h"		//削除マクロ
+#include "CameraDef.h"	//インスタンス候補
+
+// =============== グローバル変数宣言 =====================
+int CObject::ms_nCntObject;				//自身の生成数
+const CCamera* CObject::ms_pCameraDef;	//疑似カメラ
 
 /* ========================================
 	コンストラクタ関数
@@ -26,7 +33,20 @@
 =========================================== */
 CObject::CObject()
 	:m_Transform(INIT_POS, INIT_SCALE, INIT_RADIAN)	//ワールド座標
+	,m_pCamera(nullptr)								//カメラ
 {
+	// =============== 静的作成 ===================
+	if (0 == ms_nCntObject)	//現在、他にこのクラスが作成されていない時
+	{
+		// =============== 疑似カメラ作成 ===================
+		ms_pCameraDef = new CCameraDef();	//デフォルトのカメラ
+	}
+
+	// =============== 初期化 ===================
+	SetCamera(nullptr);	//カメラ初期化
+
+	// =============== カウンタ ===================
+	ms_nCntObject++;	//自身の数カウント
 }
 
 /* ========================================
@@ -41,6 +61,18 @@ CObject::CObject()
 CObject::CObject(const CObject & Obj)
 	:m_Transform(Obj.m_Transform)	//ワールド座標
 {
+	// =============== カウンタ ===================
+	ms_nCntObject--;			//自身の数カウント
+
+	// =============== 解放 ===================
+	if (0 == ms_nCntObject)	//静的確保物を解放するか
+	{
+		//SAFE_DELETE(ms_pVtx);		//頂点情報解放
+		//SAFE_DELETE(ms_pIdx);		//頂点インデックス解放
+		//SAFE_DELETE(ms_pVtxBuffer);	//頂点バッファ解放
+		//SAFE_DELETE(ms_pIdxBuffer);	//インデックスバッファ解放
+		SAFE_DELETE(ms_pCameraDef);		//疑似カメラ削除
+	}
 }
 
 /* ========================================
@@ -144,4 +176,33 @@ void CObject::SetTransform(const tagTransform3d & Transform)
 {
 	// =============== 格納 ===================
 	m_Transform = Transform;	//ワールド行列格納
+}
+
+/* ========================================
+	カメラセッタ関数
+	-------------------------------------
+	内容：カメラ登録
+	-------------------------------------
+	引数1：const CCamera* pCamera：自身を映すカメラ
+	-------------------------------------
+	戻値：なし
+=========================================== */
+void CObject::SetCamera(const CCamera* pCamera)
+{
+	// =============== 変数宣言 ===================
+	int nCnt = 0;				//ループカウント用
+	const CCamera* pCameraUse;	//カメラアドレス退避用
+
+	// =============== 初期化 ===================
+	if (pCamera)	//ヌルチェック
+	{
+		pCameraUse = pCamera;		//新規カメラ登録
+	}
+	else
+	{
+		pCameraUse = ms_pCameraDef;	//カメラ代用
+	}
+
+	// =============== カメラ登録 ===================
+	m_pCamera = pCameraUse;	//カメラ登録
 }

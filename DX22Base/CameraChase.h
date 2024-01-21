@@ -17,7 +17,7 @@
 	・2023/12/04 GetViewWithoutTransposeの戻り値を変更 yamashita
 	・2024/01/16 統一のため、インクルードガードの___を__に変更	takagi
 	・2024/01/20 コメント改修 takagi
-	・2024/01/21 コメント改修 takagi
+	・2024/01/21 コメント改修・Player内で更新しなくても良い様に変更・リファクタリング takagi
 
 ========================================== */
 
@@ -32,15 +32,15 @@ class CCameraChase :public CCamera	//カメラ
 {
 public:
 	// ===プロトタイプ宣言===
-	CCameraChase(const TPos3d<float>* pPos);						//コンストラクタ
+	CCameraChase();													//コンストラクタ
 	~CCameraChase();												//デストラクタ
-	void Update();													//更新
+	void Update() override;											//更新
 	DirectX::XMFLOAT4X4 GetViewWithoutTranspose() const override;	//転置無しビュー行列取得
+	virtual TPos3d<float> GetPos() const override;					//カメラ位置提供
+	void SetTarget(const TPos3d<float>* pPos);						//追跡対象登録
 private:
 	// ===メンバ変数宣言===
 	const TPos3d<float>* m_pTarget;	//追跡目標
-	// ===プロトタイプ宣言===
-	void UpdatePos();	//位置更新
 };	//追跡カメラ
 
 #endif	//!__CAMERA_CHASE_H__

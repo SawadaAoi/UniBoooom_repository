@@ -15,7 +15,7 @@
 	・2023/12/07 ゲームパラメータから一部定数移動 takagi
 	・2023/12/15 ステージ別に床のモデルを設定できるように修正 sawada
 	・2023/12/15 コンストラクタの引数にステージ番号を追加 yamashita
-	・2024/01/21 コメント改修・MessageBox改善 takagi
+	・2024/01/21 コメント改修・MessageBox改善・汎化作業 takagi
 
 ========================================== */
 #include "Floor.h"
@@ -44,7 +44,6 @@ const float STAGE1_FLOOR_SCALE_Z = 1.1f;
 CFloor::CFloor(TPos3d<float>* pPlayerPos, StageKinds stageKind)
 	:m_pModel(nullptr)
 	,m_pVS(nullptr)
-	,m_pCamera(nullptr)
 	,m_pPlayerFloor{0,0,0}
 	,m_pPlayePos(pPlayerPos)
 	,m_stage(stageKind)
@@ -202,20 +201,6 @@ void CFloor::calculationPosition()
 
 		m_Transform[i].fPos = { pos.x, -0.1f, pos.z };	//座標を確定
 	}
-}
-
-/* ========================================
-   カメラセット関数
-   ----------------------------------------
-   内容：他のオブジェクトと同じカメラをセットする
-   ----------------------------------------
-   引数：カメラのポインタ
-   ----------------------------------------
-   戻値：なし
-======================================== */
-void CFloor::SetCamera(const CCamera * pCamera)
-{
-	m_pCamera = pCamera;
 }
 
 /* ========================================

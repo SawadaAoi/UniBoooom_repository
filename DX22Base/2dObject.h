@@ -21,7 +21,7 @@
 	・2024/01/16 リネーム・継承・不要箇所削除 takagi
 	・2024/01/18 リファクタリング及びコメント追加 takagi
 	・2024/01/20 GetPos()関数追加 takagi
-	・2024/01/21 コメント改修・定数修正 takagi
+	・2024/01/21 コメント改修・定数修正・汎化作業 takagi
 
 ========================================== */
 
@@ -32,7 +32,6 @@
 #include "Object.h"		//親のヘッダ
 #include "Shader.h"		//メンバのヘッダ
 #include "Texture.h"	//メンバのヘッダ
-#include "Camera.h"		//メンバのヘッダ
 
 // =============== クラス定義 =====================
 class C2dObject	:public CObject	//オブジェクト継承
@@ -84,7 +83,6 @@ public:
 	virtual void Update();															//更新
 	virtual void Draw();															//描画
 	virtual void SetDrawMode(const E_DRAW_MODE& eMode = DEFAULT_DRAW_MODE) final;	//描画法セッタ
-	virtual void SetCamera(const CCamera* pCamera) final;							//カメラセッタ
 	virtual void SetUvOffset(const TDiType<float>& fUvOffset) final;				//UVずれセッタ
 	virtual void SetUvScale(const TDiType<float>& fUvScale) final;					//UV拡縮セッタ
 	virtual void SetColor(const TTriType<float>& fRGB, const float& fAlpha) final;	//色セッタRGBA
@@ -115,8 +113,6 @@ private:
 	static unsigned int ms_unIdxCount;				//インデックス数
 	static ID3D11Buffer* ms_pVtxBuffer;				//頂点バッファ
 	static ID3D11Buffer* ms_pIdxBuffer;				//インデックスバッファ
-	const CCamera* m_pCamera;						//カメラ追跡
-	static const CCamera* ms_pCameraDef;			//疑似カメラ
 	// ===プロトタイプ宣言===
 	void MakeVertexShader();		//頂点シェーダ作成
 	void MakePixelShader();			//ピクセルシェーダー

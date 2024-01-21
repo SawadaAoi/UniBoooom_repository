@@ -38,7 +38,7 @@
 	・2023/12/04 列挙にヒールスライムを追加 tei
 	・2023/12/07 ゲームパラメータから一部定数移動 takagi
 	・2024/01/20 リファクタリング takagi
-	・2024/01/21 コメント改修 takagi
+	・2024/01/21 コメント改修・汎化作業 takagi
 
 ========================================== */
 
@@ -51,7 +51,6 @@
 #include "SphereInfo.h"
 #include "Transform3d.h"
 #include "Pos3d.h"
-#include "Camera.h"
 #include "GameParameter.h"		//定数定義用ヘッダー
 #include "3dObject.h"
 #include "Shadow.h"		// 影表示用ヘッダ
@@ -117,7 +116,6 @@ public:
 
 	//セット関数
 	virtual void SetNormalSpeed() = 0;
-	void SetCamera(const CCamera* pCamera);
 	void SetExplosionPos(TPos3d<float> expPos);
 	void SetEscapeFlag(bool bEscape);
 	void SetPlPos(const tagTransform3d* plpos);
@@ -134,7 +132,6 @@ protected:
 	int m_nEscapeCnt;				//逃げる状態になった時
 
 	E_SLIME_LEVEL m_eSlimeSize;		//スライムの大きさの列挙
-	const CCamera* m_pCamera;		//カメラのポインタ
 
 	CShadow* m_pShadow;				//影のポインタ
 	float m_fScaleShadow;			//影の大きさ

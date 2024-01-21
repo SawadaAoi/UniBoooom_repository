@@ -20,7 +20,7 @@
 	・2023/11/29 Intervalの変数、関数追加　yamamoto
 	・2023/12/01 IntervalをSwingSpeedに変更　yamamoto
 	・2024/01/20 リファクタリング takagi
-	・2024/01/21 コメント改修 takagi
+	・2024/01/21 コメント改修・汎化作業 takagi
 
 ========================================== */
 
@@ -60,7 +60,6 @@ public:
 	void SwingSpeedSubtract();
 	float GetInterval();
 	bool IsExist();
-	void SetCamera(const CCamera* pCamera);
 private:
 	// ===メンバ変数宣言=====
 	Model* m_pModel;			//プレイヤーのモデル

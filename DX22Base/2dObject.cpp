@@ -23,7 +23,7 @@
 	・2024/01/18 リファクタリング及びコメント追加 takagi
 	・2024/01/19 switch文break抜け修正 takagi
 	・2024/01/20 GetPos()関数追加 takagi
-	・2024/01/21 コメント改修 takagi
+	・2024/01/21 コメント改修・汎化作業 takagi
 
 ========================================== */
 
@@ -91,7 +91,6 @@ ID3D11Buffer* C2dObject::ms_pVtxBuffer = nullptr;	//頂点バッファ
 ID3D11Buffer* C2dObject::ms_pIdxBuffer = nullptr;	//インデックスバッファ 
 VertexShader* C2dObject::ms_pDefVs;					//デフォルト頂点シェーダー
 PixelShader* C2dObject::ms_pDefPs;					//デフォルトピクセルシェーダー
-const CCamera* C2dObject::ms_pCameraDef;			//疑似カメラ
 
 /* ========================================
 	コンストラクタ関数
@@ -109,7 +108,6 @@ C2dObject::C2dObject()
 	,m_pTexture(nullptr)							//テクスチャ
 	,m_pTextureLoad(nullptr)						//テクスチャアドレス格納専用
 	,m_eMode(DEFAULT_DRAW_MODE)						//描画方法
-	,m_pCamera(nullptr)								//カメラ
 {
 	// =============== 静的作成 ===================
 	if (0 == ms_nCnt2dObject)	//現在、他にこのクラスが作成されていない時
@@ -118,17 +116,13 @@ C2dObject::C2dObject()
 		MakeVertexShader();	//頂点シェーダー作成
 		MakePixelShader();	//ピクセルシェーダー作成
 
-		// =============== 疑似カメラ作成 ===================
-		ms_pCameraDef = new CCameraDef();	//デフォルトのカメラ
-
-	// =============== 形状作成 ===================
+		// =============== 形状作成 ===================
 		Make();	//平面ポリゴン作成
 	}
 
 	// =============== 初期化 ===================
 	m_pVs = ms_pDefVs;	//頂点シェーダー初期化
 	m_pPs = ms_pDefPs;	//ピクセルシェーダー初期化
-	SetCamera(nullptr);	//カメラ初期化
 
 	// =============== 行列作成 ===================
 	m_aMatrix[E_MATRIX_WORLD] = m_Transform.GetWorldMatrixSRT();							//ワールド行列
@@ -216,7 +210,6 @@ C2dObject::~C2dObject()
 		//SAFE_DELETE(ms_pIdx);		//頂点インデックス解放
 		//SAFE_DELETE(ms_pVtxBuffer);	//頂点バッファ解放
 		//SAFE_DELETE(ms_pIdxBuffer);	//インデックスバッファ解放
-		SAFE_DELETE(ms_pCameraDef);		//疑似カメラ削除
 		SAFE_DELETE(ms_pDefVs);			//頂点シェーダー削除
 		SAFE_DELETE(ms_pDefPs);			//ピクセルシェーダー削除
 	}
@@ -363,35 +356,6 @@ void C2dObject::SetDrawMode(const E_DRAW_MODE & eMode)
 {
 	// =============== 格納 ===================
 	m_eMode = eMode;	//描画モード格納
-}
-
-/* ========================================
-	カメラセッタ関数
-	-------------------------------------
-	内容：カメラ登録
-	-------------------------------------
-	引数1：const CCamera* pCamera：自身を映すカメラ
-	-------------------------------------
-	戻値：なし
-=========================================== */
-void C2dObject::SetCamera(const CCamera* pCamera)
-{
-	// =============== 変数宣言 ===================
-	int nCnt = 0;				//ループカウント用
-	const CCamera* pCameraUse;	//カメラアドレス退避用
-
-	// =============== 初期化 ===================
-	if (pCamera)	//ヌルチェック
-	{
-		pCameraUse = pCamera;		//新規カメラ登録
-	}
-	else
-	{
-		pCameraUse = ms_pCameraDef;	//カメラ代用
-	}
-
-	// =============== カメラ登録 ===================
-	m_pCamera = pCameraUse;	//カメラ登録
 }
 
 /* ========================================
