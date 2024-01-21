@@ -11,7 +11,8 @@
 	・2023/12/07 制作 takagi
 	・2023/12/11 分秒取得追加 takagi
 	・2023/12/12 分秒取得修正 takagi
-	・2023/12/28 保存する項目を追加 Sawada
+	・2023/12/28 保存する項目を追加 sawada
+	・2024/01/21 コメント改修・MessageBox改善 takagi
 
 ========================================== */
 
@@ -131,7 +132,8 @@ void tagBattleData::Load()
 #if _DEBUG
 	else
 	{
-		MessageBox(nullptr, "ファイルが読み込めませんした", "BattleData.cpp->Error", MB_OK);	//エラー通知
+		std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+		MessageBox(nullptr, (ErrorSpot + "ファイルが読み込めませんした").c_str(), "Error", MB_OK | MB_ICONERROR);							//エラー通知
 	}
 #endif
 }

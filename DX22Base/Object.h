@@ -9,7 +9,7 @@
 
 	変更履歴
 	・2024/01/18 作成 takagi
-	・2024/01/21 コメント改修 takagi
+	・2024/01/21 コメント改修・継承先で関数定義しないでほしい関数にfinal付与 takagi
 
 ========================================== */
 
@@ -29,17 +29,17 @@ private:
 	const TTriType<float> INIT_RADIAN = 0.0f;					//初期回転
 public:
 	// ===プロトタイプ宣言===
-	CObject();													//コンストラクタ
-	CObject(const CObject& Obj);								//コピーコンストラクタ
-	virtual ~CObject();											//デストラクタ
-	virtual void Update() = 0;									//更新
-	virtual void Draw() = 0;									//描画
-	TPos3d<float> GetPos() const;								//位置ゲッタ
-	const float& GetPosZ() const;								//Z座標ゲッタ
-	virtual void SetPos(const TPos3d<float>& fPos);				//位置セッタ
-	virtual void SetSize(const TTriType<float>& fScale);		//大きさセッタ
-	virtual void SetRotate(const TTriType<float>& fRotate);		//回転セッタ
-	virtual void SetTransform(const tagTransform3d& Transform);	//ワールド座標セッタ
+	CObject();															//コンストラクタ
+	CObject(const CObject& Obj);										//コピーコンストラクタ
+	virtual ~CObject();													//デストラクタ
+	virtual void Update() = 0;											//更新
+	virtual void Draw() = 0;											//描画
+	virtual TPos3d<float> GetPos() const final;							//位置ゲッタ
+	virtual const float& GetPosZ() const final;							//Z座標ゲッタ
+	virtual void SetPos(const TPos3d<float>& fPos) final;				//位置セッタ
+	virtual void SetSize(const TTriType<float>& fScale) final;			//大きさセッタ
+	virtual void SetRotate(const TTriType<float>& fRotate) final;		//回転セッタ
+	virtual void SetTransform(const tagTransform3d& Transform) final;	//ワールド座標セッタ
 protected:
 	// ===メンバ変数宣言=====
 	tagTransform3d m_Transform;	//ワールド座標

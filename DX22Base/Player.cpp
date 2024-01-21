@@ -38,7 +38,7 @@
 	・2023/12/14 SEの変数を整理 yamashita
 	・2023/12/15 SEを外から再生できるように変更 yamashita
 	・2024/01/20 リファクタリング takagi
-	・2024/01/21 コメント改修 takagi
+	・2024/01/21 コメント改修・MessageBox改善 takagi
 
 ========================================== */
 
@@ -102,7 +102,10 @@ CPlayer::CPlayer()
 	//プレイヤーのモデル読み込み
 	m_pModel = new AnimeModel();
 	if (!m_pModel->Load("Assets/Model/player/POW.fbx", 1.0f, AnimeModel::Flip::XFlip)) {		//倍率と反転は省略可
-		MessageBox(NULL, "player", "Error", MB_OK);	//ここでエラーメッセージ表示
+#if _DEBUG
+		std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+		MessageBox(nullptr, (ErrorSpot + "player読み込み失敗").c_str(), "Error", MB_OK | MB_ICONERROR);										//エラー通知
+#endif
 	}
 	m_pModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));		//頂点シェーダーをセット
 	//m_pModel->SetPixelShader(ShaderList::GetPS(ShaderList::PS_LAMBERT));	//ピクセルシェーダーをセット
@@ -534,7 +537,10 @@ void CPlayer::LoadAnime()
 		//読み込みに失敗したらエラーメッセージ
 		if (!m_pModel->GetAnimation(m_Anime[i]))
 		{
-			MessageBox(NULL, m_sAnimeFile[i].c_str(), "Error", MB_OK);	//ここでエラーメッセージ表示
+#if _DEBUG
+			std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+			MessageBox(nullptr, (ErrorSpot + m_sAnimeFile[i]).c_str(), "Error", MB_OK | MB_ICONERROR);											//エラー通知
+#endif
 		}
 	}
 }
@@ -627,7 +633,10 @@ void CPlayer::LoadSound()
 		m_pSE[i] = CSound::LoadSound(m_sSEFile[i].c_str());
 		if (!m_pSE[i])
 		{
-			MessageBox(NULL, m_sSEFile[i].c_str(), "Error", MB_OK);	//ここでエラーメッセージ表示
+#if _DEBUG
+			std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+			MessageBox(nullptr, (ErrorSpot + m_sSEFile[i][i]).c_str(), "Error", MB_OK | MB_ICONERROR);											//エラー通知
+#endif
 		}
 	}
 }

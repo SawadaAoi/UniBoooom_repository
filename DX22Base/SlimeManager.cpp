@@ -43,7 +43,7 @@
 	・2024/01/01 スライム生成数の代わりを訂正 takagi
 	・2024/01/03 UnionSlime関数に移動速度と角度の引数を追加 nieda
 	・2024/01/20 リファクタリング takagi
-	・2024/01/21 コメント改修 takagi
+	・2024/01/21 コメント改修・MessageBox改善 takagi
 
 =========================================== */
 
@@ -1146,48 +1146,72 @@ void CSlimeManager::LoadModel()
 	//頂点シェーダ読み込み
 	m_pVS = new VertexShader();
 	if (FAILED(m_pVS->Load("Assets/Shader/VS_Model.cso"))) {
-		MessageBox(nullptr, "VS_Model.cso", "Error", MB_OK);
+#if _DEBUG
+		std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+		MessageBox(nullptr, (ErrorSpot + "VS_Model.cso読み込み失敗").c_str(), "Error", MB_OK | MB_ICONERROR);								//エラー通知
+#endif
 	}
 	//レベル1スライムのモデル読み込み
 	m_pBlueModel = new Model;
 	if (!m_pBlueModel->Load("Assets/Model/slime/slime_blue1.28.FBX", 0.15f, Model::ZFlip)) {		//倍率と反転は省略可
-		MessageBox(NULL, "slime_blue", "Error", MB_OK);	//ここでエラーメッセージ表示
+#if _DEBUG
+		std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+		MessageBox(nullptr, (ErrorSpot + "slime_blue読み込み失敗").c_str(), "Error", MB_OK | MB_ICONERROR);									//エラー通知
+#endif
 	}
 	m_pBlueModel->SetVertexShader(m_pVS);
 	//レベル2スライムのモデル読み込み
 	m_pGreenModel = new Model;
 	if (!m_pGreenModel->Load("Assets/Model/slime/slime_green1.28.FBX", 0.15f, Model::ZFlip)) {		//倍率と反転は省略可
-		MessageBox(NULL, "slime_green", "Error", MB_OK);	//ここでエラーメッセージ表示
+#if _DEBUG
+		std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+		MessageBox(nullptr, (ErrorSpot + "slime_green読み込み失敗").c_str(), "Error", MB_OK | MB_ICONERROR);								//エラー通知
+#endif
 	}
 	m_pGreenModel->SetVertexShader(m_pVS);
 	//レベル3スライムのモデル読み込み
 	m_pYellowModel = new Model;
 	if (!m_pYellowModel->Load("Assets/Model/slime/slime_Yellow1.28.FBX", 0.15f, Model::ZFlip)) {		//倍率と反転は省略可
-		MessageBox(NULL, "slime_yellow", "Error", MB_OK);	//ここでエラーメッセージ表示
+#if _DEBUG
+		std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+		MessageBox(nullptr, (ErrorSpot + "slime_yellow読み込み失敗").c_str(), "Error", MB_OK | MB_ICONERROR);								//エラー通知
+#endif
 	}
 	m_pYellowModel->SetVertexShader(m_pVS);
 	//レベル4スライムのモデル読み込み
 	m_pRedModel = new Model;
 	if (!m_pRedModel->Load("Assets/Model/slime/slime_red1.28.FBX", 0.18f, Model::ZFlip)) {		//倍率と反転は省略可
-		MessageBox(NULL, "slime_red", "Error", MB_OK);		//ここでエラーメッセージ表示
+#if _DEBUG
+		std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+		MessageBox(nullptr, (ErrorSpot + "slime_red読み込み失敗").c_str(), "Error", MB_OK | MB_ICONERROR);									//エラー通知
+#endif
 	}
 	m_pRedModel->SetVertexShader(m_pVS);
 	//フレイムスライムのモデル読み込み
 	m_pFlameModel = new Model;
 	if (!m_pFlameModel->Load("Assets/Model/Golem/Golem.FBX", 0.015f, Model::ZFlip)) {		//倍率と反転は省略可
-		MessageBox(NULL, "Flame_Slime", "Error", MB_OK);	//ここでエラーメッセージ表示
+#if _DEBUG
+		std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+		MessageBox(nullptr, (ErrorSpot + "Flame_Slime読み込み失敗").c_str(), "Error", MB_OK | MB_ICONERROR);								//エラー通知
+#endif
 	}
 	m_pFlameModel->SetVertexShader(m_pVS);
 	//ヒールスライムのモデル読み込み
 	m_pHealModel = new Model;
 	if (!m_pHealModel->Load("Assets/Model/eyeBat/eyebat.FBX", 0.15f, Model::ZFlip)) {		//倍率と反転は省略可
-		MessageBox(NULL, "Flame_Slime", "Error", MB_OK);	//ここでエラーメッセージ表示
+#if _DEBUG
+		std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+		MessageBox(nullptr, (ErrorSpot + "Heal_Slime読み込み失敗").c_str(), "Error", MB_OK | MB_ICONERROR);									//エラー通知
+#endif
 	}
 	m_pHealModel->SetVertexShader(m_pVS);
 	//ボススライムのモデル読み込み
 	m_pBossModel= new Model;
 	if (!m_pBossModel->Load("Assets/Model/boss_slime_devil/boss_slime_1.fbx", 0.23f, Model::ZFlip)) {		//倍率と反転は省略可
-		MessageBox(NULL, "Boss_Slime", "Error", MB_OK);	//ここでエラーメッセージ表示
+#if _DEBUG
+		std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+		MessageBox(nullptr, (ErrorSpot + "Boss_Slime読み込み失敗").c_str(), "Error", MB_OK | MB_ICONERROR);									//エラー通知
+#endif
 	}
 
 	m_pBossModel->SetVertexShader(m_pVS);
@@ -1195,7 +1219,10 @@ void CSlimeManager::LoadModel()
 
 	m_pBossRockModel = new Model;
 	if (!m_pBossRockModel->Load("Assets/Model/boss_slime_rock/boss_slime_rock.fbx", 0.5f, Model::ZFlip)) {		//倍率と反転は省略可
-		MessageBox(NULL, "Boss_Slime_Rock", "Error", MB_OK);	//ここでエラーメッセージ表示
+#if _DEBUG
+		std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+		MessageBox(nullptr, (ErrorSpot + "Boss_Slime_Rock読み込み失敗").c_str(), "Error", MB_OK | MB_ICONERROR);							//エラー通知
+#endif
 	}
 	m_pBossRockModel->SetVertexShader(m_pVS);
 }
@@ -1475,7 +1502,10 @@ void CSlimeManager::LoadSE()
 		m_pSE[i] = CSound::LoadSound(m_sSEFile[i].c_str());
 		if (!m_pSE[i])
 		{
-			MessageBox(NULL, m_sSEFile[i].c_str(), "Error", MB_OK);	//ここでエラーメッセージ表示
+#if _DEBUG
+			std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+			MessageBox(nullptr, (ErrorSpot + m_sSEFile[i]).c_str(), "Error", MB_OK | MB_ICONERROR);												//エラー通知
+#endif
 		}
 	}
 }

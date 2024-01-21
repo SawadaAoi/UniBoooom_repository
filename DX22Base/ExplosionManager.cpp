@@ -19,7 +19,7 @@
 	・2023/11/21 コンボ数機能の一部をコンボクラスに移動 sawada
 	・2023/11/21 爆発時にBoooomUIの表示を追加 tei
 	・2023/12/07 Effekseer.hのインクルード追加 takagi
-	・2024/01/21 コメント改修 takagi
+	・2024/01/21 コメント改修・MessageBox改善 takagi
 
 ========================================== */
 
@@ -62,7 +62,10 @@ CExplosionManager::CExplosionManager()
 	}
 	if (FAILED(m_pTexUI->Create("Assets/Texture/boooom.png")))
 	{
-		MessageBox(NULL, "boooom.png", "Error", MB_OK);
+#if _DEBUG
+		std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+		MessageBox(nullptr, (ErrorSpot + "boooom.png読み込み失敗").c_str(), "Error", MB_OK | MB_ICONERROR);									//エラー通知
+#endif
 	}
 	//サウンドファイルの読み込み
 	m_pSEExplode = CSound::LoadSound("Assets/Sound/SE/Explode.mp3");

@@ -11,7 +11,7 @@
 	・2023/12/08 cpp,作成 tei
 	・2023/12/12 ボス指示矢印表示、回転 tei
 	・2023/12/14 ボス指示矢印位置位置計算関数追加 tei
-	・2024/01/21 コメント改修 takagi
+	・2024/01/21 コメント改修・MessageBox改善 takagi
 
 ========================================== */
 
@@ -53,7 +53,10 @@ CBossArrow::CBossArrow()
 	m_pArrowTex = new Texture();
 	if (FAILED(m_pArrowTex->Create("Assets/Texture/Arrow.png")))
 	{
-		MessageBox(NULL, "Arrow.png", "Error", MB_OK);
+#if _DEBUG
+		std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+		MessageBox(nullptr, (ErrorSpot + "Arrow.png読み込み失敗").c_str(), "Error", MB_OK | MB_ICONERROR);						//エラー通知
+#endif
 	}
 
 }

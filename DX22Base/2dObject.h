@@ -21,7 +21,7 @@
 	・2024/01/16 リネーム・継承・不要箇所削除 takagi
 	・2024/01/18 リファクタリング及びコメント追加 takagi
 	・2024/01/20 GetPos()関数追加 takagi
-	・2024/01/21 コメント改修 takagi
+	・2024/01/21 コメント改修・定数修正 takagi
 
 ========================================== */
 
@@ -29,10 +29,10 @@
 #define __2D_OBJECT_H__
 
 // =============== インクルード ===================
-#include "Object.h"			//親のヘッダ
-#include "Shader.h"			//メンバのヘッダ
-#include "Texture.h"		//メンバのヘッダ
-#include "Camera.h"			//メンバのヘッダ
+#include "Object.h"		//親のヘッダ
+#include "Shader.h"		//メンバのヘッダ
+#include "Texture.h"	//メンバのヘッダ
+#include "Camera.h"		//メンバのヘッダ
 
 // =============== クラス定義 =====================
 class C2dObject	:public CObject	//オブジェクト継承
@@ -66,35 +66,35 @@ private:
 		E_MATRIX_MAX,			//要素数
 	};	//行列の種類
 	// ===定数定義===========
-	const E_DRAW_MODE DEFAULT_DRAW_MODE = E_DRAW_MODE_NORMAL;	//描画方法の規定値
-	const int FRAME_MIN = 0;									//フェード時間の最小
-	const int FRAME_TURNING_1 = 50;								//拡縮反転１反転
-	const int FRAME_TURNING_2 = 100;							//拡縮反転２反転
-	const int FRAME_MAX = 150;									//フェード時間の最大
-	const float SCALE_MIN = 0.0f;								//最小サイズ
-	const float SCALE_TURNINIG_2 = 30.0f;						//サイズ反転２反転
-	const float SCALE_TURNINIG_1 = 100.0f;						//サイズ反転１反転
-	const float SCALE_MAX = 1000.0f;							//最大サイズ
-	const float ROTATE_ACCEL_RATE = 4.0f;						//角速度増加割合
+	static const E_DRAW_MODE DEFAULT_DRAW_MODE = E_DRAW_MODE_NORMAL;	//描画方法の規定値
+	const int FRAME_MIN = 0;											//フェード時間の最小
+	const int FRAME_TURNING_1 = 50;										//拡縮反転１反転
+	const int FRAME_TURNING_2 = 100;									//拡縮反転２反転
+	const int FRAME_MAX = 150;											//フェード時間の最大
+	const float SCALE_MIN = 0.0f;										//最小サイズ
+	const float SCALE_TURNINIG_2 = 30.0f;								//サイズ反転２反転
+	const float SCALE_TURNINIG_1 = 100.0f;								//サイズ反転１反転
+	const float SCALE_MAX = 1000.0f;									//最大サイズ
+	const float ROTATE_ACCEL_RATE = 4.0f;								//角速度増加割合
 public:
 	// ===プロトタイプ宣言===
-	C2dObject();																//コンストラクタ
-	C2dObject(const C2dObject& Obj);											//コピーコンストラクタ
-	virtual ~C2dObject();														//デストラクタ
-	virtual void Update();														//更新
-	virtual void Draw();														//描画
-	virtual void SetDrawMode(const E_DRAW_MODE& eMode = E_DRAW_MODE_NORMAL);	//描画法セッタ
-	virtual void SetCamera(const CCamera* pCamera);								//カメラセッタ
-	virtual void SetUvOffset(const TDiType<float>& fUvOffset);					//UVずれセッタ
-	virtual void SetUvScale(const TDiType<float>& fUvScale);					//UV拡縮セッタ
-	virtual void SetColor(const TTriType<float>& fRGB, const float& fAlpha);	//色セッタRGBA
-	virtual void SetColor(const TTriType<float>& fRGB);							//色セッタRGB
-	virtual void SetColor(const float& fColor);									//色セッタ(同一値)
-	virtual void SetAlpha(const float& fAlpha);									//透明度セッタ
-	virtual void SetTexture(const char* pcTexPass);								//テクスチャ登録
-	virtual void SetTexture(Texture* pTexture);									//テクスチャ登録
-	virtual void SetVertexShader(VertexShader* pVs);							//頂点シェーダセッタ
-	virtual void SetPixelShader(PixelShader* pPs);								//ピクセルシェーダセッタ
+	C2dObject();																	//コンストラクタ
+	C2dObject(const C2dObject& Obj);												//コピーコンストラクタ
+	virtual ~C2dObject();															//デストラクタ
+	virtual void Update();															//更新
+	virtual void Draw();															//描画
+	virtual void SetDrawMode(const E_DRAW_MODE& eMode = DEFAULT_DRAW_MODE) final;	//描画法セッタ
+	virtual void SetCamera(const CCamera* pCamera) final;							//カメラセッタ
+	virtual void SetUvOffset(const TDiType<float>& fUvOffset) final;				//UVずれセッタ
+	virtual void SetUvScale(const TDiType<float>& fUvScale) final;					//UV拡縮セッタ
+	virtual void SetColor(const TTriType<float>& fRGB, const float& fAlpha) final;	//色セッタRGBA
+	virtual void SetColor(const TTriType<float>& fRGB) final;						//色セッタRGB
+	virtual void SetColor(const float& fColor) final;								//色セッタ(同一値)
+	virtual void SetAlpha(const float& fAlpha) final;								//透明度セッタ
+	virtual void SetTexture(const char* pcTexPass) final;							//テクスチャ登録
+	virtual void SetTexture(Texture* pTexture) final;								//テクスチャ登録
+	virtual void SetVertexShader(VertexShader* pVs) final;							//頂点シェーダセッタ
+	virtual void SetPixelShader(PixelShader* pPs) final;							//ピクセルシェーダセッタ
 private:
 	// ===メンバ変数宣言=====
 	DirectX::XMFLOAT4X4 m_aMatrix[E_MATRIX_MAX];	//行列

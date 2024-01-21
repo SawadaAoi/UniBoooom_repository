@@ -11,7 +11,7 @@
 	・2023/11/27 制作 nieda
 	・2023/12/07 ゲームパラメータから一部定数移動 takagi
 	・2024/01/20 リファクタリング takagi
-	・2024/01/21 コメント改修 takagi
+	・2024/01/21 コメント改修・MessageBox改善 takagi
 
 ========================================== */
 
@@ -41,7 +41,10 @@ CShadow::CShadow()
 	m_pTextureShadow = new Texture();
 	if (FAILED(m_pTextureShadow->Create("Assets/Texture/Shadow.png")))
 	{
-		MessageBox(NULL, "Shadow.png", "Error", MB_OK);
+#if _DEBUG
+		std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+		MessageBox(nullptr, (ErrorSpot + "Shadow.png読み込み失敗").c_str(), "Error", MB_OK | MB_ICONERROR);									//エラー通知
+#endif
 	}
 
 }

@@ -19,6 +19,7 @@
 	・2023/12/04 カメラのファイル改名適用 takagi
 	・2023/12/17 フェード完了判定がずれ、最小・最大状態にならないことがある問題を修正・ブラックアウト対応 takagi
 	・2024/01/16 フェードアウト・インにイージング適用 takagi
+	・2024/01/21 イージング式修正・MessageBox改善 takagi
 
 ========================================== */
 
@@ -49,8 +50,8 @@ const float SCALE_OUT_MAX(0.0f);							//フェード最大サイズ	uvの都合上、値が小さ
 const float SCALE_IN_MAX(0.0f);								//フェード最大サイズ	uvの都合上、値が小さい程サイズが大きくなる
 const float ROTATE_ACCEL_RATE(0.00025f);					//角速度増加割合
 const double PI(3.14159265358979323846);					//円周率M_PIのコピー
-#define ROTATE_EASE_IN_OUT(frame) (ROTATE_ACCEL_RATE * (0.5 ? 4 * pow((frame), 3.0)	\
-	: 1 - pow(-2 * (frame) + 2, 3.0) / 2))					//フェードイン・アウト回転用のイーズ計算
+#define ROTATE_EASE_IN_OUT(frame) (ROTATE_ACCEL_RATE * (frame < 0.5f ? 4 * powf((frame), 3.0f)	\
+	: 1.0f - powf(-2.0f * (frame) + 2.0f, 3.0f) / 2.0f))	//フェードイン・アウト回転用のイーズ計算
 
 // =============== グローバル変数宣言 =====================
 int CFade::ms_nCntFade;							//自身の生成数
@@ -211,7 +212,8 @@ void CFade::Update()
 				// =============== 未対応 ===================
 			default:					//その他
 #if _DEBUG
-				MessageBox(nullptr, "想定されないフェードの種類です", "Fade.cpp->Update->Error", MB_OK);	//エラー通知
+				std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+				MessageBox(nullptr, (ErrorSpot + "想定されないフェードの種類です").c_str(), "Error", MB_OK | MB_ICONERROR);							//エラー通知
 #endif
 				break;						//分岐処理終了
 			}
@@ -439,7 +441,8 @@ float CFade::GetFrameRate()
 #if _DEBUG
 				if (0 == FRAME_FADE_MAX.x)
 				{
-					MessageBox(nullptr, "0除算の危険性があります", "Fade.cpp->GetFrameRate->Error", MB_OK);	//エラー通知
+					std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+					MessageBox(nullptr, (ErrorSpot + "0除算の危険性があります").c_str(), "Error", MB_OK | MB_ICONERROR);								//エラー通知
 					return 0.0f;	//臨時対応
 				}
 #endif
@@ -451,7 +454,8 @@ float CFade::GetFrameRate()
 #if _DEBUG
 				if (0 == FRAME_FADE_MAX.y)
 				{
-					MessageBox(nullptr, "0除算の危険性があります", "Fade.cpp->GetFrameRate->Error", MB_OK);	//エラー通知
+					std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+					MessageBox(nullptr, (ErrorSpot + "0除算の危険性があります").c_str(), "Error", MB_OK | MB_ICONERROR);								//エラー通知
 					return 0.0f;	//臨時対応
 				}
 #endif
@@ -463,7 +467,8 @@ float CFade::GetFrameRate()
 #if _DEBUG
 				if (0 == FRAME_FADE_MAX.z)
 				{
-					MessageBox(nullptr, "0除算の危険性があります", "Fade.cpp->GetFrameRate->Error", MB_OK);	//エラー通知
+					std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+					MessageBox(nullptr, (ErrorSpot + "0除算の危険性があります").c_str(), "Error", MB_OK | MB_ICONERROR);								//エラー通知
 					return 0.0f;	//代替値で対応
 				}
 #endif
@@ -472,7 +477,8 @@ float CFade::GetFrameRate()
 #if _DEBUG
 				// =============== 未対応 ===================
 			default:					//その他
-				MessageBox(nullptr, "想定されないフェードの種類です", "Fade.cpp->GetFrameRate->Error", MB_OK);	//エラー通知
+				std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+				MessageBox(nullptr, (ErrorSpot + "想定されないフェードの種類です").c_str(), "Error", MB_OK | MB_ICONERROR);								//エラー通知
 				break;			//分岐処理終了
 #endif
 			}
@@ -586,17 +592,18 @@ void CFade::CreateIdxBuffer()
 	// =============== インデックスサイズの確認 ===================
 	switch (ms_unIdxSize)
 	{
-		// =============== サイズ違い ===================
-	default:	//下記以外
-#if _DEBUG
-		MessageBox(nullptr, "型のサイズがint型と一致しません", "Fade.cpp->CreateIdxBuffer->Error", MB_OK);	//エラー通知
-#endif
-		return;	//処理中断
-
 		// =============== int型と同一 ===================
 	case 2:	//古いint型のサイズ
 	case 4:	//今のint型のサイズ
 		break;	//分岐処理終了
+
+		// =============== サイズ違い ===================
+	default:	//上記以外
+#if _DEBUG
+		std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+		MessageBox(nullptr, (ErrorSpot + "型のサイズがint型と一致しません").c_str(), "Error", MB_OK | MB_ICONERROR);						//エラー通知
+#endif
+		return;	//処理中断
 	}
 
 	// =============== バッファの情報を設定 ===================
@@ -679,7 +686,10 @@ void CFade::FadeOut()
 	// =============== 検査 ===================
 	if (!(m_ucFlag & E_BIT_FLAG_FADE_OUT))	//アウト処理
 	{
-		MessageBox(nullptr, "フェードアウト中でない時にフェードアウトしようとしています", "Fade.cpp->FadeOut->Error", MB_OK);	//エラー通知
+#if _DEBUG
+		std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";		//エラー箇所
+		MessageBox(nullptr, (ErrorSpot + "フェードアウト中でない時にフェードアウトしようとしています").c_str(), "Error", MB_OK | MB_ICONERROR);	//エラー通知
+#endif
 		return;	//処理中断
 	}
 #endif
@@ -716,7 +726,8 @@ void CFade::FadeOut()
 #if _DEBUG
 					else
 					{
-						MessageBox(nullptr, "フレーム数が想定を超過しました", "Fade.cpp->FadeOut->Error", MB_OK);	//エラー通知
+						std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+						MessageBox(nullptr, (ErrorSpot + "フレーム数が想定を超過しました").c_str(), "Error", MB_OK | MB_ICONERROR);						//エラー通知
 					}
 #endif
 				}
@@ -746,7 +757,8 @@ void CFade::FadeStop()
 	// =============== 検査 ===================
 	if (!(m_ucFlag & E_BIT_FLAG_FADE_STOP))	//ストップ処理
 	{
-		MessageBox(nullptr, "フェードストップ中でない時にフェードストップしようとしています", "Fade.cpp->FadeStop->Error", MB_OK);	//エラー通知
+		std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";			//エラー箇所
+		MessageBox(nullptr, (ErrorSpot + "フェードストップ中でない時にフェードストップしようとしています").c_str(), "Error", MB_OK | MB_ICONERROR);	//エラー通知
 		return;	//処理中断
 	}
 #endif
@@ -778,7 +790,8 @@ void CFade::FadeIn()
 	// =============== 検査 ===================
 	if (!(m_ucFlag & E_BIT_FLAG_FADE_IN))	//イン処理
 	{
-		MessageBox(nullptr, "フェードイン中でない時にフェードインしようとしています", "Fade.cpp->FadeIn->Error", MB_OK);	//エラー通知
+		std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+		MessageBox(nullptr, (ErrorSpot + "フェードイン中でない時にフェードインしようとしています").c_str(), "Error", MB_OK | MB_ICONERROR);	//エラー通知
 		return;	//処理中断
 	}
 #endif
@@ -802,7 +815,8 @@ void CFade::FadeIn()
 		}
 		else
 		{
-			MessageBox(nullptr, "フレーム数が想定を超過しました", "Fade.cpp->FadeIn->Error", MB_OK);	//エラー通知
+			std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+			MessageBox(nullptr, (ErrorSpot + "フレーム数が想定を超過しました").c_str(), "Error", MB_OK | MB_ICONERROR);							//エラー通知
 		}
 #endif
 	}

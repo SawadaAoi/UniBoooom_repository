@@ -24,7 +24,7 @@
 	・2023/12/15 アプリ終了実装 takagi
 	・2024/01/18 CScene->GetType()関数を使用しない形に変更などリファクタリング takagi
 	・2024/01/20 音関係リファクタリング takagi
-	・2024/01/21 コメント改修 takagi
+	・2024/01/21 コメント改修・bgmバグ修正・MessageBox改善 takagi
 
 ========================================== */
 
@@ -81,7 +81,7 @@ CSceneManager::~CSceneManager()
 	// =============== 終了 ===================
 	SAFE_DELETE(m_pScene);			//シーン削除
 	SAFE_DELETE(m_pFade);			//フェード削除
-	UNLOAD_SOUND(m_pBGMSpeaker);	//BGMの再生を停止し、その音データの紐づけを破棄
+	UNLOAD_SOUND(m_pBGMSpeaker);	//BGMの再生を停止し、その音データの紐づけを破棄		※このとき中身のポインターがデータを持たないとエラーとなる
 }
 
 /* ========================================
@@ -232,7 +232,6 @@ void CSceneManager::ChangeScene()
 	if (m_pScene)	//ヌルチェック
 	{
 		m_ePastScene = MAP_SCENE_TYPE.at(typeid(*m_pScene).hash_code());	//現在シーン種退避
-		UNLOAD_SOUND(m_pBGMSpeaker);										//BGMの再生を停止し、その音データの紐づけを破棄
 		delete m_pScene;													//メモリ解放
 		m_pScene = nullptr;													//空アドレス
 	}
@@ -316,8 +315,8 @@ void CSceneManager::MakeNewScene()
 		// =============== 例外 ===================
 	default:	//上記以外
 #if _DEBUG
-		std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + ' ' + __FUNCTION__ + "()->Error";	//エラー箇所
-		MessageBox(nullptr, "存在しないシーンが呼び出されました", ErrorSpot.c_str(), MB_OK);												//エラー通知
+		std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+		MessageBox(nullptr, (ErrorSpot + "存在しないシーンが呼び出されました").c_str(), "Error", MB_OK | MB_ICONERROR);						//エラー通知
 #endif
 		break;	//分岐処理終了
 	}
@@ -390,14 +389,15 @@ void CSceneManager::PlayBGM()
 	// =============== 音設定 =====================
 	if (m_pScene && MAP_BGM.find(typeid(*m_pScene).hash_code()) != MAP_BGM.end() && MAP_BGM.at(typeid(*m_pScene).hash_code()))	//アクセスチェック・ヌルチェック
 	{
+		UNLOAD_SOUND(m_pBGMSpeaker);													//BGMの再生を停止し、その音データの紐づけを破棄	※ここ以外で削除するとヌルチェックできない中身のポインターがヌルとなりデストラクタで停止する
 		m_pBGMSpeaker = CSound::PlaySound(MAP_BGM.at(typeid(*m_pScene).hash_code()));	//BGM登録・再生
 		m_pBGMSpeaker->SetVolume(0.0f);													//再生音量設定
 	}
 #if _DEBUG
 	else
 	{
-		std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + ' ' + __FUNCTION__ + "()->Error";	//エラー箇所
-		MessageBox(nullptr, "音のデータが不足しています", ErrorSpot.c_str(), MB_OK);														//エラー通知
+		std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+		MessageBox(nullptr, (ErrorSpot + "音のデータが不足しています").c_str(), "Error", MB_OK | MB_ICONERROR);								//エラー通知
 	}
 #endif
 }

@@ -14,7 +14,7 @@
 	・2023/11/28 影の描画を追加 nieda
 	・2023/11/30 メモリリーク除去 takagi
 	・2024/01/20 リファクタリング takagi
-	・2024/01/21 コメント改修 takagi
+	・2024/01/21 コメント改修・MessageBox改善 takagi
 
 ========================================== */
 
@@ -60,14 +60,19 @@ CSlime_BossBase::CSlime_BossBase()
 	m_pBossHpTexture = new Texture();
 	if (FAILED(m_pBossHpTexture->Create("Assets/Texture/Boss_Hp.png")))
 	{
-		MessageBox(NULL, "HPゲージ読み込み", "Error", MB_OK);
+#if _DEBUG
+		std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+		MessageBox(nullptr, (ErrorSpot + "HPゲージ読み込み失敗").c_str(), "Error", MB_OK | MB_ICONERROR);									//エラー通知
+#endif
 	}
 	m_pHpFrameTexture = new Texture();
 	if (FAILED(m_pHpFrameTexture->Create("Assets/Texture/Boss_HpFrame.png")))
 	{
-		MessageBox(NULL, "HPフレーム読み込み", "Error", MB_OK);
+#if _DEBUG
+		std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+		MessageBox(nullptr, (ErrorSpot + "HPフレーム読み込み失敗").c_str(), "Error", MB_OK | MB_ICONERROR);									//エラー通知
+#endif
 	}
-
 }
 
 

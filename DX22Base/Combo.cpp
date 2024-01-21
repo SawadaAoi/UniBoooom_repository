@@ -12,7 +12,7 @@
 	・2023/11/23 スコアを加算する処理の追加　yamamoto
 	・2023/11/30 UIアニメーション追加　nieda
 	・2023/12/07 ゲームパラメータから定数移動 takagi
-	・2024/01/21 コメント改修 takagi
+	・2024/01/21 コメント改修・MessageBox改善 takagi
 
 ========================================== */
 
@@ -62,14 +62,20 @@ CCombo::CCombo()
 	m_pTextureNum[0] = new Texture();
 	if (FAILED(m_pTextureNum[0]->Create("Assets/Texture/Combo/combo_numbers.png")))
 	{
-		MessageBox(NULL, "combo_numbers.png", "Error", MB_OK);
+#if _DEBUG
+		std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+		MessageBox(nullptr, (ErrorSpot + "combo_numbers.png読み込み失敗").c_str(), "Error", MB_OK | MB_ICONERROR);							//エラー通知
+#endif
 	}
 
 	// コンボ背景画像読み込み
 	m_pTextureNum[1] = new Texture();
 	if (FAILED(m_pTextureNum[1]->Create("Assets/Texture/Combo/combo_back_sprite_1.png")))
 	{
-		MessageBox(NULL, "combo_back_sprite_1.png", "Error", MB_OK);
+#if _DEBUG
+		std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+		MessageBox(nullptr, (ErrorSpot + "combo_back_sprite_1.png読み込み失敗").c_str(), "Error", MB_OK | MB_ICONERROR);					//エラー通知
+#endif
 	}
 
 	// コンボ情報の初期化

@@ -10,7 +10,7 @@
 	変更履歴
 	・2023/11/18 作成 yamamoto
 	・2023/11/24 コメント追加 yamamoto
-	・2024/01/21 コメント改修 takagi
+	・2024/01/21 コメント改修・MessageBox改善 takagi
 
 ========================================== */
 
@@ -45,7 +45,8 @@ CScoreOverHead::CScoreOverHead(TPos3d<float> fPos, int nScore, float posY,float 
 	//if (FAILED(m_pScoreTexture->Create("Assets/Texture/numbers_v1/number.png")))
 	if (FAILED(m_pScoreTexture->Create("Assets/Texture/numbers_v1/combo_numbers.png")))
 	{
-		MessageBox(NULL, "数字読み込み", "Error", MB_OK);
+		std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+		MessageBox(nullptr, (ErrorSpot + "数字読み込み失敗").c_str(), "Error", MB_OK | MB_ICONERROR);										//エラー通知
 	}
 	m_Transform.fPos.y += posY;
 	//slimeのレベルによって爆発の大きさ変わるからslimeのとこで高さ調整する必要あり？

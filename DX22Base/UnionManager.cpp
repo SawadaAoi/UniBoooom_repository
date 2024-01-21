@@ -10,6 +10,7 @@
 	変更履歴
 	・2023/12/19 制作 takagi
 	・2023/12/24 サイズ・フレーム変更 takagi
+	・2024/01/21 MessageBox改善 takagi
 
 ========================================== */
 
@@ -89,35 +90,29 @@ CUnionManager::CUnionManager()
 
 		// =============== テクスチャ作成 ===================
 		ms_pTexture.insert(std::pair<size_t, Texture*>(typeid(CSlime_2).hash_code(), new Texture));	//コンテナ格納
-#if _DEBUG
 		if (FAILED(ms_pTexture.at(typeid(CSlime_2).hash_code())->Create(TEX_PASS_SLIME2.c_str())))	//新規テクスチャ登録
 		{
-			std::string ErrorSpot = typeid(*this).name(); ErrorSpot += "->Error";					//エラー箇所
-			MessageBox(nullptr, "テクスチャの読み込みに失敗しました", ErrorSpot.c_str(), MB_OK);	//エラー通知
-		}
-#else
-		ms_pTexture.at(typeid(CSlime_2).hash_code())->Create(TEX_PASS_SLIME2.c_str());	//新規テクスチャ登録
-#endif
-		ms_pTexture.insert(std::pair<size_t, Texture*>(typeid(CSlime_3).hash_code(), new Texture));	//コンテナ格納
 #if _DEBUG
+			std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+			MessageBox(nullptr, (ErrorSpot + "テクスチャの読み込みに失敗しました").c_str(), "Error", MB_OK | MB_ICONERROR);						//エラー通知
+#endif
+		}
+		ms_pTexture.insert(std::pair<size_t, Texture*>(typeid(CSlime_3).hash_code(), new Texture));	//コンテナ格納
 		if (FAILED(ms_pTexture.at(typeid(CSlime_3).hash_code())->Create(TEX_PASS_SLIME3.c_str())))	//新規テクスチャ登録
 		{
-			std::string ErrorSpot = typeid(*this).name(); ErrorSpot += "->Error";					//エラー箇所
-			MessageBox(nullptr, "テクスチャの読み込みに失敗しました", ErrorSpot.c_str(), MB_OK);	//エラー通知
-		}
-#else
-		ms_pTexture.at(typeid(CSlime_3).hash_code())->Create(TEX_PASS_SLIME3.c_str());	//新規テクスチャ登録
-#endif
-		ms_pTexture.insert(std::pair<size_t, Texture*>(typeid(CSlime_4).hash_code(), new Texture));	//コンテナ格納
 #if _DEBUG
+			std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+			MessageBox(nullptr, (ErrorSpot + "テクスチャの読み込みに失敗しました").c_str(), "Error", MB_OK | MB_ICONERROR);						//エラー通知
+#endif
+		}
+			ms_pTexture.insert(std::pair<size_t, Texture*>(typeid(CSlime_4).hash_code(), new Texture));	//コンテナ格納
 		if (FAILED(ms_pTexture.at(typeid(CSlime_4).hash_code())->Create(TEX_PASS_SLIME4.c_str())))	//新規テクスチャ登録
 		{
-			std::string ErrorSpot = typeid(*this).name(); ErrorSpot += "->Error";					//エラー箇所
-			MessageBox(nullptr, "テクスチャの読み込みに失敗しました", ErrorSpot.c_str(), MB_OK);	//エラー通知
-		}
-#else
-		ms_pTexture.at(typeid(CSlime_4).hash_code())->Create(TEX_PASS_SLIME4.c_str());	//新規テクスチャ登録
+#if _DEBUG
+			std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+			MessageBox(nullptr, (ErrorSpot + "テクスチャの読み込みに失敗しました").c_str(), "Error", MB_OK | MB_ICONERROR);						//エラー通知
 #endif
+		}
 	}
 }
 

@@ -251,15 +251,15 @@ void C2dObject::Draw()
 	{
 #if _DEBUG
 		std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
-		MessageBox(nullptr, (ErrorSpot + "テクスチャが登録されていません\n").c_str(), "Error", MB_OK | MB_ICONERROR);						//エラー通知
+		MessageBox(nullptr, (ErrorSpot + "テクスチャが登録されていません").c_str(), "Error", MB_OK | MB_ICONERROR);							//エラー通知
 #endif
 		return;	//処理中断
 	}
 	if (!m_pCamera)	//ヌルチェック
 	{
 #if _DEBUG
-		std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + ' ' + __FUNCTION__ + "()->Error";	//エラー箇所
-		MessageBox(nullptr, "カメラが登録されていません", ErrorSpot.c_str(), MB_OK);														//エラー通知
+		std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+		MessageBox(nullptr, (ErrorSpot + "カメラが登録されていません").c_str(), "Error", MB_OK | MB_ICONERROR);							//エラー通知
 #endif
 		return;	//処理中断
 	}
@@ -283,8 +283,8 @@ void C2dObject::Draw()
 #if _DEBUG
 		// =============== 例外 ===================
 	default:	//上記以外
-		std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + ' ' + __FUNCTION__ + "()->Error";	//エラー箇所
-		MessageBox(nullptr, "想定外の描画法が指定されました", ErrorSpot.c_str(), MB_OK);													//エラー通知
+		std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+		MessageBox(nullptr, (ErrorSpot + "想定外の描画法が指定されました").c_str(), "Error", MB_OK | MB_ICONERROR);							//エラー通知
 		break;																																//分岐処理終了
 #endif
 	}
@@ -331,8 +331,8 @@ void C2dObject::Draw()
 #if _DEBUG
 		// =============== 例外 ===================
 		default:	//上記以外
-			std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + ' ' + __FUNCTION__ + "()->Error";	//エラー箇所
-			MessageBox(nullptr, "型のサイズがint型と一致しません", ErrorSpot.c_str(), MB_OK);													//エラー通知
+			std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+			MessageBox(nullptr, (ErrorSpot + "型のサイズがint型と一致しません").c_str(), "Error", MB_OK | MB_ICONERROR);							//エラー通知
 			break;	//分岐処理終了
 #endif
 		}
@@ -507,8 +507,8 @@ void C2dObject::SetTexture(const char* pcTexPass)
 	if (FAILED(m_pTexture->Create(pcTexPass)))	//新規テクスチャ登録
 	{
 #if _DEBUG
-		std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + ' ' + __FUNCTION__ + "()->Error";	//エラー箇所
-		MessageBox(nullptr, "テクスチャの読み込みに失敗しました", ErrorSpot.c_str(), MB_OK);												//エラー通知
+		std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+		MessageBox(nullptr, (ErrorSpot + "テクスチャの読み込みに失敗しました").c_str(), "Error", MB_OK | MB_ICONERROR);						//エラー通知
 #endif
 	}
 	m_pTextureLoad = m_pTexture;	//アドレス格納
@@ -691,8 +691,8 @@ void C2dObject::CreateIdxBuffer()
 		// =============== 例外 ===================
 		default:	//上記以外
 #if _DEBUG
-			std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + ' ' + __FUNCTION__ + "()->Error";	//エラー箇所
-			MessageBox(nullptr, "型のサイズがint型と一致しません", ErrorSpot.c_str(), MB_OK);													//エラー通知
+		std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+		MessageBox(nullptr, (ErrorSpot + "型のサイズがint型と一致しません").c_str(), "Error", MB_OK | MB_ICONERROR);						//エラー通知
 #endif
 		return;	//処理中断
 	}

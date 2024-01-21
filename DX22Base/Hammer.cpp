@@ -23,7 +23,7 @@
 	・2023/12/01 IntervalをSwingSpeedに変更　yamamoto
 	・2023/12/07 ゲームパラメータから一部定数移動 takagi
 	・2024/01/20 リファクタリング takagi
-	・2024/01/21 コメント改修 takagi
+	・2024/01/21 コメント改修・MessageBox改善 takagi
 	
 ========================================== */
 
@@ -83,12 +83,18 @@ CHammer::CHammer()
 	//頂点シェーダ読み込み
 	m_pVS = new VertexShader();
 	if (FAILED(m_pVS->Load("Assets/Shader/VS_Model.cso"))) {
-		MessageBox(nullptr, "VS_Model.cso", "Error", MB_OK);
+#if _DEBUG
+		std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+		MessageBox(nullptr, (ErrorSpot + "VS_Model.cso読み込み失敗").c_str(), "Error", MB_OK | MB_ICONERROR);									//エラー通知
+#endif
 	}
 	//ハンマーのモデル読み込み
 	m_pModel = new Model;
 	if (!m_pModel->Load("Assets/Model/hammer/hammer3.FBX", 1.0f, Model::XFlip)) {		//倍率と反転は省略可
-		MessageBox(NULL, "hammer", "Error", MB_OK);	//ここでエラーメッセージ表示
+#if _DEBUG
+		std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+		MessageBox(nullptr, (ErrorSpot + "hammer読み込み失敗").c_str(), "Error", MB_OK | MB_ICONERROR);									//エラー通知
+#endif
 	}
 	m_pModel->SetVertexShader(m_pVS);
 

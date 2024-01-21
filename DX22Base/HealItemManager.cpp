@@ -11,7 +11,7 @@
 	・2023/11/27 cpp作成 yamashita
 	・2023/11/28 生成関数を作成 yamashita
 	・2023/11/28 リストのポインタ取得関数を作成 yamashita
-	・2024/01/21 コメント改修 takagi
+	・2024/01/21 コメント改修・MessageBox改善 takagi
 
 ========================================== */
 
@@ -34,12 +34,18 @@ CHealItemManager::CHealItemManager()
 	//頂点シェーダ読み込み
 	m_pVS = new VertexShader();
 	if (FAILED(m_pVS->Load("Assets/Shader/VS_Model.cso"))) {
-		MessageBox(nullptr, "VS_Model.cso", "Error", MB_OK);
+#if _DEBUG
+		std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+		MessageBox(nullptr, (ErrorSpot + "VS_Model.cso読み込み失敗").c_str(), "Error", MB_OK | MB_ICONERROR);								//エラー通知
+#endif
 	}
 	//回復アイテムのモデル読み込み
 	m_pModel = new Model;
 	if (!m_pModel->Load("Assets/Model/heart/heart_1.FBX", 1.0f, Model::None)) {		//倍率と反転は省略可
-		MessageBox(NULL, "HealItem:Model", "Error", MB_OK);	//ここでエラーメッセージ表示
+#if _DEBUG
+		std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+		MessageBox(nullptr, (ErrorSpot + "HealItem:Model読み込み失敗").c_str(), "Error", MB_OK | MB_ICONERROR);								//エラー通知
+#endif
 	}
 	m_pModel->SetVertexShader(m_pVS);
 }

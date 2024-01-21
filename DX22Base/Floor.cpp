@@ -15,7 +15,7 @@
 	・2023/12/07 ゲームパラメータから一部定数移動 takagi
 	・2023/12/15 ステージ別に床のモデルを設定できるように修正 sawada
 	・2023/12/15 コンストラクタの引数にステージ番号を追加 yamashita
-	・2024/01/21 コメント改修 takagi
+	・2024/01/21 コメント改修・MessageBox改善 takagi
 
 ========================================== */
 #include "Floor.h"
@@ -52,7 +52,10 @@ CFloor::CFloor(TPos3d<float>* pPlayerPos, StageKinds stageKind)
 	//頂点シェーダ読み込み
 	m_pVS = new VertexShader();
 	if (FAILED(m_pVS->Load("Assets/Shader/VS_Model.cso"))) {
-		MessageBox(nullptr, "VS_Model.cso", "Error", MB_OK);
+#if _DEBUG
+		std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+		MessageBox(nullptr, (ErrorSpot + "VS_Model.cso読み込み失敗").c_str(), "Error", MB_OK | MB_ICONERROR);									//エラー通知
+#endif
 	}
 	SetFloorModel();	//ステージ毎のモデルを読み込み
 
@@ -232,17 +235,26 @@ void CFloor::SetFloorModel()
 	{
 	case CFloor::Stage1:
 		if (!m_pModel->Load("Assets/Model/floor/Stage1/floor_grass.fbx", 1.0f, Model::XFlip)) {		//倍率と反転は省略可
-			MessageBox(NULL, "floor", "Error", MB_OK);	//ここでエラーメッセージ表示
+#if _DEBUG
+			std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+			MessageBox(nullptr, (ErrorSpot + "floor読み込み失敗").c_str(), "Error", MB_OK | MB_ICONERROR);										//エラー通知
+#endif
 		}
 		break;
 	case CFloor::Stage2:
 		if (!m_pModel->Load("Assets/Model/floor/Stage2/floor_cave.fbx", 1.0f, Model::XFlip)) {		//倍率と反転は省略可
-			MessageBox(NULL, "floor", "Error", MB_OK);	//ここでエラーメッセージ表示
+#if _DEBUG
+			std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+			MessageBox(nullptr, (ErrorSpot + "floor読み込み失敗").c_str(), "Error", MB_OK | MB_ICONERROR);										//エラー通知
+#endif
 		}
 		break;
 	case CFloor::Stage3:
 		if (!m_pModel->Load("Assets/Model/floor/Stage3/floor_StainedGlass.FBX", 1.0f, Model::XFlip)) {		//倍率と反転は省略可
-			MessageBox(NULL, "floor", "Error", MB_OK);	//ここでエラーメッセージ表示
+#if _DEBUG
+			std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+			MessageBox(nullptr, (ErrorSpot + "floor読み込み失敗").c_str(), "Error", MB_OK | MB_ICONERROR);										//エラー通知
+#endif
 		}
 		break;
 	}

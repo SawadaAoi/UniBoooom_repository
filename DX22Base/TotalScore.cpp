@@ -13,7 +13,7 @@
 	・2023/11/24 テクスチャの張替,コメント訂正 yamamoto
 	・2023/11/26 コンボ倍率の表示の変更 yamamoto
 	・2023/12/07 ゲームパラメータから一部定数移動・インクルード追加 takagi
-	・2024/01/21 コメント改修 takagi
+	・2024/01/21 コメント改修・MessageBox改善 takagi
 
 ========================================== */
 
@@ -60,22 +60,34 @@ CTotalScore::CTotalScore()
 	m_pToScoreTexture = new Texture();
 	if (FAILED(m_pToScoreTexture->Create("Assets/Texture/numbers_v1/combo_numbers.png")))
 	{
-		MessageBox(NULL, "ToScore数字読み込み", "Error", MB_OK);
+#if _DEBUG
+		std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+		MessageBox(nullptr, (ErrorSpot + "ToScore数字読み込み失敗").c_str(), "Error", MB_OK | MB_ICONERROR);								//エラー通知
+#endif
 	}
 	m_pPlusScoreTexture = new Texture();
 	if (FAILED(m_pPlusScoreTexture->Create("Assets/Texture/numbers_v1/plus_score_numbers.png")))
 	{
-		MessageBox(NULL, "PlusScore数字読み込み", "Error", MB_OK);
+#if _DEBUG
+		std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+		MessageBox(nullptr, (ErrorSpot + "PlusScore数字読み込み失敗").c_str(), "Error", MB_OK | MB_ICONERROR);								//エラー通知
+#endif
 	}
 	m_pTScoreBGTex = new Texture();
 	if (FAILED(m_pTScoreBGTex->Create("Assets/Texture/total_score_back_1.png")))
 	{
-		MessageBox(NULL, "TScoreBack読み込み", "Error", MB_OK);
+#if _DEBUG
+		std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+		MessageBox(nullptr, (ErrorSpot + "TScoreBack読み込み失敗").c_str(), "Error", MB_OK | MB_ICONERROR);									//エラー通知
+#endif
 	}
 	m_pPScoreBGTex = new Texture();
 	if (FAILED(m_pPScoreBGTex->Create("Assets/Texture/plus_score_back_1.png")))
 	{
-		MessageBox(NULL, "TScoreBack読み込み", "Error", MB_OK);
+#if _DEBUG
+		std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+		MessageBox(nullptr, (ErrorSpot + "TScoreBack読み込み失敗").c_str(), "Error", MB_OK | MB_ICONERROR);									//エラー通知
+#endif
 	}
 	for (int i = 0; i < TOTALSCORE_DIGIT; i++)//トータルスコアの桁を作る
 	{

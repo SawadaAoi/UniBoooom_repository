@@ -13,7 +13,7 @@
 	・2023/11/29 アニメーション追加 nieda
 	・2023/12/01 半分のHPアニメーション追加 nieda
 	・2023/12/07 ゲームパラメータから一部定数移動・不要物除去 takagi
-	・2024/01/21 コメント改修 takagi
+	・2024/01/21 コメント改修・MessageBox改善 takagi
 
 ========================================== */
 
@@ -65,31 +65,46 @@ CHP_UI::CHP_UI(const int* pPlayerHp)
 	m_pTexture[HEART_FULL] = new Texture();	// 満タンのHPのテクスチャ読み込み
 	if (FAILED(m_pTexture[HEART_FULL]->Create("Assets/Texture/HP_UI/HP_Full_2.png")))
 	{
-		MessageBox(NULL, "HpUI HP_Full_1.png", "Error", MB_OK);
+#if _DEBUG
+		std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+		MessageBox(nullptr, (ErrorSpot + "HP_Full_2.png読み込み失敗").c_str(), "Error", MB_OK | MB_ICONERROR);								//エラー通知
+#endif
 	}
 
 	m_pTexture[HEART_HALF] = new Texture();	// 半分のHPのテクスチャ読み込み
 	if (FAILED(m_pTexture[HEART_HALF]->Create("Assets/Texture/HP_UI/HP_Half_2.png")))
 	{
-		MessageBox(NULL, "HpUI HP_Half_2.png", "Error", MB_OK);
+#if _DEBUG
+		std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+		MessageBox(nullptr, (ErrorSpot + "HP_Half_2.png読み込み失敗").c_str(), "Error", MB_OK | MB_ICONERROR);								//エラー通知
+#endif
 	}
 
 	m_pTexture[HEART_NONE] = new Texture();	// 空のHPのテクスチャ読み込み
 	if (FAILED(m_pTexture[HEART_NONE]->Create("Assets/Texture/HP_UI/HP_Lost_2.png")))
 	{
-		MessageBox(NULL, "HpUI HP_Lost_2.png", "Error", MB_OK);
+#if _DEBUG
+		std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+		MessageBox(nullptr, (ErrorSpot + "HP_Lost_2.png読み込み失敗").c_str(), "Error", MB_OK | MB_ICONERROR);								//エラー通知
+#endif
 	}
 
 	m_pTexture[HEART_FH_ANIM] = new Texture();	// 満タン→半分のHPのテクスチャ読み込み
 	if (FAILED(m_pTexture[HEART_FH_ANIM]->Create("Assets/Texture/HP_UI/hp_FtoH_sprite_2.png")))
 	{
-		MessageBox(NULL, "HpUI hp_FtoH_sprite_2.png", "Error", MB_OK);
+#if _DEBUG
+		std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+		MessageBox(nullptr, (ErrorSpot + "hp_FtoH_sprite_2.png読み込み失敗").c_str(), "Error", MB_OK | MB_ICONERROR);						//エラー通知
+#endif
 	}
 
 	m_pTexture[HEART_HE_ANIM] = new Texture();	// 半分→空のHPのテクスチャ読み込み
 	if (FAILED(m_pTexture[HEART_HE_ANIM]->Create("Assets/Texture/HP_UI/HP_HtoE_sprite_2.png")))
 	{
-		MessageBox(NULL, "HpUI HP_HtoE_sprite_2.png", "Error", MB_OK);
+#if _DEBUG
+		std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+		MessageBox(nullptr, (ErrorSpot + "HP_HtoE_sprite_2.png読み込み失敗").c_str(), "Error", MB_OK | MB_ICONERROR);						//エラー通知
+#endif
 	}
 
 	m_pPlayerHp = pPlayerHp;

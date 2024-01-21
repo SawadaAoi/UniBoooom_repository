@@ -13,7 +13,7 @@
 	・2023/11/22 ボスゲージ表示のフェードアウト追加、パラメータ調整
 	・2023/11/27 ボス出現処理追加	sawada
 	・2023/12/07 ゲームパラメータから一部定数移動・インクルード追加 takagi
-	・2024/01/21 コメント改修 takagi
+	・2024/01/21 コメント改修・MessageBox改善 takagi
 
 ========================================== */
 
@@ -64,14 +64,18 @@ CBossgauge::CBossgauge(CTimer* pTimer)
 	m_pTexGauge = new Texture();
 	if (FAILED(m_pTexFrame->Create("Assets/Texture/bossgauge_empty.png")))
 	{
-		MessageBox(NULL, "bossgauge_empty.png", "Error", MB_OK);
+#if _DEBUG
+		std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+		MessageBox(nullptr, (ErrorSpot + "bossgauge_empty.png読み込み失敗").c_str(), "Error", MB_OK | MB_ICONERROR);						//エラー通知
+#endif
 	}
 	if (FAILED(m_pTexGauge->Create("Assets/Texture/bossgauge_full.png")))
 	{
-		MessageBox(NULL, "bossgauge_full.png", "Error", MB_OK);
+#if _DEBUG
+		std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+		MessageBox(nullptr, (ErrorSpot + "bossgauge_full.png読み込み失敗").c_str(), "Error", MB_OK | MB_ICONERROR);							//エラー通知
+#endif
 	}
-
-
 }
 
 /* ========================================

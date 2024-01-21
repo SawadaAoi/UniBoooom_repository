@@ -8,9 +8,9 @@
 	作成者
 
 	変更履歴
-   ・↓まで 学校の配布物(授業に沿い変形)・Geometryに合わせた改造
+	・↓まで 学校の配布物(授業に沿い変形)・Geometryに合わせた改造
 	・2023/11/17 終了条件でゲームループを抜けるように変更 takagi
-	・2024/01/21 コメント改修 takagi
+	・2024/01/21 コメント改修・デバッグモード削除対応・MessageBox改善 takagi
 
 ========================================== */
 
@@ -19,6 +19,9 @@
 #include "Main.h"
 #include <stdio.h>
 #include <crtdbg.h>
+#if _DEBUG
+#include <string>	//文字列操作
+#endif
 
 
 // timeGetTime周りの使用
@@ -53,7 +56,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	// ウィンドウクラス情報の登録
 	if (!RegisterClassEx(&wcex))
 	{
-		MessageBox(NULL, "Failed to RegisterClassEx", "Error", MB_OK);
+#if _DEBUG
+		std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+		MessageBox(nullptr, (ErrorSpot + "Failed to RegisterClassEx").c_str(), "Error", MB_OK | MB_ICONERROR);						//エラー通知
+#endif
 		return 0;
 	}
 
@@ -113,10 +119,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				Draw();
 				preExecTime = nowTime;
 
-#if USE_SCENE_MANAGER
 				if (IsFin())
 					break;
-#endif
 			}
 		}
 	}

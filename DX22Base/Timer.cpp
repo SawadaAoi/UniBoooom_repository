@@ -16,7 +16,7 @@
 	・2023/12/07 ゲームパラメータから一部定数移動・暗黙の型キャスト除去 takagi
 	・2023/12/08 GetErapsedTime()関数追加 takagi
 	・2024/01/01 継承用書き換え Takagi
-	・2024/01/21 コメント改修 takagi
+	・2024/01/21 コメント改修・MessageBox改善 takagi
 
 ========================================== */
 
@@ -74,20 +74,30 @@ CTimer::CTimer()
 
 	if (FAILED(m_pTextureNum->Create("Assets/Texture/numbers_v1/number.png")))
 	{
-		MessageBox(NULL, "number.png", "Error", MB_OK);
+#if _DEBUG
+		std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+		MessageBox(nullptr, (ErrorSpot + "number.png読み込み失敗").c_str(), "Error", MB_OK | MB_ICONERROR);									//エラー通知
+#endif
 	}
 
 	//タイマーの裏テクスチャ読み込む
 	m_pTextureBG = new Texture;
 	if (FAILED(m_pTextureBG->Create("Assets/Texture/timer_back_1.png")))
 	{
-		MessageBox(NULL, "timebackground.png", "Error", MB_OK);
+#if _DEBUG
+		std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+		MessageBox(nullptr, (ErrorSpot + "timebackground.png読み込み失敗").c_str(), "Error", MB_OK | MB_ICONERROR);							//エラー通知
+#endif
+		MessageBox(NULL, "", "Error", MB_OK);
 	}
 
 	m_pTextureColon = new Texture;
 	if (FAILED(m_pTextureColon->Create("Assets/Texture/numbers_v1/colon.png")))
 	{
-		MessageBox(NULL, "colon.png", "Error", MB_OK);
+#if _DEBUG
+		std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+		MessageBox(nullptr, (ErrorSpot + "colon.png読み込み失敗").c_str(), "Error", MB_OK | MB_ICONERROR);									//エラー通知
+#endif
 	}
 }
 /* ========================================

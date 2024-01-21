@@ -13,7 +13,7 @@
 	・2023/11/16 制作 takagi
 	・2023/12/12 ステージセレクトを追加　yamamoto
 	・2024/01/20 リファクタリング takagi
-	・2024/01/21 コメント改修 takagi
+	・2024/01/21 コメント改修・MessageBox改善 takagi
 
 ========================================== */
 
@@ -45,20 +45,29 @@ CSelectStage::CSelectStage()
 	mStageNum[0].m_pTexture= new Texture();
 	if (FAILED(mStageNum[0].m_pTexture->Create("Assets/Texture/StageSelect/tehaisyo1.png")))
 	{
-		MessageBox(NULL, "Title gamstart.png", "Error", MB_OK);
+#if _DEBUG
+		std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+		MessageBox(nullptr, (ErrorSpot + "tehaisyo1.png読み込み失敗").c_str(), "Error", MB_OK | MB_ICONERROR);						//エラー通知
+#endif
 	}
 
 	mStageNum[1].Type = E_TYPE_STAGE2;
 	mStageNum[1].m_pTexture = new Texture();
 	if (FAILED(mStageNum[1].m_pTexture->Create("Assets/Texture/StageSelect/tehaisyo2.png")))
 	{
-		MessageBox(NULL, "Title gamstart.png", "Error", MB_OK);
+#if _DEBUG
+		std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+		MessageBox(nullptr, (ErrorSpot + "tehaisyo2.png読み込み失敗").c_str(), "Error", MB_OK | MB_ICONERROR);						//エラー通知
+#endif
 	}
 	mStageNum[2].Type = E_TYPE_STAGE3;
 	mStageNum[2].m_pTexture = new Texture();
 	if (FAILED(mStageNum[2].m_pTexture->Create("Assets/Texture/StageSelect/tehaisyo3.png")))
 	{
-		MessageBox(NULL, "Title gamstart.png", "Error", MB_OK);
+#if _DEBUG
+		std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+		MessageBox(nullptr, (ErrorSpot + "tehaisyo3.png読み込み失敗").c_str(), "Error", MB_OK | MB_ICONERROR);						//エラー通知
+#endif
 	}
 
 	for (int i = 0; i < 5; i++)
@@ -69,12 +78,18 @@ CSelectStage::CSelectStage()
 	m_pStageSelectBG= new Texture();
 	if (FAILED(m_pStageSelectBG->Create("Assets/Texture/StageSelect/StageSelectBG.png")))
 	{
-		MessageBox(NULL, "Title gamstart.png", "Error", MB_OK);
+#if _DEBUG
+		std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+		MessageBox(nullptr, (ErrorSpot + "StageSelectBG.png読み込み失敗").c_str(), "Error", MB_OK | MB_ICONERROR);						//エラー通知
+#endif
 	}
 	m_pStageSelectUI = new Texture();
 	if (FAILED(m_pStageSelectUI->Create("Assets/Texture/StageSelect/stselectUI.png")))
 	{
-		MessageBox(NULL, "Title gamstart.png", "Error", MB_OK);
+#if _DEBUG
+		std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+		MessageBox(nullptr, (ErrorSpot + "stselectUI.png読み込み失敗").c_str(), "Error", MB_OK | MB_ICONERROR);						//エラー通知
+#endif
 	}
 
 	m_2dObj[0]->SetPos({ 250.0f, 300.0f,1.0f });
