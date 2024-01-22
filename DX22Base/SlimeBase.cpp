@@ -66,9 +66,9 @@ CSlimeBase::CSlimeBase()
 	, m_eSlimeSize(LEVEL_1)	//後でSLIME_NONEにする <=TODO
 	, m_RanMoveCnt(RANDOM_MOVE_SWITCH_TIME)	// 初期
 	, m_ExpPos{ 0.0f,0.0f,0.0f }
-	, m_bEscape(false)
+	, m_bEscFlg(false)
 	, m_nEscapeCnt(0)
-	, m_bMoveStop(false)
+	, m_bMvStpFlg(false)
 	, m_nMvStpCnt(0)
 	, m_fScaleShadow(0.0f)
 {
@@ -113,7 +113,7 @@ void CSlimeBase::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
 
 	if (!m_bHitMove)	//敵が通常の移動状態の時
 	{
-		if (!m_bEscape  && m_nEscapeCnt == 0)	//逃げるフラグがoffなら
+		if (!m_bEscFlg  && m_nEscapeCnt == 0)	//逃げるフラグがoffなら
 		{
 			NormalMove();	//通常異動
 		}
@@ -320,7 +320,7 @@ void CSlimeBase::EscapeMove()
 	m_nEscapeCnt++;	//カウントを増加
 	if (m_nEscapeCnt > ESCAPE_TIME) 
 	{ 
-		m_bEscape = false; 
+		m_bEscFlg = false; 
 		m_nEscapeCnt = 0;
 	}
 }
@@ -341,7 +341,7 @@ void CSlimeBase::MoveStop()
 	m_move.z = 0.0f;
 
 	m_nMvStpCnt++;	//カウントを増加
-	if (m_nMvStpCnt > ESCAPE_TIME)
+	if (m_nMvStpCnt > MOVE_STOP_TIME)
 	{
 		m_nMvStpCnt = false;
 		m_nMvStpCnt = 0;
@@ -385,9 +385,23 @@ void CSlimeBase::SetExplosionPos(TPos3d<float> expPos)
 	----------------------------------------
 	戻値：なし
 ======================================== */
-void CSlimeBase::SetEscapeFlag(bool bEscape)
+void CSlimeBase::SetEscapeFlg(bool bEscape)
 {
-	m_bEscape = bEscape;
+	m_bEscFlg = bEscape;
+}
+
+/* ========================================
+	停止状態セット関数
+	----------------------------------------
+	内容：移動停止状態をセットする
+	----------------------------------------
+	引数1：true：停止中 / false：移動中
+	----------------------------------------
+	戻値：なし
+======================================== */
+void CSlimeBase::SetMoveStopFlg(bool bMvStpFlg)
+{
+	m_bMvStpFlg = bMvStpFlg;
 }
 
 /* ========================================
@@ -441,9 +455,23 @@ TPos3d<float> CSlimeBase::GetPos()
 	----------------------------------------
 	戻値：bool
 ======================================== */
-bool CSlimeBase::GetEscapeFlag()
+bool CSlimeBase::GetEscapeFlg()
 {
-	return m_bEscape = false;
+	return m_bEscFlg;
+}
+
+/* ========================================
+	停止状態取得関数
+	----------------------------------------
+	内容：停止状態かの確認
+	----------------------------------------
+	引数1：なし
+	----------------------------------------
+	戻値：bool
+======================================== */
+bool CSlimeBase::GetMoveStopFlg()
+{
+	return m_bMvStpFlg;
 }
 
 /* ========================================

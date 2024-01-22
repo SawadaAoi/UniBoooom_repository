@@ -90,6 +90,7 @@ const float MAX_SIZE_EXPLODE		= 6.0f;						// スライム4同士の爆発の大きさ
 const float EXPLODE_BASE_RATIO		= 1.5f;						// スライムの爆発接触での爆発の大きさのベース
 const float ESCAPE_DISTANCE			= 15.0f;					// 爆発がこの距離より近かったら逃げる範囲
 const int ESCAPE_TIME				= int(60 * 0.8f);			// この間隔で逃げる処理が終了する
+const int MOVE_STOP_TIME			= int(60 * 0.8f);			// 爆発移動停止時間
 const float UINION_TEXT_POS_Y_ADJUST = 0.6f;					// 表示高さ(各スライムのSCALE)に掛ける調整用割合
 
 // スライム同士の反射の減算値

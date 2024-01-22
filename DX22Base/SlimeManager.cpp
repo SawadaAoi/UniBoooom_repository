@@ -221,13 +221,12 @@ CSlimeManager::~CSlimeManager()
 =========================================== */
 void CSlimeManager::Update(CExplosionManager* pExpMng)
 {
-	CheckEscape();	//Updateの前に近くに爆発があるか確認する
+	CheckExplosion();	//Updateの前に近くに爆発があるか確認する
 
 	// スライム更新
 	for (int i = 0; i <MAX_SLIME_NUM; i++)
 	{
 		if (m_pSlime[i] == nullptr) { continue; }
-		if (RigidCheck()) { continue; }
 		m_pSlime[i]->Update(m_pPlayer->GetTransform(), m_pTimer->GetSlimeMoveSpeed());
 	}
 
@@ -238,6 +237,9 @@ void CSlimeManager::Update(CExplosionManager* pExpMng)
 	{
 		if (m_pBoss[i] == nullptr) continue;
 		m_pBoss[i]->Update(m_pPlayer->GetTransform());
+
+		if (m_pBoss[i]->GetMoveState() == CSlime_Boss_2::DROP_RIGID) RigidCheck(m_pBoss[i]);
+
 		ScreenShake();	//ボス落下の振動処理
 		m_nVibrateCnt = 0;
 		
@@ -1221,7 +1223,7 @@ void CSlimeManager::OutOfRange()
 
 
 /* ========================================
-	逃走判定関数
+	爆発接近判定関数
 	----------------------------------------
 	内容：スライムと爆発の位置関係を確認して逃げるかどうか判定する
 	----------------------------------------
@@ -1229,12 +1231,12 @@ void CSlimeManager::OutOfRange()
 	----------------------------------------
 	戻値：なし
 ======================================== */
-void CSlimeManager::CheckEscape()
+void CSlimeManager::CheckExplosion()
 {
 	for (int j = 0; j <MAX_SLIME_NUM; j++)
 	{
 		if (!m_pSlime[j]) { continue; }						//nullptrならスキップ
-		if (m_pSlime[j]->GetEscapeFlag()) { continue; }		//すでに逃げているならスキップ
+		if (m_pSlime[j]->GetEscapeFlg()) { continue; }		//すでに逃げているならスキップ
 
 		TPos3d<float> slimePos = m_pSlime[j]->GetPos();	//スライムの座標をゲット
 		float distance = ESCAPE_DISTANCE;				//逃げる状態になる最大距離をセット
@@ -1249,7 +1251,7 @@ void CSlimeManager::CheckEscape()
 			{
 				distance = slimeExpDistance;
 				m_pSlime[j]->SetExplosionPos(expPos);	//爆発の座標をスライムにセット
-				m_pSlime[j]->SetEscapeFlag(true);		//逃げるフラグをONにする
+				m_pSlime[j]->SetEscapeFlg(true);		//逃げるフラグをONにする
 			}
 		}
 	}
@@ -1470,34 +1472,24 @@ void CSlimeManager::PlaySE(SE se, float volume)
 	----------------------------------------
 	戻値：m_bIsRigid,硬直範囲内かどうか
 ======================================== */
-bool CSlimeManager::RigidCheck()
+void CSlimeManager::RigidCheck(CSlime_BossBase* pBossSlime)
 {
-	for (int j = 0; j < MAX_SLIME_NUM; j++)
+	for (int i = 0; i < MAX_SLIME_NUM; i++)
 	{
-		if (m_pSlime[j] == nullptr) { continue; }		//nullptrならスキップ
+		if (m_pSlime[i] == nullptr) { continue; }		// nullptrならスキップ
+		if (m_pSlime[i]->GetEscapeFlg()) { continue; }	// 既に停止中の場合スキップ
 
-		TPos3d<float> slimePos = m_pSlime[j]->GetPos();	//スライムの座標をゲット
-		float distance = RIGID_DISTANCE;				//硬直の範囲をセット
-		//範囲内にボスがあれば硬直するためのフラグをセット
-		for (int i = 0; i < MAX_BOSS_SLIME_NUM; i++)
+		TPos3d<float> slimePos = m_pSlime[i]->GetPos();	//スライムの座標をゲット
+
+		TPos3d<float> bossPos = pBossSlime->GetPos();		//ボスの座標をゲット
+		float slimeBossDistance = slimePos.Distance(bossPos);
+
+		// 硬直させる距離だった場合
+		if (RIGID_DISTANCE > slimeBossDistance)
 		{
-			if (m_pBoss[i] == nullptr) { continue; }			//nullptrならスキップ
-			TPos3d<float> bossPos = m_pBoss[i]->GetPos();		//ボスの座標をゲット
-			float slimeBossDistance = slimePos.Distance(bossPos);
-			if (distance > slimeBossDistance && m_pBoss[i]->GetMoveState() == 5)	
-			{
-				
-				m_bIsRigid = true;
-			}
-			else
-			{
-				m_bIsRigid = false;
-			}
-			
+			m_pSlime[i]->SetEscapeFlg(true);	// 停止させる
 		}
 	}
-
-	return m_bIsRigid;
 }
 
 /* ========================================

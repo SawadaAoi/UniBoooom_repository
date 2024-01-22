@@ -96,10 +96,10 @@ public:
 	void PreventBossBossOverlap(CSlime_BossBase* pMoveBoss, CSlime_BossBase* pStandBoss);							// スライム同士が移動中に接触した時の処理
 	void LoadModel();
 	void OutOfRange();
-	void CheckEscape();
+	void CheckExplosion();
 
 	void PlaySE(SE se,float volume = 1.0f);
-	bool RigidCheck();	//ボススライムと他のスライムの距離計算
+	void RigidCheck(CSlime_BossBase* pBossSlime);	//ボススライムと他のスライムの距離計算
 	void ScreenShake();
 	//ゲット関数
 	CSlimeBase* GetSlimePtr(int num);

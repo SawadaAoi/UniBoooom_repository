@@ -110,14 +110,17 @@ public:
 	E_SLIME_LEVEL GetSlimeLevel();		// スライムのレベルを取得
 	bool GetHitMoveFlg();
 	TPos3d<float> GetPos();
-	bool GetEscapeFlag();
+	bool GetEscapeFlg();
+	bool GetMoveStopFlg();
 	int GetAttack();
 
 	//セット関数
 	virtual void SetNormalSpeed() = 0;
 	void SetCamera(const CCamera* pCamera);
 	void SetExplosionPos(TPos3d<float> expPos);
-	void SetEscapeFlag(bool bEscape);
+	void SetEscapeFlg(bool bEscape);
+	void SetMoveStopFlg(bool bMvStpFlg);
+
 protected:
 	Model* m_pModel;				// 3Dモデル
 	VertexShader* m_pVS;			// バーテックスシェーダーのポインタ
@@ -128,10 +131,10 @@ protected:
 	bool m_bHitMove;				// 吹っ飛び中かどうか
 	float m_fVecAngle;				// 敵の吹き飛ぶ方向
 									   
-	bool m_bEscape;					// スライムが逃げる状態かどうか
+	bool m_bEscFlg;					// スライムが逃げる状態かどうか
 	int m_nEscapeCnt;				// 逃げる状態になった時
 
-	bool m_bMoveStop;				// 移動停止状態かどうか
+	bool m_bMvStpFlg;				// 移動停止状態かどうか
 	int m_nMvStpCnt;				// 移動停止フレーム数
 
 	E_SLIME_LEVEL m_eSlimeSize;		//スライムの大きさの列挙

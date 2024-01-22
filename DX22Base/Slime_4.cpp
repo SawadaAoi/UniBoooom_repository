@@ -91,7 +91,7 @@ void CSlime_4::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
 
 	if (!m_bHitMove)	//敵が通常の移動状態の時
 	{
-		if (!m_bEscape  && m_nEscapeCnt == 0)	//逃げるフラグがoffなら
+		if (!m_bEscFlg  && m_nEscapeCnt == 0)	//逃げるフラグがoffなら
 		{
 			NormalMove();	//通常異動
 		}
