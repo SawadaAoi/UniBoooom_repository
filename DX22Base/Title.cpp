@@ -55,9 +55,9 @@ CTitle::CTitle()
 
 	// =============== 動的確保 ===================
 	m_p2dObject.emplace(E_2D_BACK, new CBgTitle(MAP_WAIT_START.at(E_2D_BACK)));			//背景
-	m_p2dObject.emplace(E_2D_START, new CCommandTitle(MAP_WAIT_START.at(E_2D_BACK)));	//継続コマンド
-	m_p2dObject.emplace(E_2D_FINISH, new CCommandTitle(MAP_WAIT_START.at(E_2D_BACK)));	//終了コマンド
-	m_p2dObject.emplace(E_2D_LOGO, new CTitleLogo(MAP_WAIT_START.at(E_2D_BACK)));		//タイトルロゴ
+	m_p2dObject.emplace(E_2D_START, new CCommandTitle(MAP_WAIT_START.at(E_2D_START)));	//継続コマンド
+	m_p2dObject.emplace(E_2D_FINISH, new CCommandTitle(MAP_WAIT_START.at(E_2D_FINISH)));	//終了コマンド
+	m_p2dObject.emplace(E_2D_LOGO, new CTitleLogo(MAP_WAIT_START.at(E_2D_LOGO)));		//タイトルロゴ
 #if USE_OPENING
 	m_p2dObject.emplace(E_2D_OPENING, new COpeningTitle());							//開始映像
 #endif
@@ -144,7 +144,7 @@ void CTitle::Update()
 	if (m_p2dObject.find(E_2D_OPENING) != m_p2dObject.end() && m_p2dObject.at(E_2D_OPENING)
 		&& typeid(COpeningTitle) == typeid(*m_p2dObject.at(E_2D_OPENING)))	//アクセスチェック・ヌルチェック・型チェック
 	{
-		if (!static_cast<COpeningTitle*>(m_p2dObject[E_2D_OPENING])->GetAnimFlg())
+		if (!static_cast<COpeningTitle*>(m_p2dObject[E_2D_OPENING])->GetAnimFlg())	//OPアニメーション中は描画しない
 		{
 			// =============== 終了 ===================
 			delete m_p2dObject.at(E_2D_OPENING);	//対象削除
@@ -350,10 +350,11 @@ void CTitle::Update()
 	}
 	for (int nIdx = 0; nIdx < E_2D_MAX; nIdx++)
 	{
-		if (m_p2dObject.find(nIdx) != m_p2dObject.end() && m_p2dObject.at(nIdx))	//アクセスチェック・ヌルチェック
-		{
-			m_p2dObject.at(nIdx)->Update();	//更新対象
-		}
+		CScene::Update();	//親関数呼び出し
+		//if (m_p2dObject.find(nIdx) != m_p2dObject.end() && m_p2dObject.at(nIdx))	//アクセスチェック・ヌルチェック
+		//{
+		//	m_p2dObject.at(nIdx)->Update();	//更新対象
+		//}
 	}
 }
 
@@ -371,10 +372,7 @@ void CTitle::Draw()
 	// =============== 描画 ===================
 	for (int nIdx = 0; nIdx < E_2D_MAX; nIdx++)
 	{
-		if (m_p2dObject.find(nIdx) != m_p2dObject.end() && m_p2dObject.at(nIdx))	//アクセスチェック・ヌルチェック
-		{
-			m_p2dObject.at(nIdx)->Draw();	//描画対象
-		}
+		CScene::Draw();	//親関数呼び出し
 	}
 }
 

@@ -9,6 +9,7 @@
 
 	変更履歴
 	・2024/01/21 コメント改修 takagi
+	・2024/01/23 WriteBufferのvoid*引数const化 takagi
 
 ========================================== */
 
@@ -42,7 +43,7 @@ public:
 
 
 	// 定数の書き込み
-	void WriteBuffer(UINT slot, void* pData);
+	void WriteBuffer(UINT slot, const void* pData);
 	// テクスチャの設定
 	void SetTexture(UINT slot, Texture* tex);
 	void SetSampler(UINT slot, D3D11_SAMPLER_DESC* pSampDsc);

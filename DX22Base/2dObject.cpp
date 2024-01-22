@@ -24,6 +24,7 @@
 	・2024/01/19 switch文break抜け修正 takagi
 	・2024/01/20 GetPos()関数追加 takagi
 	・2024/01/21 コメント改修・汎化作業 takagi
+	・2024/01/23 Update・Draw改修 takagi
 
 ========================================== */
 
@@ -228,6 +229,16 @@ C2dObject::~C2dObject()
 =========================================== */
 void C2dObject::Update()
 {
+	// =============== 検査 ===================
+	if (!m_pCamera)	//ヌルチェック
+	{
+#if _DEBUG
+		std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+		MessageBox(nullptr, (ErrorSpot + "カメラが登録されていません").c_str(), "Error", MB_OK | MB_ICONERROR);							//エラー通知
+#endif
+		return;	//処理中断
+	}
+
 	// =============== 行列更新 ===================
 	switch (m_eMode)	//描画状態分岐
 	{
@@ -253,16 +264,6 @@ void C2dObject::Update()
 #endif
 	}
 
-	// =============== 変数宣言 ===================
-	float Param[8] = { m_Param.fUvOffset.x, m_Param.fUvOffset.y, m_Param.fUvScale.x, m_Param.fUvScale.y,
-			m_Param.fColor.x, m_Param.fColor.y, m_Param.fColor.z, m_Param.fAlpha };	//定数バッファ書き込み用
-
-	// =============== シェーダー使用 ===================
-	m_pVs->WriteBuffer(0, m_aMatrix);		//定数バッファに行列情報書き込み
-	m_pVs->WriteBuffer(1, &Param);			//定数バッファにUV情報書き込み
-	m_pVs->Bind();							//頂点シェーダー使用
-	m_pPs->SetTexture(0, m_pTextureLoad);	//テクスチャ登録
-	m_pPs->Bind();							//ピクセルシェーダー使用
 }
 
 /* ========================================
@@ -285,16 +286,17 @@ void C2dObject::Draw() const
 #endif
 		return;	//処理中断
 	}
-	if (!m_pCamera)	//ヌルチェック
-	{
-#if _DEBUG
-		std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
-		MessageBox(nullptr, (ErrorSpot + "カメラが登録されていません").c_str(), "Error", MB_OK | MB_ICONERROR);							//エラー通知
-#endif
-		return;	//処理中断
-	}
 
+	// =============== 変数宣言 ===================
+	float Param[8] = { m_Param.fUvOffset.x, m_Param.fUvOffset.y, m_Param.fUvScale.x, m_Param.fUvScale.y,
+			m_Param.fColor.x, m_Param.fColor.y, m_Param.fColor.z, m_Param.fAlpha };	//定数バッファ書き込み用
 
+	// =============== シェーダー使用 ===================
+	m_pVs->WriteBuffer(0, m_aMatrix);		//定数バッファに行列情報書き込み
+	m_pVs->WriteBuffer(1, &Param);			//定数バッファにUV情報書き込み
+	m_pVs->Bind();							//頂点シェーダー使用
+	m_pPs->SetTexture(0, m_pTextureLoad);	//テクスチャ登録
+	m_pPs->Bind();							//ピクセルシェーダー使用
 
 	// =============== 変数宣言 ===================
 	ID3D11DeviceContext* pContext = GetContext();	//描画属性の情報

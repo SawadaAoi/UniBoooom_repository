@@ -32,6 +32,7 @@
 	・2023/12/15 回復SE追加 yamashita
 	・2024/01/20 リファクタリング takagi
 	・2024/01/21 コメント改修・汎化作業 takagi
+	・2024/01/23 SEのループ設定を修正 takagi
 
 ========================================== */
 
@@ -74,11 +75,11 @@ private:
 	};	//モーション
 	// ===定数定義===========
 	const std::map<int, XAUDIO2_BUFFER*> MAP_SE = {
-	{E_SE_SWING, CSound::LoadSound("Assets/Sound/SE/Swing.mp3", true)},				//ハンマーを振る
-	{ E_SE_RUN, CSound::LoadSound("Assets/Sound/SE/Run.mp3", true) },				//移動のSE
-	{ E_SE_DAMAGED, CSound::LoadSound("Assets/Sound/SE/PlayerDamage.mp3", true) },	//プレイヤーの被ダメージ時
-	{ E_SE_HIT_HAMMER, CSound::LoadSound("Assets/Sound/BGM/BGM_maou.mp3", true) },	//ハンマーとスライムの接触SE
-	{ E_SE_HEAL, CSound::LoadSound("Assets/Sound/SE/回復1.mp3", true) },			//回復アイテム取得時
+	{E_SE_SWING, CSound::LoadSound("Assets/Sound/SE/Swing.mp3", false)},				//ハンマーを振る
+	{ E_SE_RUN, CSound::LoadSound("Assets/Sound/SE/Run.mp3", false) },				//移動のSE
+	{ E_SE_DAMAGED, CSound::LoadSound("Assets/Sound/SE/PlayerDamage.mp3", false) },	//プレイヤーの被ダメージ時
+	{ E_SE_HIT_HAMMER, CSound::LoadSound("Assets/Sound/BGM/BGM_maou.mp3", false) },	//ハンマーとスライムの接触SE
+	{ E_SE_HEAL, CSound::LoadSound("Assets/Sound/SE/回復1.mp3", false) },			//回復アイテム取得時
 	};	//SEデータ
 	const std::map<int, std::string> MAP_ANIMATION_PASS = {
 	{E_MOTION_STOP, "Assets/Model/player/Player.FBX"},	//待機

@@ -9,6 +9,7 @@
 
 	変更履歴
 	・2024/01/21 コメント改修 takagi
+	・2024/01/23 WriteBufferのvoid*引数const化 takagi
 
 ========================================== */
 
@@ -83,7 +84,7 @@ HRESULT Shader::Compile(const char *pCode)
 	return hr;
 }
 
-void Shader::WriteBuffer(UINT slot, void* pData)
+void Shader::WriteBuffer(UINT slot, const void* pData)
 {
 	if(slot < m_pBuffers.size())
 		GetContext()->UpdateSubresource(m_pBuffers[slot], 0, nullptr, pData, 0, 0);

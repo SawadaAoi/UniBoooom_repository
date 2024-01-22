@@ -11,6 +11,7 @@
 	・2024/01/18 作成 takagi
 	・2024/01/21 リファクタリング・汎化作業 takagi
 	・2024/01/22 Draw()関数const化 takagi
+	・2024/01/23 SEのリスナー生成を修正 takagi
 
 ========================================== */
 
@@ -226,16 +227,21 @@ void CObject::SetCamera(const CCamera* pCamera)
 ======================================== */
 void CObject::PlaySe(const std::map<int, XAUDIO2_BUFFER*>& pSe, const int& nKey, const float& fVolume)
 {
-	// =============== リスナー整理 =====================
-	if (m_pListener.find(nKey) != m_pListener.end())	//アクセスチェック
-	{
-		UNLOAD_SOUND(m_pListener.at(nKey));	//BGMの再生を停止し、その音データの紐づけを破棄	※ここ以外で削除するとヌルチェックできない中身のポインターがヌルとなりデストラクタで停止する
-	}
+
 
 	// =============== 音設定 =====================
 	if (pSe.find(nKey) != pSe.end() && pSe.at(nKey))	//アクセスチェック・ヌルチェック
 	{
-		m_pListener.at(nKey) = CSound::PlaySound(pSe.at(nKey));	//SE再生
+		// =============== リスナー整理 =====================
+		if (m_pListener.find(nKey) != m_pListener.end())	//アクセスチェック
+		{
+			UNLOAD_SOUND(m_pListener.at(nKey));	//BGMの再生を停止し、その音データの紐づけを破棄	※ここ以外で削除するとヌルチェックできない中身のポインターがヌルとなりデストラクタで停止する
+			m_pListener.at(nKey) = CSound::PlaySound(pSe.at(nKey));	//SE再生
+		}
+		else
+		{
+			m_pListener.emplace(nKey, CSound::PlaySound(pSe.at(nKey)));	//リスナー追加
+		}
 		m_pListener.at(nKey)->SetVolume(fVolume);				//音量の設定
 	}
 #if _DEBUG
