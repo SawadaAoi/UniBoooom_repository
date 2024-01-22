@@ -85,10 +85,13 @@ CExplosion::CExplosion(TPos3d<float> fPos, float fSize, float fTime, int comboNu
 	m_fDamage = (float)nDamage;		// 与えるダメージ量をセットする
 	m_pCamera = pCamera;		//カメラをセット
 	m_explodeEffect = explodeEffect;	//エフェクトをセット
-	m_efcHnadle = LibEffekseer::GetManager()->Play(m_explodeEffect, m_Transform.fPos.x, m_Transform.fPos.y, m_Transform.fPos.z);	//エフェクトの開始
-	LibEffekseer::GetManager()->SetScale(m_efcHnadle,EXPLODE_STANDARD_SIZE * fSize, EXPLODE_STANDARD_SIZE * fSize, EXPLODE_STANDARD_SIZE * fSize);	//エフェクトのサイズを設定
-	LibEffekseer::GetManager()->SetSpeed(m_efcHnadle, EXPLODE_STANDARD_ONE_FRAME / fTime);		//エフェクトの再生速度を設定
+	// 遅延処理が無い場合
+	if(delayFlg==false)
+	{
+		EffectStart();			// エフェクト表示を開始する
+	}
 }
+	
 
 /* ========================================
 	デストラクタ関数
@@ -228,6 +231,7 @@ void CExplosion::Delay()
 	if (m_nDelayCnt >= DELAY_TIME)
 	{
 		m_bDelayFlg = false;	// 遅延フラグをオフにする
+		EffectStart();			// エフェクト表示を開始する
 	}
 }
 
@@ -264,9 +268,45 @@ int CExplosion::GetComboNum()
 	return m_dComboNum;
 }
 
+
+/* ========================================
+	SEフラグ取得処理関数
+	-------------------------------------
+	内容：SEフラグを取得する
+	-------------------------------------
+	引数1：無し
+	-------------------------------------
+	戻値：SEフラグ(bool)
+=========================================== */
 bool CExplosion::GetSeFlg()
 {
 	return m_bSeFlg;
+}
+
+
+/* ========================================
+	エフェクト表示開始関数
+	-------------------------------------
+	内容：エフェクトの表示を開始する
+	-------------------------------------
+	引数1：無し
+	-------------------------------------
+	戻値：無し
+=========================================== */
+void CExplosion::EffectStart()
+{
+	m_efcHnadle = LibEffekseer::GetManager()->Play(m_explodeEffect, 	//エフェクトの開始
+		m_Transform.fPos.x, 
+		m_Transform.fPos.y, 
+		m_Transform.fPos.z);
+
+	LibEffekseer::GetManager()->SetScale(m_efcHnadle, 					//エフェクトのサイズを設定
+		EXPLODE_STANDARD_SIZE * m_fMaxSize, 
+		EXPLODE_STANDARD_SIZE * m_fMaxSize, 
+		EXPLODE_STANDARD_SIZE * m_fMaxSize);	
+
+	LibEffekseer::GetManager()->SetSpeed(m_efcHnadle,					//エフェクトの再生速度を設定
+		EXPLODE_STANDARD_ONE_FRAME / m_fExplodeTime);		
 }
 
 /* ========================================
@@ -302,7 +342,7 @@ bool CExplosion::GetBossTouched()
 	----------------------------------------
 	内容：描画処理で使用するカメラ情報セット
 	----------------------------------------
-	引数1：なし
+	引数1：カメラポインタ
 	----------------------------------------
 	戻値：なし
 ======================================== */
@@ -311,10 +351,20 @@ void CExplosion::SetCamera(const CCamera * pCamera)
 	m_pCamera = pCamera;
 }
 
-	void CExplosion::SetSeFlg(bool flg)
-	{
-		m_bSeFlg = flg;
-	}
+
+/* ========================================
+	SEフラグセット関数
+	-------------------------------------
+	内容：SEフラグをセット
+	-------------------------------------
+	引数1：SEフラグ(bool)
+	-------------------------------------
+	戻値：無し
+=========================================== */
+void CExplosion::SetSeFlg(bool flg)
+{
+	m_bSeFlg = flg;
+}
 
 
 

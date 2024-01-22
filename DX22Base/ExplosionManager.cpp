@@ -189,7 +189,7 @@ void CExplosionManager::Create(TTriType<float> pos,float size, float time, int d
 		// 使用済みの爆発はスルー
 		if (m_pExplosion[i] != nullptr) continue;
 
-		m_pExplosion[i] = new CExplosion(pos, size, time, comboNum, true, damage,m_explodeEffect,m_pCamera);	// 座標を指定して生成
+		m_pExplosion[i] = new CExplosion(pos, size, time, comboNum, false, damage,m_explodeEffect,m_pCamera);	// 座標を指定して生成
 		m_pExplosion[i]->SetCamera(m_pCamera);
 
 		break;

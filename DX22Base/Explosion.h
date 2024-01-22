@@ -63,6 +63,9 @@ public:
 	bool GetSeFlg();
 
 private:
+	void EffectStart();
+
+
 	// ===ƒƒ“ƒo•Ï”éŒ¾===
 	float			m_fMaxSize;
 	TTriType<float>	m_fSizeAdd;
