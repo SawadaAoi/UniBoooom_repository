@@ -96,6 +96,9 @@ CSlimeBase::~CSlimeBase()
 {
 	// =============== メモリ開放 ===================
 	SAFE_DELETE(m_pShadow);	//影解放
+
+	//--エフェクト停止--
+	LibEffekseer::GetManager()->StopEffect(m_efcslimeHnadle);
 }
 
 /* ========================================
@@ -134,10 +137,11 @@ void CSlimeBase::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
 
 	if (GetSlimeLevel() == LEVEL_FLAME)
 	{
-		//エフェクト更新
-		LibEffekseer::GetManager()->SetLocation(m_efcslimeHnadle, m_Transform.fPos.x, m_Transform.fPos.y, m_Transform.fPos.z);
+		//エフェクト位置、回転角度更新
+		LibEffekseer::GetManager()->SetLocation(m_efcslimeHnadle, m_Transform.fPos.x, m_Transform.fPos.y, m_Transform.fPos.z + 0.5f);
+		LibEffekseer::GetManager()->SetRotation(m_efcslimeHnadle, m_Transform.fRadian.x, m_Transform.fRadian.y, m_Transform.fRadian.z);
 	}
-	
+
 }
 
 	

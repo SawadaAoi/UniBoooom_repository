@@ -29,8 +29,6 @@ public:
 	CSlime_Flame();
 	CSlime_Flame(TPos3d<float> pos, float fSize, Effekseer::EffectRef flameSlimeEffect, VertexShader* pVS, Model* pModel);
 	~CSlime_Flame();
-	//void Draw();
-	//void Update();
 	void NormalMove() override;
 	void SetNormalSpeed() override;
 

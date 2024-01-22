@@ -66,9 +66,10 @@ CSlime_Flame::CSlime_Flame(TPos3d<float> pos, float fSize, Effekseer::EffectRef 
 	m_pModel = pModel;
 	// エフェクト初期化
 	m_flameSlimeEffect = flameSlimeEffect;	//エフェクトをセット
-	m_efcslimeHnadle = LibEffekseer::GetManager()->Play(m_flameSlimeEffect, pos.x, pos.y, pos.z);	//エフェクトの開始
-	LibEffekseer::GetManager()->SetScale(m_efcslimeHnadle, LEVEL_FLAME_SCALE* fSize, LEVEL_FLAME_SCALE * fSize, LEVEL_FLAME_SCALE * fSize);	//エフェクトのサイズを設定
-	LibEffekseer::GetManager()->SetLocation(m_efcslimeHnadle, pos.x, pos.y, pos.z);
+	m_efcslimeHnadle = LibEffekseer::GetManager()->Play(m_flameSlimeEffect, pos.x, pos.y, pos.z + 0.5f);	//エフェクトの開始
+	LibEffekseer::GetManager()->SetScale(m_efcslimeHnadle, LEVEL_FLAME_SCALE* fSize, LEVEL_FLAME_SCALE * fSize * 1.1f, LEVEL_FLAME_SCALE * fSize);	//エフェクトのサイズを設定
+	LibEffekseer::GetManager()->SetRotation(m_efcslimeHnadle, m_Transform.fRadian.x, m_Transform.fRadian.y, m_Transform.fRadian.z);					//エフェクトの回転角度を設定
+	LibEffekseer::GetManager()->SetLocation(m_efcslimeHnadle, pos.x, pos.y, pos.z);																	//エフェクトの位置を設定
 }
 
 /* ========================================
@@ -84,20 +85,6 @@ CSlime_Flame::~CSlime_Flame()
 {
 }
 
-//void CSlime_Flame::Draw()
-//{
-//	//エフェクトの描画
-//	TPos3d<float> cameraPos = m_pCamera->GetPos();							//カメラ座標を取得
-//	DirectX::XMFLOAT3 fCameraPos(cameraPos.x, cameraPos.y, cameraPos.z);	//XMFLOAT3に変換
-//	LibEffekseer::SetViewPosition(fCameraPos);								//カメラ座標をセット
-//	LibEffekseer::SetCameraMatrix(m_pCamera->GetViewWithoutTranspose(), m_pCamera->GetProjectionWithoutTranspose());	//転置前のviewとprojectionをセット
-//}
-//
-//void CSlime_Flame::Update()
-//{
-//	LibEffekseer::GetManager()->SetLocation(m_efcslimeHnadle, m_Transform.fPos.x, m_Transform.fPos.y, m_Transform.fPos.z);
-//
-//}
 
 /* ========================================
 	通常移動関数

@@ -172,7 +172,7 @@ CSlimeManager::CSlimeManager(CPlayer* pPlayer)
 	LoadSE();
 
 	//エフェクト初期化
-	m_flameSlimeEffect = LibEffekseer::Create("Assets/Effect/mega/slime_fire_effect.efkefc");
+	m_flameSlimeEffect = LibEffekseer::Create("Assets/Effect/flameslime/slime_fire_effect.efkefc");
 
 	#if DEBUG_BOSS
 	// 開始時ボス生成
@@ -369,7 +369,7 @@ void CSlimeManager::Create(E_SLIME_LEVEL level)
 			m_pSlime[i] = new CSlime_4(CreatePos, m_pVS, m_pRedModel);	// 動的生成
 			break;
 		case LEVEL_FLAME:
-			m_pSlime[i] = new CSlime_Flame(CreatePos,1.5f,m_flameSlimeEffect, m_pVS,m_pFlameModel);	// 動的生成
+			m_pSlime[i] = new CSlime_Flame(CreatePos, 0.5f, m_flameSlimeEffect, m_pVS,m_pFlameModel);	// 動的生成
 			break;
 		case LEVEL_HEAL:
 			m_pSlime[i] = new CSlime_Heal(CreatePos, m_pVS, m_pHealModel);	//動的生成
