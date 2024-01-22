@@ -92,19 +92,28 @@ CSlime_2::~CSlime_2()
 {
 }
 
+/* ========================================
+	更新処理関数
+	-------------------------------------
+	内容：更新処理
+	-------------------------------------
+	引数1：プレイヤーのtransform
+	-------------------------------------
+	戻値：無し
+=========================================== */
 void CSlime_2::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
 {
 	m_PlayerTran = playerTransform;
 
 	if (!m_bHitMove)	//敵が通常の移動状態の時
 	{
-		if (!m_bEscape  && m_nEscapeCnt == 0)	//逃げるフラグがoffなら
+		if (!m_bMvStpFlg  && m_nMvStpCnt == 0)	//逃げるフラグがoffなら
 		{
 			NormalMove();	//通常異動
 		}
 		else
 		{
-			Escape();	//爆発から逃げる
+			MoveStop();	//爆発から逃げる
 		}
 	}
 	else
