@@ -311,11 +311,11 @@ void CSlimeBase::Reflect()
 void CSlimeBase::EscapeMove()
 {
 	//爆発への角度を取得
-	float rad = atan2f(m_ExpPos.z - m_Transform.fPos.z, m_ExpPos.x - m_Transform.fPos.x);	
+	float rad = atan2f(m_ExpPos.x - m_Transform.fPos.x, m_ExpPos.z - m_Transform.fPos.z);
 	//爆発と反対方向に移動
 	m_move.x = 0.0f;//-(cosf(rad)) * ENEMY_MOVE_SPEED;
 	m_move.z = 0.0f;//-(sinf(rad)) * ENEMY_MOVE_SPEED;
-	m_Transform.fRadian.y = atan2f(m_move.x,m_move.z);
+	m_Transform.fRadian.y = rad;
 
 	m_nEscapeCnt++;	//カウントを増加
 	if (m_nEscapeCnt > ESCAPE_TIME) 

@@ -10,6 +10,7 @@
 	変更履歴
 	・2023/12/07 制作 takagi
 	・2023/12/11 分秒取得追加 takagi
+	・2023/12/28 保存する項目を追加 Sawada
 
 ========================================== */
 //TODO:同じようにランキング用とかも作る
@@ -26,21 +27,27 @@ typedef struct tagBattleData	//ワールド行列に関わる情報
 {
 public:
 	// ===メンバ変数宣言===
-	int nAliveTime;		//生存時間[s]
-	int nKill;			//倒した数
-	int nTotalScore;	//スコア合計値
-	int nStageNum;		//プレイしたステージ番号
-	std::string	sName;	//プレイヤー名
+	int nAliveTime;		// 生存時間[s]
+	int nTotalKill;		// 総討伐数
+	int nKill[5];		// スライム別討伐数
+	int nTotalScore;	// スコア合計値
+	int nHighScore[3];	// ハイスコア(ステージ別)
+	int nMaxCombo;		// 最大コンボ数
+	int nStageNum;		// プレイしたステージ番号
+	bool bClearFlg;		// ステージクリアフラグ
+	std::string	sName;	// プレイヤー名
+
 	// ===プロトタイプ宣言===
-	tagBattleData();																//コンストラクタ
-	tagBattleData(const int& nAliveTime, const int& nKill, const int& nTotalScore, const int & nStageNum);	//引数付きコンストラクタ
-	tagBattleData(const tagBattleData& Obj);										//コピーコンストラクタ
-	~tagBattleData();																//デストラクタ
-	void Load();																	//データ読み込み
-	void Save();																	//データ保存
-	int GetMinute();																//分ゲッタ
-	int GetSecond();																//秒ゲッタ
-	int GetCommaSecond();															//ミリ秒ゲッタ
+	tagBattleData();																//　コンストラクタ
+	tagBattleData(const int& nAliveTime, const int& nTotalKill, 
+		const int& nTotalScore, const int& nMaxCombo, const int & nStageNum);		//　引数付きコンストラクタ
+	tagBattleData(const tagBattleData& Obj);										//	コピーコンストラクタ
+	~tagBattleData();																//	デストラクタ
+	void Load();																	//	データ読み込み
+	void Save();																	//	データ保存
+	int GetMinute();																//	分ゲッタ
+	int GetSecond();																//	秒ゲッタ
+	int GetCommaSecond();															//	ミリ秒ゲッタ
 }BattleData;	//試合データ
 
 /* ========================================
@@ -57,7 +64,23 @@ template<typename CharT, typename Traits>	//テンプレート関数実装
 std::basic_fstream<CharT, Traits>& operator>>(std::basic_fstream<CharT, Traits>& FileStream, BattleData& Data)
 {
 	// =============== 読み込み ===================
-	FileStream >> Data.nAliveTime >> Data.nKill >> Data.nTotalScore >> Data.nStageNum;	//宣言順に読み込み
+	FileStream >> Data.nAliveTime >> Data.nTotalKill;
+
+	// スライム種類数分格納する
+	for (int i = 0; i < 5; i++)
+	{
+		FileStream >> Data.nKill[i];
+	}
+
+	FileStream >> Data.nTotalScore;
+
+	// ステージ数分格納する
+	for (int i = 0; i < 3; i++)
+	{
+		FileStream >> Data.nHighScore[i];
+	}
+
+	FileStream >> Data.nMaxCombo >> Data.nStageNum >> Data.bClearFlg;	//宣言順に読み込み
 
 	// =============== 提供 ===================
 	return FileStream;	//入力元ストリーム
@@ -77,7 +100,23 @@ template<typename CharT, typename Traits>	//テンプレート関数実装
 std::basic_fstream<CharT, Traits>& operator<<(std::basic_fstream<CharT, Traits>& FileStream, const BattleData& Data)
 {
 	// =============== 書き出し ===================
-	FileStream << Data.nAliveTime << ' ' << Data.nKill << ' ' << Data.nTotalScore << ' ' << Data.nStageNum << std::endl;	//宣言順に書き出し
+	FileStream << Data.nAliveTime << ' ' << Data.nTotalKill << ' ' << std::endl;
+
+	// スライム種類数分出力する
+	for (int i = 0; i < 5; i++)
+	{
+		FileStream << Data.nKill[i] << ' ' << std::endl;
+	}
+
+	FileStream << Data.nTotalScore << ' ' << std::endl; 
+
+	// ステージ数分出力する
+	for (int i = 0; i < 3; i++)
+	{
+		FileStream << Data.nHighScore[i]  << ' ' << std::endl;
+	}
+	
+	FileStream << Data.nMaxCombo << ' ' << Data.nStageNum << ' ' << Data.bClearFlg << std::endl;	//宣言順に書き出し
 
 	// =============== 提供 ===================
 	return FileStream;	//出力先ストリーム

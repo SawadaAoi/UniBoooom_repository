@@ -209,6 +209,7 @@
     <ClCompile Include="Item.cpp" />
     <ClCompile Include="LibEffekseer.cpp" />
     <ClCompile Include="ModelParticle.cpp" />
+    <ClCompile Include="NumberText.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="OpeninigTitle.cpp" />
     <ClCompile Include="Particle.cpp" />
@@ -260,6 +261,9 @@
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="SceneGame.cpp" />
     <ClCompile Include="Timer.cpp" />
+    <ClCompile Include="TimerStage1.cpp" />
+    <ClCompile Include="TimerStage2.cpp" />
+    <ClCompile Include="TimerStage3.cpp" />
     <ClCompile Include="Title.cpp" />
     <ClCompile Include="CommandTitle.cpp" />
     <ClCompile Include="TitleAnime.cpp" />
@@ -293,6 +297,7 @@
     <ClInclude Include="CommandPause.h" />
     <ClInclude Include="Controller.h" />
     <ClInclude Include="Cylinder.h" />
+    <ClInclude Include="Delete.h" />
     <ClInclude Include="DirectWrite.h" />
     <ClInclude Include="DrawAnimation.h" />
     <ClInclude Include="GameClearText.h" />
@@ -316,6 +321,7 @@
     <ClInclude Include="HitStop.h" />
     <ClInclude Include="Item.h" />
     <ClInclude Include="LibEffekseer.h" />
+    <ClInclude Include="NumberText.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="HP_UI.h" />
     <ClInclude Include="OpeningTitle.h" />
@@ -368,6 +374,9 @@
     <ClInclude Include="StripeParticle.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Timer.h" />
+    <ClInclude Include="TimerStage1.h" />
+    <ClInclude Include="TimerStage2.h" />
+    <ClInclude Include="TimerStage3.h" />
     <ClInclude Include="Title.h" />
     <ClInclude Include="CommandTitle.h" />
     <ClInclude Include="TitleAnime.h" />

@@ -15,6 +15,8 @@
 	・2023/12/14 BGMの管理をSceneManagerに移動 yamashita
 	・2023/12/15 ゲームスタート表示を書き変え nieda
 	・2023/12/18 デバッグモード削除反映 takagi
+	・2024/01/01 親コンストラクタ呼び出し takagi
+	・2024/01/15 GameFinish()関数修正・RecordData()関数追加 takagi
 
 ========================================== */
 
@@ -23,6 +25,8 @@
 #include "CameraChase.h"
 #include "HitStop.h"	//ヒットストップ
 
+// =============== 定数・マクロ定義 ===================
+const int STAGE_NUM = 3;	//ステージ番号
 
 /* ========================================
 	コンストラクタ
@@ -34,6 +38,7 @@
 	戻値：なし
 =========================================== */
 CStage3::CStage3()
+	:CStage(CUIStageManager::E_STAGE_3)	//親関数呼び出し
 {
 	m_pFloor = new CFloor(m_pPlayer->GetPosAddress(), CFloor::Stage3);	// 床生成
 	m_pUIStageManager->GetBossGauge()->AddBossGauge(BOSS_GAUGE_S3[0].BossNum, BOSS_GAUGE_S3[0].startTime, BOSS_GAUGE_S3[0].maxTime);
@@ -52,6 +57,10 @@ CStage3::CStage3()
 =========================================== */
 CStage3::~CStage3()
 {
+	// =============== 記録 =====================
+	RecordData();	//データ記録
+
+	// =============== 終了 =====================
 	SAFE_DELETE(m_pFloor);
 }
 
@@ -115,21 +124,7 @@ void CStage3::Update()
 		}
 	}
 #else
-	if (m_pUIStageManager->GetStageFinish()->GetDeleteDispFlg())
-	{
-		// =============== フラグ管理 =====================
-		m_bFinish = true;	// タイトルシーン終了フラグON
-
-		// =============== 退避 =====================
-		m_Data.nTotalScore = m_pUIStageManager->GetTotalScore();			//スコア退避
-		m_Data.nAliveTime = m_pUIStageManager->GetTimer()->GetErapsedTime();	//経過時間退避
-		if (m_pSlimeMng)	//ヌルチェック
-		{
-			m_Data.nKill = m_pSlimeMng->GetKillCnt();						//討伐数退避
-		}
-
-		m_Data.nStageNum = 3;
-	}
+	CStage::GameFinish();	// ステージ終了処理
 #endif
 }
 
@@ -213,4 +208,35 @@ CStage3::E_TYPE CStage3::GetNext() const
 {
 	// =============== 提供 ===================
 	return CStage3::E_TYPE_RESULT;	//遷移先シーンの種類
+}
+
+/* ========================================
+	データ記録関数
+	----------------------------------------
+	内容：リザルト用にデータ記録
+	----------------------------------------
+	引数1：なし
+	----------------------------------------
+	戻値：なし
+=========================================== */
+void CStage3::RecordData()
+{
+	// =============== 退避 =====================
+	m_Data.nTotalScore = m_pUIStageManager->GetTotalScore();				// スコア退避
+
+	// =============== データ登録 =====================
+	if (m_Data.nHighScore[STAGE_NUM - 1] < m_Data.nTotalScore)	// ハイスコアを更新しているか？
+	{
+		m_Data.nHighScore[STAGE_NUM - 1] = m_Data.nTotalScore;	// ハイスコア更新
+	}
+	m_Data.nAliveTime = m_pUIStageManager->GetTimer()->GetErapsedTime();	// 経過時間退避
+	m_Data.nMaxCombo = m_pUIStageManager->GetCombo()->GetMaxCombo();		// 最大コンボ数退避
+	m_Data.bClearFlg = m_pUIStageManager->GetStageFinish()->GetClearFlg();	// ゲームクリアしたか
+	if (m_pSlimeMng)	//ヌルチェック
+	{
+		m_Data.nTotalKill = m_pSlimeMng->GetTotalKillCnt();					// 総討伐数退避
+		m_pSlimeMng->GetKillCntArray(m_Data.nKill);							// スライム別討伐数退避
+
+	}
+	m_Data.nStageNum = STAGE_NUM;	// プレイしたステージ番号
 }

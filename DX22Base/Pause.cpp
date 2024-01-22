@@ -231,7 +231,7 @@ void CPause::Update()
 			}
 
 			// =============== カーソル移動 ===================
-			if (IsKeyTrigger(VK_UP))		//↑入力時
+			if (IsKeyTrigger(VK_UP) || IsKeyTrigger('W'))		//↑・W入力時
 			{
 				// =============== 状態遷移 ===================
 				if (m_p2dObj[E_2D_CONTINUE] && typeid(CCommandPause) == typeid(*m_p2dObj[E_2D_CONTINUE]))	//ヌルチェック、型チェック
@@ -247,7 +247,7 @@ void CPause::Update()
 				UpFlag(E_FLAG_COMMAND_CONTINUE);	//上のコマンド採用
 				DownFlag(E_FLAG_COMMAND_FINISH);	//下のコマンド不採用
 			}
-			if (IsKeyTrigger(VK_DOWN))	//↓入力時
+			if (IsKeyTrigger(VK_DOWN) || IsKeyTrigger('S'))	//↓・S入力時
 			{
 				// =============== 状態遷移 ===================
 				if (m_p2dObj[E_2D_FINISH])	//ヌルチェック、型チェック
@@ -264,7 +264,7 @@ void CPause::Update()
 			}
 
 			// =============== 決定 ===================
-			if (IsKeyTrigger(VK_RETURN))	//Enter入力時
+			if (IsKeyTrigger(VK_RETURN) || IsKeyTrigger(VK_SPACE))	//Enter・Space入力時
 			{
 				// =============== フラグ操作 ===================
 				UpFlag(E_FLAG_DECIDE_COMMAND);	//決定

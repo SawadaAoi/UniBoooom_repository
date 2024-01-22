@@ -20,6 +20,9 @@
 	・2023/12/14 BGMの管理をSceneManagerに移動 yamashita
 	・2023/12/15 フェード削除 takagi
 	・2023/12/16 不要な変数など削除 nieda
+	・2023/12/28 BattleData格納処理をまとめた関数を追加	Sawada
+	・2024/01/01 ステージ分岐 Takagi
+	・2024/01/15 GameFinish()関数の引数修正・RecordData()関数追加 Takagi
 
 ========================================== */
 
@@ -60,13 +63,15 @@ class CStage :public CScene	//シーン
 {
 public:
 	// =============== プロトタイプ宣言 ===============
-	CStage();							//コンストラクタ
-	virtual ~CStage();					//デストラクタ
+	CStage(CUIStageManager::E_STAGE_NUM eStage);	//コンストラクタ
+	virtual ~CStage();								//デストラクタ
 	//virtual void Update();				//更新
 	//virtual void Draw() const;			//描画	
 	//virtual E_TYPE GetType() const = 0;	//自身の種類ゲッタ
 	void Collision();
 protected:
+	virtual void RecordData() = 0;	//データ記録
+	void GameFinish();
 	void PlayerSlimeCollision();
 	void PlayerBossCollision();		//追加
 	void PlayerHealItemCollision();
@@ -89,15 +94,9 @@ protected:
 	CSlimeManager* m_pSlimeMng;
 	CCOLLISION* m_pCollision;
 	CExplosionManager* m_pExplosionMng;
-	//CTimer* m_pTimer;
-	//CCombo* m_pCombo;
 	CFloor* m_pFloor;
-	//CStageFinish* m_pStageFin;
 	Texture* m_pTexture;
 	CScoreOHManager* m_pScoreOHMng;
-	////CTotalScore* m_pTotalScore;
-	//CHP_UI* m_pHpMng;
-	//CBossgauge* m_pBossgauge;
 	CHealItemManager* m_pHealItemMng;
 	CPause* m_pPause;						//ポーズ画面
 	CUIStageManager* m_pUIStageManager;

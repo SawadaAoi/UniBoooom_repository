@@ -172,6 +172,18 @@
     <Filter Include="ソース ファイル\2dObject\Union">
       <UniqueIdentifier>{4a70b38c-3cba-4672-941f-61058e8777ff}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\2dObject\Text">
+      <UniqueIdentifier>{5e8ff715-515a-4683-9c67-58d15b32d27d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\2dObject\Text">
+      <UniqueIdentifier>{84971194-0cb9-4bd2-80a3-31c79e07f89b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\2dObject\Timer">
+      <UniqueIdentifier>{68548d60-f9a6-4f63-a5fd-87f054be6d1d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\2dObject\Timer">
+      <UniqueIdentifier>{87981910-2080-4eb9-98a8-b2c6f9dc57ff}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -281,9 +293,6 @@
     </ClCompile>
     <ClCompile Include="Transform2d.cpp">
       <Filter>ソース ファイル\Info</Filter>
-    </ClCompile>
-    <ClCompile Include="Timer.cpp">
-      <Filter>ソース ファイル\2dObject</Filter>
     </ClCompile>
     <ClCompile Include="Object.cpp">
       <Filter>ソース ファイル\3dObject</Filter>
@@ -468,20 +477,35 @@
     <ClCompile Include="FixedCamera.cpp">
       <Filter>ソース ファイル\System\Camera</Filter>
     </ClCompile>
-    <ClCompile Include="GameStartText.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="GameClearText.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="GameOverText.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="UnionManager.cpp">
       <Filter>ソース ファイル\2dObject\Union</Filter>
     </ClCompile>
     <ClCompile Include="Union.cpp">
       <Filter>ソース ファイル\2dObject\Union</Filter>
+    </ClCompile>
+    <ClCompile Include="GameClearText.cpp">
+      <Filter>ソース ファイル\2dObject\Text</Filter>
+    </ClCompile>
+    <ClCompile Include="GameOverText.cpp">
+      <Filter>ソース ファイル\2dObject\Text</Filter>
+    </ClCompile>
+    <ClCompile Include="GameStartText.cpp">
+      <Filter>ソース ファイル\2dObject\Text</Filter>
+    </ClCompile>
+    <ClCompile Include="NumberText.cpp">
+      <Filter>ソース ファイル\2dObject\Text</Filter>
+    </ClCompile>
+    <ClCompile Include="Timer.cpp">
+      <Filter>ソース ファイル\2dObject\Timer</Filter>
+    </ClCompile>
+    <ClCompile Include="TimerStage1.cpp">
+      <Filter>ソース ファイル\2dObject\Timer</Filter>
+    </ClCompile>
+    <ClCompile Include="TimerStage2.cpp">
+      <Filter>ソース ファイル\2dObject\Timer</Filter>
+    </ClCompile>
+    <ClCompile Include="TimerStage3.cpp">
+      <Filter>ソース ファイル\2dObject\Timer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -607,9 +631,6 @@
     </ClInclude>
     <ClInclude Include="DirectWrite.h">
       <Filter>ヘッダー ファイル\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Timer.h">
-      <Filter>ヘッダー ファイル\2dObject</Filter>
     </ClInclude>
     <ClInclude Include="Object.h">
       <Filter>ヘッダー ファイル\3dObject</Filter>
@@ -788,20 +809,38 @@
     <ClInclude Include="FixedCamera.h">
       <Filter>ヘッダー ファイル\System\Camera</Filter>
     </ClInclude>
-    <ClInclude Include="GameStartText.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="GameOverText.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="GameClearText.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="UnionManager.h">
       <Filter>ヘッダー ファイル\2dObject\Union</Filter>
     </ClInclude>
     <ClInclude Include="Union.h">
       <Filter>ヘッダー ファイル\2dObject\Union</Filter>
+    </ClInclude>
+    <ClInclude Include="GameClearText.h">
+      <Filter>ヘッダー ファイル\2dObject\Text</Filter>
+    </ClInclude>
+    <ClInclude Include="GameOverText.h">
+      <Filter>ヘッダー ファイル\2dObject\Text</Filter>
+    </ClInclude>
+    <ClInclude Include="GameStartText.h">
+      <Filter>ヘッダー ファイル\2dObject\Text</Filter>
+    </ClInclude>
+    <ClInclude Include="NumberText.h">
+      <Filter>ヘッダー ファイル\2dObject\Text</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer.h">
+      <Filter>ヘッダー ファイル\2dObject\Timer</Filter>
+    </ClInclude>
+    <ClInclude Include="TimerStage1.h">
+      <Filter>ヘッダー ファイル\2dObject\Timer</Filter>
+    </ClInclude>
+    <ClInclude Include="TimerStage2.h">
+      <Filter>ヘッダー ファイル\2dObject\Timer</Filter>
+    </ClInclude>
+    <ClInclude Include="TimerStage3.h">
+      <Filter>ヘッダー ファイル\2dObject\Timer</Filter>
+    </ClInclude>
+    <ClInclude Include="Delete.h">
+      <Filter>ヘッダー ファイル\Info</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

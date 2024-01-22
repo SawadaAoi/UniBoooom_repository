@@ -18,18 +18,20 @@
 	E2023/12/01 ƒtƒF[ƒh‚Ìd—l•ÏX takagi 
 	E2023/12/04 ƒJƒƒ‰‚Ìƒtƒ@ƒCƒ‹‰ü–¼“K—p takagi
 	E2023/12/17 ƒtƒF[ƒhŠ®—¹”»’è‚ª‚¸‚êAÅ¬EÅ‘åó‘Ô‚É‚È‚ç‚È‚¢‚±‚Æ‚ª‚ ‚é–â‘è‚ğC³Eƒuƒ‰ƒbƒNƒAƒEƒg‘Î‰ takagi
+	E2024/01/16 ƒtƒF[ƒhƒAƒEƒgEƒCƒ“‚ÉƒC[ƒWƒ“ƒO“K—p takagi
 
 ========================================== */
 
 // =============== ƒCƒ“ƒNƒ‹[ƒh ===================
 #include "Fade.h"		//©g‚Ìƒwƒbƒ_
 #include "CameraDef.h"	//‹^—ƒJƒƒ‰
+#include <math.h>		//powg—p
 
 #if _DEBUG
 #include <Windows.h>	//ƒƒbƒZ[ƒWƒ{ƒbƒNƒX—p
 #endif
 
-// =============== ’è”’è‹` =====================
+// =============== ’è”Eƒ}ƒNƒ’è‹` =====================
 const std::string VS_PASS("Assets/Shader/VsFade.cso");		//ƒeƒNƒXƒ`ƒƒ‚ÌƒpƒX–¼
 const std::string PS_PASS("Assets/Shader/PsFade.cso");		//ƒeƒNƒXƒ`ƒƒ‚ÌƒpƒX–¼
 const std::string TEX_PASS("Assets/Texture/Fade.png");		//ƒeƒNƒXƒ`ƒƒ‚ÌƒpƒX–¼
@@ -45,7 +47,10 @@ const float SCALE_IN_MIN(600.0f);							//ƒtƒF[ƒhƒCƒ“Å¬ƒTƒCƒY	uv‚Ì“s‡ãA’l‚
 const float SCALE_OUT_STAY(10.0f);							//ƒtƒF[ƒhƒAƒEƒgŠgk‚ªˆêû‚Ü‚é‚Æ‚«‚ÌƒTƒCƒY
 const float SCALE_OUT_MAX(0.0f);							//ƒtƒF[ƒhÅ‘åƒTƒCƒY	uv‚Ì“s‡ãA’l‚ª¬‚³‚¢’öƒTƒCƒY‚ª‘å‚«‚­‚È‚é
 const float SCALE_IN_MAX(0.0f);								//ƒtƒF[ƒhÅ‘åƒTƒCƒY	uv‚Ì“s‡ãA’l‚ª¬‚³‚¢’öƒTƒCƒY‚ª‘å‚«‚­‚È‚é
-const float ROTATE_ACCEL_RATE(8.0f);						//Šp‘¬“x‘‰ÁŠ„‡
+const float ROTATE_ACCEL_RATE(0.00025f);					//Šp‘¬“x‘‰ÁŠ„‡
+const double PI(3.14159265358979323846);					//‰~ü—¦M_PI‚ÌƒRƒs[
+#define ROTATE_EASE_IN_OUT(frame) (ROTATE_ACCEL_RATE * (0.5 ? 4 * pow((frame), 3.0)	\
+	: 1 - pow(-2 * (frame) + 2, 3.0) / 2))					//ƒtƒF[ƒhƒCƒ“EƒAƒEƒg‰ñ“]—p‚ÌƒC[ƒYŒvZ
 
 // =============== ƒOƒ[ƒoƒ‹•Ï”éŒ¾ =====================
 int CFade::ms_nCntFade;							//©g‚Ì¶¬”
@@ -719,7 +724,7 @@ void CFade::FadeOut()
 			m_UvParam.fUvScale.y = m_UvParam.fUvScale.x;	//x’l‚Ì•ÏX‚ğy’l‚É”½‰f‚·‚é
 
 			// =============== ‰ñ“]ŠpXV ===================
-			m_Transform.fRadian.z = DirectX::XMConvertToRadians(nFrameTemp * ROTATE_ACCEL_RATE);	//ƒtƒŒ[ƒ€”‚ÅŠpXV
+			m_Transform.fRadian.z = DirectX::XMConvertToRadians(ROTATE_EASE_IN_OUT(nFrameTemp));	//ƒtƒŒ[ƒ€”‚ÅŠpXV
 		}
 
 		// =============== ƒJƒEƒ“ƒ^ ===================
@@ -804,7 +809,8 @@ void CFade::FadeIn()
 	m_UvParam.fUvScale.y = m_UvParam.fUvScale.x;	//x’l‚Ì•ÏX‚ğy’l‚É”½‰f‚·‚é
 
 	// =============== ‰ñ“]ŠpXV ===================
-	m_Transform.fRadian.z = DirectX::XMConvertToRadians(m_nFrame * ROTATE_ACCEL_RATE);	//ƒtƒŒ[ƒ€”‚ÅŠpXV
+	m_Transform.fRadian.z = DirectX::XMConvertToRadians(ROTATE_EASE_IN_OUT(FRAME_FADE_MAX.x - m_nFrame));	//ƒtƒŒ[ƒ€”‚ÅŠpXV
+	//m_Transform.fRadian.z = DirectX::XMConvertToRadians(ROTATE_ACCEL_RATE * -cosf(3.14159265358979323846264338327950188419f * (float)(m_nFrame - FRAME_MIN) / (float)(FRAME_FADE_MAX.z) - 1) / 2);
 
 	// =============== ƒJƒEƒ“ƒ^ ===================
 	m_nFrame--;	//ƒtƒŒ[ƒ€ƒJƒEƒ“ƒg

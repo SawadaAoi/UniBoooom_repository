@@ -26,6 +26,8 @@
 	・2023/12/08 被討伐数のカウンタを追加 takagi
 	・2023/12/15 SEまわりを整理 yamashita
 	・2023/12/20 UNION追加 takagi
+	・2023/12/28 スライム討伐配列番号追加 Sawada
+	・2024/01/03 UnionSlime関数に移動速度と角度の引数を追加 nieda
 	・2024/01/01 ボス落下のスライム硬直てょり追加 Tei
 
    ======================================== */
@@ -80,7 +82,7 @@ public:
 	void HitBranch(int HitSlimeArrayNum,int standSlimeArrayNum,CExplosionManager* pExpMng);			// スライムの接触が起きた際の分岐処理
 	bool HitFlameBranch(int HitSlimeNum, int StandSlimeNum, CExplosionManager* pExpMng);			// フレイムスライムとの接触が起きた際の分岐処理
 	bool HitHealBranch(int HitSlimeNum, int StandSlimeNum, CExplosionManager* pExpMng);				// フレイムスライムとの接触が起きた際の分岐処理
-	void UnionSlime(E_SLIME_LEVEL level, TPos3d<float> pos);										// スライムの結合処理
+	void UnionSlime(E_SLIME_LEVEL level, TPos3d<float> pos, float speed, float angle);				// スライムの結合処理
 	void TouchExplosion(int DelSlime, CExplosionManager* pExpMng, int comboNum);					// スライムの爆発処理
 
 	//-- ボス
@@ -111,7 +113,8 @@ public:
 	void SetHealMng(CHealItemManager* pHealItemMng);
 	void SetExplosionMng(CExplosionManager* pExpMng);
 	void SetTimer(CTimer* pTimer);
-	int GetKillCnt();									//被討伐数ゲッタ
+	int GetTotalKillCnt();									//被討伐数ゲッタ
+	void GetKillCntArray(int* nKillCnt);									//被討伐数ゲッタ
 private:
 	// ===メンバ変数宣言=====
 	int GetRandom(int min, int max);
@@ -142,6 +145,7 @@ private:
 	CExplosionManager* m_pExpMng;
 	
 	int m_nKill;	//被討伐数
+	int m_nKills[5];	//被討伐数
 	bool m_bIsRigid;	//硬直かどうかフラグ
 	int m_nVibrateCnt;	//振動時間カウント
 

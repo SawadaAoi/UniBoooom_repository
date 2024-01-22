@@ -39,6 +39,9 @@
 	・2023/12/15 SEまわりを整理 yamashita
 	・2023/12/15 ボス1のモデルを修正 Sawada
 	・2023/12/20 UNION追加 takagi
+	・2023/12/28 スライム討伐配列番号追加 Sawada
+	・2024/01/01 スライム生成数の代わりを訂正 takagi
+	・2024/01/03 UnionSlime関数に移動速度と角度の引数を追加 nieda
 	・2024/01/01 ボス落下のスライム硬直処理追加 Tei
 	・2024/01/13 ボス落下の画面揺れ処理追加 Tei
 
@@ -63,11 +66,13 @@
 #include <stdlib.h>
 
 // =============== 定数定義 =======================
-const float COL_SUB_HIT_TO_BIG = 0.1f;			// スライム衝突(小→大)の衝突側の減算値(反射する移動)				//1.0でそのまま
-const float COL_SUB_STAND_TO_SMALL = 0.8f;		// スライム衝突(小→大)の衝突される側の減算値(衝突された方向)	//1.0でそのまま
-const float COL_SUB_HIT_TO_SMALL = 0.3f;		// スライム衝突(大→小)の衝突側の減算値(移動方向)				//1.0でそのまま
-const float COL_SUB_STAND_TO_BIG = 1.2f;		// スライム衝突(大→小)の衝突される側の減算値(衝突された方向)	//1.0でそのまま
+const float COL_SUB_HIT_TO_BIG = 0.1f;		// スライム衝突(小→大)の衝突側の減算値(反射する移動)				//1.0でそのまま
+const float COL_SUB_STAND_TO_SMALL = 0.8f;	// スライム衝突(小→大)の衝突される側の減算値(衝突された方向)	//1.0でそのまま
+const float COL_SUB_HIT_TO_SMALL = 0.3f;	// スライム衝突(大→小)の衝突側の減算値(移動方向)				//1.0でそのまま
+const float COL_SUB_STAND_TO_BIG = 1.2f;	// スライム衝突(大→小)の衝突される側の減算値(衝突された方向)	//1.0でそのまま
+const int	REPLACE_SLM_CREATE_NUM = 20;	// スライム最大生成数代わりの定数
 const float RIGID_DISTANCE = 20.0f;				// ボス落下後他のスライムの硬直させる範囲
+
 #define DEBUG_BOSS	(false)	// デバッグ用にゲーム開始時ボスを生成するかどうか
 
 
@@ -103,6 +108,17 @@ const std::map<size_t, int> MAP_KILL_POINT = {
 	{typeid(CSlime_Boss_1).hash_code(), 1 },
 	{typeid(CSlime_Boss_2).hash_code(), 1 },
 };	//スライムの種類に連動した討伐数
+
+const std::map<size_t, int> MAP_SLIME_KILL_NUM = {
+	{typeid(CSlime_1).hash_code(), 0 },
+	{typeid(CSlime_2).hash_code(), 1 },
+	{typeid(CSlime_3).hash_code(), 2 },
+	{typeid(CSlime_4).hash_code(), 3 },
+	{typeid(CSlime_Flame).hash_code(), 0 },
+	{typeid(CSlime_Heal).hash_code(), 0 },
+	{typeid(CSlime_Boss_1).hash_code(), 4 },
+	{typeid(CSlime_Boss_2).hash_code(), 4 },
+};	//スライムの種類に連動した討伐配列番号
 
 /* ========================================
 	コンストラクタ関数
@@ -172,6 +188,8 @@ CSlimeManager::CSlimeManager(CPlayer* pPlayer)
 
 	// =============== UNION ===================
 	m_pUnionMng = new CUnionManager;	//UNION管理
+
+	for (int i = 0; i < 5; i++) m_nKills[i] = 0;
 }
 
 /* ========================================
@@ -314,7 +332,7 @@ void CSlimeManager::Create(E_SLIME_LEVEL level)
 	int mMaxNum;
 	if (m_pTimer == nullptr)
 	{
-		mMaxNum = SLM_CREATE_NUM[STATE_FIRST];
+		mMaxNum = REPLACE_SLM_CREATE_NUM;
 	}
 	else
 	{
@@ -502,7 +520,7 @@ void CSlimeManager::HitBranch(int HitSlimeNum, int StandSlimeNum, CExplosionMana
 		{
 			SAFE_DELETE(m_pSlime[HitSlimeNum]);								// 衝突するスライムを削除
 			SAFE_DELETE(m_pSlime[StandSlimeNum]);							// 衝突されたスライムを削除
-			UnionSlime(hitSlimeLevel,pos);	//スライムの結合処理
+			UnionSlime(hitSlimeLevel,pos, hitSlimeSpeed, travelAngle);		//スライムの結合処理
 		}
 	}
 }
@@ -688,10 +706,13 @@ bool CSlimeManager::HitHealBranch(int HitSlimeNum, int StandSlimeNum, CExplosion
 	内容：1段階上のスライムを生成する関数
 	----------------------------------------
 	引数1：スライムのレベル
+	引数2：スライムの位置情報（←書いてなかったので書いときましたが合ってるかわかんないです nieda）
+	引数3：衝突直前の衝突する側のスライムの移動速度
+	引数4：衝突直前の衝突する側のスライムの角度
 	----------------------------------------
 	戻値：なし
 ======================================== */
-void CSlimeManager::UnionSlime(E_SLIME_LEVEL level ,TPos3d<float> pos)
+void CSlimeManager::UnionSlime(E_SLIME_LEVEL level ,TPos3d<float> pos, float speed, float angle)
 {
 	for (int i = 0; i <MAX_SLIME_NUM; i++)
 	{
@@ -702,14 +723,17 @@ void CSlimeManager::UnionSlime(E_SLIME_LEVEL level ,TPos3d<float> pos)
 		case LEVEL_1:
 			//サイズ2のスライムを生成
 			m_pSlime[i] = new CSlime_2(pos, m_pVS, m_pGreenModel);
+			m_pSlime[i]->HitMoveStart(speed, angle);
 			break;
 		case LEVEL_2:
 			//サイズ3のスライムを生成
 			m_pSlime[i] = new CSlime_3(pos, m_pVS, m_pYellowModel);
+			m_pSlime[i]->HitMoveStart(speed, angle);
 			break;
 		case LEVEL_3:
 			//サイズ4のスライムを生成
 			m_pSlime[i] = new CSlime_4(pos, m_pVS, m_pRedModel);
+			m_pSlime[i]->HitMoveStart(speed, angle);
 			break;
 		}
 
@@ -1342,10 +1366,27 @@ void CSlimeManager::SetTimer(CTimer * pTimer)
 	----------------------------------------
 	戻値：被討伐数
 =========================================== */
-int CSlimeManager::GetKillCnt()
+int CSlimeManager::GetTotalKillCnt()
 {
 	// =============== 提供 ===================
 	return m_nKill;	//被討伐数
+}
+
+/* ========================================
+	スライム別討伐数ゲッタ関数
+	----------------------------------------
+	内容：スライム別討伐数提供
+	----------------------------------------
+	引数1：なし
+	----------------------------------------
+	戻値：スライム別討伐数
+=========================================== */
+void CSlimeManager::GetKillCntArray(int* nKillCnt)
+{
+	for (int i = 0; i < 5; i++)
+	{
+		nKillCnt[i] = m_nKills[i];
+	}
 }
 
 /* ========================================
@@ -1421,6 +1462,9 @@ void CSlimeManager::CntKill(const CSlimeBase* pSlime)
 		// =============== カウンターストップ =====================
 		m_nKill = MAX_KILL_CNT;	//上限値で登録
 	}
+
+	m_nKills[MAP_SLIME_KILL_NUM.at(typeid(*pSlime).hash_code())]++;	//討伐数
+
 }
 
 /* ========================================

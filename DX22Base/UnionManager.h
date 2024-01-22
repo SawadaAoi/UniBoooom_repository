@@ -9,11 +9,12 @@
 
 	変更履歴
 	・2023/12/19 制作 takagi
+	・2024/01/16 統一のため、インクルードガードの___を__に変更	takagi
 
 ========================================== */
 
-#ifndef ___UNION_MANAGER_H___	//UnionManager.hインクルードガード
-#define ___UNION_MANAGER_H___
+#ifndef __UNION_MANAGER_H__	//UnionManager.hインクルードガード
+#define __UNION_MANAGER_H__
 
 // =============== インクルード ===================
 #include "Shader.h"			//メンバのヘッダ
@@ -49,4 +50,4 @@ private:
 	const CCamera* m_pCamera;						//カメラ(貰い専)
 };	//フェード
 
-#endif // !___UNION_MANAGER_H___
+#endif // !__UNION_MANAGER_H__

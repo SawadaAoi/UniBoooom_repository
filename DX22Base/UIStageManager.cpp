@@ -9,10 +9,14 @@
 
 	変更履歴
 	・2023/11/28 cpp作成UI用処理を入れます Tei
-		・2023/12/08 シーン遷移用に関数追加 takagi
+	・2023/12/08 シーン遷移用に関数追加 takagi
+	・2024/01/01 タイマーを変更・ステージ管理 takagi
 
 ========================================== */
 #include "UIStageManager.h"
+#include "TimerStage1.h"	//ステージ1用タイマー
+#include "TimerStage2.h"	//ステージ2用タイマー
+#include "TimerStage3.h"	//ステージ3用タイマー
 
 /* ========================================
 	デストラクタ関数
@@ -21,10 +25,12 @@
 	-------------------------------------
 	引数1：プレイヤーのポインタ
 	引数2：カメラのポインタ
+	引数3：スライム管理
+	引数4：ステージ番号
 	-------------------------------------
 	戻値：無し
 =========================================== */
-CUIStageManager::CUIStageManager(CPlayer* pPlayer,CCamera * pCamera, CSlimeManager* pSlimeMng)
+CUIStageManager::CUIStageManager(CPlayer* pPlayer,CCamera * pCamera, CSlimeManager* pSlimeMng, E_STAGE_NUM eStage)
 	: m_pBossgauge(nullptr)
 	, m_pCombo(nullptr)
 	, m_pHpMng(nullptr)
@@ -35,7 +41,25 @@ CUIStageManager::CUIStageManager(CPlayer* pPlayer,CCamera * pCamera, CSlimeManag
 	, m_pBossArrow(nullptr)
 {
 	m_pCombo = new CCombo();
-	m_pTimer = new CTimer();
+
+	// =============== 動的確保 =====================
+	switch(eStage)
+	{
+	case E_STAGE_1:	//ステージ1
+		m_pTimer = new CTimerStage1();	//タイマー確保
+		break;							//分岐処理終了
+	case E_STAGE_2:	//ステージ2
+		m_pTimer = new CTimerStage2();	//タイマー確保
+		break;							//分岐処理終了
+	case E_STAGE_3:	//ステージ3
+		m_pTimer = new CTimerStage3();	//タイマー確保
+		break;							//分岐処理終了	
+	}
+	if (m_pTimer)	//分岐処理で動的確保失敗
+	{
+		m_pTimer = new CTimerStage1();	//タイマー確保
+	}
+
 	m_pBossgauge = new CBossgauge(m_pTimer);
 	m_pHpMng = new CHP_UI(pPlayer->GetHpPtr());
 	m_pTotalScore = new CTotalScore();
