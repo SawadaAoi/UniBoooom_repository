@@ -548,9 +548,6 @@
     <ClInclude Include="Sphere.h">
       <Filter>ヘッダー ファイル\Geometry</Filter>
     </ClInclude>
-    <ClInclude Include="ExplosionManager.h">
-      <Filter>ヘッダー ファイル\Object\3dObject</Filter>
-    </ClInclude>
     <ClInclude Include="Transform3d.h">
       <Filter>ヘッダー ファイル\Info\Transform</Filter>
     </ClInclude>
@@ -620,9 +617,6 @@
     <ClInclude Include="AnimeModel.h">
       <Filter>ヘッダー ファイル\System</Filter>
     </ClInclude>
-    <ClInclude Include="ScoreOHManager.h">
-      <Filter>ヘッダー ファイル\Object\2dObject\Score</Filter>
-    </ClInclude>
     <ClInclude Include="ScoreOverHead.h">
       <Filter>ヘッダー ファイル\Object\2dObject\Score</Filter>
     </ClInclude>
@@ -659,13 +653,7 @@
     <ClInclude Include="SlimeBase.h">
       <Filter>ヘッダー ファイル\Object\3dObject\Enemy</Filter>
     </ClInclude>
-    <ClInclude Include="SlimeManager.h">
-      <Filter>ヘッダー ファイル\Object\3dObject\Enemy</Filter>
-    </ClInclude>
     <ClInclude Include="HealItem.h">
-      <Filter>ヘッダー ファイル\Object\3dObject\Item</Filter>
-    </ClInclude>
-    <ClInclude Include="HealItemManager.h">
       <Filter>ヘッダー ファイル\Object\3dObject\Item</Filter>
     </ClInclude>
     <ClInclude Include="Item.h">
@@ -673,9 +661,6 @@
     </ClInclude>
     <ClInclude Include="Random.h">
       <Filter>ヘッダー ファイル\System\Random</Filter>
-    </ClInclude>
-    <ClInclude Include="UIStageManager.h">
-      <Filter>ヘッダー ファイル\Object\2dObject</Filter>
     </ClInclude>
     <ClInclude Include="Slime_Heal.h">
       <Filter>ヘッダー ファイル\Object\3dObject\Enemy</Filter>
@@ -743,9 +728,6 @@
     <ClInclude Include="FixedCamera.h">
       <Filter>ヘッダー ファイル\System\Camera</Filter>
     </ClInclude>
-    <ClInclude Include="UnionManager.h">
-      <Filter>ヘッダー ファイル\Object\2dObject\Union</Filter>
-    </ClInclude>
     <ClInclude Include="Union.h">
       <Filter>ヘッダー ファイル\Object\2dObject\Union</Filter>
     </ClInclude>
@@ -789,6 +771,24 @@
       <Filter>ヘッダー ファイル\System\Flag</Filter>
     </ClInclude>
     <ClInclude Include="ObjectManager.h">
+      <Filter>ヘッダー ファイル\Object\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="HealItemManager.h">
+      <Filter>ヘッダー ファイル\Object\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="ExplosionManager.h">
+      <Filter>ヘッダー ファイル\Object\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="SlimeManager.h">
+      <Filter>ヘッダー ファイル\Object\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="UIStageManager.h">
+      <Filter>ヘッダー ファイル\Object\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="UnionManager.h">
+      <Filter>ヘッダー ファイル\Object\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="ScoreOHManager.h">
       <Filter>ヘッダー ファイル\Object\Manager</Filter>
     </ClInclude>
   </ItemGroup>

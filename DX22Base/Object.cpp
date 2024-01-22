@@ -10,6 +10,7 @@
 	変更履歴
 	・2024/01/18 作成 takagi
 	・2024/01/21 リファクタリング・汎化作業 takagi
+	・2024/01/22 Draw()関数const化 takagi
 
 ========================================== */
 
@@ -81,6 +82,15 @@ CObject::~CObject()
 	if (0 == ms_nCntObject)	//静的確保物を解放するか
 	{
 		SAFE_DELETE(ms_pCameraDef);	//疑似カメラ削除
+	}
+	for (auto Iterator = m_pListener.end(); Iterator != m_pListener.begin();)
+	{
+		if ((--Iterator)->second)	//ヌルチェック
+		{
+			UNLOAD_SOUND(Iterator->second);		//BGMの再生を停止し、その音データの紐づけを破棄		※このとき中身のポインターがデータを持たないとエラーとなる
+			(Iterator->second) = nullptr;		//空アドレス代入
+		}
+		Iterator = m_pListener.erase(Iterator);	//イテレータ削除
 	}
 }
 
@@ -201,4 +211,38 @@ void CObject::SetCamera(const CCamera* pCamera)
 
 	// =============== カメラ登録 ===================
 	m_pCamera = pCameraUse;	//カメラ登録
+}
+
+/* ========================================
+	SEの読み込み関数
+	----------------------------------------
+	内容：SEの読み込み
+	----------------------------------------
+	引数1：const std::map<int, XAUDIO2_BUFFER*>& pSe：SEデータ
+	引数2：const int& nKey：MAPのキー
+	引数3：const float& fVolume：音量
+	----------------------------------------
+	戻値：なし
+======================================== */
+void CObject::PlaySe(const std::map<int, XAUDIO2_BUFFER*>& pSe, const int& nKey, const float& fVolume)
+{
+	// =============== リスナー整理 =====================
+	if (m_pListener.find(nKey) != m_pListener.end())	//アクセスチェック
+	{
+		UNLOAD_SOUND(m_pListener.at(nKey));	//BGMの再生を停止し、その音データの紐づけを破棄	※ここ以外で削除するとヌルチェックできない中身のポインターがヌルとなりデストラクタで停止する
+	}
+
+	// =============== 音設定 =====================
+	if (pSe.find(nKey) != pSe.end() && pSe.at(nKey))	//アクセスチェック・ヌルチェック
+	{
+		m_pListener.at(nKey) = CSound::PlaySound(pSe.at(nKey));	//SE再生
+		m_pListener.at(nKey)->SetVolume(fVolume);				//音量の設定
+	}
+#if _DEBUG
+	else
+	{
+		std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+		MessageBox(nullptr, (ErrorSpot + "音のデータが不足しています").c_str(), "Error", MB_OK | MB_ICONERROR);								//エラー通知
+	}
+#endif
 }

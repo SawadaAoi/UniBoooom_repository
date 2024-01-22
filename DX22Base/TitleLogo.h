@@ -12,6 +12,7 @@
 	・2023/12/17 引数参照化 takagi
 	・2024/01/20 リファクタリング takagi
 	・2024/01/21 コメント改修 takagi
+	・2024/01/22 Draw()関数const化 takagi
 
 ========================================== */
 
@@ -30,7 +31,7 @@ public:
 	CTitleLogo(const int& nWaitTime = 0);								//コンストラクタ
 	~CTitleLogo();														//デストラクタ
 	void Update() override;												//更新
-	void Draw() override;	//描画
+	void Draw() const override;											//描画
 	void ChangeLtoS(const int& nFrame);									//縮小
 private:
 	// ===変数宣言===========

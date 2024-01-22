@@ -22,6 +22,7 @@
 	・2024/01/18 リファクタリング及びコメント追加 takagi
 	・2024/01/20 GetPos()関数追加 takagi
 	・2024/01/21 コメント改修・定数修正・汎化作業 takagi
+	・2024/01/22 Draw()関数const化 takagi
 
 ========================================== */
 
@@ -30,7 +31,6 @@
 
 // =============== インクルード ===================
 #include "Object.h"		//親のヘッダ
-#include "Shader.h"		//メンバのヘッダ
 #include "Texture.h"	//メンバのヘッダ
 
 // =============== クラス定義 =====================
@@ -83,7 +83,7 @@ public:
 	C2dObject(const C2dObject& Obj);												//コピーコンストラクタ
 	virtual ~C2dObject();															//デストラクタ
 	virtual void Update();															//更新
-	virtual void Draw();															//描画
+	virtual void Draw() const override;												//描画
 	virtual void SetDrawMode(const E_DRAW_MODE& eMode = DEFAULT_DRAW_MODE) final;	//描画法セッタ
 	virtual void SetUvOffset(const TDiType<float>& fUvOffset) final;				//UVずれセッタ
 	virtual void SetUvScale(const TDiType<float>& fUvScale) final;					//UV拡縮セッタ

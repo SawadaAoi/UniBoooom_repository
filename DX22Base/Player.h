@@ -47,105 +47,81 @@
 #include "Pos3d.h"
 #include "Camera.h"
 #include "3dObject.h"		//3Dオブジェクト
-#include "Sound.h"
 #include "Model.h"
 #include "Shadow.h"
-#include "AnimeModel.h"
+
 // =============== クラス定義 =====================
-class CPlayer
-	: public C3dObject
+class CPlayer :public C3dObject
 {
 public:
 	// === 列挙 ===
-	enum SE
+	enum E_SE
 	{
-		SE_SWING,	//ハンマーを振るSE
-		SE_RUN,			//移動のSE
-		SE_DAMAGED,		//被ダメージのSE
-		SE_HIT_HAMMER,	//ハンマーとスライムの接触SE
-		SE_HEAL,
-
-		SE_MAX			//SEの総数
-	};
-
+		E_SE_SWING,			//ハンマーを振るSE
+		E_SE_RUN,			//移動のSE
+		E_SE_DAMAGED,		//被ダメージのSE
+		E_SE_HIT_HAMMER,	//ハンマーとスライムの接触SE
+		E_SE_HEAL,			//回復のSE
+		E_SE_MAX			//SEの総数
+	};	//SE
+private:
+	enum E_MOTION
+	{
+		E_MOTION_STOP,	//待機
+		E_MOTION_MOVE,	//移動
+		E_MOTION_SWING,	//ハンマーを振る
+		E_MOTION_MAX,	//モーションの総数
+	};	//モーション
+	// ===定数定義===========
+	const std::map<int, XAUDIO2_BUFFER*> MAP_SE = {
+	{E_SE_SWING, CSound::LoadSound("Assets/Sound/SE/Swing.mp3", true)},				//ハンマーを振る
+	{ E_SE_RUN, CSound::LoadSound("Assets/Sound/SE/Run.mp3", true) },				//移動のSE
+	{ E_SE_DAMAGED, CSound::LoadSound("Assets/Sound/SE/PlayerDamage.mp3", true) },	//プレイヤーの被ダメージ時
+	{ E_SE_HIT_HAMMER, CSound::LoadSound("Assets/Sound/BGM/BGM_maou.mp3", true) },	//ハンマーとスライムの接触SE
+	{ E_SE_HEAL, CSound::LoadSound("Assets/Sound/SE/回復1.mp3", true) },			//回復アイテム取得時
+	};	//SEデータ
+	const std::map<int, std::string> MAP_ANIMATION_PASS = {
+	{E_MOTION_STOP, "Assets/Model/player/Player.FBX"},	//待機
+	{E_MOTION_MOVE, "Assets/Model/player/Dash.FBX"},	//移動
+	{E_MOTION_SWING, "Assets/Model/player/pow.FBX"},	//スイング
+	};	//アニメーションのファイル
+	const std::string MODEL_PASS = "Assets/Model/player/POW.fbx";	//モデルのファイル
+public:
 	// ===プロトタイプ宣言===
-	CPlayer();		//コンストラクタ
-	~CPlayer();		//デストラクタ
-
-	void Update();	//更新
-	void Draw();	//描画
+	CPlayer();					//コンストラクタ
+	~CPlayer();					//デストラクタ
+	void Update();				//更新
+	void Draw() const;			//描画
 	void Damage(int DmgNum);	//自身のHPを減らす
-	void MoveKeyboard();	// キーボード用入力移動
-	void MoveController();	// コントローラ用入力移動
+	void MoveKeyboard();			// キーボード用入力移動
+	void MoveController();								// コントローラ用入力移動
 	void MoveSizeInputSet(TPos3d<float> fInput);
 	void DamageAnimation();
 	void MoveCheck();
-	void LoadSound();	//サウンド読み込み関数
-	void PlaySE(SE se, float volume = 1.0f);
 	void Healing();
-
-	// ゲット関数
 	tagSphereInfo GetHammerSphere();	//当たり判定を取るためゲッター
 	TPos3d<float>* GetPosAddress();
 	CHammer* GetHammerPtr();
 	bool GetCollide();							//当たり判定があるかの確認
 	int* GetHpPtr();
-	// セット関数
-	void SetCamera(CCamera* pCamera);
 	bool GetAttackFlg();
-	
-
+	virtual void SetCamera(const CCamera* pCamera) override;			//カメラセッタ
+	virtual void PlaySe(const E_SE& eKey, const float& fVolume = 1.0f);	//SE音源登録
 private:
-	// ===プロトタイプ宣言===
-	void LoadAnime();	//アニメーション読み込み関数
-
 	// ===メンバ変数宣言=====
-	TPos3d<float> m_fMove;				// 移動量
-	AnimeModel* m_pModel;				//プレイヤーのモデル
-	int m_nHp;							// プレイヤーの体力
-	bool m_bAttackFlg;					// 攻撃中かどうかのフラグ
-	int m_nNoDamageCnt;					// プレイヤーの無敵時間をカウント
-	bool m_bCollide;					// プレイヤーの無敵状態のフラグ(当たり判定をOFF)
-	CHammer* m_pHammer;					// ハンマークラスのポインタ(プレイヤーが管理する)
-	CCamera* m_pCamera;					// プレイヤーを追従するカメラ
-	bool m_DrawFlg;						// プレイヤーがダメージを受けたら点滅するフラグ
-	int m_FlashCnt;						// 点滅の時間の長さ
-	int m_nMoveCnt;						// プレイヤーの移動によるSEの間隔
-	bool m_bIntFlg;						// ハンマー間隔時間フラグ
-	float m_fIntCnt;					// ハンマー間隔時間カウント
-	float m_fTick;						//フレームカウンタ(0to60)
-	CShadow* m_pShadow;
-
-	// ===列挙===
-	enum MOTION
-	{
-		MOTION_STOP,	//待機
-		MOTION_MOVE,	//移動
-		MOTION_SWING,	//ハンマーを振る
-
-		MOTION_MAX,	//モーションの総数
-	};
-
-	//=====SE関連=====
-	XAUDIO2_BUFFER* m_pSE[SE_MAX];
-	IXAudio2SourceVoice* m_pSESpeaker[SE_MAX];
-	const std::string m_sSEFile[SE_MAX] = {
-		"Assets/Sound/SE/Swing.mp3",			//ハンマーを振る
-		"Assets/Sound/SE/Run.mp3",				//移動のSE
-		"Assets/Sound/SE/PlayerDamage.mp3",		//プレイヤーの被ダメージ時
-		"Assets/Sound/SE/maou_se_battle03.mp3",			//ハンマーとスライムの接触SE
-		"Assets/Sound/SE/回復1.mp3" };			//回復アイテム取得時
-
-	//=====アニメーション関連=====
-	AnimeModel::AnimeNo m_Anime[MOTION_MAX];		//プレイヤーのアニメーション
-	const std::string m_sAnimeFile[MOTION_MAX] = {	//アニメーションのファイル
-		"Assets/Model/player/Player.FBX",			//待機
-		"Assets/Model/player/Dash.FBX",				//移動
-		"Assets/Model/player/pow.FBX" };			//スイング
+	TPos3d<float> m_fMove;	//移動量
+	int m_nHp;				//プレイヤーの体力
+	bool m_bAttackFlg;		//攻撃中かどうかのフラグ
+	int m_nNoDamageCnt;		//プレイヤーの無敵時間をカウント
+	bool m_bCollide;		//プレイヤーの無敵状態のフラグ(当たり判定をOFF)
+	CHammer* m_pHammer;		//ハンマークラスのポインタ(プレイヤーが管理する)
+	bool m_DrawFlg;			//プレイヤーがダメージを受けたら点滅するフラグ
+	int m_FlashCnt;			//点滅の時間の長さ
+	int m_nMoveCnt;			//プレイヤーの移動によるSEの間隔
+	bool m_bIntFlg;			//ハンマー間隔時間フラグ
+	float m_fIntCnt;		//ハンマー間隔時間カウント
+	float m_fTick;			//レームカウンタ(0to60)
+	CShadow* m_pShadow;		//影
 };
 
-
 #endif	//!__PLAYER_H__
-
-
-

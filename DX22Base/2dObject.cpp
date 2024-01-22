@@ -228,6 +228,41 @@ C2dObject::~C2dObject()
 =========================================== */
 void C2dObject::Update()
 {
+	// =============== 行列更新 ===================
+	switch (m_eMode)	//描画状態分岐
+	{
+		// =============== 通常描画 ===================
+	case E_DRAW_MODE_NORMAL:	//通常時
+		m_aMatrix[E_MATRIX_WORLD] = m_Transform.GetWorldMatrixSRT();								//ワールド行列更新
+		DirectX::XMStoreFloat4x4(&m_aMatrix[E_MATRIX_VIEW], DirectX::XMMatrixIdentity());			//ビュー行列：単位行列
+		m_aMatrix[E_MATRIX_PROJECTION] = m_pCamera->GetProjectionMatrix(CCamera::E_DRAW_TYPE_2D);	//プロジェクション行列更新
+		break;																						//分岐処理終了
+
+		// =============== ビルボード描画 ===================
+	case E_DRAW_MODE_BILLBOARD:	//ビルボード仕様
+		m_aMatrix[E_MATRIX_WORLD] = m_Transform.GetWorldMatrixSRT(m_pCamera->GetInverseViewMatrix());	//ビルボードの行列変換
+		m_aMatrix[E_MATRIX_VIEW] = m_pCamera->GetViewMatrix();											//ビュー行列更新
+		m_aMatrix[E_MATRIX_PROJECTION] = m_pCamera->GetProjectionMatrix(CCamera::E_DRAW_TYPE_3D);		//プロジェクション行列更新
+		break;																							//分岐処理終了
+#if _DEBUG
+		// =============== 例外 ===================
+	default:	//上記以外
+		std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+		MessageBox(nullptr, (ErrorSpot + "想定外の描画法が指定されました").c_str(), "Error", MB_OK | MB_ICONERROR);							//エラー通知
+		break;																																//分岐処理終了
+#endif
+	}
+
+	// =============== 変数宣言 ===================
+	float Param[8] = { m_Param.fUvOffset.x, m_Param.fUvOffset.y, m_Param.fUvScale.x, m_Param.fUvScale.y,
+			m_Param.fColor.x, m_Param.fColor.y, m_Param.fColor.z, m_Param.fAlpha };	//定数バッファ書き込み用
+
+	// =============== シェーダー使用 ===================
+	m_pVs->WriteBuffer(0, m_aMatrix);		//定数バッファに行列情報書き込み
+	m_pVs->WriteBuffer(1, &Param);			//定数バッファにUV情報書き込み
+	m_pVs->Bind();							//頂点シェーダー使用
+	m_pPs->SetTexture(0, m_pTextureLoad);	//テクスチャ登録
+	m_pPs->Bind();							//ピクセルシェーダー使用
 }
 
 /* ========================================
@@ -239,7 +274,7 @@ void C2dObject::Update()
 	-------------------------------------
 	戻値：なし
 =========================================== */
-void C2dObject::Draw()
+void C2dObject::Draw() const
 {
 	// =============== 検査 ===================
 	if (!m_pTextureLoad)	//ヌルチェック
@@ -259,41 +294,7 @@ void C2dObject::Draw()
 		return;	//処理中断
 	}
 
-	// =============== 行列更新 ===================
-	switch (m_eMode)	//描画状態分岐
-	{
-		// =============== 通常描画 ===================
-	case E_DRAW_MODE_NORMAL:	//通常時
-		m_aMatrix[E_MATRIX_WORLD] = m_Transform.GetWorldMatrixSRT();								//ワールド行列更新
-		DirectX::XMStoreFloat4x4(&m_aMatrix[E_MATRIX_VIEW], DirectX::XMMatrixIdentity());			//ビュー行列：単位行列
-		m_aMatrix[E_MATRIX_PROJECTION] = m_pCamera->GetProjectionMatrix(CCamera::E_DRAW_TYPE_2D);	//プロジェクション行列更新
-		break;																						//分岐処理終了
-		
-		// =============== ビルボード描画 ===================
-	case E_DRAW_MODE_BILLBOARD:	//ビルボード仕様
-		m_aMatrix[E_MATRIX_WORLD] = m_Transform.GetWorldMatrixSRT(m_pCamera->GetInverseViewMatrix());	//ビルボードの行列変換
-		m_aMatrix[E_MATRIX_VIEW] = m_pCamera->GetViewMatrix();											//ビュー行列更新
-		m_aMatrix[E_MATRIX_PROJECTION] = m_pCamera->GetProjectionMatrix(CCamera::E_DRAW_TYPE_3D);		//プロジェクション行列更新
-		break;																							//分岐処理終了
-#if _DEBUG
-		// =============== 例外 ===================
-	default:	//上記以外
-		std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
-		MessageBox(nullptr, (ErrorSpot + "想定外の描画法が指定されました").c_str(), "Error", MB_OK | MB_ICONERROR);							//エラー通知
-		break;																																//分岐処理終了
-#endif
-	}
 
-	// =============== 変数宣言 ===================
-	float Param[8] = { m_Param.fUvOffset.x, m_Param.fUvOffset.y, m_Param.fUvScale.x, m_Param.fUvScale.y,
-			m_Param.fColor.x, m_Param.fColor.y, m_Param.fColor.z, m_Param.fAlpha};	//定数バッファ書き込み用
-
-	// =============== シェーダー使用 ===================
-	m_pVs->WriteBuffer(0, m_aMatrix);	//定数バッファに行列情報書き込み
-	m_pVs->WriteBuffer(1, &Param);		//定数バッファにUV情報書き込み
-	m_pVs->Bind();						//頂点シェーダー使用
-	m_pPs->SetTexture(0, m_pTextureLoad);	//テクスチャ登録
-	m_pPs->Bind();						//ピクセルシェーダー使用
 
 	// =============== 変数宣言 ===================
 	ID3D11DeviceContext* pContext = GetContext();	//描画属性の情報
@@ -474,7 +475,7 @@ void C2dObject::SetTexture(const char* pcTexPass)
 	{
 #if _DEBUG
 		std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
-		MessageBox(nullptr, (ErrorSpot + "テクスチャの読み込みに失敗しました").c_str(), "Error", MB_OK | MB_ICONERROR);						//エラー通知
+		MessageBox(nullptr, (ErrorSpot + pcTexPass + "の読み込みに失敗しました").c_str(), "Error", MB_OK | MB_ICONERROR);					//エラー通知
 #endif
 	}
 	m_pTextureLoad = m_pTexture;	//アドレス格納
@@ -485,7 +486,7 @@ void C2dObject::SetTexture(const char* pcTexPass)
 	-------------------------------------
 	内容：テクスチャ登録
 	-------------------------------------
-	引数1：Textureポインタ
+	引数1：Texture* pTexture：テクスチャのポインタ
 	-------------------------------------
 	戻値：なし
 =========================================== */

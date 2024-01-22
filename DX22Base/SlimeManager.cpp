@@ -1340,7 +1340,6 @@ CSlime_BossBase* CSlimeManager::GetBossSlimePtr(int num)
 void CSlimeManager::SetCamera(CCamera * pCamera)
 {
 	m_pCamera = pCamera;
-	m_pSlime
 
 	// =============== UNION ===================
 	if (m_pUnionMng)	//ヌルチェック

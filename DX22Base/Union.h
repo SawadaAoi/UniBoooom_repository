@@ -12,6 +12,7 @@
 	・2023/12/24 フレーム変更をマネージャへ takagi
 	・2024/01/20 リファクタリング takagi
 	・2024/01/21 コメント改修 takagi
+	・2024/01/22 Draw()関数const化 takagi
 
 ========================================== */
 
@@ -30,7 +31,7 @@ public:
 	CUnion(const int& nFrame);	//コンストラクタ
 	~CUnion();					//デストラクタ
 	void Update() override;		//更新
-	void Draw() override;		//描画
+	void Draw() const override;	//描画
 	bool IsFin();				//終了ゲッタ
 private:
 	// ===変数宣言===========

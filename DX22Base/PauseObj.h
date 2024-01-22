@@ -13,6 +13,7 @@
 	・2023/12/17 引数参照化 takagi
 	・2024/01/20 リファクタリング takagi
 	・2024/01/21 コメント改修 takagi
+	・2024/01/22 Draw()関数const化 takagi
 
 ========================================== */
 
@@ -30,7 +31,7 @@ public:
 	CPauseObj(const int& nWaitTime = 0);		//コンストラクタ
 	virtual ~CPauseObj() ;						//デストラクタ
 	virtual void Update();						//更新
-	virtual void Draw() override;				//描画
+	virtual void Draw() const override;			//描画
 	void SetReach(const TPos3d<float>& fReach);	//到達地点セッタ
 	void Destroy(const int& nWaitTime = 0);		//破棄
 	bool IsDestroyed();							//破棄準備フラグゲッタ

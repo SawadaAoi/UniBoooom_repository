@@ -18,6 +18,7 @@
 	・2023/12/17 一部引数参照化 takagi
 	・2024/01/20 リファクタリング takagi
 	・2024/01/21 コメント改修 takagi
+	・2024/01/22 Draw()関数const化 takagi
 
 ========================================== */
 
@@ -38,7 +39,7 @@ public:
 	CDrawAnim(int, TDiType<int>, int = 1);	//コンストラクタ
 	~CDrawAnim() {};						//デストラクタ
 	void Update();							//更新関数
-	void Draw() override;					//描画関数
+	void Draw() const override;				//描画関数
 	void SetLoopFlg(bool);					//ループ再生フラグをセット
 	bool GetAnimFlg();						//フラグ取得
 

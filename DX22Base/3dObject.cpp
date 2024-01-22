@@ -13,11 +13,13 @@
 	・2024/01/18 続き及びリファクタリング takagi
 	・2024/01/20 GetPos()関数を親に移動 takagi
 	・2024/01/21 コメント改修・汎化作業 takagi
+	・2024/01/22 Draw()関数const化 takagi
 
 ========================================== */
 
 // =============== インクルード ===================
 #include "3dObject.h"	//自身のヘッダ
+#include "ShaderList.h"	//陰影計算
 
 /* ========================================
 	コンストラクタ関数
@@ -29,7 +31,8 @@
 	戻値：なし
 =========================================== */
 C3dObject::C3dObject()
-	:m_Sphere(INIT_RADIUS, INIT_SHIFT)	//ヒットボックス
+	:m_pModel(nullptr)					//モデル
+	,m_Sphere(INIT_RADIUS, INIT_SHIFT)	//ヒットボックス
 {
 }
 
@@ -58,6 +61,53 @@ C3dObject::C3dObject(const C3dObject & Obj)
 =========================================== */
 C3dObject::~C3dObject()
 {
+	// =============== 終了 ===================
+	SAFE_DELETE(m_pModel);	//モデル削除
+}
+
+/* ========================================
+	更新関数
+	-------------------------------------
+	内容：更新処理
+	-------------------------------------
+	引数1：なし
+	-------------------------------------
+	戻値：なし
+=========================================== */
+void C3dObject::Update()
+{
+	// =============== 更新 ===================
+	m_pModel->Step(TICK);	//アニメーションの更新
+}
+
+/* ========================================
+	描画関数
+	-------------------------------------
+	内容：描画処理
+	-------------------------------------
+	引数1：なし
+	-------------------------------------
+	戻値：なし
+=========================================== */
+void C3dObject::Draw() const
+{
+	m_pModel->Draw(nullptr, [this](int index)
+	{
+		const AnimeModel::Mesh* pMesh = m_pModel->GetMesh(index);							//引数で指定された番号のメッシュを取得
+		const AnimeModel::Material* pMaterial = m_pModel->GetMaterial(pMesh->materialID);	//呼び出されたメッシュのマテリアルを取得
+		ShaderList::SetMaterial(*pMaterial);	//取得したマテリアルを設定
+
+		DirectX::XMFLOAT4X4 bones[200];	//200個までのボーン
+		for (int i = 0; i < pMesh->bones.size() && i < 200; ++i)
+		{
+			// この計算はゲームつくろー「スキンメッシュの仕組み」が参考になる
+			DirectX::XMStoreFloat4x4(&bones[i], DirectX::XMMatrixTranspose(
+				pMesh->bones[i].invOffset *
+				m_pModel->GetBone(pMesh->bones[i].index)
+			));	//ボーンデータ作成			//TODO:ここら辺のコード調べてコメント丁寧にする
+		}
+		ShaderList::SetBones(bones);	//作ったボーンを設定
+	});	//モデル描画
 }
 
 /* ========================================
@@ -193,4 +243,114 @@ void C3dObject::SetShift(const TPos3d<float>& Shift)
 {
 	// =============== 格納 ===================
 	m_Sphere.fShift = Shift;	//位置ずれ格納
+}
+
+/* ========================================
+	モデルセット関数
+	-------------------------------------
+	内容：引数のモデルファイル読み込み
+	-------------------------------------
+	引数1：const char* pcModelPass：3dモデル
+	-------------------------------------
+	戻値：なし
+=========================================== */
+void C3dObject::SetModel(const char* pcModelPass)
+{
+	// =============== 動的確保 ===================
+	if (!m_pModel)	//ヌルチェック
+	{
+		m_pModel = new AnimeModel();	//モデル確保
+	}
+
+	// =============== モデル読み込み ===================
+	if (!m_pModel->Load(pcModelPass, 1.0f, AnimeModel::Flip::XFlip))	//モデル読み込み
+	{
+#if _DEBUG
+		std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+		MessageBox(nullptr, (ErrorSpot + pcModelPass + "の読み込みに失敗しました").c_str(), "Error", MB_OK | MB_ICONERROR);					//エラー通知
+#endif
+	}
+}
+
+/* ========================================
+	頂点シェーダー関数
+	-------------------------------------
+	内容：頂点シェーダー登録
+	-------------------------------------
+	引数1：VertexShader* pVs：頂点シェーダーのポインタ
+	-------------------------------------
+	戻値：なし
+=========================================== */
+void C3dObject::SetVertexShader(VertexShader* pVs)
+{
+	// =============== 格納 ===================
+	if (m_pModel && pVs)	//ヌルチェック
+	{
+		m_pModel->SetVertexShader(pVs);	//頂点シェーダー登録
+	}
+#if _DEBUG
+	else
+	{
+		std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+		MessageBox(nullptr, (ErrorSpot + "ヌルのオブジェクトを使用しようとしました").c_str(), "Error", MB_OK | MB_ICONERROR);				//エラー通知
+	}
+#endif
+}
+
+/* ========================================
+	ピクセルシェーダー関数
+	-------------------------------------
+	内容：ピクセルシェーダー登録
+	-------------------------------------
+	引数1：PixelShader* pPs：ピクセルシェーダーのポインタ
+	-------------------------------------
+	戻値：なし
+=========================================== */
+void C3dObject::SetPixelShader(PixelShader* pPs)
+{
+	// =============== 格納 ===================
+	if (m_pModel && pPs)	//ヌルチェック
+	{
+		m_pModel->SetPixelShader(pPs);		//ピクセルシェーダー登録
+	}
+#if _DEBUG
+	else
+	{
+	std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+	MessageBox(nullptr, (ErrorSpot + "ヌルのオブジェクトを使用しようとしました").c_str(), "Error", MB_OK | MB_ICONERROR);				//エラー通知
+	}
+#endif
+}
+
+/* ========================================
+	アニメーション読み込み関数
+	----------------------------------------
+	内容：アニメーションを読み込む
+	----------------------------------------
+	引数：const std::map<int, std::string>& sAnimation：アニメーションファイル
+	----------------------------------------
+	戻値：無し
+======================================== */
+void C3dObject::LoadAnime(const std::map<int, std::string>& sAnimation)
+{
+	// =============== アニメーション登録 =======================
+	for (auto Iterator = sAnimation.begin(); Iterator != sAnimation.end(); Iterator++)
+	{
+		// =============== 検査 =======================
+		if (auto Key = m_AnimeNo.find(Iterator->first) != m_AnimeNo.end())	//アクセスチェック
+		{
+			// =============== キー削除 =======================
+			m_AnimeNo.erase(Iterator->first);	//要素削除
+		}
+
+		// =============== コンテナ追加 =======================
+		m_AnimeNo.emplace(Iterator->first, m_pModel->AddAnimation(Iterator->second.c_str()));	//アニメーション読み込み
+#if _DEBUG
+		if (!m_pModel->GetAnimation(m_AnimeNo.at(Iterator->first)))	//読み込みに失敗したらエラーメッセージ
+		{
+			std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
+			MessageBox(nullptr, (ErrorSpot + Iterator->second + "の読み込みに失敗しました").c_str(), "Error", MB_OK | MB_ICONERROR);			//エラー通知
+		}
+#endif
+	}
 }
