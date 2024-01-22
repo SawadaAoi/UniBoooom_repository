@@ -102,7 +102,6 @@ public:
 	void HitMove();									//スライムが吹き飛び移動状態の時に毎フレーム呼び出して移動させる
 	void HitMoveStart(float speed, float angle);	//スライムが吹き飛ばされたときに速度と角度を決める
 	void Reflect();									//スライムとぶつかって吹き飛ばした際に自分の移動量を減らす
-	void EscapeMove();
 	void MoveStop();
 
 	// ゲット関数
@@ -110,7 +109,6 @@ public:
 	E_SLIME_LEVEL GetSlimeLevel();		// スライムのレベルを取得
 	bool GetHitMoveFlg();
 	TPos3d<float> GetPos();
-	bool GetEscapeFlg();
 	bool GetMoveStopFlg();
 	int GetAttack();
 
@@ -118,8 +116,7 @@ public:
 	virtual void SetNormalSpeed() = 0;
 	void SetCamera(const CCamera* pCamera);
 	void SetExplosionPos(TPos3d<float> expPos);
-	void SetEscapeFlg(bool bEscape);
-	void SetMoveStopFlg(bool bMvStpFlg);
+	void SetMoveStopFlg(bool bEscape);
 
 protected:
 	Model* m_pModel;				// 3Dモデル
@@ -131,11 +128,9 @@ protected:
 	bool m_bHitMove;				// 吹っ飛び中かどうか
 	float m_fVecAngle;				// 敵の吹き飛ぶ方向
 									   
-	bool m_bEscFlg;					// スライムが逃げる状態かどうか
-	int m_nEscapeCnt;				// 逃げる状態になった時
+	bool m_bMvStpFlg;					// スライムが逃げる状態かどうか
+	int m_nMvStpCnt;				// 逃げる状態になった時
 
-	bool m_bMvStpFlg;				// 移動停止状態かどうか
-	int m_nMvStpCnt;				// 移動停止フレーム数
 
 	E_SLIME_LEVEL m_eSlimeSize;		//スライムの大きさの列挙
 	const CCamera* m_pCamera;		//カメラのポインタ

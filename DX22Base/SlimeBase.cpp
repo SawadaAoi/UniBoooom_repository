@@ -66,8 +66,6 @@ CSlimeBase::CSlimeBase()
 	, m_eSlimeSize(LEVEL_1)	//後でSLIME_NONEにする <=TODO
 	, m_RanMoveCnt(RANDOM_MOVE_SWITCH_TIME)	// 初期
 	, m_ExpPos{ 0.0f,0.0f,0.0f }
-	, m_bEscFlg(false)
-	, m_nEscapeCnt(0)
 	, m_bMvStpFlg(false)
 	, m_nMvStpCnt(0)
 	, m_fScaleShadow(0.0f)
@@ -113,13 +111,13 @@ void CSlimeBase::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
 
 	if (!m_bHitMove)	//敵が通常の移動状態の時
 	{
-		if (!m_bEscFlg  && m_nEscapeCnt == 0)	//逃げるフラグがoffなら
+		if (!m_bMvStpFlg  && m_nMvStpCnt == 0)	//停止フラグがoffなら
 		{
 			NormalMove();	//通常異動
 		}
 		else
 		{
-			EscapeMove();	//爆発から逃げる
+			MoveStop();	//爆発から逃げる
 		}
 	}
 	else
@@ -300,32 +298,6 @@ void CSlimeBase::Reflect()
 
 
 /* ========================================
-	逃走関数
-	----------------------------------------
-	内容：スライムが爆発から逃げる関数
-	----------------------------------------
-	引数1：なし
-	----------------------------------------
-	戻値：なし
-======================================== */
-void CSlimeBase::EscapeMove()
-{
-	//爆発への角度を取得
-	float rad = atan2f(m_ExpPos.x - m_Transform.fPos.x, m_ExpPos.z - m_Transform.fPos.z);
-	//爆発と反対方向に移動
-	m_move.x = 0.0f;//-(cosf(rad)) * ENEMY_MOVE_SPEED;
-	m_move.z = 0.0f;//-(sinf(rad)) * ENEMY_MOVE_SPEED;
-	m_Transform.fRadian.y = rad;
-
-	m_nEscapeCnt++;	//カウントを増加
-	if (m_nEscapeCnt > ESCAPE_TIME) 
-	{ 
-		m_bEscFlg = false; 
-		m_nEscapeCnt = 0;
-	}
-}
-
-/* ========================================
 	停止動作関数
 	----------------------------------------
 	内容：スライムを暫く硬直させる
@@ -336,17 +308,23 @@ void CSlimeBase::EscapeMove()
 ======================================== */
 void CSlimeBase::MoveStop()
 {
-	// 動きを止める
-	m_move.x = 0.0f;
-	m_move.z = 0.0f;
+	//爆発への角度を取得
+	float rad = atan2f(m_ExpPos.x - m_Transform.fPos.x, m_ExpPos.z - m_Transform.fPos.z);
+	//爆発と反対方向に移動
+	m_move.x = 0.0f;//-(cosf(rad)) * ENEMY_MOVE_SPEED;
+	m_move.z = 0.0f;//-(sinf(rad)) * ENEMY_MOVE_SPEED;
+	m_Transform.fRadian.y = rad;
 
 	m_nMvStpCnt++;	//カウントを増加
-	if (m_nMvStpCnt > MOVE_STOP_TIME)
-	{
-		m_nMvStpCnt = false;
+	if (m_nMvStpCnt > ESCAPE_TIME) 
+	{ 
+		m_bMvStpFlg = false; 
 		m_nMvStpCnt = 0;
 	}
 }
+
+
+
 
 /* ========================================
 	カメラ情報セット関数
@@ -376,19 +354,6 @@ void CSlimeBase::SetExplosionPos(TPos3d<float> expPos)
 	m_ExpPos = expPos;
 }
 
-/* ========================================
-	逃走状態セット関数
-	----------------------------------------
-	内容：スライムが逃げるかそうでないかの状態をセットする
-	----------------------------------------
-	引数1：スライムをが逃げるかどうか
-	----------------------------------------
-	戻値：なし
-======================================== */
-void CSlimeBase::SetEscapeFlg(bool bEscape)
-{
-	m_bEscFlg = bEscape;
-}
 
 /* ========================================
 	停止状態セット関数
@@ -399,10 +364,12 @@ void CSlimeBase::SetEscapeFlg(bool bEscape)
 	----------------------------------------
 	戻値：なし
 ======================================== */
-void CSlimeBase::SetMoveStopFlg(bool bMvStpFlg)
+void CSlimeBase::SetMoveStopFlg(bool bEscape)
 {
-	m_bMvStpFlg = bMvStpFlg;
+	m_bMvStpFlg = bEscape;
 }
+
+
 
 /* ========================================
 	スライムレベル取得関数
@@ -444,20 +411,6 @@ bool CSlimeBase::GetHitMoveFlg()
 TPos3d<float> CSlimeBase::GetPos()
 {
 	return m_Transform.fPos;
-}
-
-/* ========================================
-	逃走状態取得関数
-	----------------------------------------
-	内容：爆発から逃げているかの確認
-	----------------------------------------
-	引数1：なし
-	----------------------------------------
-	戻値：bool
-======================================== */
-bool CSlimeBase::GetEscapeFlg()
-{
-	return m_bEscFlg;
 }
 
 /* ========================================
