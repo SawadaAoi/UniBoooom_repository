@@ -159,8 +159,8 @@ private:
 	IXAudio2SourceVoice* m_pSESpeaker[SE_MAX];
 	//========== アニメ ==========
 	const std::string m_sLevel1_Motion[CSlimeBase::MOTION_MAX] = {
-		"Assets/Model/slime/Slime1/slime_blue_walk_1.0.fbx",	// レベル1スライムのモーション
-		"Assets/Model/slime/Slime1/slime_blue_damaged_1.0.fbx",			// レベル1スライムのモーション
+		"Assets/Model/slime/Slime1/slime_blue_walk_1.0.fbx",		// レベル1スライムのモーション
+		"Assets/Model/slime/Slime1/slime_blue_damaged_1.0.fbx",		// レベル1スライムのモーション
 	};
 	std::vector<AnimeModel::AnimeNo> m_level1Anime;		// レベル1スライムのアニメーション
 };

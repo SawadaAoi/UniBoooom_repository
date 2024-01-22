@@ -69,12 +69,10 @@ CSlime_1::CSlime_1(TPos3d<float> pos,VertexShader* pVS, AnimeModel* pModel, vect
 	: CSlime_1()
 {
 	m_Transform.fPos = pos;			// 初期座標を指定
-	m_pVS = pVS;
 	m_pModel = pModel;
-	pModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));
 	// アニメーションの受け渡し
 	m_Anime = anime;
-	m_pModel->Play(m_Anime[MOTION_LEVEL1_MOVE],true);
+	//m_pModel->Play(m_Anime[MOTION_LEVEL1_MOVE],true);
 }
 
 /* ========================================
@@ -121,7 +119,7 @@ void CSlime_1::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
 	else
 	{
 		// 吹き飛びアニメーション再生
-		if (m_pModel->GetPlayNo() == m_Anime[MOTION_LEVEL1_MOVE])
+		//if (m_pModel->GetPlayNo() == m_Anime[MOTION_LEVEL1_MOVE])
 		{
 			//m_pModel->Play(m_Anime[MOTION_LEVEL1_HIT],false);
 		}
@@ -146,20 +144,23 @@ void CSlime_1::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
 =========================================== */
 void CSlime_1::Draw(const CCamera * pCamera)
 {
+	if (!m_pCamera) { return; }
 
-	DirectX::XMFLOAT4X4 mat[3];
-
-	mat[0] = m_Transform.GetWorldMatrixSRT();
-	mat[1] = pCamera->GetViewMatrix();
-	mat[2] = pCamera->GetProjectionMatrix();
-
-	//-- 行列をシェーダーへ設定
-	m_pVS->WriteBuffer(0, mat);
-
+	DirectX::XMFLOAT4X4 mat[3] = {
+	m_Transform.GetWorldMatrixSRT(),
+	m_pCamera->GetViewMatrix(),
+	m_pCamera->GetProjectionMatrix()
+	};
 	ShaderList::SetWVP(mat);
 
 	// アニメーションの現在時間をセット
-	m_pModel->SetAnimationTime(m_pModel->GetPlayNo(), m_fAnimeTime);
+	//m_pModel->SetAnimationTime(m_pModel->GetPlayNo(), m_fAnimeTime);
+
+
+	// レンダーターゲット、深度バッファの設定
+	RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得
+	DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
+	SetRenderTargets(1, &pRTV, pDSV);		//DSVがnullだと2D表示になる
 
 	//-- モデル表示
 	if (m_pModel) {
@@ -181,6 +182,7 @@ void CSlime_1::Draw(const CCamera * pCamera)
 			}
 			ShaderList::SetBones(bones);
 		});
+		m_pModel->DrawBone();
 	}
 
 	//-- 影の描画

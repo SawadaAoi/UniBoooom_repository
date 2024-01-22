@@ -98,7 +98,7 @@ CPlayer::CPlayer()
 
 	//プレイヤーのモデル読み込み
 	m_pModel = new AnimeModel();
-	if (!m_pModel->Load("Assets/Model/player/POW.fbx", 1.0f, AnimeModel::Flip::XFlip)) {		//倍率と反転は省略可
+	if (!m_pModel->Load("Assets/Model/slime/Slime1/slime_blue_walk_1.0.fbx", 1.0f, AnimeModel::Flip::XFlip)) {		//倍率と反転は省略可
 		MessageBox(NULL, "player", "Error", MB_OK);	//ここでエラーメッセージ表示
 	}
 	m_pModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));		//頂点シェーダーをセット
