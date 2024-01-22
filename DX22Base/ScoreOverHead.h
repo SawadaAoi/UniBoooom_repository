@@ -45,7 +45,7 @@ private:
 	float m_fDelFrame;			//表示経過時間
 	bool m_bDelFlg;				//削除フラグ
 	bool m_bDelayFlg;			//スコア表示遅延フラグ
-	int m_dDelayCnt;			//遅延をカウント
+	int m_nDelayCnt;			//遅延をカウント
 	const CCamera*	m_pCamera;	//カメラのポインタ
 
 };
