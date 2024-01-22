@@ -9,11 +9,12 @@
 
 	変更履歴
 	・2023/12/16 制作 takagi
+	・2024/01/16 統一のため、インクルードガードの___を__に変更	takagi
 
 ========================================== */
 
-#ifndef ___FIXED_CAMERA_H___
-#define ___FIXED_CAMERA_H___
+#ifndef __FIXED_CAMERA_H__
+#define __FIXED_CAMERA_H__
 
 // =============== インクルード ===================
 #include "Camera.h"	//親のヘッダ
@@ -26,4 +27,4 @@ public:
 	void Update();		//更新
 };	//固定カメラ
 
-#endif // !___FIXED_CAMERA_H___
+#endif // !__FIXED_CAMERA_H__

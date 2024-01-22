@@ -52,12 +52,12 @@
 
 // =============== 定数定義 ===================
 const std::string BGM_FILE[CScene::E_TYPE_MAX] = {	//各ステージのBGMのファイル
-	"Assets/Sound/BGM/BGM_maou.mp3",	//タイトル
-	"Assets/Sound/BGM/BGM_maou.mp3",	//ステージセレクト
-	"Assets/Sound/BGM/BGM_maou.mp3",	//Stage1
-	"Assets/Sound/BGM/BGM_maou.mp3",	//Stage2
-	"Assets/Sound/BGM/BGM_maou.mp3",	//Stage3
-	"Assets/Sound/BGM/BGM_maou.mp3" };	//リザルト
+	"Assets/Sound/BGM/Title_Select.mp3",	//タイトル
+	"Assets/Sound/BGM/Title_Select.mp3",	//ステージセレクト
+	"Assets/Sound/BGM/Stage1.mp3",	//Stage1
+	"Assets/Sound/BGM/Stage2.mp3",	//Stage2
+	"Assets/Sound/BGM/Stage3.mp3",	//Stage3
+	"Assets/Sound/BGM/Result.mp3" };	//リザルト
 
 /* ========================================
 	コンストラクタ

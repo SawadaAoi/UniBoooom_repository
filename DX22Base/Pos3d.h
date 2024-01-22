@@ -17,11 +17,12 @@
 	・2023/11/09 変換コンストラクタ作成 takagi
 	・2023/11/10 変換コンストラクタ内で使用していた演算子が変換コンストラクタを呼び、
 					再帰的に無限増殖した結果オーバーフローに到達する問題を修正 takagi
+	・2024/01/16 統一のため、インクルードガードの___を__に変更	takagi
 
 ========================================== */
 
-#ifndef ___POS_3D_H___
-#define ___POS_3D_H___
+#ifndef __POS_3D_H__
+#define __POS_3D_H__
 
 // =============== インクルード ===================
 #include "TriType.h"	//３つの同じ型を持つ型
@@ -138,7 +139,7 @@ Pos3d TPos3d<Pos3d>::Distance(const TPos3d & Obj)
 	return (Pos3d)(pow((double)Temp.Total(), 0.5));	//計算結果
 }
 
-#endif // !___POS_3D_H___
+#endif // !__POS_3D_H__
 
 
 

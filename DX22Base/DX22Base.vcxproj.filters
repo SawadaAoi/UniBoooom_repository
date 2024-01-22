@@ -839,6 +839,9 @@
     <ClInclude Include="TimerStage3.h">
       <Filter>ヘッダー ファイル\2dObject\Timer</Filter>
     </ClInclude>
+    <ClInclude Include="Delete.h">
+      <Filter>ヘッダー ファイル\Info</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="VS_Model.hlsl">

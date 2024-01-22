@@ -13,6 +13,7 @@
 	・2023/11/20 整理 takagi
 	・2023/12/01 2dPolygonに適する形に変更 takagi
 	・2023/12/06 pose→pause修正、ポーズ文字表示 takagi
+	・2024/01/11 ブレンドステート修正に伴う透明度調整 takagi
 
 ========================================== */
 
@@ -43,7 +44,7 @@ float4 main(PS_IN PsIn) : SV_TARGET
 	float2 fUv = (PsIn.fUv - 0.5f) * 2.0f;												//UV座標更新
 	float2 fCentPos = float2(0.0f, 0.0f);												//中心位置
 	float4 fColor = Tex.Sample(Samp, PsIn.fUv);											//テクスチャ貼り付け
-	float fMinAlpha = 0.501f;															//透明度最小値
+	float fMinAlpha = 0.4f;															//透明度最小値
 	float fMaxAlpha = 1.0f;																//透明度最大値
 	float fReviseAlpha = -0.24f;														//透明度補正値
 	fColor.w = min(max(distance(fUv, fCentPos) + fReviseAlpha, fMinAlpha), fMaxAlpha);	//透明度変更：グラデーションのかかった、ぼやけた四隅

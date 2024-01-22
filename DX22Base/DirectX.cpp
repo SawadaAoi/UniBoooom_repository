@@ -138,7 +138,7 @@ HRESULT InitDirectX(HWND hWnd, UINT width, UINT height, bool fullscreen)
 	//--- アルファブレンディング
 	// https://pgming-ctrl.com/directx11/blend/
 	D3D11_BLEND_DESC blendDesc = {};
-	blendDesc.AlphaToCoverageEnable = TRUE;
+	blendDesc.AlphaToCoverageEnable = FALSE;
 	blendDesc.IndependentBlendEnable = FALSE;
 	blendDesc.RenderTarget[0].BlendEnable = TRUE;
 	blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
