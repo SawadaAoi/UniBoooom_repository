@@ -23,7 +23,7 @@
 #include "FrameCnt.h"	//メンバのヘッダ
 
 // =============== クラス定義 =====================
-class CUnion :public CTitleAnime	//アニメーション
+class CUnion :public C2dObject	//アニメーション
 {
 public:
 	// ===プロトタイプ宣言===

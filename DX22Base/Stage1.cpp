@@ -159,24 +159,24 @@ void CStage1::Draw()
 	// プレイヤー描画
 	m_pPlayer->Draw();
 
-	LibEffekseer::Draw();
+	//LibEffekseer::Draw();
 
 	//爆発マネージャー描画
 	m_pExplosionMng->Draw();
 
 	//回復アイテム描画
-	m_pHealItemMng->Draw();
+	//m_pHealItemMng->Draw();
 
 	//2D描画変換
 	SetRenderTargets(1, &pRTV, nullptr);
 
 	//UIマネージャー描画
-	m_pUIStageManager->Draw();
+	//m_pUIStageManager->Draw();
 
 	// スタート合図描画
 	if (m_pStartText->GetAnimFlg())
 	{
-		m_pStartText->Draw();
+		//m_pStartText->Draw();
 	}
 
 	// ポーズ描画

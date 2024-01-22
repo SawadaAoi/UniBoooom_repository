@@ -13,6 +13,7 @@
 	・2024/01/11 ブレンドステート修正に伴う透明度調整 takagi
 	・2024/01/20 リファクタリング takagi
 	・2024/01/21 コメント改修 takagi
+	・2024/01/22 リファクタリング takagi
 
 ========================================== */
 
@@ -22,8 +23,6 @@
 
 // =============== 定数定義 ===================
 const float MAX_MOVE(0.04f);	//高さ減少量
-const int MAX_ANIM(1);			//アニメーション数
-const TDiType<int> MAX_SEAT(1);	//1x1
 
 /* ========================================
 	コンストラクタ
@@ -35,8 +34,7 @@ const TDiType<int> MAX_SEAT(1);	//1x1
 	戻値：なし
 =========================================== */
 CUnion::CUnion(const int & nFrame)
-	:CTitleAnime(MAX_ANIM, MAX_SEAT)	//委譲
-	,m_pCnt(nullptr)					//縮小用カウンタ
+	:m_pCnt(nullptr)					//縮小用カウンタ
 {
 	// =============== 初期化 ===================
 	m_pCnt = new CFrameCnt(nFrame);	//カウント開始
@@ -67,7 +65,7 @@ CUnion::~CUnion()
 void CUnion::Update()
 {
 	// =============== 更新 ===================
-	CTitleAnime::Update();	//親の関数使用
+	C2dObject::Update();	//親の関数使用
 	if (m_pCnt)	//ヌルチェック
 	{
 		--*m_pCnt;	//カウントダウン
@@ -79,7 +77,7 @@ void CUnion::Update()
 		else
 		{
 			m_Transform.fPos.y += MAX_MOVE * m_pCnt->GetRate();	//位置更新
-			SetAlpha(m_pCnt->GetRate());					//透明度更新
+			SetAlpha(m_pCnt->GetRate());						//透明度更新
 		}
 	}
 }
@@ -98,11 +96,7 @@ void CUnion::Draw()
 	if(m_pCnt)	//ヌルチェック
 	{
 		// =============== 描画 ===================
-		CDrawAnim::Draw();	//親の関数使用
-		if (!m_bAnim)	//アニメーション部分の描画が終わっている
-		{
-			C2dObject::Draw();	//最後の場面を描き続ける
-		}
+		C2dObject::Draw();	//親の関数使用
 	}
 }
 
@@ -117,7 +111,7 @@ void CUnion::Draw()
 =========================================== */
 bool CUnion::IsFin()
 {
-	if (m_pCnt)
+	if (m_pCnt)	//ヌルチェック
 	{
 		// =============== 提供 ===================
 		return false;	//カウンタが存在する

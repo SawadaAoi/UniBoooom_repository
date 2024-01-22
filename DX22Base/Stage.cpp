@@ -82,7 +82,7 @@ CStage::CStage()
 	m_pPause = new CPause(m_pCamera);
 
 	//スライムマネージャー　←　スコアマネージャー
-	m_pSlimeMng->SetScoreOHMng(m_pUIStageManager->GetScoreMng());
+	//m_pSlimeMng->SetScoreOHMng(m_pUIStageManager->GetScoreMng());
 
 	//爆発マネージャー　←　コンボ
 	m_pExplosionMng->SetCombo(m_pUIStageManager->GetCombo());

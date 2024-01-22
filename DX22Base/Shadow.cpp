@@ -12,18 +12,12 @@
 	・2023/12/07 ゲームパラメータから一部定数移動 takagi
 	・2024/01/20 リファクタリング takagi
 	・2024/01/21 コメント改修・MessageBox改善 takagi
+	・2024/01/22 リファクタリング takagi
 
 ========================================== */
 
 // =============== インクルード ===================
-#include "Shadow.h"			// 自身のヘッダ
-#include "Sprite.h"			// 表示用ヘッダ
-#define _USE_MATH_DEFINES		// 円周率
-#include <math.h>				// 円周率
-
-// =============== 定数定義 ===================
-const float PI = 3.14159f;					// 円周率
-
+#include "Shadow.h"	// 自身のヘッダ
 
 /* ========================================
    コンストラクタ
@@ -35,18 +29,9 @@ const float PI = 3.14159f;					// 円周率
    戻値：なし
 ======================================== */
 CShadow::CShadow()
-	: m_bDisp(true)	// 表示判定
 {
-	// 影テクスチャ読込
-	m_pTextureShadow = new Texture();
-	if (FAILED(m_pTextureShadow->Create("Assets/Texture/Shadow.png")))
-	{
-#if _DEBUG
-		std::string ErrorSpot = static_cast<std::string>(__FILE__) + ".L" + std::to_string(__LINE__) + '\n' + __FUNCTION__ + "()->Error：";	//エラー箇所
-		MessageBox(nullptr, (ErrorSpot + "Shadow.png読み込み失敗").c_str(), "Error", MB_OK | MB_ICONERROR);									//エラー通知
-#endif
-	}
-
+	// =============== テクスチャ登録 ===================
+	SetTexture("Assets/Texture/Shadow.png");	// 影テクスチャ読込
 }
 
 /* ========================================
@@ -75,20 +60,4 @@ CShadow::CShadow(float fScale)
 ======================================== */
 CShadow::~CShadow()
 {
-	SAFE_DELETE(m_pTextureShadow);	// テクスチャ破棄
-}
-
-/* ========================================
-   更新処理関数関数
-   ----------------------------------------
-   内容：更新処理
-   ----------------------------------------
-   引数：なし
-   ----------------------------------------
-   戻値：なし
-======================================== */
-void CShadow::Update()
-{
-	// 一旦作ってみた
-	m_bDisp ^= 1;	// 表示、非表示の切り替え
 }

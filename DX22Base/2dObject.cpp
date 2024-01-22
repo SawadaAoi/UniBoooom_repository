@@ -121,8 +121,10 @@ C2dObject::C2dObject()
 	}
 
 	// =============== 初期化 ===================
-	m_pVs = ms_pDefVs;	//頂点シェーダー初期化
-	m_pPs = ms_pDefPs;	//ピクセルシェーダー初期化
+	m_pVs = ms_pDefVs;					//頂点シェーダー初期化
+	m_pPs = ms_pDefPs;					//ピクセルシェーダー初期化
+	m_Transform.fPos = INIT_POS;		//位置再初期化
+	m_Transform.fScale = INIT_SCALE;	//大きさ再初期化
 
 	// =============== 行列作成 ===================
 	m_aMatrix[E_MATRIX_WORLD] = m_Transform.GetWorldMatrixSRT();							//ワールド行列

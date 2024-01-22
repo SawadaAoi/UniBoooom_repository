@@ -163,6 +163,12 @@
     <Filter Include="ソース ファイル\System\Flag">
       <UniqueIdentifier>{49f8e49a-6103-4d1f-86a3-313c3aee6649}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Object\Manager">
+      <UniqueIdentifier>{6518a1cf-d717-4985-b09c-4ab1dad8d5ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Object\Manager">
+      <UniqueIdentifier>{6101de60-97ac-4224-812d-8de1c647e793}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -233,9 +239,6 @@
     </ClCompile>
     <ClCompile Include="CameraChase.cpp">
       <Filter>ソース ファイル\System\Camera</Filter>
-    </ClCompile>
-    <ClCompile Include="ExplosionManager.cpp">
-      <Filter>ソース ファイル\Object\3dObject</Filter>
     </ClCompile>
     <ClCompile Include="Collision.cpp">
       <Filter>ソース ファイル\System</Filter>
@@ -461,6 +464,12 @@
     </ClCompile>
     <ClCompile Include="UcFlag.cpp">
       <Filter>ソース ファイル\System\Flag</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectManager.cpp">
+      <Filter>ソース ファイル\Object\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="ExplosionManager.cpp">
+      <Filter>ソース ファイル\Object\Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -778,6 +787,9 @@
     </ClInclude>
     <ClInclude Include="UcFlag.h">
       <Filter>ヘッダー ファイル\System\Flag</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectManager.h">
+      <Filter>ヘッダー ファイル\Object\Manager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -135,7 +135,87 @@ CSelectStage::~CSelectStage()
 =========================================== */
 void CSelectStage::Update()
 {
-	Select();
+	// =============== 入力受付 ===================
+	//if (!(m_ucFlag.Check(E_FLAG_TIDYING_UP)))	//片付け中でない
+	//{
+		// =============== コントローラ ==================
+		if (GetUseVController())	// コントローラが接続されている場合
+		{
+			// =============== カーソル移動 ===================
+			if (IsStickLeft().x < 0)		//←入力時
+			{
+				Num += 1;
+				if (Num > 2)Num = 2;
+			}
+			if (IsStickLeft().x > 0)	//→入力時
+			{
+				Num -= 1;
+				if (Num < 0) Num = 0;
+			}
+
+			// =============== 決定 ===================
+			if (IsKeyTriggerController(BUTTON_B))	//Bボタン入力時
+			{
+				// =============== フラグ操作 ===================
+				m_bFinish = true;	//シーン終了
+			}
+		}
+		else
+		{
+			//// =============== カーソル移動 ===================
+			//if (IsKeyTrigger(VK_UP) || IsKeyTrigger('W'))		//↑・W入力時
+			//{
+			//	// =============== 状態遷移 ===================
+			//	if (m_p2dObject.find(E_2D_START) != m_p2dObject.end() && m_p2dObject.at(E_2D_START)
+			//		&& typeid(CCommandTitle) == typeid(*m_p2dObject.at(E_2D_START)))	//アクセスチェック・ヌルチェック・型チェック
+			//	{
+			//		if (static_cast<CCommandTitle*>(m_p2dObject[E_2D_START])->ChackDraw())	//表示中
+			//		{
+			//			static_cast<CCommandTitle*>(m_p2dObject[E_2D_START])->Selected();		//選択状態遷移
+			//			m_ucFlag.Up(E_FLAG_COMMAND_CONTINUE);								//上のコマンド採用
+			//		}
+			//	}
+			//	if (m_p2dObject.find(E_2D_FINISH) != m_p2dObject.end() && m_p2dObject.at(E_2D_FINISH)
+			//		&& typeid(CCommandTitle) == typeid(*m_p2dObject.at(E_2D_FINISH)))	//アクセスチェック・ヌルチェック・型チェック
+			//	{
+			//		if (static_cast<CCommandTitle*>(m_p2dObject[E_2D_FINISH])->ChackDraw())	//表示中
+			//		{
+			//			static_cast<CCommandTitle*>(m_p2dObject[E_2D_FINISH])->UnSelected();	//選択状態遷移
+			//			m_ucFlag.Down(E_FLAG_COMMAND_FINISH);								//下のコマンド不採用
+			//		}
+			//	}
+			//}
+			//if (IsKeyTrigger(VK_DOWN) || IsKeyTrigger('S'))	//↓・S入力時
+			//{
+			//	// =============== 状態遷移 ===================
+			//	if (m_p2dObject.find(E_2D_FINISH) != m_p2dObject.end() && m_p2dObject.at(E_2D_FINISH)
+			//		&& typeid(CCommandTitle) == typeid(*m_p2dObject.at(E_2D_FINISH)))	//アクセスチェック・ヌルチェック・型チェック
+			//	{
+			//		if (static_cast<CCommandTitle*>(m_p2dObject[E_2D_FINISH])->ChackDraw())	//表示中
+			//		{
+			//			static_cast<CCommandTitle*>(m_p2dObject[E_2D_FINISH])->Selected();	//選択状態遷移
+			//			m_ucFlag.Up(E_FLAG_COMMAND_FINISH);									//下のコマンド採用
+			//		}
+			//	}
+			//	if (m_p2dObject.find(E_2D_START) != m_p2dObject.end() && m_p2dObject.at(E_2D_START)
+			//		&& typeid(CCommandTitle) == typeid(*m_p2dObject.at(E_2D_START)))	//アクセスチェック・ヌルチェック・型チェック
+			//	{
+			//		if (static_cast<CCommandTitle*>(m_p2dObject[E_2D_START])->ChackDraw())	//表示中
+			//		{
+			//			static_cast<CCommandTitle*>(m_p2dObject[E_2D_START])->UnSelected();	//選択状態遷移
+			//			m_ucFlag.Down(E_FLAG_COMMAND_CONTINUE);								//上のコマンド不採用
+			//		}
+			//	}
+			//}
+
+			// =============== 決定 ===================
+			if (IsKeyTrigger(VK_RETURN) || IsKeyTrigger(VK_SPACE))	//Enter・Space入力時
+			{
+				// =============== フラグ操作 ===================
+				m_bFinish = true;	//シーン終了
+			}		
+		}
+	//}
 }
 
 /* ========================================

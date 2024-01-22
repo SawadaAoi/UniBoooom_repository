@@ -25,8 +25,8 @@ class CObject
 {
 private:
 	// ===定数定義===========
-	const TPos3d<float> INIT_POS = { 640.0f, 360.0f, 0.0f };	//初期位置
-	const TTriType<float> INIT_SCALE = { 1.0f, 1.0f, 0.0f };	//初期拡縮
+	const TPos3d<float> INIT_POS = { 0.0f, 0.0f, 0.0f };	//初期位置
+	const TTriType<float> INIT_SCALE = { 1.0f, 1.0f, 1.0f };	//初期拡縮
 	const TTriType<float> INIT_RADIAN = 0.0f;					//初期回転
 public:
 	// ===プロトタイプ宣言===

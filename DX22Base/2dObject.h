@@ -75,6 +75,8 @@ private:
 	const float SCALE_TURNINIG_1 = 100.0f;								//サイズ反転１反転
 	const float SCALE_MAX = 1000.0f;									//最大サイズ
 	const float ROTATE_ACCEL_RATE = 4.0f;								//角速度増加割合
+	const TPos3d<float> INIT_POS = { 640.0f, 360.0f, 0.0f };			//初期位置
+	const TTriType<float> INIT_SCALE = { 1.0f, 1.0f, 0.0f };			//初期拡縮
 public:
 	// ===プロトタイプ宣言===
 	C2dObject();																	//コンストラクタ

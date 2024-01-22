@@ -148,6 +148,7 @@ CSlimeManager::CSlimeManager(CPlayer* pPlayer)
 	, m_pSE{ nullptr,nullptr,nullptr }
 	, m_pSESpeaker{ nullptr,nullptr,nullptr }
 	, m_bBossPtrExist(false)
+	,m_pCamera(nullptr)
 {
 	//スライムのモデルと頂点シェーダーの読み込み
 	LoadModel();
@@ -1339,6 +1340,7 @@ CSlime_BossBase* CSlimeManager::GetBossSlimePtr(int num)
 void CSlimeManager::SetCamera(CCamera * pCamera)
 {
 	m_pCamera = pCamera;
+	m_pSlime
 
 	// =============== UNION ===================
 	if (m_pUnionMng)	//ヌルチェック

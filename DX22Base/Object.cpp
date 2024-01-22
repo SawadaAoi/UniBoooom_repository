@@ -61,18 +61,6 @@ CObject::CObject()
 CObject::CObject(const CObject & Obj)
 	:m_Transform(Obj.m_Transform)	//ワールド座標
 {
-	// =============== カウンタ ===================
-	ms_nCntObject--;			//自身の数カウント
-
-	// =============== 解放 ===================
-	if (0 == ms_nCntObject)	//静的確保物を解放するか
-	{
-		//SAFE_DELETE(ms_pVtx);		//頂点情報解放
-		//SAFE_DELETE(ms_pIdx);		//頂点インデックス解放
-		//SAFE_DELETE(ms_pVtxBuffer);	//頂点バッファ解放
-		//SAFE_DELETE(ms_pIdxBuffer);	//インデックスバッファ解放
-		SAFE_DELETE(ms_pCameraDef);		//疑似カメラ削除
-	}
 }
 
 /* ========================================
@@ -86,6 +74,14 @@ CObject::CObject(const CObject & Obj)
 =========================================== */
 CObject::~CObject()
 {
+	// =============== カウンタ ===================
+	ms_nCntObject--;			//自身の数カウント
+
+	// =============== 解放 ===================
+	if (0 == ms_nCntObject)	//静的確保物を解放するか
+	{
+		SAFE_DELETE(ms_pCameraDef);	//疑似カメラ削除
+	}
 }
 
 /* ========================================
