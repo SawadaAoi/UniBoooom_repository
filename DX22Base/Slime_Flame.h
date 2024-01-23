@@ -27,7 +27,7 @@ class CSlime_Flame :
 public:
 	// ===プロトタイプ宣言===
 	CSlime_Flame();
-	CSlime_Flame(TPos3d<float> pos, float fSize, Effekseer::EffectRef flameSlimeEffect, VertexShader* pVS, Model* pModel);
+	CSlime_Flame(TPos3d<float> pos, Effekseer::EffectRef flameSlimeEffect, VertexShader* pVS, Model* pModel);
 	~CSlime_Flame();
 	void NormalMove() override;
 	void SetNormalSpeed() override;
