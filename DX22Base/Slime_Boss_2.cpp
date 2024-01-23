@@ -10,6 +10,7 @@
 	変更履歴
 	・2023/12/12 クラス作成 Sawada
 	・2023/12/14 攻撃動作を追加 Sawada
+	・2024/01/23 着地時の高速移動バグを修正 Sawada
 
 ========================================== */
 
@@ -184,6 +185,7 @@ void CSlime_Boss_2::MoveSwitch()
 	{
 	// 移動処理
 	case MOVE_STATE::NORMAL:
+		SetNormalSpeed();	// 移動スピードをリセット(直前の吹き飛び速度を無くす為)
 		MoveNormal();
 
 		break;

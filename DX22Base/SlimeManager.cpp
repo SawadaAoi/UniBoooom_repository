@@ -389,7 +389,7 @@ void CSlimeManager::Create(E_SLIME_LEVEL level)
 			m_pSlime[i] = new CSlime_4(CreatePos, m_pVS, m_pRedModel);	// 動的生成
 			break;
 		case LEVEL_FLAME:
-			m_pSlime[i] = new CSlime_Flame(CreatePos, 0.5f, m_flameSlimeEffect, m_pVS,m_pFlameModel);	// 動的生成
+			m_pSlime[i] = new CSlime_Flame(CreatePos, m_flameSlimeEffect, m_pVS,m_pFlameModel);	// 動的生成
 			break;
 		case LEVEL_HEAL:
 			m_pSlime[i] = new CSlime_Heal(CreatePos, m_pVS, m_pHealModel);	//動的生成
