@@ -36,17 +36,15 @@
 	----------------------------------------
 	戻値：なし
 =========================================== */
-CStageFinish::CStageFinish(CCamera* pCamera, int* pPlayerHp, int* pTimeCnt)
+CStageFinish::CStageFinish()
 	: m_eGameState(GAME_PLAY)
 	, m_pPlayerHp(nullptr)
 	, m_pTimeCnt(nullptr)
 	, m_bGameEnd(false)
 {
-	m_pPlayerHp = pPlayerHp;	//プレイヤーのHPのポインタを取得
-	m_pTimeCnt = pTimeCnt;		//制限時間のポインタを取得
 
-	m_pClear = new CClearText(pCamera);
-	m_pOver = new COverText(pCamera);
+	m_pClear = new CClearText();
+	m_pOver = new COverText();
 }
 
 /* ========================================
@@ -137,6 +135,19 @@ void CStageFinish::Draw()
 	}
 }
 
+void CStageFinish::SetCamera(const CCamera * pCamera)
+{
+	C2dObject::SetCamera(pCamera);
+	if (m_pClear)
+	{
+		m_pClear->SetCamera(m_pCamera);
+	}
+	if (m_pOver)
+	{
+		m_pOver->SetCamera(m_pCamera);
+	}
+}
+
 /* ========================================
 	画面遷移フラグ取得関数
 	----------------------------------------
@@ -172,4 +183,14 @@ bool CStageFinish::GetClearFlg()
 		return false;
 	}
 	
+}
+
+void CStageFinish::SetPlHp(int * pPlayerHp)
+{
+	m_pPlayerHp = pPlayerHp;	//プレイヤーのHPのポインタを取得
+}
+
+void CStageFinish::SetTime(int * pTimeCnt)
+{
+	m_pTimeCnt = pTimeCnt;		//制限時間のポインタを取得
 }

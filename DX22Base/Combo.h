@@ -20,6 +20,7 @@
 #define __COMBO_H__
 
 // =============== インクルード ===================
+#include "2dObject.h"	//親のヘッダ
 #include "Sprite.h"
 #include <Texture.h>
 #include "Object.h"
@@ -29,7 +30,7 @@ class CTotalScore;
 const int	MAX_COMBO_NUM = 5;					// 最大同時コンボ数
 
 // =============== クラス定義 =====================
-class CCombo
+class CCombo :public C2dObject	//2Dオブジェクト
 {
 public:
 	// ===構造体定義=========
@@ -72,7 +73,6 @@ private:
 	int m_nCntHeight;	// テクスチャの縦分割数カウント用
 	int m_nCntOldCombo[MAX_COMBO_NUM];	// コンボ数増加確認用
 	int m_nCnt;			// アニメーション切り替えカウント用
-};
-
+};	//コンボ
 
 #endif	//!__COMBO_H__

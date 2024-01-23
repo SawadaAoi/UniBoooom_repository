@@ -227,8 +227,6 @@ void CObject::SetCamera(const CCamera* pCamera)
 ======================================== */
 void CObject::PlaySe(const std::map<int, XAUDIO2_BUFFER*>& pSe, const int& nKey, const float& fVolume)
 {
-
-
 	// =============== 音設定 =====================
 	if (pSe.find(nKey) != pSe.end() && pSe.at(nKey))	//アクセスチェック・ヌルチェック
 	{

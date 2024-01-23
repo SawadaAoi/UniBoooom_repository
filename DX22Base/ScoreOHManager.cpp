@@ -29,7 +29,6 @@
 	戻値：なし
 =========================================== */
 CScoreOHManager::CScoreOHManager()
-	: m_pCamera(nullptr)
 {
 	// スコア配列の初期化
 	for (int i = 0; i < MAX_EXPLOSION_NUM; i++)
@@ -182,17 +181,4 @@ void CScoreOHManager::DeleteCheck()
 		delete m_pScore[i]; m_pScore[i] = nullptr;	// 爆発を削除する
 
 	}
-}
-/* ========================================
-   カメラのセット関数
-   ----------------------------------------
-   内容：プレイヤー追従カメラをセットする
-   ----------------------------------------
-   引数：カメラ
-   ----------------------------------------
-   戻値：なし
-======================================== */
-void CScoreOHManager::SetCamera(const CCamera * pCamera)
-{
-	m_pCamera = pCamera;	//中身は変えられないけどポインタはかえれるのでヨシ！
 }

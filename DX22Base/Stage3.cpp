@@ -42,10 +42,20 @@ const int STAGE_NUM = 3;	//ステージ番号
 CStage3::CStage3()
 	:CStage()	//親関数呼び出し
 {
-	m_pFloor = new CFloor(m_pPlayer->GetPosAddress(), CFloor::Stage3);	// 床生成
-	m_pUIStageManager->GetBossGauge()->AddBossGauge(BOSS_GAUGE_S3[0].BossNum, BOSS_GAUGE_S3[0].startTime, BOSS_GAUGE_S3[0].maxTime);
-	//================セット================
-	m_pFloor->SetCamera(m_pCamera);
+	// =============== 動的確保 =====================
+	if (m_p3dObject.find(E_3D_PLAYER) != m_p3dObject.end() && m_p3dObject.at(E_3D_PLAYER) &&
+		typeid(*m_pCamera).hash_code() == typeid(CCameraChase).hash_code() &&
+		typeid(*m_p3dObject.at(E_3D_PLAYER)).hash_code() == typeid(CPlayer).hash_code())	//アクセスチェック・ヌルチェック・型チェック
+	{
+		m_p3dObject.emplace(E_3D_FLOOR, new CFloor(static_cast<CPlayer*>(m_p3dObject.at(E_3D_PLAYER))->GetPosAddress(), CFloor::Stage3));	// 床生成
+	}
+
+	// =============== 初期化 =====================
+	if (m_p3dObject.find(E_3D_PLAYER) != m_p3dObject.end() && m_p3dObject.at(E_3D_PLAYER) &&
+		typeid(*m_p3dObject.at(E_3D_PLAYER)).hash_code() == typeid(CPlayer).hash_code())	//アクセスチェック・ヌルチェック・型チェック
+	{
+		m_p3dObject.at(E_3D_FLOOR)->SetCamera(m_pCamera);	//カメラ登録
+	}
 }
 
 /* ========================================
@@ -61,9 +71,6 @@ CStage3::~CStage3()
 {
 	// =============== 記録 =====================
 	RecordData();	//データ記録
-
-	// =============== 終了 =====================
-	SAFE_DELETE(m_pFloor);
 }
 
 /* ========================================
@@ -79,44 +86,44 @@ void CStage3::Update()
 {
 	CStage::Update();	// ステージ終了処理
 
-	if (m_pStartText->GetAnimFlg())	// シーン遷移後ゲームを開始するか判定
-	{
-		m_pStartText->Update();
-	}
-	else
-	{
-		// カメラ更新
-		m_pCamera->Update();
+	//if (m_pStartText->GetAnimFlg())	// シーン遷移後ゲームを開始するか判定
+	//{
+	//	m_pStartText->Update();
+	//}
+	//else
+	//{
+	//	// カメラ更新
+	//	m_pCamera->Update();
 
-		//ポーズ更新
-		if (m_pPause)	//ヌルチェック
-		{
-			m_pPause->Update();	//ポーズ更新
-			if (m_pPause->IsPause())	//ポーズ中
-			{
-				return;	//処理中断
-			}
-			m_bFinish = m_pPause->IsFin();	//終了判定
-		}
+	//	//ポーズ更新
+	//	if (m_pPause)	//ヌルチェック
+	//	{
+	//		m_pPause->Update();	//ポーズ更新
+	//		if (m_pPause->IsPause())	//ポーズ中
+	//		{
+	//			return;	//処理中断
+	//		}
+	//		m_bFinish = m_pPause->IsFin();	//終了判定
+	//	}
 
-		// =============== ヒットストップ検査 ===================
-		if (!CHitStop::IsStop())	//ヒットストップ時処理しない
-		{
-			// プレイヤー更新
-			m_pPlayer->Update();	//※カメラ更新含
+	//	// =============== ヒットストップ検査 ===================
+	//	if (!CHitStop::IsStop())	//ヒットストップ時処理しない
+	//	{
+	//		// プレイヤー更新
+	//		m_pPlayer->Update();	//※カメラ更新含
 
-			// スライムマネージャー更新
-			m_pSlimeMng->Update(m_pExplosionMng);
-		}
+	//		// スライムマネージャー更新
+	//		m_pSlimeMng->Update(m_pExplosionMng);
+	//	}
 
-		m_pFloor->Update();				// 床更新
-		m_pExplosionMng->Update();		// 爆発マネージャー更新
-		m_pHealItemMng->Update();		// 回復アイテム更新
-		m_pUIStageManager->Update();	// UIマネージャー更新
-		Collision();					// 当たり判定更新
+	//	m_pFloor->Update();				// 床更新
+	//	m_pExplosionMng->Update();		// 爆発マネージャー更新
+	//	m_pHealItemMng->Update();		// 回復アイテム更新
+	//	m_pUIStageManager->Update();	// UIマネージャー更新
+	//	Collision();					// 当たり判定更新
 
 
-	}
+	//}
 }
 
 /* ========================================
@@ -131,38 +138,38 @@ void CStage3::Update()
 //!memo(見たら消してー)：constが邪魔になったら外してね(.hの方も)
 void CStage3::Draw()
 {
-	RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得
-	DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
-	SetRenderTargets(1, &pRTV, pDSV);		//DSVがnullだと2D表示になる
+	//RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得
+	//DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
+	//SetRenderTargets(1, &pRTV, pDSV);		//DSVがnullだと2D表示になる
 
-	//床の描画
-	m_pFloor->Draw();
+	////床の描画
+	//m_pFloor->Draw();
 
-	// スライムマネージャー描画
-	m_pSlimeMng->Draw();
+	//// スライムマネージャー描画
+	//m_pSlimeMng->Draw();
 
-	// プレイヤー描画
-	m_pPlayer->Draw();
+	//// プレイヤー描画
+	//m_pPlayer->Draw();
 
-	LibEffekseer::Draw();
+	//LibEffekseer::Draw();
 
-	//爆発マネージャー描画
-	m_pExplosionMng->Draw();
+	////爆発マネージャー描画
+	//m_pExplosionMng->Draw();
 
-	//回復アイテム描画
-	m_pHealItemMng->Draw();
+	////回復アイテム描画
+	//m_pHealItemMng->Draw();
 
-	//2D描画変換
-	SetRenderTargets(1, &pRTV, nullptr);
+	////2D描画変換
+	//SetRenderTargets(1, &pRTV, nullptr);
 
-	//UIマネージャー描画
-	m_pUIStageManager->Draw();
+	////UIマネージャー描画
+	//m_pUIStageManager->Draw();
 
-	// スタート合図描画
-	if (m_pStartText->GetAnimFlg())
-	{
-		m_pStartText->Draw();
-	}
+	//// スタート合図描画
+	//if (m_pStartText->GetAnimFlg())
+	//{
+	//	m_pStartText->Draw();
+	//}
 
 	// ポーズ描画
 	if (m_pPause)
@@ -197,22 +204,22 @@ CStage3::E_TYPE CStage3::GetNext() const
 =========================================== */
 void CStage3::RecordData()
 {
-	// =============== 退避 =====================
-	m_Data.nTotalScore = m_pUIStageManager->GetTotalScore();				// スコア退避
+	//// =============== 退避 =====================
+	//m_Data.nTotalScore = m_pUIStageManager->GetTotalScore();				// スコア退避
 
-	// =============== データ登録 =====================
-	if (m_Data.nHighScore[STAGE_NUM - 1] < m_Data.nTotalScore)	// ハイスコアを更新しているか？
-	{
-		m_Data.nHighScore[STAGE_NUM - 1] = m_Data.nTotalScore;	// ハイスコア更新
-	}
-	m_Data.nAliveTime = m_pUIStageManager->GetTimer()->GetErapsedTime();	// 経過時間退避
-	m_Data.nMaxCombo = m_pUIStageManager->GetCombo()->GetMaxCombo();		// 最大コンボ数退避
-	m_Data.bClearFlg = m_pUIStageManager->GetStageFinish()->GetClearFlg();	// ゲームクリアしたか
-	if (m_pSlimeMng)	//ヌルチェック
-	{
-		m_Data.nTotalKill = m_pSlimeMng->GetTotalKillCnt();					// 総討伐数退避
-		m_pSlimeMng->GetKillCntArray(m_Data.nKill);							// スライム別討伐数退避
+	//// =============== データ登録 =====================
+	//if (m_Data.nHighScore[STAGE_NUM - 1] < m_Data.nTotalScore)	// ハイスコアを更新しているか？
+	//{
+	//	m_Data.nHighScore[STAGE_NUM - 1] = m_Data.nTotalScore;	// ハイスコア更新
+	//}
+	//m_Data.nAliveTime = m_pUIStageManager->GetTimer()->GetErapsedTime();	// 経過時間退避
+	//m_Data.nMaxCombo = m_pUIStageManager->GetCombo()->GetMaxCombo();		// 最大コンボ数退避
+	//m_Data.bClearFlg = m_pUIStageManager->GetStageFinish()->GetClearFlg();	// ゲームクリアしたか
+	//if (m_pSlimeMng)	//ヌルチェック
+	//{
+	//	m_Data.nTotalKill = m_pSlimeMng->GetTotalKillCnt();					// 総討伐数退避
+	//	m_pSlimeMng->GetKillCntArray(m_Data.nKill);							// スライム別討伐数退避
 
-	}
+	//}
 	m_Data.nStageNum = STAGE_NUM;	// プレイしたステージ番号
 }

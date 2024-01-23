@@ -20,11 +20,12 @@
 #define __HP_UI_H__
 
 // =============== インクルード ===================
+#include "2dObject.h"	//親のヘッダ
 #include "Texture.h"	// テクスチャ用ヘッダ
 
 
 // =============== クラス定義 =====================
-class CHP_UI
+class CHP_UI :public C2dObject	//2Dオブジェクト
 {
 public:
 	enum HEART_STATE
@@ -39,11 +40,11 @@ public:
 
 public:
 	// ===メンバ関数宣言===
-	CHP_UI(const int* pPlayerHp);		// コンストラクタ
+	CHP_UI();		// コンストラクタ
 	~CHP_UI();							// デストラクタ
 	void Update();				// 更新処理
 	void Draw();				// 描画処理
-
+	void SetPlayerHp(const int* pPlayerHp);	//hp登録
 
 private:
 	// ===メンバ変数宣言===
@@ -57,6 +58,6 @@ private:
 	float m_fUVposY;	// テクスチャの縦分割数
 	int m_nCntWidth;	// テクスチャの横分割数カウント用
 	int m_nCntHeight;	// テクスチャの縦分割数カウント用
-};
+};	//HPのUI
 
 #endif	//!__HP_UI_H__

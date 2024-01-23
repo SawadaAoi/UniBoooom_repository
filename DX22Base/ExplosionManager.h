@@ -27,6 +27,7 @@
 #define __EXPLOSION_MANAGER_H__
 
 // =============== インクルード ===================
+#include "ObjectManager.h"		//親のヘッダ
 #include "Explosion.h"			//爆発処理ヘッダー
 #include "GameParameter.h"		//定数定義用ヘッダー
 #include "SlimeBase.h"
@@ -54,7 +55,7 @@ const float LEVEL_BOSS_EXPLODE_TIME = 4.0f * 60.0f;	// スライム_ボスの爆発総時間
 #endif
 
 // =============== クラス定義 =====================
-class CExplosionManager
+class CExplosionManager:public CObjectManager	//オブジェクト管理
 {
 public:
 	// ===メンバ関数宣言===
@@ -70,7 +71,7 @@ public:
 	void DeleteCheck();							   				// 時間より爆発を削除関数
 	void ComboEndCheck();										// 爆発の連鎖が途切れたかチェックする
 	void SwitchExplode(E_SLIME_LEVEL slimeLevel, TPos3d<float> pos, TTriType<float> slimeSize);					//スライムのレベルに応じて爆発を変更
-	void SwitchExplode(E_SLIME_LEVEL slimeLevel, TPos3d<float> pos, TTriType<float> slimeSize, int comboNum);					//スライムのレベルに応じて爆発を変更
+	void SwitchExplode(E_SLIME_LEVEL slimeLevel, TPos3d<float> pos, TTriType<float> slimeSize, int comboNum);	//スライムのレベルに応じて爆発を変更
 
 
 	void CreateUI(TPos3d<float> pos, float fTime);				//BoooomUI生成関数
@@ -92,6 +93,6 @@ private:
 	XAUDIO2_BUFFER* m_pSEExplode;
 	IXAudio2SourceVoice* m_pSEExplodeSpeaker;
 	Effekseer::EffectRef m_explodeEffect;		//爆発のエフェクト
-};
+};	//爆発管理
 
 #endif	//!__EXPLOSION_MANAGER_H__

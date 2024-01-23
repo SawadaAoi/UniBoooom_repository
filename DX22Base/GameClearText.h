@@ -24,7 +24,7 @@ class CClearText :public CDrawAnim	//UIアニメーション
 {
 public:
 	// ===プロトタイプ宣言===
-	CClearText(CCamera*);	// コンストラクタ
+	CClearText();	// コンストラクタ
 	~CClearText() {};		// デストラクタ
 protected:
 	// ===メンバ変数宣言=====

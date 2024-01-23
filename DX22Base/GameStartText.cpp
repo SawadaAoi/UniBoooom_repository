@@ -35,15 +35,14 @@ const int START_SWITCH_CNT = 1;					// アニメーション切り替え間隔
 	----------------------------------------
 	内容：生成時に行う処理
 	----------------------------------------
-	引数1：カメラクラスのポインタ
+	引数1：
 	----------------------------------------
 	戻値：なし
 =========================================== */
-CStartText::CStartText(CCamera* pCamera)
+CStartText::CStartText()
 	: CDrawAnim(START_SPLIT_NUM_MAX, START_SPLIT_NUM, START_SWITCH_CNT)
 {
 	SetTexture("Assets/Texture/Start_sprit.png");		//テクスチャ初期化
-	SetCamera(pCamera);									//カメラ登録
 	SetPos({ START_POS.x, START_POS.y, 0.0f });			//位置初期化
 	SetSize({ START_SCALE.x, START_SCALE.y, 0.0f });	//サイズ初期化
 }

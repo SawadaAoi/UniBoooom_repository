@@ -36,11 +36,10 @@ const int OVER_SWITCH_CNT = 1;
 	----------------------------------------
 	ñﬂílÅFÇ»Çµ
 =========================================== */
-COverText::COverText(CCamera* pCamera)
+COverText::COverText()
 	: CDrawAnim(OVER_SPLIT_NUM_MAX, OVER_SPLIT_NUM, OVER_SWITCH_CNT)
 {
 	SetTexture("Assets/Texture/StageFinish/GameOver.png");
-	SetCamera(pCamera);
 	SetPos({ OVER_POS.x, OVER_POS.y, 0.0f });
 	SetSize({ OVER_SCALE.x, OVER_SCALE.y, 0.0f });
 }

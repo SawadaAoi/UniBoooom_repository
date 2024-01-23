@@ -291,17 +291,11 @@
     <ClCompile Include="StageFinishUI.cpp">
       <Filter>ソース ファイル\Object\2dObject</Filter>
     </ClCompile>
-    <ClCompile Include="Combo.cpp">
-      <Filter>ソース ファイル\Object\2dObject</Filter>
-    </ClCompile>
     <ClCompile Include="HitStop.cpp">
       <Filter>ソース ファイル\System</Filter>
     </ClCompile>
     <ClCompile Include="AnimeModel.cpp">
       <Filter>ソース ファイル\System</Filter>
-    </ClCompile>
-    <ClCompile Include="ScoreOHManager.cpp">
-      <Filter>ソース ファイル\Object\2dObject\Score</Filter>
     </ClCompile>
     <ClCompile Include="ScoreOverHead.cpp">
       <Filter>ソース ファイル\Object\2dObject\Score</Filter>
@@ -356,9 +350,6 @@
     </ClCompile>
     <ClCompile Include="Random.cpp">
       <Filter>ソース ファイル\System\Random</Filter>
-    </ClCompile>
-    <ClCompile Include="UIStageManager.cpp">
-      <Filter>ソース ファイル\Object\2dObject</Filter>
     </ClCompile>
     <ClCompile Include="Slime_Heal.cpp">
       <Filter>ソース ファイル\Object\3dObject\Enemy</Filter>
@@ -470,6 +461,15 @@
     </ClCompile>
     <ClCompile Include="ExplosionManager.cpp">
       <Filter>ソース ファイル\Object\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="ScoreOHManager.cpp">
+      <Filter>ソース ファイル\Object\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="UIStageManager.cpp">
+      <Filter>ソース ファイル\Object\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Combo.cpp">
+      <Filter>ソース ファイル\Object\2dObject\Score</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -606,9 +606,6 @@
       <Filter>ヘッダー ファイル\Info</Filter>
     </ClInclude>
     <ClInclude Include="StageFinishUI.h">
-      <Filter>ヘッダー ファイル\Object\2dObject</Filter>
-    </ClInclude>
-    <ClInclude Include="Combo.h">
       <Filter>ヘッダー ファイル\Object\2dObject</Filter>
     </ClInclude>
     <ClInclude Include="HitStop.h">
@@ -790,6 +787,12 @@
     </ClInclude>
     <ClInclude Include="ScoreOHManager.h">
       <Filter>ヘッダー ファイル\Object\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Combo.h">
+      <Filter>ヘッダー ファイル\Object\2dObject\Score</Filter>
+    </ClInclude>
+    <ClInclude Include="ControllMap.h">
+      <Filter>ヘッダー ファイル\Info</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

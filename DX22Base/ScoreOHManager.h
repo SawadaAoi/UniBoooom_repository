@@ -19,6 +19,7 @@
 #define __SCORE_OH_MANAGER_H__
 
 // =============== インクルード ===================
+#include "ObjectManager.h"	//親のヘッダ
 #include "ScoreOverHead.h"
 #include "ExplosionManager.h"	//最大爆発数定義
 #include "SlimeBase.h"
@@ -27,7 +28,7 @@
 const float SLIME_SCORE_HEIGHT = 4.0f;	//爆発時頭上スコアの表示位置
 
 // =============== クラス定義 =====================
-class CScoreOHManager
+class CScoreOHManager :public CObjectManager	//オブジェクト管理
 {
 public:
 	// ===メンバ関数宣言===
@@ -38,14 +39,10 @@ public:
 	void DisplayOverheadScore(TTriType<float> pos,int score, float height);			// スコアの生成
 	void DisplayOverheadScore(TTriType<float> pos, E_SLIME_LEVEL level);			// スコアの生成
 	void DeleteCheck();
-	void SetCamera(const CCamera * pCamera);
-	
 protected:
 	// ===メンバ変数宣言===
 	CScoreOverHead* m_pScore[MAX_EXPLOSION_NUM];	//スコアの配列
 	static int m_nTotalScore[5];	//トータルスコア//複数箇所対応	//倍率かける前
-	const CCamera*	m_pCamera;	//カメラのポインタ
-};
-
+};	//スコア管理
 
 #endif	//!__SCORE_OH_MANAGER_H__

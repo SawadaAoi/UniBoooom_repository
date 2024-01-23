@@ -32,6 +32,7 @@
 	・2024/01/15 GameFinish()関数修正・RecordData()関数追加 takagi
 	・2024/01/20 リファクタリング takagi
 	・2024/01/21 コメント改修 takagi
+	・2024/01/23 親関数呼出 takagi
 
 	========================================== */
 
@@ -41,6 +42,7 @@
 #include "Input.h"
 #include "HitStop.h"	//ヒットストップ
 #include "Fade.h"
+#include "ControllMap.h"	//マップ操作
 #include <algorithm>
 
 // =============== 定数・マクロ定義 ===================
@@ -58,10 +60,20 @@ const int STAGE_NUM = 1;	//ステージ番号
 CStage1::CStage1()
 	:CStage()	//親関数呼び出し
 {
-	m_pFloor = new CFloor(m_pPlayer->GetPosAddress(), CFloor::Stage1);	// 床生成
-	//================セット================
-	m_pFloor->SetCamera(m_pCamera);
+	// =============== 動的確保 =====================
+	if (m_p3dObject.find(E_3D_PLAYER) != m_p3dObject.end() && m_p3dObject.at(E_3D_PLAYER) &&
+		typeid(*m_pCamera).hash_code() == typeid(CCameraChase).hash_code() &&
+		typeid(*m_p3dObject.at(E_3D_PLAYER)).hash_code() == typeid(CPlayer).hash_code())	//アクセスチェック・ヌルチェック・型チェック
+	{
+		m_p3dObject.emplace(E_3D_FLOOR, new CFloor(static_cast<CPlayer*>(m_p3dObject.at(E_3D_PLAYER))->GetPosAddress(), CFloor::Stage1));	// 床生成
+	}
 
+	// =============== 初期化 =====================
+	if (m_p3dObject.find(E_3D_PLAYER) != m_p3dObject.end() && m_p3dObject.at(E_3D_PLAYER) &&
+		typeid(*m_p3dObject.at(E_3D_PLAYER)).hash_code() == typeid(CPlayer).hash_code())	//アクセスチェック・ヌルチェック・型チェック
+	{
+		m_p3dObject.at(E_3D_FLOOR)->SetCamera(m_pCamera);	//カメラ登録
+	}
 }
 
 /* ========================================
@@ -77,9 +89,6 @@ CStage1::~CStage1()
 {
 	// =============== 記録 =====================
 	RecordData();	//データ記録
-
-	// =============== 終了 =====================
-	SAFE_DELETE(m_pFloor);
 }
 
 /* ========================================
@@ -93,18 +102,14 @@ CStage1::~CStage1()
 =========================================== */
 void CStage1::Update()
 {
-	CStage::Update();	// ステージ終了処理
-
-	if (m_pStartText->GetAnimFlg())	// シーン遷移後ゲームを開始するか判定
+	// =============== 更新 ===================
+	if (ACCESS_NULL_TYPE_CHECK(m_p2dObjectOnScreen, E_2D_ON_SCREEN_OPENING, typeid(CStartText).hash_code()) && 
+		static_cast<CStartText*>(m_p2dObjectOnScreen.at(E_2D_ON_SCREEN_OPENING))->GetAnimFlg())	// シーン遷移後ゲームを開始するか判定
 	{
-		m_pStartText->Update();
+		m_p2dObjectOnScreen.at(E_2D_ON_SCREEN_OPENING)->Update();	//一部更新
 	}
 	else
 	{
-		// カメラ更新
-		m_pCamera->Update();
-
-		//ポーズ更新
 		if (m_pPause)	//ヌルチェック
 		{
 			m_pPause->Update();	//ポーズ更新
@@ -115,23 +120,8 @@ void CStage1::Update()
 			m_bFinish = m_pPause->IsFin();	//終了判定
 		}
 
-		// =============== ヒットストップ検査 ===================
-		if (!CHitStop::IsStop())	//ヒットストップ時処理しない
-		{
-			// プレイヤー更新
-			m_pPlayer->Update();	//※カメラ更新含
-
-			// スライムマネージャー更新
-			m_pSlimeMng->Update(m_pExplosionMng);
-		}
-
-		m_pFloor->Update();				// 床更新
-		m_pExplosionMng->Update();		// 爆発マネージャー更新
-		m_pHealItemMng->Update();		// 回復アイテム更新
-		m_pUIStageManager->Update();	// UIマネージャー更新
-		Collision();					// 当たり判定更新
-
-		
+		// =============== 関数呼出 ===================
+		CStage::Update();	//親関数呼び出し
 	}
 }
 
@@ -146,43 +136,13 @@ void CStage1::Update()
 =========================================== */
 void CStage1::Draw()
 {
-	RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得
-	DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
-	SetRenderTargets(1, &pRTV, pDSV);		//DSVがnullだと2D表示になる
-	
+	// =============== 関数呼出 ===================
+	CStage::Draw();	//親関数呼び出し
 
-	m_pFloor->Draw();
-
-	// スライムマネージャー描画
-	m_pSlimeMng->Draw();
-
-	// プレイヤー描画
-	m_pPlayer->Draw();
-
-	//LibEffekseer::Draw();
-
-	//爆発マネージャー描画
-	m_pExplosionMng->Draw();
-
-	//回復アイテム描画
-	//m_pHealItemMng->Draw();
-
-	//2D描画変換
-	SetRenderTargets(1, &pRTV, nullptr);
-
-	//UIマネージャー描画
-	//m_pUIStageManager->Draw();
-
-	// スタート合図描画
-	if (m_pStartText->GetAnimFlg())
+	// =============== 描画 ===================
+	if (m_pPause)	//ヌルチェック
 	{
-		//m_pStartText->Draw();
-	}
-
-	// ポーズ描画
-	if (m_pPause)
-	{
-		m_pPause->Draw();
+		m_pPause->Draw();	// ポーズ描画
 	}
 }
 
@@ -213,21 +173,32 @@ CStage1::E_TYPE CStage1::GetNext() const
 void CStage1::RecordData()
 {
 	// =============== 退避 =====================
-	m_Data.nTotalScore = m_pUIStageManager->GetTotalScore();				// スコア退避
+	if (ACCESS_NULL_TYPE_CHECK(m_p2dObjectOnScreen, E_2D_ON_SCREEN_FINISH, typeid(CTotalScore).hash_code()))	//アクセス・ヌル・型チェック
+	{
+		m_Data.nTotalScore = static_cast<CTotalScore*>(m_p2dObjectOnScreen.at(E_2D_ON_SCREEN_FINISH))->GetTotalScore();	//スコア退避
+	}
 
 	// =============== データ登録 =====================
 	if (m_Data.nHighScore[STAGE_NUM - 1] < m_Data.nTotalScore)	// ハイスコアを更新しているか？
 	{
 		m_Data.nHighScore[STAGE_NUM - 1] = m_Data.nTotalScore;	// ハイスコア更新
 	}
-	m_Data.nAliveTime = m_pUIStageManager->GetTimer()->GetErapsedTime();	// 経過時間退避
-	m_Data.nMaxCombo = m_pUIStageManager->GetCombo()->GetMaxCombo();		// 最大コンボ数退避
-	m_Data.bClearFlg = m_pUIStageManager->GetStageFinish()->GetClearFlg();	// ゲームクリアしたか
-	if (m_pSlimeMng)	//ヌルチェック
+	if (ACCESS_NULL_TYPE_CHECK(m_p2dObjectOnScreen, E_2D_ON_SCREEN_TIMER, typeid(CTimer).hash_code()))	//アクセス・ヌル・型チェック
 	{
-		m_Data.nTotalKill = m_pSlimeMng->GetTotalKillCnt();					// 総討伐数退避
-		m_pSlimeMng->GetKillCntArray(m_Data.nKill);							// スライム別討伐数退避
-
+		m_Data.nTotalScore = static_cast<CTimer*>(m_p2dObjectOnScreen.at(E_2D_ON_SCREEN_TIMER))->GetErapsedTime();	// 経過時間退避
+	}
+	if (ACCESS_NULL_TYPE_CHECK(m_p2dObjectOnScreen, E_2D_ON_SCREEN_COMBO, typeid(CCombo).hash_code()))	//アクセス・ヌル・型チェック
+	{
+		m_Data.nTotalScore = static_cast<CCombo*>(m_p2dObjectOnScreen.at(E_2D_ON_SCREEN_COMBO))->GetMaxCombo();		// 最大コンボ数退避
+	}
+	if (ACCESS_NULL_TYPE_CHECK(m_p2dObjectOnScreen, E_2D_ON_SCREEN_COMBO, typeid(CStageFinish).hash_code()))	//アクセス・ヌル・型チェック
+	{
+		m_Data.nTotalScore = static_cast<CStageFinish*>(m_p2dObjectOnScreen.at(E_2D_ON_SCREEN_COMBO))->GetClearFlg();	// ゲームクリアしたか
+	}
+	if (ACCESS_NULL_TYPE_CHECK(m_pObjectManager, E_MANAGER_SLIME, typeid(CSlimeManager).hash_code()))	//アクセス・ヌル・型チェック
+	{
+		m_Data.nTotalKill = static_cast<CSlimeManager*>(m_pObjectManager.at(E_MANAGER_SLIME))->GetTotalKillCnt();	// 総討伐数退避
+		static_cast<CSlimeManager*>(m_pObjectManager.at(E_MANAGER_SLIME))->GetKillCntArray(m_Data.nKill);			// スライム別討伐数退避
 	}
 	m_Data.nStageNum = STAGE_NUM;	// プレイしたステージ番号
 }

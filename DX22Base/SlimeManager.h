@@ -37,6 +37,7 @@
 #define __SLIME_MANAGER_H__
 
 // =============== インクルード ===================
+#include "ObjectManager.h"	//親のヘッダ
 #include "TriType.h"
 //#include "SlimeBase.h"
 #include "Camera.h"
@@ -58,7 +59,7 @@ const int MAX_BOSS_SLIME_NUM = 5;		// ボススライムの最大生成数
 #endif
 
 // =============== クラス定義 =====================
-class CSlimeManager
+class CSlimeManager :public CObjectManager	//オブジェクト管理
 {
 public:
 	enum SE
@@ -70,7 +71,7 @@ public:
 	};
 
 	// ===プロトタイプ宣言===
-	CSlimeManager(CPlayer* pPlayer);
+	CSlimeManager();
 	~CSlimeManager();
 
 	void Update(CExplosionManager* pExpMng);
@@ -113,6 +114,7 @@ public:
 	void SetHealMng(CHealItemManager* pHealItemMng);
 	void SetExplosionMng(CExplosionManager* pExpMng);
 	void SetTimer(CTimer* pTimer);
+	void SetPlayer(CPlayer* pPlayer);
 	int GetTotalKillCnt();									//被討伐数ゲッタ
 	void GetKillCntArray(int* nKillCnt);									//被討伐数ゲッタ
 private:
@@ -159,6 +161,6 @@ private:
 		"Assets/Sound/SE/BossDamaged.mp3" };	//被ダメージのSE
 	XAUDIO2_BUFFER* m_pSE[SE_MAX];
 	IXAudio2SourceVoice* m_pSESpeaker[SE_MAX];
-};
+};	//スライム管理
 
 #endif	//!__SLIME_MANAGER_H__

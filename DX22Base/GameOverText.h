@@ -24,7 +24,7 @@ class COverText :public CDrawAnim	//UIアニメーション
 {
 public:
 	// ===プロトタイプ宣言===
-	COverText(CCamera*);	// コンストラクタ
+	COverText();	// コンストラクタ
 	~COverText() {};		// デストラクタ
 protected:
 	// ===メンバ変数宣言=====

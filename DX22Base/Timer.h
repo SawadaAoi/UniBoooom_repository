@@ -23,6 +23,7 @@
 // =============== 定数定義 ===================
 
 // =============== インクルード ===================
+#include <2dObject.h>
 #include <Texture.h>
 #include "Pos2d.h"	//二次元座標
 
@@ -30,7 +31,7 @@
 const int STAGE_TIME = 180 * 60;	//ステージ制限時間（秒*フレーム）
 
 // =============== クラス定義 =====================
-class CTimer
+class CTimer :public C2dObject	//2Dオブジェクト
 {
 protected:
 	// ===列挙定義 ==========
@@ -86,7 +87,7 @@ private:
 	Texture* m_pTextureNum;	//タイマー表示用テクスチャポインタ
 	Texture* m_pTextureBG;
 	Texture* m_pTextureColon;
-};
+};	//タイマー
 
 
 #endif	//!__TIMER_H__

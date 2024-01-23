@@ -128,7 +128,7 @@ const std::map<size_t, int> MAP_SLIME_KILL_NUM = {
 	-------------------------------------
 	戻値：無し
 =========================================== */
-CSlimeManager::CSlimeManager(CPlayer* pPlayer)
+CSlimeManager::CSlimeManager()
 	: m_CreateCnt(0)
 	, m_pVS(nullptr)
 	, m_pBlueModel(nullptr)
@@ -140,7 +140,7 @@ CSlimeManager::CSlimeManager(CPlayer* pPlayer)
 	, m_pBossRockModel(nullptr)
 	, m_pBossModel(nullptr)
 	, m_oldCreatePos{ 0.0f,0.0f,0.0f }
-	, m_pPlayer(pPlayer)
+	, m_pPlayer(nullptr)
 	, m_pExpMng(nullptr)
 	, m_pUnionMng(nullptr)	//UNION管理
 	, m_pTimer(nullptr)
@@ -164,12 +164,7 @@ CSlimeManager::CSlimeManager(CPlayer* pPlayer)
 		m_pBoss[i] = nullptr;
 	}
 		
-	// ゲーム開始時に敵キャラを生成する
-	for (int i = 0; i < START_ENEMY_NUM; i++)
-	{
-		int ranLv = rand() % 3 + 1;		// 生成するスライムのレベルを乱数で指定
-		Create((E_SLIME_LEVEL)ranLv);	// 生成処理
-	}
+
 	// SEの読み込み
 	LoadSE();
 #if DEBUG_BOSS
@@ -1374,6 +1369,11 @@ void CSlimeManager::SetExplosionMng(CExplosionManager* pExpMng)
 void CSlimeManager::SetTimer(CTimer * pTimer)
 {
 	m_pTimer = pTimer;
+}
+
+void CSlimeManager::SetPlayer(CPlayer * pPlayer)
+{
+	m_pPlayer = pPlayer;
 }
 
 /* ========================================

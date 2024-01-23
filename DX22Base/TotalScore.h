@@ -19,12 +19,13 @@
 #define __TOTAL_SCORE_H__
 
 // =============== インクルード ===================
+#include "2dObject.h"
 #include <Texture.h>
 #include"Combo.h"
 #include <vector>
 #include "Defines.h"
 // =============== クラス定義 =====================
-class CTotalScore
+class CTotalScore :public C2dObject	//2Dオブジェクト
 {
 public:
 	// ===構造体定義=========
@@ -66,7 +67,7 @@ private:
 	std::vector<int> digits;//digitsをここに入れる
 	
 
-};
+};	//総スコア
 
 
 

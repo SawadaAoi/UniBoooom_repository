@@ -21,12 +21,13 @@
 #define __STAGE_FINISH_UI_H__
 
 // =============== インクルード ===================
+#include "2dObject.h"
 #include "Texture.h"
 #include "GameParameter.h"
 #include "GameClearText.h"
 #include "GameOverText.h"
 
-class CStageFinish
+class CStageFinish :public C2dObject
 {
 public:
 	enum GAME_STATE
@@ -40,14 +41,16 @@ public:
 		MAX_STATE
 	};
 
-	CStageFinish(CCamera* pCamera, int* pPlayerHp,int* pTimeCnt);
+	CStageFinish();
 	~CStageFinish();
 	void Update();
 	void Draw();
+	virtual void SetCamera(const CCamera* pCamera) override;
 	bool GetGameEndFlg();	// 画面遷移フラグ取得用
 
 	bool GetClearFlg();
-
+	void SetPlHp(int* pPlayerHp);
+	void SetTime(int* pTimeCnt);
 private:
 	GAME_STATE m_eGameState;
 	const int* m_pPlayerHp;

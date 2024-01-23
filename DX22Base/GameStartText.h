@@ -25,7 +25,7 @@ class CStartText :public CDrawAnim	//UIアニメーション
 {
 public:
 	// ===プロトタイプ宣言===
-	CStartText(CCamera*);	// コンストラクタ
+	CStartText();	// コンストラクタ
 	~CStartText() {};		// デストラクタ
 protected:
 	// ===メンバ変数宣言=====

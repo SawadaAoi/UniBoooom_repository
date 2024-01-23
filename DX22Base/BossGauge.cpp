@@ -53,10 +53,10 @@ const int FADE_TIME = 5 * 60;										// ボスゲージが溜まってから消える時間
 	----------------------------------------
 	戻値：なし
 =========================================== */
-CBossgauge::CBossgauge(CTimer* pTimer)
+CBossGauge::CBossGauge()
 	: m_pTexFrame(nullptr)
 	, m_pTexGauge(nullptr)
-	, m_pTimer(pTimer)
+	, m_pTimer(nullptr)
 {
 
 	//ボスゲージのテクスチャ読む込み
@@ -87,7 +87,7 @@ CBossgauge::CBossgauge(CTimer* pTimer)
 	----------------------------------------
 	戻値：なし
 =========================================== */
-CBossgauge::~CBossgauge()
+CBossGauge::~CBossGauge()
 {
 	SAFE_DELETE(m_pTexFrame);
 	SAFE_DELETE(m_pTexGauge);
@@ -102,7 +102,7 @@ CBossgauge::~CBossgauge()
 	----------------------------------------
 	戻値：なし
 =========================================== */
-void CBossgauge::Update()
+void CBossGauge::Update()
 {
 	// ボスゲージ配列数分(表示するボス数分)
 	for (auto itr = m_BossGauges.begin(); itr != m_BossGauges.end(); ++itr)
@@ -153,7 +153,7 @@ void CBossgauge::Update()
 	----------------------------------------
 	戻値：なし
 =========================================== */
-void CBossgauge::Draw()
+void CBossGauge::Draw()
 {
 	// ボスゲージ配列数分(表示するボス数分)
 	for (auto itr = m_BossGauges.begin(); itr != m_BossGauges.end(); ++itr)
@@ -179,7 +179,7 @@ void CBossgauge::Draw()
 	----------------------------------------
 	戻値：なし
 =========================================== */
-void CBossgauge::DrawFrame(std::vector<BossGauge>::iterator itr)
+void CBossGauge::DrawFrame(std::vector<BossGauge>::iterator itr)
 {
 	//ボスゲージテクスチャ（空）
 	DirectX::XMFLOAT4X4 bossempty[3];
@@ -217,7 +217,7 @@ void CBossgauge::DrawFrame(std::vector<BossGauge>::iterator itr)
 	----------------------------------------
 	戻値：なし
 =========================================== */
-void CBossgauge::DrawGauge(std::vector<BossGauge>::iterator itr)
+void CBossGauge::DrawGauge(std::vector<BossGauge>::iterator itr)
 {
 
 	//ボスゲージテクスチャ（満）
@@ -261,7 +261,7 @@ void CBossgauge::DrawGauge(std::vector<BossGauge>::iterator itr)
 	----------------------------------------
 	戻値：なし
 =========================================== */
-void CBossgauge::SetSlimeManager(CSlimeManager* pSlimeMng)
+void CBossGauge::SetSlimeManager(CSlimeManager* pSlimeMng)
 {
 	m_pSlimeMng = pSlimeMng;
 }
@@ -276,20 +276,24 @@ void CBossgauge::SetSlimeManager(CSlimeManager* pSlimeMng)
 	----------------------------------------
 	戻値：なし
 =========================================== */
-void CBossgauge::AddBossGauge(int BossNum, float fStartTime, float fMaxTime)
+void CBossGauge::AddBossGauge(int BossNum, float fStartTime, float fMaxTime)
 {
 	BossGauge addPram = { 
 		BossNum,
-		false,				// 削除フラグ
-		false,				// フェードフラグ
-		fStartTime * 60,	// 開始時間Frame
-		fMaxTime * 60,		// 最大値Frame
-		0,					// ゲージ加算
-		0,					// フェード加算
-		0.0f,				// 表示割合 
+		false,					// 削除フラグ
+		false,					// フェードフラグ
+		(int)fStartTime * 60,	// 開始時間Frame
+		(int)fMaxTime * 60,		// 最大値Frame
+		0,						// ゲージ加算
+		0,						// フェード加算
+		0.0f,					// 表示割合 
 	};
 
 	m_BossGauges.push_back(addPram);	// 配列に追加
 
 }
 
+void CBossGauge::SetTimer(CTimer * pTimer)
+{
+	m_pTimer = pTimer;
+}

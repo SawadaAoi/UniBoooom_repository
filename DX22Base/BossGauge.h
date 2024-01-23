@@ -30,7 +30,7 @@
 #include "Camera.h"
 
 // =============== クラス定義 =====================
-class CBossgauge
+class CBossGauge :public C2dObject	//2Dオブジェクト
 {
 public:
 	// ===列挙定義===========
@@ -49,8 +49,8 @@ public:
 
 public:
 	// ===プロトタイプ宣言===
-	CBossgauge(CTimer* pTimer);
-	~CBossgauge();
+	CBossGauge();
+	~CBossGauge();
 	void Update();
 	void Draw();
 
@@ -58,6 +58,7 @@ public:
 	void DrawGauge(std::vector<BossGauge>::iterator itr);	// ボスゲージ増加量描画関数
 
 	void SetSlimeManager(CSlimeManager* pSlimeMng);
+	void SetTimer(CTimer* pTimer);
 
 	void AddBossGauge(int BossNum, float fStartTime, float fMaxTime);
 
@@ -68,7 +69,7 @@ private:
 	CTimer* m_pTimer;						// 残り時間のポインタ
 	CSlimeManager* m_pSlimeMng;				// スライム管理(ボス生成で使用する)
 	std::vector<BossGauge> m_BossGauges;	// ボスゲージ管理配列(ステージ毎に生成する数配列に格納する)
-};
+};	//ボスゲージ
 
 
 #endif	//!__BOSS_GAUGE_H__

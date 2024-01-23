@@ -35,12 +35,11 @@ const int CLEAR_SWITCH_CNT = 1;					// アニメーション切り替え間隔
 	----------------------------------------
 	戻値：なし
 =========================================== */
-CClearText::CClearText(CCamera* pCamera)
+CClearText::CClearText()
 	: CDrawAnim(CLEAR_SPLIT_NUM_MAX, CLEAR_SPLIT_NUM, CLEAR_SWITCH_CNT)
 {
 	//ゲームクリアの描画準備
 	SetTexture("Assets/Texture/StageFinish/finish.png");
-	SetCamera(pCamera);
 	SetPos({ CLEAR_POS.x, CLEAR_POS.y, 0.0f });
 	SetSize({ CLEAR_SCALE.x, CLEAR_SCALE.y, 0.0f });
 }

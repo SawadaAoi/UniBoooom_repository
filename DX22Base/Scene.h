@@ -23,6 +23,7 @@
 	・2023/12/15 列挙中身追加 takagi
 	・2024/01/19 GetType()関数削除・その他リファクタリング takagi
 	・2024/01/20 コメント改修 takagi
+	・2024/01/23 2dObject分割 takagi
 
 ========================================== */
 
@@ -30,11 +31,11 @@
 #define __SCENE_H__
 
 // =============== インクルード ===================
-#include "Camera.h"		//メンバのヘッダ
-#include <3dObject.h>	//メンバのヘッダ
-#include <2dObject.h>	//メンバのヘッダ
-//#include <ObjManager.h>	//メンバのヘッダ
-#include <map>			//連想型配列
+#include "Camera.h"			//メンバのヘッダ
+#include <3dObject.h>		//メンバのヘッダ
+#include <2dObject.h>		//メンバのヘッダ
+#include <ObjectManager.h>	//メンバのヘッダ
+#include <map>				//連想型配列
 
 // =============== クラス定義 =====================
 class CScene
@@ -66,10 +67,12 @@ public:
 	CCamera* GetCamera() const;			//カメラゲッタ
 protected:
 	// ===メンバ変数宣言=====
-	std::map<int, C3dObject*> m_p3dObject;	//オブジェクト(各シーンで更新順に定義した列挙をキーとする)
-	std::map<int, C2dObject*> m_p2dObject;
-	bool m_bFinish;						//終了予約用(trueで終了)
-	CCamera* m_pCamera;					//カメラ
+	CCamera* m_pCamera;									//カメラ
+	std::map<int, C3dObject*> m_p3dObject;				//3Dオブジェクト(各シーンで更新順に定義した列挙をキーとする)
+	std::map<int, C2dObject*> m_p2dObjectOnWorld;		//3D空間に配置する2Dオブジェクト(各シーンで更新順に定義した列挙をキーとする)
+	std::map<int, CObjectManager*> m_pObjectManager;	//3D空間に配置するオブジェクトの管理者(各シーンで更新順に定義した列挙をキーとする)
+	std::map<int, C2dObject*> m_p2dObjectOnScreen;		//2D空間に配置する2Dオブジェクト(各シーンで更新順に定義した列挙をキーとする)
+	bool m_bFinish;										//終了予約用(trueで終了)
 };	//シーン
 
 #endif	//!__SCENE_H__

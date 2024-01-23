@@ -53,7 +53,7 @@ const float FAR_Z = 10.0f;			// 写せる限界距離
 	-------------------------------------
 	戻値：なし
 =========================================== */
-CHP_UI::CHP_UI(const int* pPlayerHp)
+CHP_UI::CHP_UI()
 	: m_bPlayAnim(false)
 	, m_nPlayerOldHp(PLAYER_HP)
 	, m_nCnt(0)
@@ -106,8 +106,6 @@ CHP_UI::CHP_UI(const int* pPlayerHp)
 		MessageBox(nullptr, (ErrorSpot + "HP_HtoE_sprite_2.png読み込み失敗").c_str(), "Error", MB_OK | MB_ICONERROR);						//エラー通知
 #endif
 	}
-
-	m_pPlayerHp = pPlayerHp;
 
 }
 
@@ -312,6 +310,11 @@ void CHP_UI::Draw()
 		Sprite::Draw();
 	}
 
+}
+
+void CHP_UI::SetPlayerHp(const int * pPlayerHp)
+{
+	m_pPlayerHp = pPlayerHp;
 }
 
 

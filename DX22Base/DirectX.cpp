@@ -9,6 +9,7 @@
 
 	変更履歴
 	・2024/01/21 コメント改修 takagi
+	・2024/01/23 SetRenderTargets()の初期引数変更 takagi
 
 ========================================== */
 
@@ -126,7 +127,7 @@ HRESULT InitDirectX(HWND hWnd, UINT width, UINT height, bool fullscreen)
 	g_pDSV = new DepthStencil();
 	if (FAILED(hr = g_pDSV->Create(g_pRTV->GetWidth(), g_pRTV->GetHeight(), false)))
 		return hr;
-	SetRenderTargets(1, &g_pRTV, nullptr);
+	SetRenderTargets(1, &g_pRTV, g_pDSV);
 
 
 	//--- カリング設定

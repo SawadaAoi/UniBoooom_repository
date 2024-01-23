@@ -28,6 +28,12 @@
 // =============== クラス定義 =====================
 class CStage1 :public CStage	//ステージ
 {
+protected:
+	enum E_3D	//更新順
+	{
+		E_3D_FLOOR = CStage::E_3D_MAX,	//床
+		E_3D_MAX,						//要素数
+	};	//3Dのオブジェクト
 public:
 	// ===プロトタイプ宣言===
 	CStage1();							//コンストラクタ

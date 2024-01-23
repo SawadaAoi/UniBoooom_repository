@@ -58,6 +58,37 @@
 // =============== クラス定義 =====================
 class CStage :public CScene	//シーン
 {
+	// ===列挙定義==========
+protected:
+	enum E_3D	//更新順
+	{
+		E_3D_PLAYER,	//プレイヤー
+		E_3D_MAX,		//要素数
+	};	//3Dのオブジェクト
+	enum E_2D_ON_WORLD	//更新順
+	{
+		E_2D_ON_WORLD_BOSS_ARROW,	//ボス方向指針
+		E_2D_ON_WORLD_BOSS_GAUGE,	//ボスゲージ
+		E_2D_ON_WORLD_MAX,			//要素数
+	};	//3D表示する2Dのオブジェクト
+	enum E_MANAGER	//更新順
+	{
+		E_MANAGER_SLIME,		//スライム管理
+		E_MANAGER_EXPLOSION,	//爆発管理
+		E_MANAGER_SCORE_OH,		//ScoreOH管理	//TODO:修正
+		E_MANAGER_HEAL_ITEM,	//回復アイテム管理
+		E_MANAGER_MAX,			//要素数
+	};	//マネージャー
+	enum E_2D_ON_SCREEN	//更新順
+	{
+		E_2D_ON_SCREEN_OPENING,		//開始表示
+		E_2D_ON_SCREEN_FINISH,		//終了表示
+		E_2D_ON_SCREEN_TOTAL_SCORE,	//総スコア
+		E_2D_ON_SCREEN_COMBO,		//コンボ数
+		E_2D_ON_SCREEN_HP,			//HP
+		E_2D_ON_SCREEN_TIMER,		//時間
+		E_2D_ON_SCREEN_MAX,			//要素数
+	};	//2D表示する2Dのオブジェクト
 public:
 	// ===プロトタイプ宣言===
 	CStage();				//コンストラクタ
@@ -65,25 +96,11 @@ public:
 	virtual void Update();	//更新
 	void Collision();		//当たり判定
 protected:
-	// ===プロトタイプ宣言===
-	virtual void RecordData() = 0;	//データ記録
 	// ===メンバ変数宣言===
 	CPause* m_pPause;							//ポーズ画面
 	BattleData m_Data;							//戦闘データ記録用変数
-	XAUDIO2_BUFFER* m_pSEHitHammer;				//ハンマーヒット音データ
-	IXAudio2SourceVoice* m_pSEHitHammerSpeaker;	//ハンマーヒット音再生機構
-
-
-	CPlayer* m_pPlayer;
-	CFloor* m_pFloor;
-
-
-	CSlimeManager* m_pSlimeMng;			//
-	CExplosionManager* m_pExplosionMng;	//
-	CScoreOHManager* m_pScoreOHMng;		//
-	CHealItemManager* m_pHealItemMng;	//
-	CUIStageManager* m_pUIStageManager;	//
-	CStartText* m_pStartText;			//ゲームスタート描画
+	// ===プロトタイプ宣言===
+	virtual void RecordData() = 0;	//データ記録
 private:
 	// ===プロトタイプ宣言===
 	void PlayerSlimeCollision();			//プレイヤーとスライムの当たり判定
@@ -101,7 +118,6 @@ private:
 	void SlimeBossNormalMoveCollision();	//スライムからボスへの重複判定
 	void BossSlimeNormalMoveCollision();	//ボスからスライムへの重複判定
 	void BossBossNormalMoveCollision();		//ボスからボスへの重複判定
-	void LoadSE();							//SE読み込み
 };	//ステージ
 
 #endif	//!__STAGE_H__

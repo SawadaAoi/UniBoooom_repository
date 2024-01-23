@@ -19,11 +19,12 @@
 #define __HEAL_ITEM_MANAGER_H__
 
 // =============== インクルード部 =====================
+#include "ObjectManager.h"	//親のヘッダ
 #include "HealItem.h"
 #include "Model.h"
 #include "Shader.h"
 
-class CHealItemManager
+class CHealItemManager :public CObjectManager	//オブジェクト管理
 {
 public:
 	CHealItemManager();
@@ -41,6 +42,6 @@ private:
 	Model* m_pModel;
 	VertexShader* m_pVS;
 	const CCamera* m_pCamera;
-};
+};	//回復アイテム管理
 
 #endif	//!__HEAL_ITEM_MANAGER_H__

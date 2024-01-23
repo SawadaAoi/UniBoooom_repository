@@ -17,6 +17,7 @@
 #define __BOSS_ARROW_H__
 
 // =============== インクルード ===================
+#include "2dObject.h"
 #include "Sprite.h"
 #include <Texture.h>
 #include "Pos2d.h"
@@ -26,7 +27,7 @@
 #include "Defines.h"
 
 // =============== クラス定義 =====================
-class CBossArrow
+class CBossArrow :public C2dObject	//2Dオブジェクト
 {
 public:
 	// ===プロトタイプ宣言===
@@ -49,7 +50,7 @@ private:
 	bool m_bBossInsideScreen;		// ボスが画面内判定用フラグ
 	float m_fDistanceX;		// ポスとプレイヤーのX座標の差
 	float m_fDistanceZ;		// ポスとプレイヤーのZ座標の差
-};
+};	//ボス方向表示矢印
 
 
 #endif	//!__BOSS_ARROW_H__

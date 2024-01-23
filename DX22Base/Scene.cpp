@@ -23,6 +23,7 @@
 	・2024/01/19 GetType()関数削除・その他リファクタリング takagi
 	・2024/01/20 細かな修正 takagi
 	・2024/01/21 コメント改修 takagi
+	・2024/01/23 Zソート時複製物const化 takagi
 
 ========================================== */
 
@@ -42,8 +43,8 @@
 	戻値：なし
 =========================================== */
 CScene::CScene()
-	:m_bFinish(false)	//シーン開始
-	,m_pCamera(nullptr)	//カメラ
+	:m_pCamera(nullptr)	//カメラ
+	,m_bFinish(false)	//シーン開始
 {
 }
 
@@ -59,9 +60,11 @@ CScene::CScene()
 CScene::~CScene()
 {
 	// =============== 終了 =====================
-	SAFE_DELETE(m_pCamera);				//カメラ削除
-	SAFE_DELETE_POINTER_MAP(m_p3dObject);	//オブジェクト削除
-	SAFE_DELETE_POINTER_MAP(m_p2dObject);	//オブジェクト削除
+	SAFE_DELETE_POINTER_MAP(m_p2dObjectOnScreen);	//オブジェクト削除
+	SAFE_DELETE_POINTER_MAP(m_pObjectManager);		//オブジェクト削除
+	SAFE_DELETE_POINTER_MAP(m_p2dObjectOnWorld);	//オブジェクト削除
+	SAFE_DELETE_POINTER_MAP(m_p3dObject);			//オブジェクト削除
+	SAFE_DELETE(m_pCamera);							//カメラ削除
 }
 
 /* ========================================
@@ -85,13 +88,25 @@ void CScene::Update()
 		{
 			pObject.second->Update();	//オブジェクト更新
 		}
-	});	//非ヌル時更新
-	for_each(m_p2dObject.begin(), m_p2dObject.end(), [](std::pair<int, CObject*> pObject)->void {
+	});	//3Dオブジェクト更新
+	for_each(m_p2dObjectOnWorld.begin(), m_p2dObjectOnWorld.end(), [](std::pair<int, CObject*> pObject)->void {
 		if (pObject.second)	//ヌルチェック
 		{
 			pObject.second->Update();	//オブジェクト更新
 		}
-	});	//非ヌル時更新
+	});	//3D表示2Dオブジェクト更新
+	for_each(m_pObjectManager.begin(), m_pObjectManager.end(), [](std::pair<int, CObjectManager*> pObjectManager)->void {
+		if (pObjectManager.second)	//ヌルチェック
+		{
+			pObjectManager.second->Update();	//マネージャ更新
+		}
+	});	//マネージャ更新
+	for_each(m_p2dObjectOnScreen.begin(), m_p2dObjectOnScreen.end(), [](std::pair<int, CObject*> pObject)->void {
+		if (pObject.second)	//ヌルチェック
+		{
+			pObject.second->Update();	//オブジェクト更新
+		}
+	});	//2D表示2Dオブジェクト更新
 }
 
 /* ========================================
@@ -106,7 +121,7 @@ void CScene::Update()
 void CScene::Draw()
 {
 	// =============== 変数宣言 =====================
-	std::vector<CObject*> Subject;	//被写体
+	std::vector<const CObject*> Subject;	//被写体
 
 	// =============== 初期化 =====================
 	for_each(m_p3dObject.begin(), m_p3dObject.end(), [&Subject](std::pair<int, CObject*> pObject)->void {
@@ -115,26 +130,41 @@ void CScene::Draw()
 			Subject.emplace_back(pObject.second);	//オブジェクト追加
 		}
 	});	//被写体3Dオブジェクトアドレスコピー
-	for_each(m_p2dObject.begin(), m_p2dObject.end(), [&Subject](std::pair<int, CObject*> pObject)->void {
+	for_each(m_p2dObjectOnWorld.begin(), m_p2dObjectOnWorld.end(), [&Subject](std::pair<int, CObject*> pObject)->void {
 		if (pObject.second)	//ヌルチェック
 		{
 			Subject.emplace_back(pObject.second);	//オブジェクト追加
 		}
 	});	//被写体2Dオブジェクトアドレスコピー
+	for_each(m_pObjectManager.begin(), m_pObjectManager.end(), [&Subject](std::pair<int, CObjectManager*> pObjectManager)->void {
+		if (pObjectManager.second)	//ヌルチェック
+		{
+			pObjectManager.second->GetObjects(Subject);	//オブジェクト追加
+		}
+	});	//管理されているオブジェクトアドレスコピー
+
 	// =============== Zソート =====================
-	std::sort(Subject.begin(), Subject.end(), [](CObject* pFirst, CObject* pSecond)->bool {
+	std::sort(Subject.begin(), Subject.end(), [](const CObject* pFirst, const CObject* pSecond)->bool {
 		return pFirst && pSecond					//ヌルチェック
-			? pFirst->GetPosZ() < pFirst->GetPosZ()	//Z座標で比較(等価の場合は入れ替えない)
+			? pFirst->GetPosZ() > pFirst->GetPosZ()	//奥のものから描画(等価の場合は入れ替えない)
 			: false;								//片方はnullなので比較する必要がない
 	});	//オブジェクトのソート
 
-	// =============== 描画 =====================
-	for_each(Subject.begin(), Subject.end(), [](CObject* pObject)->void {
+	// =============== 3D空間描画 =====================
+	for_each(Subject.begin(), Subject.end(), [](const CObject* pObject)->void {
 		if (pObject)	//ヌルチェック
 		{
 			pObject->Draw();	//描画
 		}
 	});	//ソート順に描画
+
+	// =============== 2D空間描画 =====================
+	for_each(m_p2dObjectOnScreen.begin(), m_p2dObjectOnScreen.end(), [](std::pair<int, const CObject*> pObject)->void {
+		if (pObject.second)	//ヌルチェック
+		{
+			pObject.second->Draw();	//オブジェクト描画
+		}
+	});	//キー順に描画
 }
 
 /* ========================================
