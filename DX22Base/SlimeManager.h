@@ -29,6 +29,7 @@
 	・2023/12/28 スライム討伐配列番号追加 Sawada
 	・2024/01/03 UnionSlime関数に移動速度と角度の引数を追加 nieda
 	・2024/01/01 ボス落下のスライム硬直てょり追加 Tei
+	・2024/01/18 炎スライムエフェクト追加 Tei
 
    ======================================== */
 
@@ -49,6 +50,8 @@
 #include "Player.h"
 #include "Timer.h"
 #include "Sound.h"
+#include "LibEffekseer.h"
+
 // =============== 定数定義 =======================
 #if MODE_GAME_PARAMETER
 #else
@@ -160,6 +163,11 @@ private:
 		"Assets/Sound/SE/BossDamaged.mp3" };	//被ダメージのSE
 	XAUDIO2_BUFFER* m_pSE[SE_MAX];
 	IXAudio2SourceVoice* m_pSESpeaker[SE_MAX];
+
+	//=======Effekseer=======
+	Effekseer::EffectRef m_flameSlimeEffect;
+
+	
 };
 
 #endif // __SLIME_MANAGER_H__

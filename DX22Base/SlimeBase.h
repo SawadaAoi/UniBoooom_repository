@@ -37,6 +37,7 @@
 	・2023/11/28 影の描画追加 nieda
 	・2023/12/04 列挙にヒールスライムを追加 Tei
 	・2023/12/07 ゲームパラメータから一部定数移動 takagi
+	・2024/01/18 炎スライムエフェクト追加 Tei
 
 ========================================== */
 #ifndef __SLIME_BASE_H__
@@ -53,6 +54,7 @@
 #include "Object.h"
 #include "Shadow.h"		// 影表示用ヘッダ
 #include "Timer.h"
+#include "LibEffekseer.h"
 
 // =============== 列挙定義 =======================
 enum E_SLIME_LEVEL
@@ -144,6 +146,10 @@ protected:
 	int m_nAttack;					// 攻撃力
 
 	tagTransform3d m_PlayerTran;	// プレイヤーの変形情報
+
+	//=======Effekseer=======
+	Effekseer::EffectRef m_flameSlimeEffect;
+	Effekseer::Handle m_efcslimeHnadle;
 
 };
 #endif // __SLIME_BASE_H__
