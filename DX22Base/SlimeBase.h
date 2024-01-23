@@ -117,14 +117,14 @@ public:
 	//セット関数
 	virtual void SetNormalSpeed() = 0;
 	void SetCamera(const CCamera* pCamera);
-	void SetExplosionPos(TPos3d<float> expPos);
+	void SetStopDirectionObjPos(TPos3d<float> expPos);
 	void SetMoveStopFlg(bool bEscape);
 
 protected:
 	Model* m_pModel;				// 3Dモデル
 	VertexShader* m_pVS;			// バーテックスシェーダーのポインタ
 	TTriType<float> m_move;			// 移動量
-	TPos3d<float> m_ExpPos;			// 最も近い爆発の座標
+	TPos3d<float> m_fStpDirPos;		// 停止状態時に向く対象のオブジェクトの座標
 	float m_fSpeed;					// スライムの移動速度
 									   
 	bool m_bHitMove;				// 吹っ飛び中かどうか
