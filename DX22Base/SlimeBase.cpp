@@ -66,7 +66,7 @@ CSlimeBase::CSlimeBase()
 	, m_bHitMove(false)
 	, m_eSlimeSize(LEVEL_1)	//後でSLIME_NONEにする <=TODO
 	, m_RanMoveCnt(RANDOM_MOVE_SWITCH_TIME)	// 初期
-	, m_ExpPos{ 0.0f,0.0f,0.0f }
+	, m_fStpDirPos{ 0.0f,0.0f,0.0f }
 	, m_bMvStpFlg(false)
 	, m_nMvStpCnt(0)
 	, m_fScaleShadow(0.0f)
@@ -332,7 +332,7 @@ void CSlimeBase::Reflect()
 void CSlimeBase::MoveStop()
 {
 	//爆発への角度を取得
-	float rad = atan2f(m_ExpPos.x - m_Transform.fPos.x, m_ExpPos.z - m_Transform.fPos.z);
+	float rad = atan2f(m_fStpDirPos.x - m_Transform.fPos.x, m_fStpDirPos.z - m_Transform.fPos.z);
 	//爆発と反対方向に移動
 	m_move.x = 0.0f;//-(cosf(rad)) * ENEMY_MOVE_SPEED;
 	m_move.z = 0.0f;//-(sinf(rad)) * ENEMY_MOVE_SPEED;
@@ -364,17 +364,17 @@ void CSlimeBase::SetCamera(const CCamera * pCamera)
 }
 
 /* ========================================
-	爆発座標セット関数
+	停止時方向対象オブジェクト座標セット関数
 	----------------------------------------
-	内容：爆発の座標をセットする
+	内容：停止時方向対象の座標をセットする
 	----------------------------------------
-	引数1：爆発の座標
+	引数1：停止時方向対象の座標
 	----------------------------------------
 	戻値：なし
 ======================================== */
-void CSlimeBase::SetExplosionPos(TPos3d<float> expPos)
+void CSlimeBase::SetStopDirectionObjPos(TPos3d<float> stpDirPos)
 {
-	m_ExpPos = expPos;
+	m_fStpDirPos = stpDirPos;
 }
 
 

@@ -1287,7 +1287,7 @@ void CSlimeManager::CheckExplosion()
 			if (distance > slimeExpDistance)	//より近い爆発が見つかった場合
 			{
 				distance = slimeExpDistance;
-				m_pSlime[j]->SetExplosionPos(expPos);	//爆発の座標をスライムにセット
+				m_pSlime[j]->SetStopDirectionObjPos(expPos);	//爆発の座標をスライムにセット
 				m_pSlime[j]->SetMoveStopFlg(true);		//逃げるフラグをONにする
 			}
 		}
@@ -1544,7 +1544,8 @@ void CSlimeManager::RigidCheck(CSlime_BossBase* pBossSlime)
 		// 硬直させる距離だった場合
 		if (RIGID_DISTANCE > slimeBossDistance)
 		{
-			m_pSlime[i]->SetMoveStopFlg(true);	// 停止させる
+			m_pSlime[i]->SetStopDirectionObjPos(bossPos);	// ボスのの座標をスライムにセット
+			m_pSlime[i]->SetMoveStopFlg(true);				// 停止させる
 			if (RIGID_BLOW_DISTANCE > slimeBossDistance)
 			{
 				m_pSlime[i]->HitMoveStart(RIGID_BLOW_SPEED, fBlowAwayAngle);	// 衝突されたスライムに吹き飛び移動処理
@@ -1565,6 +1566,6 @@ void CSlimeManager::RigidCheck(CSlime_BossBase* pBossSlime)
 void CSlimeManager::ScreenShake()
 {
 	m_pCamera->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_WEAK);
-	m_pCamera->ChangeScaleVibrate(12, 1.2f);
+	//m_pCamera->ChangeScaleVibrate(12, 1.2f);
 	
 }
