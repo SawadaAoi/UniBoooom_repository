@@ -297,6 +297,7 @@
     <ClInclude Include="CommandPause.h" />
     <ClInclude Include="Controller.h" />
     <ClInclude Include="Cylinder.h" />
+    <ClInclude Include="Delete.h" />
     <ClInclude Include="DirectWrite.h" />
     <ClInclude Include="DrawAnimation.h" />
     <ClInclude Include="GameClearText.h" />

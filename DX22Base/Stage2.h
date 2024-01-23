@@ -13,6 +13,7 @@
 	・2023/11/16 制作 takagi
 	・2023/12/12 LoadSEをオーバーライド yamashita
 	・2023/12/14 BGMの管理をSceneManagerに移動 yamashita
+	・2024/01/15 GameFinish()関数の引数修正・RecordData()関数追加 takagi
 
 ========================================== */
 
@@ -33,6 +34,9 @@ public:
 	void Draw();					//描画	
 	E_TYPE GetType() const override;	//自身の種類ゲッタ
 	E_TYPE GetNext() const override;	//次のシーンゲッタ
+private:
+	// ===プロトタイプ宣言===
+	virtual void RecordData();			//データ記録
 };	//ステージ2
 
 #endif	//!__STAGE2_H__

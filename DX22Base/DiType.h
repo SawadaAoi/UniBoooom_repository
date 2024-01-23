@@ -12,11 +12,12 @@
 	・2023/11/08 一部関数にconst修飾子付与 takagi
 	・2023/11/09 コメント揃え takagi
 	・2023/11/17 １つの値だけのコンストラクタを実装 takagi
+	・2024/01/16 統一のため、インクルードガードの___を__に変更	takagi
 
 ========================================== */
 
-#ifndef ___DI_TYPE_H___
-#define ___DI_TYPE_H___
+#ifndef __DI_TYPE_H__
+#define __DI_TYPE_H__
 
 // =============== インクルード ===================
 #include <math.h>	//計算関数
@@ -360,7 +361,7 @@ TDiType<DiType> & TDiType<DiType>::operator^=(const double & dIndex)
 	return (*this = *this ^ dIndex);	//実装済演算子を使用して処理を行い、自身の参照を返す
 }
 
-#endif // !___DI_TYPE_H___
+#endif // !__DI_TYPE_H__
 
 
 

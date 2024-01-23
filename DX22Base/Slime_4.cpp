@@ -91,13 +91,13 @@ void CSlime_4::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
 
 	if (!m_bHitMove)	//敵が通常の移動状態の時
 	{
-		if (!m_bEscape  && m_nEscapeCnt == 0)	//逃げるフラグがoffなら
+		if (!m_bMvStpFlg  && m_nMvStpCnt == 0)	//逃げるフラグがoffなら
 		{
 			NormalMove();	//通常異動
 		}
 		else
 		{
-			Escape();	//爆発から逃げる
+			MoveStop();	//爆発から逃げる
 		}
 	}
 	else

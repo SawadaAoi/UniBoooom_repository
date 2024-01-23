@@ -14,6 +14,7 @@
 	・2023/11/07 コメント修正 takagi
 	・2023/11/16 Prot.h→Stage1.h takagi
 	・2023/12/14 BGMの管理をSceneManagerに移動 yamashita
+	・2024/01/15 GameFinish()関数の引数修正・RecordData()関数追加 takagi
 
 ========================================== */
 
@@ -28,14 +29,15 @@ class CStage1 :public CStage	//ステージ
 {
 public:
 	// ===プロトタイプ宣言===
-	CStage1();		//コンストラクタ
-	~CStage1();									//デストラクタ
+	CStage1();							//コンストラクタ
+	~CStage1();							//デストラクタ
 	void Update();						//更新
 	void Draw();						//描画	
 	E_TYPE GetType() const override;	//自身の種類ゲッタ
 	E_TYPE GetNext() const override;	//次のシーンゲッタ
 private:
-	
+	// ===プロトタイプ宣言===
+	virtual void RecordData();			//データ記録	
 };	//ステージ1
 
 #endif	//!__STAGE1_H__

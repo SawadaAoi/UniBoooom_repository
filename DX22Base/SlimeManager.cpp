@@ -42,6 +42,8 @@
 	・2023/12/28 スライム討伐配列番号追加 Sawada
 	・2024/01/01 スライム生成数の代わりを訂正 takagi
 	・2024/01/03 UnionSlime関数に移動速度と角度の引数を追加 nieda
+	・2024/01/01 ボス落下のスライム硬直処理追加 Tei
+	・2024/01/13 ボス落下の画面揺れ処理追加 Tei
 	・2024/01/18 炎スライムエフェクト追加 Tei
 
 =========================================== */
@@ -70,6 +72,9 @@ const float COL_SUB_STAND_TO_SMALL = 0.8f;	// スライム衝突(小→大)の衝突される側
 const float COL_SUB_HIT_TO_SMALL = 0.3f;	// スライム衝突(大→小)の衝突側の減算値(移動方向)				//1.0でそのまま
 const float COL_SUB_STAND_TO_BIG = 1.2f;	// スライム衝突(大→小)の衝突される側の減算値(衝突された方向)	//1.0でそのまま
 const int	REPLACE_SLM_CREATE_NUM = 20;	// スライム最大生成数代わりの定数
+const float RIGID_DISTANCE = 20.0f;				// ボス落下後他のスライムの硬直させる範囲
+const float RIGID_BLOW_DISTANCE = 5.0f;		// ボス2の着地時の雑魚スライムの吹き飛び距離
+const float RIGID_BLOW_SPEED = 1.0f;		// ボス2の着地時の雑魚スライムの吹き飛び速度
 
 #define DEBUG_BOSS	(false)	// デバッグ用にゲーム開始時ボスを生成するかどうか
 
@@ -147,6 +152,7 @@ CSlimeManager::CSlimeManager(CPlayer* pPlayer)
 	, m_pSE{ nullptr,nullptr,nullptr }
 	, m_pSESpeaker{ nullptr,nullptr,nullptr }
 	, m_bBossPtrExist(false)
+	, m_bIsRigid(false)
 {
 	//スライムのモデルと頂点シェーダーの読み込み
 	LoadModel();
@@ -239,14 +245,13 @@ CSlimeManager::~CSlimeManager()
 =========================================== */
 void CSlimeManager::Update(CExplosionManager* pExpMng)
 {
-	CheckEscape();	//Updateの前に近くに爆発があるか確認する
+	CheckExplosion();	//Updateの前に近くに爆発があるか確認する
 
 	// スライム更新
 	for (int i = 0; i <MAX_SLIME_NUM; i++)
 	{
-		if (m_pSlime[i] == nullptr) continue;
+		if (m_pSlime[i] == nullptr) { continue; }
 		m_pSlime[i]->Update(m_pPlayer->GetTransform(), m_pTimer->GetSlimeMoveSpeed());
-
 	}
 
 	OutOfRange();	//スライムがプレイヤーから一定距離離れたら対角線に移動
@@ -256,7 +261,16 @@ void CSlimeManager::Update(CExplosionManager* pExpMng)
 	{
 		if (m_pBoss[i] == nullptr) continue;
 		m_pBoss[i]->Update(m_pPlayer->GetTransform());
+
+		if (m_pBoss[i]->GetMoveState() == CSlime_Boss_2::DROP_RIGID)
+		{
+			RigidCheck(m_pBoss[i]);	// スライムの硬直処理
+			ScreenShake();			// ボス落下の振動処理
+		}
+
+		
 	}
+
 
 	//---敵生成---
 	m_CreateCnt++;
@@ -272,6 +286,8 @@ void CSlimeManager::Update(CExplosionManager* pExpMng)
 	{
 		m_pUnionMng->Update();	//更新
 	}
+
+	
 }
 
 /* ========================================
@@ -1240,7 +1256,7 @@ void CSlimeManager::OutOfRange()
 
 
 /* ========================================
-	逃走判定関数
+	爆発接近判定関数
 	----------------------------------------
 	内容：スライムと爆発の位置関係を確認して逃げるかどうか判定する
 	----------------------------------------
@@ -1248,12 +1264,12 @@ void CSlimeManager::OutOfRange()
 	----------------------------------------
 	戻値：なし
 ======================================== */
-void CSlimeManager::CheckEscape()
+void CSlimeManager::CheckExplosion()
 {
 	for (int j = 0; j <MAX_SLIME_NUM; j++)
 	{
 		if (!m_pSlime[j]) { continue; }						//nullptrならスキップ
-		if (m_pSlime[j]->GetEscapeFlag()) { continue; }		//すでに逃げているならスキップ
+		if (m_pSlime[j]->GetMoveStopFlg()) { continue; }		//すでに逃げているならスキップ
 
 		TPos3d<float> slimePos = m_pSlime[j]->GetPos();	//スライムの座標をゲット
 		float distance = ESCAPE_DISTANCE;				//逃げる状態になる最大距離をセット
@@ -1268,7 +1284,7 @@ void CSlimeManager::CheckEscape()
 			{
 				distance = slimeExpDistance;
 				m_pSlime[j]->SetExplosionPos(expPos);	//爆発の座標をスライムにセット
-				m_pSlime[j]->SetEscapeFlag(true);		//逃げるフラグをONにする
+				m_pSlime[j]->SetMoveStopFlg(true);		//逃げるフラグをONにする
 			}
 		}
 	}
@@ -1482,6 +1498,8 @@ void CSlimeManager::LoadSE()
 	}
 }
 
+
+
 /* ========================================
 	SEの読み込み関数
 	----------------------------------------
@@ -1496,4 +1514,53 @@ void CSlimeManager::PlaySE(SE se, float volume)
 {
 	m_pSESpeaker[se] = CSound::PlaySound(m_pSE[se]);	//SE再生
 	m_pSESpeaker[se]->SetVolume(volume);				//音量の設定
+}
+
+/* ========================================
+	スライム硬直範囲関数
+	----------------------------------------
+	内容：ボス落下後他のスライムに硬直させる範囲判断
+	----------------------------------------
+	引数1：なし
+	----------------------------------------
+	戻値：m_bIsRigid,硬直範囲内かどうか
+======================================== */
+void CSlimeManager::RigidCheck(CSlime_BossBase* pBossSlime)
+{
+	for (int i = 0; i < MAX_SLIME_NUM; i++)
+	{
+		if (m_pSlime[i] == nullptr) { continue; }		// nullptrならスキップ
+		if (m_pSlime[i]->GetMoveStopFlg()) { continue; }	// 既に停止中の場合スキップ
+
+		TPos3d<float> slimePos = m_pSlime[i]->GetPos();	//スライムの座標をゲット
+
+		TPos3d<float> bossPos = pBossSlime->GetPos();		//ボスの座標をゲット
+		float slimeBossDistance = slimePos.Distance(bossPos);
+		float fBlowAwayAngle = pBossSlime->GetTransform().Angle(m_pSlime[i]->GetTransform());		// 吹き飛ばされる方向
+		// 硬直させる距離だった場合
+		if (RIGID_DISTANCE > slimeBossDistance)
+		{
+			m_pSlime[i]->SetMoveStopFlg(true);	// 停止させる
+			if (RIGID_BLOW_DISTANCE > slimeBossDistance)
+			{
+				m_pSlime[i]->HitMoveStart(RIGID_BLOW_SPEED, fBlowAwayAngle);	// 衝突されたスライムに吹き飛び移動処理
+			}
+		}
+	}
+}
+
+/* ========================================
+	スライム落下画面揺れ
+	----------------------------------------
+	内容：ボス落下後画面が振動する処理
+	----------------------------------------
+	引数1：なし
+	----------------------------------------
+	戻値：なし
+======================================== */
+void CSlimeManager::ScreenShake()
+{
+	m_pCamera->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_WEAK);
+	m_pCamera->ChangeScaleVibrate(12, 1.2f);
+	
 }

@@ -10,11 +10,12 @@
 	変更履歴
 	・2023/11/27 制作 takagi
 	・2023/12/04 フェード以外でもカメラがない時の代用としてほしかったので改名 takagi
+	・2024/01/16 統一のため、インクルードガードの___を__に変更	takagi
 
 ========================================== */
 
-#ifndef ___CAMERA_DEF_H___
-#define ___CAMERA_DEF_H___
+#ifndef __CAMERA_DEF_H__
+#define __CAMERA_DEF_H__
 
 // =============== インクルード ===================
 #include "Camera.h"	//親のヘッダ
@@ -27,4 +28,4 @@ public:
 	void Update() {}	//更新
 };	//疑似カメラ
 
-#endif // !___CAMERA_DEF_H___
+#endif // !__CAMERA_DEF_H__

@@ -28,6 +28,7 @@
 	・2023/12/20 UNION追加 takagi
 	・2023/12/28 スライム討伐配列番号追加 Sawada
 	・2024/01/03 UnionSlime関数に移動速度と角度の引数を追加 nieda
+	・2024/01/01 ボス落下のスライム硬直てょり追加 Tei
 	・2024/01/18 炎スライムエフェクト追加 Tei
 
    ======================================== */
@@ -100,10 +101,11 @@ public:
 	void PreventBossBossOverlap(CSlime_BossBase* pMoveBoss, CSlime_BossBase* pStandBoss);							// スライム同士が移動中に接触した時の処理
 	void LoadModel();
 	void OutOfRange();
-	void CheckEscape();
+	void CheckExplosion();
 
 	void PlaySE(SE se,float volume = 1.0f);
-
+	void RigidCheck(CSlime_BossBase* pBossSlime);	//ボススライムと他のスライムの距離計算
+	void ScreenShake();
 	//ゲット関数
 	CSlimeBase* GetSlimePtr(int num);
 	CSlime_BossBase* GetBossSlimePtr(int num);
@@ -147,6 +149,7 @@ private:
 	
 	int m_nKill;	//被討伐数
 	int m_nKills[5];	//被討伐数
+	bool m_bIsRigid;	//硬直かどうかフラグ
 
 	bool m_bBossPtrExist;		// ボスのポインタが存在するかどうか
 	// ===プロトタイプ宣言===

@@ -52,14 +52,20 @@ public:
 
 	// セット関数
 	void SetCamera(const CCamera* m_pCamera);	// 他のオブジェクトと同一のカメラをセット
+	void SetSeFlg(bool flg);
 
 	// ゲット関数
 	bool GetDelFlg();				// 削除フラグ取得処理関数
+	bool GetDelayFlg();
 	int GetDamage();				// ダメージ量取得関数
 	bool GetBossTouched();			// 既にボスと当たっているかどうか取得関数
 	int GetComboNum();				// コンボ配列番号取得
+	bool GetSeFlg();
 
 private:
+	void EffectStart();
+
+
 	// ===メンバ変数宣言===
 	float			m_fMaxSize;
 	TTriType<float>	m_fSizeAdd;
@@ -73,7 +79,9 @@ private:
 	int m_dComboNum;			// コンボ配列番号
 
 	bool m_bDelayFlg;		// 爆発遅延フラグ
-	int m_dDelayCnt;		// カウントダウン開始フレーム減算値
+	int m_nDelayCnt;		// カウントダウン開始フレーム減算値
+	bool m_bSeFlg;
+	int m_nSeCnt;
 
 	Effekseer::EffectRef m_explodeEffect;
 	Effekseer::Handle m_efcHnadle;

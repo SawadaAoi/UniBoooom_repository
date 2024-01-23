@@ -37,7 +37,7 @@ CScoreOverHead::CScoreOverHead(TPos3d<float> fPos, int nScore, float posY,float 
 	, m_fExplodeTime(fTime)	
 	, m_bDelFlg(false)
 	, m_bDelayFlg(delayFlg)
-	, m_dDelayCnt(0)
+	, m_nDelayCnt(0)
 {
 	
 	m_pScoreTexture = new Texture();
@@ -161,10 +161,10 @@ void CScoreOverHead::Draw()
 =========================================== */
 void CScoreOverHead::Delay()
 {
-	m_dDelayCnt++;
+	m_nDelayCnt++;
 
 	// 遅延秒数が経ったら
-	if (m_dDelayCnt >= DELAY_TIME)
+	if (m_nDelayCnt >= DELAY_TIME)
 	{
 		m_bDelayFlg = false;	// 遅延フラグをオフにする
 	}
