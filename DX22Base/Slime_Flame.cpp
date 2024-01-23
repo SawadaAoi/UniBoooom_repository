@@ -28,7 +28,8 @@ const float LEVEL_FLAME_SCALE = 1.0f;
 const float LEVEL_FLAME_SPEED = ENEMY_MOVE_SPEED * 0.2f;
 const int	LEVEL_FLAME_ATTACK = 1;	// 攻撃力
 #endif
-const float LEVEL_FLAME_SHADOW_SCALE = 2.0f;// スライム＿フレイムの影の大きさ
+const float LEVEL_FLAME_SHADOW_SCALE = 2.0f; // スライム＿フレイムの影の大きさ
+const float FLAME_EFFECT_SCALE = 0.7f;		 // スライム＿フレイムの炎エフェクトの大きさ
 
 /* ========================================
 	コンストラクタ関数
@@ -67,7 +68,7 @@ CSlime_Flame::CSlime_Flame(TPos3d<float> pos, float fSize, Effekseer::EffectRef 
 	// エフェクト初期化
 	m_flameSlimeEffect = flameSlimeEffect;	//エフェクトをセット
 	m_efcslimeHnadle = LibEffekseer::GetManager()->Play(m_flameSlimeEffect, pos.x, pos.y, pos.z + 0.5f);	//エフェクトの開始
-	LibEffekseer::GetManager()->SetScale(m_efcslimeHnadle, LEVEL_FLAME_SCALE* fSize, LEVEL_FLAME_SCALE * fSize * 1.1f, LEVEL_FLAME_SCALE * fSize);	//エフェクトのサイズを設定
+	LibEffekseer::GetManager()->SetScale(m_efcslimeHnadle, FLAME_EFFECT_SCALE, FLAME_EFFECT_SCALE * 1.1f, FLAME_EFFECT_SCALE);	//エフェクトのサイズを設定
 	LibEffekseer::GetManager()->SetRotation(m_efcslimeHnadle, m_Transform.fRadian.x, m_Transform.fRadian.y, m_Transform.fRadian.z);					//エフェクトの回転角度を設定
 	LibEffekseer::GetManager()->SetLocation(m_efcslimeHnadle, pos.x, pos.y, pos.z);																	//エフェクトの位置を設定
 }

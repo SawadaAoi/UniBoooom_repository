@@ -319,7 +319,11 @@ void CSlimeManager::Draw()
 	// =============== UNION•`‰æ ===================
 	if (m_pUnionMng)	//ƒkƒ‹ƒ`ƒFƒbƒN
 	{
+		auto rtv = GetDefaultRTV();
+		SetRenderTargets(1, &rtv, nullptr);
 		m_pUnionMng->Draw();	//•`‰æ
+		SetRenderTargets(1, &rtv, GetDefaultDSV());
+
 	}
 
 }
