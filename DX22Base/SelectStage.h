@@ -46,13 +46,12 @@ public:
 protected:
 	StageSelect mStageNum[SUTAGE_NUM];
 private:
-	int Num;
+	int m_nSelectNum;			// 選択中のステージ番号
 	C2dPolygon* m_2dObj[5];
 	StageSelect EscapeStageNum;
 	Texture* m_pStageSelectBG;
 	Texture* m_pStageSelectUI;
-	bool m_bSelect;
-	int m_nCount;
+	bool m_bStickFlg;			// コントローラーのスティックをたおしているか
 
 };	//ステージセレクト
 
