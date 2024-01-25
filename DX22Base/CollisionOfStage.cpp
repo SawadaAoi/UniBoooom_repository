@@ -4,7 +4,7 @@
 	ステージの当たり判定処理実装
 	---------------------------------------
 	CollisionOfStage.cpp
-	---------------------------------------
+
 	作成者
 			takagi
 			nieda
@@ -16,16 +16,12 @@
 	・2023/12/01 ハンマーとスライムの当たり判定持にSEを再生 yamashita
 	・2023/12/07 ゲームパラメータから一部定数移動 takagi
 	・2023/12/15 SEの変数を削除 yamashita
-	・2024/01/20 リファクタリング takagi
-	・2024/01/21 コメント改修 takagi
-	・2024/01/22 Draw()関数const化 takagi
 
 ========================================== */
 
 // =============== インクルード ===================
 #include "Stage.h"	//自身のヘッダ
 #include "GameParameter.h"
-#include "ControllMap.h"	//map操作
 #include "HitStop.h"	//ヒットストップ
 #include "Slime_4.h"	//赤スライム種分けよう
 #include <typeinfo.h>	//typeid使用
@@ -63,7 +59,6 @@ void CStage::Collision()
 	SlimeBossNormalMoveCollision();
 	BossSlimeNormalMoveCollision();
 	SlimeSlimeNormalMoveCollision();
-	PlayerHealItemCollision();
 }
 
 /* ========================================
@@ -77,33 +72,19 @@ void CStage::Collision()
    ======================================== */
 void CStage::PlayerSlimeCollision()
 {
-	// =============== 変数宣言 =====================
-	CPlayer* pPlayer = nullptr;	//プレイヤーのアドレスを格納してアタッチ
-	CSlimeManager* pSlimeMng = nullptr;	//スライム管理のアドレスを格納してアタッチ
-
-	// =============== 初期化 =====================
-	if (!ACCESS_NULL_TYPE_CHECK(m_p3dObject, E_3D_PLAYER, typeid(CPlayer).hash_code()))	//アクセス・ヌル・型チェック
-	{
-		pPlayer = static_cast<CPlayer*>(m_p3dObject.at(E_3D_PLAYER));	//プレイヤーポインタ生成
-	}
-	if (!ACCESS_NULL_TYPE_CHECK(m_pObjectManager, E_MANAGER_SLIME, typeid(CSlimeManager).hash_code()))	//アクセス・ヌル・型チェック
-	{
-		pSlimeMng = static_cast<CSlimeManager*>(m_pObjectManager.at(E_MANAGER_SLIME));	//スライム管理生成
-	}
-
-	if (pPlayer->GetCollide()) return;	//	無敵時間の時はスルー
+	if (m_pPlayer->GetCollide()) return;	//	無敵時間の時はスルー
 
 	// スライム
 	for (int i = 0; i < MAX_SLIME_NUM; i++)
 	{
-		CSlimeBase* pSlimeNow = pSlimeMng->GetSlimePtr(i);	// スライム情報
+		CSlimeBase* pSlimeNow = m_pSlimeMng->GetSlimePtr(i);	// スライム情報
 
 		if (pSlimeNow == nullptr)				continue;	// 無効なスライムはスルー
 
 		// スライムとハンマーが衝突した場合
-		if (CCollision::CheckCollisionSphere(pPlayer->GetSphere(), pSlimeNow->GetSphere(), pPlayer->GetPos(), pSlimeNow->GetPos()))
+		if (m_pCollision->CheckCollisionSphere(m_pPlayer->GetSphere(), pSlimeNow->GetSphere(), m_pPlayer->GetPos(), pSlimeNow->GetPos()))
 		{
-			pPlayer->Damage(pSlimeNow->GetAttack());
+			m_pPlayer->Damage(pSlimeNow->GetAttack());
 			return;
 		}
 	}
@@ -119,34 +100,19 @@ void CStage::PlayerSlimeCollision()
    ======================================== */
 void CStage::PlayerBossCollision()
 {
-	// =============== 変数宣言 =====================
-	CPlayer* pPlayer = nullptr;	//プレイヤーのアドレスを格納してアタッチ
-	CSlimeManager* pSlimeMng = nullptr;	//スライム管理のアドレスを格納してアタッチ
-
-	// =============== 初期化 =====================
-	if (!ACCESS_NULL_TYPE_CHECK(m_p3dObject, E_3D_PLAYER, typeid(CPlayer).hash_code()))	//アクセス・ヌル・型チェック
-	{
-		pPlayer = static_cast<CPlayer*>(m_p3dObject.at(E_3D_PLAYER));	//プレイヤーポインタ生成
-	}
-	if (!ACCESS_NULL_TYPE_CHECK(m_pObjectManager, E_MANAGER_SLIME, typeid(CSlimeManager).hash_code()))	//アクセス・ヌル・型チェック
-	{
-		pSlimeMng = static_cast<CSlimeManager*>(m_pObjectManager.at(E_MANAGER_SLIME));	//スライム管理生成
-	}
-
-
-	if (pPlayer->GetCollide()) return;	//	無敵時間の時はスルー
+	if (m_pPlayer->GetCollide()) return;	//	無敵時間の時はスルー
 
 // ボススライム
 	for (int i = 0; i < MAX_BOSS_SLIME_NUM; i++)
 	{
-		CSlime_BossBase* pBossNow = pSlimeMng->GetBossSlimePtr(i);	// スライム情報
+		CSlime_BossBase* pBossNow = m_pSlimeMng->GetBossSlimePtr(i);	// スライム情報
 
 		if (pBossNow == nullptr)				continue;	// 無効なスライムはスルー
 
 		// ボスとハンマーが衝突した場合
-		if (CCollision::CheckCollisionSphere(pPlayer->GetSphere(), pBossNow->GetSphere(), pPlayer->GetPos(), pBossNow->GetPos()))
+		if (m_pCollision->CheckCollisionSphere(m_pPlayer->GetSphere(), pBossNow->GetSphere(), m_pPlayer->GetPos(), pBossNow->GetPos()))
 		{
-			pPlayer->Damage(pBossNow->GetAttack());
+			m_pPlayer->Damage(pBossNow->GetAttack());
 			return;
 		}
 	}
@@ -163,31 +129,20 @@ void CStage::PlayerBossCollision()
    ======================================== */
 void CStage::PlayerHealItemCollision()
 {
-	// =============== 変数宣言 =====================
-	CPlayer* pPlayer = nullptr;	//プレイヤーのアドレスを格納してアタッチ
+	std::vector<CHealItem*>* pHealItemList = m_pHealItemMng->GetHealItemConPtr();
+	if (pHealItemList->size() == 0) { return; }	//中身が空ならスキップ
 
-	// =============== 初期化 =====================
-	if (!ACCESS_NULL_TYPE_CHECK(m_p3dObject, E_3D_PLAYER, typeid(CPlayer).hash_code()))	//アクセス・ヌル・型チェック
+	for (auto i = pHealItemList->begin(); i != pHealItemList->end();)
 	{
-		pPlayer = static_cast<CPlayer*>(m_p3dObject.at(E_3D_PLAYER));	//プレイヤーポインタ生成
-	}
-	if (!ACCESS_NULL_TYPE_CHECK(m_pObjectManager, E_MANAGER_HEAL_ITEM, typeid(CHealItemManager).hash_code()))	//アクセス・ヌル・型チェック
-	{
-		std::vector<CHealItem*>* pHealItemList = static_cast<CHealItemManager*>(m_pObjectManager.at(E_MANAGER_HEAL_ITEM))->GetHealItemConPtr();
-		if (pHealItemList->size() == 0) { return; }	//中身が空ならスキップ
-
-		for (auto i = pHealItemList->begin(); i != pHealItemList->end();)
+		if (m_pCollision->CheckCollisionSphere(m_pPlayer->GetSphere(), (*i)->GetSphere(), m_pPlayer->GetPos(), (*i)->GetPos()))
 		{
-			if (CCollision::CheckCollisionSphere(pPlayer->GetSphere(), (*i)->GetSphere(), pPlayer->GetPos(), (*i)->GetPos()))
-			{
-				delete (*i);
-				i = pHealItemList->erase(i);	//アイテムの消去
-				pPlayer->Healing();		//プレイヤーのHPの回復
-			}
-			else
-			{
-				i++;	//アイテムが機内場合はイテレータを進める
-			}
+			delete (*i);
+			i = pHealItemList->erase(i);	//アイテムの消去
+			m_pPlayer->Healing();		//プレイヤーのHPの回復
+		}
+		else
+		{
+			i++;	//アイテムが機内場合はイテレータを進める
 		}
 	}
 }
@@ -202,35 +157,21 @@ void CStage::PlayerHealItemCollision()
    戻値：なし
    ======================================== */
 void CStage::HammerSlimeCollision()
-{	// =============== 変数宣言 =====================
-	CPlayer* pPlayer = nullptr;	//プレイヤーのアドレスを格納してアタッチ
-	CSlimeManager* pSlimeMng = nullptr;	//スライム管理のアドレスを格納してアタッチ
+{
+	CHammer* playerHammer = m_pPlayer->GetHammerPtr();	// プレイヤーのハンマー
 
-	// =============== 初期化 =====================
-	if (!ACCESS_NULL_TYPE_CHECK(m_p3dObject, E_3D_PLAYER, typeid(CPlayer).hash_code()))	//アクセス・ヌル・型チェック
-	{
-		pPlayer = static_cast<CPlayer*>(m_p3dObject.at(E_3D_PLAYER));	//プレイヤーポインタ生成
-	}
-	if (!ACCESS_NULL_TYPE_CHECK(m_pObjectManager, E_MANAGER_SLIME, typeid(CSlimeManager).hash_code()))	//アクセス・ヌル・型チェック
-	{
-		pSlimeMng = static_cast<CSlimeManager*>(m_pObjectManager.at(E_MANAGER_SLIME));	//スライム管理生成
-	}
-
-
-	CHammer* playerHammer = pPlayer->GetHammerPtr();	// プレイヤーのハンマー
-
-	if (pPlayer->GetAttackFlg() == false) return;	// ハンマー攻撃してない場合は返す
+	if (m_pPlayer->GetAttackFlg() == false) return;	// ハンマー攻撃してない場合は返す
 
 	// スライム
 	for (int i = 0; i < MAX_SLIME_NUM; i++)
 	{
-		CSlimeBase* pSlimeNow = pSlimeMng->GetSlimePtr(i);	// スライム情報
+		CSlimeBase* pSlimeNow = m_pSlimeMng->GetSlimePtr(i);	// スライム情報
 
 		if (pSlimeNow == nullptr)				continue;	// 無効なスライムはスルー
 		if (pSlimeNow->GetHitMoveFlg() == true)	continue; 	// 吹飛状態のスライムはスルー
 
 		// スライムとハンマーが衝突した場合
-		if (CCollision::CheckCollisionSphere(playerHammer->GetSphere(), pSlimeNow->GetSphere(), playerHammer->GetPos(), pSlimeNow->GetPos()))
+		if (m_pCollision->CheckCollisionSphere(playerHammer->GetSphere(), pSlimeNow->GetSphere(), playerHammer->GetPos(), pSlimeNow->GetPos()))
 		{
 			//赤スライムと激突したときだけヒットストップの時間を長くする
 			if (typeid(CSlime_4) == typeid(*pSlimeNow))
@@ -242,10 +183,10 @@ void CStage::HammerSlimeCollision()
 				CHitStop::UpFlag(CHitStop::E_BIT_FLAG_STOP_SOFT);	//ヒットストップ
 			}
 			float fAngleSlime
-				= pPlayer->GetTransform().Angle(pSlimeNow->GetTransform());	// スライムが飛ぶ角度を取得
+				= m_pPlayer->GetTransform().Angle(pSlimeNow->GetTransform());	// スライムが飛ぶ角度を取得
 
 			pSlimeNow->HitMoveStart(HAMMER_HIT_MOVE_SPEED, fAngleSlime);	// スライムを飛ばす
-			pPlayer->PlaySe(CPlayer::E_SE_HIT_HAMMER, HIT_HAMMER_VOLUME);	//ハンマーとスライムの接触SEを再生
+			m_pPlayer->PlaySe(CPlayer::E_SE_HIT_HAMMER, HIT_HAMMER_VOLUME);	//ハンマーとスライムの接触SEを再生
 		}
 	}
 }
@@ -260,49 +201,34 @@ void CStage::HammerSlimeCollision()
    ======================================== */
 void CStage::HammerBossCollision()
 {
-	// =============== 変数宣言 =====================
-	CPlayer* pPlayer = nullptr;	//プレイヤーのアドレスを格納してアタッチ
-	CSlimeManager* pSlimeMng = nullptr;	//スライム管理のアドレスを格納してアタッチ
+	CHammer* playerHammer = m_pPlayer->GetHammerPtr();	// プレイヤーのハンマー
 
-	// =============== 初期化 =====================
-	if (!ACCESS_NULL_TYPE_CHECK(m_p3dObject, E_3D_PLAYER, typeid(CPlayer).hash_code()))	//アクセス・ヌル・型チェック
-	{
-		pPlayer = static_cast<CPlayer*>(m_p3dObject.at(E_3D_PLAYER));	//プレイヤーポインタ生成
-	}
-	if (!ACCESS_NULL_TYPE_CHECK(m_pObjectManager, E_MANAGER_SLIME, typeid(CSlimeManager).hash_code()))	//アクセス・ヌル・型チェック
-	{
-		pSlimeMng = static_cast<CSlimeManager*>(m_pObjectManager.at(E_MANAGER_SLIME));	//スライム管理生成
-	}
-
-
-	CHammer* playerHammer = pPlayer->GetHammerPtr();	// プレイヤーのハンマー
-
-	if (pPlayer->GetAttackFlg() == false) return;	// ハンマー攻撃してない場合は返す
+	if (m_pPlayer->GetAttackFlg() == false) return;	// ハンマー攻撃してない場合は返す
 
 	// ボススライム
 	for (int i = 0; i < MAX_BOSS_SLIME_NUM; i++)
 	{
-		CSlime_BossBase* pBossNow = pSlimeMng->GetBossSlimePtr(i);	// スライム情報
+		CSlime_BossBase* pBossNow = m_pSlimeMng->GetBossSlimePtr(i);	// スライム情報
 
 		if (pBossNow == nullptr)				continue;	// 無効なスライムはスルー
 		if (pBossNow->GetHitMoveFlg() == true)	continue; 	// 吹飛状態のスライムはスルー
 
 		// スライムとハンマーが衝突した場合
-		if (CCollision::CheckCollisionSphere(playerHammer->GetSphere(), pBossNow->GetSphere(), playerHammer->GetPos(), pBossNow->GetPos()))
+		if (m_pCollision->CheckCollisionSphere(playerHammer->GetSphere(), pBossNow->GetSphere(), playerHammer->GetPos(), pBossNow->GetPos()))
 		{
 			// 通常移動中にしかヒットストップしない
-			if(pBossNow->GetMoveState() != 0)
-			{ 
+			if (pBossNow->GetMoveState() != 0)
+			{
 				return;
 			}
 
 			CHitStop::UpFlag(CHitStop::E_BIT_FLAG_STOP_NORMAL);	//ヒットストップ
 
 			float fAngleSlime
-				= pPlayer->GetTransform().Angle(pBossNow->GetTransform());	// スライムが飛ぶ角度を取得
+				= m_pPlayer->GetTransform().Angle(pBossNow->GetTransform());	// スライムが飛ぶ角度を取得
 
-			pBossNow->HitMoveStart(HAMMER_HIT_MOVE_SPEED, fAngleSlime);		// スライムを飛ばす
-			pPlayer->PlaySe(CPlayer::E_SE_HIT_HAMMER, HIT_HAMMER_VOLUME);	//ハンマーとスライムの接触SEを再生
+			pBossNow->HitMoveStart(HAMMER_HIT_MOVE_SPEED, fAngleSlime);	// スライムを飛ばす
+			m_pPlayer->PlaySe(CPlayer::E_SE_HIT_HAMMER, HIT_HAMMER_VOLUME);	//ハンマーとスライムの接触SEを再生
 		}
 	}
 }
@@ -318,24 +244,10 @@ void CStage::HammerBossCollision()
    ======================================== */
 void CStage::SlimeSlimeCollision()
 {
-	// =============== 変数宣言 =====================
-	CSlimeManager* pSlimeMng = nullptr;			//スライム管理のアドレスを格納してアタッチ
-	CExplosionManager* pExplosionMng = nullptr;	//爆発管理のアドレスを格納してアタッチ
-
-	// =============== 初期化 =====================
-	if (!ACCESS_NULL_TYPE_CHECK(m_pObjectManager, E_MANAGER_SLIME, typeid(CSlimeManager).hash_code()))	//アクセス・ヌル・型チェック
-	{
-		pSlimeMng = static_cast<CSlimeManager*>(m_pObjectManager.at(E_MANAGER_SLIME));	//スライム管理生成
-	}
-	if (!ACCESS_NULL_TYPE_CHECK(m_pObjectManager, E_MANAGER_EXPLOSION, typeid(CExplosionManager).hash_code()))	//アクセス・ヌル・型チェック
-	{
-		pExplosionMng = static_cast<CExplosionManager*>(m_pObjectManager.at(E_MANAGER_EXPLOSION));	//スライム管理生成
-	}
-
 	// 衝突するスライム
 	for (int i = 0; i < MAX_SLIME_NUM; i++)
 	{
-		CSlimeBase* pSlimeFly = pSlimeMng->GetSlimePtr(i);	// 衝突するスライムのポインタ
+		CSlimeBase* pSlimeFly = m_pSlimeMng->GetSlimePtr(i);	// 衝突するスライムのポインタ
 
 		if (pSlimeFly == nullptr)					continue;	// 無効なスライムはスルー
 		if (pSlimeFly->GetHitMoveFlg() == false)	continue; 	// 通常状態のスライムはスルー
@@ -343,7 +255,7 @@ void CStage::SlimeSlimeCollision()
 		// 衝突されるスライム
 		for (int j = 0; j < MAX_SLIME_NUM; j++)
 		{
-			CSlimeBase* pSlimeTarget = pSlimeMng->GetSlimePtr(j);	// 衝突されるスライムのポインタ
+			CSlimeBase* pSlimeTarget = m_pSlimeMng->GetSlimePtr(j);	// 衝突されるスライムのポインタ
 
 			if (pSlimeTarget == nullptr)	continue;	// 無効なスライムはスルー
 			if (i == j)						continue;	// 自分と同じスライムはスルー
@@ -351,10 +263,10 @@ void CStage::SlimeSlimeCollision()
 
 
 			// スライム同士が衝突した場合
-			if (CCollision::CheckCollisionSphere(pSlimeFly->GetSphere(), pSlimeTarget->GetSphere(), pSlimeFly->GetPos(), pSlimeTarget->GetPos()))
+			if (m_pCollision->CheckCollisionSphere(pSlimeFly->GetSphere(), pSlimeTarget->GetSphere(), pSlimeFly->GetPos(), pSlimeTarget->GetPos()))
 			{
 
-				pSlimeMng->HitBranch(i, j, pExplosionMng);	// 爆発処理、結合処理(スライム同士の情報によって処理を変える)
+				m_pSlimeMng->HitBranch(i, j, m_pExplosionMng);	// 爆発処理、結合処理(スライム同士の情報によって処理を変える)
 				break;
 			}
 		}
@@ -372,24 +284,10 @@ void CStage::SlimeSlimeCollision()
    ======================================== */
 void CStage::SlimeBossCollision()
 {
-	// =============== 変数宣言 =====================
-	CSlimeManager* pSlimeMng = nullptr;			//スライム管理のアドレスを格納してアタッチ
-	CExplosionManager* pExplosionMng = nullptr;	//爆発管理のアドレスを格納してアタッチ
-
-	// =============== 初期化 =====================
-	if (!ACCESS_NULL_TYPE_CHECK(m_pObjectManager, E_MANAGER_SLIME, typeid(CSlimeManager).hash_code()))	//アクセス・ヌル・型チェック
-	{
-		pSlimeMng = static_cast<CSlimeManager*>(m_pObjectManager.at(E_MANAGER_SLIME));	//スライム管理生成
-	}
-	if (!ACCESS_NULL_TYPE_CHECK(m_pObjectManager, E_MANAGER_EXPLOSION, typeid(CExplosionManager).hash_code()))	//アクセス・ヌル・型チェック
-	{
-		pExplosionMng = static_cast<CExplosionManager*>(m_pObjectManager.at(E_MANAGER_EXPLOSION));	//スライム管理生成
-	}
-
 	// 衝突するスライム
 	for (int i = 0; i < MAX_SLIME_NUM; i++)
 	{
-		CSlimeBase* pSlimeFly = pSlimeMng->GetSlimePtr(i);	// 衝突するスライムのポインタ
+		CSlimeBase* pSlimeFly = m_pSlimeMng->GetSlimePtr(i);	// 衝突するスライムのポインタ
 
 		if (pSlimeFly == nullptr)					continue;	// 無効なスライムはスルー
 		if (pSlimeFly->GetHitMoveFlg() == false)	continue; 	// 通常状態のスライムはスルー
@@ -397,16 +295,16 @@ void CStage::SlimeBossCollision()
 		// 衝突されるボス
 		for (int j = 0; j < MAX_BOSS_SLIME_NUM; j++)
 		{
-			CSlime_BossBase* pBossTarget = pSlimeMng->GetBossSlimePtr(j);	// 衝突されるスライムのポインタ
+			CSlime_BossBase* pBossTarget = m_pSlimeMng->GetBossSlimePtr(j);	// 衝突されるスライムのポインタ
 
 			if (pBossTarget == nullptr)					continue;	// 無効なスライムはスルー
 			if (pBossTarget->GetHitMoveFlg() == true)	continue; 	// 通常状態のスライムはスルー
 
 			// スライム同士が衝突した場合
-			if (CCollision::CheckCollisionSphere(pSlimeFly->GetSphere(), pBossTarget->GetSphere(), pSlimeFly->GetPos(), pBossTarget->GetPos()))
+			if (m_pCollision->CheckCollisionSphere(pSlimeFly->GetSphere(), pBossTarget->GetSphere(), pSlimeFly->GetPos(), pBossTarget->GetPos()))
 			{
 
-				pSlimeMng->HitSlimeBossBranch(i, j, pExplosionMng);	// 爆発処理、結合処理(スライム同士の情報によって処理を変える)
+				m_pSlimeMng->HitSlimeBossBranch(i, j, m_pExplosionMng);	// 爆発処理、結合処理(スライム同士の情報によって処理を変える)
 				break;
 			}
 		}
@@ -423,24 +321,10 @@ void CStage::SlimeBossCollision()
    ======================================== */
 void CStage::BossSlimeCollision()
 {
-	// =============== 変数宣言 =====================
-	CSlimeManager* pSlimeMng = nullptr;			//スライム管理のアドレスを格納してアタッチ
-	CExplosionManager* pExplosionMng = nullptr;	//爆発管理のアドレスを格納してアタッチ
-
-	// =============== 初期化 =====================
-	if (!ACCESS_NULL_TYPE_CHECK(m_pObjectManager, E_MANAGER_SLIME, typeid(CSlimeManager).hash_code()))	//アクセス・ヌル・型チェック
-	{
-		pSlimeMng = static_cast<CSlimeManager*>(m_pObjectManager.at(E_MANAGER_SLIME));	//スライム管理生成
-	}
-	if (!ACCESS_NULL_TYPE_CHECK(m_pObjectManager, E_MANAGER_EXPLOSION, typeid(CExplosionManager).hash_code()))	//アクセス・ヌル・型チェック
-	{
-		pExplosionMng = static_cast<CExplosionManager*>(m_pObjectManager.at(E_MANAGER_EXPLOSION));	//スライム管理生成
-	}
-
 	// 衝突するボス
 	for (int i = 0; i < MAX_BOSS_SLIME_NUM; i++)
 	{
-		CSlime_BossBase* pBossFly = pSlimeMng->GetBossSlimePtr(i);	// 衝突するスライムのポインタ
+		CSlime_BossBase* pBossFly = m_pSlimeMng->GetBossSlimePtr(i);	// 衝突するスライムのポインタ
 
 		if (pBossFly == nullptr)					continue;	// 無効なスライムはスルー
 		if (pBossFly->GetHitMoveFlg() == false)		continue; 	// 通常状態のスライムはスルー
@@ -448,17 +332,17 @@ void CStage::BossSlimeCollision()
 		// 衝突されるスライム
 		for (int j = 0; j < MAX_SLIME_NUM; j++)
 		{
-			CSlimeBase* pSlimeTarget = pSlimeMng->GetSlimePtr(j);	// 衝突されるスライムのポインタ
+			CSlimeBase* pSlimeTarget = m_pSlimeMng->GetSlimePtr(j);	// 衝突されるスライムのポインタ
 
 			if (pSlimeTarget == nullptr)				continue;	// 無効なスライムはスルー
 			if (pSlimeTarget->GetHitMoveFlg() == true)	continue; 	// 通常状態のスライムはスルー
 
 
 			// スライム同士が衝突した場合
-			if (CCollision::CheckCollisionSphere(pBossFly->GetSphere(), pSlimeTarget->GetSphere(), pBossFly->GetPos(), pSlimeTarget->GetPos()))
+			if (m_pCollision->CheckCollisionSphere(pBossFly->GetSphere(), pSlimeTarget->GetSphere(), pBossFly->GetPos(), pSlimeTarget->GetPos()))
 			{
 
-				pSlimeMng->HitBossSlimeBranch(i, j, pExplosionMng);	// 爆発処理、結合処理(スライム同士の情報によって処理を変える)
+				m_pSlimeMng->HitBossSlimeBranch(i, j, m_pExplosionMng);	// 爆発処理、結合処理(スライム同士の情報によって処理を変える)
 				break;
 			}
 		}
@@ -476,24 +360,10 @@ void CStage::BossSlimeCollision()
    ======================================== */
 void CStage::BossBossCollision()
 {
-	// =============== 変数宣言 =====================
-	CSlimeManager* pSlimeMng = nullptr;			//スライム管理のアドレスを格納してアタッチ
-	CExplosionManager* pExplosionMng = nullptr;	//爆発管理のアドレスを格納してアタッチ
-
-	// =============== 初期化 =====================
-	if (!ACCESS_NULL_TYPE_CHECK(m_pObjectManager, E_MANAGER_SLIME, typeid(CSlimeManager).hash_code()))	//アクセス・ヌル・型チェック
-	{
-		pSlimeMng = static_cast<CSlimeManager*>(m_pObjectManager.at(E_MANAGER_SLIME));	//スライム管理生成
-	}
-	if (!ACCESS_NULL_TYPE_CHECK(m_pObjectManager, E_MANAGER_EXPLOSION, typeid(CExplosionManager).hash_code()))	//アクセス・ヌル・型チェック
-	{
-		pExplosionMng = static_cast<CExplosionManager*>(m_pObjectManager.at(E_MANAGER_EXPLOSION));	//スライム管理生成
-	}
-
 	// 衝突するボス
 	for (int i = 0; i < MAX_BOSS_SLIME_NUM; i++)
 	{
-		CSlime_BossBase* pBossFly = pSlimeMng->GetBossSlimePtr(i);	// 衝突するスライムのポインタ
+		CSlime_BossBase* pBossFly = m_pSlimeMng->GetBossSlimePtr(i);	// 衝突するスライムのポインタ
 
 		if (pBossFly == nullptr)					continue;	// 無効なスライムはスルー
 		if (pBossFly->GetHitMoveFlg() == false)		continue; 	// 通常状態のスライムはスルー
@@ -501,7 +371,7 @@ void CStage::BossBossCollision()
 		// 衝突されるボス
 		for (int j = 0; j < MAX_BOSS_SLIME_NUM; j++)
 		{
-			CSlime_BossBase* pBossTarget = pSlimeMng->GetBossSlimePtr(j);	// 衝突されるスライムのポインタ
+			CSlime_BossBase* pBossTarget = m_pSlimeMng->GetBossSlimePtr(j);	// 衝突されるスライムのポインタ
 
 			if (pBossTarget == nullptr)					continue;	// 無効なスライムはスルー
 			if (i == j)									continue;	// 自分と同じスライムはスルー
@@ -509,10 +379,10 @@ void CStage::BossBossCollision()
 
 
 			// スライム同士が衝突した場合
-			if (CCollision::CheckCollisionSphere(pBossFly->GetSphere(), pBossTarget->GetSphere(), pBossFly->GetPos(), pBossTarget->GetPos()))
+			if (m_pCollision->CheckCollisionSphere(pBossFly->GetSphere(), pBossTarget->GetSphere(), pBossFly->GetPos(), pBossTarget->GetPos()))
 			{
 
-				pSlimeMng->HitBossBossBranch(i, j, pExplosionMng);	// 爆発処理、結合処理(スライム同士の情報によって処理を変える)
+				m_pSlimeMng->HitBossBossBranch(i, j, m_pExplosionMng);	// 爆発処理、結合処理(スライム同士の情報によって処理を変える)
 				break;
 			}
 		}
@@ -530,34 +400,20 @@ void CStage::BossBossCollision()
    ======================================== */
 void CStage::ExplosionBossCollision()
 {
-	// =============== 変数宣言 =====================
-	CSlimeManager* pSlimeMng = nullptr;			//スライム管理のアドレスを格納してアタッチ
-	CExplosionManager* pExplosionMng = nullptr;	//爆発管理のアドレスを格納してアタッチ
-
-	// =============== 初期化 =====================
-	if (!ACCESS_NULL_TYPE_CHECK(m_pObjectManager, E_MANAGER_SLIME, typeid(CSlimeManager).hash_code()))	//アクセス・ヌル・型チェック
-	{
-		pSlimeMng = static_cast<CSlimeManager*>(m_pObjectManager.at(E_MANAGER_SLIME));	//スライム管理生成
-	}
-	if (!ACCESS_NULL_TYPE_CHECK(m_pObjectManager, E_MANAGER_EXPLOSION, typeid(CExplosionManager).hash_code()))	//アクセス・ヌル・型チェック
-	{
-		pExplosionMng = static_cast<CExplosionManager*>(m_pObjectManager.at(E_MANAGER_EXPLOSION));	//スライム管理生成
-	}
-
 	for (int i = 0; i < MAX_EXPLOSION_NUM; ++i)    // 爆発
 	{
-		CExplosion* pExplosion = pExplosionMng->GetExplosionPtr(i);    // 衝突する爆発のポインタ
+		CExplosion* pExplosion = m_pExplosionMng->GetExplosionPtr(i);    // 衝突する爆発のポインタ
 		if (pExplosion == nullptr) { continue; }    // 未使用の爆発はスルー
 
 		for (int j = 0; j < MAX_BOSS_SLIME_NUM; ++j)    // スライム
 		{
-			CSlime_BossBase* pBossTarget = pSlimeMng->GetBossSlimePtr(j);    // 衝突されるスライムのポインタ
+			CSlime_BossBase* pBossTarget = m_pSlimeMng->GetBossSlimePtr(j);    // 衝突されるスライムのポインタ
 
 			if (pBossTarget == nullptr)    continue;    // 無効なスライムはスルー
 
-			if (CCollision::CheckCollisionSphere(pExplosion->GetSphere(), pBossTarget->GetSphere(), pExplosion->GetPos(), pBossTarget->GetPos()))
+			if (m_pCollision->CheckCollisionSphere(pExplosion->GetSphere(), pBossTarget->GetSphere(), pExplosion->GetPos(), pBossTarget->GetPos()))
 			{
-				pSlimeMng->TouchBossExplosion(j, pExplosionMng, i);// スライムの爆発処理
+				m_pSlimeMng->TouchBossExplosion(j, m_pExplosionMng, i);// スライムの爆発処理
 				break;
 			}
 		}
@@ -576,34 +432,20 @@ void CStage::ExplosionBossCollision()
    ======================================== */
 void CStage::ExplosionSlimeCollision()
 {
-	// =============== 変数宣言 =====================
-	CSlimeManager* pSlimeMng = nullptr;			//スライム管理のアドレスを格納してアタッチ
-	CExplosionManager* pExplosionMng = nullptr;	//爆発管理のアドレスを格納してアタッチ
-
-	// =============== 初期化 =====================
-	if (!ACCESS_NULL_TYPE_CHECK(m_pObjectManager, E_MANAGER_SLIME, typeid(CSlimeManager).hash_code()))	//アクセス・ヌル・型チェック
-	{
-		pSlimeMng = static_cast<CSlimeManager*>(m_pObjectManager.at(E_MANAGER_SLIME));	//スライム管理生成
-	}
-	if (!ACCESS_NULL_TYPE_CHECK(m_pObjectManager, E_MANAGER_EXPLOSION, typeid(CExplosionManager).hash_code()))	//アクセス・ヌル・型チェック
-	{
-		pExplosionMng = static_cast<CExplosionManager*>(m_pObjectManager.at(E_MANAGER_EXPLOSION));	//スライム管理生成
-	}
-
 	for (int i = 0; i < MAX_EXPLOSION_NUM; ++i)	// 爆発
 	{
-		CExplosion* pExplosion = pExplosionMng->GetExplosionPtr(i);	// 衝突する爆発のポインタ
+		CExplosion* pExplosion = m_pExplosionMng->GetExplosionPtr(i);	// 衝突する爆発のポインタ
 		if (pExplosion == nullptr) { continue; }	// 未使用の爆発はスルー
 
 		for (int j = 0; j < MAX_SLIME_NUM; ++j)	// スライム
 		{
-			CSlimeBase* pSlimeTarget = pSlimeMng->GetSlimePtr(j);	// 衝突されるスライムのポインタ
+			CSlimeBase* pSlimeTarget = m_pSlimeMng->GetSlimePtr(j);	// 衝突されるスライムのポインタ
 
 			if (pSlimeTarget == nullptr)	continue;	// 無効なスライムはスルー
 
-			if (CCollision::CheckCollisionSphere(pExplosion->GetSphere(), pSlimeTarget->GetSphere(), pExplosion->GetPos(), pSlimeTarget->GetPos()))
+			if (m_pCollision->CheckCollisionSphere(pExplosion->GetSphere(), pSlimeTarget->GetSphere(), pExplosion->GetPos(), pSlimeTarget->GetPos()))
 			{
-				pSlimeMng->TouchExplosion(j, pExplosionMng, pExplosion->GetComboNum());// スライムの爆発処理
+				m_pSlimeMng->TouchExplosion(j, m_pExplosionMng, pExplosion->GetComboNum());// スライムの爆発処理
 				break;
 			}
 		}
@@ -621,19 +463,10 @@ void CStage::ExplosionSlimeCollision()
    ======================================== */
 void CStage::SlimeSlimeNormalMoveCollision()
 {
-	// =============== 変数宣言 =====================
-	CSlimeManager* pSlimeMng = nullptr;	//スライム管理のアドレスを格納してアタッチ
-
-	// =============== 初期化 =====================
-	if (!ACCESS_NULL_TYPE_CHECK(m_pObjectManager, E_MANAGER_SLIME, typeid(CSlimeManager).hash_code()))	//アクセス・ヌル・型チェック
-	{
-		pSlimeMng = static_cast<CSlimeManager*>(m_pObjectManager.at(E_MANAGER_SLIME));	//スライム管理生成
-	}
-
 	// 衝突するスライム
 	for (int i = 0; i < MAX_SLIME_NUM; i++)
 	{
-		CSlimeBase* pMoveSlime = pSlimeMng->GetSlimePtr(i);	//移動するスライムのポインタ
+		CSlimeBase* pMoveSlime = m_pSlimeMng->GetSlimePtr(i);	//移動するスライムのポインタ
 
 		if (pMoveSlime == nullptr)					continue;	// 無効なスライムはスルー
 		if (pMoveSlime->GetHitMoveFlg() == true)	continue;	// 吹き飛び中のスライムはスルー
@@ -641,7 +474,7 @@ void CStage::SlimeSlimeNormalMoveCollision()
 		// 衝突されるスライム
 		for (int j = 0; j < MAX_SLIME_NUM; j++)
 		{
-			CSlimeBase* pStandSlime = pSlimeMng->GetSlimePtr(j);	// 止まっているスライムのポインタ
+			CSlimeBase* pStandSlime = m_pSlimeMng->GetSlimePtr(j);	// 止まっているスライムのポインタ
 
 			if (pStandSlime == nullptr)					continue;	// 無効なスライムはスルー
 			if (pMoveSlime->GetHitMoveFlg() == true)	continue;	// 吹き飛び中のスライムはスルー
@@ -651,9 +484,9 @@ void CStage::SlimeSlimeNormalMoveCollision()
 			// スライム同士が衝突した場合(青、緑、炎)
 			if (int(pStandSlime->GetSlimeLevel()) <= 3 && int(pMoveSlime->GetSlimeLevel()) <= 3)
 			{
-				if (CCollision::CheckCollisionSphere(pMoveSlime->GetSphere(), pStandSlime->GetSphere(), pMoveSlime->GetPos(), pStandSlime->GetPos()))
+				if (m_pCollision->CheckCollisionSphere(pMoveSlime->GetSphere(), pStandSlime->GetSphere(), pMoveSlime->GetPos(), pStandSlime->GetPos()))
 				{
-					pSlimeMng->PreventSlimeSlimeOverlap(pMoveSlime, pStandSlime);	//スライムの位置を押し戻す処理
+					m_pSlimeMng->PreventSlimeSlimeOverlap(pMoveSlime, pStandSlime);	//スライムの位置を押し戻す処理
 
 					break;
 				}
@@ -661,9 +494,9 @@ void CStage::SlimeSlimeNormalMoveCollision()
 			else
 			{//（黄色または赤のどちらかがはいってたらこっち）
 				if (int(pStandSlime->GetSlimeLevel()) < int(pMoveSlime->GetSlimeLevel())) continue;
-				if (CCollision::CheckCollisionSphere(pMoveSlime->GetSphere(), pStandSlime->GetSphere(), pMoveSlime->GetPos(), pStandSlime->GetPos()))
+				if (m_pCollision->CheckCollisionSphere(pMoveSlime->GetSphere(), pStandSlime->GetSphere(), pMoveSlime->GetPos(), pStandSlime->GetPos()))
 				{
-					pSlimeMng->PreventSlimeSlimeOverlap(pMoveSlime, pStandSlime);	//スライムの位置を押し戻す処理
+					m_pSlimeMng->PreventSlimeSlimeOverlap(pMoveSlime, pStandSlime);	//スライムの位置を押し戻す処理
 
 					break;
 				}
@@ -682,19 +515,10 @@ void CStage::SlimeSlimeNormalMoveCollision()
    ======================================== */
 void CStage::SlimeBossNormalMoveCollision()
 {
-	// =============== 変数宣言 =====================
-	CSlimeManager* pSlimeMng = nullptr;	//スライム管理のアドレスを格納してアタッチ
-
-	// =============== 初期化 =====================
-	if (!ACCESS_NULL_TYPE_CHECK(m_pObjectManager, E_MANAGER_SLIME, typeid(CSlimeManager).hash_code()))	//アクセス・ヌル・型チェック
-	{
-		pSlimeMng = static_cast<CSlimeManager*>(m_pObjectManager.at(E_MANAGER_SLIME));	//スライム管理生成
-	}
-
 	// 衝突するスライム
 	for (int i = 0; i < MAX_SLIME_NUM; i++)
 	{
-		CSlimeBase* pMoveSlime = pSlimeMng->GetSlimePtr(i);	//移動するスライムのポインタ
+		CSlimeBase* pMoveSlime = m_pSlimeMng->GetSlimePtr(i);	//移動するスライムのポインタ
 
 		if (pMoveSlime == nullptr)					continue;	// 無効なスライムはスルー
 		if (pMoveSlime->GetHitMoveFlg() == true)	continue;	// 吹き飛び中のスライムはスルー
@@ -702,15 +526,15 @@ void CStage::SlimeBossNormalMoveCollision()
 		// 衝突されるボス
 		for (int j = 0; j < MAX_BOSS_SLIME_NUM; j++)
 		{
-			CSlime_BossBase* pStandBoss = pSlimeMng->GetBossSlimePtr(j);	// 止まっているスライムのポインタ
+			CSlime_BossBase* pStandBoss = m_pSlimeMng->GetBossSlimePtr(j);	// 止まっているスライムのポインタ
 
 			if (pStandBoss == nullptr)					continue;	// 無効なスライムはスルー
 			if (pMoveSlime->GetHitMoveFlg() == true)	continue;	// 吹き飛び中のスライムはスルー
 
 			// スライム同士が衝突した場合
-			if (CCollision::CheckCollisionSphere(pMoveSlime->GetSphere(), pStandBoss->GetSphere(), pMoveSlime->GetPos(), pStandBoss->GetPos()))
+			if (m_pCollision->CheckCollisionSphere(pMoveSlime->GetSphere(), pStandBoss->GetSphere(), pMoveSlime->GetPos(), pStandBoss->GetPos()))
 			{
-				pSlimeMng->PreventSlimeBossOverlap(pMoveSlime, pStandBoss);	//スライムの位置を押し戻す処理
+				m_pSlimeMng->PreventSlimeBossOverlap(pMoveSlime, pStandBoss);	//スライムの位置を押し戻す処理
 
 
 				break;
@@ -730,19 +554,10 @@ void CStage::SlimeBossNormalMoveCollision()
    ======================================== */
 void CStage::BossSlimeNormalMoveCollision()
 {
-	// =============== 変数宣言 =====================
-	CSlimeManager* pSlimeMng = nullptr;	//スライム管理のアドレスを格納してアタッチ
-
-	// =============== 初期化 =====================
-	if (!ACCESS_NULL_TYPE_CHECK(m_pObjectManager, E_MANAGER_SLIME, typeid(CSlimeManager).hash_code()))	//アクセス・ヌル・型チェック
-	{
-		pSlimeMng = static_cast<CSlimeManager*>(m_pObjectManager.at(E_MANAGER_SLIME));	//スライム管理生成
-	}
-
 	// 衝突するボス
 	for (int i = 0; i < MAX_BOSS_SLIME_NUM; i++)
 	{
-		CSlime_BossBase* pMoveBoss = pSlimeMng->GetBossSlimePtr(i);	//移動するスライムのポインタ
+		CSlime_BossBase* pMoveBoss = m_pSlimeMng->GetBossSlimePtr(i);	//移動するスライムのポインタ
 
 		if (pMoveBoss == nullptr)					continue;	// 無効なスライムはスルー
 		if (pMoveBoss->GetHitMoveFlg() == true)		continue;	// 吹き飛び中のスライムはスルー
@@ -750,15 +565,15 @@ void CStage::BossSlimeNormalMoveCollision()
 		// 衝突されるスライム
 		for (int j = 0; j < MAX_SLIME_NUM; j++)
 		{
-			CSlimeBase* pStandSlime = pSlimeMng->GetSlimePtr(j);	// 止まっているスライムのポインタ
+			CSlimeBase* pStandSlime = m_pSlimeMng->GetSlimePtr(j);	// 止まっているスライムのポインタ
 
 			if (pStandSlime == nullptr)					continue;	// 無効なスライムはスルー
 			if (pMoveBoss->GetHitMoveFlg() == true)		continue;	// 吹き飛び中のスライムはスルー
 
 			// スライム同士が衝突した場合
-			if (CCollision::CheckCollisionSphere(pMoveBoss->GetSphere(), pStandSlime->GetSphere(), pMoveBoss->GetPos(), pStandSlime->GetPos()))
+			if (m_pCollision->CheckCollisionSphere(pMoveBoss->GetSphere(), pStandSlime->GetSphere(), pMoveBoss->GetPos(), pStandSlime->GetPos()))
 			{
-				pSlimeMng->PreventBossSlimeOverlap(pMoveBoss, pStandSlime);	//スライムの位置を押し戻す処理
+				m_pSlimeMng->PreventBossSlimeOverlap(pMoveBoss, pStandSlime);	//スライムの位置を押し戻す処理
 
 
 				break;
@@ -778,19 +593,10 @@ void CStage::BossSlimeNormalMoveCollision()
    ======================================== */
 void CStage::BossBossNormalMoveCollision()
 {
-	// =============== 変数宣言 =====================
-	CSlimeManager* pSlimeMng = nullptr;	//スライム管理のアドレスを格納してアタッチ
-
-	// =============== 初期化 =====================
-	if (!ACCESS_NULL_TYPE_CHECK(m_pObjectManager, E_MANAGER_SLIME, typeid(CSlimeManager).hash_code()))	//アクセス・ヌル・型チェック
-	{
-		pSlimeMng = static_cast<CSlimeManager*>(m_pObjectManager.at(E_MANAGER_SLIME));	//スライム管理生成
-	}
-
 	// 衝突するボス
 	for (int i = 0; i < MAX_BOSS_SLIME_NUM; i++)
 	{
-		CSlime_BossBase* pMoveBoss = pSlimeMng->GetBossSlimePtr(i);	//移動するスライムのポインタ
+		CSlime_BossBase* pMoveBoss = m_pSlimeMng->GetBossSlimePtr(i);	//移動するスライムのポインタ
 
 		if (pMoveBoss == nullptr)					continue;	// 無効なスライムはスルー
 		if (pMoveBoss->GetHitMoveFlg() == true)		continue;	// 吹き飛び中のスライムはスルー
@@ -798,16 +604,16 @@ void CStage::BossBossNormalMoveCollision()
 		// 衝突されるボス
 		for (int j = 0; j < MAX_BOSS_SLIME_NUM; j++)
 		{
-			CSlime_BossBase* pStandBoss = pSlimeMng->GetBossSlimePtr(j);	// 止まっているスライムのポインタ
+			CSlime_BossBase* pStandBoss = m_pSlimeMng->GetBossSlimePtr(j);	// 止まっているスライムのポインタ
 
 			if (pStandBoss == nullptr)					continue;	// 無効なスライムはスルー
 			if (pMoveBoss->GetHitMoveFlg() == true)		continue;	// 吹き飛び中のスライムはスルー
 			if (i == j)									continue;	// 自分と同じスライムはスルー
 
 			// スライム同士が衝突した場合
-			if (CCollision::CheckCollisionSphere(pMoveBoss->GetSphere(), pStandBoss->GetSphere(), pMoveBoss->GetPos(), pStandBoss->GetPos()))
+			if (m_pCollision->CheckCollisionSphere(pMoveBoss->GetSphere(), pStandBoss->GetSphere(), pMoveBoss->GetPos(), pStandBoss->GetPos()))
 			{
-				pSlimeMng->PreventBossBossOverlap(pMoveBoss, pStandBoss);	//スライムの位置を押し戻す処理
+				m_pSlimeMng->PreventBossBossOverlap(pMoveBoss, pStandBoss);	//スライムの位置を押し戻す処理
 
 
 				break;

@@ -42,20 +42,20 @@ const int STAGE_NUM = 3;	//ステージ番号
 CStage3::CStage3()
 	:CStage()	//親関数呼び出し
 {
-	// =============== 動的確保 =====================
-	if (m_p3dObject.find(E_3D_PLAYER) != m_p3dObject.end() && m_p3dObject.at(E_3D_PLAYER) &&
-		typeid(*m_pCamera).hash_code() == typeid(CCameraChase).hash_code() &&
-		typeid(*m_p3dObject.at(E_3D_PLAYER)).hash_code() == typeid(CPlayer).hash_code())	//アクセスチェック・ヌルチェック・型チェック
-	{
-		m_p3dObject.emplace(E_3D_FLOOR, new CFloor(static_cast<CPlayer*>(m_p3dObject.at(E_3D_PLAYER))->GetPosAddress(), CFloor::Stage3));	// 床生成
-	}
+	//// =============== 動的確保 =====================
+	//if (m_p3dObject.find(E_3D_PLAYER) != m_p3dObject.end() && m_p3dObject.at(E_3D_PLAYER) &&
+	//	typeid(*m_pCamera).hash_code() == typeid(CCameraChase).hash_code() &&
+	//	typeid(*m_p3dObject.at(E_3D_PLAYER)).hash_code() == typeid(CPlayer).hash_code())	//アクセスチェック・ヌルチェック・型チェック
+	//{
+	//	m_p3dObject.emplace(E_3D_FLOOR, new CFloor(static_cast<CPlayer*>(m_p3dObject.at(E_3D_PLAYER))->GetPosAddress(), CFloor::Stage3));	// 床生成
+	//}
 
-	// =============== 初期化 =====================
-	if (m_p3dObject.find(E_3D_PLAYER) != m_p3dObject.end() && m_p3dObject.at(E_3D_PLAYER) &&
-		typeid(*m_p3dObject.at(E_3D_PLAYER)).hash_code() == typeid(CPlayer).hash_code())	//アクセスチェック・ヌルチェック・型チェック
-	{
-		m_p3dObject.at(E_3D_FLOOR)->SetCamera(m_pCamera);	//カメラ登録
-	}
+	//// =============== 初期化 =====================
+	//if (m_p3dObject.find(E_3D_PLAYER) != m_p3dObject.end() && m_p3dObject.at(E_3D_PLAYER) &&
+	//	typeid(*m_p3dObject.at(E_3D_PLAYER)).hash_code() == typeid(CPlayer).hash_code())	//アクセスチェック・ヌルチェック・型チェック
+	//{
+	//	m_p3dObject.at(E_3D_FLOOR)->SetCamera(m_pCamera);	//カメラ登録
+	//}
 }
 
 /* ========================================

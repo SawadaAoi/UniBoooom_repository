@@ -67,20 +67,30 @@ CStage::CStage()
 	}
 	m_pExplosionMng = new CExplosionManager();			// 爆発マネージャー生成
 	m_pSlimeMng = new CSlimeManager();			// スライムマネージャー生成
-	m_pSlimeMng->SetPlayer(m_pPlayer);
 	m_pHealItemMng = new CHealItemManager();			// 回復アイテムマネージャー生成
 	//================System動的確保================
 
 	m_pCollision = new CCollision();					//衝突判定チェック生成
 	m_pStartText = new CStartText();
-	m_pStartText->SetCamera(m_pCamera);
+
+	m_pTimer = new CTimer;
+	m_pBossGauge = new CBossGauge();
+	m_pHpMng = new CHP_UI();
+	m_pTotalScore = new CTotalScore();
+	m_pScoreOHMng = new CScoreOHManager();
+	m_pStageFin = new CStageFinish();
+	m_pBossArrow = new CBossArrow();
+	m_pCombo = new CCombo();
+
+	m_pPause = new CPause(m_pCamera);
 	//================セット================
 	// カメラ
 	m_pPlayer->SetCamera(m_pCamera);
+	m_pStartText->SetCamera(m_pCamera);
 	m_pExplosionMng->SetCamera(m_pCamera);
 	m_pSlimeMng->SetCamera(m_pCamera);
+	m_pSlimeMng->SetPlayer(m_pPlayer);
 	m_pHealItemMng->SetCamera(m_pCamera);
-	m_pPause = new CPause(m_pCamera);
 	//スライムマネージャー　←　スコアマネージャー
 	m_pSlimeMng->SetScoreOHMng(m_pScoreOHMng);
 	//爆発マネージャー　←　コンボ
@@ -95,28 +105,20 @@ CStage::CStage()
 	m_Data.Load();	//ファイルに上がっている情報を読み込む
 	
 	
-	m_pTimer = new CTimer;
 	m_pTimer->SetCamera(m_pCamera);
-	m_pBossGauge = new CBossGauge();
 	m_pBossGauge->SetCamera(m_pCamera);
 	m_pBossGauge->SetTimer(m_pTimer);
 	m_pBossGauge->SetSlimeManager(m_pSlimeMng);
-	m_pHpMng = new CHP_UI();
 	m_pHpMng->SetCamera(m_pCamera);
 	m_pHpMng->SetPlayerHp(m_pPlayer->GetHpPtr());
-	m_pTotalScore = new CTotalScore();
 	m_pTotalScore->SetCamera(m_pCamera);
-	m_pScoreOHMng = new CScoreOHManager();
 	m_pScoreOHMng->SetCamera(m_pCamera);
-	m_pStageFin = new CStageFinish();
 	m_pStageFin->SetCamera(m_pCamera);
 	m_pStageFin->SetTime(m_pTimer->GetTimePtr());
 	m_pStageFin->SetPlHp(m_pPlayer->GetHpPtr());
-	m_pBossArrow = new CBossArrow();
 	m_pBossArrow->SetCamera(m_pCamera);
 	m_pBossArrow->SetSlimeMng(m_pSlimeMng);
 	m_pBossArrow->SetPlayer(m_pPlayer);
-	m_pCombo = new CCombo();
 	m_pCombo->SetCamera(m_pCamera);
 	m_pCombo->SetTotalScore(m_pTotalScore);
 
@@ -125,15 +127,15 @@ CStage::CStage()
 	// =============== データ受け継ぎ =====================
 	m_Data.Load();	//ファイルに上がっている情報を読み込む
 
-	// =============== データ受け継ぎ =====================
-	if (m_pObjectManager.find(E_MANAGER_SLIME) != m_pObjectManager.end() && m_pObjectManager.at(E_MANAGER_SLIME) &&
-		typeid(*m_pObjectManager.at(E_MANAGER_SLIME)).hash_code() == typeid(CSlimeManager).hash_code() &&
-		m_p3dObject.find(E_3D_PLAYER) != m_p3dObject.end() && m_p3dObject.at(E_3D_PLAYER) &&
-		typeid(*m_p3dObject.at(E_3D_PLAYER)).hash_code() == typeid(CPlayer).hash_code())	//アクセスチェック・ヌルチェック・型チェック
-	{
-		auto func = [](CSlimeManager* pSlimeMng) {pSlimeMng->Create(pSlimeMng->GetRandomLevel()); };	//ランダム生成用ラムダ式
-		func(static_cast<CSlimeManager*>(m_pObjectManager.at(E_MANAGER_SLIME)));	//スライムランダム生成
-	}	//スライムマネージャー　←　プレイヤー
+	//// =============== データ受け継ぎ =====================
+	//if (m_pObjectManager.find(E_MANAGER_SLIME) != m_pObjectManager.end() && m_pObjectManager.at(E_MANAGER_SLIME) &&
+	//	typeid(*m_pObjectManager.at(E_MANAGER_SLIME)).hash_code() == typeid(CSlimeManager).hash_code() &&
+	//	m_p3dObject.find(E_3D_PLAYER) != m_p3dObject.end() && m_p3dObject.at(E_3D_PLAYER) &&
+	//	typeid(*m_p3dObject.at(E_3D_PLAYER)).hash_code() == typeid(CPlayer).hash_code())	//アクセスチェック・ヌルチェック・型チェック
+	//{
+	//	auto func = [](CSlimeManager* pSlimeMng) {pSlimeMng->Create(pSlimeMng->GetRandomLevel()); };	//ランダム生成用ラムダ式
+	//	func(static_cast<CSlimeManager*>(m_pObjectManager.at(E_MANAGER_SLIME)));	//スライムランダム生成
+	//}	//スライムマネージャー　←　プレイヤー
 
 	Update();
 }
@@ -240,38 +242,38 @@ void CStage::Draw() const
 //	DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
 //	SetRenderTargets(1, &pRTV, pDSV);		//DSVがnullだと2D表示になる
 //
-	//床の描画
-	m_pFloor->Draw();
+	////床の描画
+	//m_pFloor->Draw();
 
-	// スライムマネージャー描画
-	m_pSlimeMng->Draw();
+	//// スライムマネージャー描画
+	//m_pSlimeMng->Draw();
 
 	// プレイヤー描画
 	m_pPlayer->Draw();
 
-	LibEffekseer::Draw();
+	//LibEffekseer::Draw();
 
-	//爆発マネージャー描画
-	m_pExplosionMng->Draw();
+	////爆発マネージャー描画
+	//m_pExplosionMng->Draw();
 
-	//回復アイテム描画
-	m_pHealItemMng->Draw();
-	
-	//UIマネージャー描画
-	m_pTimer->Draw();
-	m_pBossGauge->Draw();
-	m_pHpMng->Draw();
-	m_pTotalScore->Draw();
-	m_pScoreOHMng->Draw();
-	m_pStageFin->Draw();
-	m_pBossArrow->Draw();
-	m_pCombo->Draw();
+	////回復アイテム描画
+	//m_pHealItemMng->Draw();
+	//
+	////UIマネージャー描画
+	//m_pTimer->Draw();
+	//m_pBossGauge->Draw();
+	//m_pHpMng->Draw();
+	//m_pTotalScore->Draw();
+	//m_pScoreOHMng->Draw();
+	//m_pStageFin->Draw();
+	//m_pBossArrow->Draw();
+	//m_pCombo->Draw();
 
-	// スタート合図描画
-	if (m_pStartText->GetAnimFlg())
-	{
-		m_pStartText->Draw();
-	}
+	//// スタート合図描画
+	//if (m_pStartText->GetAnimFlg())
+	//{
+	//	m_pStartText->Draw();
+	//}
 
 	//ポーズ描画
 	if (m_pPause)

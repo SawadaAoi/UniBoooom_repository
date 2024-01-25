@@ -60,20 +60,20 @@ const int STAGE_NUM = 1;	//ステージ番号
 CStage1::CStage1()
 	:CStage()	//親関数呼び出し
 {
-	// =============== 動的確保 =====================
-	if (m_p3dObject.find(E_3D_PLAYER) != m_p3dObject.end() && m_p3dObject.at(E_3D_PLAYER) &&
-		typeid(*m_pCamera).hash_code() == typeid(CCameraChase).hash_code() &&
-		typeid(*m_p3dObject.at(E_3D_PLAYER)).hash_code() == typeid(CPlayer).hash_code())	//アクセスチェック・ヌルチェック・型チェック
-	{
-		m_p3dObject.emplace(E_3D_FLOOR, new CFloor(static_cast<CPlayer*>(m_p3dObject.at(E_3D_PLAYER))->GetPosAddress(), CFloor::Stage1));	// 床生成
-	}
+	//// =============== 動的確保 =====================
+	//if (m_p3dObject.find(E_3D_PLAYER) != m_p3dObject.end() && m_p3dObject.at(E_3D_PLAYER) &&
+	//	typeid(*m_pCamera).hash_code() == typeid(CCameraChase).hash_code() &&
+	//	typeid(*m_p3dObject.at(E_3D_PLAYER)).hash_code() == typeid(CPlayer).hash_code())	//アクセスチェック・ヌルチェック・型チェック
+	//{
+	//	m_p3dObject.emplace(E_3D_FLOOR, new CFloor(static_cast<CPlayer*>(m_p3dObject.at(E_3D_PLAYER))->GetPosAddress(), CFloor::Stage1));	// 床生成
+	//}
 
-	// =============== 初期化 =====================
-	if (m_p3dObject.find(E_3D_PLAYER) != m_p3dObject.end() && m_p3dObject.at(E_3D_PLAYER) &&
-		typeid(*m_p3dObject.at(E_3D_PLAYER)).hash_code() == typeid(CPlayer).hash_code())	//アクセスチェック・ヌルチェック・型チェック
-	{
-		m_p3dObject.at(E_3D_FLOOR)->SetCamera(m_pCamera);	//カメラ登録
-	}
+	//// =============== 初期化 =====================
+	//if (m_p3dObject.find(E_3D_PLAYER) != m_p3dObject.end() && m_p3dObject.at(E_3D_PLAYER) &&
+	//	typeid(*m_p3dObject.at(E_3D_PLAYER)).hash_code() == typeid(CPlayer).hash_code())	//アクセスチェック・ヌルチェック・型チェック
+	//{
+	//	m_p3dObject.at(E_3D_FLOOR)->SetCamera(m_pCamera);	//カメラ登録
+	//}
 }
 
 /* ========================================
@@ -102,27 +102,27 @@ CStage1::~CStage1()
 =========================================== */
 void CStage1::Update()
 {
-	// =============== 更新 ===================
-	if (ACCESS_NULL_TYPE_CHECK(m_p2dObjectOnScreen, E_2D_ON_SCREEN_OPENING, typeid(CStartText).hash_code()) && 
-		static_cast<CStartText*>(m_p2dObjectOnScreen.at(E_2D_ON_SCREEN_OPENING))->GetAnimFlg())	// シーン遷移後ゲームを開始するか判定
-	{
-		m_p2dObjectOnScreen.at(E_2D_ON_SCREEN_OPENING)->Update();	//一部更新
-	}
-	else
-	{
-		if (m_pPause)	//ヌルチェック
-		{
-			m_pPause->Update();	//ポーズ更新
-			if (m_pPause->IsPause())	//ポーズ中
-			{
-				return;	//処理中断
-			}
-			m_bFinish = m_pPause->IsFin();	//終了判定
-		}
+	//// =============== 更新 ===================
+	//if (ACCESS_NULL_TYPE_CHECK(m_p2dObjectOnScreen, E_2D_ON_SCREEN_OPENING, typeid(CStartText).hash_code()) && 
+	//	static_cast<CStartText*>(m_p2dObjectOnScreen.at(E_2D_ON_SCREEN_OPENING))->GetAnimFlg())	// シーン遷移後ゲームを開始するか判定
+	//{
+	//	m_p2dObjectOnScreen.at(E_2D_ON_SCREEN_OPENING)->Update();	//一部更新
+	//}
+	//else
+	//{
+	//	if (m_pPause)	//ヌルチェック
+	//	{
+	//		m_pPause->Update();	//ポーズ更新
+	//		if (m_pPause->IsPause())	//ポーズ中
+	//		{
+	//			return;	//処理中断
+	//		}
+	//		m_bFinish = m_pPause->IsFin();	//終了判定
+	//	}
 
-		// =============== 関数呼出 ===================
-		CStage::Update();	//親関数呼び出し
-	}
+	//	// =============== 関数呼出 ===================
+	//	CStage::Update();	//親関数呼び出し
+	//}
 }
 
 /* ========================================
@@ -172,33 +172,33 @@ CStage1::E_TYPE CStage1::GetNext() const
 =========================================== */
 void CStage1::RecordData()
 {
-	// =============== 退避 =====================
-	if (ACCESS_NULL_TYPE_CHECK(m_p2dObjectOnScreen, E_2D_ON_SCREEN_FINISH, typeid(CTotalScore).hash_code()))	//アクセス・ヌル・型チェック
-	{
-		m_Data.nTotalScore = static_cast<CTotalScore*>(m_p2dObjectOnScreen.at(E_2D_ON_SCREEN_FINISH))->GetTotalScore();	//スコア退避
-	}
+	//// =============== 退避 =====================
+	//if (ACCESS_NULL_TYPE_CHECK(m_p2dObjectOnScreen, E_2D_ON_SCREEN_FINISH, typeid(CTotalScore).hash_code()))	//アクセス・ヌル・型チェック
+	//{
+	//	m_Data.nTotalScore = static_cast<CTotalScore*>(m_p2dObjectOnScreen.at(E_2D_ON_SCREEN_FINISH))->GetTotalScore();	//スコア退避
+	//}
 
-	// =============== データ登録 =====================
-	if (m_Data.nHighScore[STAGE_NUM - 1] < m_Data.nTotalScore)	// ハイスコアを更新しているか？
-	{
-		m_Data.nHighScore[STAGE_NUM - 1] = m_Data.nTotalScore;	// ハイスコア更新
-	}
-	if (ACCESS_NULL_TYPE_CHECK(m_p2dObjectOnScreen, E_2D_ON_SCREEN_TIMER, typeid(CTimer).hash_code()))	//アクセス・ヌル・型チェック
-	{
-		m_Data.nTotalScore = static_cast<CTimer*>(m_p2dObjectOnScreen.at(E_2D_ON_SCREEN_TIMER))->GetErapsedTime();	// 経過時間退避
-	}
-	if (ACCESS_NULL_TYPE_CHECK(m_p2dObjectOnScreen, E_2D_ON_SCREEN_COMBO, typeid(CCombo).hash_code()))	//アクセス・ヌル・型チェック
-	{
-		m_Data.nTotalScore = static_cast<CCombo*>(m_p2dObjectOnScreen.at(E_2D_ON_SCREEN_COMBO))->GetMaxCombo();		// 最大コンボ数退避
-	}
-	if (ACCESS_NULL_TYPE_CHECK(m_p2dObjectOnScreen, E_2D_ON_SCREEN_COMBO, typeid(CStageFinish).hash_code()))	//アクセス・ヌル・型チェック
-	{
-		m_Data.nTotalScore = static_cast<CStageFinish*>(m_p2dObjectOnScreen.at(E_2D_ON_SCREEN_COMBO))->GetClearFlg();	// ゲームクリアしたか
-	}
-	if (ACCESS_NULL_TYPE_CHECK(m_pObjectManager, E_MANAGER_SLIME, typeid(CSlimeManager).hash_code()))	//アクセス・ヌル・型チェック
-	{
-		m_Data.nTotalKill = static_cast<CSlimeManager*>(m_pObjectManager.at(E_MANAGER_SLIME))->GetTotalKillCnt();	// 総討伐数退避
-		static_cast<CSlimeManager*>(m_pObjectManager.at(E_MANAGER_SLIME))->GetKillCntArray(m_Data.nKill);			// スライム別討伐数退避
-	}
-	m_Data.nStageNum = STAGE_NUM;	// プレイしたステージ番号
+	//// =============== データ登録 =====================
+	//if (m_Data.nHighScore[STAGE_NUM - 1] < m_Data.nTotalScore)	// ハイスコアを更新しているか？
+	//{
+	//	m_Data.nHighScore[STAGE_NUM - 1] = m_Data.nTotalScore;	// ハイスコア更新
+	//}
+	//if (ACCESS_NULL_TYPE_CHECK(m_p2dObjectOnScreen, E_2D_ON_SCREEN_TIMER, typeid(CTimer).hash_code()))	//アクセス・ヌル・型チェック
+	//{
+	//	m_Data.nTotalScore = static_cast<CTimer*>(m_p2dObjectOnScreen.at(E_2D_ON_SCREEN_TIMER))->GetErapsedTime();	// 経過時間退避
+	//}
+	//if (ACCESS_NULL_TYPE_CHECK(m_p2dObjectOnScreen, E_2D_ON_SCREEN_COMBO, typeid(CCombo).hash_code()))	//アクセス・ヌル・型チェック
+	//{
+	//	m_Data.nTotalScore = static_cast<CCombo*>(m_p2dObjectOnScreen.at(E_2D_ON_SCREEN_COMBO))->GetMaxCombo();		// 最大コンボ数退避
+	//}
+	//if (ACCESS_NULL_TYPE_CHECK(m_p2dObjectOnScreen, E_2D_ON_SCREEN_COMBO, typeid(CStageFinish).hash_code()))	//アクセス・ヌル・型チェック
+	//{
+	//	m_Data.nTotalScore = static_cast<CStageFinish*>(m_p2dObjectOnScreen.at(E_2D_ON_SCREEN_COMBO))->GetClearFlg();	// ゲームクリアしたか
+	//}
+	//if (ACCESS_NULL_TYPE_CHECK(m_pObjectManager, E_MANAGER_SLIME, typeid(CSlimeManager).hash_code()))	//アクセス・ヌル・型チェック
+	//{
+	//	m_Data.nTotalKill = static_cast<CSlimeManager*>(m_pObjectManager.at(E_MANAGER_SLIME))->GetTotalKillCnt();	// 総討伐数退避
+	//	static_cast<CSlimeManager*>(m_pObjectManager.at(E_MANAGER_SLIME))->GetKillCntArray(m_Data.nKill);			// スライム別討伐数退避
+	//}
+	//m_Data.nStageNum = STAGE_NUM;	// プレイしたステージ番号
 }
