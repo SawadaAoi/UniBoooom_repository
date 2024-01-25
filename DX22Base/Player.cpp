@@ -292,7 +292,7 @@ void CPlayer::Draw()
 	//=====アニメーションの調整用に一応残しておく=====
 	if (m_bAttackFlg)
 	{
-		m_pHammer->Draw();		//ハンマーの描画
+		//m_pHammer->Draw();		//ハンマーの描画
 	}
 
 	m_pShadow->Draw(m_Transform, PLAYER_SHADOW_SCALE, m_pCamera);	// 影の描画
