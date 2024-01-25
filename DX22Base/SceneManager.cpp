@@ -25,6 +25,7 @@
 	・2024/01/18 CScene->GetType()関数を使用しない形に変更などリファクタリング takagi
 	・2024/01/20 音関係リファクタリング takagi
 	・2024/01/21 コメント改修・bgmバグ修正・MessageBox改善 takagi
+	・2024/01/25 オブジェクトチェック追加
 
 ========================================== */
 
@@ -38,6 +39,7 @@
 #include "HitStop.h"		//ヒットストップ
 #if _DEBUG
 #include <Windows.h>		//メッセージボックス用
+#include "ObjectDrawer.h"	//オブジェクトリークチェック用
 #endif
 #if KEY_CHANGE_SCENE
 #include <string>			//文字列操作
@@ -235,6 +237,11 @@ void CSceneManager::ChangeScene()
 		delete m_pScene;													//メモリ解放
 		m_pScene = nullptr;													//空アドレス
 	}
+
+#if _DEBUG
+	// =============== メモリリーク予防 =====================
+	CObjectDrawer::CheckAliveObject();	//生きているオブジェクトの通知
+#endif	//!_DEBUG
 
 	// =============== シーン切換 =====================
 	MakeNewScene();	//新シーン作成

@@ -102,44 +102,6 @@ CSelectStage::CSelectStage()
 	m_2dObj[1]->SetSize({ TEXTURE_SELECT_STAGE_WIDTH, TEXTURE_SELECT_STAGE_HEIGHT ,1.0f });
 	m_2dObj[2]->SetSize({ TEXTURE_SELECT_STAGE_WIDTH, TEXTURE_SELECT_STAGE_HEIGHT ,1.0f });
 
-	//背景
-	m_2dObj[3]->SetTexture(m_pStageSelectBG);
-	m_2dObj[3]->SetPos({ SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 ,1.0f });
-	m_2dObj[3]->SetSize({ SCREEN_WIDTH, SCREEN_HEIGHT ,1.0f });
-	m_2dObj[3]->Update();
-
-
-
-	if (!(0 == Num))
-	{//ステージ1
-		m_2dObj[0]->SetTexture(mStageNum[0].m_pTexture);
-		m_2dObj[0]->SetPos({ 250.0f, 300.0f,1.0f });
-		m_2dObj[0]->SetSize({ TEXTURE_SELECT_STAGE_WIDTH, TEXTURE_SELECT_STAGE_HEIGHT ,1.0f });
-		m_2dObj[0]->SetRotate({ 0.0f,0.0f,-0.25f });
-		m_2dObj[0]->SetColor(0.5f, 1.0f);
-		m_2dObj[0]->Update();
-	}
-	if (!(1 == Num))
-	{
-		//ステージ2
-		m_2dObj[1]->SetTexture(mStageNum[1].m_pTexture);
-		m_2dObj[1]->SetPos({ 600.0f, 300.0f,1.0f });
-		m_2dObj[1]->SetSize({ TEXTURE_SELECT_STAGE_WIDTH , TEXTURE_SELECT_STAGE_HEIGHT   ,1.0f });
-		m_2dObj[1]->SetRotate({ 0.0f,0.0f,0.05f });
-		m_2dObj[1]->SetColor(0.5f, 1.0f);
-		m_2dObj[1]->Update();
-	}
-	if (!(2 == Num))
-	{
-		//ステージ3
-		m_2dObj[2]->SetTexture(mStageNum[2].m_pTexture);
-		m_2dObj[2]->SetPos({ 950.0f, 300.0f,1.0f });
-		m_2dObj[2]->SetSize({ TEXTURE_SELECT_STAGE_WIDTH , TEXTURE_SELECT_STAGE_HEIGHT   ,1.0f });
-		m_2dObj[2]->SetRotate({ 0.0f,0.0f,0.1f });
-		m_2dObj[2]->SetColor(0.5f, 1.0f);
-		m_2dObj[2]->Update();
-	}
-
 	CSelectStage::Update();	//応急処置
 }	
 
@@ -161,6 +123,10 @@ CSelectStage::~CSelectStage()
 		SAFE_DELETE(mStageNum[i].m_pTexture);
 	}
 	SAFE_DELETE(m_pStageSelectBG);
+	for (int i = 0; i < 5; i++)
+	{
+		SAFE_DELETE(m_2dObj[i]);
+	}
 }
 
 /* ========================================

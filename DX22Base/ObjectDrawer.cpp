@@ -115,21 +115,19 @@ void CObjectDrawer::RemoveObject(const unsigned int & unKey)
 void CObjectDrawer::CheckAliveObject()
 {
 	// =============== 探索 =====================
-	for (unsigned int unKey = (std::numeric_limits<unsigned int>::min)(); unKey < MAX_OBJECT; unKey++)	//残っているキーを探す
+	for (unsigned int unKey = (std::numeric_limits<unsigned int>::min)(); unKey < static_cast<unsigned int>(m_pObject.size()); unKey++)	//残っているキーを探す
 	{
 		// =============== 検査 =====================
-		if (ACCESS_NULL_CHECK(m_pObject, unKey))	//アクセス・ヌルチェック
+		if (m_pObject.find(unKey) != m_pObject.end())	//アクセスできる
 		{
-			// =============== パス =====================
-			continue;	//次の候補へ
-		}
-		if (m_pObject.find(unKey) != m_pObject.end())	//ヌルの中身が存在
-		{
-			MessageBox(nullptr, (static_cast<std::string>("キーのみ生存しています：") + std::to_string(unKey)).c_str(), "Error", MB_OK | MB_ICONERROR);							//エラー通知
-		}
-		else
-		{
-			MessageBox(nullptr, (static_cast<std::string>("メモリリークのおそれがあります：") + typeid(*m_pObject.at(unKey)).name()).c_str(), "Error", MB_OK | MB_ICONERROR);	//エラー通知
+			if (m_pObject.at(unKey))	//中身がヌルでない
+			{
+				MessageBox(nullptr, (static_cast<std::string>("メモリリークのおそれがあります：") + typeid(*m_pObject.at(unKey)).name()).c_str(), "Error", MB_OK | MB_ICONERROR);	//エラー通知
+			}
+			else
+			{	//ヌルの中身が存在
+				MessageBox(nullptr, (static_cast<std::string>("キーのみ生存しています：") + std::to_string(unKey)).c_str(), "Error", MB_OK | MB_ICONERROR);							//エラー通知
+			}
 		}
 	}
 }

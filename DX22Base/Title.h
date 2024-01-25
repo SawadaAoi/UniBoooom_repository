@@ -90,7 +90,7 @@ public:
 	CTitle();							//コンストラクタ
 	~CTitle();							//デストラクタ
 	void Update() override;				//更新
-	void Draw() override;				//描画
+	void Draw() const override;				//描画
 	E_TYPE GetNext() const override;	//次のシーンゲッタ
 private:
 	// ===メンバ変数宣言=====
