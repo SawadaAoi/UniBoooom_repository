@@ -57,22 +57,22 @@ CTotalScore::CTotalScore()
 	, digits{}
 {
 	m_pToScoreTexture = new Texture();
-	if (FAILED(m_pToScoreTexture->Create("Assets/Texture/numbers_v1/combo_numbers.png")))
+	if (FAILED(m_pToScoreTexture->Create("Assets/Texture/Score/score_numbers.png")))
 	{
 		MessageBox(NULL, "ToScoreêîéöì«Ç›çûÇ›", "Error", MB_OK);
 	}
 	m_pPlusScoreTexture = new Texture();
-	if (FAILED(m_pPlusScoreTexture->Create("Assets/Texture/numbers_v1/plus_score_numbers.png")))
+	if (FAILED(m_pPlusScoreTexture->Create("Assets/Texture/Score/plus_score_numbers.png")))
 	{
 		MessageBox(NULL, "PlusScoreêîéöì«Ç›çûÇ›", "Error", MB_OK);
 	}
 	m_pTScoreBGTex = new Texture();
-	if (FAILED(m_pTScoreBGTex->Create("Assets/Texture/total_score_back_1.png")))
+	if (FAILED(m_pTScoreBGTex->Create("Assets/Texture/Score/total_score_back_1.png")))
 	{
 		MessageBox(NULL, "TScoreBackì«Ç›çûÇ›", "Error", MB_OK);
 	}
 	m_pPScoreBGTex = new Texture();
-	if (FAILED(m_pPScoreBGTex->Create("Assets/Texture/plus_score_back_1.png")))
+	if (FAILED(m_pPScoreBGTex->Create("Assets/Texture/Score/plus_score_back_1.png")))
 	{
 		MessageBox(NULL, "TScoreBackì«Ç›çûÇ›", "Error", MB_OK);
 	}

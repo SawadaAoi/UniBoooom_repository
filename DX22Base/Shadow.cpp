@@ -37,7 +37,7 @@ CShadow::CShadow()
 {
 	// 影テクスチャ読込
 	m_pTextureShadow = new Texture();
-	if (FAILED(m_pTextureShadow->Create("Assets/Texture/Shadow.png")))
+	if (FAILED(m_pTextureShadow->Create("Assets/Texture/Direction/Shadow/Shadow.png")))
 	{
 		MessageBox(NULL, "Shadow.png", "Error", MB_OK);
 	}

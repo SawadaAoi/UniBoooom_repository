@@ -82,13 +82,6 @@ CHammer::CHammer()
 	if (FAILED(m_pVS->Load("Assets/Shader/VS_Model.cso"))) {
 		MessageBox(nullptr, "VS_Model.cso", "Error", MB_OK);
 	}
-	//ハンマーのモデル読み込み
-	m_pModel = new Model;
-	if (!m_pModel->Load("Assets/Model/hammer/hammer3.FBX", 1.0f, Model::XFlip)) {		//倍率と反転は省略可
-		MessageBox(NULL, "hammer", "Error", MB_OK);	//ここでエラーメッセージ表示
-	}
-	m_pModel->SetVertexShader(m_pVS);
-
 	m_pSphere = new CSphere();
 }
 
@@ -105,7 +98,6 @@ CHammer::~CHammer()
 {
 	SAFE_DELETE(m_pSphere);
 
-	SAFE_DELETE(m_pModel);
 	SAFE_DELETE(m_pVS);
 }
 
@@ -147,25 +139,6 @@ bool CHammer::Update()
 void CHammer::Draw()
 {
 	if (!m_pCamera) { return; }
-
-	//-- モデル表示
-	if (m_pModel) {
-		DirectX::XMFLOAT4X4 mat[3];
-
-		mat[0] = m_Transform.GetWorldMatrixSRT();
-		mat[1] = m_pCamera->GetViewMatrix();
-		mat[2] = m_pCamera->GetProjectionMatrix();
-
-		//-- 行列をシェーダーへ設定
-		m_pVS->WriteBuffer(0, mat);
-
-		// レンダーターゲット、深度バッファの設定
-		RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得
-		DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
-		SetRenderTargets(1, &pRTV, pDSV);		//DSVがnullだと2D表示になる
-
-		m_pModel->Draw();
-	}
 
 	if (m_pSphere)
 	{

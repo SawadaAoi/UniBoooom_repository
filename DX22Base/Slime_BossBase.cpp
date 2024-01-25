@@ -56,12 +56,12 @@ CSlime_BossBase::CSlime_BossBase()
 {
 
 	m_pBossHpTexture = new Texture();
-	if (FAILED(m_pBossHpTexture->Create("Assets/Texture/Boss_Hp.png")))
+	if (FAILED(m_pBossHpTexture->Create("Assets/Texture/Boss_UI/HP/Boss_Hp.png")))
 	{
 		MessageBox(NULL, "HPゲージ読み込み", "Error", MB_OK);
 	}
 	m_pHpFrameTexture = new Texture();
-	if (FAILED(m_pHpFrameTexture->Create("Assets/Texture/Boss_HpFrame.png")))
+	if (FAILED(m_pHpFrameTexture->Create("Assets/Texture/Boss_UI/HP/Boss_HpFrame.png")))
 	{
 		MessageBox(NULL, "HPフレーム読み込み", "Error", MB_OK);
 	}
