@@ -77,25 +77,25 @@ const TDiType<int> NUM_SPLIT = { 5, 2 };
 const TDiType<float> NUM_UVSCALE = { (1.0f / 5) ,(1.0f / 2) };
 
 const Display_Param BG_SCREEN_PARAM		= { { SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 },{ SCREEN_WIDTH, SCREEN_HEIGHT } };	// 背景
-const Display_Param BG_PANEL_PARAM		= { { 900.0f, SCREEN_HEIGHT / 2 } ,{ 750.0f, SCREEN_HEIGHT } };					// 項目背景
-const Display_Param RESULT_TEXT_PARAM = { { 260.0f, 90.0f },{ 400.0f, 100.0f } };										// リザルト
+const Display_Param BG_PANEL_PARAM		= { { 905.0f, SCREEN_HEIGHT / 2 } ,{ 750.0f, SCREEN_HEIGHT } };					// 項目背景
+const Display_Param RESULT_TEXT_PARAM = { { 265.0f, 90.0f },{ 400.0f, 100.0f } };										// リザルト
 
-const Display_Param SVL_TIME_TEXT_PARAM = { { 700.0f, 30.0f },{ 300.0f, 100.0f } };	// 生存時間(文字)
-const Display_Param SVL_TIME_NUM__PARAM = { { 1200.0f, 50.0f },{ 75.0f, 75.0f } };	// 生存時間(数字)
-const Display_Param SVL_TIME_LINE_PARAM = { { 900.0f, 100.0f },{ 700.0f, 5.0f } };	// 線
+const Display_Param SVL_TIME_TEXT_PARAM = { { 650.0f, 30.0f },{ 200.0f, 80.0f } };	// 生存時間(文字)
+const Display_Param SVL_TIME_NUM__PARAM = { { 1200.0f, 50.0f },{ 85.0f, 95.0f } };	// 生存時間(数字)
+const Display_Param SVL_TIME_LINE_PARAM = { { 907.0f, 100.0f },{ 729.0f, 5.0f } };	// 線
 const float SVL_TIME_NUM_SPACE = 55.0f;		// 時間の間(12^:^33)
 
-const Display_Param SCORE_TEXT_PARAM		= { { 700.0f, 130.0f },{ 300.0f, 100.0f } };	// スコア(文字)
-const Display_Param NEW_RECORD_TEXT_PARAM	= { { 1100.0f, 130.0f },{ 170.0f, 55.0f } };	// 新記録(文字)
-const Display_Param SCORE_NUM_PARAM			= { { 1200.0f, 170.0f },{ 80.0f, 80.0f } };		// スコア(数字)
-const Display_Param HIGH_SCORE_TEXT_PARAM	= { { 660.0f, 240.0f },{ 200.0f, 75.0f } };		// ハイスコア(文字)
+const Display_Param SCORE_TEXT_PARAM		= { { 655.0f, 130.0f },{ 220.0f, 75.0f } };	// スコア(文字)
+const Display_Param NEW_RECORD_TEXT_PARAM	= { { 820.0f,180.0f },{ 170.0f, 55.0f } };	// 新記録(文字)
+const Display_Param SCORE_NUM_PARAM			= { { 1200.0f, 160.0f },{ 85.0f, 105.0f } };		// スコア(数字)
+const Display_Param HIGH_SCORE_TEXT_PARAM	= { { 645.0f, 240.0f },{ 180.0f, 75.0f } };		// ハイスコア(文字)
 const Display_Param HIGH_SCORE_NUM_PARAM	= { { 1200.0f, 260.0f },{ 55.0f, 55.0f } };		// ハイスコア(数字)
-const Display_Param SCORE_LINE_PARAM		= { { 900.0f, 300.0f },{ 700.0f, 5.0f } };		// 線
+const Display_Param SCORE_LINE_PARAM		= { { 907.0f, 300.0f },{ 729.0f, 5.0f } };		// 線
 const float SCORE_NUM_SPACE = 65.0f;
 const float HIGH_SCORE_NUM_SPACE = 45.0f;
 
 
-const Display_Param HUNT_TEXT_PARAM			= { { 750.0f, 350.0f },{ 400.0f, 150.0f } };	// 討伐数(文字)
+const Display_Param HUNT_TEXT_PARAM			= { { 710.0f, 340.0f },{ 330.0f, 110.0f } };	// 討伐数(文字)
 const Display_Param SLIME_TEXTURE_PARAM		= { { 650.0f, 430.0f },{ 90.0f, 90.0f } };		// スライム画像
 const float SLIME_SPACE_Y = 120.0f;	// スライム画像の間
 const Display_Param SLIME_HUNT_NUM_PARAM	= { { 650.0f, 430.0f },{ 60.0f, 60.0f } };		// スライム別討伐数
@@ -103,12 +103,12 @@ const Display_Param PARENTHESIS_PARAM		= { { 650.0f, 530.0f },{ 0.0f, 0.0f } };	
 const Display_Param MULTI_PARAM				= { { 650.0f, 510.0f },{ 40.0f, 40.0f } };		// ×
 const Display_Param MULTI_SLIME_PARAM		= { { 615.0f, 510.0f },{ 30.0f, 30.0f } };		// 青スライム画像の位置
 const Display_Param MULTI_NUM_PARAM			= { { 685.0f, 510.0f },{ 40.0f, 40.0f } };		// 青スライムの倍数
-const Display_Param TOTAL_HUNT_TEXT_PARAM	= { { 700.0f, 570.0f },{ 300.0f, 100.0f } };	// 総討伐数(文字)
-const Display_Param TOTAL_HUNT_NUM_PARAM	= { { 1200.0f, 570.0f },{ 70.0f, 70.0f } };		// 総討伐数(数字)
-const Display_Param HUNT_LINE_PARAM			= { { 900.0f, 620.0f } , { 700.0f, 5.0f } };	// 線
+const Display_Param TOTAL_HUNT_TEXT_PARAM	= { { 670.0f, 560.0f },{ 250.0f, 80.0f } };		// 総討伐数(文字)
+const Display_Param TOTAL_HUNT_NUM_PARAM	= { { 1200.0f, 580.0f },{ 85.0f, 105.0f } };	// 総討伐数(数字)
+const Display_Param HUNT_LINE_PARAM			= { { 907.0f, 620.0f } , { 729.0f, 5.0f } };	// 線
 
-const Display_Param MAX_COMBO_TEXT_PARAM	= { { 750.0f, 670.0f } , { 400.0f, 150.0f } };	// 最大コンボ数(文字)
-const Display_Param MAX_COMBO_NUM_PARAM		= { { 1200.0f, 670.0f } ,{ 75.0f, 75.0f } };	// 最大コンボ数(数字)
+const Display_Param MAX_COMBO_TEXT_PARAM	= { { 695.0f, 655.0f } , {  300.0f, 90.0f } };	// 最大コンボ数(文字)
+const Display_Param MAX_COMBO_NUM_PARAM		= { { 1200.0f, 670.0f } ,{ 85.0f, 105.0f } };	// 最大コンボ数(数字)
 
 
 
@@ -261,8 +261,8 @@ void CResult::DrawWarningTexture()
 		pWarningTex);
 
 	// クリアした場合
-	if (m_Data.bClearFlg)
-	{
+	//if (m_Data.bClearFlg)
+	//{
 		// スタンプを表示する
 		Draw2d(
 			CLEAR_STAMP_PARAM.fPos.x,
@@ -270,7 +270,7 @@ void CResult::DrawWarningTexture()
 			CLEAR_STAMP_PARAM.fSize.x,
 			CLEAR_STAMP_PARAM.fSize.y,
 			m_pTexture[E_TEXTURE::CLEAR_STAMP]);
-	}
+	//}
 }
 
 
@@ -338,8 +338,8 @@ void CResult::DrawScore()
 		m_pTexture[E_TEXTURE::HIGH_SCORE_TEXT]);
 
 	// ハイスコアを更新していたら(ゲーム終了時にハイスコアを更新する為)
-	if (m_Data.nHighScore[m_Data.nStageNum-1] == m_Data.nTotalScore)
-	{
+	//if (m_Data.nHighScore[m_Data.nStageNum-1] == m_Data.nTotalScore)
+	//{
 		// ニューレコード(文字)
 		Draw2d(
 			NEW_RECORD_TEXT_PARAM.fPos.x,
@@ -348,7 +348,7 @@ void CResult::DrawScore()
 			NEW_RECORD_TEXT_PARAM.fSize.y,
 			m_pTexture[E_TEXTURE::NEW_RECORD_TEXT]);
 
-	}
+	//}
 
 	// ハイスコア(数字)
 	DispNum(m_Data.nHighScore[m_Data.nStageNum - 1], 5, HIGH_SCORE_NUM_PARAM.fPos, HIGH_SCORE_NUM_PARAM.fSize, HIGH_SCORE_NUM_SPACE);
