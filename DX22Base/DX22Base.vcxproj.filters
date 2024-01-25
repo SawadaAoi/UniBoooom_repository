@@ -175,6 +175,9 @@
     <Filter Include="ソース ファイル\System\ZSort">
       <UniqueIdentifier>{ddc9c8b1-2ce8-49e9-984d-a98c806dc83f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Object\2dObject\2dOnScreen">
+      <UniqueIdentifier>{bf3b2d8e-9a6d-429a-98c3-c6d290863ea9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">

@@ -160,6 +160,8 @@ CStage::CStage()
 		auto func = [](CSlimeManager* pSlimeMng) {pSlimeMng->Create(pSlimeMng->GetRandomLevel()); };	//ランダム生成用ラムダ式
 		func(static_cast<CSlimeManager*>(m_pObjectManager.at(E_MANAGER_SLIME)));	//スライムランダム生成
 	}	//スライムマネージャー　←　プレイヤー
+
+	Update();
 }
 
 /* ========================================
@@ -212,14 +214,15 @@ void CStage::Update()
 		{
 			(m_pObjectManager.at(E_MANAGER_EXPLOSION))->Update();	//ゲームが終了したか
 		}
+		if (ACCESS_NULL_CHECK(m_pObjectManager, E_MANAGER_HEAL_ITEM))	//アクセス・ヌルチェック
+		{
+			(m_pObjectManager.at(E_MANAGER_HEAL_ITEM))->Update();	//ゲームが終了したか
+		}
+		if (ACCESS_NULL_CHECK(m_pObjectManager, E_MANAGER_HEAL_ITEM))	//アクセス・ヌルチェック
+		{
+			(m_pObjectManager.at(E_MANAGER_HEAL_ITEM))->Update();	//ゲームが終了したか
+		}
 	}
-
-
-
-	//m_p->Update();				// 床更新
-	//m_pExplosionMng->Update();		// 爆発マネージャー更新
-	//m_pHealItemMng->Update();		// 回復アイテム更新
-	//m_pUIStageManager->Update();	// UIマネージャー更新
 
 	// =============== 更新 =====================
 	CScene::Update();	//親関数呼び出し
