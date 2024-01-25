@@ -37,6 +37,8 @@
 	・2023/12/14 プレイヤーのアニメーション実装 yamashita
 	・2023/12/14 SEの変数を整理 yamashita
 	・2023/12/15 SEを外から再生できるように変更 yamashita
+	・2023/01/25 待機モーションを変更 takagi
+
 ======================================== */
 
 // =============== インクルード ===================
@@ -89,6 +91,7 @@ CPlayer::CPlayer()
 	, m_bIntFlg(false)
 	, m_fIntCnt(0.0f)
 	, m_fTick(1.0f / 60.0f)
+	,m_pWaitFrameCnt(nullptr)
 {
 	m_pHammer = new CHammer();								// Hammerクラスをインスタンス
 	m_nHp = PLAYER_HP;										// プレイヤーのHPを決定
@@ -211,8 +214,12 @@ void CPlayer::Update()
 
 	//移動によるSEとアニメーションの処理
 	MoveCheck();
+
 	//アニメーションの更新
-	m_pModel->Step(m_fTick);
+	if (!m_pWaitFrameCnt)	//待機時間中は止める
+	{
+		m_pModel->Step(m_fTick);	
+	}
 
 }
 
@@ -584,10 +591,26 @@ void CPlayer::MoveCheck()
 		m_nMoveCnt = 0;
 
 		//アニメーションを再生
-		if (m_pModel->GetPlayNo() != m_Anime[MOTION_STOP] && !m_bAttackFlg && !m_pModel->IsPlay(m_Anime[MOTION_SWING]))
-		{	//待機中のアニメーションを再生してない、なおかつ攻撃中じゃない場合
-			m_pModel->Play(m_Anime[MOTION_STOP], true);
+		if (m_pModel->GetPlayNo() != m_Anime[MOTION_STOP] && !m_bAttackFlg && !m_pModel->IsPlay(m_Anime[MOTION_SWING]))	//待機中のアニメーションを再生してない、なおかつ攻撃中じゃない場合
+		{
+			if (m_pWaitFrameCnt)	//ヌルチェック
+			{
+				m_pWaitFrameCnt->Count();	//カウントダウン
+			}
+			else
+			{	//時間計測開始
+				m_pWaitFrameCnt = new CFrameCnt(CNT_START_WAIT);	//カウントダウン開始
+			}
+			if (m_pWaitFrameCnt->IsFin())	//カウントダウン完了
+			{
+				SAFE_DELETE(m_pWaitFrameCnt);	//カウンタ削除
+				m_pModel->Play(m_Anime[MOTION_STOP], false);	//待機モーション開始
+			}
 		}
+	}
+	else if (m_pWaitFrameCnt)	//カウントダウン計算中
+	{
+		SAFE_DELETE(m_pWaitFrameCnt);	//カウンタ削除
 	}
 
 	//カウントが一定以上になればSEを発生してカウントをリセット
