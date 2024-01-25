@@ -69,8 +69,8 @@ typedef struct
 	TDiType<float> fSize;
 }Display_Param;
 
-const Display_Param WARNING_TEXTURE_PARAM	= { {300.0f, 360.0f} ,{480.0f, 600.0f} };	// 手配書
-const Display_Param CLEAR_STAMP_PARAM		= { {300.0f, 360.0f} ,{400.0f, 400.0f} };	// スタンプ
+const Display_Param WARNING_TEXTURE_PARAM	= { {260.0f, 420.0f} ,{480.0f, 600.0f} };	// 手配書
+const Display_Param CLEAR_STAMP_PARAM		= { {260.0f, 420.0f} ,{400.0f, 400.0f} };	// スタンプ
 
 const float DEF_NUM_SPACE = 55.0f;
 const TDiType<int> NUM_SPLIT = { 5, 2 };
@@ -78,7 +78,7 @@ const TDiType<float> NUM_UVSCALE = { (1.0f / 5) ,(1.0f / 2) };
 
 const Display_Param BG_SCREEN_PARAM		= { { SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 },{ SCREEN_WIDTH, SCREEN_HEIGHT } };	// 背景
 const Display_Param BG_PANEL_PARAM		= { { 900.0f, SCREEN_HEIGHT / 2 } ,{ 750.0f, SCREEN_HEIGHT } };					// 項目背景
-const Display_Param RESULT_TEXT_PARAM = { { 200.0f, 37.0f },{ 320.0f, 85.0f } };										// リザルト
+const Display_Param RESULT_TEXT_PARAM = { { 260.0f, 90.0f },{ 400.0f, 100.0f } };										// リザルト
 
 const Display_Param SVL_TIME_TEXT_PARAM = { { 700.0f, 30.0f },{ 300.0f, 100.0f } };	// 生存時間(文字)
 const Display_Param SVL_TIME_NUM__PARAM = { { 1200.0f, 50.0f },{ 75.0f, 75.0f } };	// 生存時間(数字)
