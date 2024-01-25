@@ -128,6 +128,8 @@ void CSlimeBase::Update()
 	// -- 座標更新
 	m_Transform.fPos.x += m_move.x;// *fSlimeMoveSpeed;
 	m_Transform.fPos.z += m_move.z;// *fSlimeMoveSpeed;
+
+	C3dObject::Update();
 }
 
 	
@@ -141,25 +143,12 @@ void CSlimeBase::Update()
 	-------------------------------------
 	戻値：無し
 =========================================== */
-void CSlimeBase::Draw()
+void CSlimeBase::Draw() const
 {
-
-	DirectX::XMFLOAT4X4 mat[3];
-
-	mat[0] = m_Transform.GetWorldMatrixSRT();
-	mat[1] = m_pCamera->GetViewMatrix();
-	mat[2] = m_pCamera->GetProjectionMatrix();
-	
-	//-- 行列をシェーダーへ設定
-	m_pVS->WriteBuffer(0, mat);
-
-	//-- モデル表示
-	if (m_pModel) {
-		m_pModel->Draw();
-	}
-
 	//-- 影の描画
 	m_pShadow->Draw();
+
+	C3dObject::Draw();
 }
 
 

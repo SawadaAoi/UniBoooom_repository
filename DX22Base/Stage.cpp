@@ -236,48 +236,48 @@ void CStage::Update()
 	----------------------------------------
 	戻値：なし
 =========================================== */
-void CStage::Draw() const
-{
-//	RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得
-//	DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
-//	SetRenderTargets(1, &pRTV, pDSV);		//DSVがnullだと2D表示になる
+//void CStage::Draw() const
+//{
+////	RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得
+////	DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
+////	SetRenderTargets(1, &pRTV, pDSV);		//DSVがnullだと2D表示になる
+////
+//	////床の描画
+//	//m_pFloor->Draw();
 //
-	////床の描画
-	//m_pFloor->Draw();
-
-	//// スライムマネージャー描画
-	//m_pSlimeMng->Draw();
-
-	// プレイヤー描画
-	m_pPlayer->Draw();
-
-	//LibEffekseer::Draw();
-
-	////爆発マネージャー描画
-	//m_pExplosionMng->Draw();
-
-	////回復アイテム描画
-	//m_pHealItemMng->Draw();
-	//
-	////UIマネージャー描画
-	//m_pTimer->Draw();
-	//m_pBossGauge->Draw();
-	//m_pHpMng->Draw();
-	//m_pTotalScore->Draw();
-	//m_pScoreOHMng->Draw();
-	//m_pStageFin->Draw();
-	//m_pBossArrow->Draw();
-	//m_pCombo->Draw();
-
-	//// スタート合図描画
-	//if (m_pStartText->GetAnimFlg())
-	//{
-	//	m_pStartText->Draw();
-	//}
-
-	//ポーズ描画
-	if (m_pPause)
-	{
-		m_pPause->Draw();
-	}
-}
+//	//// スライムマネージャー描画
+//	//m_pSlimeMng->Draw();
+//
+//	// プレイヤー描画
+//	m_pPlayer->Draw();
+//
+//	//LibEffekseer::Draw();
+//
+//	////爆発マネージャー描画
+//	//m_pExplosionMng->Draw();
+//
+//	////回復アイテム描画
+//	//m_pHealItemMng->Draw();
+//	//
+//	////UIマネージャー描画
+//	//m_pTimer->Draw();
+//	//m_pBossGauge->Draw();
+//	//m_pHpMng->Draw();
+//	//m_pTotalScore->Draw();
+//	//m_pScoreOHMng->Draw();
+//	//m_pStageFin->Draw();
+//	//m_pBossArrow->Draw();
+//	//m_pCombo->Draw();
+//
+//	//// スタート合図描画
+//	//if (m_pStartText->GetAnimFlg())
+//	//{
+//	//	m_pStartText->Draw();
+//	//}
+//
+//	//ポーズ描画
+//	if (m_pPause)
+//	{
+//		m_pPause->Draw();
+//	}
+//}

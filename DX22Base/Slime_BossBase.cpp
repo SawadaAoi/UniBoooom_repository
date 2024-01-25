@@ -55,6 +55,8 @@ CSlime_BossBase::CSlime_BossBase()
 	, m_pBossHpTexture(nullptr)
 	, m_pHpFrameTexture(nullptr)
 	, m_nMoveState(0)	// 0はNormal
+	, m_pHpFrame(nullptr)
+	,m_pBossHp(nullptr)
 {
 
 	m_pBossHpTexture = new Texture();
@@ -65,6 +67,8 @@ CSlime_BossBase::CSlime_BossBase()
 		MessageBox(nullptr, (ErrorSpot + "HPゲージ読み込み失敗").c_str(), "Error", MB_OK | MB_ICONERROR);									//エラー通知
 #endif
 	}
+	m_pBossHp = new C2dObject;
+	m_pBossHp->SetTexture(m_pBossHpTexture);
 	m_pHpFrameTexture = new Texture();
 	if (FAILED(m_pHpFrameTexture->Create("Assets/Texture/Boss_HpFrame.png")))
 	{
@@ -73,6 +77,8 @@ CSlime_BossBase::CSlime_BossBase()
 		MessageBox(nullptr, (ErrorSpot + "HPフレーム読み込み失敗").c_str(), "Error", MB_OK | MB_ICONERROR);									//エラー通知
 #endif
 	}
+	m_pHpFrame = new C2dObject;
+	m_pHpFrame->SetTexture(m_pHpFrameTexture);
 }
 
 
@@ -94,54 +100,17 @@ CSlime_BossBase::~CSlime_BossBase()
 	m_pHpFrameTexture = nullptr;	//空アドレス代入
 }
 
-/* ========================================
-	更新処理関数
-	-------------------------------------
-	内容：更新処理
-	-------------------------------------
-	引数1：プレイヤー座標(TPos3d)
-	-------------------------------------
-	戻値：無し
-=========================================== */
 void CSlime_BossBase::Update()
 {
-	if (!m_bHitMove)	//敵が通常の移動状態の時
+	if (m_pBossHp)
 	{
-		NormalMove();
+		m_pBossHp->SetTransform(m_Transform);
+		m_pBossHp->Update();
 	}
-	else
+	if (m_pHpFrame)
 	{
-		//敵の吹き飛び移動
-		HitMove();
-	}
-
-	// -- 座標更新
-	m_Transform.fPos.x += m_move.x;
-	m_Transform.fPos.z += m_move.z;
-
-	// ダメージ発生中じゃないなら点滅処理を行わない
-	if (m_bFlash == false) return;
-	// 点滅処理
-	m_nInvFrame++;						//毎フレームでカウントを追加
-	if (0 == m_nInvFrame % BOSS_DAMAGE_FLASH_FRAME)
-	{
-		// 描画するかしない切り替え
-		if (m_bDrawFlg)
-		{
-			m_bDrawFlg = false;	// true→false
-		}
-		else
-		{
-			m_bDrawFlg = true;	// false→true
-		}
-
-	}
-	// 総点滅時間を過ぎたら終了
-	if (m_nInvFrame >= BOSS_DAMAGE_FLASH_TOTAL_FRAME)
-	{
-		m_bFlash = false;
-		m_nInvFrame = 0;
-		m_bDrawFlg = true;
+		m_pHpFrame->SetTransform(m_Transform);
+		m_pHpFrame->Update();
 	}
 }
 
@@ -154,86 +123,24 @@ void CSlime_BossBase::Update()
 	-------------------------------------
 	戻値：無し
 =========================================== */
-void CSlime_BossBase::Draw()
+void CSlime_BossBase::Draw() const
 {
 	// DrawFlgがtrueなら描画処理を行う
 	if (m_bDrawFlg == false) return;
 
-	DirectX::XMFLOAT4X4 mat[3];
-
-	mat[0] = m_Transform.GetWorldMatrixSRT();
-	mat[1] = m_pCamera->GetViewMatrix();
-	mat[2] = m_pCamera->GetProjectionMatrix();
-
-	//-- 行列をシェーダーへ設定
-	m_pVS->WriteBuffer(0, mat);
-
-	//-- モデル表示
-	if (m_pModel) {
-		// レンダーターゲット、深度バッファの設定
-		RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得
-		DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
-		SetRenderTargets(1, &pRTV, pDSV);		//DSVがnullだと2D表示になる
-		m_pModel->Draw();
-	}
-	
 	//-- 影の描画
 	m_pShadow->Draw();
-
-	//HP表示
-	RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得
-	DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
-	SetRenderTargets(1, &pRTV, nullptr);		//DSVがnullだと2D表示になる
-
-	mat[1] = m_pCamera->GetViewMatrix();
-	mat[2] = m_pCamera->GetProjectionMatrix();
-	DirectX::XMFLOAT4X4 inv;//逆行列の格納先
-	inv = m_pCamera->GetViewMatrix();
-
-	//カメラの行列はGPUに渡す際に転置されているため、逆行列のために一度元に戻す
-	DirectX::XMMATRIX matInv = DirectX::XMLoadFloat4x4(&inv);
-	matInv = DirectX::XMMatrixTranspose(matInv);
-
-	//移動成分は逆行列で打ち消す必要が無いので0を設定して移動を無視する
-	DirectX::XMStoreFloat4x4(&inv, matInv);
-	inv._41 = inv._42 = inv._43 = 0.0f;
-
-	matInv = DirectX::XMLoadFloat4x4(&inv);
-	matInv = DirectX::XMMatrixInverse(nullptr, matInv);
-
-
-
-	//フレーム
-	DirectX::XMMATRIX world = matInv * DirectX::XMMatrixTranslation(m_Transform.fPos.x+0.2f, m_Transform.fPos.y + SLIME_HP_HEIGHT, m_Transform.fPos.z);
-	DirectX::XMStoreFloat4x4(&mat[0], DirectX::XMMatrixTranspose(world));
-	Sprite::SetSize(DirectX::XMFLOAT2(3.2f, 0.7f));
-
-	Sprite::SetUVPos(DirectX::XMFLOAT2(1.0f, 1.0f));
-	Sprite::SetUVScale(DirectX::XMFLOAT2(1.0f, 1.0f));
-
-
-	Sprite::SetWorld(mat[0]);
-	Sprite::SetView(mat[1]);
-	Sprite::SetProjection(mat[2]);
-	Sprite::SetTexture(m_pHpFrameTexture);
-	Sprite::Draw();
-
-
-	float width = (BOSS_HP_SIZEX /2)*(BOSS_HP_POSX - m_nHp);
-
-
-	 world = matInv * DirectX::XMMatrixTranslation(m_Transform.fPos.x - width, m_Transform.fPos.y+ SLIME_HP_HEIGHT, m_Transform.fPos.z);
-	DirectX::XMStoreFloat4x4(&mat[0], DirectX::XMMatrixTranspose(world));
-	Sprite::SetSize(DirectX::XMFLOAT2(BOSS_HP_SIZEX*m_nHp, BOSS_HP_SIZEY));
 	
-	Sprite::SetUVPos(DirectX::XMFLOAT2(1.0f,1.0f));
-	Sprite::SetUVScale(DirectX::XMFLOAT2(1.0f,1.0f));
+	C3dObject::Draw();
 
-	Sprite::SetWorld(mat[0]);
-	Sprite::SetView(mat[1]);
-	Sprite::SetProjection(mat[2]);
-	Sprite::SetTexture(m_pBossHpTexture);
-	Sprite::Draw();
+	if (m_pBossHp)
+	{
+		m_pBossHp->Draw();
+	}
+	if (m_pHpFrame)
+	{
+		m_pHpFrame->Draw();
+	}
 
 }
 

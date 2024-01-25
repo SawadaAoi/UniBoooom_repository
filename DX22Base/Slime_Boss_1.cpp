@@ -161,6 +161,8 @@ void CSlime_Boss_1::Update()
 		m_nInvFrame = 0;
 		m_bDrawFlg = true;
 	}
+
+	C3dObject::Update();
 }
 
 /* ========================================

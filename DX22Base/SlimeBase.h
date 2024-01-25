@@ -97,7 +97,7 @@ public:
 	CSlimeBase();
 	~CSlimeBase();
 	virtual void Update(); 
-	virtual void Draw();
+	virtual void Draw() const;
 
 	virtual void NormalMove();	// ’Êí‚ÌˆÚ“®ˆ—
 	void RandomMove();

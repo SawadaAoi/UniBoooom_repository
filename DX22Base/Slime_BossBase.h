@@ -41,7 +41,7 @@ public:
 	~CSlime_BossBase();
 
 	virtual void Update();
-	void Draw() override;
+	void Draw() const override;
 
 	void Warp(TPos3d<float> playerPos);	// ÉèÅ[Évä÷êî TODO:ñ¢é¿ëï
 
@@ -65,6 +65,8 @@ protected:
 
 private:
 	bool m_bDead;		// éÄÇÒÇ≈Ç¢ÇÈÇ©Ç«Ç§Ç©
+	C2dObject* m_pBossHp;
+	C2dObject* m_pHpFrame;
 	Texture* m_pBossHpTexture;
 	Texture* m_pHpFrameTexture;
 };

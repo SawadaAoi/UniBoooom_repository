@@ -78,6 +78,12 @@ void C3dObject::Update()
 {
 	// =============== 更新 ===================
 	m_pModel->Step(TICK);	//アニメーションの更新
+
+	// =============== 行列更新 ===================
+	m_aMatrix[E_MATRIX_WORLD] = m_Transform.GetWorldMatrixSRT();		//ワールド行列更新
+	m_aMatrix[E_MATRIX_VIEW] = m_pCamera->GetViewMatrix();				//ビュー行列：単位行列
+	m_aMatrix[E_MATRIX_PROJECTION] = m_pCamera->GetProjectionMatrix();	//プロジェクション行列更新
+
 }
 
 /* ========================================
@@ -91,6 +97,9 @@ void C3dObject::Update()
 =========================================== */
 void C3dObject::Draw() const
 {
+	// =============== 行列格納 ===================
+	ShaderList::SetWVP(m_aMatrix);	//定数書き込み
+
 	m_pModel->Draw(nullptr, [this](int index)
 	{
 		const AnimeModel::Mesh* pMesh = m_pModel->GetMesh(index);							//引数で指定された番号のメッシュを取得

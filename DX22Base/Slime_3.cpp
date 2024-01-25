@@ -123,6 +123,8 @@ void CSlime_3::Update()
 	// -- ç¿ïWçXêV
 	m_Transform.fPos.x += m_move.x;// *fSlimeMoveSpeed;
 	m_Transform.fPos.z += m_move.z;// *fSlimeMoveSpeed;
+
+	C3dObject::Update();
 }
 
 /* ========================================

@@ -57,13 +57,6 @@ private:
 		TTriType<float> fColor;		//色
 		float fAlpha;				//透明度
 	}Param;	//シェーダーに送る情報
-	enum E_MATRIX
-	{
-		E_MATRIX_WORLD,			//ワールド行列
-		E_MATRIX_VIEW,			//ビュー行列
-		E_MATRIX_PROJECTION,	//プロジェクション行列
-		E_MATRIX_MAX,			//要素数
-	};	//行列の種類
 	// ===定数定義===========
 	static const E_DRAW_MODE DEFAULT_DRAW_MODE = E_DRAW_MODE_NORMAL;	//描画方法の規定値
 	const int FRAME_MIN = 0;											//フェード時間の最小
@@ -97,7 +90,6 @@ public:
 	virtual void SetPixelShader(PixelShader* pPs) final;							//ピクセルシェーダセッタ
 private:
 	// ===メンバ変数宣言=====
-	DirectX::XMFLOAT4X4 m_aMatrix[E_MATRIX_MAX];	//行列
 	Param m_Param;									//シェーダーに書き込む情報
 	static VertexShader* ms_pDefVs;					//デフォルト頂点シェーダー
 	static PixelShader* ms_pDefPs;					//デフォルトピクセルシェーダー

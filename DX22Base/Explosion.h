@@ -49,7 +49,7 @@ public:
 	CExplosion(TPos3d<float> fPos, float fSize, float fTime, int comboNum, bool delayFlg, int nDamage, Effekseer::EffectRef explodeEffect,const CCamera* pCamera);	//コンストラクタ
 	~CExplosion();												// デストラクタ
 	void Update();												// 更新関数
-	void Draw();												// 描画関数
+	void Draw() const;											// 描画関数
 	void DisplayTimeAdd();										// 爆発表示カウント加算処理関数
 	void Delay();
 	void BossTouched();											//ボスに触ったときに呼び出す関数

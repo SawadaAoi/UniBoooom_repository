@@ -117,6 +117,8 @@ CFloor::~CFloor()
 void CFloor::Update()
 {
 	calculationPosition();
+
+	C3dObject::Update();
 }
 
 /* ========================================
@@ -128,24 +130,9 @@ void CFloor::Update()
    ----------------------------------------
    戻値：なし
 ======================================== */
-void CFloor::Draw()
+void CFloor::Draw() const
 {
-	DirectX::XMFLOAT4X4 mat[3];
-
-	for (int i = 0; i < FLOOR_NUM; i++)
-	{
-		mat[0] = m_Transform[i].GetWorldMatrixSRT();
-		mat[1] = m_pCamera->GetViewMatrix();
-		mat[2] = m_pCamera->GetProjectionMatrix();
-
-		//-- 行列をシェーダーへ設定
-		m_pVS->WriteBuffer(0, mat);
-
-		//-- モデル表示
-		if (m_pModel) {
-			m_pModel->Draw();
-		}
-	}
+	C3dObject::Draw();
 }
 
 /* ========================================

@@ -142,6 +142,8 @@ void CHammer::Update()
 	{
 		m_bExist = true;
 	}
+
+	C3dObject::Update();
 }
 
 /* ========================================
@@ -153,48 +155,11 @@ void CHammer::Update()
    ----------------------------------------
    戻値：なし
    ======================================== */
-void CHammer::Draw()
+void CHammer::Draw() const
 {
 	if (!m_pCamera) { return; }
 
-	//-- モデル表示
-	if (m_pModel) {
-		DirectX::XMFLOAT4X4 mat[3];
-
-		mat[0] = m_Transform.GetWorldMatrixSRT();
-		mat[1] = m_pCamera->GetViewMatrix();
-		mat[2] = m_pCamera->GetProjectionMatrix();
-
-		//-- 行列をシェーダーへ設定
-		m_pVS->WriteBuffer(0, mat);
-
-		// レンダーターゲット、深度バッファの設定
-		RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得
-		DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
-		SetRenderTargets(1, &pRTV, pDSV);		//DSVがnullだと2D表示になる
-
-		m_pModel->Draw();
-	}
-
-	if (m_pSphere)
-	{
-		DirectX::XMFLOAT4X4 mat;
-		DirectX::XMStoreFloat4x4(&mat, DirectX::XMMatrixTranspose(DirectX::XMMatrixScaling(3.0f, 3.0f, 3.0f) *
-			DirectX::XMMatrixRotationY(m_Transform.fRadian.y) *
-			DirectX::XMMatrixTranslation(m_Transform.fPos.x, m_Transform.fPos.y, m_Transform.fPos.z)));
-
-		m_pSphere->SetWorld(mat);
-		m_pSphere->SetView(m_pCamera->GetViewMatrix());
-		m_pSphere->SetProjection(m_pCamera->GetProjectionMatrix());
-
-
-		// レンダーターゲット、深度バッファの設定
-		RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得
-		DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
-		SetRenderTargets(1, &pRTV, pDSV);		//DSVがnullだと2D表示になる
-
-		m_pSphere->Draw();
-	}
+	C3dObject::Draw();
 }
 
 /* ========================================

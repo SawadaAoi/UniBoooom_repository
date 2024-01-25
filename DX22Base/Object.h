@@ -26,6 +26,15 @@
 // =============== クラス定義 =====================
 class CObject
 {
+protected:
+	// ===列挙定義===========
+	enum E_MATRIX
+	{
+		E_MATRIX_WORLD,			//ワールド行列
+		E_MATRIX_VIEW,			//ビュー行列
+		E_MATRIX_PROJECTION,	//プロジェクション行列
+		E_MATRIX_MAX,			//要素数
+	};	//行列の種類
 private:
 	// ===定数定義===========
 	const TPos3d<float> INIT_POS = { 0.0f, 0.0f, 0.0f };		//初期位置
@@ -53,7 +62,8 @@ public:
 	//void operator delete(void* pPointer);								//"delete"演算子オーバーロード
 protected:
 	// ===メンバ変数宣言=====
-	tagTransform3d m_Transform;	//ワールド座標
+	DirectX::XMFLOAT4X4 m_aMatrix[E_MATRIX_MAX];		//行列
+	tagTransform3d m_Transform;							//ワールド座標
 	std::map<int, IXAudio2SourceVoice*> m_pListener;	//音再生部(各シーンで定義したSEの列挙をキーとする)
 	const CCamera* m_pCamera;							//カメラ追跡
 	static const CCamera* ms_pCameraDef;				//疑似カメラ

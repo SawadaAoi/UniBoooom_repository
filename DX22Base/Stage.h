@@ -64,7 +64,7 @@ public:
 	CStage();				//コンストラクタ
 	virtual ~CStage();		//デストラクタ
 	virtual void Update() override;	//更新
-	virtual void Draw() const override;	//描画
+	//virtual void Draw() const override;	//描画
 	void Collision();		//当たり判定
 protected:
 	// ===メンバ変数宣言===

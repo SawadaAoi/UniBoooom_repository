@@ -31,7 +31,7 @@ public:
 	~CHealItem() override;
 
 	void Update();
-	void Draw();
+	void Draw() const;
 private:
 	float m_fAnimeCnt;
 	Model* m_pModel;

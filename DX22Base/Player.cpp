@@ -200,6 +200,7 @@ void CPlayer::Update()
 	//ˆÚ“®‚É‚æ‚éSE‚ÆƒAƒjƒ[ƒVƒ‡ƒ“‚Ìˆ—
 	MoveCheck();
 
+	C3dObject::Update();
 }
 
 /* ========================================
@@ -253,6 +254,9 @@ void CPlayer::Draw() const
 	}
 
 	m_pShadow->Draw();	// ‰e‚Ì•`‰æ
+
+
+	C3dObject::Draw();
 }
 
 /* ========================================

@@ -84,7 +84,7 @@ PixelShader* ShaderList::GetPS(PSKind ps)
 	return m_pPS[ps];
 }
 
-void ShaderList::SetWVP(DirectX::XMFLOAT4X4* wvp)
+void ShaderList::SetWVP(const DirectX::XMFLOAT4X4* wvp)
 {
 	for (int i = 0; i < VS_KIND_MAX; ++i)
 	{

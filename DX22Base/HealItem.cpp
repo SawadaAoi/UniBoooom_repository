@@ -85,6 +85,17 @@ void CHealItem::Update()
 	float rad = DirectX::XMConvertToRadians((float)degree);				//ラジアン角に変換
 	m_Transform.fPos.y = cosf(rad) * HEALITEM_MOVE_Y + HEALITEM_HEIGHT;	//cosで1～-1をまわる
 	m_Transform.fRadian.y = rad;										//cosで1～-1で回転する
+
+
+		//拡縮、回転、移動(Y軸回転を先にしたかったのでSRTは使わない)
+	DirectX::XMStoreFloat4x4(&m_aMatrix[E_MATRIX_WORLD], DirectX::XMMatrixTranspose(DirectX::XMMatrixScaling(m_Transform.fScale.x, m_Transform.fScale.y, m_Transform.fScale.z)
+		* DirectX::XMMatrixRotationY(m_Transform.fRadian.y)
+		* DirectX::XMMatrixRotationX(m_Transform.fRadian.x) * DirectX::XMMatrixRotationZ(m_Transform.fRadian.z)
+		* DirectX::XMMatrixTranslation(m_Transform.fPos.x, m_Transform.fPos.y, m_Transform.fPos.z)));
+	m_aMatrix[E_MATRIX_VIEW] = m_pCamera->GetViewMatrix();
+	m_aMatrix[E_MATRIX_PROJECTION] = m_pCamera->GetProjectionMatrix();
+
+	C3dObject::Update();
 }
 
 /* ========================================
@@ -96,30 +107,9 @@ void CHealItem::Update()
    ----------------------------------------
    戻値：なし
 ======================================== */
-void CHealItem::Draw()
+void CHealItem::Draw() const
 {
 	if (!m_pCamera) { return; }
 
-	//-- モデル表示
-	if (m_pModel) {
-		DirectX::XMFLOAT4X4 mat[3];
-
-		//拡縮、回転、移動(Y軸回転を先にしたかったのでSRTは使わない)
-		DirectX::XMStoreFloat4x4(&mat[0],DirectX::XMMatrixTranspose(DirectX::XMMatrixScaling(m_Transform.fScale.x, m_Transform.fScale.y, m_Transform.fScale.z)
-			* DirectX::XMMatrixRotationY(m_Transform.fRadian.y)
-			* DirectX::XMMatrixRotationX(m_Transform.fRadian.x) * DirectX::XMMatrixRotationZ(m_Transform.fRadian.z)
-			* DirectX::XMMatrixTranslation(m_Transform.fPos.x, m_Transform.fPos.y, m_Transform.fPos.z)));
-		mat[1] = m_pCamera->GetViewMatrix();
-		mat[2] = m_pCamera->GetProjectionMatrix();
-
-		//-- 行列をシェーダーへ設定
-		m_pVS->WriteBuffer(0, mat);
-
-		// レンダーターゲット、深度バッファの設定
-		RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得
-		DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
-		SetRenderTargets(1, &pRTV, pDSV);		//DSVがnullだと2D表示になる
-
-		m_pModel->Draw();
-	}
+	C3dObject::Draw();
 }

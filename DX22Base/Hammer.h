@@ -53,7 +53,7 @@ public:
 	~CHammer();	//デストラクタ
 
 	void Update();			// 更新関数
-	void Draw();			// 描画関数
+	void Draw() const;			// 描画関数
 	void Swing();											// 移動による回転移動
 	void AttackStart(TPos3d<float>pPos, float angle);		// 攻撃開始処理
 	void SwingSpeedAdd();

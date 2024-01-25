@@ -46,7 +46,7 @@ public:
 	CFloor(TPos3d<float>* pPlayerPos,StageKinds stageKind);
 	~CFloor();
 	void Update();
-	void Draw();
+	void Draw() const;
 
 	void calculationPosition();				//ç¿ïWéZèoä÷êî
 	void SetFloorModel();

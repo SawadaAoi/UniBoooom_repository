@@ -120,6 +120,8 @@ void CExplosion::Update()
 	}
 
 	DisplayTimeAdd();
+
+	C3dObject::Update();
 }
 
 
@@ -133,13 +135,15 @@ void CExplosion::Update()
 	-------------------------------------
 	戻値：無し
 =========================================== */
-void CExplosion::Draw()
+void CExplosion::Draw() const
 {
 	//エフェクトの描画
 	TPos3d<float> cameraPos = m_pCamera->GetPos();							//カメラ座標を取得
 	DirectX::XMFLOAT3 fCameraPos(cameraPos.x, cameraPos.y, cameraPos.z);	//XMFLOAT3に変換
 	LibEffekseer::SetViewPosition(fCameraPos);								//カメラ座標をセット
 	LibEffekseer::SetCameraMatrix(m_pCamera->GetViewWithoutTranspose(), m_pCamera->GetProjectionWithoutTranspose());	//転置前のviewとprojectionをセット
+
+	C3dObject::Draw();
 }
 
 
