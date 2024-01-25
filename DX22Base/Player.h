@@ -30,6 +30,7 @@
 	・2023/12/14 SE用の列挙を作成 yamashita
 	・2023/12/15 SEを外から再生できるように変更 yamashita
 	・2023/12/15 回復SE追加 yamashita
+	・2023/01/25 待機モーションを変更 takagi
 
 ========================================== */
 #ifndef __PLAYER_H__
@@ -48,6 +49,7 @@
 #include "Model.h"
 #include "Shadow.h"
 #include "AnimeModel.h"
+#include "FrameCnt.h"
 // =============== クラス定義 =====================
 class CPlayer
 	: public CObject
@@ -64,7 +66,10 @@ public:
 
 		SE_MAX			//SEの総数
 	};
-
+private:
+	// ===定数定義===========
+	const int CNT_START_WAIT = 100;	//待機モーションを始めるまでの時間
+public:
 	// ===プロトタイプ宣言===
 	CPlayer();		//コンストラクタ
 	~CPlayer();		//デストラクタ
@@ -112,6 +117,7 @@ private:
 	float m_fIntCnt;					// ハンマー間隔時間カウント
 	float m_fTick;						//フレームカウンタ(0to60)
 	CShadow* m_pShadow;
+	CFrameCnt* m_pWaitFrameCnt;			//待機モーション用フレームカウントダウン
 
 	// ===列挙===
 	enum MOTION
@@ -119,7 +125,6 @@ private:
 		MOTION_STOP,	//待機
 		MOTION_MOVE,	//移動
 		MOTION_SWING,	//ハンマーを振る
-
 		MOTION_MAX,	//モーションの総数
 	};
 
@@ -130,15 +135,16 @@ private:
 		"Assets/Sound/SE/Swing.mp3",			//ハンマーを振る
 		"Assets/Sound/SE/Run.mp3",				//移動のSE
 		"Assets/Sound/SE/PlayerDamage.mp3",		//プレイヤーの被ダメージ時
-		"Assets/Sound/SE/Smash.mp3",			//ハンマーとスライムの接触SE
-		"Assets/Sound/SE/Heal.mp3" };			//回復アイテム取得時
+		"Assets/Sound/SE/HammerHit.mp3",			//ハンマーとスライムの接触SE
+		"Assets/Sound/SE/HealSE.mp3" };			//回復アイテム取得時
 
 	//=====アニメーション関連=====
 	AnimeModel::AnimeNo m_Anime[MOTION_MAX];		//プレイヤーのアニメーション
 	const std::string m_sAnimeFile[MOTION_MAX] = {	//アニメーションのファイル
-		"Assets/Model/player/Player.fbx",			//待機
-		"Assets/Model/player/dash.fbx",				//移動
-		"Assets/Model/player/POW.fbx" };			//スイング
+		"Assets/Model/player/wait_end.FBX",			//待機
+		"Assets/Model/player/Dash.FBX",				//移動
+		"Assets/Model/player/pow.FBX",				//スイング
+	};			
 };
 
 

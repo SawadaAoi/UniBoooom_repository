@@ -27,6 +27,7 @@
 	・2023/11/29 影メモリリーク除去 takagi
 	・2023/11/30 モデルの読み込みが反転したのでradian.yが反対になるように変更 yamashita
 	・2023/12/07 ゲームパラメータから一部定数移動 takagi
+	・2024/01/18 炎スライムのエフェクト追加 Tei
 
 ========================================== */
 
@@ -65,9 +66,9 @@ CSlimeBase::CSlimeBase()
 	, m_bHitMove(false)
 	, m_eSlimeSize(LEVEL_1)	//後でSLIME_NONEにする <=TODO
 	, m_RanMoveCnt(RANDOM_MOVE_SWITCH_TIME)	// 初期
-	, m_ExpPos{ 0.0f,0.0f,0.0f }
-	, m_bEscape(false)
-	, m_nEscapeCnt(0)
+	, m_fStpDirPos{ 0.0f,0.0f,0.0f }
+	, m_bMvStpFlg(false)
+	, m_nMvStpCnt(0)
 	, m_fScaleShadow(0.0f)
 	, m_fAnimeTime(0.0f)
 	, m_eCurAnime(MOTION_LEVEL1_MOVE)
@@ -80,6 +81,7 @@ CSlimeBase::CSlimeBase()
 	m_Ry = DirectX::XMMatrixRotationY((float)random);
 
 	m_pShadow = new CShadow();	// 影生成
+
 
 }
 
@@ -96,6 +98,9 @@ CSlimeBase::~CSlimeBase()
 {
 	// =============== メモリ開放 ===================
 	SAFE_DELETE(m_pShadow);	//影解放
+
+	//--エフェクト停止--
+	LibEffekseer::GetManager()->StopEffect(m_efcslimeHnadle);
 }
 
 /* ========================================
@@ -113,13 +118,13 @@ void CSlimeBase::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
 
 	if (!m_bHitMove)	//敵が通常の移動状態の時
 	{
-		if (!m_bEscape  && m_nEscapeCnt == 0)	//逃げるフラグがoffなら
+		if (!m_bMvStpFlg  && m_nMvStpCnt == 0)	//停止フラグがoffなら
 		{
 			NormalMove();	//通常移動
 		}
 		else
 		{
-			Escape();	//爆発から逃げる
+			MoveStop();	//爆発から逃げる
 		}
 	}
 	else
@@ -131,7 +136,17 @@ void CSlimeBase::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
 	// -- 座標更新
 	m_Transform.fPos.x += m_move.x * fSlimeMoveSpeed;
 	m_Transform.fPos.z += m_move.z * fSlimeMoveSpeed;
+
+	if (GetSlimeLevel() == LEVEL_FLAME)
+	{
+		//エフェクト位置、回転角度更新
+		LibEffekseer::GetManager()->SetLocation(m_efcslimeHnadle, m_Transform.fPos.x, m_Transform.fPos.y, m_Transform.fPos.z + 0.5f);
+		LibEffekseer::GetManager()->SetRotation(m_efcslimeHnadle, m_Transform.fRadian.x, m_Transform.fRadian.y, m_Transform.fRadian.z);
+	}
+
 }
+
+	
 
 /* ========================================
 	描画処理関数
@@ -161,7 +176,17 @@ void CSlimeBase::Draw(const CCamera* pCamera)
 	}
 
 	//-- 影の描画
-	m_pShadow->Draw(m_Transform, m_fScaleShadow, m_pCamera);
+	m_pShadow->Draw(m_Transform, m_fScaleShadow, pCamera);
+
+	if (GetSlimeLevel() == LEVEL_FLAME)
+	{
+		//エフェクトの描画
+		TPos3d<float> cameraPos = m_pCamera->GetPos();							//カメラ座標を取得
+		DirectX::XMFLOAT3 fCameraPos(cameraPos.x, cameraPos.y, cameraPos.z);	//XMFLOAT3に変換
+		LibEffekseer::SetViewPosition(fCameraPos);								//カメラ座標をセット
+		LibEffekseer::SetCameraMatrix(m_pCamera->GetViewWithoutTranspose(), m_pCamera->GetProjectionWithoutTranspose());	//転置前のviewとprojectionをセット
+	}
+	
 }
 
 
@@ -299,30 +324,33 @@ void CSlimeBase::Reflect()
 
 
 /* ========================================
-	逃走関数
+	停止動作関数
 	----------------------------------------
-	内容：スライムが爆発から逃げる関数
+	内容：スライムを暫く硬直させる
 	----------------------------------------
 	引数1：なし
 	----------------------------------------
 	戻値：なし
 ======================================== */
-void CSlimeBase::Escape()
+void CSlimeBase::MoveStop()
 {
 	//爆発への角度を取得
-	float rad = atan2f(m_ExpPos.z - m_Transform.fPos.z, m_ExpPos.x - m_Transform.fPos.x);	
+	float rad = atan2f(m_fStpDirPos.x - m_Transform.fPos.x, m_fStpDirPos.z - m_Transform.fPos.z);
 	//爆発と反対方向に移動
 	m_move.x = 0.0f;//-(cosf(rad)) * ENEMY_MOVE_SPEED;
 	m_move.z = 0.0f;//-(sinf(rad)) * ENEMY_MOVE_SPEED;
-	m_Transform.fRadian.y = atan2f(m_move.x,m_move.z);
+	m_Transform.fRadian.y = rad;
 
-	m_nEscapeCnt++;	//カウントを増加
-	if (m_nEscapeCnt > ESCAPE_TIME) 
+	m_nMvStpCnt++;	//カウントを増加
+	if (m_nMvStpCnt > ESCAPE_TIME) 
 	{ 
-		m_bEscape = false; 
-		m_nEscapeCnt = 0;
+		m_bMvStpFlg = false; 
+		m_nMvStpCnt = 0;
 	}
 }
+
+
+
 
 /* ========================================
 	カメラ情報セット関数
@@ -339,32 +367,35 @@ void CSlimeBase::SetCamera(const CCamera * pCamera)
 }
 
 /* ========================================
-	爆発座標セット関数
+	停止時方向対象オブジェクト座標セット関数
 	----------------------------------------
-	内容：爆発の座標をセットする
+	内容：停止時方向対象の座標をセットする
 	----------------------------------------
-	引数1：爆発の座標
+	引数1：停止時方向対象の座標
 	----------------------------------------
 	戻値：なし
 ======================================== */
-void CSlimeBase::SetExplosionPos(TPos3d<float> expPos)
+void CSlimeBase::SetStopDirectionObjPos(TPos3d<float> stpDirPos)
 {
-	m_ExpPos = expPos;
+	m_fStpDirPos = stpDirPos;
 }
 
+
 /* ========================================
-	逃走状態セット関数
+	停止状態セット関数
 	----------------------------------------
-	内容：スライムが逃げるかそうでないかの状態をセットする
+	内容：移動停止状態をセットする
 	----------------------------------------
-	引数1：スライムをが逃げるかどうか
+	引数1：true：停止中 / false：移動中
 	----------------------------------------
 	戻値：なし
 ======================================== */
-void CSlimeBase::SetEscapeFlag(bool bEscape)
+void CSlimeBase::SetMoveStopFlg(bool bEscape)
 {
-	m_bEscape = bEscape;
+	m_bMvStpFlg = bEscape;
 }
+
+
 
 /* ========================================
 	スライムレベル取得関数
@@ -409,17 +440,17 @@ TPos3d<float> CSlimeBase::GetPos()
 }
 
 /* ========================================
-	逃走状態取得関数
+	停止状態取得関数
 	----------------------------------------
-	内容：爆発から逃げているかの確認
+	内容：停止状態かの確認
 	----------------------------------------
 	引数1：なし
 	----------------------------------------
 	戻値：bool
 ======================================== */
-bool CSlimeBase::GetEscapeFlag()
+bool CSlimeBase::GetMoveStopFlg()
 {
-	return m_bEscape = false;
+	return m_bMvStpFlg;
 }
 
 /* ========================================

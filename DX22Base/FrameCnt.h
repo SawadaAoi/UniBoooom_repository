@@ -9,11 +9,12 @@
 
 	変更履歴
 	・2023/12/16 作成 takagi
+	・2024/01/16 統一のため、インクルードガードの___を__に変更	takagi
 
 ========================================== */
 
-#ifndef ___FRAME_CNT_H___	//FrameCnt.hインクルードガード
-#define ___FRAME_CNT_H___
+#ifndef __FRAME_CNT_H__	//FrameCnt.hインクルードガード
+#define __FRAME_CNT_H__
 
 // =============== クラス定義 =====================
 class CFrameCnt	//システム
@@ -35,4 +36,4 @@ private:
 	bool m_bCntDown;	//true:カウントダウン	false:カウントアップ
 };	//カウンタ
 
-#endif // !___FRAME_CNT_H___
+#endif // !__FRAME_CNT_H__

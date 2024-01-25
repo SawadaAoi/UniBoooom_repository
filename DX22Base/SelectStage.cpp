@@ -36,7 +36,8 @@ const float TEXTURE_SELECT_STAGE_HEIGHT =500.0f;
 CSelectStage::CSelectStage()
 	: m_pStageSelectBG(nullptr)
 	, m_pStageSelectUI(nullptr)
-	,Num(0)
+	, m_nSelectNum(0)
+	, m_bStickFlg(false)
 {
 	mStageNum[0].Type = E_TYPE_STAGE1;
 	mStageNum[0].m_pTexture= new Texture();
@@ -140,7 +141,7 @@ void CSelectStage::Draw() //const
 	
 
 
-	if (!(0 == Num))
+	if (!(0 == m_nSelectNum))
 	{//ステージ1
 		m_2dObj[0]->SetTexture(mStageNum[0].m_pTexture);
 		m_2dObj[0]->SetPos({ 250.0f, 300.0f,1.0f });
@@ -149,7 +150,7 @@ void CSelectStage::Draw() //const
 		m_2dObj[0]->SetColor(0.5f, 1.0f);
 		m_2dObj[0]->Draw();
 	}
-	if (!(1 == Num))
+	if (!(1 == m_nSelectNum))
 	{
 		//ステージ2
 		m_2dObj[1]->SetTexture(mStageNum[1].m_pTexture);
@@ -159,7 +160,7 @@ void CSelectStage::Draw() //const
 		m_2dObj[1]->SetColor(0.5f, 1.0f);
 		m_2dObj[1]->Draw();
 	}
-	if (!(2 == Num))
+	if (!(2 == m_nSelectNum))
 	{
 		//ステージ3
 		m_2dObj[2]->SetTexture(mStageNum[2].m_pTexture);
@@ -170,13 +171,13 @@ void CSelectStage::Draw() //const
 		m_2dObj[2]->Draw();
 	}
 
-	m_2dObj[Num]->SetTexture(mStageNum[Num].m_pTexture);
-	m_2dObj[Num]->SetColor(1.0f, 1.0f);
-	m_2dObj[Num]->Draw();
+	m_2dObj[m_nSelectNum]->SetTexture(mStageNum[m_nSelectNum].m_pTexture);
+	m_2dObj[m_nSelectNum]->SetColor(1.0f, 1.0f);
+	m_2dObj[m_nSelectNum]->Draw();
 
 	//for (int i = SUTAGE_NUM-1; i > 0-1; i--)
 	//{
-	//	if (i == Num) continue;
+	//	if (i == m_nSelectNum) continue;
 	//	m_2dObj[i]->SetTexture(mStageNum[i].m_pTexture);
 	//	m_2dObj[i]->SetPos({ TEXTURE_SELECT_STAGE_POSX + i * 100,TEXTURE_SELECT_STAGE_POSY-i*70,1.0f });
 	//	m_2dObj[i]->SetSize({ TEXTURE_SELECT_STAGE_WIDTH, TEXTURE_SELECT_STAGE_HEIGHT ,1.0f});
@@ -200,45 +201,49 @@ void CSelectStage::Draw() //const
 	======================================== */
 void CSelectStage::Select()
 {
-	if (IsKeyTrigger('A'))
+	// ゲームコントローラー
+	if (GetUseVController())
 	{
-		Num -= 1;
-		if (Num < 0) Num = 0;
-	//EscapeStageNum = mStageNum[2];
-	//mStageNum[2] = mStageNum[1];
-	//mStageNum[1] = mStageNum[0];
-	//mStageNum[0] = EscapeStageNum;
-	}
-	if (IsKeyTrigger('D'))
-	{
-		Num += 1;
-		if (Num > 2)Num = 2;
-		//EscapeStageNum = mStageNum[0];
-		//mStageNum[0] = mStageNum[1];
-		//mStageNum[1] = mStageNum[2];
-		//mStageNum[2] = EscapeStageNum;
-	}
-	TPos3d<float> fMoveInput;	// スティックの入力値を入れる変数
+		TPos3d<float> fMoveInput;	// スティックの入力値を入れる変数
+		fMoveInput.x = IsStickLeft().x;// コントローラーの左スティックの傾きを取得
 
-	//if (GetUseVController())
-	//{// コントローラーの左スティックの傾きを取得
-	//	fMoveInput.x = IsStickLeft().x;
-	//	//fMoveInput.z = IsStickLeft().y * -1;	// 上下逆(↑が－1)
-	//	if (fMoveInput.x < 0.0f)
-	//	{
-	//		EscapeStageNum = mStageNum[2];
-	//		mStageNum[2] = mStageNum[1];
-	//		mStageNum[1] = mStageNum[0];
-	//		mStageNum[0] = EscapeStageNum;
-	//	}
-	//	if (fMoveInput.x > 0.0f)
-	//	{
-	//		EscapeStageNum = mStageNum[0];
-	//		mStageNum[0] = mStageNum[1];
-	//		mStageNum[1] = mStageNum[2];
-	//		mStageNum[2] = EscapeStageNum;
-	//	}
-	//}
+		// 左スティックを倒している
+		if (!m_bStickFlg)
+		{
+			// スティック左
+			if (fMoveInput.x < 0.0f)
+			{
+				m_nSelectNum -= 1;
+				if (m_nSelectNum < 0) m_nSelectNum = 0;
+				m_bStickFlg = true;
+			}
+			// スティック右
+			else if ( 0.0f < fMoveInput.x )
+			{
+				m_nSelectNum += 1;
+				if (m_nSelectNum > 2)m_nSelectNum = 2;
+				m_bStickFlg = true;
+			}
+		}
+		// 左スティックがニュートラル
+		else
+		{
+			if (fabs(fMoveInput.x) <= 0.5f )
+			{
+				m_bStickFlg = false;
+			}
+		}
+	}
+	//キーボード入力
+	if (IsKeyTrigger('A')) {
+		m_nSelectNum -= 1;
+		if (m_nSelectNum < 0) m_nSelectNum = 0;
+	}
+	if (IsKeyTrigger('D')) {
+		m_nSelectNum += 1;
+		if (m_nSelectNum > 2)m_nSelectNum = 2;
+	}
+
 	if (IsKeyTrigger(VK_SPACE) || IsKeyTriggerController(BUTTON_B))
 	{
 		m_bFinish = true;	// タイトルシーン終了フラグON
@@ -273,5 +278,5 @@ CSelectStage::E_TYPE CSelectStage::GetNext() const
 {
 	// =============== 提供 ===================
 	//return CSelectStage::E_TYPE_STAGE1;	//遷移先シーンの種類
-	return mStageNum[Num].Type;	//遷移先シーンの種類
+	return mStageNum[m_nSelectNum].Type;	//遷移先シーンの種類
 }

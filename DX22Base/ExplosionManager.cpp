@@ -117,6 +117,14 @@ void CExplosionManager::Update()
 		}
 
 		m_pExplosion[i]->Update();
+
+		if (m_pExplosion[i]->GetSeFlg() == true)
+		{
+			m_pSEExplodeSpeaker = CSound::PlaySound(m_pSEExplode);	//爆発の再生
+			m_pSEExplodeSpeaker->SetVolume(EXPLODE_VOLUME);			//音量調整
+			m_pExplosion[i]->SetSeFlg(false);
+		}
+		
 	}
 	for (int i = 0; i < MAX_BOOOOM_NUM; i++)
 	{
@@ -181,10 +189,9 @@ void CExplosionManager::Create(TTriType<float> pos,float size, float time, int d
 		// 使用済みの爆発はスルー
 		if (m_pExplosion[i] != nullptr) continue;
 
-		m_pExplosion[i] = new CExplosion(pos, size, time, comboNum, true, damage,m_explodeEffect,m_pCamera);	// 座標を指定して生成
+		m_pExplosion[i] = new CExplosion(pos, size, time, comboNum, false, damage,m_explodeEffect,m_pCamera);	// 座標を指定して生成
 		m_pExplosion[i]->SetCamera(m_pCamera);
-		m_pSEExplodeSpeaker = CSound::PlaySound(m_pSEExplode);	//爆発の再生
-		m_pSEExplodeSpeaker->SetVolume(EXPLODE_VOLUME);			//音量調整
+
 		break;
 
 	}	
@@ -216,8 +223,6 @@ void CExplosionManager::Create(TTriType<float> pos, float size, float time, int 
 
 		m_pExplosion[i] = new CExplosion(pos, size, time, comboNum, true, damage, m_explodeEffect, m_pCamera);	// 座標を指定して生成
 		m_pExplosion[i]->SetCamera(m_pCamera);
-		m_pSEExplodeSpeaker = CSound::PlaySound(m_pSEExplode);	//爆発の再生
-		m_pSEExplodeSpeaker->SetVolume(EXPLODE_VOLUME);			//音量調整
 
 		return;
 	}
@@ -282,6 +287,7 @@ void CExplosionManager::CreateUI(TPos3d<float> pos, float fTime)
 		return;
 	}
 }
+
 
 
 /* ========================================
@@ -365,6 +371,7 @@ CExplosion* CExplosionManager::GetExplosionPtr(int num)
 	if (!m_pExplosion[num]) { return nullptr; }
 	return m_pExplosion[num];
 }
+
 
 /* ========================================
 	関数：爆発分岐関数

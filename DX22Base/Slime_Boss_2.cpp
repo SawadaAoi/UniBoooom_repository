@@ -10,6 +10,7 @@
 	変更履歴
 	・2023/12/12 クラス作成 Sawada
 	・2023/12/14 攻撃動作を追加 Sawada
+	・2024/01/23 着地時の高速移動バグを修正 Sawada
 
 ========================================== */
 
@@ -31,9 +32,9 @@ const float JUMP_CHAEGE_SCALE_ADJUST		= 0.02f;	// ジャンプ前溜めの大きさ変更値
 const float JUMP_TIME						= 1.5f;		// ジャンプ処理時間
 const float JUMP_SPEED						= 1.0f;		// ジャンプスピード
 const float JUMP_SHADOW_SIZE_MUL			= 0.9f;		// ジャンプ中の影の変更量
-const float TARGET_SHADOW_TIME				= 4.0f;		// 影落とし中の時間
+const float TARGET_SHADOW_TIME				= 2.5f;		// 影落とし中の時間
 const float TARGET_SHADOW_PLYR_MOVE_TIME	= 3.0f;		// 影落とし中のプレイヤー追従時間
-const float DROP_SPEED						= 2.0f;		// 落下処理スピード
+const float DROP_SPEED						= 5.0f;	// 落下処理スピード
 const float DROP_RIGID_TIME					= 3.0f;		// 落下後硬直時間
 const float DROP_RIGID_SCALE_TIME			= 0.2f;		// 落下後硬直の大きさ変更時間
 const float DROP_RIGID_SCALE_ADJUST			= 0.01f;	// 落下後硬直の大きさ変更値
@@ -184,6 +185,7 @@ void CSlime_Boss_2::MoveSwitch()
 	{
 	// 移動処理
 	case MOVE_STATE::NORMAL:
+		SetNormalSpeed();	// 移動スピードをリセット(直前の吹き飛び速度を無くす為)
 		MoveNormal();
 
 		break;
@@ -236,7 +238,7 @@ void CSlime_Boss_2::MoveNormal()
 	float distancePlayer	= m_Transform.fPos.Distance(playerPos);	// 敵からエネミーの距離、角度を計算
 
 	// プレイヤーと距離が一定以内だったら
-	if (distancePlayer < MOVE_DISTANCE_PLAYER)
+	if (distancePlayer < MOVE_DISTANCE_PLAYER + 50.0f)	//ボスは常にプレイヤーを追いかけて欲しい
 	{
 		TPos3d<float> movePos;
 		movePos = playerPos - m_Transform.fPos;	// プレイヤーへのベクトルを計算

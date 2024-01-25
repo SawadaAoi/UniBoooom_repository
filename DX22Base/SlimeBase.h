@@ -37,6 +37,7 @@
 	・2023/11/28 影の描画追加 nieda
 	・2023/12/04 列挙にヒールスライムを追加 Tei
 	・2023/12/07 ゲームパラメータから一部定数移動 takagi
+	・2024/01/18 炎スライムエフェクト追加 Tei
 
 ========================================== */
 #ifndef __SLIME_BASE_H__
@@ -53,6 +54,7 @@
 #include "Object.h"
 #include "Shadow.h"		// 影表示用ヘッダ
 #include "Timer.h"
+#include "LibEffekseer.h"
 #include "AnimeModel.h"
 #include "ShaderList.h"
 
@@ -116,32 +118,36 @@ public:
 	void HitMove();									//スライムが吹き飛び移動状態の時に毎フレーム呼び出して移動させる
 	void HitMoveStart(float speed, float angle);	//スライムが吹き飛ばされたときに速度と角度を決める
 	void Reflect();									//スライムとぶつかって吹き飛ばした際に自分の移動量を減らす
-	void Escape();
+	void MoveStop();
 
 	// ゲット関数
 	float GetSpeed();					// スライムの移動速度を取得
 	E_SLIME_LEVEL GetSlimeLevel();		// スライムのレベルを取得
 	bool GetHitMoveFlg();
 	TPos3d<float> GetPos();
-	bool GetEscapeFlag();
+	bool GetMoveStopFlg();
 	int GetAttack();
 
 	//セット関数
 	virtual void SetNormalSpeed() = 0;
 	void SetCamera(const CCamera* pCamera);
-	void SetExplosionPos(TPos3d<float> expPos);
-	void SetEscapeFlag(bool bEscape);
+	void SetStopDirectionObjPos(TPos3d<float> expPos);
+	void SetMoveStopFlg(bool bEscape);
+
 protected:
 	AnimeModel* m_pModel;			//3Dモデル
-	VertexShader* m_pVS;			//バーテックスシェーダーのポインタ
-	TTriType<float> m_move;			//移動量
+	VertexShader* m_pVS;			// バーテックスシェーダーのポインタ
+	TTriType<float> m_move;			// 移動量
+	TPos3d<float> m_fStpDirPos;		// 停止状態時に向く対象のオブジェクトの座標
+	float m_fSpeed;					// スライムの移動速度
+									   
+	bool m_bHitMove;				// 吹っ飛び中かどうか
+	float m_fVecAngle;				// 敵の吹き飛ぶ方向
+									   
+	bool m_bMvStpFlg;					// スライムが逃げる状態かどうか
+	int m_nMvStpCnt;				// 逃げる状態になった時
 	TPos3d<float> m_ExpPos;			//最も近い爆発の座標
-	float m_fSpeed;					//スライムの移動速度
 
-	bool m_bHitMove;				//吹っ飛び中かどうか
-	float m_fVecAngle;				//敵の吹き飛ぶ方向
-	bool m_bEscape;					//スライムが逃げる状態かどうか
-	int m_nEscapeCnt;				//逃げる状態になった時
 
 	E_SLIME_LEVEL m_eSlimeSize;		//スライムの大きさの列挙
 	const CCamera* m_pCamera;		//カメラのポインタ
@@ -155,6 +161,10 @@ protected:
 	int m_nAttack;					// 攻撃力
 
 	tagTransform3d m_PlayerTran;	// プレイヤーの変形情報
+
+	//=======Effekseer=======
+	Effekseer::EffectRef m_flameSlimeEffect;
+	Effekseer::Handle m_efcslimeHnadle;
 
 	vector<AnimeModel::AnimeNo> m_Anime;	// レベル1スライムのアニメーション
 	float m_fAnimeTime;						// アニメーションの現在の時間

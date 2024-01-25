@@ -11,6 +11,7 @@
 	・2023/11/14 クラス作成 Suzumura
 	・2023/11/14 NormalMoveをオーバーライドして作成 Suzumura
 	・2023/11/15 スライムのモデルと頂点シェーダーをmanagerから受け取るように変更 yamashita
+	・2024/01/18 炎スライムエフェクト追加 Tei
 
 ========================================== */
 #ifndef __SLIME_FLAME__H__
@@ -26,13 +27,15 @@ class CSlime_Flame :
 public:
 	// ===プロトタイプ宣言===
 	CSlime_Flame();
-	CSlime_Flame(TPos3d<float> pos, VertexShader* pVS, AnimeModel* pModel);
+	CSlime_Flame(TPos3d<float> pos, Effekseer::EffectRef flameSlimeEffect, VertexShader* pVS, AnimeModel* pModel);
 	~CSlime_Flame();
 	void NormalMove() override;
 	void SetNormalSpeed() override;
 
 private:
-
+	////=======Effekseer=======
+	//Effekseer::EffectRef m_flameSlimeEffect;
+	//Effekseer::Handle m_efcslimeHnadle;
 };
 
 
