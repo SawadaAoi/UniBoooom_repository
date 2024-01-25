@@ -38,7 +38,7 @@ public:
 public:
 	// ===プロトタイプ宣言===
 	CSlime_Boss_2();
-	CSlime_Boss_2(TPos3d<float> pos, VertexShader* pVS, Model* pModel);
+	CSlime_Boss_2(TPos3d<float> pos, VertexShader* pVS, AnimeModel* pModel);
 	~CSlime_Boss_2();
 
 	void Update(tagTransform3d playerTransform) override;

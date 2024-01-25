@@ -237,15 +237,6 @@ void CPlayer::Draw()
 	// 描画しない(点滅処理中)
 	if (m_DrawFlg == true)
 	{
-		//DirectX::XMFLOAT4X4 mat[3];
-
-		//mat[0] = m_Transform.GetWorldMatrixSRT();
-		//mat[1] = m_pCamera->GetViewMatrix();
-		//mat[2] = m_pCamera->GetProjectionMatrix();
-
-		////-- 行列をシェーダーへ設定
-		//m_pVS->WriteBuffer(0, mat);
-
 		//-- モデル表示
 		if (m_pModel) {
 			// レンダーターゲット、深度バッファの設定

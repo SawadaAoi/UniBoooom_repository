@@ -70,6 +70,8 @@ CSlimeBase::CSlimeBase()
 	, m_bMvStpFlg(false)
 	, m_nMvStpCnt(0)
 	, m_fScaleShadow(0.0f)
+	, m_fAnimeTime(0.0f)
+	, m_eCurAnime(MOTION_LEVEL1_MOVE)
 {
 	m_Transform.fScale = (1.0f, 1.0f, 1.0f);
 	//当たり判定(自分)初期化
@@ -118,7 +120,7 @@ void CSlimeBase::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
 	{
 		if (!m_bMvStpFlg  && m_nMvStpCnt == 0)	//停止フラグがoffなら
 		{
-			NormalMove();	//通常異動
+			NormalMove();	//通常移動
 		}
 		else
 		{
@@ -157,12 +159,13 @@ void CSlimeBase::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
 =========================================== */
 void CSlimeBase::Draw(const CCamera* pCamera)
 {
+	if (!m_pCamera) { return; }
 
 	DirectX::XMFLOAT4X4 mat[3];
 
 	mat[0] = m_Transform.GetWorldMatrixSRT();
-	mat[1] = pCamera->GetViewMatrix();
-	mat[2] = pCamera->GetProjectionMatrix();
+	mat[1] = m_pCamera->GetViewMatrix();
+	mat[2] = m_pCamera->GetProjectionMatrix();
 	
 	//-- 行列をシェーダーへ設定
 	m_pVS->WriteBuffer(0, mat);
