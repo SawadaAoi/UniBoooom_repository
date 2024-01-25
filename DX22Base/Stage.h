@@ -59,37 +59,6 @@
 // =============== クラス定義 =====================
 class CStage :public CScene	//シーン
 {
-	// ===列挙定義==========
-protected:
-	enum E_3D	//更新順
-	{
-		E_3D_PLAYER,	//プレイヤー
-		E_3D_MAX,		//要素数
-	};	//3Dのオブジェクト
-	enum E_2D_ON_WORLD	//更新順
-	{
-		E_2D_ON_WORLD_BOSS_ARROW,	//ボス方向指針
-		E_2D_ON_WORLD_BOSS_GAUGE,	//ボスゲージ
-		E_2D_ON_WORLD_MAX,			//要素数
-	};	//3D表示する2Dのオブジェクト
-	enum E_MANAGER	//更新順
-	{
-		E_MANAGER_SLIME,		//スライム管理
-		E_MANAGER_EXPLOSION,	//爆発管理
-		E_MANAGER_SCORE_OH,		//ScoreOH管理	//TODO:修正
-		E_MANAGER_HEAL_ITEM,	//回復アイテム管理
-		E_MANAGER_MAX,			//要素数
-	};	//マネージャー
-	enum E_2D_ON_SCREEN	//更新順
-	{
-		E_2D_ON_SCREEN_OPENING,		//開始表示
-		E_2D_ON_SCREEN_FINISH,		//終了表示
-		E_2D_ON_SCREEN_TOTAL_SCORE,	//総スコア
-		E_2D_ON_SCREEN_COMBO,		//コンボ数
-		E_2D_ON_SCREEN_HP,			//HP
-		E_2D_ON_SCREEN_TIMER,		//時間
-		E_2D_ON_SCREEN_MAX,			//要素数
-	};	//2D表示する2Dのオブジェクト
 public:
 	// ===プロトタイプ宣言===
 	CStage();				//コンストラクタ

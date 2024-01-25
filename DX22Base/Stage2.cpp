@@ -191,22 +191,22 @@ CStage2::E_TYPE CStage2::GetNext() const
 =========================================== */
 void CStage2::RecordData()
 {
-//	// =============== 退避 =====================
-//	m_Data.nTotalScore = m_pUIStageManager->GetTotalScore();				// スコア退避
-//
-//	// =============== データ登録 =====================
-//	if (m_Data.nHighScore[STAGE_NUM - 1] < m_Data.nTotalScore)	// ハイスコアを更新しているか？
-//	{
-//		m_Data.nHighScore[STAGE_NUM - 1] = m_Data.nTotalScore;	// ハイスコア更新
-//	}
-//	m_Data.nAliveTime = m_pUIStageManager->GetTimer()->GetErapsedTime();	// 経過時間退避
-//	m_Data.nMaxCombo = m_pUIStageManager->GetCombo()->GetMaxCombo();		// 最大コンボ数退避
-//	m_Data.bClearFlg = m_pUIStageManager->GetStageFinish()->GetClearFlg();	// ゲームクリアしたか
-//	if (m_pSlimeMng)	//ヌルチェック
-//	{
-//		m_Data.nTotalKill = m_pSlimeMng->GetTotalKillCnt();					// 総討伐数退避
-//		m_pSlimeMng->GetKillCntArray(m_Data.nKill);							// スライム別討伐数退避
-//
-//	}
+	// =============== 退避 =====================
+	m_Data.nTotalScore = m_pTotalScore->GetTotalScore();				// スコア退避
+
+	// =============== データ登録 =====================
+	if (m_Data.nHighScore[STAGE_NUM - 1] < m_Data.nTotalScore)	// ハイスコアを更新しているか？
+	{
+		m_Data.nHighScore[STAGE_NUM - 1] = m_Data.nTotalScore;	// ハイスコア更新
+	}
+	m_Data.nAliveTime = m_pTimer->GetErapsedTime();	// 経過時間退避
+	m_Data.nMaxCombo = m_pCombo->GetMaxCombo();		// 最大コンボ数退避
+	m_Data.bClearFlg = m_pStageFin->GetClearFlg();	// ゲームクリアしたか
+	if (m_pSlimeMng)	//ヌルチェック
+	{
+		m_Data.nTotalKill = m_pSlimeMng->GetTotalKillCnt();					// 総討伐数退避
+		m_pSlimeMng->GetKillCntArray(m_Data.nKill);							// スライム別討伐数退避
+
+	}
 	m_Data.nStageNum = STAGE_NUM;	// プレイしたステージ番号
 }
