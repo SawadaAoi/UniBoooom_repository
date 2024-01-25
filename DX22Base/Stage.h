@@ -23,6 +23,7 @@
 	・2023/12/28 BattleData格納処理をまとめた関数を追加	Sawada
 	・2024/01/01 ステージ分岐 Takagi
 	・2024/01/15 GameFinish()関数の引数修正・RecordData()関数追加 Takagi
+	・2024/01/25 ヒットエフェクト関係の変数、ヘッダー追加 Tei
 
 ========================================== */
 
@@ -49,6 +50,7 @@
 #include "TotalScore.h"
 #include "Sound.h"
 #include "UIStageManager.h"
+#include "HitSlimeEffectManager.h"
 #include "BattleData.h"			//メンバのヘッダ
 #include "GameStartText.h"
 
@@ -102,6 +104,7 @@ protected:
 	CUIStageManager* m_pUIStageManager;
 	BattleData m_Data;	//戦闘データ記録用変数
 	CStartText* m_pStartText;	// ゲームスタート描画
+	CHitSlimeEffectManager* m_pHitEffectMng;
 
 	const int* m_pPlayerHp;		// プレイヤーHP取得用
 	const int* m_pTimeCnt;		// 制限時間取得用

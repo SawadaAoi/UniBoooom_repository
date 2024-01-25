@@ -17,6 +17,7 @@
 	・2023/12/18 デバッグモード削除反映 takagi
 	・2024/01/01 親コンストラクタ呼び出し takagi
 	・2024/01/15 GameFinish()関数修正・RecordData()関数追加 takagi
+	・2024/01/25 ヒットエフェクト関係の処理追加 Tei
 
 ========================================== */
 
@@ -111,6 +112,7 @@ void CStage3::Update()
 		m_pUIStageManager->Update();	// UIマネージャー更新
 		PlayerHealItemCollision();		// 回復アイテム取る判定
 		Collision();					// 当たり判定更新
+		m_pHitEffectMng->Update();		// ヒットエフェクトマネージャー更新
 
 
 	}
@@ -178,6 +180,9 @@ void CStage3::Draw()
 	{
 		m_pPause->Draw();
 	}
+
+	// ヒットエフェクト描画
+	m_pHitEffectMng->Draw();
 }
 
 /* ========================================

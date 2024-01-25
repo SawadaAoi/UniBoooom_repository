@@ -173,6 +173,7 @@ void CStage::HammerSlimeCollision()
 		// スライムとハンマーが衝突した場合
 		if (m_pCollision->CheckCollisionSphere(playerHammer->GetSphere(), pSlimeNow->GetSphere(), playerHammer->GetPos(), pSlimeNow->GetPos()))
 		{
+			
 			//赤スライムと激突したときだけヒットストップの時間を長くする
 			if (typeid(CSlime_4) == typeid(*pSlimeNow))
 			{
@@ -187,6 +188,8 @@ void CStage::HammerSlimeCollision()
 
 			pSlimeNow->HitMoveStart(HAMMER_HIT_MOVE_SPEED, fAngleSlime);	// スライムを飛ばす
 			m_pPlayer->PlaySE(CPlayer::SE_HIT_HAMMER, HIT_HAMMER_VOLUME);	//ハンマーとスライムの接触SEを再生
+
+			m_pHitEffectMng->Create(pSlimeNow->GetPos());	//ヒットエフェクト生成
 		}
 	}
 }
@@ -216,6 +219,7 @@ void CStage::HammerBossCollision()
 		// スライムとハンマーが衝突した場合
 		if (m_pCollision->CheckCollisionSphere(playerHammer->GetSphere(), pBossNow->GetSphere(), playerHammer->GetPos(), pBossNow->GetPos()))
 		{
+			m_pHitEffectMng->Create(pBossNow->GetPos());	//ヒットエフェクト生成
 			// 通常移動中にしかヒットストップしない
 			if(pBossNow->GetMoveState() != 0)
 			{ 
