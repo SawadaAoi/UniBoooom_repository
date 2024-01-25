@@ -1159,7 +1159,7 @@ void CSlimeManager::LoadModel()
 			MessageBox(NULL, m_sLevel1_Motion[i].c_str(), "Error", MB_OK);	//ここでエラーメッセージ表示
 		}
 	}
-	m_pBlueModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));
+	m_pBlueModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));		//頂点シェーダーをセット
 	//レベル2スライムのモデル読み込み
 	m_pGreenModel = new AnimeModel;
 	if (!m_pGreenModel->Load("Assets/Model/slime/slime_green1.28.FBX", 0.15f, AnimeModel::ZFlip)) {		//倍率と反転は省略可

@@ -158,6 +158,7 @@ protected:
 
 	vector<AnimeModel::AnimeNo> m_Anime;	// レベル1スライムのアニメーション
 	float m_fAnimeTime;						// アニメーションの現在の時間
+	LEVEL1_MOTION m_eCurAnime;				// 現在のアニメーション
 
 
 };

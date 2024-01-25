@@ -72,7 +72,9 @@ CSlime_1::CSlime_1(TPos3d<float> pos,VertexShader* pVS, AnimeModel* pModel, vect
 	m_pModel = pModel;
 	// アニメーションの受け渡し
 	m_Anime = anime;
-	//m_pModel->Play(m_Anime[MOTION_LEVEL1_MOVE],true);
+	m_pModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));		//頂点シェーダーをセット
+	m_pModel->Play(m_Anime[MOTION_LEVEL1_MOVE], true);
+	m_eCurAnime = MOTION_LEVEL1_MOVE;	// 現在のアニメーションをセット
 }
 
 /* ========================================
@@ -100,12 +102,25 @@ CSlime_1::~CSlime_1()
 void CSlime_1::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
 {
 	m_PlayerTran = playerTransform;	// プレイヤーの最新パラメータを取得
-	// m_pModel->Step(ADD_ANIME);
-	m_fAnimeTime += ADD_ANIME;		// アニメーションを進行
-
+	//m_pModel->Step(ADD_ANIME);
+	if (m_eCurAnime == MOTION_LEVEL1_HIT)
+	{
+		m_fAnimeTime += (ADD_ANIME * 0.7f);		// アニメーションを進行
+	}
+	else if (m_eCurAnime == MOTION_LEVEL1_MOVE)
+	{
+		m_fAnimeTime += ADD_ANIME;		// アニメーションを進行
+	}
 
 	if (!m_bHitMove)	//敵が通常の移動状態の時
 	{
+		// 現在のアニメーションが「吹き飛び」だったら移動モーションに変更
+		if (m_eCurAnime == MOTION_LEVEL1_HIT)
+		{
+			m_eCurAnime = MOTION_LEVEL1_MOVE;
+			m_fAnimeTime = 0.0f;	//アニメーションタイムのリセット
+		}
+
 		if (!m_bEscape  && m_nEscapeCnt == 0)	// 逃げるフラグがoffなら
 		{
 			NormalMove();	//通常移動
@@ -113,15 +128,16 @@ void CSlime_1::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
 		else
 		{
 			Escape();	//爆発から逃げる
-			//m_pModel->Step(-ADD_ANIME);	// 近くに爆発がある場合アニメを戻して静止させる
+			m_fAnimeTime -= ADD_ANIME;		// アニメーションを進行
 		}
 	}
 	else
 	{
 		// 吹き飛びアニメーション再生
-		//if (m_pModel->GetPlayNo() == m_Anime[MOTION_LEVEL1_MOVE])
+		if (m_eCurAnime == MOTION_LEVEL1_MOVE)
 		{
-			//m_pModel->Play(m_Anime[MOTION_LEVEL1_HIT],false);
+			m_eCurAnime = MOTION_LEVEL1_HIT;
+			m_fAnimeTime = 0.0f;	// アニメーションタイムのリセット
 		}
 
 		//敵の吹き飛び移動
@@ -153,9 +169,11 @@ void CSlime_1::Draw(const CCamera * pCamera)
 	};
 	ShaderList::SetWVP(mat);
 
-	// アニメーションの現在時間をセット
-	//m_pModel->SetAnimationTime(m_pModel->GetPlayNo(), m_fAnimeTime);
-
+	// 複数体を共通のモデルで扱っているため描画のタイミングでモーションの種類と時間をセットする
+	m_pModel->Play(m_eCurAnime,true);
+	m_pModel->SetAnimationTime(m_eCurAnime, m_fAnimeTime);	// アニメーションタイムをセット
+	// アニメーションタイムをセットしてから動かさないと反映されないため少しだけ進める
+	m_pModel->Step(0.00000001f);	
 
 	// レンダーターゲット、深度バッファの設定
 	RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得
