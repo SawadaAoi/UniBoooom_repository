@@ -20,6 +20,7 @@
 	・2023/12/04 GetViewWithoutTransposeの戻り値を変更 yamashita
 	・2023/12/16 ズーム機能に対応 takagi
 	・2024/01/21 Player内で更新しなくても良い様に変更・リファクタリング takagi
+	・2024/01/25 GetViewWithoutTranspose()関数内で初期化しないパターンを修正 takagi
 
 ========================================== */
 
@@ -101,7 +102,7 @@ DirectX::XMFLOAT4X4 CCameraChase::GetViewWithoutTranspose() const
 	}
 	else
 	{
-		CCamera::GetViewWithoutTranspose();	//委譲
+		View = CCamera::GetViewWithoutTranspose();	//委譲
 	}
 
 	// =============== 提供 ===================
