@@ -41,6 +41,7 @@ public:
 	CSelectStage();						//コンストラクタ
 	~CSelectStage();					//デストラクタ
 	void Update() override;				//更新	
+	void Draw() const override;			//描画
 	void Select();
 	E_TYPE GetNext() const override;	//次のシーンゲッタ
 protected:

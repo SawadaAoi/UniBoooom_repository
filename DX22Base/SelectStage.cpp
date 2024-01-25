@@ -167,51 +167,19 @@ void CSelectStage::Update()
 		}
 		else
 		{
-			//// =============== カーソル移動 ===================
-			//if (IsKeyTrigger(VK_UP) || IsKeyTrigger('W'))		//↑・W入力時
-			//{
-			//	// =============== 状態遷移 ===================
-			//	if (m_p2dObject.find(E_2D_START) != m_p2dObject.end() && m_p2dObject.at(E_2D_START)
-			//		&& typeid(CCommandTitle) == typeid(*m_p2dObject.at(E_2D_START)))	//アクセスチェック・ヌルチェック・型チェック
-			//	{
-			//		if (static_cast<CCommandTitle*>(m_p2dObject[E_2D_START])->ChackUpdate())	//表示中
-			//		{
-			//			static_cast<CCommandTitle*>(m_p2dObject[E_2D_START])->Selected();		//選択状態遷移
-			//			m_ucFlag.Up(E_FLAG_COMMAND_CONTINUE);								//上のコマンド採用
-			//		}
-			//	}
-			//	if (m_p2dObject.find(E_2D_FINISH) != m_p2dObject.end() && m_p2dObject.at(E_2D_FINISH)
-			//		&& typeid(CCommandTitle) == typeid(*m_p2dObject.at(E_2D_FINISH)))	//アクセスチェック・ヌルチェック・型チェック
-			//	{
-			//		if (static_cast<CCommandTitle*>(m_p2dObject[E_2D_FINISH])->ChackUpdate())	//表示中
-			//		{
-			//			static_cast<CCommandTitle*>(m_p2dObject[E_2D_FINISH])->UnSelected();	//選択状態遷移
-			//			m_ucFlag.Down(E_FLAG_COMMAND_FINISH);								//下のコマンド不採用
-			//		}
-			//	}
-			//}
-			//if (IsKeyTrigger(VK_DOWN) || IsKeyTrigger('S'))	//↓・S入力時
-			//{
-			//	// =============== 状態遷移 ===================
-			//	if (m_p2dObject.find(E_2D_FINISH) != m_p2dObject.end() && m_p2dObject.at(E_2D_FINISH)
-			//		&& typeid(CCommandTitle) == typeid(*m_p2dObject.at(E_2D_FINISH)))	//アクセスチェック・ヌルチェック・型チェック
-			//	{
-			//		if (static_cast<CCommandTitle*>(m_p2dObject[E_2D_FINISH])->ChackUpdate())	//表示中
-			//		{
-			//			static_cast<CCommandTitle*>(m_p2dObject[E_2D_FINISH])->Selected();	//選択状態遷移
-			//			m_ucFlag.Up(E_FLAG_COMMAND_FINISH);									//下のコマンド採用
-			//		}
-			//	}
-			//	if (m_p2dObject.find(E_2D_START) != m_p2dObject.end() && m_p2dObject.at(E_2D_START)
-			//		&& typeid(CCommandTitle) == typeid(*m_p2dObject.at(E_2D_START)))	//アクセスチェック・ヌルチェック・型チェック
-			//	{
-			//		if (static_cast<CCommandTitle*>(m_p2dObject[E_2D_START])->ChackUpdate())	//表示中
-			//		{
-			//			static_cast<CCommandTitle*>(m_p2dObject[E_2D_START])->UnSelected();	//選択状態遷移
-			//			m_ucFlag.Down(E_FLAG_COMMAND_CONTINUE);								//上のコマンド不採用
-			//		}
-			//	}
-			//}
+			// =============== カーソル移動 ===================
+			if (IsKeyTrigger(VK_RIGHT) || IsKeyTrigger('D'))	//→・D入力時
+			{
+				// =============== 状態遷移 ===================
+				Num += 1;
+				if (Num > 2)Num = 2;
+			}
+			if (IsKeyTrigger(VK_LEFT) || IsKeyTrigger('A'))	//←・A入力時
+			{
+				// =============== 状態遷移 ===================
+				Num -= 1;
+				if (Num < 0) Num = 0;
+			}
 
 			// =============== 決定 ===================
 			if (IsKeyTrigger(VK_RETURN) || IsKeyTrigger(VK_SPACE))	//Enter・Space入力時
@@ -279,6 +247,51 @@ void CSelectStage::Update()
 		m_2dObj[4]->SetPos({ 640.0f, 660.0f  ,1.0f });
 		m_2dObj[4]->SetSize({ SCREEN_WIDTH, 120.0f ,1.0f });
 		m_2dObj[4]->Update();
+}
+
+/* ========================================
+	描画関数
+	----------------------------------------
+	内容：描画処理
+	----------------------------------------
+	引数1：なし
+	----------------------------------------
+	戻値：なし
+=========================================== */
+void CSelectStage::Draw() const
+{	//背景
+	m_2dObj[3]->Draw();
+
+
+
+	if (!(0 == Num))
+	{//ステージ1
+		m_2dObj[0]->Draw();
+	}
+	if (!(1 == Num))
+	{
+		//ステージ2
+		m_2dObj[1]->Draw();
+	}
+	if (!(2 == Num))
+	{
+		//ステージ3
+		m_2dObj[2]->Draw();
+	}
+
+	m_2dObj[Num]->Draw();
+
+	//for (int i = SUTAGE_NUM-1; i > 0-1; i--)
+	//{
+	//	if (i == m_nSelectNum) continue;
+	//	m_2dObj[i]->SetTexture(mStageNum[i].m_pTexture);
+	//	m_2dObj[i]->SetPos({ TEXTURE_SELECT_STAGE_POSX + i * 100,TEXTURE_SELECT_STAGE_POSY-i*70,1.0f });
+	//	m_2dObj[i]->SetSize({ TEXTURE_SELECT_STAGE_WIDTH, TEXTURE_SELECT_STAGE_HEIGHT ,1.0f});
+	//	m_2dObj[i]->SetRotate({ 0.0f,0.0f,-0.3f });
+	//	m_2dObj[i]->Draw();
+	//}
+	//文字
+	m_2dObj[4]->Draw();
 }
 
 /* ========================================
