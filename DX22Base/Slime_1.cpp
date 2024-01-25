@@ -121,14 +121,13 @@ void CSlime_1::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
 			m_fAnimeTime = 0.0f;	//アニメーションタイムのリセット
 		}
 
-		if (!m_bEscape  && m_nEscapeCnt == 0)	// 逃げるフラグがoffなら
+		if (!m_bMvStpFlg  && m_nMvStpCnt == 0)	//停止フラグがoffなら
 		{
 			NormalMove();	//通常移動
 		}
 		else
 		{
-			Escape();	//爆発から逃げる
-			m_fAnimeTime -= ADD_ANIME;		// アニメーションを進行
+			MoveStop();	//爆発から逃げる
 		}
 	}
 	else
@@ -200,7 +199,7 @@ void CSlime_1::Draw(const CCamera * pCamera)
 			}
 			ShaderList::SetBones(bones);
 		});
-		m_pModel->DrawBone();
+		//m_pModel->DrawBone();
 	}
 
 	//-- 影の描画

@@ -1172,7 +1172,7 @@ void CSlimeManager::LoadModel()
 	}
 	//レベル1スライムのモデル読み込み
 	m_pBlueModel = new AnimeModel;
-	if (!m_pBlueModel->Load("Assets/Model/slime/Slime1/slime_blue_walk_1.0.fbx", 0.15f, AnimeModel::XFlip)) {		//倍率と反転は省略可
+	if (!m_pBlueModel->Load("Assets/Model/slime/Slime1/slime_blue_walk_1.0.fbx", 0.15f, AnimeModel::ZFlip)) {		//倍率と反転は省略可
 		MessageBox(NULL, "slime_blue", "Error", MB_OK);	//ここでエラーメッセージ表示
 	}
 	for (int i = 0; i < CSlimeBase::MOTION_MAX; i++)
@@ -1206,13 +1206,13 @@ void CSlimeManager::LoadModel()
 	m_pRedModel->SetVertexShader(m_pVS);
 	//フレイムスライムのモデル読み込み
 	m_pFlameModel = new AnimeModel();
-	if (!m_pFlameModel->Load("Assets/Model/slime/slime_fire1.FBX", 0.30f, Model::ZFlip)) {		//倍率と反転は省略可
+	if (!m_pFlameModel->Load("Assets/Model/slime/slime_fire1.FBX", 0.30f, AnimeModel::ZFlip)) {		//倍率と反転は省略可
 		MessageBox(NULL, "Flame_Slime", "Error", MB_OK);	//ここでエラーメッセージ表示
 	}
 	m_pFlameModel->SetVertexShader(m_pVS);
 	//ヒールスライムのモデル読み込み
 	m_pHealModel = new AnimeModel();
-	if (!m_pHealModel->Load("Assets/Model/slime/slime_heal_mesh.FBX", 0.45f, Model::ZFlip)) {		//倍率と反転は省略可
+	if (!m_pHealModel->Load("Assets/Model/slime/slime_heal_mesh.FBX", 0.45f, AnimeModel::ZFlip)) {		//倍率と反転は省略可
 		MessageBox(NULL, "Heal_Slime", "Error", MB_OK);	//ここでエラーメッセージ表示
 	}
 	m_pHealModel->SetVertexShader(m_pVS);
