@@ -54,6 +54,7 @@
 #include "UIStageManager.h"
 #include "BattleData.h"			//メンバのヘッダ
 #include "GameStartText.h"
+#include "BossArrow.h"
 
 // =============== クラス定義 =====================
 class CStage :public CScene	//シーン
@@ -94,11 +95,33 @@ public:
 	CStage();				//コンストラクタ
 	virtual ~CStage();		//デストラクタ
 	virtual void Update();	//更新
+	virtual void Draw() const;	//描画
 	void Collision();		//当たり判定
 protected:
 	// ===メンバ変数宣言===
 	CPause* m_pPause;							//ポーズ画面
 	BattleData m_Data;							//戦闘データ記録用変数
+
+
+	CHP_UI* m_pHpMng;
+	CTimer* m_pTimer;
+	CCombo* m_pCombo;
+	CBossGauge* m_pBossGauge;
+	CTotalScore* m_pTotalScore;
+	CScoreOHManager* m_pScoreOHMng;
+	CStageFinish* m_pStageFin;
+	CBossArrow* m_pBossArrow;
+
+	CFloor* m_pFloor;
+	CPlayer* m_pPlayer;
+	CGeometry* m_pBox;
+	CSlimeManager* m_pSlimeMng;
+	CCollision* m_pCollision;
+	CExplosionManager* m_pExplosionMng;
+	Texture* m_pTexture;
+	CHealItemManager* m_pHealItemMng;
+	CStartText* m_pStartText;	// ゲームスタート描画
+
 	// ===プロトタイプ宣言===
 	virtual void RecordData() = 0;	//データ記録
 private:

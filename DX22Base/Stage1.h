@@ -43,7 +43,7 @@ public:
 	E_TYPE GetNext() const override;	//次のシーンゲッタ
 private:
 	// ===プロトタイプ宣言===
-	virtual void RecordData();			//データ記録	
+	virtual void RecordData();			//データ記録
 };	//ステージ1
 
 #endif	//!__STAGE1_H__
