@@ -510,7 +510,10 @@ void C2dObject::SetTexture(Texture* pTexture)
 void C2dObject::SetVertexShader(VertexShader* pVs)
 {
 	// =============== ポインタ初期化 ===================
-	m_pVs = pVs;	//ピクセルシェーダ登録
+	if (pVs)	//ヌルチェック
+	{
+		m_pVs = pVs;	//ピクセルシェーダ登録
+	}
 }
 
 /* ========================================
@@ -525,7 +528,10 @@ void C2dObject::SetVertexShader(VertexShader* pVs)
 void C2dObject::SetPixelShader(PixelShader* pPs)
 {
 	// =============== ポインタ初期化 ===================
-	m_pPs = pPs;	//ピクセルシェーダ登録
+	if (pPs)	//ヌルチェック
+	{
+		m_pPs = pPs;	//ピクセルシェーダ登録
+	}
 }
 
 /* ========================================

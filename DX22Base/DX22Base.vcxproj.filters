@@ -169,6 +169,12 @@
     <Filter Include="ヘッダー ファイル\Object\Manager">
       <UniqueIdentifier>{6101de60-97ac-4224-812d-8de1c647e793}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\System\ZSort">
+      <UniqueIdentifier>{238956b1-5705-4004-a44e-ee343647fbe4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\System\ZSort">
+      <UniqueIdentifier>{ddc9c8b1-2ce8-49e9-984d-a98c806dc83f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -470,6 +476,12 @@
     </ClCompile>
     <ClCompile Include="Combo.cpp">
       <Filter>ソース ファイル\Object\2dObject\Score</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectDrawer.cpp">
+      <Filter>ソース ファイル\System\ZSort</Filter>
+    </ClCompile>
+    <ClCompile Include="ZSort.cpp">
+      <Filter>ソース ファイル\System\ZSort</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -793,6 +805,15 @@
     </ClInclude>
     <ClInclude Include="ControllMap.h">
       <Filter>ヘッダー ファイル\Info</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectDrawer.h">
+      <Filter>ヘッダー ファイル\System\ZSort</Filter>
+    </ClInclude>
+    <ClInclude Include="ZSort.h">
+      <Filter>ヘッダー ファイル\System\ZSort</Filter>
+    </ClInclude>
+    <ClInclude Include="MakeObjectVector.h">
+      <Filter>ヘッダー ファイル\System\ZSort</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

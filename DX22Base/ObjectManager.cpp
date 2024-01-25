@@ -101,7 +101,7 @@ void CObjectManager::SetCamera(const CCamera* pCamera)
 	-------------------------------------
 	戻値：無し
 =========================================== */
-void CObjectManager::GetObjects(std::vector<const CObject*>& Object)
+void CObjectManager::GetObjects(std::vector<const CObject*>& Object) const
 {
 	// =============== 提供 ===================
 	for (int nIdx = 0; nIdx < static_cast<int>(m_pObject.size()); nIdx++)	//コンテナ周回

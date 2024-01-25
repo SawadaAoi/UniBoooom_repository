@@ -49,6 +49,8 @@ public:
 		const int& nKey, const float& fVolume = 1.0f);					//SE音源登録
 	virtual void SetVertexShader(VertexShader* pVs) = 0;				//頂点シェーダセッタ
 	virtual void SetPixelShader(PixelShader* pPs) = 0;					//ピクセルシェーダセッタ
+	//void* operator new(size_t _Size);									//"new"演算子オーバーロード
+	//void operator delete(void* pPointer);								//"delete"演算子オーバーロード
 protected:
 	// ===メンバ変数宣言=====
 	tagTransform3d m_Transform;	//ワールド座標
@@ -57,6 +59,7 @@ protected:
 	static const CCamera* ms_pCameraDef;				//疑似カメラ
 private:
 	static int ms_nCntObject;	//自身の生成数
+	unsigned int m_unMyNum;		//オブジェクト番号(ObjectDrawer用)
 };	//オブジェクト
 
 #endif	//!__OBJECT_H__

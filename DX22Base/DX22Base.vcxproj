@@ -208,6 +208,7 @@
     <ClCompile Include="NumberText.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="3dObject.cpp" />
+    <ClCompile Include="ObjectDrawer.cpp" />
     <ClCompile Include="ObjectManager.cpp" />
     <ClCompile Include="OpeninigTitle.cpp" />
     <ClCompile Include="Pause.cpp" />
@@ -269,6 +270,7 @@
     <ClCompile Include="UIStageManager.cpp" />
     <ClCompile Include="Union.cpp" />
     <ClCompile Include="UnionManager.cpp" />
+    <ClCompile Include="ZSort.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="2dObject.h" />
@@ -312,10 +314,12 @@
     <ClInclude Include="HitStop.h" />
     <ClInclude Include="Item.h" />
     <ClInclude Include="LibEffekseer.h" />
+    <ClInclude Include="MakeObjectVector.h" />
     <ClInclude Include="NumberText.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="3dObject.h" />
     <ClInclude Include="HP_UI.h" />
+    <ClInclude Include="ObjectDrawer.h" />
     <ClInclude Include="ObjectManager.h" />
     <ClInclude Include="OpeningTitle.h" />
     <ClInclude Include="PauseObj.h" />
@@ -378,6 +382,7 @@
     <ClInclude Include="UIStageManager.h" />
     <ClInclude Include="Union.h" />
     <ClInclude Include="UnionManager.h" />
+    <ClInclude Include="ZSort.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="PsFade.hlsl">

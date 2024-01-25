@@ -10,6 +10,7 @@
 	変更履歴
 	・2024/01/21 制作 takagi
 	・2024/01/23 制作進行 takagi
+	・2024/01/24 コメント修正 takagi
 
 ========================================== */
 
@@ -19,18 +20,18 @@
 // =============== インクルード ===================
 #include "Camera.h"	//メンバのヘッダ
 #include "Object.h"	//メンバのヘッダ
-#include <vector>	//連想型配列
+#include <vector>	//配列コンテナ
 
 // =============== クラス定義 =====================
 class CObjectManager
 {
 public:
 	// ===プロトタイプ宣言===
-	CObjectManager();													//コンストラクタ
-	virtual ~CObjectManager();											//デストラクタ
-	virtual void Update();												//更新
-	virtual void SetCamera(const CCamera* pCamera);						//カメラセッタ
-	virtual void GetObjects(std::vector<const CObject*>& Object) final;	//オブジェクトゲッタ
+	CObjectManager();															//コンストラクタ
+	virtual ~CObjectManager();													//デストラクタ
+	virtual void Update();														//更新
+	virtual void SetCamera(const CCamera* pCamera);								//カメラセッタ
+	virtual void GetObjects(std::vector<const CObject*>& Object) const final;	//オブジェクトゲッタ
 protected:
 	// ===メンバ変数宣言=====
 	std::vector<CObject*> m_pObject;	//オブジェクト

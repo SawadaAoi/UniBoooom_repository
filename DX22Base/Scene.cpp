@@ -32,6 +32,7 @@
 #include "Delete.h"		//削除マクロ
 #include <vector>		//配列コンテナ
 #include <algorithm>	//ソート用
+#include "ObjectDrawer.h"	//オブジェクト描画機構
 
 /* ========================================
 	コンストラクタ
@@ -120,51 +121,53 @@ void CScene::Update()
 =========================================== */
 void CScene::Draw()
 {
-	// =============== 変数宣言 =====================
-	std::vector<const CObject*> Subject;	//被写体
+	//// =============== 変数宣言 =====================
+	//std::vector<const CObject*> Subject;	//被写体
 
-	// =============== 初期化 =====================
-	for_each(m_p3dObject.begin(), m_p3dObject.end(), [&Subject](std::pair<int, CObject*> pObject)->void {
-		if (pObject.second)	//ヌルチェック
-		{
-			Subject.emplace_back(pObject.second);	//オブジェクト追加
-		}
-	});	//被写体3Dオブジェクトアドレスコピー
-	for_each(m_p2dObjectOnWorld.begin(), m_p2dObjectOnWorld.end(), [&Subject](std::pair<int, CObject*> pObject)->void {
-		if (pObject.second)	//ヌルチェック
-		{
-			Subject.emplace_back(pObject.second);	//オブジェクト追加
-		}
-	});	//被写体2Dオブジェクトアドレスコピー
-	for_each(m_pObjectManager.begin(), m_pObjectManager.end(), [&Subject](std::pair<int, CObjectManager*> pObjectManager)->void {
-		if (pObjectManager.second)	//ヌルチェック
-		{
-			pObjectManager.second->GetObjects(Subject);	//オブジェクト追加
-		}
-	});	//管理されているオブジェクトアドレスコピー
+	//// =============== 初期化 =====================
+	//for_each(m_p3dObject.begin(), m_p3dObject.end(), [&Subject](std::pair<int, CObject*> pObject)->void {
+	//	if (pObject.second)	//ヌルチェック
+	//	{
+	//		Subject.emplace_back(pObject.second);	//オブジェクト追加
+	//	}
+	//});	//被写体3Dオブジェクトアドレスコピー
+	//for_each(m_p2dObjectOnWorld.begin(), m_p2dObjectOnWorld.end(), [&Subject](std::pair<int, CObject*> pObject)->void {
+	//	if (pObject.second)	//ヌルチェック
+	//	{
+	//		Subject.emplace_back(pObject.second);	//オブジェクト追加
+	//	}
+	//});	//被写体2Dオブジェクトアドレスコピー
+	//for_each(m_pObjectManager.begin(), m_pObjectManager.end(), [&Subject](std::pair<int, CObjectManager*> pObjectManager)->void {
+	//	if (pObjectManager.second)	//ヌルチェック
+	//	{
+	//		pObjectManager.second->GetObjects(Subject);	//オブジェクト追加
+	//	}
+	//});	//管理されているオブジェクトアドレスコピー
 
-	// =============== Zソート =====================
-	std::sort(Subject.begin(), Subject.end(), [](const CObject* pFirst, const CObject* pSecond)->bool {
-		return pFirst && pSecond					//ヌルチェック
-			? pFirst->GetPosZ() > pFirst->GetPosZ()	//奥のものから描画(等価の場合は入れ替えない)
-			: false;								//片方はnullなので比較する必要がない
-	});	//オブジェクトのソート
+	//// =============== Zソート =====================
+	//std::sort(Subject.begin(), Subject.end(), [](const CObject* pFirst, const CObject* pSecond)->bool {
+	//	return pFirst && pSecond					//ヌルチェック
+	//		? pFirst->GetPosZ() > pFirst->GetPosZ()	//奥のものから描画(等価の場合は入れ替えない)
+	//		: false;								//片方はnullなので比較する必要がない
+	//});	//オブジェクトのソート
 
-	// =============== 3D空間描画 =====================
-	for_each(Subject.begin(), Subject.end(), [](const CObject* pObject)->void {
-		if (pObject)	//ヌルチェック
-		{
-			pObject->Draw();	//描画
-		}
-	});	//ソート順に描画
+	//// =============== 3D空間描画 =====================
+	//for_each(Subject.begin(), Subject.end(), [](const CObject* pObject)->void {
+	//	if (pObject)	//ヌルチェック
+	//	{
+	//		pObject->Draw();	//描画
+	//	}
+	//});	//ソート順に描画
 
-	// =============== 2D空間描画 =====================
-	for_each(m_p2dObjectOnScreen.begin(), m_p2dObjectOnScreen.end(), [](std::pair<int, const CObject*> pObject)->void {
-		if (pObject.second)	//ヌルチェック
-		{
-			pObject.second->Draw();	//オブジェクト描画
-		}
-	});	//キー順に描画
+	//// =============== 2D空間描画 =====================
+	//for_each(m_p2dObjectOnScreen.begin(), m_p2dObjectOnScreen.end(), [](std::pair<int, const CObject*> pObject)->void {
+	//	if (pObject.second)	//ヌルチェック
+	//	{
+	//		pObject.second->Draw();	//オブジェクト描画
+	//	}
+	//});	//キー順に描画
+
+	CObjectDrawer::Draw();
 }
 
 /* ========================================
