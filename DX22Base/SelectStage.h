@@ -40,8 +40,7 @@ public:
 	// =============== プロトタイプ宣言 ===============
 	CSelectStage();						//コンストラクタ
 	~CSelectStage();					//デストラクタ
-	void Update();						//更新
-	void Draw();// const;				//描画	
+	void Update() override;				//更新	
 	void Select();
 	E_TYPE GetNext() const override;	//次のシーンゲッタ
 protected:

@@ -169,7 +169,7 @@ void CSelectStage::Update()
 			//	if (m_p2dObject.find(E_2D_START) != m_p2dObject.end() && m_p2dObject.at(E_2D_START)
 			//		&& typeid(CCommandTitle) == typeid(*m_p2dObject.at(E_2D_START)))	//アクセスチェック・ヌルチェック・型チェック
 			//	{
-			//		if (static_cast<CCommandTitle*>(m_p2dObject[E_2D_START])->ChackDraw())	//表示中
+			//		if (static_cast<CCommandTitle*>(m_p2dObject[E_2D_START])->ChackUpdate())	//表示中
 			//		{
 			//			static_cast<CCommandTitle*>(m_p2dObject[E_2D_START])->Selected();		//選択状態遷移
 			//			m_ucFlag.Up(E_FLAG_COMMAND_CONTINUE);								//上のコマンド採用
@@ -178,7 +178,7 @@ void CSelectStage::Update()
 			//	if (m_p2dObject.find(E_2D_FINISH) != m_p2dObject.end() && m_p2dObject.at(E_2D_FINISH)
 			//		&& typeid(CCommandTitle) == typeid(*m_p2dObject.at(E_2D_FINISH)))	//アクセスチェック・ヌルチェック・型チェック
 			//	{
-			//		if (static_cast<CCommandTitle*>(m_p2dObject[E_2D_FINISH])->ChackDraw())	//表示中
+			//		if (static_cast<CCommandTitle*>(m_p2dObject[E_2D_FINISH])->ChackUpdate())	//表示中
 			//		{
 			//			static_cast<CCommandTitle*>(m_p2dObject[E_2D_FINISH])->UnSelected();	//選択状態遷移
 			//			m_ucFlag.Down(E_FLAG_COMMAND_FINISH);								//下のコマンド不採用
@@ -191,7 +191,7 @@ void CSelectStage::Update()
 			//	if (m_p2dObject.find(E_2D_FINISH) != m_p2dObject.end() && m_p2dObject.at(E_2D_FINISH)
 			//		&& typeid(CCommandTitle) == typeid(*m_p2dObject.at(E_2D_FINISH)))	//アクセスチェック・ヌルチェック・型チェック
 			//	{
-			//		if (static_cast<CCommandTitle*>(m_p2dObject[E_2D_FINISH])->ChackDraw())	//表示中
+			//		if (static_cast<CCommandTitle*>(m_p2dObject[E_2D_FINISH])->ChackUpdate())	//表示中
 			//		{
 			//			static_cast<CCommandTitle*>(m_p2dObject[E_2D_FINISH])->Selected();	//選択状態遷移
 			//			m_ucFlag.Up(E_FLAG_COMMAND_FINISH);									//下のコマンド採用
@@ -200,7 +200,7 @@ void CSelectStage::Update()
 			//	if (m_p2dObject.find(E_2D_START) != m_p2dObject.end() && m_p2dObject.at(E_2D_START)
 			//		&& typeid(CCommandTitle) == typeid(*m_p2dObject.at(E_2D_START)))	//アクセスチェック・ヌルチェック・型チェック
 			//	{
-			//		if (static_cast<CCommandTitle*>(m_p2dObject[E_2D_START])->ChackDraw())	//表示中
+			//		if (static_cast<CCommandTitle*>(m_p2dObject[E_2D_START])->ChackUpdate())	//表示中
 			//		{
 			//			static_cast<CCommandTitle*>(m_p2dObject[E_2D_START])->UnSelected();	//選択状態遷移
 			//			m_ucFlag.Down(E_FLAG_COMMAND_CONTINUE);								//上のコマンド不採用
@@ -216,76 +216,66 @@ void CSelectStage::Update()
 			}		
 		}
 	//}
-}
 
-/* ========================================
-	描画関数
-	----------------------------------------
-	内容：描画処理
-	----------------------------------------
-	引数1：なし
-	----------------------------------------
-	戻値：なし
-	======================================== */
-void CSelectStage::Draw() //const
-{
+
 	//背景
-	m_2dObj[3]->SetTexture(m_pStageSelectBG);
-	m_2dObj[3]->SetPos({ SCREEN_WIDTH/2, SCREEN_HEIGHT/2 ,1.0f });
-	m_2dObj[3]->SetSize({ SCREEN_WIDTH, SCREEN_HEIGHT ,1.0f });
-	m_2dObj[3]->Draw();
-	
+		m_2dObj[3]->SetTexture(m_pStageSelectBG);
+		m_2dObj[3]->SetPos({ SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 ,1.0f });
+		m_2dObj[3]->SetSize({ SCREEN_WIDTH, SCREEN_HEIGHT ,1.0f });
+		m_2dObj[3]->Update();
 
 
-	if (!(0 == Num))
-	{//ステージ1
-		m_2dObj[0]->SetTexture(mStageNum[0].m_pTexture);
-		m_2dObj[0]->SetPos({ 250.0f, 300.0f,1.0f });
-		m_2dObj[0]->SetSize({ TEXTURE_SELECT_STAGE_WIDTH, TEXTURE_SELECT_STAGE_HEIGHT ,1.0f });
-		m_2dObj[0]->SetRotate({ 0.0f,0.0f,-0.25f });
-		m_2dObj[0]->SetColor(0.5f, 1.0f);
-		m_2dObj[0]->Draw();
-	}
-	if (!(1 == Num))
-	{
-		//ステージ2
-		m_2dObj[1]->SetTexture(mStageNum[1].m_pTexture);
-		m_2dObj[1]->SetPos({ 600.0f, 300.0f,1.0f });
-		m_2dObj[1]->SetSize({ TEXTURE_SELECT_STAGE_WIDTH , TEXTURE_SELECT_STAGE_HEIGHT   ,1.0f });
-		m_2dObj[1]->SetRotate({ 0.0f,0.0f,0.05f });
-		m_2dObj[1]->SetColor(0.5f, 1.0f);
-		m_2dObj[1]->Draw();
-	}
-	if (!(2 == Num))
-	{
-		//ステージ3
-		m_2dObj[2]->SetTexture(mStageNum[2].m_pTexture);
-		m_2dObj[2]->SetPos({ 950.0f, 300.0f,1.0f });
-		m_2dObj[2]->SetSize({ TEXTURE_SELECT_STAGE_WIDTH , TEXTURE_SELECT_STAGE_HEIGHT   ,1.0f });
-		m_2dObj[2]->SetRotate({ 0.0f,0.0f,0.1f });
-		m_2dObj[2]->SetColor(0.5f, 1.0f);
-		m_2dObj[2]->Draw();
-	}
 
-	m_2dObj[Num]->SetTexture(mStageNum[Num].m_pTexture);
-	m_2dObj[Num]->SetColor(1.0f, 1.0f);
-	m_2dObj[Num]->Draw();
+		if (!(0 == Num))
+		{//ステージ1
+			m_2dObj[0]->SetTexture(mStageNum[0].m_pTexture);
+			m_2dObj[0]->SetPos({ 250.0f, 300.0f,1.0f });
+			m_2dObj[0]->SetSize({ TEXTURE_SELECT_STAGE_WIDTH, TEXTURE_SELECT_STAGE_HEIGHT ,1.0f });
+			m_2dObj[0]->SetRotate({ 0.0f,0.0f,-0.25f });
+			m_2dObj[0]->SetColor(0.5f, 1.0f);
+			m_2dObj[0]->Update();
+		}
+		if (!(1 == Num))
+		{
+			//ステージ2
+			m_2dObj[1]->SetTexture(mStageNum[1].m_pTexture);
+			m_2dObj[1]->SetPos({ 600.0f, 300.0f,1.0f });
+			m_2dObj[1]->SetSize({ TEXTURE_SELECT_STAGE_WIDTH , TEXTURE_SELECT_STAGE_HEIGHT   ,1.0f });
+			m_2dObj[1]->SetRotate({ 0.0f,0.0f,0.05f });
+			m_2dObj[1]->SetColor(0.5f, 1.0f);
+			m_2dObj[1]->Update();
+		}
+		if (!(2 == Num))
+		{
+			//ステージ3
+			m_2dObj[2]->SetTexture(mStageNum[2].m_pTexture);
+			m_2dObj[2]->SetPos({ 950.0f, 300.0f,1.0f });
+			m_2dObj[2]->SetSize({ TEXTURE_SELECT_STAGE_WIDTH , TEXTURE_SELECT_STAGE_HEIGHT   ,1.0f });
+			m_2dObj[2]->SetRotate({ 0.0f,0.0f,0.1f });
+			m_2dObj[2]->SetColor(0.5f, 1.0f);
+			m_2dObj[2]->Update();
+		}
 
-	//for (int i = SUTAGE_NUM-1; i > 0-1; i--)
-	//{
-	//	if (i == Num) continue;
-	//	m_2dObj[i]->SetTexture(mStageNum[i].m_pTexture);
-	//	m_2dObj[i]->SetPos({ TEXTURE_SELECT_STAGE_POSX + i * 100,TEXTURE_SELECT_STAGE_POSY-i*70,1.0f });
-	//	m_2dObj[i]->SetSize({ TEXTURE_SELECT_STAGE_WIDTH, TEXTURE_SELECT_STAGE_HEIGHT ,1.0f});
-	//	m_2dObj[i]->SetRotate({ 0.0f,0.0f,-0.3f });
-	//	m_2dObj[i]->Draw();
-	//}
-	//文字
-	m_2dObj[4]->SetTexture(m_pStageSelectUI);
-	m_2dObj[4]->SetPos({ 640.0f, 660.0f  ,1.0f });
-	m_2dObj[4]->SetSize({ SCREEN_WIDTH, 120.0f ,1.0f });
-	m_2dObj[4]->Draw();
+		m_2dObj[Num]->SetTexture(mStageNum[Num].m_pTexture);
+		m_2dObj[Num]->SetColor(1.0f, 1.0f);
+		m_2dObj[Num]->Update();
+
+		//for (int i = SUTAGE_NUM-1; i > 0-1; i--)
+		//{
+		//	if (i == Num) continue;
+		//	m_2dObj[i]->SetTexture(mStageNum[i].m_pTexture);
+		//	m_2dObj[i]->SetPos({ TEXTURE_SELECT_STAGE_POSX + i * 100,TEXTURE_SELECT_STAGE_POSY-i*70,1.0f });
+		//	m_2dObj[i]->SetSize({ TEXTURE_SELECT_STAGE_WIDTH, TEXTURE_SELECT_STAGE_HEIGHT ,1.0f});
+		//	m_2dObj[i]->SetRotate({ 0.0f,0.0f,-0.3f });
+		//	m_2dObj[i]->Update();
+		//}
+		//文字
+		m_2dObj[4]->SetTexture(m_pStageSelectUI);
+		m_2dObj[4]->SetPos({ 640.0f, 660.0f  ,1.0f });
+		m_2dObj[4]->SetSize({ SCREEN_WIDTH, 120.0f ,1.0f });
+		m_2dObj[4]->Update();
 }
+
 /* ========================================
 	ステージを選択する関数
 	----------------------------------------
