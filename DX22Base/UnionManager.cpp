@@ -27,9 +27,9 @@
 // =============== 定数定義 =====================
 const std::string VS_PASS("Assets/Shader/VsUnionManager.cso");				//テクスチャのパス名
 const std::string PS_PASS("Assets/Shader/PsUnionManager.cso");				//テクスチャのパス名
-const std::string TEX_PASS_SLIME2("Assets/Texture/Union/Union_Green.png");	//テクスチャのパス名
-const std::string TEX_PASS_SLIME3("Assets/Texture/Union/Union_Yellow.png");	//テクスチャのパス名
-const std::string TEX_PASS_SLIME4("Assets/Texture/Union/Union_Red.png");	//テクスチャのパス名
+const std::string TEX_PASS_SLIME2("Assets/Texture/Direction/Union/Union_Green.png");	//テクスチャのパス名
+const std::string TEX_PASS_SLIME3("Assets/Texture/Direction/Union/Union_Yellow.png");	//テクスチャのパス名
+const std::string TEX_PASS_SLIME4("Assets/Texture/Direction/Union/Union_Red.png");	//テクスチャのパス名
 const TPos3d<float> INIT_POS(640.0f, 360.0f, 0.0f);						//位置初期化
 const TTriType<float> INIT_SCALE(4000.0f, 4000.0f, 0.0f);				//初期拡縮
 const TTriType<float> INIT_RADIAN(0.0f);								//初期回転

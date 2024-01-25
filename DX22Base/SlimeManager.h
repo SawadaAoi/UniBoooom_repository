@@ -129,14 +129,14 @@ private:
 	CPlayer* m_pPlayer;	// プレイヤーの座標
 	VertexShader* m_pVS;
 	// スライムのモデル
-	Model* m_pBlueModel;
-	Model* m_pGreenModel;
-	Model* m_pYellowModel;
-	Model* m_pRedModel;
-	Model* m_pFlameModel;
-	Model* m_pHealModel;
-	Model* m_pBossModel;
-	Model* m_pBossRockModel;
+	AnimeModel* m_pBlueModel;
+	AnimeModel* m_pGreenModel;
+	AnimeModel* m_pYellowModel;
+	AnimeModel* m_pRedModel;
+	AnimeModel* m_pFlameModel;
+	AnimeModel* m_pHealModel;
+	AnimeModel* m_pBossModel;
+	AnimeModel* m_pBossRockModel;
 
 	CScoreOHManager* m_pScoreOHMng;		// スコアマネージャ―ポインタ
 	CHealItemManager* m_pHealItemMng;	// 回復アイテムマネージャーポインタ
@@ -168,6 +168,12 @@ private:
 	Effekseer::EffectRef m_flameSlimeEffect;
 
 	
+	//========== アニメ ==========
+	const std::string m_sLevel1_Motion[CSlimeBase::MOTION_MAX] = {
+		"Assets/Model/slime/Slime1/slime_blue_walk_1.0.fbx",		// レベル1スライムのモーション
+		"Assets/Model/slime/Slime1/slime_blue_damaged_1.1.fbx",		// レベル1スライムのモーション
+	};
+	std::vector<AnimeModel::AnimeNo> m_level1Anime;		// レベル1スライムのアニメーション
 };
 
 #endif // __SLIME_MANAGER_H__

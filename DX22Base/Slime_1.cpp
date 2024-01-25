@@ -65,13 +65,16 @@ CSlime_1::CSlime_1()
 	-------------------------------------
 	戻値：無し
 =========================================== */
-CSlime_1::CSlime_1(TPos3d<float> pos,VertexShader* pVS,Model* pModel)
+CSlime_1::CSlime_1(TPos3d<float> pos,VertexShader* pVS, AnimeModel* pModel, vector<AnimeModel::AnimeNo> anime)
 	: CSlime_1()
 {
 	m_Transform.fPos = pos;			// 初期座標を指定
-	m_pVS = pVS;
 	m_pModel = pModel;
-	pModel->SetVertexShader(m_pVS);
+	// アニメーションの受け渡し
+	m_Anime = anime;
+	m_pModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));		//頂点シェーダーをセット
+	m_pModel->Play(m_Anime[MOTION_LEVEL1_MOVE], true);
+	m_eCurAnime = MOTION_LEVEL1_MOVE;	// 現在のアニメーションをセット
 }
 
 /* ========================================
@@ -88,6 +91,122 @@ CSlime_1::~CSlime_1()
 }
 
 /* ========================================
+	更新処理関数
+	-------------------------------------
+	内容：更新処理
+	-------------------------------------
+	引数1：プレイヤー座標(TPos3d)
+	-------------------------------------
+	戻値：無し
+=========================================== */
+void CSlime_1::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
+{
+	m_PlayerTran = playerTransform;	// プレイヤーの最新パラメータを取得
+	//m_pModel->Step(ADD_ANIME);
+	if (m_eCurAnime == MOTION_LEVEL1_HIT)
+	{
+		m_fAnimeTime += (ADD_ANIME * 0.7f);		// アニメーションを進行
+	}
+	else if (m_eCurAnime == MOTION_LEVEL1_MOVE)
+	{
+		m_fAnimeTime += ADD_ANIME;		// アニメーションを進行
+	}
+
+	if (!m_bHitMove)	//敵が通常の移動状態の時
+	{
+		// 現在のアニメーションが「吹き飛び」だったら移動モーションに変更
+		if (m_eCurAnime == MOTION_LEVEL1_HIT)
+		{
+			m_eCurAnime = MOTION_LEVEL1_MOVE;
+			m_fAnimeTime = 0.0f;	//アニメーションタイムのリセット
+		}
+
+		if (!m_bMvStpFlg  && m_nMvStpCnt == 0)	//停止フラグがoffなら
+		{
+			NormalMove();	//通常移動
+		}
+		else
+		{
+			MoveStop();	//爆発から逃げる
+		}
+	}
+	else
+	{
+		// 吹き飛びアニメーション再生
+		if (m_eCurAnime == MOTION_LEVEL1_MOVE)
+		{
+			m_eCurAnime = MOTION_LEVEL1_HIT;
+			m_fAnimeTime = 0.0f;	// アニメーションタイムのリセット
+		}
+
+		//敵の吹き飛び移動
+		HitMove();
+	}
+
+	// -- 座標更新
+	m_Transform.fPos.x += m_move.x * fSlimeMoveSpeed;
+	m_Transform.fPos.z += m_move.z * fSlimeMoveSpeed;
+}
+
+/* ========================================
+	描画処理関数
+	-------------------------------------
+	内容：描画処理
+	-------------------------------------
+	引数1：カメラ
+	-------------------------------------
+	戻値：無し
+=========================================== */
+void CSlime_1::Draw(const CCamera * pCamera)
+{
+	if (!m_pCamera) { return; }
+
+	DirectX::XMFLOAT4X4 mat[3] = {
+	m_Transform.GetWorldMatrixSRT(),
+	m_pCamera->GetViewMatrix(),
+	m_pCamera->GetProjectionMatrix()
+	};
+	ShaderList::SetWVP(mat);
+
+	// 複数体を共通のモデルで扱っているため描画のタイミングでモーションの種類と時間をセットする
+	m_pModel->Play(m_eCurAnime,true);
+	m_pModel->SetAnimationTime(m_eCurAnime, m_fAnimeTime);	// アニメーションタイムをセット
+	// アニメーションタイムをセットしてから動かさないと反映されないため少しだけ進める
+	m_pModel->Step(0.00000001f);	
+
+	// レンダーターゲット、深度バッファの設定
+	RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得
+	DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
+	SetRenderTargets(1, &pRTV, pDSV);		//DSVがnullだと2D表示になる
+
+	//-- モデル表示
+	if (m_pModel) {
+		//アニメーション対応したプレイヤーの描画
+		m_pModel->Draw(nullptr, [this](int index)
+		{
+			const AnimeModel::Mesh* pMesh = m_pModel->GetMesh(index);
+			const AnimeModel::Material* pMaterial = m_pModel->GetMaterial(pMesh->materialID);
+			ShaderList::SetMaterial(*pMaterial);
+
+			DirectX::XMFLOAT4X4 bones[200];
+			for (int i = 0; i < pMesh->bones.size() && i < 200; ++i)
+			{
+				// この計算はゲームつくろー「スキンメッシュの仕組み」が参考になる
+				DirectX::XMStoreFloat4x4(&bones[i], DirectX::XMMatrixTranspose(
+					pMesh->bones[i].invOffset *
+					m_pModel->GetBone(pMesh->bones[i].index)
+				));
+			}
+			ShaderList::SetBones(bones);
+		});
+		//m_pModel->DrawBone();
+	}
+
+	//-- 影の描画
+	m_pShadow->Draw(m_Transform, m_fScaleShadow, pCamera);
+}
+
+/* ========================================
 	スピード決定関数
 	-------------------------------------
 	内容：スライムの移動速度を設定
@@ -100,6 +219,3 @@ void CSlime_1::SetNormalSpeed()
 {
 	m_fSpeed = LEVEL1_SPEED;	//移動速度に定数をセット
 }
-
-
-

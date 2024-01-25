@@ -24,10 +24,10 @@
 // =============== 定数定義 ===================
 const std::string TEXTURE_PATH[CTotalScore::TEXTURE_MAX][2] =
 {
-	{"トータルスコア数字","Assets/Texture/numbers_v1/combo_numbers.png"},
-	{"加算スコア数字","Assets/Texture/numbers_v1/plus_score_numbers.png"},
-	{"トータルスコア背景","Assets/Texture/total_score_back_1.png"},
-	{"加算スコア背景","Assets/Texture/plus_score_back_1.png"},
+	{"トータルスコア数字","Assets/Texture/Score/numbers_v1/combo_numbers.png"},
+	{"加算スコア数字","Assets/Texture/Score/numbers_v1/plus_score_numbers.png"},
+	{"トータルスコア背景","Assets/Texture/Score/total_score_back_1.png"},
+	{"加算スコア背景","Assets/Texture/Score/plus_score_back_1.png"},
 };
 
 

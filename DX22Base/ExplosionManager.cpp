@@ -60,7 +60,7 @@ CExplosionManager::CExplosionManager()
 	{
 		m_pBoooomUI[i] = nullptr;
 	}
-	if (FAILED(m_pTexUI->Create("Assets/Texture/boooom.png")))
+	if (FAILED(m_pTexUI->Create("Assets/Texture/Direction/Boom/boooom.png")))
 	{
 		MessageBox(NULL, "boooom.png", "Error", MB_OK);
 	}

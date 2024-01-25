@@ -12,6 +12,8 @@
 	変更履歴
 	・2023/11/16 制作 takagi
 	・2023/12/12 ステージセレクト用の構造体、配列、関数追加 yamamoto
+	・2024/01/26 拡縮実装 takagi
+
 ========================================== */
 
 #ifndef __SELECT_STAGE_H__	//SelectStage.hインクルードガード
@@ -20,12 +22,17 @@
 // =============== インクルード ===================
 #include "Scene.h"	//親のヘッダ
 #include "2dPolygon.h"
+#include "FrameCnt.h"	//割合検出用
 // =============== 定数定義 =======================
 const int SUTAGE_NUM = 3;						// ステージの数
 
 // =============== クラス定義 =====================
 class CSelectStage :public CScene	//シーン
 {
+	// ===定数定義===========
+	const float MIN_SIZE_ARR_LET = 450.0f;	//手配書最小サイズ
+	const float MAX_SIZE_ARR_LET = 550.0f;	//手配書最大サイズ
+	const int CHANGE_SCALE_HALF_TIME = 120;	//拡縮半周あたりにかかる時間
 public:
 	// ===構造体定義=========
 	typedef struct
@@ -52,6 +59,8 @@ private:
 	Texture* m_pStageSelectBG;
 	Texture* m_pStageSelectUI;
 	bool m_bStickFlg;			// コントローラーのスティックをたおしているか
+	CFrameCnt* m_pFrameCnt;		//イージング用タイマー
+	bool m_bCntUpDwn;			//カウントアップ・ダウン
 
 };	//ステージセレクト
 

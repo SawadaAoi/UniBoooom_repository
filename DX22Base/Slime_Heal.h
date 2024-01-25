@@ -17,7 +17,7 @@
 // =============== インクルード ===================
 #include "SlimeBase.h"
 #include "GameParameter.h"
-
+#include "AnimeModel.h"
 // =============== クラス定義 =====================
 class CSlime_Heal :
 	public CSlimeBase
@@ -25,7 +25,7 @@ class CSlime_Heal :
 public:
 	// ===プロトタイプ宣言===
 	CSlime_Heal();
-	CSlime_Heal(TPos3d<float> pos, VertexShader* pVS, Model* pModel);
+	CSlime_Heal(TPos3d<float> pos, VertexShader* pVS, AnimeModel* pModel);
 	~CSlime_Heal();
 	void NormalMove() override;
 	void SetNormalSpeed() override;
