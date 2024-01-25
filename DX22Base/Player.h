@@ -136,9 +136,9 @@ private:
 	//=====アニメーション関連=====
 	AnimeModel::AnimeNo m_Anime[MOTION_MAX];		//プレイヤーのアニメーション
 	const std::string m_sAnimeFile[MOTION_MAX] = {	//アニメーションのファイル
-		"Assets/Model/slime/Slime1/slime_blue_walk_1.0.fbx",			//待機
-		"Assets/Model/slime/Slime1/slime_blue_walk_1.0.fbx",				//移動
-		"Assets/Model/slime/Slime1/slime_blue_walk_1.0.fbx" };			//スイング
+		"Assets/Model/player/Player.fbx",			//待機
+		"Assets/Model/player/dash.fbx",				//移動
+		"Assets/Model/player/POW.fbx" };			//スイング
 };
 
 
