@@ -261,8 +261,8 @@ void CResult::DrawWarningTexture()
 		pWarningTex);
 
 	// クリアした場合
-	//if (m_Data.bClearFlg)
-	//{
+	if (m_Data.bClearFlg)
+	{
 		// スタンプを表示する
 		Draw2d(
 			CLEAR_STAMP_PARAM.fPos.x,
@@ -270,7 +270,7 @@ void CResult::DrawWarningTexture()
 			CLEAR_STAMP_PARAM.fSize.x,
 			CLEAR_STAMP_PARAM.fSize.y,
 			m_pTexture[E_TEXTURE::CLEAR_STAMP]);
-	//}
+	}
 }
 
 
@@ -338,8 +338,8 @@ void CResult::DrawScore()
 		m_pTexture[E_TEXTURE::HIGH_SCORE_TEXT]);
 
 	// ハイスコアを更新していたら(ゲーム終了時にハイスコアを更新する為)
-	//if (m_Data.nHighScore[m_Data.nStageNum-1] == m_Data.nTotalScore)
-	//{
+	if (m_Data.nHighScore[m_Data.nStageNum-1] == m_Data.nTotalScore)
+	{
 		// ニューレコード(文字)
 		Draw2d(
 			NEW_RECORD_TEXT_PARAM.fPos.x,
@@ -348,7 +348,7 @@ void CResult::DrawScore()
 			NEW_RECORD_TEXT_PARAM.fSize.y,
 			m_pTexture[E_TEXTURE::NEW_RECORD_TEXT]);
 
-	//}
+	}
 
 	// ハイスコア(数字)
 	DispNum(m_Data.nHighScore[m_Data.nStageNum - 1], 5, HIGH_SCORE_NUM_PARAM.fPos, HIGH_SCORE_NUM_PARAM.fSize, HIGH_SCORE_NUM_SPACE);

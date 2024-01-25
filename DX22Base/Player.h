@@ -68,7 +68,7 @@ public:
 	};
 private:
 	// ===定数定義===========
-	const int CNT_START_WAIT = 100;	//待機モーションを始めるまでの時間
+	const int CNT_START_WAIT = 10;	//待機モーションを始めるまでの時間
 public:
 	// ===プロトタイプ宣言===
 	CPlayer();		//コンストラクタ
