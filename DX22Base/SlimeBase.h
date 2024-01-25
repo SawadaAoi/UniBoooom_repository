@@ -103,15 +103,22 @@ public:
 		MOTION_LEVEL1_MOVE,	// レベル1の移動
 		MOTION_LEVEL1_HIT,	// レベル1がハンマーに殴られる挙動
 
-		MOTION_MAX,
+		MOTION_LEVEL1_MAX,
 	};
 
+	enum LEVEL2_MOTION {
+		MOTION_LEVEL2_MOVE,		// レベル2の移動
+		MOTION_LEVEL2_HIT,		// レベル2がハンマーに殴られる挙動
+		MOTION_LEVEL2_ATTACK,	// レベル2の攻撃
+
+		MOTION_LEVEL2_MAX,
+	};
 
 	// ===プロトタイプ宣言===
 	CSlimeBase();
 	~CSlimeBase();
 	virtual void Update(tagTransform3d playerTransform, float fSlimeMoveSpeed); 
-	virtual void Draw(const CCamera* pCamera);
+	virtual void Draw();
 
 	virtual void NormalMove();	// 通常時の移動処理
 	void RandomMove();
@@ -166,9 +173,8 @@ protected:
 	Effekseer::EffectRef m_flameSlimeEffect;
 	Effekseer::Handle m_efcslimeHnadle;
 
-	vector<AnimeModel::AnimeNo> m_Anime;	// レベル1スライムのアニメーション
-	float m_fAnimeTime;						// アニメーションの現在の時間
-	LEVEL1_MOTION m_eCurAnime;				// 現在のアニメーション
+	float m_fAnimeTime;		// アニメーションの現在の時間
+	int m_eCurAnime;		// 現在のアニメーション
 
 
 };

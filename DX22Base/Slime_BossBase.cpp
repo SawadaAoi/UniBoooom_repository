@@ -149,7 +149,7 @@ void CSlime_BossBase::Update(tagTransform3d playerTransform)
 	-------------------------------------
 	戻値：無し
 =========================================== */
-void CSlime_BossBase::Draw(const CCamera* pCamera)
+void CSlime_BossBase::Draw()
 {
 	// DrawFlgがtrueなら描画処理を行う
 	if (m_bDrawFlg == false) return;
@@ -157,8 +157,8 @@ void CSlime_BossBase::Draw(const CCamera* pCamera)
 	DirectX::XMFLOAT4X4 mat[3];
 
 	mat[0] = m_Transform.GetWorldMatrixSRT();
-	mat[1] = pCamera->GetViewMatrix();
-	mat[2] = pCamera->GetProjectionMatrix();
+	mat[1] = m_pCamera->GetViewMatrix();
+	mat[2] = m_pCamera->GetProjectionMatrix();
 
 	//-- 行列をシェーダーへ設定
 	m_pVS->WriteBuffer(0, mat);
@@ -173,17 +173,17 @@ void CSlime_BossBase::Draw(const CCamera* pCamera)
 	}
 	
 	//-- 影の描画
-	m_pShadow->Draw(pCamera);
+	m_pShadow->Draw(m_pCamera);
 
 	//HP表示
 	RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得
 	DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
 	SetRenderTargets(1, &pRTV, nullptr);		//DSVがnullだと2D表示になる
 
-	mat[1] = pCamera->GetViewMatrix();
-	mat[2] = pCamera->GetProjectionMatrix();
+	mat[1] = m_pCamera->GetViewMatrix();
+	mat[2] = m_pCamera->GetProjectionMatrix();
 	DirectX::XMFLOAT4X4 inv;//逆行列の格納先
-	inv = pCamera->GetViewMatrix();
+	inv = m_pCamera->GetViewMatrix();
 
 	//カメラの行列はGPUに渡す際に転置されているため、逆行列のために一度元に戻す
 	DirectX::XMMATRIX matInv = DirectX::XMLoadFloat4x4(&inv);

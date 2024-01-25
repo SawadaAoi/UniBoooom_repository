@@ -28,6 +28,7 @@
 	・2023/11/30 モデルの読み込みが反転したのでradian.yが反対になるように変更 yamashita
 	・2023/12/07 ゲームパラメータから一部定数移動 takagi
 	・2024/01/18 炎スライムのエフェクト追加 Tei
+	・2024/1/26  Drawの引数の const CCamera*　を削除 Yamashita
 
 ========================================== */
 
@@ -153,11 +154,11 @@ void CSlimeBase::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
 	-------------------------------------
 	内容：描画処理
 	-------------------------------------
-	引数1：カメラ
+	引数1：なし
 	-------------------------------------
 	戻値：無し
 =========================================== */
-void CSlimeBase::Draw(const CCamera* pCamera)
+void CSlimeBase::Draw()
 {
 	if (!m_pCamera) { return; }
 
@@ -176,7 +177,7 @@ void CSlimeBase::Draw(const CCamera* pCamera)
 	}
 
 	//-- 影の描画
-	m_pShadow->Draw(m_Transform, m_fScaleShadow, pCamera);
+	m_pShadow->Draw(m_Transform, m_fScaleShadow, m_pCamera);
 
 	if (GetSlimeLevel() == LEVEL_FLAME)
 	{

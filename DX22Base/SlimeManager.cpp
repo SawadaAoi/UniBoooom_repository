@@ -305,14 +305,14 @@ void CSlimeManager::Draw()
 	for (int i = 0; i <MAX_SLIME_NUM; i++)
 	{
 		if (m_pSlime[i] == nullptr) continue;
-		m_pSlime[i]->Draw(m_pCamera);
+		m_pSlime[i]->Draw();
 	}
 				
 	// ボススライム更新
 	for (int i = 0; i < MAX_BOSS_SLIME_NUM; i++)
 	{
 		if (m_pBoss[i] == nullptr) continue;
-		m_pBoss[i]->Draw(m_pCamera);
+		m_pBoss[i]->Draw();
 
 	}
 
@@ -377,10 +377,10 @@ void CSlimeManager::Create(E_SLIME_LEVEL level)
 		switch (level)
 		{
 		case LEVEL_1:
-			m_pSlime[i] = new CSlime_1(CreatePos,m_pVS,m_pBlueModel,m_level1Anime);	// 動的生成
+			m_pSlime[i] = new CSlime_1(CreatePos,m_pBlueModel);	// 動的生成
 			break;
 		case LEVEL_2:
-			m_pSlime[i] = new CSlime_2(CreatePos, m_pVS, m_pGreenModel);	// 動的生成
+			m_pSlime[i] = new CSlime_2(CreatePos, m_pGreenModel);	// 動的生成
 			break;
 		case LEVEL_3:
 			m_pSlime[i] = new CSlime_3(CreatePos, m_pVS, m_pYellowModel);	// 動的生成
@@ -432,7 +432,7 @@ void CSlimeManager::CreateBoss(int BossNum)
 
 			break;
 		}
-
+		m_pBoss[i]->SetCamera(m_pCamera);
 		m_bBossPtrExist = true;
 		break;
 	}
@@ -735,7 +735,7 @@ void CSlimeManager::UnionSlime(E_SLIME_LEVEL level ,TPos3d<float> pos, float spe
 		{
 		case LEVEL_1:
 			//サイズ2のスライムを生成
-			m_pSlime[i] = new CSlime_2(pos, m_pVS, m_pGreenModel);
+			m_pSlime[i] = new CSlime_2(pos, m_pGreenModel);
 			m_pSlime[i]->HitMoveStart(speed, angle);
 			break;
 		case LEVEL_2:
@@ -1172,15 +1172,15 @@ void CSlimeManager::LoadModel()
 	}
 	//レベル1スライムのモデル読み込み
 	m_pBlueModel = new AnimeModel;
-	if (!m_pBlueModel->Load("Assets/Model/slime/Slime1/slime_blue_walk_1.0.fbx", 0.15f, AnimeModel::ZFlip)) {		//倍率と反転は省略可
+	if (!m_pBlueModel->Load("Assets/Model/slime/Blue/slime_blue_walk_1.0.fbx", 0.15f, AnimeModel::ZFlip)) {		//倍率と反転は省略可
 		MessageBox(NULL, "slime_blue", "Error", MB_OK);	//ここでエラーメッセージ表示
 	}
-	for (int i = 0; i < CSlimeBase::MOTION_MAX; i++)
+	for (int i = 0; i < CSlimeBase::MOTION_LEVEL1_MAX; i++)
 	{
 		//各アニメーションの読み込み
-		m_level1Anime.push_back(m_pBlueModel->AddAnimation(m_sLevel1_Motion[i].c_str()));
+		m_pBlueModel->AddAnimation(m_sLevel1_Motion[i].c_str());
 		//読み込みに失敗したらエラーメッセージ
-		if (!m_pBlueModel->GetAnimation(m_level1Anime[i]))
+		if (!m_pBlueModel->GetAnimation(i))
 		{
 			MessageBox(NULL, m_sLevel1_Motion[i].c_str(), "Error", MB_OK);	//ここでエラーメッセージ表示
 		}
@@ -1188,10 +1188,20 @@ void CSlimeManager::LoadModel()
 	m_pBlueModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));		//頂点シェーダーをセット
 	//レベル2スライムのモデル読み込み
 	m_pGreenModel = new AnimeModel;
-	if (!m_pGreenModel->Load("Assets/Model/slime/slime_green1.28.FBX", 0.15f, AnimeModel::ZFlip)) {		//倍率と反転は省略可
-		MessageBox(NULL, "slime_green", "Error", MB_OK);	//ここでエラーメッセージ表示
+	if (!m_pGreenModel->Load(m_sLevel2_Motion[0].c_str(), 0.15f, AnimeModel::ZFlip)) {		//倍率と反転は省略可
+		MessageBox(NULL, "slime_blue", "Error", MB_OK);	//ここでエラーメッセージ表示
 	}
-	m_pGreenModel->SetVertexShader(m_pVS);
+	for (int i = 0; i < CSlimeBase::MOTION_LEVEL2_MAX; i++)
+	{
+		//各アニメーションの読み込み
+		m_pGreenModel->AddAnimation(m_sLevel2_Motion[i].c_str());
+		//読み込みに失敗したらエラーメッセージ
+		if (!m_pGreenModel->GetAnimation(i))
+		{
+			MessageBox(NULL, m_sLevel2_Motion[i].c_str(), "Error", MB_OK);	//ここでエラーメッセージ表示
+		}
+	}
+	m_pGreenModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));		//頂点シェーダーをセット
 	//レベル3スライムのモデル読み込み
 	m_pYellowModel = new AnimeModel;
 	if (!m_pYellowModel->Load("Assets/Model/slime/slime_Yellow1.28.FBX", 0.15f, AnimeModel::ZFlip)) {	//倍率と反転は省略可
