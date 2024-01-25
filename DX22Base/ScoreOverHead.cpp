@@ -42,7 +42,7 @@ CScoreOverHead::CScoreOverHead(TPos3d<float> fPos, int nScore, float posY,float 
 	
 	m_pScoreTexture = new Texture();
 	//if (FAILED(m_pScoreTexture->Create("Assets/Texture/numbers_v1/number.png")))
-	if (FAILED(m_pScoreTexture->Create("Assets/Texture/numbers_v1/combo_numbers.png")))
+	if (FAILED(m_pScoreTexture->Create("Assets/Texture/Score/score_numbers.png")))
 	{
 		MessageBox(NULL, "”š“Ç‚İ‚İ", "Error", MB_OK);
 	}

@@ -61,11 +61,11 @@ CBossgauge::CBossgauge(CTimer* pTimer)
 	//ボスゲージのテクスチャ読む込み
 	m_pTexFrame = new Texture();
 	m_pTexGauge = new Texture();
-	if (FAILED(m_pTexFrame->Create("Assets/Texture/bossgauge_empty.png")))
+	if (FAILED(m_pTexFrame->Create("Assets/Texture/Boss_UI/Gauge/bossgauge_empty.png")))
 	{
 		MessageBox(NULL, "bossgauge_empty.png", "Error", MB_OK);
 	}
-	if (FAILED(m_pTexGauge->Create("Assets/Texture/bossgauge_full.png")))
+	if (FAILED(m_pTexGauge->Create("Assets/Texture/Boss_UI/Gauge/bossgauge_full.png")))
 	{
 		MessageBox(NULL, "bossgauge_full.png", "Error", MB_OK);
 	}
