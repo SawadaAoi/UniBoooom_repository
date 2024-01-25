@@ -21,6 +21,7 @@
 #include"Combo.h"
 #include <vector>
 #include "Defines.h"
+#include "DiType.h"
 // =============== クラス定義 =====================
 class CTotalScore
 {
@@ -29,39 +30,66 @@ public:
 	typedef struct
 	{
 		int   nAddScore;				// スコア
-		float fComboMagnification;		// コンボ倍率
-		bool  bEndComboFlg;				// コンボ表示終了フラグ
-		bool  bDispTotalScoreFlg;		// スコア表示終了フラグ
+		float fCombScoreMult;			// コンボスコア倍率
+		bool  bEndComboFlg;				// コンボ表示終了フラグ(true:コンボ終了)
 		int   nDispFrame;				// 残描画用加算値
-		bool  bDispFlg;				
+		bool  bDispFlg;					// スコア加算値表示終了フラグ
 	}PlusScore;	// スコア処理情報まとめ
+
+	// 数字表示用
+	typedef struct
+	{
+		TDiType<float> fSize;
+		TDiType<float> fPos; 
+		TDiType<float> fUVSize; 
+		float spaceW; 
+		Texture* pTexture; 
+		int digits;
+
+	}NumbersParam;
+
+	enum TextureType
+	{
+		NUM_TOTAL_SCORE,
+		NUM_ADD_SCORE,
+		BG_TOTAL_SCORE,
+		BG_ADD_SCORE,
+
+		TEXTURE_MAX,
+	};
+
 public:
 	CTotalScore();
 	~CTotalScore();
 
 	void Update();		 		//更新関数
 	void Draw();		 		//描画関数
-	void AddScore(CCombo::ComboInfo comboInfo,int num);
+	void SetAddScore(CCombo::ComboInfo comboInfo,int num);
 	void ComboCheck(CCombo::ComboInfo comboInfo, int num);
 	void AddTotalScore();
-	void DrawTotalScoreBG();			// トータルスコアの背景描画
-	void DrawPlusScoreBG(int lineNum);		// 加算スコアの背景描画
+
 	int GetTotalScore();
-	std::vector<int> digitsToArray(int score);	//引数の数字を各桁1ずつ配列に入れる
+	std::vector<int> digitsToArray(int score, int digits);	//引数の数字を各桁1ずつ配列に入れる
 private:
+	void DrawBGTotalScore();			// トータルスコアの背景描画
+	void DrawTotalScore();
+	void DrawAddScore(int nNum, int lineNum);
+	void DrawBGAddScore(int lineNum);		// 加算スコアの背景描画
+	void DrawScoreComboMulti(int nNum, int lineNum);
+
+	void DrawTexture(TDiType<float> fSize, TDiType<float> fPos, TDiType<float> fUVSize, TDiType<float> fUVPos, Texture * pTexture);
+	void DrawNumber(int dispNum, TDiType<float> fSize, TDiType<float> fPos, TDiType<float> fUVSize, float spaceW, float spaceH, Texture* pTexture, int digits);
+
 	int m_nTotalScore;
 	
-	PlusScore m_PlusScore[MAX_COMBO_NUM];
+	PlusScore m_AddScore[MAX_COMBO_NUM];
 	CCombo::ComboInfo* m_pComboInfo;
-	Texture* m_pToScoreTexture;
-	Texture* m_pPlusScoreTexture;
-	Texture* m_pTScoreBGTex;	// TotalScoreテクスチャ
-	Texture* m_pPScoreBGTex;	// PlusScoreテクスチャ
+
+	Texture* m_pTexture[TEXTURE_MAX];
+
 	CCombo* m_pCombo;
 	int nArraySize;
 	std::vector<int> TotalScoreArray;	//各桁1ずつ入れるための配列
-	std::vector<int> digitArray;//digitsをここに入れる
-	std::vector<int> digits;//digitsをここに入れる
 	
 
 };

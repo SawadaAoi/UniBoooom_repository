@@ -113,7 +113,7 @@ void CCombo::Update()
 	for (int i = 0; i < MAX_COMBO_NUM; i++)
 	{
 		if (m_dComboInfo[i].dCnt == 0) continue;
-		m_pTotalScore->AddScore(m_dComboInfo[i],i);
+		m_pTotalScore->SetAddScore(m_dComboInfo[i],i);
 
 		// コンボ背景UIアニメーション再生
 		if (m_nCntOldCombo[i] != m_dComboInfo[i].dCnt)	// コンボ数が直前と違ったら
