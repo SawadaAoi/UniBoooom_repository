@@ -134,7 +134,6 @@ void CSlime_2::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
 
 		// ƒ^ƒbƒNƒ‹‚ğ’†~‚µ‚Ä•Ï”‚ğ‰Šú‰»
 		m_AtcMoveType = ATTACK_NONE;
-		m_nAtkInterval = 0;
 		m_nChargeCnt = 0;
 		m_nTackleCnt = 0;
 	}
