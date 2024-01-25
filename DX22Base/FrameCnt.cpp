@@ -10,6 +10,7 @@
 	変更履歴
 	・2023/12/16 作成 takagi
 	・2023/12/17 デクリメント修正 takagi
+	・2024/01/26 インクリメント修正 takagi
 
 ========================================== */
 
@@ -69,7 +70,7 @@ CFrameCnt::~CFrameCnt()
 CFrameCnt& CFrameCnt::operator++()
 {	
 	// =============== 検査 =====================
-	if (true == m_bCntDown || m_nFrame + 1 < m_nEndFrame)	//カウントしてもリミットを超えない
+	if (true == m_bCntDown || m_nFrame < m_nEndFrame)	//カウントしてもリミットを超えない
 	{
 		// =============== カウンタ =====================
 		m_nFrame++;	//カウント+1

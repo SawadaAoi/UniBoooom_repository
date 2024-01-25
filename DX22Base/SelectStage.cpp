@@ -12,12 +12,17 @@
 	変更履歴
 	・2023/11/16 制作 takagi
 	・2023/12/12 ステージセレクトを追加　yamamoto
+	・2024/01/26 拡縮実装 takagi
+
 ========================================== */
 
 // =============== インクルード ===================
 #include "SelectStage.h"	//自身のヘッダ
 #include "Input.h"
 #include "GameParameter.h"
+#define _USE_MATH_DEFINES	//math.hの定義使用
+#include <math.h>			//M_PI使用
+#include <algorithm>		//clamp使用
 // =============== 定数定義 =======================
 const float TEXTURE_SELECT_STAGE_POSX = 900.0f;
 const float TEXTURE_SELECT_STAGE_POSY = 300.0f;
@@ -38,6 +43,8 @@ CSelectStage::CSelectStage()
 	, m_pStageSelectUI(nullptr)
 	, m_nSelectNum(0)
 	, m_bStickFlg(false)
+	, m_pFrameCnt(nullptr)	//フレームカウンタ
+	,m_bCntUpDwn(false)	//カウントアップ・ダウン
 {
 	mStageNum[0].Type = E_TYPE_STAGE1;
 	mStageNum[0].m_pTexture= new Texture();
@@ -85,6 +92,8 @@ CSelectStage::CSelectStage()
 	m_2dObj[1]->SetSize({ TEXTURE_SELECT_STAGE_WIDTH, TEXTURE_SELECT_STAGE_HEIGHT ,1.0f });
 	m_2dObj[2]->SetSize({ TEXTURE_SELECT_STAGE_WIDTH, TEXTURE_SELECT_STAGE_HEIGHT ,1.0f });
 
+	// =============== 動的確保 =====================
+	m_pFrameCnt = new CFrameCnt(CHANGE_SCALE_HALF_TIME, m_bCntUpDwn);	//フレーム初期化
 }	
 
 
@@ -171,8 +180,25 @@ void CSelectStage::Draw() //const
 		m_2dObj[2]->Draw();
 	}
 
+
+	// =============== 変数宣言 =====================
+	float fSize = MIN_SIZE_ARR_LET;	//大きさ
+
+	if (m_pFrameCnt)	//ヌルチェック
+	{
+		m_pFrameCnt->Count();	//カウント進行
+		fSize = -(cosf(static_cast<float>(M_PI) * m_pFrameCnt->GetRate()) - 1.0f) / 2.0f * (MAX_SIZE_ARR_LET - MIN_SIZE_ARR_LET) + MIN_SIZE_ARR_LET;	//イージングを使った大きさ変更
+		if (m_pFrameCnt->IsFin())	//カウント完了
+		{
+			m_bCntUpDwn ^= 1;													//カウントアップダウン逆転
+			SAFE_DELETE(m_pFrameCnt);											//カウンタ削除
+			m_pFrameCnt = new CFrameCnt(CHANGE_SCALE_HALF_TIME, m_bCntUpDwn);	//カウントアップ・ダウン
+		}
+	}
+
 	m_2dObj[m_nSelectNum]->SetTexture(mStageNum[m_nSelectNum].m_pTexture);
 	m_2dObj[m_nSelectNum]->SetColor(1.0f, 1.0f);
+	m_2dObj[m_nSelectNum]->SetSize({ fSize * TEXTURE_SELECT_STAGE_WIDTH / TEXTURE_SELECT_STAGE_HEIGHT, fSize, 1.0f });	//拡縮
 	m_2dObj[m_nSelectNum]->Draw();
 
 	//for (int i = SUTAGE_NUM-1; i > 0-1; i--)
