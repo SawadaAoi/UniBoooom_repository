@@ -48,7 +48,7 @@ CHitEffect::CHitEffect(TPos3d<float> fPos, float fTime, Effekseer::EffectRef hit
 		m_Transform.fPos.z - 0.5f);
 	LibEffekseer::GetManager()->SetScale(m_efcHitHandle, HIT_EFFECT_SIZE, HIT_EFFECT_SIZE, HIT_EFFECT_SIZE);	//エフェクトサイズ設定
 	LibEffekseer::GetManager()->SetSpeed(m_efcHitHandle, m_fEffectTime / HIT_EFFECT_STANDARD_ONE_FRAME );		//エフェクト再生速度設定
-
+	m_pCamera = pCamera;
 }
 
 /* ========================================
