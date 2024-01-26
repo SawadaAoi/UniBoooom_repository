@@ -99,6 +99,7 @@ class CSlimeBase
 {
 public:
 	// === 列挙 ===
+	// 青スライム
 	enum LEVEL1_MOTION {
 		MOTION_LEVEL1_MOVE,	// レベル1の移動
 		MOTION_LEVEL1_HIT,	// レベル1がハンマーに殴られる挙動
@@ -106,12 +107,30 @@ public:
 		MOTION_LEVEL1_MAX,
 	};
 
+	// 緑スライム
 	enum LEVEL2_MOTION {
 		MOTION_LEVEL2_MOVE,		// レベル2の移動
 		MOTION_LEVEL2_HIT,		// レベル2がハンマーに殴られる挙動
 		MOTION_LEVEL2_ATTACK,	// レベル2の攻撃
 
 		MOTION_LEVEL2_MAX,
+	};
+
+	// 黄色スライム
+	enum LEVEL3_MOTION {
+		MOTION_LEVEL3_MOVE,		// レベル3の移動
+		MOTION_LEVEL3_HIT,		// レベル3がハンマーに殴られる挙動
+		MOTION_LEVEL3_STOP,		// レベル3の静止挙動
+
+		MOTION_LEVEL3_MAX,
+	};
+
+	// 赤スライム
+	enum LEVEL4_MOTION {
+		MOTION_LEVEL4_MOVE,		// レベル4の移動
+		MOTION_LEVEL4_HIT,		// レベル4がハンマーに殴られる挙動
+
+		MOTION_LEVEL4_MAX,
 	};
 
 	// ===プロトタイプ宣言===

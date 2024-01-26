@@ -26,10 +26,11 @@ class CSlime_3 :
 public:
 	// === プロトタイプ宣言 ===
 	CSlime_3();
-	CSlime_3(TPos3d<float> pos, VertexShader* pVS, AnimeModel* pModel);
+	CSlime_3(TPos3d<float> pos, AnimeModel* pModel);
 	~CSlime_3();
 
 	void Update(tagTransform3d playerTransform, float fSlimeMoveSpeed);
+	void Draw() override;
 	void NormalMove() final;	// 通常時の移動処理
 
 	void SetNormalSpeed() override;
