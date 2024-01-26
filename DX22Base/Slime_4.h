@@ -18,7 +18,7 @@
 
 // =============== インクルード ===================
 #include "SlimeBase.h"
-
+#include "AnimeModel.h"
 // =============== クラス定義 =====================
 class CSlime_4 :
 	public CSlimeBase
@@ -26,7 +26,7 @@ class CSlime_4 :
 public:
 	// ===プロトタイプ宣言===
 	CSlime_4();
-	CSlime_4(TPos3d<float> pos, VertexShader* pVS, Model* pModel);
+	CSlime_4(TPos3d<float> pos, VertexShader* pVS, AnimeModel* pModel);
 	~CSlime_4();
 	void Update(tagTransform3d playerTransform, float fSlimeMoveSpeed) override;
 

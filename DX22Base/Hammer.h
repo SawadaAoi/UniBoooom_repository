@@ -59,7 +59,6 @@ public:
 	void SetCamera(const CCamera* pCamera);
 private:
 	// ===メンバ変数宣言=====
-	Model* m_pModel;				//プレイヤーのモデル
 	VertexShader* m_pVS;			//頂点シェーダーのポインタ
 	TPos3d<float> m_tPlayerPos;		// 現在のプレイヤー座標
 	float m_fAngleNow;				// 今の角度

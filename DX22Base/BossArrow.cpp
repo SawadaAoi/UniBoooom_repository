@@ -49,7 +49,7 @@ CBossArrow::CBossArrow()
 {
 
 	m_pArrowTex = new Texture();
-	if (FAILED(m_pArrowTex->Create("Assets/Texture/Arrow.png")))
+	if (FAILED(m_pArrowTex->Create("Assets/Texture/Boss_UI/Arrow/Devil_arrow.png")))
 	{
 		MessageBox(NULL, "Arrow.png", "Error", MB_OK);
 	}

@@ -17,7 +17,7 @@
 
 // =============== インクルード ===================
 #include "Slime_BossBase.h"
-
+#include "AnimeModel.h"
 // =============== 列挙定義 ===================
 enum E_BOSS_1_STATE
 {
@@ -33,7 +33,7 @@ class CSlime_Boss_1 :
 public:
 	// ===プロトタイプ宣言===
 	CSlime_Boss_1();
-	CSlime_Boss_1(TPos3d<float> pos, VertexShader* pVS, Model* pModel);
+	CSlime_Boss_1(TPos3d<float> pos, VertexShader* pVS, AnimeModel* pModel);
 	~CSlime_Boss_1();
 
 	void Update(tagTransform3d playerTransform) override;

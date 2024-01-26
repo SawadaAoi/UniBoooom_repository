@@ -34,7 +34,7 @@
 // =============== 定数・マクロ定義 =====================
 const std::string VS_PASS("Assets/Shader/VsFade.cso");		//テクスチャのパス名
 const std::string PS_PASS("Assets/Shader/PsFade.cso");		//テクスチャのパス名
-const std::string TEX_PASS("Assets/Texture/Fade.png");		//テクスチャのパス名
+const std::string TEX_PASS("Assets/Texture/Direction/Fade/Fade.png");		//テクスチャのパス名
 const TPos3d<float> INIT_POS(640.0f, 360.0f, 0.0f);			//位置初期化
 const TTriType<float> INIT_SCALE(4000.0f, 4000.0f, 0.0f);	//初期拡縮
 const TTriType<float> INIT_RADIAN(0.0f);					//初期回転

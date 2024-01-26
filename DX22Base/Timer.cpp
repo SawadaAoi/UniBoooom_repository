@@ -71,20 +71,20 @@ CTimer::CTimer()
 
 	m_pTextureNum = new Texture();
 
-	if (FAILED(m_pTextureNum->Create("Assets/Texture/numbers_v1/number.png")))
+	if (FAILED(m_pTextureNum->Create("Assets/Texture/Timer/number.png")))
 	{
 		MessageBox(NULL, "number.png", "Error", MB_OK);
 	}
 
 	//タイマーの裏テクスチャ読み込む
 	m_pTextureBG = new Texture;
-	if (FAILED(m_pTextureBG->Create("Assets/Texture/timer_back_1.png")))
+	if (FAILED(m_pTextureBG->Create("Assets/Texture/Timer/timer_back.png")))
 	{
 		MessageBox(NULL, "timebackground.png", "Error", MB_OK);
 	}
 
 	m_pTextureColon = new Texture;
-	if (FAILED(m_pTextureColon->Create("Assets/Texture/numbers_v1/colon.png")))
+	if (FAILED(m_pTextureColon->Create("Assets/Texture/Timer/colon.png")))
 	{
 		MessageBox(NULL, "colon.png", "Error", MB_OK);
 	}
