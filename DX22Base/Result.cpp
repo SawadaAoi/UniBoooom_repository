@@ -17,6 +17,7 @@
 	・2023/12/08 シーン遷移用に変数追加 takagi
 	・2023/12/11 成績仮表示 takagi
 	・2023/12/25 表示内容の変更 Sawada
+	・2024/01/26 決定SE追加 suzumura
 
 ========================================== */
 
@@ -122,6 +123,8 @@ const Display_Param MAX_COMBO_NUM_PARAM		= { { 1200.0f, 670.0f } ,{ 75.0f, 75.0f
 	戻値：なし
 =========================================== */
 CResult::CResult()
+	: m_pSE{ nullptr }
+	, m_pSESpeaker{ nullptr }
 {
 	for (int i = 0; i < E_TEXTURE::TEXTURE_MAX; i++)
 	{
@@ -136,6 +139,9 @@ CResult::CResult()
 
 	// データ受け継ぎ
 	m_Data.Load();	//ファイルに上がっている情報を読み込む
+
+	//=== サウンドファイル読み込み =====
+	LoadSound();
 
 }
 
@@ -175,6 +181,8 @@ void CResult::Update()
 	if (IsKeyTrigger(VK_SPACE) || IsKeyTriggerController(BUTTON_B))
 	{
 		m_bFinish = true;	// タイトルシーン終了フラグON
+		//===== SEの再生 =======
+		PlaySE(SE_DECISION);
 	}
 
 
@@ -625,4 +633,42 @@ CResult::E_TYPE CResult::GetNext() const
 {
 	// =============== 提供 ===================
 	return CResult::E_TYPE_TITLE;	//遷移先シーンの種類
+}
+
+/* ========================================
+	リザルト用SE読み込み関数
+   ----------------------------------------
+   内容：リザルト用のSEのファイルを読み込む
+   ----------------------------------------
+   引数：無し
+   ----------------------------------------
+   戻値：無し
+======================================== */
+void CResult::LoadSound()
+{
+	//SEの読み込み
+	for (int i = 0; i < SE_MAX; i++)
+	{
+		m_pSE[i] = CSound::LoadSound(m_sSEFile[i].c_str());
+		if (!m_pSE[i])
+		{
+			MessageBox(NULL, m_sSEFile[i].c_str(), "Error", MB_OK);	//ここでエラーメッセージ表示
+		}
+	}
+}
+
+/* ========================================
+	SEの再生関数
+	----------------------------------------
+	内容：SEの再生
+	----------------------------------------
+	引数1：SEの種類(enum)
+	引数2：音量
+	----------------------------------------
+	戻値：なし
+======================================== */
+void CResult::PlaySE(SE se, float volume)
+{
+	m_pSESpeaker[se] = CSound::PlaySound(m_pSE[se]);	//SE再生
+	m_pSESpeaker[se]->SetVolume(volume);				//音量の設定
 }

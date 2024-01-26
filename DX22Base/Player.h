@@ -30,7 +30,8 @@
 	・2023/12/14 SE用の列挙を作成 yamashita
 	・2023/12/15 SEを外から再生できるように変更 yamashita
 	・2023/12/15 回復SE追加 yamashita
-	・2023/01/25 待機モーションを変更 takagi
+	・2024/01/25 待機モーションを変更 takagi
+	・2024/01/26 警告SE追加 suzumura
 
 ========================================== */
 #ifndef __PLAYER_H__
@@ -58,11 +59,12 @@ public:
 	// === 列挙 ===
 	enum SE
 	{
-		SE_SWING,	//ハンマーを振るSE
+		SE_SWING,		//ハンマーを振るSE
 		SE_RUN,			//移動のSE
 		SE_DAMAGED,		//被ダメージのSE
 		SE_HIT_HAMMER,	//ハンマーとスライムの接触SE
-		SE_HEAL,
+		SE_HEAL,		//回復SE
+		SE_WARNING,		//残り体力１
 
 		SE_MAX			//SEの総数
 	};
@@ -135,8 +137,11 @@ private:
 		"Assets/Sound/SE/Swing.mp3",			//ハンマーを振る
 		"Assets/Sound/SE/Run.mp3",				//移動のSE
 		"Assets/Sound/SE/PlayerDamage.mp3",		//プレイヤーの被ダメージ時
-		"Assets/Sound/SE/HammerHit.mp3",			//ハンマーとスライムの接触SE
-		"Assets/Sound/SE/HealSE.mp3" };			//回復アイテム取得時
+		"Assets/Sound/SE/HammerHit.mp3",		//ハンマーとスライムの接触SE
+		"Assets/Sound/SE/HealSE.mp3",			//回復アイテム取得時
+		"Assets/Sound/SE/Warning.mp3"			//残りHPが１の時
+
+	};
 
 	//=====アニメーション関連=====
 	AnimeModel::AnimeNo m_Anime[MOTION_MAX];		//プレイヤーのアニメーション

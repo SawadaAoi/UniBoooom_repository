@@ -13,6 +13,7 @@
 	・2023/11/16 制作 takagi
 	・2023/12/12 ステージセレクト用の構造体、配列、関数追加 yamamoto
 	・2024/01/26 拡縮実装 takagi
+	・2024/01/26 選択、決定SE追加 suzumura
 
 ========================================== */
 
@@ -23,6 +24,7 @@
 #include "Scene.h"	//親のヘッダ
 #include "2dPolygon.h"
 #include "FrameCnt.h"	//割合検出用
+#include "Sound.h"	//サウンドヘッダ
 // =============== 定数定義 =======================
 const int SUTAGE_NUM = 3;						// ステージの数
 
@@ -34,6 +36,14 @@ class CSelectStage :public CScene	//シーン
 	const float MAX_SIZE_ARR_LET = 550.0f;	//手配書最大サイズ
 	const int CHANGE_SCALE_HALF_TIME = 120;	//拡縮半周あたりにかかる時間
 public:
+	// ===列挙宣言===========
+	enum SE
+	{
+		SE_DECISION,	//決定音
+		SE_CHOOSE,		//項目選択SE
+
+		SE_MAX			//SEの総数
+	}; //SE
 	// ===構造体定義=========
 	typedef struct
 	{
@@ -46,10 +56,12 @@ public:
 	CSelectStage();						//コンストラクタ
 	~CSelectStage();					//デストラクタ
 	void Update();						//更新
-	void Draw();// const;					//描画	
+	void Draw();// const;				//描画	
 	void Select();
 	E_TYPE GetType() const override;	//自身の種類ゲッタ
 	E_TYPE GetNext() const override;	//次のシーンゲッタ
+	void LoadSound();								//シーンセレクト用のサウンドをロード
+	void PlaySE(SE se, float volume = 1.0f);		//SEを再生する
 protected:
 	StageSelect mStageNum[SUTAGE_NUM];
 private:
@@ -61,6 +73,14 @@ private:
 	bool m_bStickFlg;			// コントローラーのスティックをたおしているか
 	CFrameCnt* m_pFrameCnt;		//イージング用タイマー
 	bool m_bCntUpDwn;			//カウントアップ・ダウン
+
+	//=====SE関連=====
+	XAUDIO2_BUFFER* m_pSE[SE_MAX];
+	IXAudio2SourceVoice* m_pSESpeaker[SE_MAX];
+	const std::string m_sSEFile[SE_MAX] = {
+		"Assets/Sound/SE/Paper_break.mp3",			// 決定音
+		"Assets/Sound/SE/Select_Cursor.mp3" 		// 選択音
+	};
 
 };	//ステージセレクト
 
