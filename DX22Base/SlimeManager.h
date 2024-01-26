@@ -169,11 +169,16 @@ private:
 
 	
 	//========== アニメ ==========
-	const std::string m_sLevel1_Motion[CSlimeBase::MOTION_MAX] = {
-		"Assets/Model/slime/Slime1/slime_blue_walk_1.0.fbx",		// レベル1スライムのモーション
-		"Assets/Model/slime/Slime1/slime_blue_damaged_1.1.fbx",		// レベル1スライムのモーション
+	const std::string m_sLevel1_Motion[CSlimeBase::MOTION_LEVEL1_MAX] = {
+		"Assets/Model/slime/Blue/slime_blue_walk_1.0.fbx",		// レベル1スライムのモーション
+		"Assets/Model/slime/Blue/slime_blue_damaged_1.1.fbx",	// レベル1スライムのモーション
 	};
-	std::vector<AnimeModel::AnimeNo> m_level1Anime;		// レベル1スライムのアニメーション
+
+	const std::string m_sLevel2_Motion[CSlimeBase::MOTION_LEVEL2_MAX] = {
+	"Assets/Model/slime/Green/slime_green_walk_1.0.fbx",		// レベル2スライムの移動モーション
+	"Assets/Model/slime/Green/slime_green_damaged_1.0.fbx",		// レベル2スライムの叩かれたときのモーション
+	"Assets/Model/slime/Green/slime_green_rush_1.0.fbx",		// レベル2スライムの攻撃モーション
+	};
 };
 
 #endif // __SLIME_MANAGER_H__
