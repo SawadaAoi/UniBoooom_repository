@@ -19,6 +19,7 @@
 	・2023/11/15 スライムのモデルと頂点シェーダーをmanagerから受け取るように変更 yamashita
 	・2023/11/28 影の大きさを設定する変数追加 nieda
 	・2023/12/07 ゲームパラメータから一部定数移動 takagi
+	・2024/1/26  アニメーションの実装 Yamashita
 
 ========================================== */
 
@@ -65,16 +66,14 @@ CSlime_1::CSlime_1()
 	-------------------------------------
 	戻値：無し
 =========================================== */
-CSlime_1::CSlime_1(TPos3d<float> pos,VertexShader* pVS, AnimeModel* pModel, vector<AnimeModel::AnimeNo> anime)
+CSlime_1::CSlime_1(TPos3d<float> pos, AnimeModel* pModel)
 	: CSlime_1()
 {
 	m_Transform.fPos = pos;			// 初期座標を指定
 	m_pModel = pModel;
-	// アニメーションの受け渡し
-	m_Anime = anime;
-	m_pModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));		//頂点シェーダーをセット
-	m_pModel->Play(m_Anime[MOTION_LEVEL1_MOVE], true);
-	m_eCurAnime = MOTION_LEVEL1_MOVE;	// 現在のアニメーションをセット
+	// アニメーションのセット
+	m_eCurAnime = (int)MOTION_LEVEL1_MOVE;	// 現在のアニメーションをセット
+	m_pModel->Play(m_eCurAnime, true);
 }
 
 /* ========================================
@@ -102,12 +101,13 @@ CSlime_1::~CSlime_1()
 void CSlime_1::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
 {
 	m_PlayerTran = playerTransform;	// プレイヤーの最新パラメータを取得
-	//m_pModel->Step(ADD_ANIME);
-	if (m_eCurAnime == MOTION_LEVEL1_HIT)
+
+	// アニメーションの状態によってアニメーションの進行速度を変更
+	if (m_eCurAnime == (int)MOTION_LEVEL1_HIT)
 	{
 		m_fAnimeTime += (ADD_ANIME * 0.7f);		// アニメーションを進行
 	}
-	else if (m_eCurAnime == MOTION_LEVEL1_MOVE)
+	else if (m_eCurAnime == (int)MOTION_LEVEL1_MOVE)
 	{
 		m_fAnimeTime += ADD_ANIME;		// アニメーションを進行
 	}
@@ -115,9 +115,9 @@ void CSlime_1::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
 	if (!m_bHitMove)	//敵が通常の移動状態の時
 	{
 		// 現在のアニメーションが「吹き飛び」だったら移動モーションに変更
-		if (m_eCurAnime == MOTION_LEVEL1_HIT)
+		if (m_eCurAnime == (int)MOTION_LEVEL1_HIT)
 		{
-			m_eCurAnime = MOTION_LEVEL1_MOVE;
+			m_eCurAnime = (int)MOTION_LEVEL1_MOVE;
 			m_fAnimeTime = 0.0f;	//アニメーションタイムのリセット
 		}
 
@@ -128,14 +128,17 @@ void CSlime_1::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
 		else
 		{
 			MoveStop();	//爆発から逃げる
+
+			// 停止中はアニメーションも停止させるためにアニメーションタイムを戻す
+			m_fAnimeTime -= ADD_ANIME;
 		}
 	}
 	else
 	{
 		// 吹き飛びアニメーション再生
-		if (m_eCurAnime == MOTION_LEVEL1_MOVE)
+		if (m_eCurAnime == (int)MOTION_LEVEL1_MOVE)
 		{
-			m_eCurAnime = MOTION_LEVEL1_HIT;
+			m_eCurAnime = (int)MOTION_LEVEL1_HIT;
 			m_fAnimeTime = 0.0f;	// アニメーションタイムのリセット
 		}
 
@@ -153,20 +156,21 @@ void CSlime_1::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
 	-------------------------------------
 	内容：描画処理
 	-------------------------------------
-	引数1：カメラ
+	引数1：なし
 	-------------------------------------
 	戻値：無し
 =========================================== */
-void CSlime_1::Draw(const CCamera * pCamera)
+void CSlime_1::Draw()
 {
-	if (!m_pCamera) { return; }
+	if (!m_pCamera) { return; }	//ヌルチェック
 
+	//行列状態を取得してセット
 	DirectX::XMFLOAT4X4 mat[3] = {
 	m_Transform.GetWorldMatrixSRT(),
 	m_pCamera->GetViewMatrix(),
 	m_pCamera->GetProjectionMatrix()
 	};
-	ShaderList::SetWVP(mat);
+	ShaderList::SetWVP(mat);	
 
 	// 複数体を共通のモデルで扱っているため描画のタイミングでモーションの種類と時間をセットする
 	m_pModel->Play(m_eCurAnime,true);
@@ -179,7 +183,7 @@ void CSlime_1::Draw(const CCamera * pCamera)
 	DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
 	SetRenderTargets(1, &pRTV, pDSV);		//DSVがnullだと2D表示になる
 
-	//-- モデル表示
+	//-- モデル表示(アニメーション対応ver)
 	if (m_pModel) {
 		//アニメーション対応したプレイヤーの描画
 		m_pModel->Draw(nullptr, [this](int index)
@@ -203,7 +207,7 @@ void CSlime_1::Draw(const CCamera * pCamera)
 	}
 
 	//-- 影の描画
-	m_pShadow->Draw(m_Transform, m_fScaleShadow, pCamera);
+	m_pShadow->Draw(m_Transform, m_fScaleShadow, m_pCamera);
 }
 
 /* ========================================

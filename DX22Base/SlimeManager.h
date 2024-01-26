@@ -169,11 +169,31 @@ private:
 
 	
 	//========== アニメ ==========
-	const std::string m_sLevel1_Motion[CSlimeBase::MOTION_MAX] = {
-		"Assets/Model/slime/Slime1/slime_blue_walk_1.0.fbx",		// レベル1スライムのモーション
-		"Assets/Model/slime/Slime1/slime_blue_damaged_1.1.fbx",		// レベル1スライムのモーション
+	// 青スライム
+	const std::string m_sLevel1_Motion[CSlimeBase::MOTION_LEVEL1_MAX] = {
+		"Assets/Model/slime/Blue/slime_blue_walk_1.0.fbx",		// レベル1スライムの移動モーション
+		"Assets/Model/slime/Blue/slime_blue_damaged_1.1.fbx",	// レベル1スライムの叩かれたときのモーション
 	};
-	std::vector<AnimeModel::AnimeNo> m_level1Anime;		// レベル1スライムのアニメーション
+
+	// 緑スライム
+	const std::string m_sLevel2_Motion[CSlimeBase::MOTION_LEVEL2_MAX] = {
+	"Assets/Model/slime/Green/slime_green_walk_1.0.fbx",		// レベル2スライムの移動モーション
+	"Assets/Model/slime/Green/slime_green_damaged_1.0.fbx",		// レベル2スライムの叩かれたときのモーション
+	"Assets/Model/slime/Green/slime_green_rush_1.0.fbx",		// レベル2スライムの攻撃モーション
+	};
+
+	// 黄色スライム
+	const std::string m_sLevel3_Motion[CSlimeBase::MOTION_LEVEL3_MAX] = {
+	"Assets/Model/slime/Yellow/slime_yellow_walk_1.0.fbx",		// レベル3スライムの移動モーション
+	"Assets/Model/slime/Yellow/slime_yellow_damaged_1.0.fbx",	// レベル3スライムの叩かれたときのモーション
+	"Assets/Model/slime/Yellow/slime_yellow_mekakushi_1.1.fbx",	// レベル3スライム静止状態のモーション
+	};
+
+	// 赤スライム
+	const std::string m_sLevel4_Motion[CSlimeBase::MOTION_LEVEL4_MAX] = {
+		"Assets/Model/slime/Red/slime_red_walk_1.0.fbx",		// レベル1スライムの移動モーション
+		"Assets/Model/slime/Red/slime_red_damaged_1.0.fbx",	// レベル1スライムの叩かれたときのモーション
+	};
 };
 
 #endif // __SLIME_MANAGER_H__

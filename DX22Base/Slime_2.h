@@ -26,18 +26,18 @@ class CSlime_2 :
 {
 
 public:
-	enum ATTACK_MOVE_TYPE
-	{
-		ATTACK_NONE,		// 初期状態
+	enum ATTACK_MOVE_TYPE{
+		ATTACK_NONE,	// 初期状態
 		ATTACK_CHARGE,	// 突進前の溜め
 		ATTACK_TACKLE,	// 突進
 	};
 public:
 	// ===プロトタイプ宣言===
 	CSlime_2();
-	CSlime_2(TPos3d<float> pos, VertexShader* pVS, AnimeModel* pModel);
+	CSlime_2(TPos3d<float> pos, AnimeModel* pModel);
 	~CSlime_2();
 	void Update(tagTransform3d playerTransform, float fSlimeMoveSpeed) override;
+	void Draw() override;
 	void NormalMove() override;
 
 	void SetNormalSpeed() override;

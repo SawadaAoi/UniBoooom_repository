@@ -20,6 +20,8 @@
 	・2023/11/28 影の大きさを設定する変数追加 nieda
 	・2023/12/01 タックルの挙動を追加 yamashita
 	・2023/12/07 ゲームパラメータから一部定数移動 takagi
+	・2024/1/26  アニメーションの実装 Yamashita
+	・2024/1/26  タックル中に叩くとタックルがまた再開される不具合を修正 Yamashita
 
 ========================================== */
 
@@ -71,12 +73,13 @@ CSlime_2::CSlime_2()
 	-------------------------------------
 	戻値：無し
 =========================================== */
-CSlime_2::CSlime_2(TPos3d<float> pos,VertexShader* pVS, AnimeModel* pModel)
+CSlime_2::CSlime_2(TPos3d<float> pos, AnimeModel* pModel)
 	: CSlime_2()
 {
 	m_Transform.fPos = pos;			// 初期座標を指定
-	m_pVS = pVS;
 	m_pModel = pModel;
+	m_eCurAnime = MOTION_LEVEL2_MOVE;
+	m_pModel->Play(m_eCurAnime,true);
 }
 
 /* ========================================
@@ -104,12 +107,13 @@ CSlime_2::~CSlime_2()
 void CSlime_2::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
 {
 	m_PlayerTran = playerTransform;
+	m_fAnimeTime += ADD_ANIME * 0.6f;		// アニメーションを進行
 
 	if (!m_bHitMove)	//敵が通常の移動状態の時
 	{
 		if (!m_bMvStpFlg  && m_nMvStpCnt == 0)	//逃げるフラグがoffなら
 		{
-			NormalMove();	//通常異動
+			NormalMove();	//通常移動
 		}
 		else
 		{
@@ -118,13 +122,83 @@ void CSlime_2::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
 	}
 	else
 	{
+		// 吹き飛びアニメーション再生
+		if (m_eCurAnime != (int)MOTION_LEVEL2_HIT)
+		{
+			m_eCurAnime = (int)MOTION_LEVEL2_HIT;
+			m_fAnimeTime = 0.0f;	// アニメーションタイムのリセット
+		}
+
 		//敵の吹き飛び移動
 		HitMove();
+
+		// タックルを中止して変数を初期化
+		m_AtcMoveType = ATTACK_NONE;
+		m_nChargeCnt = 0;
+		m_nTackleCnt = 0;
 	}
 
 	// -- 座標更新
 	m_Transform.fPos.x += m_move.x * fSlimeMoveSpeed;
 	m_Transform.fPos.z += m_move.z * fSlimeMoveSpeed;
+}
+
+/* ========================================
+	描画処理関数
+	-------------------------------------
+	内容：描画処理
+	-------------------------------------
+	引数1：なし
+	-------------------------------------
+	戻値：無し
+=========================================== */
+void CSlime_2::Draw()
+{
+	if (!m_pCamera) { return; }
+
+	DirectX::XMFLOAT4X4 mat[3] = {
+	m_Transform.GetWorldMatrixSRT(),
+	m_pCamera->GetViewMatrix(),
+	m_pCamera->GetProjectionMatrix()
+	};
+	ShaderList::SetWVP(mat);
+
+	// 複数体を共通のモデルで扱っているため描画のタイミングでモーションの種類と時間をセットする
+	m_pModel->Play(m_eCurAnime, true);
+	m_pModel->SetAnimationTime(m_eCurAnime, m_fAnimeTime);	// アニメーションタイムをセット
+	// アニメーションタイムをセットしてから動かさないと反映されないため少しだけ進める
+	m_pModel->Step(0.00000001f);
+
+	// レンダーターゲット、深度バッファの設定
+	RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得
+	DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
+	SetRenderTargets(1, &pRTV, pDSV);		//DSVがnullだと2D表示になる
+
+	//-- モデル表示
+	if (m_pModel) {
+		//アニメーション対応したプレイヤーの描画
+		m_pModel->Draw(nullptr, [this](int index)
+		{
+			const AnimeModel::Mesh* pMesh = m_pModel->GetMesh(index);
+			const AnimeModel::Material* pMaterial = m_pModel->GetMaterial(pMesh->materialID);
+			ShaderList::SetMaterial(*pMaterial);
+
+			DirectX::XMFLOAT4X4 bones[200];
+			for (int i = 0; i < pMesh->bones.size() && i < 200; ++i)
+			{
+				// この計算はゲームつくろー「スキンメッシュの仕組み」が参考になる
+				DirectX::XMStoreFloat4x4(&bones[i], DirectX::XMMatrixTranspose(
+					pMesh->bones[i].invOffset *
+					m_pModel->GetBone(pMesh->bones[i].index)
+				));
+			}
+			ShaderList::SetBones(bones);
+		});
+		//m_pModel->DrawBone();
+	}
+
+	//-- 影の描画
+	m_pShadow->Draw(m_Transform, m_fScaleShadow, m_pCamera);
 }
 
 /* ========================================
@@ -151,6 +225,14 @@ void CSlime_2::NormalMove()
 		{
 			m_AtcMoveType = ATTACK_CHARGE;
 			m_nAtkInterval = 0;
+
+			// アニメーションを「攻撃」に変更
+			if (m_eCurAnime != (int)MOTION_LEVEL2_ATTACK)
+			{
+				m_eCurAnime = (int)MOTION_LEVEL2_ATTACK;
+				m_fAnimeTime = 0.0f;	//アニメーションタイムのリセット
+			}
+
 			return;
 		}
 	}
@@ -162,17 +244,29 @@ void CSlime_2::NormalMove()
 		m_nAtkInterval++;
 		CSlimeBase::NormalMove();
 
+		// 現在のアニメーションが「移動」以外だったら移動モーションに変更
+		if (m_eCurAnime != (int)MOTION_LEVEL2_MOVE)
+		{
+			m_eCurAnime = (int)MOTION_LEVEL2_MOVE;
+			m_fAnimeTime = 0.0f;	//アニメーションタイムのリセット
+		}
+
 		return;
 	case (ATTACK_CHARGE):
 		if (m_nChargeCnt > LEVEL2_ATTACK_CHARGE_CNT)
 		{	//チャージの時間を超えていたらタックル状態に移行する
 			m_AtcMoveType = ATTACK_TACKLE;
 			m_nChargeCnt = 0;
+
+
 		}
 		else 
 		{ //まだだったらカウントを溜める
 			m_nChargeCnt++; 
 			CSlimeBase::NormalMove();
+
+			// アニメーションのカウントが一定以上ならアニメーションを止めるためにカウントをマイナス
+
 
 		}	
 
@@ -206,12 +300,24 @@ void CSlime_2::NormalMove()
 			m_AtcMoveType = ATTACK_NONE;
 			m_nTackleCnt = 0;
 			CSlimeBase::NormalMove();
+
+			// 移動アニメーションに変更
+			m_eCurAnime = (int)MOTION_LEVEL2_MOVE;
+			m_fAnimeTime = 0.0f;	//アニメーションタイムのリセット
+
 		}
 		break;
 	}
 
 	//上記のどのifにも当てはまらない場合ランダム移動
 	RandomMove();
+
+	// 現在のアニメーションが「移動」以外だったら移動モーションに変更
+	if (m_eCurAnime != (int)MOTION_LEVEL2_MOVE)
+	{
+		m_eCurAnime = (int)MOTION_LEVEL2_MOVE;
+		m_fAnimeTime = 0.0f;	//アニメーションタイムのリセット
+	}
 }
 
 /* ========================================

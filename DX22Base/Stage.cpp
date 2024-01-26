@@ -22,6 +22,7 @@
 	・2023/12/18 ポーズ動的確保 takagi
 	・2023/12/28 BattleData格納処理をまとめた関数を追加	Sawada
 	・2024/01/01 ステージ分岐 Takagi
+	・2024/01/25 ヒットエフェクト関係の処理追加 Tei
 
 ========================================== */
 
@@ -89,8 +90,12 @@ CStage::CStage(CUIStageManager::E_STAGE_NUM eStage)
 	m_pUIStageManager = new CUIStageManager(m_pPlayer, m_pCamera, m_pSlimeMng, eStage);	// UIマネージャー生成
 	m_pStartText = new CStartText(m_pCamera);
 
+	//================エフェクト動的確保================
+	m_pHitEffectMng = new CHitSlimeEffectManager();
+
 	//================セット================
 	// カメラ
+	m_pHitEffectMng->SetCamera(m_pCamera);
 	m_pPlayer->SetCamera(m_pCamera);
 	m_pExplosionMng->SetCamera(m_pCamera);
 	m_pSlimeMng->SetCamera(m_pCamera);
@@ -141,6 +146,7 @@ CStage::~CStage()
 	SAFE_DELETE(m_pBox);
 	SAFE_DELETE(m_pSlimeMng);
 	SAFE_DELETE(m_pExplosionMng);
+	SAFE_DELETE(m_pHitEffectMng);
 	SAFE_DELETE(m_pCollision);
 	SAFE_DELETE(m_pFade);
 	SAFE_DELETE(m_pTexture);

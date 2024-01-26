@@ -70,7 +70,7 @@ public:
 	};
 private:
 	// ===定数定義===========
-	const int CNT_START_WAIT = 100;	//待機モーションを始めるまでの時間
+	const int CNT_START_WAIT = 10;	//待機モーションを始めるまでの時間
 public:
 	// ===プロトタイプ宣言===
 	CPlayer();		//コンストラクタ
@@ -105,7 +105,7 @@ private:
 
 	// ===メンバ変数宣言=====
 	TPos3d<float> m_fMove;				// 移動量
-	AnimeModel* m_pModel;				//プレイヤーのモデル
+	AnimeModel* m_pModel;				// プレイヤーのモデル
 	int m_nHp;							// プレイヤーの体力
 	bool m_bAttackFlg;					// 攻撃中かどうかのフラグ
 	int m_nNoDamageCnt;					// プレイヤーの無敵時間をカウント
@@ -114,12 +114,11 @@ private:
 	CCamera* m_pCamera;					// プレイヤーを追従するカメラ
 	bool m_DrawFlg;						// プレイヤーがダメージを受けたら点滅するフラグ
 	int m_FlashCnt;						// 点滅の時間の長さ
-	int m_nMoveCnt;						// プレイヤーの移動によるSEの間隔
+	int m_nWalkSECnt;					// プレイヤーの移動によるSEの間隔
 	bool m_bIntFlg;						// ハンマー間隔時間フラグ
 	float m_fIntCnt;					// ハンマー間隔時間カウント
-	float m_fTick;						//フレームカウンタ(0to60)
 	CShadow* m_pShadow;
-	CFrameCnt* m_pWaitFrameCnt;			//待機モーション用フレームカウントダウン
+	CFrameCnt* m_pWaitFrameCnt;			// 待機モーション用フレームカウントダウン
 
 	// ===列挙===
 	enum MOTION

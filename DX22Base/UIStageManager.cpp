@@ -117,6 +117,7 @@ void CUIStageManager::Update()
 	m_pCombo->Update();
 	m_pHpMng->Update();
 	m_pBossgauge->Update();
+	m_pTotalScore->Update();
 	m_pScoreOHMng->Update();
 	m_pBossArrow->Update();
 }

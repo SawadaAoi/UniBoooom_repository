@@ -28,6 +28,7 @@
 #include <vector>		//配列型コンテナ
 #include "2dPolygon.h"	// 2Dオブジェクト用
 #include "NumberText.h"
+#include "DrawAnimation.h"
 #include "Sound.h"
 
 // =============== クラス定義 =====================
@@ -102,6 +103,7 @@ private:
 	
 	Texture* m_pTexture[TEXTURE_MAX];
 	BattleData m_Data;					//戦闘結果
+	CDrawAnim *m_pDrawAnim;				//リザルトの文字のアニメーション
 
 	//=====SE関連=====
 	XAUDIO2_BUFFER* m_pSE[SE_MAX];
