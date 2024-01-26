@@ -15,6 +15,7 @@
 	・2023/12/09 オブジェクト分割 takagi
 	・2023/12/10 制作進行 takagi
 	・2023/12/12 フラグ追加 takagi
+	・2024/01/26 選択.決定.ポーズSE追加 suzumura
 
 ========================================== */
 
@@ -41,6 +42,15 @@ private:
 		E_FLAG_TIDYING_UP = 0x10,		//片付け中
 		E_FLAG_CALL_FINISH = 0x20,		//終了予約
 	};	//フラグ
+
+	enum SE
+	{
+		SE_DECISION,	//決定音
+		SE_CHOOSE,		//項目選択SE
+		SE_PAUSE,		//ポーズ音
+
+		SE_MAX			//SEの総数
+	}; //SE
 public:
 	// ===プロトタイプ宣言===
 	CPause(const CCamera* pCamera);						//コンストラクタ
@@ -63,6 +73,18 @@ private:
 	void UpFlag(const unsigned char& ucBitFlag);	//フラグ起こし
 	void DownFlag(const unsigned char& ucBitFlag);	//フラグ降ろし
 	void SetFlag(const unsigned char& ucBitFlag);	//フラグ反転
-};	//リザルト
+	void LoadSound();								//サウンドをロード
+	void PlaySE(SE se, float volume = 1.0f);		//SEを再生する
+
+	//=====SE関連=====
+	XAUDIO2_BUFFER* m_pSE[SE_MAX];
+	IXAudio2SourceVoice* m_pSESpeaker[SE_MAX];
+	const std::string m_sSEFile[SE_MAX] = {
+		"Assets/Sound/SE/Decision.mp3",				// 決定音
+		"Assets/Sound/SE/Select_Cursor.mp3", 		// 選択音
+		"Assets/Sound/SE/Pause.mp3" 				// ポーズ音
+	};
+
+};
 
 #endif	//!__PAUSE_H__

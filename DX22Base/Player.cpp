@@ -38,6 +38,7 @@
 	・2023/12/14 SEの変数を整理 yamashita
 	・2023/12/15 SEを外から再生できるように変更 yamashita
 	・2023/01/25 待機モーションを変更 takagi
+	・2024/01/26 警告SE追加 suzumura
 
 ======================================== */
 
@@ -67,6 +68,8 @@ const float	SE_RUN_VOLUME = 0.3f;							// 移動によるSEの音量
 const float PLAYER_MOVE_ANIME_SPEED = 1.2f;					// プレイヤーの移動アニメーション再生速度
 const float PLAYER_SWING_ANIME_SPEED = 5.0f;				// プレイヤーの移動アニメーション再生速度
 const float	ADD_ANIM_FRAME = 1.0f / 60.0f;
+const int   PLAYER_WARNING_HP = 1;							//瀕死の警告を行うプレイヤー残りHP
+
 
 /* ========================================
    関数：コンストラクタ
@@ -308,8 +311,11 @@ void CPlayer::Damage(int DmgNum)
 	m_nHp -= DmgNum;
 	m_bCollide = true;	//プレイヤーを一定時間、無敵にする
 	m_nNoDamageCnt = 0;	//プレイヤー無敵時間のカウントを0に戻す
-	//SEの再生
+	//=== SEの再生 =====
 	PlaySE(SE_DAMAGED);
+
+	// プレイヤーが瀕死になったら警告音を流す
+	if(m_nHp == PLAYER_WARNING_HP) PlaySE(SE_WARNING);
 
 	if (m_nHp <= 0)
 	{
