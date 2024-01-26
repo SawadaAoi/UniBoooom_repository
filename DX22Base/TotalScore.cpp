@@ -153,7 +153,7 @@ void CTotalScore::Draw()
 		//スプライトの設定
 		Sprite::SetWorld(time[0]);
 		
-		int x = TotalScoreArray[i] % 5;	//ここ名前募集します
+		int x = TotalScoreArray[i] % 5;
 		int y = TotalScoreArray[i] / 5;	//配列に入ってる数字の場所を計算してます
 		
 		Sprite::SetUVPos(DirectX::XMFLOAT2(0.2f*x, 0.5f*y));

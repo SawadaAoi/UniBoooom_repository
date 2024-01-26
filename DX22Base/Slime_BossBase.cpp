@@ -27,7 +27,7 @@ const float BOSS_HP_SIZEX = 0.3f;		//体力１分の大きさ（X）
 const float BOSS_HP_SIZEY = 0.5f;		//体力１分の大きさ（Y）
 const float BOSS_HPFRAME_SIZEX = 0.2f;	//体力ゲージよりどれだけ大きいか（X）
 const float BOSS_HPFRAME_SIZEY = 0.2f;	//体力ゲージよりどれだけ大きいか（Y）
-const float BOSS_HP_POSX = 8.6f;		//体力ゲージ（減る方）の位置
+const float BOSS_HP_POSX = 17.0f;		//体力ゲージ（減る方）の位置
 
 const int BOSS_DAMAGE_FLASH_FRAME = 0.1 * 60;					// ダメージ受けた際の点滅フレーム(無敵ではない)
 const int BOSS_DAMAGE_FLASH_TOTAL_FRAME = 0.5 * 60;					// ダメージを受けた際の点滅を何フレーム行うか
@@ -65,7 +65,7 @@ CSlime_BossBase::CSlime_BossBase()
 	{
 		MessageBox(NULL, "HPフレーム読み込み", "Error", MB_OK);
 	}
-
+	
 }
 
 
@@ -199,7 +199,7 @@ void CSlime_BossBase::Draw(const CCamera* pCamera)
 
 
 	//フレーム
-	DirectX::XMMATRIX world = matInv * DirectX::XMMatrixTranslation(m_Transform.fPos.x+0.2f, m_Transform.fPos.y + SLIME_HP_HEIGHT, m_Transform.fPos.z);
+	DirectX::XMMATRIX world = matInv * DirectX::XMMatrixTranslation(m_Transform.fPos.x, m_Transform.fPos.y + SLIME_HP_HEIGHT, m_Transform.fPos.z);
 	DirectX::XMStoreFloat4x4(&mat[0], DirectX::XMMatrixTranspose(world));
 	Sprite::SetSize(DirectX::XMFLOAT2(3.2f, 0.7f));
 
@@ -214,12 +214,13 @@ void CSlime_BossBase::Draw(const CCamera* pCamera)
 	Sprite::Draw();
 
 
-	float width = (BOSS_HP_SIZEX /2)*(BOSS_HP_POSX - m_nHp);
-
+	HPWidth = 3.0f / m_nMaxHp;	
+	float width = (HPWidth /2)*(m_nMaxHp - m_nHp);
+	
 
 	 world = matInv * DirectX::XMMatrixTranslation(m_Transform.fPos.x - width, m_Transform.fPos.y+ SLIME_HP_HEIGHT, m_Transform.fPos.z);
 	DirectX::XMStoreFloat4x4(&mat[0], DirectX::XMMatrixTranspose(world));
-	Sprite::SetSize(DirectX::XMFLOAT2(BOSS_HP_SIZEX*m_nHp, BOSS_HP_SIZEY));
+	Sprite::SetSize(DirectX::XMFLOAT2(HPWidth*m_nHp, BOSS_HP_SIZEY));
 	
 	Sprite::SetUVPos(DirectX::XMFLOAT2(1.0f,1.0f));
 	Sprite::SetUVScale(DirectX::XMFLOAT2(1.0f,1.0f));
