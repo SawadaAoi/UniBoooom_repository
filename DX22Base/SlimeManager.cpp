@@ -383,7 +383,7 @@ void CSlimeManager::Create(E_SLIME_LEVEL level)
 			m_pSlime[i] = new CSlime_2(CreatePos, m_pGreenModel);	// 動的生成
 			break;
 		case LEVEL_3:
-			m_pSlime[i] = new CSlime_3(CreatePos, m_pVS, m_pYellowModel);	// 動的生成
+			m_pSlime[i] = new CSlime_3(CreatePos, m_pYellowModel);	// 動的生成
 			break;
 		case LEVEL_4:
 			m_pSlime[i] = new CSlime_4(CreatePos, m_pVS, m_pRedModel);	// 動的生成
@@ -740,7 +740,7 @@ void CSlimeManager::UnionSlime(E_SLIME_LEVEL level ,TPos3d<float> pos, float spe
 			break;
 		case LEVEL_2:
 			//サイズ3のスライムを生成
-			m_pSlime[i] = new CSlime_3(pos, m_pVS, m_pYellowModel);
+			m_pSlime[i] = new CSlime_3(pos, m_pYellowModel);
 			m_pSlime[i]->HitMoveStart(speed, angle);
 			break;
 		case LEVEL_3:
@@ -1186,6 +1186,7 @@ void CSlimeManager::LoadModel()
 		}
 	}
 	m_pBlueModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));		//頂点シェーダーをセット
+
 	//レベル2スライムのモデル読み込み
 	m_pGreenModel = new AnimeModel;
 	if (!m_pGreenModel->Load(m_sLevel2_Motion[0].c_str(), 0.15f, AnimeModel::ZFlip)) {		//倍率と反転は省略可
@@ -1202,12 +1203,23 @@ void CSlimeManager::LoadModel()
 		}
 	}
 	m_pGreenModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));		//頂点シェーダーをセット
+
 	//レベル3スライムのモデル読み込み
 	m_pYellowModel = new AnimeModel;
-	if (!m_pYellowModel->Load("Assets/Model/slime/slime_Yellow1.28.FBX", 0.15f, AnimeModel::ZFlip)) {	//倍率と反転は省略可
+	if (!m_pYellowModel->Load("Assets/Model/slime/Yellow/slime_yellow_walk_1.0.fbx", 0.15f, AnimeModel::ZFlip)) {	//倍率と反転は省略可
 		MessageBox(NULL, "slime_yellow", "Error", MB_OK);	//ここでエラーメッセージ表示
 	}
-	m_pYellowModel->SetVertexShader(m_pVS);
+	for (int i = 0; i < CSlimeBase::MOTION_LEVEL3_MAX; i++)
+	{
+		//各アニメーションの読み込み
+		m_pYellowModel->AddAnimation(m_sLevel3_Motion[i].c_str());
+		//読み込みに失敗したらエラーメッセージ
+		if (!m_pYellowModel->GetAnimation(i))
+		{
+			MessageBox(NULL, m_sLevel3_Motion[i].c_str(), "Error", MB_OK);	//ここでエラーメッセージ表示
+		}
+	}
+	m_pYellowModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));		//頂点シェーダーをセット
 	//レベル4スライムのモデル読み込み
 	m_pRedModel = new AnimeModel;
 	if (!m_pRedModel->Load("Assets/Model/slime/slime_red1.28.FBX", 0.18f, AnimeModel::ZFlip)) {			//倍率と反転は省略可
