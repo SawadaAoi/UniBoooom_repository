@@ -13,6 +13,7 @@
 	E2023/11/24@ƒeƒNƒXƒ`ƒƒ‚Ì’£‘Ö,ƒRƒƒ“ƒg’ù³ yamamoto
 	E2023/11/26@ƒRƒ“ƒ{”{—¦‚Ì•\¦‚Ì•ÏX yamamoto
 	E2023/12/07 ƒQ[ƒ€ƒpƒ‰ƒ[ƒ^‚©‚çˆê•”’è”ˆÚ“®EƒCƒ“ƒNƒ‹[ƒh’Ç‰Á takagi
+	E2024/01/26 ˆ—‚ğŒ©‚â‚·‚­C³&&ƒg[ƒ^ƒ‹ƒXƒRƒA‰ÁZƒAƒjƒˆ—’Ç‰Á sawada
 
 ========================================== */
 
@@ -24,15 +25,20 @@
 // =============== ’è”’è‹` ===================
 const std::string TEXTURE_PATH[CTotalScore::TEXTURE_MAX][2] =
 {
-	{"ƒg[ƒ^ƒ‹ƒXƒRƒA”š","Assets/Texture/Score/numbers_v1/combo_numbers.png"},
-	{"‰ÁZƒXƒRƒA”š","Assets/Texture/Score/numbers_v1/plus_score_numbers.png"},
+	{"ƒg[ƒ^ƒ‹ƒXƒRƒA”š","Assets/Texture/Score/score_numbers.png"},
+	{"‰ÁZƒXƒRƒA”š","Assets/Texture/Score/plus_score_numbers.png"},
 	{"ƒg[ƒ^ƒ‹ƒXƒRƒA”wŒi","Assets/Texture/Score/total_score_back_1.png"},
 	{"‰ÁZƒXƒRƒA”wŒi","Assets/Texture/Score/plus_score_back_1.png"},
 };
 
+const int ADD_SCORE_DISP_FRAME = 1.5f * 60;		// ‰ÁZƒXƒRƒA•\¦ŠÔ
+const int COMBO_MULT_DISP_FRAME = 1.0f * 60;	// ƒRƒ“ƒ{”{—¦•\¦ŠÔ
+const int TOTAL_SCORE_MOVE_FRAME = 0.05f * 60;	// ƒg[ƒ^ƒ‹ƒXƒRƒA‰ÁZƒAƒjƒˆ—Ø‚è‘Ö‚¦ŠÔ
+const int TOTAL_SCORE_MOVE_ADD_POINT = 100;		// ƒg[ƒ^ƒ‹ƒXƒRƒA‰ÁZƒAƒjƒˆ—‰ÁZ’l
 
-const int TOTAL_SCORE_DIGIT = 5;								//ƒg[ƒ^ƒ‹ƒXƒRƒA‚ÌŒ…”
-const int MAX_TOTALSCORE = 99999;							//ªˆê‚É•Ï‚¦‚Ä‚­‚¾‚³‚¢iŒ…”•ª9‚ğ’Ç‰Áj//Å‘åƒg[ƒ^ƒAƒ‹ƒXƒRƒA
+
+const int TOTAL_SCORE_DIGIT = 5;						//ƒg[ƒ^ƒ‹ƒXƒRƒA‚ÌŒ…”
+const int MAX_TOTALSCORE = 99999;						//ªˆê‚É•Ï‚¦‚Ä‚­‚¾‚³‚¢iŒ…”•ª9‚ğ’Ç‰Áj//Å‘åƒg[ƒ^ƒAƒ‹ƒXƒRƒA
 
 const TDiType<float> TOTAL_SCORE_POS(1230.0f, 50.0f);	// ƒg[ƒ^ƒ‹ƒXƒRƒA‚ÌˆÊ’uİ’è
 const TDiType<float> TOTAL_SCORE_SIZE(50.0f, -75.0f);	// ƒg[ƒ^ƒ‹ƒXƒRƒA‚Ì•\¦‚Ì‘å‚«‚³
@@ -45,19 +51,16 @@ const TDiType<float> ADD_SCORE_UVSIZE(0.2f, 0.333f);	// ‰ÁZƒXƒRƒA‚ÌUV‚Ì‘å‚«‚³
 const float ADD_SCORE_WIDTH = 30.0f;					   
 const float ADD_SCORE_HIGHT = 60.0f;		
 
-
 const TDiType<float> PLUS_SYMBOL_SIZE(30.0f, -40.0f);	// +‚Ì•\¦‚Ì‘å‚«‚³
-const TDiType<float> PLUS_SYMBOL_UVPOS(0.2f, 0.666f);	// +‚Ì•\¦‚ÌUVÀ•W
+const TDiType<float> PLUS_SYMBOL_UVPOS(0.0f, 0.666f);	// +‚Ì•\¦‚ÌUVÀ•W
 													   
 const float CONBO_MULTI_WIDTH = 40.0f;
-const float CONBO_MULTI_HIGHT = 60.0f;
 
-
-const TDiType<float> DECIMAL_POINT_POS(2.0f, -3.0f);	// ¬”“_‚ÌˆÊ’uİ’è
-const TDiType<float> DECIMAL_POINT_SIZE(15.0f, -15.0f);	// ¬”“_‚Ì•\¦‚Ì‘å‚«‚³
+const TDiType<float> DECIMAL_POINT_POS(CONBO_MULTI_WIDTH / 2, -0.0f);	// ¬”“_‚ÌˆÊ’uİ’è
+const TDiType<float> DECIMAL_POINT_SIZE(30.0f, -30.0f);	// ¬”“_‚Ì•\¦‚Ì‘å‚«‚³
 const TDiType<float> DECIMAL_POINT_UVPOS(0.4f, 0.666f); // ¬”“_‚ÌUVÀ•W
 
-const TDiType<float> CROSS_SYMBOL_SIZE(30.0f, -40.0f);	// ~‚Ì•\¦‚Ì‘å‚«‚³
+const TDiType<float> CROSS_SYMBOL_SIZE(40.0f, -65.0f);	// ~‚Ì•\¦‚Ì‘å‚«‚³
 const TDiType<float> CROSS_SYMBOL_UVPOS(0.2f, 0.666f);	// ~‚Ì•\¦‚ÌUVÀ•W
 
 
@@ -67,8 +70,6 @@ const DirectX::XMFLOAT2 TOTAL_SCORE_BG_SIZE(320.0f, -110.0f);	// ƒg[ƒ^ƒ‹ƒXƒRƒA‚
 const TPos2d<float> PLUS_SCORE_BG_POS(1175.0f, 60.0f);		// ƒg[ƒ^ƒ‹ƒXƒRƒA‚Ì”wŒiˆÊ’uİ’è
 const DirectX::XMFLOAT2 PLUS_SCORE_BG_SIZE(200.0f, -50.0f);	// ƒg[ƒ^ƒ‹ƒXƒRƒA‚Ì”wŒi‚Ì•\¦‚Ì‘å‚«‚³
 
-
-const CTotalScore::NumbersParam SCORE_MULTI_PARAM	 = { {50.0f, -75.0f},{1230.0f, 50.0f},{0.2f, 0.5f}, 50.0f };
 
 /* ========================================
 	ŠÖ”FƒRƒ“ƒXƒgƒ‰ƒNƒ^
@@ -80,7 +81,9 @@ const CTotalScore::NumbersParam SCORE_MULTI_PARAM	 = { {50.0f, -75.0f},{1230.0f,
 	–ß’lF‚È‚µ
 =========================================== */
 CTotalScore::CTotalScore()
-	: m_nTotalScore(0)
+	: m_nTotalScoreDisp(0)
+	, m_nTotalScore(0)
+	, m_nToScoreAddCnt(0)
 
 {
 	for (int i = 0; i < TextureType::TEXTURE_MAX; i++)
@@ -95,12 +98,9 @@ CTotalScore::CTotalScore()
 	// ƒXƒRƒA‰ÁZ’l”z—ñƒŠƒZƒbƒg
 	for (int i = 0; i < MAX_COMBO_NUM; i++)
 	{
-		m_AddScore[i].nAddScore = 0;
-		m_AddScore[i].fCombScoreMult = 0;
-		m_AddScore[i].bEndComboFlg = false;
-		m_AddScore[i].nDispFrame = 0;
-		m_AddScore[i].bDispFlg = false;
+		m_AddScore[i] = ResetPlusScore();
 	}
+
 }
 /* ========================================
 	ŠÖ”FƒfƒXƒgƒ‰ƒNƒ^
@@ -118,9 +118,79 @@ CTotalScore::~CTotalScore()
 		SAFE_DELETE(m_pTexture[i]);
 	}
 }
+
+
+/* ========================================
+	XVŠÖ”
+	----------------------------------------
+	“à—eFXVˆ—
+	----------------------------------------
+	ˆø”1F‚È‚µ
+	----------------------------------------
+	–ß’lF‚È‚µ
+=========================================== */
 void CTotalScore::Update()
 {
-	
+	TotalScoreMove();
+
+	// ‰ÁZƒXƒRƒA
+	for (int i = 0, lineNum = 1; i < MAX_COMBO_NUM; i++)
+	{
+		if (m_AddScore[i].nAddScore == 0)continue; // ’l‚Ì‚È‚¢•¨‚ÍƒXƒ‹[
+
+		// ƒRƒ“ƒ{‚ªI—¹‚µ‚½ê‡
+		if (m_AddScore[i].bEndComboFlg)
+		{
+			// ƒRƒ“ƒ{”{—¦•\¦‚ªI—¹‚µ‚Ä‚¢‚éê‡
+			if (m_AddScore[i].bDispComMultEndFlg)
+			{
+				m_AddScore[i].nDispFrame++;	// ‰ÁZƒXƒRƒA•\¦ƒJƒEƒ“ƒg‰ÁZ
+			}
+			else
+			{
+				// ƒRƒ“ƒ{”{—¦‚ª1.1ˆÈã‚Ìê‡
+				if (m_AddScore[i].fCombScoreMult >= 1.1f)
+				{
+					m_AddScore[i].nDispComMultFrame++;	// ƒRƒ“ƒ{”{—¦•\¦ƒJƒEƒ“ƒg‰ÁZ
+
+					// ˆê’è•b”ƒRƒ“ƒ{”{—¦‚ğ•\¦‚µ‚½‚©
+					if (m_AddScore[i].nDispComMultFrame >= COMBO_MULT_DISP_FRAME)
+					{
+						m_AddScore[i].bDispComMultEndFlg = true;
+						m_AddScore[i].nAddScore = static_cast<int>(m_AddScore[i].nAddScore * m_AddScore[i].fCombScoreMult);
+					}
+				}
+				else
+				{
+					m_AddScore[i].bDispComMultEndFlg = true;
+				}
+			}
+
+
+			// ˆê’èŠÔ‰ÁZƒXƒRƒA‚ğ•\¦‚µ‚½‚©
+			if (m_AddScore[i].nDispFrame >= ADD_SCORE_DISP_FRAME)
+			{
+				m_AddScore[i].bDispEndFlg = true;
+
+			}
+
+
+		}
+
+		// •\¦ƒtƒ‰ƒO‚ªƒIƒt‚É‚È‚Á‚Ä‚¢‚é‚©
+		if (m_AddScore[i].bDispEndFlg)
+		{
+			AddTotalScore(m_AddScore[i].nAddScore);	// ƒg[ƒ^ƒ‹ƒXƒRƒA‚É‰ÁZ
+
+			// ˆÈ‰º‰ÁZƒXƒRƒA”z—ñ’lƒŠƒZƒbƒg
+			m_AddScore[i] = ResetPlusScore();
+
+			continue;
+
+		}
+
+
+	}
 }
 
 /* ========================================
@@ -144,53 +214,28 @@ void CTotalScore::Draw()
 
 	// ‰ÁZƒXƒRƒA•\¦	-----------
 	// “¯ƒRƒ“ƒ{”•ª•¡”s‚Å•\¦‚·‚é
-	for (int i = 0, lineNum=1; i < MAX_COMBO_NUM; i++)
+	for (int i = 0, lineNum = 1; i < MAX_COMBO_NUM; i++)
 	{
-		if (m_AddScore[i].nAddScore == 0)continue;//‰½‚à‚È‚¯‚ê‚ÎƒXƒ‹[
-		
-		// ƒRƒ“ƒ{Œp‘±’†‚©‚Ç‚¤‚©
+		if (m_AddScore[i].nAddScore == 0)continue; // ‰½‚à‚È‚¯‚ê‚ÎƒXƒ‹[
 
 		DrawBGAddScore(lineNum);	// ‰ÁZƒXƒRƒA‚Ì”wŒi•`‰æ
-
 		DrawAddScore(i, lineNum);	// ‰ÁZƒXƒRƒA•`‰æ
 		lineNum++;
-
-
-		m_AddScore[i].nDispFrame++;
 
 		// ƒRƒ“ƒ{‚ªI—¹‚µ‚½ê‡
 		if (m_AddScore[i].bEndComboFlg)
 		{
-			// ˆê’èŠÔƒRƒ“ƒ{”{—¦‚ğ•\¦‚µ‚½‚©
-			if (m_AddScore[i].nDispFrame >= 1 * 60)
-			{
-				m_AddScore[i].bEndComboFlg = false;
-				m_AddScore[i].bDispFlg = true;
-				m_AddScore[i].nAddScore = static_cast<int>(m_AddScore[i].nAddScore * m_AddScore[i].fCombScoreMult);
-				m_AddScore[i].nDispFrame = 0;
-			}
-
 			// ”{—¦‚ğ•\¦‚·‚éê‡
-			if (m_AddScore[i].fCombScoreMult != 1.0f)
+			if (!m_AddScore[i].bDispComMultEndFlg)
 			{
+				DrawBGAddScore(lineNum);	// ‰ÁZƒXƒRƒA‚Ì”wŒi•`‰æ
 				DrawScoreComboMulti(i, lineNum);
 				lineNum++;
 
 			}
 			
 		}
-		// ˆê’è•b”•\¦‚µ‚½‚ç•`‰æ‚ğ«‚ß‚é&&•\¦ƒtƒ‰ƒO‚ªƒIƒt‚É‚È‚Á‚Ä‚¢‚é‚©
-		if (m_AddScore[i].nDispFrame >= 2 * 60&& m_AddScore[i].bDispFlg==true)
-		{
-			
-			AddTotalScore();	// ƒg[ƒ^ƒ‹ƒXƒRƒA‚É‰ÁZ
-			// ˆÈ‰º‰ÁZƒXƒRƒA”z—ñ’lƒŠƒZƒbƒg
-			m_AddScore[i].nAddScore = 0;
-			m_AddScore[i].bEndComboFlg = false;
-			m_AddScore[i].nDispFrame = 0;
-			m_AddScore[i].bDispFlg = false;
-		}
-	
+
 	}
 }
 
@@ -206,7 +251,7 @@ void CTotalScore::Draw()
 void CTotalScore::DrawTotalScore()
 {
 	DrawNumber(
-		m_nTotalScore, 
+		m_nTotalScoreDisp, 
 		TOTAL_SCORE_SIZE, 
 		TOTAL_SCORE_POS, 
 		TOTAL_SCORE_UVSIZE, 
@@ -237,25 +282,23 @@ void CTotalScore::DrawAddScore(int nNum, int lineNum)
 		m_pTexture[TextureType::NUM_ADD_SCORE],
 		0);
 
-	return;
-
-	//TDiType<float> fSetPos = { (ADD_SCORE_SIZE.x * nArraySize), (ADD_SCORE_HIGHT * lineNum) };
-	//DrawTexture(ADD_SCORE_SIZE, fSetPos,);
 
 	//+‚Ì•\¦
-	DirectX::XMFLOAT4X4 PlusMat[3];
+	int AdScoDigi = digitsToArray(m_AddScore[nNum].nAddScore, 0).size();
 
-	int width = int(ADD_SCORE_SIZE.x * nArraySize);
-	int hight = int(ADD_SCORE_HIGHT * lineNum);
-	//ƒ[ƒ‹ƒhs—ñ‚ÍX‚ÆY‚Ì‚İ‚ğl—¶‚µ‚Äì¬(Z‚Í10‚®‚ç‚¢‚É”z’u
-	DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(ADD_SCORE_POS.x - width, ADD_SCORE_POS.y + hight, 0.0f);
-	DirectX::XMStoreFloat4x4(&PlusMat[0], DirectX::XMMatrixTranspose(world));
+	TDiType<float> fSetPos = { 
+		ADD_SCORE_POS.x - (ADD_SCORE_SIZE.x * AdScoDigi), 
+		ADD_SCORE_POS.y + (ADD_SCORE_HIGHT * lineNum) 
+	};
+	DrawTexture(
+		PLUS_SYMBOL_SIZE, 
+		fSetPos, 
+		ADD_SCORE_UVSIZE, 
+		PLUS_SYMBOL_UVPOS,
+		m_pTexture[TextureType::NUM_ADD_SCORE]);
 
-	//ƒXƒvƒ‰ƒCƒg‚Ìİ’è
-	Sprite::SetWorld(PlusMat[0]);
-	Sprite::SetUVPos(DirectX::XMFLOAT2(0.0f, 0.666f));
 
-	Sprite::Draw();
+	
 }
 
 /* ========================================
@@ -353,40 +396,38 @@ void CTotalScore::DrawScoreComboMulti(int nNum, int lineNum)
 		ADD_SCORE_POS,
 		ADD_SCORE_UVSIZE,
 		CONBO_MULTI_WIDTH,
-		CONBO_MULTI_HIGHT * lineNum,
+		ADD_SCORE_HIGHT * lineNum,
 		m_pTexture[TextureType::NUM_ADD_SCORE],
 		0);
 
 
 	//¬”“_•\¦
-	Sprite::SetSize(DirectX::XMFLOAT2(DECIMAL_POINT_SIZE.x, DECIMAL_POINT_SIZE.y));
+	int AdScoDigi = digitsToArray(m_AddScore[nNum].nAddScore, 0).size();
 
-	DirectX::XMFLOAT4X4 DecimalMat[3];
-	int width1 = int(ADD_SCORE_SIZE.x - DECIMAL_POINT_POS.x);
-	int hight1 = int(DECIMAL_POINT_POS.y);
-	//ƒ[ƒ‹ƒhs—ñ‚ÍX‚ÆY‚Ì‚İ‚ğl—¶‚µ‚Äì¬(Z‚Í10‚®‚ç‚¢‚É”z’u
-	DirectX::XMMATRIX world1 = DirectX::XMMatrixTranslation(TOTAL_SCORE_POS.x - width1, TOTAL_SCORE_POS.y + hight1, 0.0f);
-	DirectX::XMStoreFloat4x4(&DecimalMat[0], DirectX::XMMatrixTranspose(world1));
-
-	//ƒXƒvƒ‰ƒCƒg‚Ìİ’è
-	Sprite::SetWorld(DecimalMat[0]);
-	Sprite::SetUVPos(DirectX::XMFLOAT2(DECIMAL_POINT_UVPOS.x, DECIMAL_POINT_UVPOS.y));
-
-	Sprite::Draw();
-
+	TDiType<float> fSetPos = { 
+		ADD_SCORE_POS.x - DECIMAL_POINT_POS.x ,
+		ADD_SCORE_POS.y + (ADD_SCORE_HIGHT* lineNum)+ DECIMAL_POINT_POS.y 
+	};
+	DrawTexture(
+		DECIMAL_POINT_SIZE,
+		fSetPos,
+		ADD_SCORE_UVSIZE,
+		DECIMAL_POINT_UVPOS,
+		m_pTexture[TextureType::NUM_ADD_SCORE]);
 
 	//~•\¦
-	DirectX::XMFLOAT4X4 MultiMat[3];
+	fSetPos = {
+		ADD_SCORE_POS.x - (ADD_SCORE_SIZE.x * 2 + DECIMAL_POINT_SIZE.x),
+		ADD_SCORE_POS.y + (ADD_SCORE_HIGHT* lineNum)
+	};
+	DrawTexture(
+		CROSS_SYMBOL_SIZE,
+		fSetPos,
+		ADD_SCORE_UVSIZE,
+		CROSS_SYMBOL_UVPOS,
+		m_pTexture[TextureType::NUM_ADD_SCORE]);
 
-	int width = int(CROSS_SYMBOL_SIZE.x * 2 + DECIMAL_POINT_SIZE.x);
-	int hight = int(CONBO_MULTI_HIGHT * lineNum);
-	//ƒ[ƒ‹ƒhs—ñ‚ÍX‚ÆY‚Ì‚İ‚ğl—¶‚µ‚Äì¬(Z‚Í10‚®‚ç‚¢‚É”z’u
-	DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(ADD_SCORE_POS.x - width, ADD_SCORE_POS.y + hight, 0.0f);
-	DirectX::XMStoreFloat4x4(&MultiMat[0], DirectX::XMMatrixTranspose(world));
-	//ƒXƒvƒ‰ƒCƒg‚Ìİ’è
-	Sprite::SetWorld(MultiMat[0]);
-	Sprite::SetUVPos(DirectX::XMFLOAT2(CROSS_SYMBOL_UVPOS.x, CROSS_SYMBOL_UVPOS.y));
-	Sprite::Draw();
+
 }
 
 
@@ -414,6 +455,8 @@ void CTotalScore::DrawTexture(TDiType<float> fSize, TDiType<float> fPos, TDiType
 	// s—ñ
 	DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(fPos.x, fPos.y, 0.0f);	// À•WˆÚ“®
 	DirectX::XMStoreFloat4x4(&Mat[0], DirectX::XMMatrixTranspose(world));
+
+	Sprite::SetWorld(Mat[0]);
 	Sprite::SetView(Mat[1]);		// ƒrƒ…[s—ñ
 	Sprite::SetProjection(Mat[2]);	// ƒvƒƒWƒFƒNƒVƒ‡ƒ“s—ñ
 
@@ -481,6 +524,31 @@ void CTotalScore::DrawNumber(int dispNum, TDiType<float> fSize, TDiType<float> f
 	}
 }
 
+
+/* ========================================
+	‰ÁZƒXƒRƒAƒŠƒZƒbƒgŠÖ”
+	----------------------------------------
+	“à—eF‰ÁZƒXƒRƒA‚ğƒŠƒZƒbƒg‚·‚é
+	----------------------------------------
+	ˆø”1F–³‚µ
+	----------------------------------------
+	–ß’lF‰ÁZƒXƒRƒA\‘¢‘Ì
+======================================== */
+CTotalScore::PlusScore CTotalScore::ResetPlusScore()
+{
+	PlusScore rePlusScore;	// •Ô‚·’l
+		
+	rePlusScore.nAddScore			= 0;
+	rePlusScore.fCombScoreMult		= 0.0f;	// ƒRƒ“ƒ{ƒXƒRƒA”{—¦
+	rePlusScore.bEndComboFlg		= false;
+	rePlusScore.nDispFrame			= 0;
+	rePlusScore.bDispEndFlg			= false;
+	rePlusScore.nDispComMultFrame	= 0;
+	rePlusScore.bDispComMultEndFlg	= false;
+
+	return rePlusScore;
+}
+
 /* ========================================
 	‰ÁZƒXƒRƒAƒZƒbƒgŠÖ”
 	----------------------------------------
@@ -493,10 +561,10 @@ void CTotalScore::DrawNumber(int dispNum, TDiType<float> fSize, TDiType<float> f
 ======================================== */
 void CTotalScore::SetAddScore(CCombo::ComboInfo comboInfo,int num)
 {
+	// ‰ÁZƒXƒRƒA‚ÉƒRƒ“ƒ{”{—¦‚ğæZÏ‚İ‚Ìê‡‚ÍƒZƒbƒg‚µ‚È‚¢
+	if (m_AddScore[num].bDispComMultEndFlg) return;
 
 	m_AddScore[num].nAddScore = comboInfo.dScore;	// ƒRƒ“ƒ{‚ÌƒXƒRƒA‚ğXV‚·‚é
-
-	//m_AddScore[num].fCombScoreMult= comboInfo.dCnt
 	
 }
 
@@ -538,15 +606,13 @@ void CTotalScore::ComboCheck(CCombo::ComboInfo comboInfo, int num)
 	----------------------------------------
 	“à—eFƒg[ƒ^ƒ‹ƒXƒRƒA‚Ì‰ÁZ
 	----------------------------------------
-	ˆø”1F
+	ˆø”1F‰ÁZ‚·‚éƒXƒRƒA’l
 	----------------------------------------
 	–ß’lF‚È‚µ
 ======================================== */
-void CTotalScore::AddTotalScore()
+void CTotalScore::AddTotalScore(int addScore)
 {
-	std::vector<int> digitArray;
-	
-	m_nTotalScore += m_AddScore->nAddScore;	// ƒg[ƒ^ƒ‹ƒXƒRƒA‚É‰ÁZƒXƒRƒA‚ğ‘«‚·
+	m_nTotalScore += addScore;	// ƒg[ƒ^ƒ‹ƒXƒRƒA‚É‰ÁZƒXƒRƒA‚ğ‘«‚·
 
 	// Å‘å’l’´‚¦‚µ‚È‚¢‚æ‚¤‚É‚·‚é
 	if (m_nTotalScore > MAX_TOTALSCORE)
@@ -554,20 +620,6 @@ void CTotalScore::AddTotalScore()
 		m_nTotalScore = MAX_TOTALSCORE;
 	}
 
-	//digitArray = digitsToArray(m_nTotalScore,);
-	//nArraySize = int(digitArray.size());
-
-	//TotalScoreArray.clear();					//‰ÁZ‘O‚Ìƒg[ƒ^ƒ‹ƒXƒRƒAíœ
-	//for (int i = 0; i < TOTAL_SCORE_DIGIT; i++)//ƒg[ƒ^ƒ‹ƒXƒRƒA‚ÌŒ…‚ğì‚é
-	//{
-	//	TotalScoreArray.push_back(0);
-	//}
-	//for (int i = 0; i < nArraySize; i++)	//‰ÁZŒã‚Ìƒg[ƒ^ƒ‹ƒXƒRƒAì¬
-	//{
-	//	TotalScoreArray[i] = digitArray[i];
-	//}
-	//digitArray.clear();
-	
 
 }
 
@@ -616,5 +668,41 @@ std::vector<int> CTotalScore::digitsToArray(int score, int digits)
 	}
 
 	return digitsArray;
+}
+
+
+/* ========================================
+	ƒg[ƒ^ƒ‹ƒXƒRƒA‰ÁZ“®ìŠÖ”
+	-------------------------------------
+	“à—eFƒg[ƒ^ƒ‹ƒXƒRƒA‚É‰ÁZƒXƒRƒA‚ğ‘«‚µ‚½’l‚Ü‚Å”š‚ğƒAƒjƒ[ƒVƒ‡ƒ“‚·‚é
+	-------------------------------------
+	ˆø”1F–³‚µ
+	-------------------------------------
+	–ß’lF–³‚µ
+=========================================== */
+void CTotalScore::TotalScoreMove()
+{
+	// •\¦—pƒg[ƒ^ƒ‹ƒXƒRƒA‚ª‰ÁZŒãƒg[ƒ^ƒ‹ƒXƒRƒA‚É’Ç‚¢‚Â‚¢‚Ä‚¢‚È‚¢
+	if (m_nTotalScoreDisp < m_nTotalScore)
+	{
+		m_nToScoreAddCnt++;	// •\¦—pƒg[ƒ^ƒ‹ƒXƒRƒA‚Ì”šØ‚è‘Ö‚¦ƒJƒEƒ“ƒg‰ÁZ
+
+		// Ø‚è‘Ö‚¦ŠÔ‚ª‰ß‚¬‚Ä‚¢‚é‚©
+		if (TOTAL_SCORE_MOVE_FRAME <= m_nToScoreAddCnt)
+		{
+			m_nTotalScoreDisp += TOTAL_SCORE_MOVE_ADD_POINT;
+			m_nToScoreAddCnt = 0;
+		}
+	}
+	// •\¦—pƒg[ƒ^ƒ‹ƒXƒRƒA‚ª‰ÁZŒãƒg[ƒ^ƒ‹ƒXƒRƒA‚É’Ç‚¢‚Â‚¢‚Ä‚¢‚é
+	else
+	{
+		// •\¦—pƒg[ƒ^ƒ‹ƒXƒRƒA‚É’l‚ğ‘«‚µ‚·‚¬‚½ê‡
+		if (m_nTotalScore != m_nTotalScoreDisp)
+		{
+			m_nTotalScoreDisp = m_nTotalScore;	// ’l‚ğ‡‚í‚¹‚é
+		}
+		m_nToScoreAddCnt = 0;
+	}
 }
 

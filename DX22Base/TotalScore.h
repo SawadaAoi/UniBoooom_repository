@@ -11,6 +11,7 @@
 	・2023/11/22　作成 yamamoto
 	・2023/11/23　score構造体、comboの構造体の情報取得処理追加 yamamoto
 	・2023/12/07 ゲームパラメータに依存していたので修正 takagi
+	・2024/01/26 処理を見やすく修正&&トータルスコア加算アニメ処理追加 sawada
 
 ========================================== */
 #ifndef __TOTALSCORE_H__
@@ -33,7 +34,10 @@ public:
 		float fCombScoreMult;			// コンボスコア倍率
 		bool  bEndComboFlg;				// コンボ表示終了フラグ(true:コンボ終了)
 		int   nDispFrame;				// 残描画用加算値
-		bool  bDispFlg;					// スコア加算値表示終了フラグ
+		bool  bDispEndFlg;				// スコア加算値表示終了フラグ
+		int	  nDispComMultFrame;		// コンボ倍率表示用加算値
+		bool  bDispComMultEndFlg;				// スコア加算値表示終了フラグ
+
 	}PlusScore;	// スコア処理情報まとめ
 
 	// 数字表示用
@@ -48,6 +52,7 @@ public:
 
 	}NumbersParam;
 
+	// 画像種類
 	enum TextureType
 	{
 		NUM_TOTAL_SCORE,
@@ -66,11 +71,13 @@ public:
 	void Draw();		 		//描画関数
 	void SetAddScore(CCombo::ComboInfo comboInfo,int num);
 	void ComboCheck(CCombo::ComboInfo comboInfo, int num);
-	void AddTotalScore();
+	void AddTotalScore(int addScore);
 
 	int GetTotalScore();
 	std::vector<int> digitsToArray(int score, int digits);	//引数の数字を各桁1ずつ配列に入れる
 private:
+	void TotalScoreMove();
+
 	void DrawBGTotalScore();			// トータルスコアの背景描画
 	void DrawTotalScore();
 	void DrawAddScore(int nNum, int lineNum);
@@ -80,7 +87,12 @@ private:
 	void DrawTexture(TDiType<float> fSize, TDiType<float> fPos, TDiType<float> fUVSize, TDiType<float> fUVPos, Texture * pTexture);
 	void DrawNumber(int dispNum, TDiType<float> fSize, TDiType<float> fPos, TDiType<float> fUVSize, float spaceW, float spaceH, Texture* pTexture, int digits);
 
+	CTotalScore::PlusScore ResetPlusScore();
+
+	int m_nTotalScoreDisp;
 	int m_nTotalScore;
+	int m_nToScoreAddCnt;
+	int m_nToScoAddPoint;
 	
 	PlusScore m_AddScore[MAX_COMBO_NUM];
 	CCombo::ComboInfo* m_pComboInfo;
