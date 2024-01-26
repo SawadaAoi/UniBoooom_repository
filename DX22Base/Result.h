@@ -27,6 +27,7 @@
 #include <vector>		//配列型コンテナ
 #include "2dPolygon.h"	// 2Dオブジェクト用
 #include "NumberText.h"
+#include "DrawAnimation.h"
 
 // =============== クラス定義 =====================
 class CResult :public CScene	//シーン
@@ -91,6 +92,7 @@ private:
 	
 	Texture* m_pTexture[TEXTURE_MAX];
 	BattleData m_Data;					//戦闘結果
+	CDrawAnim *m_pDrawAnim;				//リザルトの文字のアニメーション
 
 };	//リザルト
 

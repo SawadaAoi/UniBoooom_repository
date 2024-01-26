@@ -78,7 +78,7 @@ const TDiType<float> NUM_UVSCALE = { (1.0f / 5) ,(1.0f / 2) };
 
 const Display_Param BG_SCREEN_PARAM		= { { SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 },{ SCREEN_WIDTH, SCREEN_HEIGHT } };	// 背景
 const Display_Param BG_PANEL_PARAM		= { { 905.0f, SCREEN_HEIGHT / 2 } ,{ 750.0f, SCREEN_HEIGHT } };					// 項目背景
-const Display_Param RESULT_TEXT_PARAM = { { 265.0f, 90.0f },{ 400.0f, 100.0f } };										// リザルト
+//const Display_Param RESULT_TEXT_PARAM = { { 265.0f, 90.0f },{ 400.0f, 100.0f } };										// リザルト
 
 const Display_Param SVL_TIME_TEXT_PARAM = { { 650.0f, 30.0f },{ 200.0f, 80.0f } };	// 生存時間(文字)
 const Display_Param SVL_TIME_NUM__PARAM = { { 1200.0f, 50.0f },{ 85.0f, 95.0f } };	// 生存時間(数字)
@@ -87,7 +87,7 @@ const float SVL_TIME_NUM_SPACE = 55.0f;		// 時間の間(12^:^33)
 
 const Display_Param SCORE_TEXT_PARAM		= { { 655.0f, 130.0f },{ 220.0f, 75.0f } };	// スコア(文字)
 const Display_Param NEW_RECORD_TEXT_PARAM	= { { 820.0f,180.0f },{ 170.0f, 55.0f } };	// 新記録(文字)
-const Display_Param SCORE_NUM_PARAM			= { { 1200.0f, 160.0f },{ 85.0f, 105.0f } };		// スコア(数字)
+const Display_Param SCORE_NUM_PARAM			= { { 1200.0f, 160.0f },{ 85.0f, 105.0f } };	// スコア(数字)
 const Display_Param HIGH_SCORE_TEXT_PARAM	= { { 645.0f, 240.0f },{ 180.0f, 75.0f } };		// ハイスコア(文字)
 const Display_Param HIGH_SCORE_NUM_PARAM	= { { 1200.0f, 260.0f },{ 55.0f, 55.0f } };		// ハイスコア(数字)
 const Display_Param SCORE_LINE_PARAM		= { { 907.0f, 300.0f },{ 729.0f, 5.0f } };		// 線
@@ -96,8 +96,8 @@ const float HIGH_SCORE_NUM_SPACE = 45.0f;
 
 
 const Display_Param HUNT_TEXT_PARAM			= { { 710.0f, 340.0f },{ 330.0f, 110.0f } };	// 討伐数(文字)
-const Display_Param SLIME_TEXTURE_PARAM		= { { 650.0f, 430.0f },{ 90.0f, 90.0f } };		// スライム画像
-const float SLIME_SPACE_Y = 120.0f;	// スライム画像の間
+const Display_Param SLIME_TEXTURE_PARAM		= { { 650.0f, 430.0f },{ 160.0f, 160.0f } };	// スライム画像
+const float SLIME_SPACE_Y = 130.0f;	// スライム画像の間
 const Display_Param SLIME_HUNT_NUM_PARAM	= { { 650.0f, 430.0f },{ 60.0f, 60.0f } };		// スライム別討伐数
 const Display_Param PARENTHESIS_PARAM		= { { 650.0f, 530.0f },{ 0.0f, 0.0f } };		// ()
 const Display_Param MULTI_PARAM				= { { 650.0f, 510.0f },{ 40.0f, 40.0f } };		// ×
@@ -133,6 +133,12 @@ CResult::CResult()
 		}
 	}
 	
+	// リザルト文字のアニメーションの初期化
+	m_pDrawAnim = new CDrawAnim(60, TDiType <int>(5, 12), 2);
+	m_pDrawAnim->SetTexture(m_pTexture[E_TEXTURE::RESULT_TEXT]);
+	m_pDrawAnim->SetPos(TPos3d<float>(275.0f, 630.0f, 0.0f));
+	m_pDrawAnim->SetSize(TPos3d<float>(640.0f, 280.0f, 0.0f));
+	m_pDrawAnim->SetLoopFlg(true);
 
 	// データ受け継ぎ
 	m_Data.Load();	//ファイルに上がっている情報を読み込む
@@ -158,6 +164,7 @@ CResult::~CResult()
 	{
 		SAFE_DELETE(m_pTexture[i]);
 	}
+	delete m_pDrawAnim;
 }
 
 /* ========================================
@@ -177,7 +184,8 @@ void CResult::Update()
 		m_bFinish = true;	// タイトルシーン終了フラグON
 	}
 
-
+	// リザルトの文字のアニメーション
+	m_pDrawAnim->Update();
 }
 
 /* ========================================
@@ -191,8 +199,10 @@ void CResult::Update()
 	======================================== */
 void CResult::Draw()
 {
+	
 	DrawBgScreen();			// 背景
 	DrawWarningTexture();	// Result＆＆手配書
+	m_pDrawAnim->Draw();	// リザルトの文字のアニメーション
 	DrawSurvivalTime();		// 生存時間
 	DrawScore();			// スコア
 	DrawHunt();				// 討伐数
@@ -237,12 +247,12 @@ void CResult::DrawWarningTexture()
 	Texture* pWarningTex;	// 手配書画像
 
 	// リザルト文字
-	Draw2d(
-		RESULT_TEXT_PARAM.fPos.x,
-		RESULT_TEXT_PARAM.fPos.y,
-		RESULT_TEXT_PARAM.fSize.x,
-		RESULT_TEXT_PARAM.fSize.y,
-		m_pTexture[E_TEXTURE::RESULT_TEXT]);
+	//Draw2d(
+	//	RESULT_TEXT_PARAM.fPos.x,
+	//	RESULT_TEXT_PARAM.fPos.y,
+	//	RESULT_TEXT_PARAM.fSize.x,
+	//	RESULT_TEXT_PARAM.fSize.y,
+	//	m_pTexture[E_TEXTURE::RESULT_TEXT]);
 
 	// プレイしたステージによって手配書の画像を変える
 	switch (m_Data.nStageNum)
@@ -428,7 +438,7 @@ void CResult::DrawHunt()
 		DispNum(8, 1, { MULTI_NUM_PARAM.fPos.x + (3 * SLIME_SPACE_Y), MULTI_NUM_PARAM.fPos.y }, MULTI_NUM_PARAM.fSize, DEF_NUM_SPACE);
 
 		// スライム別討伐数
-		DispNum(m_Data.nKill[i], 1,{ 
+		DispNum(m_Data.nKill[i], 1,{
 			SLIME_HUNT_NUM_PARAM.fPos.x + (i*SLIME_SPACE_Y),
 			SLIME_HUNT_NUM_PARAM.fPos.y },
 			SLIME_HUNT_NUM_PARAM.fSize, DEF_NUM_SPACE);
