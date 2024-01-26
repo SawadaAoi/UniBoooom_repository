@@ -305,14 +305,14 @@ void CSlimeManager::Draw()
 	for (int i = 0; i <MAX_SLIME_NUM; i++)
 	{
 		if (m_pSlime[i] == nullptr) continue;
-		m_pSlime[i]->Draw(m_pCamera);
+		m_pSlime[i]->Draw();
 	}
 				
 	// ボススライム更新
 	for (int i = 0; i < MAX_BOSS_SLIME_NUM; i++)
 	{
 		if (m_pBoss[i] == nullptr) continue;
-		m_pBoss[i]->Draw(m_pCamera);
+		m_pBoss[i]->Draw();
 
 	}
 
@@ -377,16 +377,16 @@ void CSlimeManager::Create(E_SLIME_LEVEL level)
 		switch (level)
 		{
 		case LEVEL_1:
-			m_pSlime[i] = new CSlime_1(CreatePos,m_pVS,m_pBlueModel);	// 動的生成
+			m_pSlime[i] = new CSlime_1(CreatePos,m_pBlueModel);		// 動的生成
 			break;
 		case LEVEL_2:
-			m_pSlime[i] = new CSlime_2(CreatePos, m_pVS, m_pGreenModel);	// 動的生成
+			m_pSlime[i] = new CSlime_2(CreatePos, m_pGreenModel);	// 動的生成
 			break;
 		case LEVEL_3:
-			m_pSlime[i] = new CSlime_3(CreatePos, m_pVS, m_pYellowModel);	// 動的生成
+			m_pSlime[i] = new CSlime_3(CreatePos, m_pYellowModel);	// 動的生成
 			break;
 		case LEVEL_4:
-			m_pSlime[i] = new CSlime_4(CreatePos, m_pVS, m_pRedModel);	// 動的生成
+			m_pSlime[i] = new CSlime_4(CreatePos, m_pRedModel);		// 動的生成
 			break;
 		case LEVEL_FLAME:
 			m_pSlime[i] = new CSlime_Flame(CreatePos, m_flameSlimeEffect, m_pVS,m_pFlameModel);	// 動的生成
@@ -432,7 +432,7 @@ void CSlimeManager::CreateBoss(int BossNum)
 
 			break;
 		}
-
+		m_pBoss[i]->SetCamera(m_pCamera);
 		m_bBossPtrExist = true;
 		break;
 	}
@@ -735,17 +735,17 @@ void CSlimeManager::UnionSlime(E_SLIME_LEVEL level ,TPos3d<float> pos, float spe
 		{
 		case LEVEL_1:
 			//サイズ2のスライムを生成
-			m_pSlime[i] = new CSlime_2(pos, m_pVS, m_pGreenModel);
+			m_pSlime[i] = new CSlime_2(pos, m_pGreenModel);
 			m_pSlime[i]->HitMoveStart(speed, angle);
 			break;
 		case LEVEL_2:
 			//サイズ3のスライムを生成
-			m_pSlime[i] = new CSlime_3(pos, m_pVS, m_pYellowModel);
+			m_pSlime[i] = new CSlime_3(pos, m_pYellowModel);
 			m_pSlime[i]->HitMoveStart(speed, angle);
 			break;
 		case LEVEL_3:
 			//サイズ4のスライムを生成
-			m_pSlime[i] = new CSlime_4(pos, m_pVS, m_pRedModel);
+			m_pSlime[i] = new CSlime_4(pos, m_pRedModel);
 			m_pSlime[i]->HitMoveStart(speed, angle);
 			break;
 		}
@@ -1171,52 +1171,95 @@ void CSlimeManager::LoadModel()
 		MessageBox(nullptr, "VS_Model.cso", "Error", MB_OK);
 	}
 	//レベル1スライムのモデル読み込み
-	m_pBlueModel = new Model;
-	if (!m_pBlueModel->Load("Assets/Model/slime/slime_blue1.28.FBX", 0.15f, Model::ZFlip)) {		//倍率と反転は省略可
+	m_pBlueModel = new AnimeModel;
+	if (!m_pBlueModel->Load("Assets/Model/slime/Blue/slime_blue_walk_1.0.fbx", 0.15f, AnimeModel::ZFlip)) {		//倍率と反転は省略可
 		MessageBox(NULL, "slime_blue", "Error", MB_OK);	//ここでエラーメッセージ表示
 	}
-	m_pBlueModel->SetVertexShader(m_pVS);
-	//レベル2スライムのモデル読み込み
-	m_pGreenModel = new Model;
-	if (!m_pGreenModel->Load("Assets/Model/slime/slime_green1.28.FBX", 0.15f, Model::ZFlip)) {		//倍率と反転は省略可
-		MessageBox(NULL, "slime_green", "Error", MB_OK);	//ここでエラーメッセージ表示
+	for (int i = 0; i < CSlimeBase::MOTION_LEVEL1_MAX; i++)
+	{
+		//各アニメーションの読み込み
+		m_pBlueModel->AddAnimation(m_sLevel1_Motion[i].c_str());
+		//読み込みに失敗したらエラーメッセージ
+		if (!m_pBlueModel->GetAnimation(i))
+		{
+			MessageBox(NULL, m_sLevel1_Motion[i].c_str(), "Error", MB_OK);	//ここでエラーメッセージ表示
+		}
 	}
-	m_pGreenModel->SetVertexShader(m_pVS);
+	m_pBlueModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));		//頂点シェーダーをセット
+
+	//レベル2スライムのモデル読み込み
+	m_pGreenModel = new AnimeModel;
+	if (!m_pGreenModel->Load(m_sLevel2_Motion[0].c_str(), 0.15f, AnimeModel::ZFlip)) {		//倍率と反転は省略可
+		MessageBox(NULL, "slime_blue", "Error", MB_OK);	//ここでエラーメッセージ表示
+	}
+	for (int i = 0; i < CSlimeBase::MOTION_LEVEL2_MAX; i++)
+	{
+		//各アニメーションの読み込み
+		m_pGreenModel->AddAnimation(m_sLevel2_Motion[i].c_str());
+		//読み込みに失敗したらエラーメッセージ
+		if (!m_pGreenModel->GetAnimation(i))
+		{
+			MessageBox(NULL, m_sLevel2_Motion[i].c_str(), "Error", MB_OK);	//ここでエラーメッセージ表示
+		}
+	}
+	m_pGreenModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));		//頂点シェーダーをセット
+
 	//レベル3スライムのモデル読み込み
-	m_pYellowModel = new Model;
-	if (!m_pYellowModel->Load("Assets/Model/slime/slime_Yellow1.28.FBX", 0.15f, Model::ZFlip)) {		//倍率と反転は省略可
+	m_pYellowModel = new AnimeModel;
+	if (!m_pYellowModel->Load("Assets/Model/slime/Yellow/slime_yellow_walk_1.0.fbx", 0.15f, AnimeModel::ZFlip)) {	//倍率と反転は省略可
 		MessageBox(NULL, "slime_yellow", "Error", MB_OK);	//ここでエラーメッセージ表示
 	}
-	m_pYellowModel->SetVertexShader(m_pVS);
+	for (int i = 0; i < CSlimeBase::MOTION_LEVEL3_MAX; i++)
+	{
+		//各アニメーションの読み込み
+		m_pYellowModel->AddAnimation(m_sLevel3_Motion[i].c_str());
+		//読み込みに失敗したらエラーメッセージ
+		if (!m_pYellowModel->GetAnimation(i))
+		{
+			MessageBox(NULL, m_sLevel3_Motion[i].c_str(), "Error", MB_OK);	//ここでエラーメッセージ表示
+		}
+	}
+	m_pYellowModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));		//頂点シェーダーをセット
 	//レベル4スライムのモデル読み込み
-	m_pRedModel = new Model;
-	if (!m_pRedModel->Load("Assets/Model/slime/slime_red1.28.FBX", 0.18f, Model::ZFlip)) {		//倍率と反転は省略可
+	m_pRedModel = new AnimeModel;
+	if (!m_pRedModel->Load("Assets/Model/slime/Red/slime_red_walk_1.0.fbx", 0.18f, AnimeModel::ZFlip)) {			//倍率と反転は省略可
 		MessageBox(NULL, "slime_red", "Error", MB_OK);		//ここでエラーメッセージ表示
 	}
-	m_pRedModel->SetVertexShader(m_pVS);
+	for (int i = 0; i < CSlimeBase::MOTION_LEVEL4_MAX; i++)
+	{
+		//各アニメーションの読み込み
+		m_pRedModel->AddAnimation(m_sLevel4_Motion[i].c_str());
+		//読み込みに失敗したらエラーメッセージ
+		if (!m_pRedModel->GetAnimation(i))
+		{
+			MessageBox(NULL, m_sLevel4_Motion[i].c_str(), "Error", MB_OK);	//ここでエラーメッセージ表示
+		}
+	}
+	m_pRedModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));		//頂点シェーダーをセット
+
 	//フレイムスライムのモデル読み込み
-	m_pFlameModel = new Model;
-	if (!m_pFlameModel->Load("Assets/Model/slime/slime_fire1.FBX", 0.30f, Model::ZFlip)) {		//倍率と反転は省略可
+	m_pFlameModel = new AnimeModel();
+	if (!m_pFlameModel->Load("Assets/Model/slime/slime_fire1.FBX", 0.30f, AnimeModel::ZFlip)) {		//倍率と反転は省略可
 		MessageBox(NULL, "Flame_Slime", "Error", MB_OK);	//ここでエラーメッセージ表示
 	}
 	m_pFlameModel->SetVertexShader(m_pVS);
 	//ヒールスライムのモデル読み込み
-	m_pHealModel = new Model;
-	if (!m_pHealModel->Load("Assets/Model/slime/slime_heal_mesh.FBX", 0.45f, Model::ZFlip)) {		//倍率と反転は省略可
+	m_pHealModel = new AnimeModel();
+	if (!m_pHealModel->Load("Assets/Model/slime/slime_heal_mesh.FBX", 0.45f, AnimeModel::ZFlip)) {		//倍率と反転は省略可
 		MessageBox(NULL, "Heal_Slime", "Error", MB_OK);	//ここでエラーメッセージ表示
 	}
 	m_pHealModel->SetVertexShader(m_pVS);
 	//ボススライムのモデル読み込み
-	m_pBossModel= new Model;
-	if (!m_pBossModel->Load("Assets/Model/boss_slime_devil/boss_slime_1.fbx", 0.23f, Model::ZFlip)) {		//倍率と反転は省略可
+	m_pBossModel= new AnimeModel;
+	if (!m_pBossModel->Load("Assets/Model/boss_slime_devil/boss_slime_1.fbx", 0.23f, AnimeModel::ZFlip)) {		//倍率と反転は省略可
 		MessageBox(NULL, "Boss_Slime", "Error", MB_OK);	//ここでエラーメッセージ表示
 	}
 
 	m_pBossModel->SetVertexShader(m_pVS);
 
 
-	m_pBossRockModel = new Model;
-	if (!m_pBossRockModel->Load("Assets/Model/boss_slime_rock/boss_slime_rock.fbx", 0.5f, Model::ZFlip)) {		//倍率と反転は省略可
+	m_pBossRockModel = new AnimeModel;
+	if (!m_pBossRockModel->Load("Assets/Model/boss_slime_rock/boss_slime_rock.fbx", 0.5f, AnimeModel::ZFlip)) {		//倍率と反転は省略可
 		MessageBox(NULL, "Boss_Slime_Rock", "Error", MB_OK);	//ここでエラーメッセージ表示
 	}
 	m_pBossRockModel->SetVertexShader(m_pVS);
@@ -1287,7 +1330,7 @@ void CSlimeManager::CheckExplosion()
 			if (distance > slimeExpDistance)	//より近い爆発が見つかった場合
 			{
 				distance = slimeExpDistance;
-				m_pSlime[j]->SetExplosionPos(expPos);	//爆発の座標をスライムにセット
+				m_pSlime[j]->SetStopDirectionObjPos(expPos);	//爆発の座標をスライムにセット
 				m_pSlime[j]->SetMoveStopFlg(true);		//逃げるフラグをONにする
 			}
 		}
@@ -1339,6 +1382,16 @@ void CSlimeManager::SetCamera(CCamera * pCamera)
 	if (m_pUnionMng)	//ヌルチェック
 	{
 		m_pUnionMng->SetCamera(pCamera);	//カメラ登録
+	}
+
+	// すでに生成されているスライムにもカメラをセット
+	for (int i = 0; i < MAX_SLIME_NUM; i++)
+	{
+		// 生成されているスライムにカメラをセット
+		if (m_pSlime[i])
+		{	
+			m_pSlime[i]->SetCamera(pCamera);
+		}
 	}
 }
 
@@ -1544,7 +1597,8 @@ void CSlimeManager::RigidCheck(CSlime_BossBase* pBossSlime)
 		// 硬直させる距離だった場合
 		if (RIGID_DISTANCE > slimeBossDistance)
 		{
-			m_pSlime[i]->SetMoveStopFlg(true);	// 停止させる
+			m_pSlime[i]->SetStopDirectionObjPos(bossPos);	// ボスのの座標をスライムにセット
+			m_pSlime[i]->SetMoveStopFlg(true);				// 停止させる
 			if (RIGID_BLOW_DISTANCE > slimeBossDistance)
 			{
 				m_pSlime[i]->HitMoveStart(RIGID_BLOW_SPEED, fBlowAwayAngle);	// 衝突されたスライムに吹き飛び移動処理
@@ -1565,6 +1619,6 @@ void CSlimeManager::RigidCheck(CSlime_BossBase* pBossSlime)
 void CSlimeManager::ScreenShake()
 {
 	m_pCamera->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_WEAK);
-	m_pCamera->ChangeScaleVibrate(12, 1.2f);
+	//m_pCamera->ChangeScaleVibrate(12, 1.2f);
 	
 }

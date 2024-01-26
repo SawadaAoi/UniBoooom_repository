@@ -37,6 +37,8 @@
 	・2023/12/14 プレイヤーのアニメーション実装 yamashita
 	・2023/12/14 SEの変数を整理 yamashita
 	・2023/12/15 SEを外から再生できるように変更 yamashita
+	・2023/01/25 待機モーションを変更 takagi
+
 ======================================== */
 
 // =============== インクルード ===================
@@ -57,13 +59,14 @@ const float PLAYER_SIZE = 1.0f;			// プレイヤーの大きさ
 const int	NO_DAMAGE_TIME = 3 * 60;		//プレイヤーの無敵時間
 const int	DAMAGE_FLASH_FRAME = 0.1f * 60;	// プレイヤーのダメージ点滅の切り替え間隔
 #endif
-const int	HEAL_NUM = 2;									//プレイヤーの回復量
+const int	HEAL_NUM = 2;									// プレイヤーの回復量
 const float HAMMER_INTERVAL_TIME = 0.0f * 60;				// ハンマー振り間隔
-const float PLAYER_SHADOW_SCALE = 2.5f;		// プレイヤーの影の大きさ
-const int	SE_RUN_INTERVAL = static_cast<int>(0.4f * 60);	//プレイヤーの移動によるSE発生の間隔
-const float	SE_RUN_VOLUME = 0.3f;							//移動によるSEの音量
-const float PLAYER_MOVE_ANIME_SPEED = 1.2f;					//プレイヤーの移動アニメーション再生速度
-const float PLAYER_SWING_ANIME_SPEED = 5.0f;					//プレイヤーの移動アニメーション再生速度
+const float PLAYER_SHADOW_SCALE = 2.5f;						// プレイヤーの影の大きさ
+const int	SE_RUN_INTERVAL = static_cast<int>(0.4f * 60);	// プレイヤーの移動によるSE発生の間隔
+const float	SE_RUN_VOLUME = 0.3f;							// 移動によるSEの音量
+const float PLAYER_MOVE_ANIME_SPEED = 1.2f;					// プレイヤーの移動アニメーション再生速度
+const float PLAYER_SWING_ANIME_SPEED = 5.0f;				// プレイヤーの移動アニメーション再生速度
+const float	ADD_ANIM_FRAME = 1.0f / 60.0f;
 
 /* ========================================
    関数：コンストラクタ
@@ -85,10 +88,10 @@ CPlayer::CPlayer()
 	, m_FlashCnt(0)
 	, m_pSE{ nullptr,nullptr ,nullptr }
 	, m_pSESpeaker{ nullptr ,nullptr, nullptr }
-	, m_nMoveCnt(0)
+	, m_nWalkSECnt(0)
 	, m_bIntFlg(false)
 	, m_fIntCnt(0.0f)
-	, m_fTick(1.0f / 60.0f)
+	,m_pWaitFrameCnt(nullptr)
 {
 	m_pHammer = new CHammer();								// Hammerクラスをインスタンス
 	m_nHp = PLAYER_HP;										// プレイヤーのHPを決定
@@ -133,11 +136,6 @@ CPlayer::~CPlayer()
 ======================================== */
 void CPlayer::Update()
 {
-	//m_nTick++;
-	//if (m_nTick > 18000)
-	//{
-	//	m_nTick = 0;
-	//}
 	// ハンマー攻撃中
 	if (m_bAttackFlg == true)
 	{
@@ -180,8 +178,17 @@ void CPlayer::Update()
 		// スペースキーを押した時、またはコントローラのBボタンを押した時 && ハンマー間隔時間経過済み
 		if ((IsKeyTrigger(VK_SPACE) || IsKeyTriggerController(BUTTON_B)) && !m_bIntFlg)
 		{
-			m_pModel->Play(m_Anime[MOTION_SWING], false, PLAYER_SWING_ANIME_SPEED + (SwingSpeed_MIN - m_pHammer->GetInterval()) * 0.092f);	//アニメーションの再生
-			m_pModel->SetAnimationTime(m_Anime[MOTION_SWING],0.0f);					//アニメーションタイムをスタート位置にセット
+			if (m_pWaitFrameCnt)
+			{
+				SAFE_DELETE(m_pWaitFrameCnt);	//カウンタ削除
+			}
+
+			m_pModel->Play(
+				m_Anime[MOTION_SWING],
+				false, 
+				PLAYER_SWING_ANIME_SPEED + (SwingSpeed_MIN - m_pHammer->GetInterval()) * 0.092f);	//アニメーションの再生
+
+			m_pModel->SetAnimationTime(m_Anime[MOTION_SWING], 0.0f);					//アニメーションタイムをスタート位置にセット
 			m_pHammer->AttackStart(m_Transform.fPos, m_Transform.fRadian.y + DirectX::g_XMPi[0]);	// ハンマー攻撃開始
 			m_bAttackFlg = true;	// 攻撃フラグを有効にする
 			//SEの再生
@@ -211,8 +218,13 @@ void CPlayer::Update()
 
 	//移動によるSEとアニメーションの処理
 	MoveCheck();
+
 	//アニメーションの更新
-	m_pModel->Step(m_fTick);
+	if (!m_pWaitFrameCnt)	//待機時間中は止める
+	{
+		m_pModel->Step(ADD_ANIM_FRAME);
+	}
+
 
 }
 
@@ -230,15 +242,6 @@ void CPlayer::Draw()
 	// 描画しない(点滅処理中)
 	if (m_DrawFlg == true)
 	{
-		//DirectX::XMFLOAT4X4 mat[3];
-
-		//mat[0] = m_Transform.GetWorldMatrixSRT();
-		//mat[1] = m_pCamera->GetViewMatrix();
-		//mat[2] = m_pCamera->GetProjectionMatrix();
-
-		////-- 行列をシェーダーへ設定
-		//m_pVS->WriteBuffer(0, mat);
-
 		//-- モデル表示
 		if (m_pModel) {
 			// レンダーターゲット、深度バッファの設定
@@ -576,34 +579,61 @@ void CPlayer::DamageAnimation()
 ======================================== */
 void CPlayer::MoveCheck()
 {
-	m_nMoveCnt++;	//カウントを増やす
 
-	//移動量が縦横どちらも0の時はカウントをリセット
+	//移動量が縦横どちらも0の時はカウントをリセット(移動していない時)
 	if (m_fMove.x == 0.0f && m_fMove.z == 0.0f)
 	{
-		m_nMoveCnt = 0;
+		// 待機中のアニメーションを再生してない、なおかつ攻撃中じゃない場合
+		if (m_pModel->GetPlayNo() != m_Anime[MOTION_STOP] 
+			&& !m_bAttackFlg && !m_pModel->IsPlay(m_Anime[MOTION_SWING]))	
+		{
+			// カウントダウン開始前の場合
+			if (!m_pWaitFrameCnt)	// 値がnullptr
+			{
+				m_pWaitFrameCnt = new CFrameCnt(CNT_START_WAIT);	//カウントダウン開始
+			}
+			// カウントダウン開始済みの場合
+			else
+			{	
+				m_pWaitFrameCnt->Count();	//カウントダウン中
 
-		//アニメーションを再生
-		if (m_pModel->GetPlayNo() != m_Anime[MOTION_STOP] && !m_bAttackFlg && !m_pModel->IsPlay(m_Anime[MOTION_SWING]))
-		{	//待機中のアニメーションを再生してない、なおかつ攻撃中じゃない場合
-			m_pModel->Play(m_Anime[MOTION_STOP], true);
+			}
+			// カウントダウン完了
+			if (m_pWaitFrameCnt->IsFin())
+			{
+				SAFE_DELETE(m_pWaitFrameCnt);					// カウンタ削除
+				m_pModel->Play(m_Anime[MOTION_STOP], false);	// 待機モーション開始
+			}
 		}
 	}
-
-	//カウントが一定以上になればSEを発生してカウントをリセット
-	if (SE_RUN_INTERVAL <= m_nMoveCnt)
+	// 移動中の場合(待機モーション遷移前に移動を始めた)
+	else
 	{
-		//SEの再生
-		PlaySE(SE_RUN, SE_RUN_VOLUME);
-
-		//アニメーションを再生
-		if (m_pModel->GetPlayNo() != m_Anime[MOTION_MOVE] && !m_pModel->IsPlay(m_Anime[MOTION_SWING]))
-		{	//移動中のアニメーションを再生してない場合
-			m_pModel->Play(m_Anime[MOTION_MOVE], true, PLAYER_MOVE_ANIME_SPEED);
+		if (m_pWaitFrameCnt)
+		{
+			SAFE_DELETE(m_pWaitFrameCnt);	//カウンタ削除
 		}
 
-		m_nMoveCnt = 0;	//カウントをリセット
+		m_nWalkSECnt++;	//カウントを増やす
+
+		//　カウントが一定以上になればSEを発生してカウントをリセット
+		if (SE_RUN_INTERVAL <= m_nWalkSECnt)
+		{
+			//SEの再生
+			PlaySE(SE_RUN, SE_RUN_VOLUME);
+			m_nWalkSECnt = 0;	//カウントをリセット
+		}
+
+		// 移動中のアニメーションを再生してない場合、なおかつ攻撃中じゃない場合
+		if (m_pModel->GetPlayNo() != m_Anime[MOTION_MOVE] && !m_pModel->IsPlay(m_Anime[MOTION_SWING]))
+		{	
+			m_pModel->Play(m_Anime[MOTION_MOVE], true, PLAYER_MOVE_ANIME_SPEED);	// アニメーションを再生
+
+
+		}
+
 	}
+	
 }
 
 /* ========================================

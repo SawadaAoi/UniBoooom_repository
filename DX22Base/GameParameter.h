@@ -62,7 +62,7 @@ const int	DAMAGE_FLASH_FRAME	= int(0.1f * 60);		// ƒvƒŒƒCƒ„[‚Ìƒ_ƒ[ƒW“_–Å‚ÌØ‚
 
 // ƒnƒ“ƒ}[
 const float SWING_TIME_FRAME	= 0.15f * 60;			// ƒnƒ“ƒ}[‚ðU‚éŽžŠÔ(ƒtƒŒ[ƒ€’PˆÊ)
-const float ROTATE_RADIUS = 2.0f;						// ƒnƒ“ƒ}[‚ª‰ñ“]‚·‚éƒvƒŒƒCƒ„[‚©‚ç‚Ì‹——£
+const float ROTATE_RADIUS = 3.0f;						// ƒnƒ“ƒ}[‚ª‰ñ“]‚·‚éƒvƒŒƒCƒ„[‚©‚ç‚Ì‹——£
 const float HAMMER_COL_SIZE = 2.0f;						//ƒnƒ“ƒ}[‚Ì“–‚½‚è”»’è‚Ì‘å‚«‚³
 const float HAMMER_SIZE = HAMMER_COL_SIZE * 0.26666f;	//ƒnƒ“ƒ}[‚Ì‘å‚«‚³
 const float INTERVAL_INITIAL = 0.2f;					//ƒnƒ“ƒ}[‰ŠúŠÔŠu

@@ -60,7 +60,7 @@ CExplosionManager::CExplosionManager()
 	{
 		m_pBoooomUI[i] = nullptr;
 	}
-	if (FAILED(m_pTexUI->Create("Assets/Texture/boooom.png")))
+	if (FAILED(m_pTexUI->Create("Assets/Texture/Direction/Boom/boooom.png")))
 	{
 		MessageBox(NULL, "boooom.png", "Error", MB_OK);
 	}
@@ -435,7 +435,7 @@ void CExplosionManager::SwitchExplode(E_SLIME_LEVEL slimeLevel, TPos3d<float> po
 	}
 
 	Create(pos, ExplosionSize, ExplodeTime, comboNum, ExplodeDamage, slimeLevel);	// ”š”­¶¬
-//	m_pCombo->AddScore(slimeLevel, comboNum);
+//	m_pCombo->SetAddScore(slimeLevel, comboNum);
 
 }
 

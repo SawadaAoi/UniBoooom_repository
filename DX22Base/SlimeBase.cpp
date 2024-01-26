@@ -28,6 +28,7 @@
 	・2023/11/30 モデルの読み込みが反転したのでradian.yが反対になるように変更 yamashita
 	・2023/12/07 ゲームパラメータから一部定数移動 takagi
 	・2024/01/18 炎スライムのエフェクト追加 Tei
+	・2024/1/26  Drawの引数の const CCamera*　を削除 Yamashita
 
 ========================================== */
 
@@ -66,10 +67,12 @@ CSlimeBase::CSlimeBase()
 	, m_bHitMove(false)
 	, m_eSlimeSize(LEVEL_1)	//後でSLIME_NONEにする <=TODO
 	, m_RanMoveCnt(RANDOM_MOVE_SWITCH_TIME)	// 初期
-	, m_ExpPos{ 0.0f,0.0f,0.0f }
+	, m_fStpDirPos{ 0.0f,0.0f,0.0f }
 	, m_bMvStpFlg(false)
 	, m_nMvStpCnt(0)
 	, m_fScaleShadow(0.0f)
+	, m_fAnimeTime(0.0f)
+	, m_eCurAnime(MOTION_LEVEL1_MOVE)
 {
 	m_Transform.fScale = (1.0f, 1.0f, 1.0f);
 	//当たり判定(自分)初期化
@@ -118,7 +121,7 @@ void CSlimeBase::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
 	{
 		if (!m_bMvStpFlg  && m_nMvStpCnt == 0)	//停止フラグがoffなら
 		{
-			NormalMove();	//通常異動
+			NormalMove();	//通常移動
 		}
 		else
 		{
@@ -151,18 +154,19 @@ void CSlimeBase::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
 	-------------------------------------
 	内容：描画処理
 	-------------------------------------
-	引数1：カメラ
+	引数1：なし
 	-------------------------------------
 	戻値：無し
 =========================================== */
-void CSlimeBase::Draw(const CCamera* pCamera)
+void CSlimeBase::Draw()
 {
+	if (!m_pCamera) { return; }
 
 	DirectX::XMFLOAT4X4 mat[3];
 
 	mat[0] = m_Transform.GetWorldMatrixSRT();
-	mat[1] = pCamera->GetViewMatrix();
-	mat[2] = pCamera->GetProjectionMatrix();
+	mat[1] = m_pCamera->GetViewMatrix();
+	mat[2] = m_pCamera->GetProjectionMatrix();
 	
 	//-- 行列をシェーダーへ設定
 	m_pVS->WriteBuffer(0, mat);
@@ -173,7 +177,7 @@ void CSlimeBase::Draw(const CCamera* pCamera)
 	}
 
 	//-- 影の描画
-	m_pShadow->Draw(m_Transform, m_fScaleShadow, pCamera);
+	m_pShadow->Draw(m_Transform, m_fScaleShadow, m_pCamera);
 
 	if (GetSlimeLevel() == LEVEL_FLAME)
 	{
@@ -332,7 +336,7 @@ void CSlimeBase::Reflect()
 void CSlimeBase::MoveStop()
 {
 	//爆発への角度を取得
-	float rad = atan2f(m_ExpPos.x - m_Transform.fPos.x, m_ExpPos.z - m_Transform.fPos.z);
+	float rad = atan2f(m_fStpDirPos.x - m_Transform.fPos.x, m_fStpDirPos.z - m_Transform.fPos.z);
 	//爆発と反対方向に移動
 	m_move.x = 0.0f;//-(cosf(rad)) * ENEMY_MOVE_SPEED;
 	m_move.z = 0.0f;//-(sinf(rad)) * ENEMY_MOVE_SPEED;
@@ -364,17 +368,17 @@ void CSlimeBase::SetCamera(const CCamera * pCamera)
 }
 
 /* ========================================
-	爆発座標セット関数
+	停止時方向対象オブジェクト座標セット関数
 	----------------------------------------
-	内容：爆発の座標をセットする
+	内容：停止時方向対象の座標をセットする
 	----------------------------------------
-	引数1：爆発の座標
+	引数1：停止時方向対象の座標
 	----------------------------------------
 	戻値：なし
 ======================================== */
-void CSlimeBase::SetExplosionPos(TPos3d<float> expPos)
+void CSlimeBase::SetStopDirectionObjPos(TPos3d<float> stpDirPos)
 {
-	m_ExpPos = expPos;
+	m_fStpDirPos = stpDirPos;
 }
 
 
