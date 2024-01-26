@@ -171,8 +171,8 @@ private:
 	//========== アニメ ==========
 	// 青スライム
 	const std::string m_sLevel1_Motion[CSlimeBase::MOTION_LEVEL1_MAX] = {
-		"Assets/Model/slime/Blue/slime_blue_walk_1.0.fbx",		// レベル1スライムのモーション
-		"Assets/Model/slime/Blue/slime_blue_damaged_1.1.fbx",	// レベル1スライムのモーション
+		"Assets/Model/slime/Blue/slime_blue_walk_1.0.fbx",		// レベル1スライムの移動モーション
+		"Assets/Model/slime/Blue/slime_blue_damaged_1.1.fbx",	// レベル1スライムの叩かれたときのモーション
 	};
 
 	// 緑スライム
@@ -187,6 +187,12 @@ private:
 	"Assets/Model/slime/Yellow/slime_yellow_walk_1.0.fbx",		// レベル3スライムの移動モーション
 	"Assets/Model/slime/Yellow/slime_yellow_damaged_1.0.fbx",	// レベル3スライムの叩かれたときのモーション
 	"Assets/Model/slime/Yellow/slime_yellow_mekakushi_1.1.fbx",	// レベル3スライム静止状態のモーション
+	};
+
+	// 赤スライム
+	const std::string m_sLevel4_Motion[CSlimeBase::MOTION_LEVEL4_MAX] = {
+		"Assets/Model/slime/Red/slime_red_walk_1.0.fbx",		// レベル1スライムの移動モーション
+		"Assets/Model/slime/Red/slime_red_damaged_1.0.fbx",	// レベル1スライムの叩かれたときのモーション
 	};
 };
 

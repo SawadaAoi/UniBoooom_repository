@@ -102,6 +102,7 @@ void CSlime_1::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
 {
 	m_PlayerTran = playerTransform;	// プレイヤーの最新パラメータを取得
 
+	// アニメーションの状態によってアニメーションの進行速度を変更
 	if (m_eCurAnime == (int)MOTION_LEVEL1_HIT)
 	{
 		m_fAnimeTime += (ADD_ANIME * 0.7f);		// アニメーションを進行
@@ -127,6 +128,9 @@ void CSlime_1::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
 		else
 		{
 			MoveStop();	//爆発から逃げる
+
+			// 停止中はアニメーションも停止させるためにアニメーションタイムを戻す
+			m_fAnimeTime -= ADD_ANIME;
 		}
 	}
 	else
@@ -158,14 +162,15 @@ void CSlime_1::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
 =========================================== */
 void CSlime_1::Draw()
 {
-	if (!m_pCamera) { return; }
+	if (!m_pCamera) { return; }	//ヌルチェック
 
+	//行列状態を取得してセット
 	DirectX::XMFLOAT4X4 mat[3] = {
 	m_Transform.GetWorldMatrixSRT(),
 	m_pCamera->GetViewMatrix(),
 	m_pCamera->GetProjectionMatrix()
 	};
-	ShaderList::SetWVP(mat);
+	ShaderList::SetWVP(mat);	
 
 	// 複数体を共通のモデルで扱っているため描画のタイミングでモーションの種類と時間をセットする
 	m_pModel->Play(m_eCurAnime,true);
@@ -178,7 +183,7 @@ void CSlime_1::Draw()
 	DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
 	SetRenderTargets(1, &pRTV, pDSV);		//DSVがnullだと2D表示になる
 
-	//-- モデル表示
+	//-- モデル表示(アニメーション対応ver)
 	if (m_pModel) {
 		//アニメーション対応したプレイヤーの描画
 		m_pModel->Draw(nullptr, [this](int index)
