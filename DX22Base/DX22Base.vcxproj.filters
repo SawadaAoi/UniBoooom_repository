@@ -390,9 +390,6 @@
     <ClCompile Include="SlimeBase.cpp">
       <Filter>ソース ファイル\3dObject\Enemy</Filter>
     </ClCompile>
-    <ClCompile Include="SlimeManager.cpp">
-      <Filter>ソース ファイル\3dObject\Enemy</Filter>
-    </ClCompile>
     <ClCompile Include="SphereInfo.cpp">
       <Filter>ソース ファイル\Info</Filter>
     </ClCompile>
@@ -506,6 +503,9 @@
     </ClCompile>
     <ClCompile Include="TimerStage3.cpp">
       <Filter>ソース ファイル\2dObject\Timer</Filter>
+    </ClCompile>
+    <ClCompile Include="SlimeManager.cpp">
+      <Filter>ソース ファイル\3dObject\Enemy</Filter>
     </ClCompile>
     <ClCompile Include="HitSlimeEffectManager.cpp">
       <Filter>ソース ファイル\2dObject\Effect</Filter>
