@@ -136,7 +136,7 @@ void CHitSlimeEffectManager::Create(TTriType<float> pos)
 
 		// 座標、エフェクト時間、Effekseerファイル、カメラを指定して生成
 		m_phitEffect[i] = new CHitEffect(pos, TOTAL_HIT_EFFECT_TIME, m_hitEffect, m_pCamera);	
-		m_phitEffect[i]->SetCamera(m_pCamera);		//カメラセット
+		//m_phitEffect[i]->SetCamera(m_pCamera);		//カメラセット
 		break;	
 	}
 }

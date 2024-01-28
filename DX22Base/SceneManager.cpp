@@ -245,7 +245,7 @@ void CSceneManager::ChangeScene()
 	// =============== 事前準備 =====================
 	if (m_pScene)	//ヌルチェック
 	{
-		m_eNextScene = m_pScene->GetNext();	//遷移先取得
+		m_eNextScene = m_pScene->GetNext();	// 遷移先取得
 	}
 
 	// =============== 遷移先検査 =====================
