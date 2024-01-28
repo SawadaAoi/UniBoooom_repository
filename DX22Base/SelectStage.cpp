@@ -14,21 +14,17 @@
 	・2023/12/12 ステージセレクトを追加　yamamoto
 	・2024/01/26 拡縮実装 takagi
 	・2024/01/26 選択、決定SE追加 suzumura
+	・2024/01/28 落下実装 takagi
 
 ========================================== */
 
 // =============== インクルード ===================
 #include "SelectStage.h"	//自身のヘッダ
-#include "Input.h"
-#include "GameParameter.h"
+#include "Input.h"			//入力管理
 #define _USE_MATH_DEFINES	//math.hの定義使用
 #include <math.h>			//M_PI使用
 #include <algorithm>		//clamp使用
-// =============== 定数定義 =======================
-const float TEXTURE_SELECT_STAGE_POSX = 900.0f;
-const float TEXTURE_SELECT_STAGE_POSY = 300.0f;
-const float TEXTURE_SELECT_STAGE_WIDTH = 400.0f;
-const float TEXTURE_SELECT_STAGE_HEIGHT =500.0f;
+#include "Delete.h"			//削除マクロ
 
 /* ========================================
 	コンストラクタ
@@ -40,63 +36,38 @@ const float TEXTURE_SELECT_STAGE_HEIGHT =500.0f;
 	戻値：なし
 =========================================== */
 CSelectStage::CSelectStage()
-	: m_pStageSelectBG(nullptr)
-	, m_pStageSelectUI(nullptr)
-	, m_nSelectNum(0)
-	, m_bStickFlg(false)
-	, m_pFrameCnt(nullptr)	//フレームカウンタ
-	,m_bCntUpDwn(false)	//カウントアップ・ダウン
+	:m_fSelectSize(INIT_SIZE_ARR_LET.x)	//選択しているオブジェクトの大きさ
+	,m_bStickFlg(false)					//スティックの傾倒有無
+	,m_pFrameCntFall(nullptr)			//手配書落下用フレームカウンタ
+	,m_pFrameCntScale(nullptr)			//拡縮用フレームカウンタ
+	,m_bCntUpDwn(false)					//カウントアップ・ダウン
+	,m_eNextType(CScene::E_TYPE_STAGE1)	//初期の次のシーン
 	, m_pSE{ nullptr,nullptr }
 	, m_pSESpeaker{ nullptr ,nullptr }
 {
-	mStageNum[0].Type = E_TYPE_STAGE1;
-	mStageNum[0].m_pTexture= new Texture();
-	if (FAILED(mStageNum[0].m_pTexture->Create("Assets/Texture/StageSelect/tehaisyo1.png")))
-	{
-		MessageBox(NULL, "Title gamstart.png", "Error", MB_OK);
-	}
-
-	mStageNum[1].Type = E_TYPE_STAGE2;
-	mStageNum[1].m_pTexture = new Texture();
-	if (FAILED(mStageNum[1].m_pTexture->Create("Assets/Texture/StageSelect/tehaisyo2.png")))
-	{
-		MessageBox(NULL, "Title gamstart.png", "Error", MB_OK);
-	}
-	mStageNum[2].Type = E_TYPE_STAGE3;
-	mStageNum[2].m_pTexture = new Texture();
-	if (FAILED(mStageNum[2].m_pTexture->Create("Assets/Texture/StageSelect/tehaisyo3.png")))
-	{
-		MessageBox(NULL, "Title gamstart.png", "Error", MB_OK);
-	}
-
-	for (int i = 0; i < 5; i++)
-	{
-		m_2dObj[i] = new C2dPolygon();
-		m_2dObj[i]->SetCamera(m_pCamera);					//カメラセッタ
-	}
-	m_pStageSelectBG= new Texture();
-	if (FAILED(m_pStageSelectBG->Create("Assets/Texture/StageSelect/StageSelectBG.png")))
-	{
-		MessageBox(NULL, "Title gamstart.png", "Error", MB_OK);
-	}
-	m_pStageSelectUI = new Texture();
-	if (FAILED(m_pStageSelectUI->Create("Assets/Texture/StageSelect/stselectUI.png")))
-	{
-		MessageBox(NULL, "Title gamstart.png", "Error", MB_OK);
-	}
-
-	m_2dObj[0]->SetPos({ 250.0f, 300.0f,1.0f });
-	m_2dObj[0]->SetRotate({ 0.0f,0.0f,-0.25f });
-	m_2dObj[1]->SetPos({ 600.0f, 300.0f,1.0f });
-	m_2dObj[1]->SetRotate({ 0.0f,0.0f,0.05f });
-	m_2dObj[2]->SetPos({ 950.0f, 300.0f,1.0f });
-	m_2dObj[2]->SetRotate({ 0.0f,0.0f,0.1f });
-	m_2dObj[0]->SetSize({ TEXTURE_SELECT_STAGE_WIDTH, TEXTURE_SELECT_STAGE_HEIGHT ,1.0f });
-	m_2dObj[1]->SetSize({ TEXTURE_SELECT_STAGE_WIDTH, TEXTURE_SELECT_STAGE_HEIGHT ,1.0f });
-	m_2dObj[2]->SetSize({ TEXTURE_SELECT_STAGE_WIDTH, TEXTURE_SELECT_STAGE_HEIGHT ,1.0f });
-
 	// =============== 動的確保 =====================
-	m_pFrameCnt = new CFrameCnt(CHANGE_SCALE_HALF_TIME, m_bCntUpDwn);	//フレーム初期化
+	for (int nIdx = 0; nIdx < static_cast<int>(E_2D_OBJECT_MAX); nIdx++)
+	{
+		if (m_p2dObject.find(static_cast<E_2D_OBJECT>(nIdx)) != m_p2dObject.end())	//アクセス・ヌルチェック
+		{
+			// =============== 中断 =====================
+			continue;	//次の値の処理へ
+		}
+		m_p2dObject.emplace(static_cast<E_2D_OBJECT>(nIdx), new C2dPolygon());
+	}
+	m_pFrameCntScale = new CFrameCnt(CHANGE_SCALE_HALF_TIME, m_bCntUpDwn);	//フレーム初期化
+
+	// =============== 初期化 =====================
+	for (int nIdx = 0; nIdx < static_cast<int>(m_p2dObject.size()); nIdx++)
+	{
+		if (m_p2dObject.find(static_cast<E_2D_OBJECT>(nIdx)) != m_p2dObject.end() && m_p2dObject.at(static_cast<E_2D_OBJECT>(nIdx)))	//アクセス・ヌルチェック
+		{
+			m_p2dObject.at(static_cast<E_2D_OBJECT>(nIdx))->SetPos(INIT_MAP_POS.at(static_cast<E_2D_OBJECT>(nIdx)));					//位置セット
+			m_p2dObject.at(static_cast<E_2D_OBJECT>(nIdx))->SetRotate(INIT_MAP_ROTATE.at(static_cast<E_2D_OBJECT>(nIdx)));				//回転セット
+			m_p2dObject.at(static_cast<E_2D_OBJECT>(nIdx))->SetTexture(MAP_TEXTURE_FILE.at(static_cast<E_2D_OBJECT>(nIdx)).c_str());	//テクスチャセット
+			m_p2dObject.at(static_cast<E_2D_OBJECT>(nIdx))->SetSize(INIT_MAP_SIZE.at(static_cast<E_2D_OBJECT>(nIdx)));					//拡縮セット
+		}
+	}
 
 	//=== サウンドファイル読み込み =====
 	LoadSound();	
@@ -116,11 +87,9 @@ CSelectStage::CSelectStage()
 CSelectStage::~CSelectStage()
 {
 	// 破棄処理
-	for (int i = 0; i >= SUTAGE_NUM; ++i)
-	{
-		SAFE_DELETE(mStageNum[i].m_pTexture);
-	}
-	SAFE_DELETE(m_pStageSelectBG);
+	SAFE_DELETE_POINTER_MAP(m_p2dObject);	//2dオブジェクト削除
+	SAFE_DELETE(m_pFrameCntScale);			//カウンタ削除
+	SAFE_DELETE(m_pFrameCntFall);			//カウンタ削除
 }
 
 /* ========================================
@@ -134,7 +103,99 @@ CSelectStage::~CSelectStage()
 =========================================== */
 void CSelectStage::Update()
 {
-	Select();
+	// =============== 分岐 =====================
+	if (!m_pFrameCntFall)	//手配書が落ちていない=選択中
+	{
+		Select();
+
+		// =============== 拡縮更新 =====================
+		if (m_pFrameCntScale)	//ヌルチェック
+		{
+			m_pFrameCntScale->Count();	//カウント進行
+			m_fSelectSize = -(cosf(static_cast<float>(M_PI) * m_pFrameCntScale->GetRate()) - 1.0f) / 2.0f * (MAX_SIZE_ARR_LET - MIN_SIZE_ARR_LET) + MIN_SIZE_ARR_LET;	//イージングを使った大きさ変更
+			if (m_pFrameCntScale->IsFin())	//カウント完了
+			{
+				m_bCntUpDwn ^= 1;													//カウントアップダウン逆転
+				SAFE_DELETE(m_pFrameCntScale);											//カウンタ削除
+				m_pFrameCntScale = new CFrameCnt(CHANGE_SCALE_HALF_TIME, m_bCntUpDwn);	//カウントアップ・ダウン
+			}
+		}
+
+		// =============== 拡縮変更 =====================
+		switch (m_eNextType)	//選択されているものを変更
+		{	//TODO:アクセス・ヌルチェック
+		case CScene::E_TYPE_STAGE1:	//ステージ1
+			m_p2dObject.at(E_2D_OBJECT_STAGE_1_LEAVE)->SetSize({ m_fSelectSize * ASPECT_RATE_ARR_LET, m_fSelectSize, 1.0f });	//ステージ1の手配書
+			m_p2dObject.at(E_2D_OBJECT_STAGE_1_REMINE)->SetSize({ m_fSelectSize * ASPECT_RATE_ARR_LET, m_fSelectSize, 1.0f });	//ステージ1の手配書
+			break;	//分岐処理終了
+		case CScene::E_TYPE_STAGE2:	//ステージ2
+			m_p2dObject.at(E_2D_OBJECT_STAGE_2_LEAVE)->SetSize({ m_fSelectSize * ASPECT_RATE_ARR_LET, m_fSelectSize, 1.0f });	//ステージ2の手配書
+			m_p2dObject.at(E_2D_OBJECT_STAGE_2_REMINE)->SetSize({ m_fSelectSize * ASPECT_RATE_ARR_LET, m_fSelectSize, 1.0f });	//ステージ2の手配書
+			break;	//分岐処理終了
+		case CScene::E_TYPE_STAGE3:	//ステージ3
+			m_p2dObject.at(E_2D_OBJECT_STAGE_3_LEAVE)->SetSize({ m_fSelectSize * ASPECT_RATE_ARR_LET, m_fSelectSize, 1.0f });	//ステージ3の手配書
+			m_p2dObject.at(E_2D_OBJECT_STAGE_3_REMINE)->SetSize({ m_fSelectSize * ASPECT_RATE_ARR_LET, m_fSelectSize, 1.0f });	//ステージ3の手配書
+			break;	//分岐処理終了			
+		}
+	}
+	else
+	{	//手配書が落ちている=選択完了
+
+		// =============== 検査 =====================
+		if (m_pFrameCntFall->IsFin())	//カウント完了
+		{
+			// =============== フラグ操作 =====================
+			m_bFinish = true;	//シーン終了
+
+			// =============== 終了 =====================
+			SAFE_DELETE(m_pFrameCntFall);	//カウンタ削除
+			return;							//処理中断
+		}
+
+		// =============== カウント =====================
+		m_pFrameCntFall->Count();	//カウント進行
+
+		// =============== 変数宣言 =====================
+		TTriType<float> fPos = 0.0f;	//位置
+		auto EasingFunc = [this, &fPos](const TTriType<float>& fBasePos)->void {
+			// =============== 変数宣言 =====================
+			float fCompare = 7.5625;	//比較対象
+
+			// =============== 初期化 =====================
+			fPos = fBasePos;
+
+			// =============== 更新 =====================
+			fPos.y = (1.0f - powf(m_pFrameCntFall->GetRate(), 4.0f)) * (-m_fSelectSize / 2.0f - fBasePos.y) + fBasePos.y;	//y値更新	GetRate()は1to0
+		};	//初期位置・初期サイズをもとにfPosに落下後位置を格納
+
+		// =============== 初期化 =====================
+		switch (m_eNextType)	//選択されているものを変更
+		{	//TODO:アクセス・ヌルチェック
+		case CScene::E_TYPE_STAGE1:	//ステージ1
+			EasingFunc(INIT_MAP_POS.at(E_2D_OBJECT_STAGE_1_LEAVE));	//ステージ1の手配書			
+			break;	//分岐処理終了
+		case CScene::E_TYPE_STAGE2:	//ステージ2
+			EasingFunc(INIT_MAP_POS.at(E_2D_OBJECT_STAGE_2_LEAVE));	//ステージ2の手配書	
+			break;	//分岐処理終了
+		case CScene::E_TYPE_STAGE3:	//ステージ3
+			EasingFunc(INIT_MAP_POS.at(E_2D_OBJECT_STAGE_3_LEAVE));	//ステージ3の手配書	
+			break;	//分岐処理終了
+		}
+
+		// =============== 落下位置更新 =====================
+		switch (m_eNextType)	//選択されているものを変更
+		{	//TODO:アクセス・ヌルチェック
+		case CScene::E_TYPE_STAGE1:	//ステージ1
+			m_p2dObject.at(E_2D_OBJECT_STAGE_1_LEAVE)->SetPos(fPos);	//ステージ1の手配書
+			break;	//分岐処理終了
+		case CScene::E_TYPE_STAGE2:	//ステージ2
+			m_p2dObject.at(E_2D_OBJECT_STAGE_2_LEAVE)->SetPos(fPos);	//ステージ2の手配書
+			break;	//分岐処理終了
+		case CScene::E_TYPE_STAGE3:	//ステージ3
+			m_p2dObject.at(E_2D_OBJECT_STAGE_3_LEAVE)->SetPos(fPos);	//ステージ3の手配書
+			break;	//分岐処理終了
+		}
+	}
 }
 
 /* ========================================
@@ -149,79 +210,44 @@ void CSelectStage::Update()
 	//!memo(見たら消してー)：constが邪魔になったら外してね(.hの方も)
 void CSelectStage::Draw() //const
 {
-	//背景
-	m_2dObj[3]->SetTexture(m_pStageSelectBG);
-	m_2dObj[3]->SetPos({ SCREEN_WIDTH/2, SCREEN_HEIGHT/2 ,1.0f });
-	m_2dObj[3]->SetSize({ SCREEN_WIDTH, SCREEN_HEIGHT ,1.0f });
-	m_2dObj[3]->Draw();
-	
-
-
-	if (!(0 == m_nSelectNum))
-	{//ステージ1
-		m_2dObj[0]->SetTexture(mStageNum[0].m_pTexture);
-		m_2dObj[0]->SetPos({ 250.0f, 300.0f,1.0f });
-		m_2dObj[0]->SetSize({ TEXTURE_SELECT_STAGE_WIDTH, TEXTURE_SELECT_STAGE_HEIGHT ,1.0f });
-		m_2dObj[0]->SetRotate({ 0.0f,0.0f,-0.25f });
-		m_2dObj[0]->SetColor(0.5f, 1.0f);
-		m_2dObj[0]->Draw();
+	// =============== 描画 =====================	//TODO:アクセス・ヌルチェック
+	m_p2dObject[E_2D_OBJECT_BACK_GROUND]->Draw();		//背景描画
+	switch (m_eNextType)	//選択されているものを変更
+	{	//TODO:アクセス・ヌルチェック
+	case CScene::E_TYPE_STAGE1:	//ステージ1
+		m_p2dObject.at(E_2D_OBJECT_STAGE_2_LEAVE)->Draw();	//ステージ2の手配書描画
+		m_p2dObject.at(E_2D_OBJECT_STAGE_2_REMINE)->Draw();	//ステージ2の手配書描画
+		m_p2dObject.at(E_2D_OBJECT_STAGE_3_LEAVE)->Draw();	//ステージ3の手配書描画
+		m_p2dObject.at(E_2D_OBJECT_STAGE_3_REMINE)->Draw();	//ステージ3の手配書描画
+		m_p2dObject.at(E_2D_OBJECT_STAGE_1_LEAVE)->Draw();	//ステージ1の手配書描画
+		m_p2dObject.at(E_2D_OBJECT_STAGE_1_REMINE)->Draw();	//ステージ1の手配書描画
+		break;	//分岐処理終了
+	case CScene::E_TYPE_STAGE2:	//ステージ2
+		m_p2dObject.at(E_2D_OBJECT_STAGE_1_LEAVE)->Draw();	//ステージ1の手配書描画
+		m_p2dObject.at(E_2D_OBJECT_STAGE_1_REMINE)->Draw();	//ステージ1の手配書描画
+		m_p2dObject.at(E_2D_OBJECT_STAGE_3_LEAVE)->Draw();	//ステージ3の手配書描画
+		m_p2dObject.at(E_2D_OBJECT_STAGE_3_REMINE)->Draw();	//ステージ3の手配書描画
+		m_p2dObject.at(E_2D_OBJECT_STAGE_2_LEAVE)->Draw();	//ステージ2の手配書描画
+		m_p2dObject.at(E_2D_OBJECT_STAGE_2_REMINE)->Draw();	//ステージ2の手配書描画
+		break;	//分岐処理終了
+	case CScene::E_TYPE_STAGE3:	//ステージ3
+		m_p2dObject.at(E_2D_OBJECT_STAGE_1_LEAVE)->Draw();	//ステージ1の手配書描画
+		m_p2dObject.at(E_2D_OBJECT_STAGE_1_REMINE)->Draw();	//ステージ1の手配書描画
+		m_p2dObject.at(E_2D_OBJECT_STAGE_2_LEAVE)->Draw();	//ステージ2の手配書描画
+		m_p2dObject.at(E_2D_OBJECT_STAGE_2_REMINE)->Draw();	//ステージ2の手配書描画
+		m_p2dObject.at(E_2D_OBJECT_STAGE_3_LEAVE)->Draw();	//ステージ3の手配書描画
+		m_p2dObject.at(E_2D_OBJECT_STAGE_3_REMINE)->Draw();	//ステージ3の手配書描画
+		break;	//分岐処理終了
 	}
-	if (!(1 == m_nSelectNum))
-	{
-		//ステージ2
-		m_2dObj[1]->SetTexture(mStageNum[1].m_pTexture);
-		m_2dObj[1]->SetPos({ 600.0f, 300.0f,1.0f });
-		m_2dObj[1]->SetSize({ TEXTURE_SELECT_STAGE_WIDTH , TEXTURE_SELECT_STAGE_HEIGHT   ,1.0f });
-		m_2dObj[1]->SetRotate({ 0.0f,0.0f,0.05f });
-		m_2dObj[1]->SetColor(0.5f, 1.0f);
-		m_2dObj[1]->Draw();
-	}
-	if (!(2 == m_nSelectNum))
-	{
-		//ステージ3
-		m_2dObj[2]->SetTexture(mStageNum[2].m_pTexture);
-		m_2dObj[2]->SetPos({ 950.0f, 300.0f,1.0f });
-		m_2dObj[2]->SetSize({ TEXTURE_SELECT_STAGE_WIDTH , TEXTURE_SELECT_STAGE_HEIGHT   ,1.0f });
-		m_2dObj[2]->SetRotate({ 0.0f,0.0f,0.1f });
-		m_2dObj[2]->SetColor(0.5f, 1.0f);
-		m_2dObj[2]->Draw();
-	}
+	m_p2dObject[E_2D_OBJECT_BACK_SCENE_NAME]->Draw();	//シーン名描画
 
-
-	// =============== 変数宣言 =====================
-	float fSize = MIN_SIZE_ARR_LET;	//大きさ
-
-	if (m_pFrameCnt)	//ヌルチェック
-	{
-		m_pFrameCnt->Count();	//カウント進行
-		fSize = -(cosf(static_cast<float>(M_PI) * m_pFrameCnt->GetRate()) - 1.0f) / 2.0f * (MAX_SIZE_ARR_LET - MIN_SIZE_ARR_LET) + MIN_SIZE_ARR_LET;	//イージングを使った大きさ変更
-		if (m_pFrameCnt->IsFin())	//カウント完了
-		{
-			m_bCntUpDwn ^= 1;													//カウントアップダウン逆転
-			SAFE_DELETE(m_pFrameCnt);											//カウンタ削除
-			m_pFrameCnt = new CFrameCnt(CHANGE_SCALE_HALF_TIME, m_bCntUpDwn);	//カウントアップ・ダウン
-		}
-	}
-
-	m_2dObj[m_nSelectNum]->SetTexture(mStageNum[m_nSelectNum].m_pTexture);
-	m_2dObj[m_nSelectNum]->SetColor(1.0f, 1.0f);
-	m_2dObj[m_nSelectNum]->SetSize({ fSize * TEXTURE_SELECT_STAGE_WIDTH / TEXTURE_SELECT_STAGE_HEIGHT, fSize, 1.0f });	//拡縮
-	m_2dObj[m_nSelectNum]->Draw();
-
-	//for (int i = SUTAGE_NUM-1; i > 0-1; i--)
+	//for (auto Iterator = m_p2dObject.begin(); Iterator != m_p2dObject.end(); Iterator++)
 	//{
-	//	if (i == m_nSelectNum) continue;
-	//	m_2dObj[i]->SetTexture(mStageNum[i].m_pTexture);
-	//	m_2dObj[i]->SetPos({ TEXTURE_SELECT_STAGE_POSX + i * 100,TEXTURE_SELECT_STAGE_POSY-i*70,1.0f });
-	//	m_2dObj[i]->SetSize({ TEXTURE_SELECT_STAGE_WIDTH, TEXTURE_SELECT_STAGE_HEIGHT ,1.0f});
-	//	m_2dObj[i]->SetRotate({ 0.0f,0.0f,-0.3f });
-	//	m_2dObj[i]->Draw();
+	//	if (Iterator->second)	//ヌルチェック
+	//	{
+	//		Iterator->second->Draw();	//描画	//順番の都合で不採用
+	//	}
 	//}
-	//文字
-	m_2dObj[4]->SetTexture(m_pStageSelectUI);
-	m_2dObj[4]->SetPos({ 640.0f, 660.0f  ,1.0f });
-	m_2dObj[4]->SetSize({ SCREEN_WIDTH, 120.0f ,1.0f });
-	m_2dObj[4]->Draw();
 }
 /* ========================================
 	ステージを選択する関数
@@ -246,22 +272,58 @@ void CSelectStage::Select()
 			// スティック左
 			if (fMoveInput.x < 0.0f)
 			{
-				m_nSelectNum -= 1;
-				if (m_nSelectNum < 0) m_nSelectNum = 0;
-				m_bStickFlg = true;
+				if (m_eNextType != CScene::E_TYPE_STAGE1)	//候補の最低値でないとき
+				{	//TODO:アクセス・ヌルチェック
+					//TODO:段数減らす
+					switch (m_eNextType)	//新しく選択されたものを変更
+					{
+						case CScene::E_TYPE_STAGE1:	//ステージ1
+							m_p2dObject.at(E_2D_OBJECT_STAGE_1_LEAVE)->SetSize(INIT_MAP_SIZE.at(E_2D_OBJECT_STAGE_1_LEAVE));	//ステージ1の手配書
+							m_p2dObject.at(E_2D_OBJECT_STAGE_1_REMINE)->SetSize(INIT_MAP_SIZE.at(E_2D_OBJECT_STAGE_1_REMINE));	//ステージ1の手配書
+							break;	//分岐処理終了
+						case CScene::E_TYPE_STAGE2:	//ステージ1
+							m_p2dObject.at(E_2D_OBJECT_STAGE_2_LEAVE)->SetSize(INIT_MAP_SIZE.at(E_2D_OBJECT_STAGE_2_LEAVE));	//ステージ2の手配書
+							m_p2dObject.at(E_2D_OBJECT_STAGE_2_REMINE)->SetSize(INIT_MAP_SIZE.at(E_2D_OBJECT_STAGE_2_REMINE));	//ステージ2の手配書
+							break;	//分岐処理終了
+						case CScene::E_TYPE_STAGE3:	//ステージ1
+							m_p2dObject.at(E_2D_OBJECT_STAGE_3_LEAVE)->SetSize(INIT_MAP_SIZE.at(E_2D_OBJECT_STAGE_3_LEAVE));	//ステージ3の手配書
+							m_p2dObject.at(E_2D_OBJECT_STAGE_3_REMINE)->SetSize(INIT_MAP_SIZE.at(E_2D_OBJECT_STAGE_3_REMINE));	//ステージ3の手配書
+							break;	//分岐処理終了
+					}
+					m_eNextType = static_cast<CScene::E_TYPE>(m_eNextType - 1);	//次のシーン番号を選択
 
 				//===== SEの再生 =======
-				PlaySE(SE_CHOOSE);
+					PlaySE(SE_CHOOSE);
+				}
+
 			}
 			// スティック右
 			else if ( 0.0f < fMoveInput.x )
 			{
-				m_nSelectNum += 1;
-				if (m_nSelectNum > 2)m_nSelectNum = 2;
-				m_bStickFlg = true;
+				if (m_eNextType != CScene::E_TYPE_STAGE3)	//候補の最大値でないとき
+				{	//TODO:アクセス・ヌルチェック
+					//TODO:段数減らす
+					switch (m_eNextType)	//新しく選択されたものを変更
+					{
+					case CScene::E_TYPE_STAGE1:	//ステージ1
+						m_p2dObject.at(E_2D_OBJECT_STAGE_1_LEAVE)->SetSize(INIT_MAP_SIZE.at(E_2D_OBJECT_STAGE_1_LEAVE));	//ステージ1の手配書
+						m_p2dObject.at(E_2D_OBJECT_STAGE_1_REMINE)->SetSize(INIT_MAP_SIZE.at(E_2D_OBJECT_STAGE_1_REMINE));	//ステージ1の手配書
+						break;	//分岐処理終了
+					case CScene::E_TYPE_STAGE2:	//ステージ1
+						m_p2dObject.at(E_2D_OBJECT_STAGE_2_LEAVE)->SetSize(INIT_MAP_SIZE.at(E_2D_OBJECT_STAGE_2_LEAVE));	//ステージ2の手配書
+						m_p2dObject.at(E_2D_OBJECT_STAGE_2_REMINE)->SetSize(INIT_MAP_SIZE.at(E_2D_OBJECT_STAGE_2_REMINE));	//ステージ2の手配書
+						break;	//分岐処理終了
+					case CScene::E_TYPE_STAGE3:	//ステージ1
+						m_p2dObject.at(E_2D_OBJECT_STAGE_3_LEAVE)->SetSize(INIT_MAP_SIZE.at(E_2D_OBJECT_STAGE_3_LEAVE));	//ステージ3の手配書
+						m_p2dObject.at(E_2D_OBJECT_STAGE_3_REMINE)->SetSize(INIT_MAP_SIZE.at(E_2D_OBJECT_STAGE_3_REMINE));	//ステージ3の手配書
+						break;	//分岐処理終了
+					}
+					m_eNextType = static_cast<CScene::E_TYPE>(m_eNextType + 1);	//次のシーン番号を選択
 
 				//===== SEの再生 =======
-				PlaySE(SE_CHOOSE);
+					PlaySE(SE_CHOOSE);
+				}
+
 			}
 		}
 		// 左スティックがニュートラル
@@ -273,23 +335,68 @@ void CSelectStage::Select()
 			}
 		}
 	}
-	//キーボード入力
-	if (IsKeyTrigger('A')) {
-		m_nSelectNum -= 1;
-		if (m_nSelectNum < 0) m_nSelectNum = 0;
-		//===== SEの再生 =======
-		PlaySE(SE_CHOOSE);
-	}
-	if (IsKeyTrigger('D')) {
-		m_nSelectNum += 1;
-		if (m_nSelectNum > 2)m_nSelectNum = 2;
-		//===== SEの再生 =======
-		PlaySE(SE_CHOOSE);
+	else
+	{
+		//キーボード入力
+		if (IsKeyTrigger('A'))
+		{
+			if (m_eNextType != CScene::E_TYPE_STAGE1)	//候補の最低値でないとき
+			{	//TODO:アクセス・ヌルチェック
+				//TODO:段数減らす
+				switch (m_eNextType)	//新しく選択されたものを変更
+				{
+				case CScene::E_TYPE_STAGE1:	//ステージ1
+					m_p2dObject.at(E_2D_OBJECT_STAGE_1_LEAVE)->SetSize(INIT_MAP_SIZE.at(E_2D_OBJECT_STAGE_1_LEAVE));	//ステージ1の手配書
+					m_p2dObject.at(E_2D_OBJECT_STAGE_1_REMINE)->SetSize(INIT_MAP_SIZE.at(E_2D_OBJECT_STAGE_1_REMINE));	//ステージ1の手配書
+					break;	//分岐処理終了
+				case CScene::E_TYPE_STAGE2:	//ステージ1
+					m_p2dObject.at(E_2D_OBJECT_STAGE_2_LEAVE)->SetSize(INIT_MAP_SIZE.at(E_2D_OBJECT_STAGE_2_LEAVE));	//ステージ2の手配書
+					m_p2dObject.at(E_2D_OBJECT_STAGE_2_REMINE)->SetSize(INIT_MAP_SIZE.at(E_2D_OBJECT_STAGE_2_REMINE));	//ステージ2の手配書
+					break;	//分岐処理終了
+				case CScene::E_TYPE_STAGE3:	//ステージ1
+					m_p2dObject.at(E_2D_OBJECT_STAGE_3_LEAVE)->SetSize(INIT_MAP_SIZE.at(E_2D_OBJECT_STAGE_3_LEAVE));	//ステージ3の手配書
+					m_p2dObject.at(E_2D_OBJECT_STAGE_3_REMINE)->SetSize(INIT_MAP_SIZE.at(E_2D_OBJECT_STAGE_3_REMINE));	//ステージ3の手配書
+					break;	//分岐処理終了
+				}
+				m_eNextType = static_cast<CScene::E_TYPE>(m_eNextType - 1);	//次のシーン番号を選択
+			}
+			m_bStickFlg = true;	//スティック傾倒中
+
+				//===== SEの再生 =======
+			PlaySE(SE_CHOOSE);
+		}
+		if (IsKeyTrigger('D'))
+		{
+			if (m_eNextType != CScene::E_TYPE_STAGE3)	//候補の最大値でないとき
+			{	//TODO:アクセス・ヌルチェック
+				//TODO:段数減らす
+				switch (m_eNextType)	//新しく選択されたものを変更
+				{
+				case CScene::E_TYPE_STAGE1:	//ステージ1
+					m_p2dObject.at(E_2D_OBJECT_STAGE_1_LEAVE)->SetSize(INIT_MAP_SIZE.at(E_2D_OBJECT_STAGE_1_LEAVE));	//ステージ1の手配書
+					m_p2dObject.at(E_2D_OBJECT_STAGE_1_REMINE)->SetSize(INIT_MAP_SIZE.at(E_2D_OBJECT_STAGE_1_REMINE));	//ステージ1の手配書
+					break;	//分岐処理終了
+				case CScene::E_TYPE_STAGE2:	//ステージ1
+					m_p2dObject.at(E_2D_OBJECT_STAGE_2_LEAVE)->SetSize(INIT_MAP_SIZE.at(E_2D_OBJECT_STAGE_2_LEAVE));	//ステージ2の手配書
+					m_p2dObject.at(E_2D_OBJECT_STAGE_2_REMINE)->SetSize(INIT_MAP_SIZE.at(E_2D_OBJECT_STAGE_2_REMINE));	//ステージ2の手配書
+					break;	//分岐処理終了
+				case CScene::E_TYPE_STAGE3:	//ステージ1
+					m_p2dObject.at(E_2D_OBJECT_STAGE_3_LEAVE)->SetSize(INIT_MAP_SIZE.at(E_2D_OBJECT_STAGE_3_LEAVE));	//ステージ3の手配書
+					m_p2dObject.at(E_2D_OBJECT_STAGE_3_REMINE)->SetSize(INIT_MAP_SIZE.at(E_2D_OBJECT_STAGE_3_REMINE));	//ステージ3の手配書
+					break;	//分岐処理終了
+				}
+				m_eNextType = static_cast<CScene::E_TYPE>(m_eNextType + 1);	//次のシーン番号を選択
+			}
+			m_bStickFlg = true;	//スティック傾倒中
+
+				//===== SEの再生 =======
+			PlaySE(SE_CHOOSE);
+		}
 	}
 
-	if (IsKeyTrigger(VK_SPACE) || IsKeyTriggerController(BUTTON_B))
+	if (IsKeyTrigger(VK_SPACE) || IsKeyTriggerController(BUTTON_B) && m_pFrameCntFall)
 	{
-		m_bFinish = true;	// タイトルシーン終了フラグON
+		m_pFrameCntFall = new CFrameCnt(FALL_TIME_ARR_LET);	//カウンタ作成
 		//===== SEの再生 =======
 		PlaySE(SE_DECISION);
 	}
@@ -322,8 +429,7 @@ CSelectStage::E_TYPE CSelectStage::GetType() const
 CSelectStage::E_TYPE CSelectStage::GetNext() const
 {
 	// =============== 提供 ===================
-	//return CSelectStage::E_TYPE_STAGE1;	//遷移先シーンの種類
-	return mStageNum[m_nSelectNum].Type;	//遷移先シーンの種類
+	return m_eNextType;	//遷移先シーンの種類
 }
 
 /* ========================================

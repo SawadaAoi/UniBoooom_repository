@@ -14,6 +14,7 @@
 	・2023/12/12 ステージセレクト用の構造体、配列、関数追加 yamamoto
 	・2024/01/26 拡縮実装 takagi
 	・2024/01/26 選択、決定SE追加 suzumura
+	・2024/01/28 落下実装 takagi
 
 ========================================== */
 
@@ -25,16 +26,75 @@
 #include "2dPolygon.h"
 #include "FrameCnt.h"	//割合検出用
 #include "Sound.h"	//サウンドヘッダ
+#include <string>		//文字列操作
 // =============== 定数定義 =======================
 const int SUTAGE_NUM = 3;						// ステージの数
 
 // =============== クラス定義 =====================
 class CSelectStage :public CScene	//シーン
 {
+private:
+	// ===列挙定義===========
+	enum E_2D_OBJECT
+	{
+		E_2D_OBJECT_BACK_GROUND,		//背景
+		E_2D_OBJECT_STAGE_1_REMINE,		//ステージ1手配書残る方
+		E_2D_OBJECT_STAGE_1_LEAVE,		//ステージ1手配書離れる方
+		E_2D_OBJECT_STAGE_2_REMINE,		//ステージ2手配書残る方
+		E_2D_OBJECT_STAGE_2_LEAVE,		//ステージ2手配書離れる方
+		E_2D_OBJECT_STAGE_3_REMINE,		//ステージ3手配書残る方
+		E_2D_OBJECT_STAGE_3_LEAVE,		//ステージ3手配書離れる方
+		E_2D_OBJECT_BACK_SCENE_NAME,	//シーン名
+		E_2D_OBJECT_MAX,				//要素数
+	};	//2dで扱うオブジェクト
 	// ===定数定義===========
-	const float MIN_SIZE_ARR_LET = 450.0f;	//手配書最小サイズ
-	const float MAX_SIZE_ARR_LET = 550.0f;	//手配書最大サイズ
-	const int CHANGE_SCALE_HALF_TIME = 120;	//拡縮半周あたりにかかる時間
+	const float MIN_SIZE_ARR_LET = 450.0f;				//手配書最小サイズ
+	const float MAX_SIZE_ARR_LET = 550.0f;				//手配書最大サイズ
+	const float ASPECT_RATE_ARR_LET = 400.0f / 500.0f;	//手配書縦に対する横の比率
+	const TTriType<float> INIT_SIZE_ARR_LET = { MIN_SIZE_ARR_LET, MIN_SIZE_ARR_LET, 1.0f };	//手配書初期サイズ
+	const float MARGIN_FALL = 0.0f;					//落ち切ったと判断するときに補正する余裕
+	const int FALL_TIME_ARR_LET = 60;					//手配書が落ちるのにかかる時間
+	const int CHANGE_SCALE_HALF_TIME = 120;				//拡縮半周あたりにかかる時間
+	const std::map<E_2D_OBJECT, std::string> MAP_TEXTURE_FILE= {
+	{ E_2D_OBJECT_STAGE_1_REMINE, "Assets/Texture/StageSelect/zako1-1.png" },	//ステージ1手配書残る方
+	{ E_2D_OBJECT_STAGE_1_LEAVE,	"Assets/Texture/StageSelect/zako1-2.png" },	//ステージ1手配書離れる方
+	{ E_2D_OBJECT_STAGE_2_REMINE, "Assets/Texture/StageSelect/boss1-1.png" },	//ステージ2手配書残る方
+	{ E_2D_OBJECT_STAGE_2_LEAVE,	"Assets/Texture/StageSelect/boss1-2.png" },	//ステージ2手配書離れる方
+	{ E_2D_OBJECT_STAGE_3_REMINE, "Assets/Texture/StageSelect/stone1-1.png" },	//ステージ3手配書残る方
+	{ E_2D_OBJECT_STAGE_3_LEAVE, "Assets/Texture/StageSelect/stone1-2.png" },	//ステージ3手配書離れる方
+	{ E_2D_OBJECT_BACK_GROUND, "Assets/Texture/StageSelect/StageSelectBG.png"},	//背景
+	{ E_2D_OBJECT_BACK_SCENE_NAME, "Assets/Texture/StageSelect/stselectUI.png"},//シーン名
+	};	//テクスチャのファイル名
+	const std::map<E_2D_OBJECT, TPos3d<float>> INIT_MAP_POS = {
+	{ E_2D_OBJECT_STAGE_1_REMINE, { 250.0f, 300.0f,1.0f } },							//ステージ1手配書残る方
+	{ E_2D_OBJECT_STAGE_1_LEAVE, { 250.0f, 300.0f,1.0f } },								//ステージ1手配書離れる方
+	{ E_2D_OBJECT_STAGE_2_REMINE, { 600.0f, 300.0f,1.0f } },							//ステージ2手配書残る方
+	{ E_2D_OBJECT_STAGE_2_LEAVE, { 600.0f, 300.0f,1.0f } },								//ステージ2手配書離れる方
+	{ E_2D_OBJECT_STAGE_3_REMINE, { 950.0f, 300.0f,1.0f } },							//ステージ3手配書残る方
+	{ E_2D_OBJECT_STAGE_3_LEAVE, { 950.0f, 300.0f,1.0f } },								//ステージ3手配書離れる方
+	{ E_2D_OBJECT_BACK_GROUND, { SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f ,1.0f }},	//背景
+	{ E_2D_OBJECT_BACK_SCENE_NAME, { 640.0f, 660.0f  ,1.0f }},							//シーン名
+	};	//オブジェクト毎の初期位置
+	const std::map<E_2D_OBJECT, TTriType<float>> INIT_MAP_ROTATE = {
+	{ E_2D_OBJECT_STAGE_1_REMINE, { 0.0f,0.0f,-0.25f } },	//ステージ1手配書残る方
+	{ E_2D_OBJECT_STAGE_1_LEAVE, { 0.0f,0.0f,-0.25f } },	//ステージ1手配書離れる方
+	{ E_2D_OBJECT_STAGE_2_REMINE, { 0.0f,0.0f,0.05f } },	//ステージ2手配書残る方
+	{ E_2D_OBJECT_STAGE_2_LEAVE, { 0.0f,0.0f,0.05f } },		//ステージ2手配書離れる方
+	{ E_2D_OBJECT_STAGE_3_REMINE, { 0.0f,0.0f,0.1f } },		//ステージ3手配書残る方
+	{ E_2D_OBJECT_STAGE_3_LEAVE, { 0.0f,0.0f,0.1f } },		//ステージ3手配書離れる方
+	{ E_2D_OBJECT_BACK_GROUND, {0.0f, 0.0f, 0.0f}},			//背景
+	{ E_2D_OBJECT_BACK_SCENE_NAME, { 0.0f,0.0f,0.0f }},		//シーン名
+	};	//オブジェクト毎の初期回転
+	const std::map<E_2D_OBJECT, TTriType<float>> INIT_MAP_SIZE = {
+	{ E_2D_OBJECT_STAGE_1_REMINE, { MIN_SIZE_ARR_LET * ASPECT_RATE_ARR_LET, MIN_SIZE_ARR_LET, 1.0f } },	//ステージ1手配書残る方
+	{ E_2D_OBJECT_STAGE_1_LEAVE, { MIN_SIZE_ARR_LET * ASPECT_RATE_ARR_LET, MIN_SIZE_ARR_LET, 1.0f } },	//ステージ1手配書離れる方
+	{ E_2D_OBJECT_STAGE_2_REMINE, { MIN_SIZE_ARR_LET * ASPECT_RATE_ARR_LET, MIN_SIZE_ARR_LET, 1.0f } },	//ステージ2手配書残る方
+	{ E_2D_OBJECT_STAGE_2_LEAVE, { MIN_SIZE_ARR_LET * ASPECT_RATE_ARR_LET, MIN_SIZE_ARR_LET, 1.0f } },	//ステージ2手配書離れる方
+	{ E_2D_OBJECT_STAGE_3_REMINE, { MIN_SIZE_ARR_LET * ASPECT_RATE_ARR_LET, MIN_SIZE_ARR_LET, 1.0f } },	//ステージ3手配書残る方
+	{ E_2D_OBJECT_STAGE_3_LEAVE, { MIN_SIZE_ARR_LET * ASPECT_RATE_ARR_LET, MIN_SIZE_ARR_LET, 1.0f } },	//ステージ3手配書離れる方
+	{ E_2D_OBJECT_BACK_GROUND, { SCREEN_WIDTH, SCREEN_HEIGHT,1.0f }},									//背景
+	{ E_2D_OBJECT_BACK_SCENE_NAME, { SCREEN_WIDTH, 120.0f ,1.0f }},										//シーン名
+	};	//オブジェクト毎の初期拡縮
 public:
 	// ===列挙宣言===========
 	enum SE
@@ -44,13 +104,6 @@ public:
 
 		SE_MAX			//SEの総数
 	}; //SE
-	// ===構造体定義=========
-	typedef struct
-	{
-		E_TYPE Type;
-		Texture* m_pTexture;
-	}StageSelect;
-
 public:
 	// =============== プロトタイプ宣言 ===============
 	CSelectStage();						//コンストラクタ
@@ -62,17 +115,14 @@ public:
 	E_TYPE GetNext() const override;	//次のシーンゲッタ
 	void LoadSound();								//シーンセレクト用のサウンドをロード
 	void PlaySE(SE se, float volume = 1.0f);		//SEを再生する
-protected:
-	StageSelect mStageNum[SUTAGE_NUM];
 private:
-	int m_nSelectNum;			// 選択中のステージ番号
-	C2dPolygon* m_2dObj[5];
-	StageSelect EscapeStageNum;
-	Texture* m_pStageSelectBG;
-	Texture* m_pStageSelectUI;
-	bool m_bStickFlg;			// コントローラーのスティックをたおしているか
-	CFrameCnt* m_pFrameCnt;		//イージング用タイマー
-	bool m_bCntUpDwn;			//カウントアップ・ダウン
+	std::map<E_2D_OBJECT, C2dPolygon*> m_p2dObject;	//2dで扱うオブジェクト
+	float m_fSelectSize;							//選択しているオブジェクトの大きさ(y値)
+	bool m_bStickFlg;								//コントローラーのスティックをたおしているか
+	CFrameCnt* m_pFrameCntFall;						//落下イージング用タイマー
+	CFrameCnt* m_pFrameCntScale;					//拡縮イージング用タイマー
+	bool m_bCntUpDwn;								//カウントアップ・ダウン切換フラグ
+	E_TYPE m_eNextType;								//次のシーンの種類
 
 	//=====SE関連=====
 	XAUDIO2_BUFFER* m_pSE[SE_MAX];
@@ -81,7 +131,6 @@ private:
 		"Assets/Sound/SE/Paper_break.mp3",			// 決定音
 		"Assets/Sound/SE/Select_Cursor.mp3" 		// 選択音
 	};
-
 };	//ステージセレクト
 
 #endif	//!__SELECT_STAGE_H__
