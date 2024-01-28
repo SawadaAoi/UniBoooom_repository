@@ -204,6 +204,8 @@
     <ClCompile Include="FrameCnt.cpp" />
     <ClCompile Include="HealItem.cpp" />
     <ClCompile Include="HealItemManager.cpp" />
+    <ClCompile Include="HitSlimeEffect.cpp" />
+    <ClCompile Include="HitSlimeEffectManager.cpp" />
     <ClCompile Include="HitStop.cpp" />
     <ClCompile Include="HP_UI.cpp" />
     <ClCompile Include="Item.cpp" />
@@ -318,6 +320,8 @@
     <ClInclude Include="ExplosionManager.h" />
     <ClInclude Include="HealItem.h" />
     <ClInclude Include="HealItemManager.h" />
+    <ClInclude Include="HitSlimeEffect.h" />
+    <ClInclude Include="HitSlimeEffectManager.h" />
     <ClInclude Include="HitStop.h" />
     <ClInclude Include="Item.h" />
     <ClInclude Include="LibEffekseer.h" />

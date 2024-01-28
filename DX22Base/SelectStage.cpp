@@ -13,6 +13,7 @@
 	・2023/11/16 制作 takagi
 	・2023/12/12 ステージセレクトを追加　yamamoto
 	・2024/01/26 拡縮実装 takagi
+	・2024/01/26 選択、決定SE追加 suzumura
 	・2024/01/28 落下実装 takagi
 
 ========================================== */
@@ -35,6 +36,8 @@
 	戻値：なし
 =========================================== */
 CSelectStage::CSelectStage()
+	, m_pSE{ nullptr,nullptr }
+	, m_pSESpeaker{ nullptr ,nullptr }
 	:m_fSelectSize(INIT_SIZE_ARR_LET.x)	//選択しているオブジェクトの大きさ
 	,m_bStickFlg(false)					//スティックの傾倒有無
 	,m_pFrameCntFall(nullptr)			//手配書落下用フレームカウンタ
@@ -64,7 +67,10 @@ CSelectStage::CSelectStage()
 			m_p2dObject.at(static_cast<E_2D_OBJECT>(nIdx))->SetTexture(MAP_TEXTURE_FILE.at(static_cast<E_2D_OBJECT>(nIdx)).c_str());	//テクスチャセット
 			m_p2dObject.at(static_cast<E_2D_OBJECT>(nIdx))->SetSize(INIT_MAP_SIZE.at(static_cast<E_2D_OBJECT>(nIdx)));					//拡縮セット
 		}
-	}
+
+	//=== サウンドファイル読み込み =====
+	LoadSound();	
+
 }	
 
 
@@ -284,8 +290,11 @@ void CSelectStage::Select()
 							break;	//分岐処理終了
 					}
 					m_eNextType = static_cast<CScene::E_TYPE>(m_eNextType - 1);	//次のシーン番号を選択
+
+				//===== SEの再生 =======
+					PlaySE(SE_CHOOSE);
 				}
-				m_bStickFlg = true;	//スティック傾倒中
+
 			}
 			// スティック右
 			else if ( 0.0f < fMoveInput.x )
@@ -309,8 +318,11 @@ void CSelectStage::Select()
 						break;	//分岐処理終了
 					}
 					m_eNextType = static_cast<CScene::E_TYPE>(m_eNextType + 1);	//次のシーン番号を選択
+
+				//===== SEの再生 =======
+					PlaySE(SE_CHOOSE);
 				}
-				m_bStickFlg = true;	//スティック傾倒中
+
 			}
 		}
 		// 左スティックがニュートラル
@@ -348,6 +360,9 @@ void CSelectStage::Select()
 				m_eNextType = static_cast<CScene::E_TYPE>(m_eNextType - 1);	//次のシーン番号を選択
 			}
 			m_bStickFlg = true;	//スティック傾倒中
+
+				//===== SEの再生 =======
+			PlaySE(SE_CHOOSE);
 		}
 		if (IsKeyTrigger('D'))
 		{
@@ -372,12 +387,17 @@ void CSelectStage::Select()
 				m_eNextType = static_cast<CScene::E_TYPE>(m_eNextType + 1);	//次のシーン番号を選択
 			}
 			m_bStickFlg = true;	//スティック傾倒中
+
+				//===== SEの再生 =======
+			PlaySE(SE_CHOOSE);
 		}
 	}
 
 	if (IsKeyTrigger(VK_SPACE) || IsKeyTriggerController(BUTTON_B) && m_pFrameCntFall)
 	{
 		m_pFrameCntFall = new CFrameCnt(FALL_TIME_ARR_LET);	//カウンタ作成
+		//===== SEの再生 =======
+		PlaySE(SE_DECISION);
 	}
 }
 
@@ -409,4 +429,42 @@ CSelectStage::E_TYPE CSelectStage::GetNext() const
 {
 	// =============== 提供 ===================
 	return m_eNextType;	//遷移先シーンの種類
+}
+
+/* ========================================
+   セレクトステージ用SE読み込み関数
+   ----------------------------------------
+   内容：セレクトステージ用のSEのファイルを読み込む
+   ----------------------------------------
+   引数：無し
+   ----------------------------------------
+   戻値：無し
+======================================== */
+void CSelectStage::LoadSound()
+{
+	//SEの読み込み
+	for (int i = 0; i < SE_MAX; i++)
+	{
+		m_pSE[i] = CSound::LoadSound(m_sSEFile[i].c_str());
+		if (!m_pSE[i])
+		{
+			MessageBox(NULL, m_sSEFile[i].c_str(), "Error", MB_OK);	//ここでエラーメッセージ表示
+		}
+	}
+}
+
+/* ========================================
+	SEの再生関数
+	----------------------------------------
+	内容：SEの再生
+	----------------------------------------
+	引数1：SEの種類(enum)
+	引数2：音量
+	----------------------------------------
+	戻値：なし
+======================================== */
+void CSelectStage::PlaySE(SE se, float volume)
+{
+	m_pSESpeaker[se] = CSound::PlaySound(m_pSE[se]);	//SE再生
+	m_pSESpeaker[se]->SetVolume(volume);				//音量の設定
 }

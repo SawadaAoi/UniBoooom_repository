@@ -27,7 +27,7 @@ const float BOSS_HP_SIZEX = 0.3f;		//体力１分の大きさ（X）
 const float BOSS_HP_SIZEY = 0.5f;		//体力１分の大きさ（Y）
 const float BOSS_HPFRAME_SIZEX = 0.2f;	//体力ゲージよりどれだけ大きいか（X）
 const float BOSS_HPFRAME_SIZEY = 0.2f;	//体力ゲージよりどれだけ大きいか（Y）
-const float BOSS_HP_POSX = 8.6f;		//体力ゲージ（減る方）の位置
+const float BOSS_HP_POSX = 17.0f;		//体力ゲージ（減る方）の位置
 
 const int BOSS_DAMAGE_FLASH_FRAME = 0.1 * 60;					// ダメージ受けた際の点滅フレーム(無敵ではない)
 const int BOSS_DAMAGE_FLASH_TOTAL_FRAME = 0.5 * 60;					// ダメージを受けた際の点滅を何フレーム行うか
@@ -65,7 +65,7 @@ CSlime_BossBase::CSlime_BossBase()
 	{
 		MessageBox(NULL, "HPフレーム読み込み", "Error", MB_OK);
 	}
-
+	
 }
 
 
@@ -149,7 +149,7 @@ void CSlime_BossBase::Update(tagTransform3d playerTransform)
 	-------------------------------------
 	戻値：無し
 =========================================== */
-void CSlime_BossBase::Draw(const CCamera* pCamera)
+void CSlime_BossBase::Draw()
 {
 	// DrawFlgがtrueなら描画処理を行う
 	if (m_bDrawFlg == false) return;
@@ -157,8 +157,8 @@ void CSlime_BossBase::Draw(const CCamera* pCamera)
 	DirectX::XMFLOAT4X4 mat[3];
 
 	mat[0] = m_Transform.GetWorldMatrixSRT();
-	mat[1] = pCamera->GetViewMatrix();
-	mat[2] = pCamera->GetProjectionMatrix();
+	mat[1] = m_pCamera->GetViewMatrix();
+	mat[2] = m_pCamera->GetProjectionMatrix();
 
 	//-- 行列をシェーダーへ設定
 	m_pVS->WriteBuffer(0, mat);
@@ -173,17 +173,17 @@ void CSlime_BossBase::Draw(const CCamera* pCamera)
 	}
 	
 	//-- 影の描画
-	m_pShadow->Draw(pCamera);
+	m_pShadow->Draw(m_pCamera);
 
 	//HP表示
 	RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得
 	DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
 	SetRenderTargets(1, &pRTV, nullptr);		//DSVがnullだと2D表示になる
 
-	mat[1] = pCamera->GetViewMatrix();
-	mat[2] = pCamera->GetProjectionMatrix();
+	mat[1] = m_pCamera->GetViewMatrix();
+	mat[2] = m_pCamera->GetProjectionMatrix();
 	DirectX::XMFLOAT4X4 inv;//逆行列の格納先
-	inv = pCamera->GetViewMatrix();
+	inv = m_pCamera->GetViewMatrix();
 
 	//カメラの行列はGPUに渡す際に転置されているため、逆行列のために一度元に戻す
 	DirectX::XMMATRIX matInv = DirectX::XMLoadFloat4x4(&inv);
@@ -199,7 +199,7 @@ void CSlime_BossBase::Draw(const CCamera* pCamera)
 
 
 	//フレーム
-	DirectX::XMMATRIX world = matInv * DirectX::XMMatrixTranslation(m_Transform.fPos.x+0.2f, m_Transform.fPos.y + SLIME_HP_HEIGHT, m_Transform.fPos.z);
+	DirectX::XMMATRIX world = matInv * DirectX::XMMatrixTranslation(m_Transform.fPos.x, m_Transform.fPos.y + SLIME_HP_HEIGHT, m_Transform.fPos.z);
 	DirectX::XMStoreFloat4x4(&mat[0], DirectX::XMMatrixTranspose(world));
 	Sprite::SetSize(DirectX::XMFLOAT2(3.2f, 0.7f));
 
@@ -214,12 +214,13 @@ void CSlime_BossBase::Draw(const CCamera* pCamera)
 	Sprite::Draw();
 
 
-	float width = (BOSS_HP_SIZEX /2)*(BOSS_HP_POSX - m_nHp);
-
+	HPWidth = 3.0f / m_nMaxHp;	
+	float width = (HPWidth /2)*(m_nMaxHp - m_nHp);
+	
 
 	 world = matInv * DirectX::XMMatrixTranslation(m_Transform.fPos.x - width, m_Transform.fPos.y+ SLIME_HP_HEIGHT, m_Transform.fPos.z);
 	DirectX::XMStoreFloat4x4(&mat[0], DirectX::XMMatrixTranspose(world));
-	Sprite::SetSize(DirectX::XMFLOAT2(BOSS_HP_SIZEX*m_nHp, BOSS_HP_SIZEY));
+	Sprite::SetSize(DirectX::XMFLOAT2(HPWidth*m_nHp, BOSS_HP_SIZEY));
 	
 	Sprite::SetUVPos(DirectX::XMFLOAT2(1.0f,1.0f));
 	Sprite::SetUVScale(DirectX::XMFLOAT2(1.0f,1.0f));

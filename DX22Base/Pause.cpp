@@ -18,6 +18,7 @@
 	・2023/12/12 スタートボタンの入力反映 sawada
 	・2023/12/12 型チェック修正 takagi
 	・2023/12/17 ゲームパラメータ無効化 takagi
+	・2024/01/26 選択.決定.ポーズSE追加 suzumura
 
 ========================================== */
 
@@ -105,9 +106,15 @@ const std::map<int, TPos3d<float>> MAP_POS = {	//更新順
 =========================================== */
 CPause::CPause(const CCamera* pCamera)
 	:m_ucFlag(0x00)			//フラグ
+	, m_pSE{ nullptr,nullptr,nullptr }
+	, m_pSESpeaker{ nullptr ,nullptr,nullptr }
 {	
 	// =============== 初期化 ===================
 	m_pCamera = pCamera;	//カメラ初期化
+
+	//=== サウンドファイル読み込み =====
+	LoadSound();
+
 }
 
 /* ========================================
@@ -158,6 +165,8 @@ void CPause::Update()
 				else
 				{
 					Boot();		//起動
+					//===== SEの再生 =======
+					PlaySE(SE_PAUSE);
 				}
 			}
 
@@ -179,6 +188,8 @@ void CPause::Update()
 				if (m_p2dObj[E_2D_FINISH] && typeid(CCommandPause) == typeid(*m_p2dObj[E_2D_FINISH]))	//ヌルチェック、型チェック
 				{
 					static_cast<CCommandPause*>(m_p2dObj[E_2D_FINISH])->UnSelected();	//選択状態遷移
+					//===== SEの再生 =======
+					PlaySE(SE_CHOOSE);
 				}
 
 				// =============== フラグ操作 ===================
@@ -195,6 +206,8 @@ void CPause::Update()
 				if (m_p2dObj[E_2D_CONTINUE] && typeid(CCommandPause) == typeid(*m_p2dObj[E_2D_CONTINUE]))	//ヌルチェック、型チェック
 				{
 					static_cast<CCommandPause*>(m_p2dObj[E_2D_CONTINUE])->UnSelected();	//選択状態遷移
+					//===== SEの再生 =======
+					PlaySE(SE_CHOOSE);
 				}
 				// =============== フラグ操作 ===================
 				UpFlag(E_FLAG_COMMAND_FINISH);		//下のコマンド採用
@@ -206,6 +219,8 @@ void CPause::Update()
 			{
 				// =============== フラグ操作 ===================
 				UpFlag(E_FLAG_DECIDE_COMMAND);	//決定
+				//===== SEの再生 =======
+				PlaySE(SE_DECISION);
 			}
 		}
 		else
@@ -220,6 +235,8 @@ void CPause::Update()
 				else
 				{
 					Boot();		//起動
+					//===== SEの再生 =======
+					PlaySE(SE_PAUSE);
 				}
 			}
 
@@ -241,6 +258,8 @@ void CPause::Update()
 				if (m_p2dObj[E_2D_FINISH] && typeid(CCommandPause) == typeid(*m_p2dObj[E_2D_FINISH]))	//ヌルチェック、型チェック
 				{
 					static_cast<CCommandPause*>(m_p2dObj[E_2D_FINISH])->UnSelected();	//選択状態遷移
+					//===== SEの再生 =======
+					PlaySE(SE_CHOOSE);
 				}
 
 				// =============== フラグ操作 ===================
@@ -257,6 +276,8 @@ void CPause::Update()
 				if (m_p2dObj[E_2D_CONTINUE])	//ヌルチェック、型チェック
 				{
 					static_cast<CCommandPause*>(m_p2dObj[E_2D_CONTINUE])->UnSelected();	//選択状態遷移
+					//===== SEの再生 =======
+					PlaySE(SE_CHOOSE);
 				}
 				// =============== フラグ操作 ===================
 				UpFlag(E_FLAG_COMMAND_FINISH);		//下のコマンド採用
@@ -268,6 +289,8 @@ void CPause::Update()
 			{
 				// =============== フラグ操作 ===================
 				UpFlag(E_FLAG_DECIDE_COMMAND);	//決定
+				//===== SEの再生 =======
+				PlaySE(SE_DECISION);
 			}
 		}
 	}
@@ -567,4 +590,42 @@ void CPause::SetFlag(const unsigned char & ucBitFlag)
 {
 	// =============== 代入 ===================
 	m_ucFlag ^= ucBitFlag;	//フラグ操作
+}
+
+/* ========================================
+   ポーズ用SE読み込み関数
+   ----------------------------------------
+   内容：ポーズ用のSEのファイルを読み込む
+   ----------------------------------------
+   引数：無し
+   ----------------------------------------
+   戻値：無し
+======================================== */
+void CPause::LoadSound()
+{
+	//SEの読み込み
+	for (int i = 0; i < SE_MAX; i++)
+	{
+		m_pSE[i] = CSound::LoadSound(m_sSEFile[i].c_str());
+		if (!m_pSE[i])
+		{
+			MessageBox(NULL, m_sSEFile[i].c_str(), "Error", MB_OK);	//ここでエラーメッセージ表示
+		}
+	}
+}
+
+/* ========================================
+	SEの再生関数
+	----------------------------------------
+	内容：SEの再生
+	----------------------------------------
+	引数1：SEの種類(enum)
+	引数2：音量
+	----------------------------------------
+	戻値：なし
+======================================== */
+void CPause::PlaySE(SE se, float volume)
+{
+	m_pSESpeaker[se] = CSound::PlaySound(m_pSE[se]);	//SE再生
+	m_pSESpeaker[se]->SetVolume(volume);				//音量の設定
 }

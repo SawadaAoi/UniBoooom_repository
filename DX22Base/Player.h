@@ -30,7 +30,8 @@
 	・2023/12/14 SE用の列挙を作成 yamashita
 	・2023/12/15 SEを外から再生できるように変更 yamashita
 	・2023/12/15 回復SE追加 yamashita
-	・2023/01/25 待機モーションを変更 takagi
+	・2024/01/25 待機モーションを変更 takagi
+	・2024/01/26 警告SE追加 suzumura
 
 ========================================== */
 #ifndef __PLAYER_H__
@@ -58,17 +59,18 @@ public:
 	// === 列挙 ===
 	enum SE
 	{
-		SE_SWING,	//ハンマーを振るSE
+		SE_SWING,		//ハンマーを振るSE
 		SE_RUN,			//移動のSE
 		SE_DAMAGED,		//被ダメージのSE
 		SE_HIT_HAMMER,	//ハンマーとスライムの接触SE
-		SE_HEAL,
+		SE_HEAL,		//回復SE
+		SE_WARNING,		//残り体力１
 
 		SE_MAX			//SEの総数
 	};
 private:
 	// ===定数定義===========
-	const int CNT_START_WAIT = 100;	//待機モーションを始めるまでの時間
+	const int CNT_START_WAIT = 10;	//待機モーションを始めるまでの時間
 public:
 	// ===プロトタイプ宣言===
 	CPlayer();		//コンストラクタ
@@ -103,7 +105,7 @@ private:
 
 	// ===メンバ変数宣言=====
 	TPos3d<float> m_fMove;				// 移動量
-	AnimeModel* m_pModel;				//プレイヤーのモデル
+	AnimeModel* m_pModel;				// プレイヤーのモデル
 	int m_nHp;							// プレイヤーの体力
 	bool m_bAttackFlg;					// 攻撃中かどうかのフラグ
 	int m_nNoDamageCnt;					// プレイヤーの無敵時間をカウント
@@ -112,12 +114,11 @@ private:
 	CCamera* m_pCamera;					// プレイヤーを追従するカメラ
 	bool m_DrawFlg;						// プレイヤーがダメージを受けたら点滅するフラグ
 	int m_FlashCnt;						// 点滅の時間の長さ
-	int m_nMoveCnt;						// プレイヤーの移動によるSEの間隔
+	int m_nWalkSECnt;					// プレイヤーの移動によるSEの間隔
 	bool m_bIntFlg;						// ハンマー間隔時間フラグ
 	float m_fIntCnt;					// ハンマー間隔時間カウント
-	float m_fTick;						//フレームカウンタ(0to60)
 	CShadow* m_pShadow;
-	CFrameCnt* m_pWaitFrameCnt;			//待機モーション用フレームカウントダウン
+	CFrameCnt* m_pWaitFrameCnt;			// 待機モーション用フレームカウントダウン
 
 	// ===列挙===
 	enum MOTION
@@ -135,8 +136,11 @@ private:
 		"Assets/Sound/SE/Swing.mp3",			//ハンマーを振る
 		"Assets/Sound/SE/Run.mp3",				//移動のSE
 		"Assets/Sound/SE/PlayerDamage.mp3",		//プレイヤーの被ダメージ時
-		"Assets/Sound/SE/HammerHit.mp3",			//ハンマーとスライムの接触SE
-		"Assets/Sound/SE/HealSE.mp3" };			//回復アイテム取得時
+		"Assets/Sound/SE/HammerHit.mp3",		//ハンマーとスライムの接触SE
+		"Assets/Sound/SE/HealSE.mp3",			//回復アイテム取得時
+		"Assets/Sound/SE/Warning.mp3"			//残りHPが１の時
+
+	};
 
 	//=====アニメーション関連=====
 	AnimeModel::AnimeNo m_Anime[MOTION_MAX];		//プレイヤーのアニメーション
