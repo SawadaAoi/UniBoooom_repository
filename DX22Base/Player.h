@@ -131,6 +131,9 @@ private:
 	bool m_bHumInvFlg;						// ハンマー間隔時間フラグ
 	float m_fHumInvCnt;					// ハンマー間隔時間カウント
 
+	bool m_bDieInvFlg;					// 死亡猶予時間フラグ
+	float m_fDieInvCnt;					// 死亡猶予時間カウント
+
 	// ===列挙===
 	enum MOTION
 	{

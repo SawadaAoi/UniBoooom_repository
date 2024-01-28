@@ -70,6 +70,7 @@ const float PLAYER_SWING_ANIME_SPEED = 5.0f;				// ƒvƒŒƒCƒ„[‚ÌˆÚ“®ƒAƒjƒ[ƒVƒ‡ƒ
 const float	ADD_ANIM_FRAME = 1.0f / 60.0f;
 const int   PLAYER_WARNING_HP = 1;							//•m€‚ÌŒx‚ğs‚¤ƒvƒŒƒCƒ„[c‚èHP
 
+const int	DIE_AFTER_INTERVAL = 2.0f * 60;					// €–S‚µ‚Ä‚©‚çGameOverƒeƒLƒXƒg‚ªo‚é‚Ü‚Å‚Ì—P—\ŠÔ
 
 /* ========================================
    ŠÖ”FƒRƒ“ƒXƒgƒ‰ƒNƒ^
@@ -83,7 +84,7 @@ const int   PLAYER_WARNING_HP = 1;							//•m€‚ÌŒx‚ğs‚¤ƒvƒŒƒCƒ„[c‚èHP
 CPlayer::CPlayer()
 	: m_pHammer(nullptr)
 	, m_bAttackFlg(false)
-	, m_nHp(1)		// ƒvƒŒƒCƒ„[‚ÌHP‚ğŒˆ’è
+	, m_nHp(PLAYER_HP)		// ƒvƒŒƒCƒ„[‚ÌHP‚ğŒˆ’è
 	, m_bDieFlg(false)
 	, m_pCamera(nullptr)
 	, m_nSafeTimeCnt(0)
@@ -96,6 +97,8 @@ CPlayer::CPlayer()
 	, m_bHumInvFlg(false)
 	, m_fHumInvCnt(0.0f)
 	, m_pWaitFrameCnt(nullptr)
+	, m_bDieInvFlg(false)
+	, m_fDieInvCnt(0.0f)
 {
 	m_pHammer = new CHammer();								// HammerƒNƒ‰ƒX‚ğƒCƒ“ƒXƒ^ƒ“ƒX
 
@@ -142,12 +145,18 @@ CPlayer::~CPlayer()
 void CPlayer::Update()
 {
 	// €–S‚µ‚½ê‡
-	if (m_bDieFlg)
+	if (m_bDieInvFlg)
 	{
-		m_bAttackFlg = false;	// UŒ‚’†ƒtƒ‰ƒO‚ğƒIƒt‚É‚·‚é
-		m_DrawFlg = true;				// “_–Å‚ğ‰ğœ
+		m_bAttackFlg = false;				// UŒ‚’†ƒtƒ‰ƒO‚ğƒIƒt‚É‚·‚é
+		m_DrawFlg = true;					// “_–Å‚ğ‰ğœ
 		m_bSafeTimeFlg = false;				// –³“G‚ğ‰ğœ
 
+		m_fDieInvCnt++;
+		// €–S—P—\ŠÔ‚ªŒo‰ß‚µ‚Ä‚¢‚é‚©
+		if (DIE_AFTER_INTERVAL <= m_fDieInvCnt)
+		{
+			m_bDieFlg = true;	// €–S”»’è‚ğƒIƒ“
+		}
 
 	}
 	// ƒnƒ“ƒ}[UŒ‚’†
@@ -320,6 +329,8 @@ void CPlayer::Draw()
 ======================================== */
 void CPlayer::Damage(int DmgNum)
 {
+	if (m_bDieInvFlg) return;	// €–S‚µ‚½‚ ‚Æ‚Íˆ—‚µ‚È‚¢
+
 	m_nHp -= DmgNum;
 	m_bSafeTimeFlg = true;	//ƒvƒŒƒCƒ„[‚ğˆê’èŠÔA–³“G‚É‚·‚é
 	m_nSafeTimeCnt = 0;	//ƒvƒŒƒCƒ„[–³“GŠÔ‚ÌƒJƒEƒ“ƒg‚ğ0‚É–ß‚·
@@ -329,11 +340,10 @@ void CPlayer::Damage(int DmgNum)
 	// ƒvƒŒƒCƒ„[‚ª•m€‚É‚È‚Á‚½‚çŒx‰¹‚ğ—¬‚·
 	if(m_nHp == PLAYER_WARNING_HP) PlaySE(SE_WARNING);
 
-	if (m_nHp <= 0 && !m_bDieFlg)
+	if (m_nHp <= 0)
 	{
-		m_bDieFlg = true;
+		m_bDieInvFlg = true;
 		m_pModel->Play(m_Anime[MOTION_DIE],false);	//ƒAƒjƒ[ƒVƒ‡ƒ“‚ÌÄ¶
-		m_pCamera->BootZoom(10.0f, 10.0f * 60, false, 1.0f);
 
 	}
 }
@@ -611,6 +621,7 @@ void CPlayer::DamageAnimation()
 ======================================== */
 void CPlayer::MoveCheck()
 {
+	if (m_bDieInvFlg) return;	// €–S‚µ‚½‚ ‚Æ‚Íˆ—‚µ‚È‚¢
 
 	//ˆÚ“®—Ê‚ªc‰¡‚Ç‚¿‚ç‚à0‚Ì‚ÍƒJƒEƒ“ƒg‚ğƒŠƒZƒbƒg(ˆÚ“®‚µ‚Ä‚¢‚È‚¢)
 	if (m_fMove.x == 0.0f && m_fMove.z == 0.0f)
