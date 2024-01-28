@@ -115,15 +115,14 @@ public:
 	E_TYPE GetNext() const override;	//次のシーンゲッタ
 	void LoadSound();								//シーンセレクト用のサウンドをロード
 	void PlaySE(SE se, float volume = 1.0f);		//SEを再生する
-protected:
-	StageSelect mStageNum[SUTAGE_NUM];
 private:
-	int m_nSelectNum;			// 選択中のステージ番号
-	Texture* m_pStageSelectBG;
-	Texture* m_pStageSelectUI;
-	bool m_bStickFlg;			// コントローラーのスティックをたおしているか
-	CFrameCnt* m_pFrameCnt;		//イージング用タイマー
-	bool m_bCntUpDwn;			//カウントアップ・ダウン
+	std::map<E_2D_OBJECT, C2dPolygon*> m_p2dObject;	//2dで扱うオブジェクト
+	float m_fSelectSize;							//選択しているオブジェクトの大きさ(y値)
+	bool m_bStickFlg;								//コントローラーのスティックをたおしているか
+	CFrameCnt* m_pFrameCntFall;						//落下イージング用タイマー
+	CFrameCnt* m_pFrameCntScale;					//拡縮イージング用タイマー
+	bool m_bCntUpDwn;								//カウントアップ・ダウン切換フラグ
+	E_TYPE m_eNextType;								//次のシーンの種類
 
 	//=====SE関連=====
 	XAUDIO2_BUFFER* m_pSE[SE_MAX];
@@ -132,14 +131,6 @@ private:
 		"Assets/Sound/SE/Paper_break.mp3",			// 決定音
 		"Assets/Sound/SE/Select_Cursor.mp3" 		// 選択音
 	};
-
-	std::map<E_2D_OBJECT, C2dPolygon*> m_p2dObject;	//2dで扱うオブジェクト
-	float m_fSelectSize;							//選択しているオブジェクトの大きさ(y値)
-	bool m_bStickFlg;								//コントローラーのスティックをたおしているか
-	CFrameCnt* m_pFrameCntFall;						//落下イージング用タイマー
-	CFrameCnt* m_pFrameCntScale;					//拡縮イージング用タイマー
-	bool m_bCntUpDwn;								//カウントアップ・ダウン切換フラグ
-	E_TYPE m_eNextType;								//次のシーンの種類
 };	//ステージセレクト
 
 #endif	//!__SELECT_STAGE_H__

@@ -36,14 +36,14 @@
 	戻値：なし
 =========================================== */
 CSelectStage::CSelectStage()
-	, m_pSE{ nullptr,nullptr }
-	, m_pSESpeaker{ nullptr ,nullptr }
 	:m_fSelectSize(INIT_SIZE_ARR_LET.x)	//選択しているオブジェクトの大きさ
 	,m_bStickFlg(false)					//スティックの傾倒有無
 	,m_pFrameCntFall(nullptr)			//手配書落下用フレームカウンタ
 	,m_pFrameCntScale(nullptr)			//拡縮用フレームカウンタ
 	,m_bCntUpDwn(false)					//カウントアップ・ダウン
 	,m_eNextType(CScene::E_TYPE_STAGE1)	//初期の次のシーン
+	, m_pSE{ nullptr,nullptr }
+	, m_pSESpeaker{ nullptr ,nullptr }
 {
 	// =============== 動的確保 =====================
 	for (int nIdx = 0; nIdx < static_cast<int>(E_2D_OBJECT_MAX); nIdx++)
@@ -67,6 +67,7 @@ CSelectStage::CSelectStage()
 			m_p2dObject.at(static_cast<E_2D_OBJECT>(nIdx))->SetTexture(MAP_TEXTURE_FILE.at(static_cast<E_2D_OBJECT>(nIdx)).c_str());	//テクスチャセット
 			m_p2dObject.at(static_cast<E_2D_OBJECT>(nIdx))->SetSize(INIT_MAP_SIZE.at(static_cast<E_2D_OBJECT>(nIdx)));					//拡縮セット
 		}
+	}
 
 	//=== サウンドファイル読み込み =====
 	LoadSound();	
