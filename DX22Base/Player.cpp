@@ -83,21 +83,22 @@ const int   PLAYER_WARNING_HP = 1;							//瀕死の警告を行うプレイヤー残りHP
 CPlayer::CPlayer()
 	: m_pHammer(nullptr)
 	, m_bAttackFlg(false)
-	, m_nHp(0)
+	, m_nHp(1)		// プレイヤーのHPを決定
+	, m_bDieFlg(false)
 	, m_pCamera(nullptr)
-	, m_nNoDamageCnt(0)
-	, m_bCollide(false)
+	, m_nSafeTimeCnt(0)
+	, m_bSafeTimeFlg(false)
 	, m_DrawFlg(true)
 	, m_FlashCnt(0)
 	, m_pSE{ nullptr,nullptr ,nullptr }
 	, m_pSESpeaker{ nullptr ,nullptr, nullptr }
 	, m_nWalkSECnt(0)
-	, m_bIntFlg(false)
-	, m_fIntCnt(0.0f)
-	,m_pWaitFrameCnt(nullptr)
+	, m_bHumInvFlg(false)
+	, m_fHumInvCnt(0.0f)
+	, m_pWaitFrameCnt(nullptr)
 {
 	m_pHammer = new CHammer();								// Hammerクラスをインスタンス
-	m_nHp = PLAYER_HP;										// プレイヤーのHPを決定
+
 	m_Sphere.fRadius = PLAYER_RADIUS;						// 当たり判定用の球体の半径
 	m_Transform.fScale = PLAYER_SIZE;
 	LoadSound();	//サウンドファイル読み込み
@@ -109,6 +110,7 @@ CPlayer::CPlayer()
 	}
 	m_pModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));		//頂点シェーダーをセット
 	//m_pModel->SetPixelShader(ShaderList::GetPS(ShaderList::PS_LAMBERT));	//ピクセルシェーダーをセット
+
 	LoadAnime();	//アニメーションの読み込み
 	m_pShadow = new CShadow();
 }
@@ -139,27 +141,37 @@ CPlayer::~CPlayer()
 ======================================== */
 void CPlayer::Update()
 {
+	// 死亡した場合
+	if (m_bDieFlg)
+	{
+		m_bAttackFlg = false;	// 攻撃中フラグをオフにする
+		m_DrawFlg = true;				// 点滅を解除
+		m_bSafeTimeFlg = false;				// 無敵を解除
+
+
+	}
 	// ハンマー攻撃中
-	if (m_bAttackFlg == true)
+	else if (m_bAttackFlg)
 	{
 		// ハンマーの攻撃が終了したら
 		if (m_pHammer->Update() == false)
 		{
 			m_bAttackFlg = false;	// 攻撃中フラグをオフにする
-			m_bIntFlg = true;		// ハンマー振り間隔フラグオン
+			m_bHumInvFlg = true;	// ハンマー振り間隔フラグオン
 		}
 
 	}
+	// ハンマー攻撃以外
 	else
 	{
 		// ハンマー間隔時間フラグがオンの時
-		if (m_bIntFlg)
+		if (m_bHumInvFlg)
 		{
-			m_fIntCnt++;				// ハンマー間隔時間カウント加算
-			if (m_fIntCnt >= HAMMER_INTERVAL_TIME)
+			m_fHumInvCnt++;				// ハンマー間隔時間カウント加算
+			if (m_fHumInvCnt >= HAMMER_INTERVAL_TIME)
 			{
-				m_bIntFlg = false;		// ハンマー間隔時間フラグオン
-				m_fIntCnt = 0.0f;		//ハンマー間隔時間リセット
+				m_bHumInvFlg = false;		// ハンマー間隔時間フラグオン
+				m_fHumInvCnt = 0.0f;		// ハンマー間隔時間リセット
 			}
 		}
 
@@ -179,12 +191,9 @@ void CPlayer::Update()
 
 
 		// スペースキーを押した時、またはコントローラのBボタンを押した時 && ハンマー間隔時間経過済み
-		if ((IsKeyTrigger(VK_SPACE) || IsKeyTriggerController(BUTTON_B)) && !m_bIntFlg)
+		if ((IsKeyTrigger(VK_SPACE) || IsKeyTriggerController(BUTTON_B)) && !m_bHumInvFlg)
 		{
-			if (m_pWaitFrameCnt)
-			{
-				SAFE_DELETE(m_pWaitFrameCnt);	//カウンタ削除
-			}
+			SAFE_DELETE(m_pWaitFrameCnt);	//カウンタ削除
 
 			m_pModel->Play(
 				m_Anime[MOTION_SWING],
@@ -192,29 +201,34 @@ void CPlayer::Update()
 				PLAYER_SWING_ANIME_SPEED + (SwingSpeed_MIN - m_pHammer->GetInterval()) * 0.092f);	//アニメーションの再生
 
 			m_pModel->SetAnimationTime(m_Anime[MOTION_SWING], 0.0f);					//アニメーションタイムをスタート位置にセット
+
 			m_pHammer->AttackStart(m_Transform.fPos, m_Transform.fRadian.y + DirectX::g_XMPi[0]);	// ハンマー攻撃開始
 			m_bAttackFlg = true;	// 攻撃フラグを有効にする
+
 			//SEの再生
 			PlaySE(SE_SWING);
 
-			//ハンマーのスイング量を減らす
+			//ハンマーのスイングスピードを遅くする
 			m_pHammer->SwingSpeedAdd();
 		}
-		// ハンマーのスイング量を増やす
+		// 攻撃ボタンを押してない時はハンマーのスイングスピードを通常に戻していく
 		m_pHammer->SwingSpeedSubtract();
 	}
 
+
+
+
 	// 無敵状態になっている場合
-	if (m_bCollide)
+	if (m_bSafeTimeFlg)
 	{
-		m_nNoDamageCnt++;					// 毎フレームでカウントを追加
+		m_nSafeTimeCnt++;					// 毎フレームでカウントを追加
 		DamageAnimation();					// プレイヤー点滅関数呼び出す
 
 		// カウントが一定時間を超えたら
-		if (m_nNoDamageCnt >= NO_DAMAGE_TIME)
+		if (m_nSafeTimeCnt >= NO_DAMAGE_TIME)
 		{
 			m_DrawFlg = true;				// 点滅を解除
-			m_bCollide = false;				// 無敵を解除
+			m_bSafeTimeFlg = false;				// 無敵を解除
 		}
 
 	}
@@ -254,8 +268,6 @@ void CPlayer::Draw()
 
 			//m_pModel->Draw();
 		}
-
-
 
 		DirectX::XMFLOAT4X4 mat[3] = {
 			m_Transform.GetWorldMatrixSRT(),
@@ -309,17 +321,20 @@ void CPlayer::Draw()
 void CPlayer::Damage(int DmgNum)
 {
 	m_nHp -= DmgNum;
-	m_bCollide = true;	//プレイヤーを一定時間、無敵にする
-	m_nNoDamageCnt = 0;	//プレイヤー無敵時間のカウントを0に戻す
+	m_bSafeTimeFlg = true;	//プレイヤーを一定時間、無敵にする
+	m_nSafeTimeCnt = 0;	//プレイヤー無敵時間のカウントを0に戻す
 	//=== SEの再生 =====
 	PlaySE(SE_DAMAGED);
 
 	// プレイヤーが瀕死になったら警告音を流す
 	if(m_nHp == PLAYER_WARNING_HP) PlaySE(SE_WARNING);
 
-	if (m_nHp <= 0)
+	if (m_nHp <= 0 && !m_bDieFlg)
 	{
-		//ゲームオーバー処理 <= TODO
+		m_bDieFlg = true;
+		m_pModel->Play(m_Anime[MOTION_DIE],false);	//アニメーションの再生
+		m_pCamera->BootZoom(10.0f, 10.0f * 60, false, 1.0f);
+
 	}
 }
 
@@ -419,9 +434,6 @@ void CPlayer::MoveSizeInputSet(TPos3d<float> fInput)
 }
 
 
-
-
-
 /* ========================================
    ハンマー当たり判定取得関数
    ----------------------------------------
@@ -465,17 +477,17 @@ CHammer* CPlayer::GetHammerPtr()
 }
 
 /* ========================================
-   Collision確認関数
+   無敵時間フラグ取得関数
    ----------------------------------------
    内容：プレイヤーが無敵状態かの確認
    ----------------------------------------
    引数：なし
    ----------------------------------------
-   戻値：bool
+   戻値：bool(true=無敵状態) 
 ======================================== */
-bool CPlayer::GetCollide()
+bool CPlayer::GetSafeTime()
 {
-	return m_bCollide;
+	return m_bSafeTimeFlg;
 }
 
 /* ========================================
@@ -490,6 +502,20 @@ bool CPlayer::GetCollide()
 int* CPlayer::GetHpPtr()
 {
 	return &m_nHp;
+}
+
+/* ========================================
+   プレイヤー死亡フラグ取得関数
+   ----------------------------------------
+   内容：プレイヤー死亡フラグを取得
+   ----------------------------------------
+   引数：無し
+   ----------------------------------------
+   戻値：true = 死亡 / false = 生存
+======================================== */
+bool CPlayer::GetDieFlg() const
+{
+	return m_bDieFlg;
 }
 
 /* ========================================
@@ -634,7 +660,6 @@ void CPlayer::MoveCheck()
 		if (m_pModel->GetPlayNo() != m_Anime[MOTION_MOVE] && !m_pModel->IsPlay(m_Anime[MOTION_SWING]))
 		{	
 			m_pModel->Play(m_Anime[MOTION_MOVE], true, PLAYER_MOVE_ANIME_SPEED);	// アニメーションを再生
-
 
 		}
 

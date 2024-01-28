@@ -22,22 +22,21 @@
 #include "GameParameter.h"
 #include "GameClearText.h"
 #include "GameOverText.h"
+#include "Player.h"
 
 class CStageFinish
 {
 public:
 	enum GAME_STATE
 	{
-		GAME_NONE,
-
-		GAME_PLAY,
+		GAME_PLAY,	// ƒvƒŒƒC’†
 		GAME_CLEAR,
 		GAME_OVER,
 
 		MAX_STATE
 	};
 
-	CStageFinish(CCamera* pCamera, int* pPlayerHp,int* pTimeCnt);
+	CStageFinish(CCamera* pCamera, CPlayer* pPlayer,int* pTimeCnt);
 	~CStageFinish();
 	void Update();
 	void Draw();
@@ -46,8 +45,10 @@ public:
 	bool GetClearFlg();
 
 private:
+	void ChangeGameState();
+
 	GAME_STATE m_eGameState;
-	const int* m_pPlayerHp;
+	const CPlayer* m_pPlayer;
 	const int* m_pTimeCnt;
 	bool m_bGameEnd;
 

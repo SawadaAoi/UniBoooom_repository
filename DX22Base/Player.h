@@ -92,8 +92,10 @@ public:
 	tagSphereInfo GetHammerSphere();	//当たり判定を取るためゲッター
 	TPos3d<float>* GetPosAddress();
 	CHammer* GetHammerPtr();
-	bool GetCollide();							//当たり判定があるかの確認
+	bool GetSafeTime();							//当たり判定があるかの確認
 	int* GetHpPtr();
+	bool GetDieFlg() const;
+
 	// セット関数
 	void SetCamera(CCamera* pCamera);
 	bool GetAttackFlg();
@@ -106,26 +108,37 @@ private:
 	// ===メンバ変数宣言=====
 	TPos3d<float> m_fMove;				// 移動量
 	AnimeModel* m_pModel;				// プレイヤーのモデル
-	int m_nHp;							// プレイヤーの体力
-	bool m_bAttackFlg;					// 攻撃中かどうかのフラグ
-	int m_nNoDamageCnt;					// プレイヤーの無敵時間をカウント
-	bool m_bCollide;					// プレイヤーの無敵状態のフラグ(当たり判定をOFF)
+
 	CHammer* m_pHammer;					// ハンマークラスのポインタ(プレイヤーが管理する)
 	CCamera* m_pCamera;					// プレイヤーを追従するカメラ
-	bool m_DrawFlg;						// プレイヤーがダメージを受けたら点滅するフラグ
-	int m_FlashCnt;						// 点滅の時間の長さ
-	int m_nWalkSECnt;					// プレイヤーの移動によるSEの間隔
-	bool m_bIntFlg;						// ハンマー間隔時間フラグ
-	float m_fIntCnt;					// ハンマー間隔時間カウント
+
 	CShadow* m_pShadow;
 	CFrameCnt* m_pWaitFrameCnt;			// 待機モーション用フレームカウントダウン
+
+	int m_nHp;							// プレイヤーの体力
+	bool m_bDieFlg;						// プレイヤー死亡フラグ(trueの場合死亡)
+
+	bool m_bAttackFlg;					// 攻撃中かどうかのフラグ
+
+	int m_nSafeTimeCnt;					// プレイヤーの無敵時間をカウント
+	bool m_bSafeTimeFlg;				// プレイヤーの無敵状態のフラグ(当たり判定をOFF)
+
+	bool m_DrawFlg;						// プレイヤーがダメージを受けたら点滅するフラグ(trueの場合表示)
+	int m_FlashCnt;						// 点滅の時間の長さ
+
+	int m_nWalkSECnt;					// プレイヤーの移動によるSEの間隔
+
+	bool m_bHumInvFlg;						// ハンマー間隔時間フラグ
+	float m_fHumInvCnt;					// ハンマー間隔時間カウント
 
 	// ===列挙===
 	enum MOTION
 	{
-		MOTION_STOP,	//待機
-		MOTION_MOVE,	//移動
-		MOTION_SWING,	//ハンマーを振る
+		MOTION_STOP,	// 待機
+		MOTION_MOVE,	// 移動
+		MOTION_SWING,	// ハンマーを振る
+		MOTION_DIE,		// 死亡
+
 		MOTION_MAX,	//モーションの総数
 	};
 
@@ -148,6 +161,7 @@ private:
 		"Assets/Model/player/wait_end.FBX",			//待機
 		"Assets/Model/player/Dash.FBX",				//移動
 		"Assets/Model/player/pow.FBX",				//スイング
+		"Assets/Model/player/down.fbx",				//死亡
 	};			
 };
 

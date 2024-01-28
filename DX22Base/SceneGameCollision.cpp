@@ -77,7 +77,7 @@ void SceneGame::SceneGameCollision()
    ======================================== */
 void SceneGame::PlayerSlimeCollision()
 {
-	if (m_pPlayer->GetCollide()) return;	//	無敵時間の時はスルー
+	if (m_pPlayer->GetSafeTime()) return;	//	無敵時間の時はスルー
 
 	// スライム
 	for (int i = 0; i < MAX_SLIME_NUM; i++)
@@ -106,7 +106,7 @@ void SceneGame::PlayerSlimeCollision()
    ======================================== */
 void SceneGame::PlayerBossCollision()
 {
-	if (m_pPlayer->GetCollide()) return;	//	無敵時間の時はスルー
+	if (m_pPlayer->GetSafeTime()) return;	//	無敵時間の時はスルー
 
 	// ボススライム
 	for (int i = 0; i < MAX_BOSS_SLIME_NUM; i++)
