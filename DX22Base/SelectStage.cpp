@@ -13,13 +13,13 @@
 	・2023/11/16 制作 takagi
 	・2023/12/12 ステージセレクトを追加　yamamoto
 	・2024/01/26 拡縮実装 takagi
+	・2024/01/28 落下実装 takagi
 
 ========================================== */
 
 // =============== インクルード ===================
 #include "SelectStage.h"	//自身のヘッダ
-#include "Input.h"
-#include "GameParameter.h"
+#include "Input.h"			//入力管理
 #define _USE_MATH_DEFINES	//math.hの定義使用
 #include <math.h>			//M_PI使用
 #include <algorithm>		//clamp使用
@@ -35,8 +35,10 @@
 	戻値：なし
 =========================================== */
 CSelectStage::CSelectStage()
-	:m_bStickFlg(false)					//スティックの傾倒有無
-	,m_pFrameCnt(nullptr)				//フレームカウンタ
+	:m_fSelectSize(INIT_SIZE_ARR_LET.x)	//選択しているオブジェクトの大きさ
+	,m_bStickFlg(false)					//スティックの傾倒有無
+	,m_pFrameCntFall(nullptr)			//手配書落下用フレームカウンタ
+	,m_pFrameCntScale(nullptr)			//拡縮用フレームカウンタ
 	,m_bCntUpDwn(false)					//カウントアップ・ダウン
 	,m_eNextType(CScene::E_TYPE_STAGE1)	//初期の次のシーン
 {
@@ -50,7 +52,7 @@ CSelectStage::CSelectStage()
 		}
 		m_p2dObject.emplace(static_cast<E_2D_OBJECT>(nIdx), new C2dPolygon());
 	}
-	m_pFrameCnt = new CFrameCnt(CHANGE_SCALE_HALF_TIME, m_bCntUpDwn);	//フレーム初期化
+	m_pFrameCntScale = new CFrameCnt(CHANGE_SCALE_HALF_TIME, m_bCntUpDwn);	//フレーム初期化
 
 	// =============== 初期化 =====================
 	for (int nIdx = 0; nIdx < static_cast<int>(m_p2dObject.size()); nIdx++)
@@ -79,6 +81,8 @@ CSelectStage::~CSelectStage()
 {
 	// 破棄処理
 	SAFE_DELETE_POINTER_MAP(m_p2dObject);	//2dオブジェクト削除
+	SAFE_DELETE(m_pFrameCntScale);			//カウンタ削除
+	SAFE_DELETE(m_pFrameCntFall);			//カウンタ削除
 }
 
 /* ========================================
@@ -92,39 +96,98 @@ CSelectStage::~CSelectStage()
 =========================================== */
 void CSelectStage::Update()
 {
-	Select();
-
-	// =============== 変数宣言 =====================
-	float fSize = INIT_SIZE_ARR_LET.x;	//大きさ
-
-	// =============== 拡縮更新 =====================
-	if (m_pFrameCnt)	//ヌルチェック
+	// =============== 分岐 =====================
+	if (!m_pFrameCntFall)	//手配書が落ちていない=選択中
 	{
-		m_pFrameCnt->Count();	//カウント進行
-		fSize = -(cosf(static_cast<float>(M_PI) * m_pFrameCnt->GetRate()) - 1.0f) / 2.0f * (MAX_SIZE_ARR_LET - MIN_SIZE_ARR_LET) + MIN_SIZE_ARR_LET;	//イージングを使った大きさ変更
-		if (m_pFrameCnt->IsFin())	//カウント完了
+		Select();
+
+		// =============== 拡縮更新 =====================
+		if (m_pFrameCntScale)	//ヌルチェック
 		{
-			m_bCntUpDwn ^= 1;													//カウントアップダウン逆転
-			SAFE_DELETE(m_pFrameCnt);											//カウンタ削除
-			m_pFrameCnt = new CFrameCnt(CHANGE_SCALE_HALF_TIME, m_bCntUpDwn);	//カウントアップ・ダウン
+			m_pFrameCntScale->Count();	//カウント進行
+			m_fSelectSize = -(cosf(static_cast<float>(M_PI) * m_pFrameCntScale->GetRate()) - 1.0f) / 2.0f * (MAX_SIZE_ARR_LET - MIN_SIZE_ARR_LET) + MIN_SIZE_ARR_LET;	//イージングを使った大きさ変更
+			if (m_pFrameCntScale->IsFin())	//カウント完了
+			{
+				m_bCntUpDwn ^= 1;													//カウントアップダウン逆転
+				SAFE_DELETE(m_pFrameCntScale);											//カウンタ削除
+				m_pFrameCntScale = new CFrameCnt(CHANGE_SCALE_HALF_TIME, m_bCntUpDwn);	//カウントアップ・ダウン
+			}
+		}
+
+		// =============== 拡縮変更 =====================
+		switch (m_eNextType)	//選択されているものを変更
+		{	//TODO:アクセス・ヌルチェック
+		case CScene::E_TYPE_STAGE1:	//ステージ1
+			m_p2dObject.at(E_2D_OBJECT_STAGE_1_LEAVE)->SetSize({ m_fSelectSize * ASPECT_RATE_ARR_LET, m_fSelectSize, 1.0f });	//ステージ1の手配書
+			m_p2dObject.at(E_2D_OBJECT_STAGE_1_REMINE)->SetSize({ m_fSelectSize * ASPECT_RATE_ARR_LET, m_fSelectSize, 1.0f });	//ステージ1の手配書
+			break;	//分岐処理終了
+		case CScene::E_TYPE_STAGE2:	//ステージ2
+			m_p2dObject.at(E_2D_OBJECT_STAGE_2_LEAVE)->SetSize({ m_fSelectSize * ASPECT_RATE_ARR_LET, m_fSelectSize, 1.0f });	//ステージ2の手配書
+			m_p2dObject.at(E_2D_OBJECT_STAGE_2_REMINE)->SetSize({ m_fSelectSize * ASPECT_RATE_ARR_LET, m_fSelectSize, 1.0f });	//ステージ2の手配書
+			break;	//分岐処理終了
+		case CScene::E_TYPE_STAGE3:	//ステージ3
+			m_p2dObject.at(E_2D_OBJECT_STAGE_3_LEAVE)->SetSize({ m_fSelectSize * ASPECT_RATE_ARR_LET, m_fSelectSize, 1.0f });	//ステージ3の手配書
+			m_p2dObject.at(E_2D_OBJECT_STAGE_3_REMINE)->SetSize({ m_fSelectSize * ASPECT_RATE_ARR_LET, m_fSelectSize, 1.0f });	//ステージ3の手配書
+			break;	//分岐処理終了			
 		}
 	}
+	else
+	{	//手配書が落ちている=選択完了
 
-	// =============== 拡縮変更 =====================
-	switch (m_eNextType)	//選択されているものを変更
-	{	//TODO:アクセス・ヌルチェック
-	case CScene::E_TYPE_STAGE1:	//ステージ1
-		m_p2dObject.at(E_2D_OBJECT_STAGE_1_LEAVE)->SetSize({ fSize * ASPECT_RATE_ARR_LET, fSize, 1.0f });	//ステージ1の手配書
-		m_p2dObject.at(E_2D_OBJECT_STAGE_1_REMINE)->SetSize({ fSize * ASPECT_RATE_ARR_LET, fSize, 1.0f });	//ステージ1の手配書
-		break;	//分岐処理終了
-	case CScene::E_TYPE_STAGE2:	//ステージ2
-		m_p2dObject.at(E_2D_OBJECT_STAGE_2_LEAVE)->SetSize({ fSize * ASPECT_RATE_ARR_LET, fSize, 1.0f });	//ステージ2の手配書
-		m_p2dObject.at(E_2D_OBJECT_STAGE_2_REMINE)->SetSize({ fSize * ASPECT_RATE_ARR_LET, fSize, 1.0f });	//ステージ2の手配書
-		break;	//分岐処理終了
-	case CScene::E_TYPE_STAGE3:	//ステージ3
-		m_p2dObject.at(E_2D_OBJECT_STAGE_3_LEAVE)->SetSize({ fSize * ASPECT_RATE_ARR_LET, fSize, 1.0f });	//ステージ3の手配書
-		m_p2dObject.at(E_2D_OBJECT_STAGE_3_REMINE)->SetSize({ fSize * ASPECT_RATE_ARR_LET, fSize, 1.0f });	//ステージ3の手配書
-		break;	//分岐処理終了
+		// =============== 検査 =====================
+		if (m_pFrameCntFall->IsFin())	//カウント完了
+		{
+			// =============== フラグ操作 =====================
+			m_bFinish = true;	//シーン終了
+
+			// =============== 終了 =====================
+			SAFE_DELETE(m_pFrameCntFall);	//カウンタ削除
+			return;							//処理中断
+		}
+
+		// =============== カウント =====================
+		m_pFrameCntFall->Count();	//カウント進行
+
+		// =============== 変数宣言 =====================
+		TTriType<float> fPos = 0.0f;	//位置
+		auto EasingFunc = [this, &fPos](const TTriType<float>& fBasePos)->void {
+			// =============== 変数宣言 =====================
+			float fCompare = 7.5625;	//比較対象
+
+			// =============== 初期化 =====================
+			fPos = fBasePos;
+
+			// =============== 更新 =====================
+			fPos.y = (1.0f - powf(m_pFrameCntFall->GetRate(), 4.0f)) * (-m_fSelectSize / 2.0f - fBasePos.y) + fBasePos.y;	//y値更新	GetRate()は1to0
+		};	//初期位置・初期サイズをもとにfPosに落下後位置を格納
+
+		// =============== 初期化 =====================
+		switch (m_eNextType)	//選択されているものを変更
+		{	//TODO:アクセス・ヌルチェック
+		case CScene::E_TYPE_STAGE1:	//ステージ1
+			EasingFunc(INIT_MAP_POS.at(E_2D_OBJECT_STAGE_1_LEAVE));	//ステージ1の手配書			
+			break;	//分岐処理終了
+		case CScene::E_TYPE_STAGE2:	//ステージ2
+			EasingFunc(INIT_MAP_POS.at(E_2D_OBJECT_STAGE_2_LEAVE));	//ステージ2の手配書	
+			break;	//分岐処理終了
+		case CScene::E_TYPE_STAGE3:	//ステージ3
+			EasingFunc(INIT_MAP_POS.at(E_2D_OBJECT_STAGE_3_LEAVE));	//ステージ3の手配書	
+			break;	//分岐処理終了
+		}
+
+		// =============== 落下位置更新 =====================
+		switch (m_eNextType)	//選択されているものを変更
+		{	//TODO:アクセス・ヌルチェック
+		case CScene::E_TYPE_STAGE1:	//ステージ1
+			m_p2dObject.at(E_2D_OBJECT_STAGE_1_LEAVE)->SetPos(fPos);	//ステージ1の手配書
+			break;	//分岐処理終了
+		case CScene::E_TYPE_STAGE2:	//ステージ2
+			m_p2dObject.at(E_2D_OBJECT_STAGE_2_LEAVE)->SetPos(fPos);	//ステージ2の手配書
+			break;	//分岐処理終了
+		case CScene::E_TYPE_STAGE3:	//ステージ3
+			m_p2dObject.at(E_2D_OBJECT_STAGE_3_LEAVE)->SetPos(fPos);	//ステージ3の手配書
+			break;	//分岐処理終了
+		}
 	}
 }
 
@@ -312,9 +375,9 @@ void CSelectStage::Select()
 		}
 	}
 
-	if (IsKeyTrigger(VK_SPACE) || IsKeyTriggerController(BUTTON_B))
+	if (IsKeyTrigger(VK_SPACE) || IsKeyTriggerController(BUTTON_B) && m_pFrameCntFall)
 	{
-		m_bFinish = true;	// タイトルシーン終了フラグON
+		m_pFrameCntFall = new CFrameCnt(FALL_TIME_ARR_LET);	//カウンタ作成
 	}
 }
 

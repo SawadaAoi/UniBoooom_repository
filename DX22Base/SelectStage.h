@@ -13,6 +13,7 @@
 	・2023/11/16 制作 takagi
 	・2023/12/12 ステージセレクト用の構造体、配列、関数追加 yamamoto
 	・2024/01/26 拡縮実装 takagi
+	・2024/01/28 落下実装 takagi
 
 ========================================== */
 
@@ -49,7 +50,9 @@ private:
 	const float MAX_SIZE_ARR_LET = 550.0f;				//手配書最大サイズ
 	const float ASPECT_RATE_ARR_LET = 400.0f / 500.0f;	//手配書縦に対する横の比率
 	const TTriType<float> INIT_SIZE_ARR_LET = { MIN_SIZE_ARR_LET, MIN_SIZE_ARR_LET, 1.0f };	//手配書初期サイズ
-	const int CHANGE_SCALE_HALF_TIME = 120;	//拡縮半周あたりにかかる時間
+	const float MARGIN_FALL = 0.0f;					//落ち切ったと判断するときに補正する余裕
+	const int FALL_TIME_ARR_LET = 60;					//手配書が落ちるのにかかる時間
+	const int CHANGE_SCALE_HALF_TIME = 120;				//拡縮半周あたりにかかる時間
 	const std::map<E_2D_OBJECT, std::string> MAP_TEXTURE_FILE= {
 	{ E_2D_OBJECT_STAGE_1_REMINE, "Assets/Texture/StageSelect/zako1-1.png" },	//ステージ1手配書残る方
 	{ E_2D_OBJECT_STAGE_1_LEAVE,	"Assets/Texture/StageSelect/zako1-2.png" },	//ステージ1手配書離れる方
@@ -101,10 +104,12 @@ public:
 	E_TYPE GetNext() const override;	//次のシーンゲッタ
 private:
 	std::map<E_2D_OBJECT, C2dPolygon*> m_p2dObject;	//2dで扱うオブジェクト
-	bool m_bStickFlg;			// コントローラーのスティックをたおしているか
-	CFrameCnt* m_pFrameCnt;		//イージング用タイマー
-	bool m_bCntUpDwn;			//カウントアップ・ダウン
-	E_TYPE m_eNextType;			//次のシーンの種類
+	float m_fSelectSize;							//選択しているオブジェクトの大きさ(y値)
+	bool m_bStickFlg;								//コントローラーのスティックをたおしているか
+	CFrameCnt* m_pFrameCntFall;						//落下イージング用タイマー
+	CFrameCnt* m_pFrameCntScale;					//拡縮イージング用タイマー
+	bool m_bCntUpDwn;								//カウントアップ・ダウン切換フラグ
+	E_TYPE m_eNextType;								//次のシーンの種類
 };	//ステージセレクト
 
 #endif	//!__SELECT_STAGE_H__
