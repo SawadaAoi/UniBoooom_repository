@@ -174,6 +174,7 @@
     <ClCompile Include="BattleData.cpp" />
     <ClCompile Include="BgPause.cpp" />
     <ClCompile Include="BgTitle.cpp" />
+    <ClCompile Include="BgTitleAnime.cpp" />
     <ClCompile Include="BoooomUI.cpp" />
     <ClCompile Include="BossArrow.cpp" />
     <ClCompile Include="BossGauge.cpp" />
@@ -269,6 +270,9 @@
     <ClCompile Include="Title.cpp" />
     <ClCompile Include="CommandTitle.cpp" />
     <ClCompile Include="TitleAnime.cpp" />
+    <ClCompile Include="TitleBgGlass.cpp" />
+    <ClCompile Include="TitleBgPlayer.cpp" />
+    <ClCompile Include="TitleBgSky.cpp" />
     <ClCompile Include="TitleLogo.cpp" />
     <ClCompile Include="TitleObj.cpp" />
     <ClCompile Include="TotalScore.cpp" />
@@ -285,6 +289,7 @@
     <ClInclude Include="BattleData.h" />
     <ClInclude Include="BgPause.h" />
     <ClInclude Include="BgTitle.h" />
+    <ClInclude Include="BgTitleAnime.h" />
     <ClInclude Include="BoooomUI.h" />
     <ClInclude Include="BossArrow.h" />
     <ClInclude Include="BossGauge.h" />
@@ -384,6 +389,9 @@
     <ClInclude Include="Title.h" />
     <ClInclude Include="CommandTitle.h" />
     <ClInclude Include="TitleAnime.h" />
+    <ClInclude Include="TitleBgPlayer.h" />
+    <ClInclude Include="TitleBgSky.h" />
+    <ClInclude Include="TitleBgGlass.h" />
     <ClInclude Include="TitleLogo.h" />
     <ClInclude Include="TitleObj.h" />
     <ClInclude Include="TotalScore.h" />

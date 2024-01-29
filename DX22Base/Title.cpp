@@ -32,7 +32,7 @@
 #include "Title.h"			//自身のヘッダ
 #include "Input.h"			//入力受付
 #include "FixedCamera.h"	//インスタンス候補
-#include "BgTitle.h"		//インスタンス候補
+#include "BgTitleAnime.h"	//インスタンス候補
 #include "CommandTitle.h"	//インスタンス候補
 #include "TitleLogo.h"		//インスタンス候補
 #include "OpeningTitle.h"	//インスタンス候補
@@ -61,12 +61,6 @@ const std::map<int, int> MAP_WAIT_START = {
 	{E_2D_LOGO, 0},		//タイトルロゴ
 	{E_2D_OPENING, 0},	//開始映像
 };	//ポリゴンと表示開始待機時間の対応表
-const std::map<int, int> MAP_WAIT_FIN = {
-	{E_2D_BACK, 30},	//背景
-	{E_2D_START, 15},	//開始コマンド
-	{E_2D_FINISH, 30},	//終了コマンド
-	{E_2D_LOGO, 15},	//タイトルロゴ
-};	//ポリゴンと表示終了待機時間の対応表
 const std::map<int, std::string> MAP_TEXTURE = {
 	{E_2D_BACK, "Assets/Texture//Title/TitleBg.png"},				//背景
 	{E_2D_START, "Assets/Texture/Title/Title_Start.png"},			//開始コマンド
@@ -102,7 +96,8 @@ CTitle::CTitle()
 
 	// =============== 動的確保 ===================
 	m_p2dObj = {
-		{E_2D_BACK,new CBgTitle(MAP_WAIT_START.at(E_2D_BACK))},				//背景用
+		//{E_2D_BACK,new CBgTitle(MAP_WAIT_START.at(E_2D_BACK))},				//背景用
+		{E_2D_BACK,new CBgTitleAnime()},				//背景用
 		{E_2D_START,new CCommandTitle(MAP_WAIT_START.at(E_2D_START))},		//継続コマンド用
 		{E_2D_FINISH,new CCommandTitle(MAP_WAIT_START.at(E_2D_FINISH))},	//終了コマンド用
 		{E_2D_LOGO,new CTitleLogo(MAP_WAIT_START.at(E_2D_LOGO))},			//タイトルロゴ用
@@ -144,9 +139,9 @@ CTitle::CTitle()
 #if !USE_OPENING	//開始映像がない場合かわりに縮小を呼ぶ
 	// =============== 縮小 ===================
 	if (m_p2dObj.find(E_2D_BACK) != m_p2dObj.end() && m_p2dObj.at(E_2D_BACK)
-		&& typeid(CBgTitle) == typeid(*m_p2dObj.at(E_2D_BACK)))	//アクセスチェック・ヌルチェック・型チェック
+		&& typeid(CBgTitleAnime) == typeid(*m_p2dObj.at(E_2D_BACK)))	//アクセスチェック・ヌルチェック・型チェック
 	{
-		static_cast<CBgTitle*>(m_p2dObj[E_2D_BACK])->ChangeLtoS(ZOOMOUT_FRAME);	//背景縮小開始
+		static_cast<CBgTitleAnime*>(m_p2dObj[E_2D_BACK])->ChangeLtoS(ZOOMOUT_FRAME);	//背景縮小開始
 	}
 	if (m_p2dObj.find(E_2D_LOGO) != m_p2dObj.end() && m_p2dObj.at(E_2D_LOGO)
 		&& typeid(CTitleLogo) == typeid(*m_p2dObj.at(E_2D_LOGO)))	//アクセスチェック・ヌルチェック・型チェック
@@ -210,9 +205,9 @@ void CTitle::Update()
 
 			// =============== 縮小 ===================
 			if (m_p2dObj.find(E_2D_BACK) != m_p2dObj.end() && m_p2dObj.at(E_2D_BACK)
-				&& typeid(CBgTitle) == typeid(*m_p2dObj.at(E_2D_BACK)))	//アクセスチェック・ヌルチェック・型チェック
+				&& typeid(CBgTitleAnime) == typeid(*m_p2dObj.at(E_2D_BACK)))	//アクセスチェック・ヌルチェック・型チェック
 			{
-				static_cast<CBgTitle*>(m_p2dObj[E_2D_BACK])->ChangeLtoS(ZOOMOUT_FRAME);	//背景縮小開始
+				static_cast<CBgTitleAnime*>(m_p2dObj[E_2D_BACK])->ChangeLtoS(ZOOMOUT_FRAME);	//背景縮小開始
 			}
 			if (m_p2dObj.find(E_2D_LOGO) != m_p2dObj.end() && m_p2dObj.at(E_2D_LOGO)
 				&& typeid(CTitleLogo) == typeid(*m_p2dObj.at(E_2D_LOGO)))	//アクセスチェック・ヌルチェック・型チェック
