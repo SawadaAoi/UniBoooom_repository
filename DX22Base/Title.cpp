@@ -72,7 +72,7 @@ const std::map<int, std::string> MAP_TEXTURE = {
 	{E_2D_START, "Assets/Texture/Title/Title_Start.png"},			//開始コマンド
 	{E_2D_FINISH, "Assets/Texture/Pause/Pause_Finish.png"},			//終了コマンド
 	{E_2D_LOGO, "Assets/Texture/Title/TitleLogo.png"},				//タイトルロゴ
-	{E_2D_OPENING, "Assets/Texture/Title/TitleBgAnim_1.png"},		//開始映像
+	{E_2D_OPENING, "Assets/Texture/Title/TitleBgAnim_1-92.png"},		//開始映像
 };	//ポリゴンとテクスチャの対応表
 const std::map<int, TPos3d<float>> MAP_POS = {
 	{E_2D_BACK, {static_cast<float>(SCREEN_WIDTH) / 2.0f, static_cast<float>(SCREEN_HEIGHT) / 2.0f, 0.0f}},		//背景
