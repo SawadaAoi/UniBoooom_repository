@@ -32,6 +32,14 @@ class CSlime_BossBase :
 	public CSlimeBase
 {
 public:
+	// ===== 列挙 =====
+	enum ROCK_SLIME_MOTION
+	{
+		ROCK_SLIME_MOVE,
+
+
+	};
+
 	// ===プロトタイプ宣言======
 	CSlime_BossBase();
 	~CSlime_BossBase();
