@@ -21,8 +21,8 @@
 // =============== 定数定義 ===================
 const TPos3d<float> SCALE(static_cast<float>(SCREEN_WIDTH),
 	static_cast<float>(SCREEN_HEIGHT), 0.0f);		//大きさ
-const int MAX_ANIM(1);								//アニメーション数
-const TDiType<int> MAX_SEAT(1);						//1x1
+const int MAX_ANIM(92);								//アニメーション数
+const TDiType<int> MAX_SEAT(19,5);						//1x1
 
 /* ========================================
 	コンストラクタ
@@ -34,7 +34,7 @@ const TDiType<int> MAX_SEAT(1);						//1x1
 	戻値：なし
 =========================================== */
 COpeningTitle::COpeningTitle()
-	:CTitleAnime(MAX_ANIM, MAX_SEAT,0,100)	//委譲	//TODO:この第三引数以降はアニメ実装時に消す事(アニメーションの代わりに停止するためにおいているため)
+	:CTitleAnime(MAX_ANIM, MAX_SEAT,10,6)	//委譲	//TODO:この第三引数以降はアニメ実装時に消す事(アニメーションの代わりに停止するためにおいているため)
 {
 	// =============== 初期化 ===================
 	SetSize(SCALE);	//大きさ初期化
