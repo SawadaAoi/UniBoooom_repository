@@ -15,6 +15,7 @@
 	・2024/01/26 拡縮実装 takagi
 	・2024/01/26 選択、決定SE追加 suzumura
 	・2024/01/28 落下実装 takagi
+	・2024/01/29 画像修正 takagi
 
 ========================================== */
 
@@ -22,10 +23,10 @@
 #define __SELECT_STAGE_H__
 
 // =============== インクルード ===================
-#include "Scene.h"	//親のヘッダ
+#include "Scene.h"		//親のヘッダ
 #include "2dPolygon.h"
 #include "FrameCnt.h"	//割合検出用
-#include "Sound.h"	//サウンドヘッダ
+#include "Sound.h"		//サウンドヘッダ
 #include <string>		//文字列操作
 // =============== 定数定義 =======================
 const int SUTAGE_NUM = 3;						// ステージの数
@@ -56,14 +57,14 @@ private:
 	const int FALL_TIME_ARR_LET = 60;					//手配書が落ちるのにかかる時間
 	const int CHANGE_SCALE_HALF_TIME = 120;				//拡縮半周あたりにかかる時間
 	const std::map<E_2D_OBJECT, std::string> MAP_TEXTURE_FILE= {
-	{ E_2D_OBJECT_STAGE_1_REMINE, "Assets/Texture/StageSelect/zako1-1.png" },	//ステージ1手配書残る方
-	{ E_2D_OBJECT_STAGE_1_LEAVE,	"Assets/Texture/StageSelect/zako1-2.png" },	//ステージ1手配書離れる方
-	{ E_2D_OBJECT_STAGE_2_REMINE, "Assets/Texture/StageSelect/boss1-1.png" },	//ステージ2手配書残る方
-	{ E_2D_OBJECT_STAGE_2_LEAVE,	"Assets/Texture/StageSelect/boss1-2.png" },	//ステージ2手配書離れる方
-	{ E_2D_OBJECT_STAGE_3_REMINE, "Assets/Texture/StageSelect/stone1-1.png" },	//ステージ3手配書残る方
-	{ E_2D_OBJECT_STAGE_3_LEAVE, "Assets/Texture/StageSelect/stone1-2.png" },	//ステージ3手配書離れる方
-	{ E_2D_OBJECT_BACK_GROUND, "Assets/Texture/StageSelect/StageSelectBG.png"},	//背景
-	{ E_2D_OBJECT_BACK_SCENE_NAME, "Assets/Texture/StageSelect/stselectUI.png"},//シーン名
+	{ E_2D_OBJECT_STAGE_1_REMINE, "Assets/Texture/StageSelect/zako1-1.png" },		//ステージ1手配書残る方
+	{ E_2D_OBJECT_STAGE_1_LEAVE,	"Assets/Texture/StageSelect/zako1-2.png" },		//ステージ1手配書離れる方
+	{ E_2D_OBJECT_STAGE_2_REMINE, "Assets/Texture/StageSelect/stone1-1.png" },		//ステージ2手配書残る方
+	{ E_2D_OBJECT_STAGE_2_LEAVE,	"Assets/Texture/StageSelect/stone1-2.png" },	//ステージ2手配書離れる方
+	{ E_2D_OBJECT_STAGE_3_REMINE, "Assets/Texture/StageSelect/boss1-1.png" },		//ステージ3手配書残る方
+	{ E_2D_OBJECT_STAGE_3_LEAVE, "Assets/Texture/StageSelect/boss1-2.png" },		//ステージ3手配書離れる方
+	{ E_2D_OBJECT_BACK_GROUND, "Assets/Texture/StageSelect/StageSelectBG.png"},		//背景
+	{ E_2D_OBJECT_BACK_SCENE_NAME, "Assets/Texture/StageSelect/stselectUI.png"},	//シーン名
 	};	//テクスチャのファイル名
 	const std::map<E_2D_OBJECT, TPos3d<float>> INIT_MAP_POS = {
 	{ E_2D_OBJECT_STAGE_1_REMINE, { 250.0f, 300.0f,1.0f } },							//ステージ1手配書残る方
