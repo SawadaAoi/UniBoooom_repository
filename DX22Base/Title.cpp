@@ -22,6 +22,7 @@
 	・2023/12/17 コマンドが表示されていないときは決定キーを受け付けないように takagi
 	・2023/12/18 画像差し替え・コマンド位置調整・オープニング使用切換作成 takagi
 	・2024/01/26 選択、決定SE追加
+	・2024/01/29 背景変更 takagi
 	
 ========================================== */
 
@@ -66,7 +67,7 @@ const std::map<int, std::string> MAP_TEXTURE = {
 	{E_2D_START, "Assets/Texture/Title/Title_Start.png"},			//開始コマンド
 	{E_2D_FINISH, "Assets/Texture/Pause/Pause_Finish.png"},			//終了コマンド
 	{E_2D_LOGO, "Assets/Texture/Title/TitleLogo.png"},				//タイトルロゴ
-	{E_2D_OPENING, "Assets/Texture/Title/TitleBgAnim_1-92.png"},		//開始映像
+	{E_2D_OPENING, "Assets/Texture/Title/TitleBgAnim_1-92.png"},	//開始映像
 };	//ポリゴンとテクスチャの対応表
 const std::map<int, TPos3d<float>> MAP_POS = {
 	{E_2D_BACK, {static_cast<float>(SCREEN_WIDTH) / 2.0f, static_cast<float>(SCREEN_HEIGHT) / 2.0f, 0.0f}},		//背景
@@ -196,12 +197,6 @@ void CTitle::Update()
 			// =============== 終了 ===================
 			delete m_p2dObj.at(E_2D_OPENING);	//対象削除
 			m_p2dObj.erase(E_2D_OPENING);		//mapから切除
-
-			//// =============== ズームアウト ===================
-			//if (m_pCamera)	//ヌルチェック
-			//{
-			//	m_pCamera->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_STRONG);	//ズームアウト開始
-			//}
 
 			// =============== 縮小 ===================
 			if (m_p2dObj.find(E_2D_BACK) != m_p2dObj.end() && m_p2dObj.at(E_2D_BACK)
@@ -410,8 +405,6 @@ void CTitle::Update()
 			DownFlag(E_FLAG_DECIDE_COMMAND);	//決定処理完了
 		}
 	}
-
-
 
 	// =============== 更新 ===================
 	if (m_pCamera)	//ヌルチェック

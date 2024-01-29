@@ -8,7 +8,7 @@
 	作成者	takagi
 
 	変更履歴
-	・2023/12/16 制作 takagi
+	・2024/01/29 制作 takagi
 
 ========================================== */
 
@@ -44,8 +44,6 @@ CBgTitleAnime::CBgTitleAnime()
 {
 	// =============== 初期化 ===================
 	SetSize(SCALE_L);					//大きさ初期化
-	SetPos(POS);						//位置初期化
-	SetTexture(TEXTURE_FILE.c_str());	//テクスチャ登録
 	SetLoopFlg(true);
 }
 

@@ -510,9 +510,6 @@
     <ClCompile Include="CommandTitle.cpp">
       <Filter>ソース ファイル\2dObject\TitleObj\TitleObj</Filter>
     </ClCompile>
-    <ClCompile Include="TitleLogo.cpp">
-      <Filter>ソース ファイル\2dObject\TitleObj\TitleObj</Filter>
-    </ClCompile>
     <ClCompile Include="BgTitleAnime.cpp">
       <Filter>ソース ファイル\2dObject\TitleObj\TitleAnime</Filter>
     </ClCompile>
@@ -523,6 +520,9 @@
       <Filter>ソース ファイル\2dObject\TitleObj\TitleAnime</Filter>
     </ClCompile>
     <ClCompile Include="TitleBgGlass.cpp">
+      <Filter>ソース ファイル\2dObject\TitleObj\TitleAnime</Filter>
+    </ClCompile>
+    <ClCompile Include="TitleLogo.cpp">
       <Filter>ソース ファイル\2dObject\TitleObj\TitleAnime</Filter>
     </ClCompile>
   </ItemGroup>
