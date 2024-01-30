@@ -26,6 +26,16 @@
 #include <algorithm>		//clamp使用
 #include "Delete.h"			//削除マクロ
 
+// =============== 定数定義 =======================
+const TDiType<int> HISCORE_NUM_SPLIT = { 5,2 };		// ハイスコア数字画像の分割数
+const TDiType<float> HISCORE_NUM_UVSCALE = { 1.0f / HISCORE_NUM_SPLIT.x ,1.0f / HISCORE_NUM_SPLIT.y };		// ハイスコア数字画像の分割数
+
+const TTriType<float> HISCORE_BASE_POS[3] = {	// ハイスコアのステージ別の位置(背景、テキスト、スコアをまとめて)
+	{220.0f, 150.0f, 0.0f},
+	{600.0f, 550.0f, 0.0f},
+	{1000.0f, 150.0f, 0.0f},
+};
+
 /* ========================================
 	コンストラクタ
 	----------------------------------------
@@ -36,12 +46,13 @@
 	戻値：なし
 =========================================== */
 CSelectStage::CSelectStage()
-	:m_fSelectSize(INIT_SIZE_ARR_LET.x)	//選択しているオブジェクトの大きさ
-	,m_bStickFlg(false)					//スティックの傾倒有無
-	,m_pFrameCntFall(nullptr)			//手配書落下用フレームカウンタ
-	,m_pFrameCntScale(nullptr)			//拡縮用フレームカウンタ
-	,m_bCntUpDwn(false)					//カウントアップ・ダウン
-	,m_eNextType(CScene::E_TYPE_STAGE1)	//初期の次のシーン
+	: m_fSelectSize(INIT_SIZE_ARR_LET.x)	//選択しているオブジェクトの大きさ
+	, m_bStickFlg(false)					//スティックの傾倒有無
+	, m_pFrameCntFall(nullptr)			//手配書落下用フレームカウンタ
+	, m_pFrameCntScale(nullptr)			//拡縮用フレームカウンタ
+	, m_bCntUpDwn(false)					//カウントアップ・ダウン
+	, m_eNextType(CScene::E_TYPE_STAGE1)	//初期の次のシーン
+	, m_nButtonAlphaCnt(0)			//拡縮用フレームカウンタ
 	, m_pSE{ nullptr,nullptr }
 	, m_pSESpeaker{ nullptr ,nullptr }
 {
@@ -71,6 +82,9 @@ CSelectStage::CSelectStage()
 
 	//=== サウンドファイル読み込み =====
 	LoadSound();	
+
+	// データ受け継ぎ
+	m_Data.Load();	//ファイルに上がっている情報を読み込む
 
 }	
 
@@ -103,6 +117,7 @@ CSelectStage::~CSelectStage()
 =========================================== */
 void CSelectStage::Update()
 {
+
 	// =============== 分岐 =====================
 	if (!m_pFrameCntFall)	//手配書が落ちていない=選択中
 	{
@@ -196,6 +211,9 @@ void CSelectStage::Update()
 			break;	//分岐処理終了
 		}
 	}
+
+	m_nButtonAlphaCnt++;	//カウント進行
+
 }
 
 /* ========================================
@@ -207,11 +225,15 @@ void CSelectStage::Update()
 	----------------------------------------
 	戻値：なし
 	======================================== */
-	//!memo(見たら消してー)：constが邪魔になったら外してね(.hの方も)
 void CSelectStage::Draw() //const
 {
 	// =============== 描画 =====================	//TODO:アクセス・ヌルチェック
+
+
 	m_p2dObject[E_2D_OBJECT_BACK_GROUND]->Draw();		//背景描画
+
+	HiscoreDraw();	// ハイスコア関連
+
 	switch (m_eNextType)	//選択されているものを変更
 	{	//TODO:アクセス・ヌルチェック
 	case CScene::E_TYPE_STAGE1:	//ステージ1
@@ -241,13 +263,12 @@ void CSelectStage::Draw() //const
 	}
 	m_p2dObject[E_2D_OBJECT_BACK_SCENE_NAME]->Draw();	//シーン名描画
 
-	//for (auto Iterator = m_p2dObject.begin(); Iterator != m_p2dObject.end(); Iterator++)
-	//{
-	//	if (Iterator->second)	//ヌルチェック
-	//	{
-	//		Iterator->second->Draw();	//描画	//順番の都合で不採用
-	//	}
-	//}
+	// 「タイトルへ戻る」関連
+	m_p2dObject[E_2D_OBJECT_TO_TITLE_TEXT]->Draw();		// タイトルへテキスト
+
+	m_p2dObject[E_2D_OBJECT_TO_TITLE_BUTTON]->SetAlpha(fabs(cosf(m_nButtonAlphaCnt * 0.03f)));
+
+	m_p2dObject[E_2D_OBJECT_TO_TITLE_BUTTON]->Draw();	// Aボタンテキスト
 }
 /* ========================================
 	ステージを選択する関数
@@ -389,7 +410,7 @@ void CSelectStage::Select()
 			}
 			m_bStickFlg = true;	//スティック傾倒中
 
-				//===== SEの再生 =======
+			//===== SEの再生 =======
 			PlaySE(SE_CHOOSE);
 		}
 	}
@@ -399,6 +420,12 @@ void CSelectStage::Select()
 		m_pFrameCntFall = new CFrameCnt(FALL_TIME_ARR_LET);	//カウンタ作成
 		//===== SEの再生 =======
 		PlaySE(SE_DECISION);
+	}
+
+	if (IsKeyTrigger('B') || IsKeyTriggerController(BUTTON_A) && m_pFrameCntFall)
+	{
+		m_eNextType = E_TYPE::E_TYPE_TITLE;
+		m_bFinish = true;
 	}
 }
 
@@ -468,4 +495,115 @@ void CSelectStage::PlaySE(SE se, float volume)
 {
 	m_pSESpeaker[se] = CSound::PlaySound(m_pSE[se]);	//SE再生
 	m_pSESpeaker[se]->SetVolume(volume);				//音量の設定
+}
+
+void CSelectStage::HiscoreParamSet()
+{
+}
+
+void CSelectStage::HiscoreDraw()
+{
+	for (int i = 0; i < 3; i++)
+	{
+		m_p2dObject.at(E_2D_OBJECT_HISCORE_BG)->SetPos({
+		INIT_MAP_POS.at(E_2D_OBJECT_HISCORE_BG).x + HISCORE_BASE_POS[i].x,
+		INIT_MAP_POS.at(E_2D_OBJECT_HISCORE_BG).y + HISCORE_BASE_POS[i].y,
+		INIT_MAP_POS.at(E_2D_OBJECT_HISCORE_BG).z ,
+			});
+		m_p2dObject.at(E_2D_OBJECT_HISCORE_TEXT)->SetPos({
+			INIT_MAP_POS.at(E_2D_OBJECT_HISCORE_TEXT).x + HISCORE_BASE_POS[i].x,
+			INIT_MAP_POS.at(E_2D_OBJECT_HISCORE_TEXT).y + HISCORE_BASE_POS[i].y,
+			INIT_MAP_POS.at(E_2D_OBJECT_HISCORE_TEXT).z ,
+			});
+
+		m_p2dObject.at(E_2D_OBJECT_HISCORE_BG)->Draw();
+		m_p2dObject.at(E_2D_OBJECT_HISCORE_TEXT)->Draw();
+
+		TTriType<float> NumBasePos = {
+			INIT_MAP_POS.at(E_2D_OBJECT_HISCORE_NUM).x + HISCORE_BASE_POS[i].x,
+			INIT_MAP_POS.at(E_2D_OBJECT_HISCORE_NUM).y + HISCORE_BASE_POS[i].y,
+			INIT_MAP_POS.at(E_2D_OBJECT_HISCORE_NUM).z ,
+		};
+
+		DispNum(m_Data.nHighScore[i], 5, NumBasePos);
+	}
+
+	
+}
+
+
+
+/* ========================================
+	数字描画関数
+	----------------------------------------
+	内容：数字を描画する
+	----------------------------------------
+	引数1：描画する数字
+	引数2：桁数
+	引数3：位置
+	引数4：大きさ
+	引数5：数字間の大きさ
+	----------------------------------------
+	戻値：なし
+=========================================== */
+void CSelectStage::DispNum(int dispNum, int nDigits, TTriType<float> pos)
+{
+
+	std::vector<int> digitArray;
+	DirectX::XMFLOAT4X4 mat;
+	int Num = dispNum;
+
+
+	NumStorage(&digitArray, dispNum, nDigits);
+
+	for (int i = 0; i < digitArray.size(); i++)
+	{
+		float width = (INIT_MAP_SIZE.at(E_2D_OBJECT_HISCORE_NUM).x * 0.8f) * i;
+		
+		int x = digitArray[i] % HISCORE_NUM_SPLIT.x;	//ここ名前募集します
+		int y = digitArray[i] / HISCORE_NUM_SPLIT.x;	//配列に入ってる数字の場所を計算してます
+
+		m_p2dObject.at(E_2D_OBJECT_HISCORE_NUM)->SetUvScale(HISCORE_NUM_UVSCALE);
+		m_p2dObject.at(E_2D_OBJECT_HISCORE_NUM)->SetUvOffset({ HISCORE_NUM_UVSCALE.x * x, HISCORE_NUM_UVSCALE.y * y });
+
+		m_p2dObject.at(E_2D_OBJECT_HISCORE_NUM)->SetPos({ pos.x - width , pos.y, pos.z });
+		m_p2dObject.at(E_2D_OBJECT_HISCORE_NUM)->Draw();
+	}
+}
+
+
+/* ========================================
+	数字桁格納処理
+	----------------------------------------
+	内容：配列に数字を桁ごとに格納する
+	----------------------------------------
+	引数1：桁格納配列
+	引数1：格納する数字
+	引数1：桁数
+	----------------------------------------
+	戻値：無し
+=========================================== */
+void CSelectStage::NumStorage(std::vector<int>* digitArray, int nNumber, int nDigits)
+{
+	// 数字桁配列をリセット
+	(*digitArray).clear();
+
+	// 表示する数字が0以上の場合
+	if (0 < nNumber)
+	{
+		// nNumberを全て格納するまで繰り返す
+		while (0 != nNumber)
+		{
+			(*digitArray).push_back(nNumber % 10);	// nNumberの下1桁を格納する
+			nNumber /= 10;							// nNumberを1桁スライドさせる
+
+		}
+
+	}
+
+	// 指定桁数まで0埋めする
+	while ((*digitArray).size() < nDigits)
+	{
+		(*digitArray).push_back(0);
+	}
 }
