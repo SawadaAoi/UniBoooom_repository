@@ -37,6 +37,7 @@ public:
 	~CSlime_Boss_1();
 
 	void Update(tagTransform3d playerTransform) override;
+	void Draw() override;
 
 	void NormalMove() override;
 	void SetNormalSpeed() override;
