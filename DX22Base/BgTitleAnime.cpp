@@ -23,8 +23,8 @@ const TPos3d<float> SCALE_L(static_cast<float>(SCREEN_WIDTH) * 2.0f,
 	static_cast<float>(SCREEN_HEIGHT) * 2.0f, 0.0f);							//‘å‚«‚¢‚Æ‚«‚Ì‘å‚«‚³
 const TPos3d<float> SCALE_S(static_cast<float>(SCREEN_WIDTH),
 	static_cast<float>(SCREEN_HEIGHT), 0.0f);									//¬‚³‚¢‚Æ‚«‚Ì‘å‚«‚³
-const int MAX_ANIM(92);															//ƒAƒjƒ[ƒVƒ‡ƒ“”
-const TDiType<int> MAX_SEAT(19, 5);												//1x1
+const int MAX_ANIM(100);															//ƒAƒjƒ[ƒVƒ‡ƒ“”
+const TDiType<int> MAX_SEAT(5, 20);												//5x10
 const TPos3d<float> POS{ static_cast<float>(SCREEN_WIDTH) / 2.0f,
 static_cast<float>(SCREEN_HEIGHT) / 2.0f, 0.0f };								//”wŒi
 const std::string TEXTURE_FILE="Assets/Texture/Title/TitleBg.png";	//ƒeƒNƒXƒ`ƒƒƒtƒ@ƒCƒ‹–¼
@@ -39,7 +39,7 @@ const std::string TEXTURE_FILE="Assets/Texture/Title/TitleBg.png";	//ƒeƒNƒXƒ`ƒƒƒ
 	–ß’lF‚È‚µ
 =========================================== */
 CBgTitleAnime::CBgTitleAnime()
-	:CTitleAnime(MAX_ANIM, MAX_SEAT)
+	:CTitleAnime(MAX_ANIM, MAX_SEAT, 0, 2)
 	,m_pCntLtoS(nullptr)					//k¬ƒJƒEƒ“ƒ^
 {
 	// =============== ‰Šú‰» ===================

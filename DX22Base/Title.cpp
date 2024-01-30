@@ -63,7 +63,7 @@ const std::map<int, int> MAP_WAIT_START = {
 	{E_2D_OPENING, 0},	//開始映像
 };	//ポリゴンと表示開始待機時間の対応表
 const std::map<int, std::string> MAP_TEXTURE = {
-	{E_2D_BACK, "Assets/Texture//Title/TitleBg.png"},				//背景
+	{E_2D_BACK, "Assets/Texture//Title/01f-100f.png"},				//背景
 	{E_2D_START, "Assets/Texture/Title/Title_Start.png"},			//開始コマンド
 	{E_2D_FINISH, "Assets/Texture/Pause/Pause_Finish.png"},			//終了コマンド
 	{E_2D_LOGO, "Assets/Texture/Title/TitleLogo.png"},				//タイトルロゴ
