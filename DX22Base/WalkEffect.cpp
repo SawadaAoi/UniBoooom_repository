@@ -13,29 +13,37 @@
 ========================================== */
 
 // =============== 定数定義 =======================
-const float WALK_EFFECT_STANDARD_ONE_FRAME = 0.083f * 60.0f;
-const float WALK_EFFECT_SIZE = 0.075f;
+const float WALK_EFFECT_STANDARD_ONE_FRAME = 0.4f * 60.0f;
+const float WALK_EFFECT_SIZE = 0.8f;
 
 // =============== インクルード ===================
 #include "WalkEffect.h"
+#include <time.h>
 
-CWalkEffect::CWalkEffect(TPos3d<float> fPos, float fTime, Effekseer::EffectRef walkEffect, const CCamera * pCamera)
+CWalkEffect::CWalkEffect(TPos3d<float> fPos, TPos3d<float> fRadian, float fTime, float fSize, Effekseer::EffectRef walkEffect, const CCamera * pCamera)
 	: m_bDelFlg(false)
 	, m_nDelFrame(0)
 	, m_pCamera(nullptr)
 	, m_fEffectTime(fTime)
+	, m_fRandSize(0.0f)
 {
 	//プレイヤー移動エフェクト初期化
 	m_fEffectTime = fTime;		//エフェクトの総時間		
 	m_Transform.fPos = fPos;	//エフェクトの位置
 	m_walkEffect = walkEffect;	//エフェクトのEffekseerファイル
+	m_fRandSize = fSize;
+	m_Transform.fRadian = fRadian;
+
 	m_pCamera = pCamera;
-	m_efcWalkHandle = LibEffekseer::GetManager()->Play(m_walkEffect, 	//エフェクトの開始
-		m_Transform.fPos.x,
-		m_Transform.fPos.y,
-		m_Transform.fPos.z);
-	LibEffekseer::GetManager()->SetScale(m_efcWalkHandle, WALK_EFFECT_SIZE, WALK_EFFECT_SIZE, WALK_EFFECT_SIZE);	//エフェクトサイズ設定
-	LibEffekseer::GetManager()->SetSpeed(m_efcWalkHandle, WALK_EFFECT_STANDARD_ONE_FRAME / m_fEffectTime);			//エフェクト再生速度設定
+	for (int i = 0; i < 5; i++)
+	{
+		LibEffekseer::GetManager()->Play(m_walkEffect, m_Transform.fPos.x+ m_fRandSize, m_Transform.fPos.y + 0.2f, m_Transform.fPos.z + m_fRandSize);
+		LibEffekseer::GetManager()->SetRotation(m_efcWalkHandle, m_Transform.fRadian.x, m_Transform.fRadian.y, m_Transform.fRadian.z);
+		LibEffekseer::GetManager()->SetSpeed(m_efcWalkHandle, WALK_EFFECT_STANDARD_ONE_FRAME / m_fEffectTime);			//エフェクト再生速度設定
+		LibEffekseer::GetManager()->SetScale(m_efcWalkHandle, WALK_EFFECT_SIZE + m_fRandSize, WALK_EFFECT_SIZE + m_fRandSize, WALK_EFFECT_SIZE + m_fRandSize);	//エフェクトサイズ設定
+
+	}
+	
 }
 
 CWalkEffect::~CWalkEffect()
@@ -44,9 +52,7 @@ CWalkEffect::~CWalkEffect()
 
 void CWalkEffect::Update()
 {
-	LibEffekseer::GetManager()->SetLocation(m_efcWalkHandle, m_Transform.fPos.x, m_Transform.fPos.y, m_Transform.fPos.z);
 	DisplayTimeAdd();
-	
 }
 
 void CWalkEffect::Draw()
@@ -63,12 +69,13 @@ void CWalkEffect::DisplayTimeAdd()
 	m_nDelFrame++;	// フレーム加算
 
 // 再生秒数経ったら削除
-	if (m_fEffectTime * 2  <= m_nDelFrame)
+	if (m_fEffectTime * 0.75f <= m_nDelFrame)
 	{
 		m_bDelFlg = true;	// 削除フラグを立てる
 	}
 
 }
+
 
 void CWalkEffect::SetCamera(const CCamera * pCamera)
 {

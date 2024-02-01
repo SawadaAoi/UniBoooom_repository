@@ -103,6 +103,7 @@ CPlayer::CPlayer()
 	, m_bDieInvFlg(false)
 	, m_fDieInvCnt(0.0f)
 	, m_pWalkEffectMng(nullptr)
+	, m_nShowEffectCnt(0)
 {
 	m_pHammer = new CHammer();								// Hammerクラスをインスタンス
 
@@ -132,7 +133,6 @@ CPlayer::CPlayer()
 ======================================== */
 CPlayer::~CPlayer()
 {
-	SAFE_DELETE(m_pWalkEffectMng);
 	SAFE_DELETE(m_pShadow);
 	SAFE_DELETE(m_pModel);
 	SAFE_DELETE(m_pHammer);
@@ -256,7 +256,7 @@ void CPlayer::Update()
 		m_pModel->Step(ADD_ANIM_FRAME);
 	}
 	
-
+	
 }
 
 /* ========================================
@@ -460,6 +460,8 @@ void CPlayer::MoveSizeInputSet(TPos3d<float> fInput)
 		m_Transform.fRadian.y =
 			(atan2(fInput.z * -1, fInput.x)			// DirectXと三角関数で回転方向が逆なので調整
 				- DirectX::XMConvertToRadians(90.0f));	// DirectXと三角関数で0度の位置が90度ずれている(↑が0)ので調整
+		// プレイイヤー移動エフェクト表示
+		ShowWalkEffect();
 	}
 	// キー入力がない場合
 	else
@@ -769,6 +771,12 @@ void CPlayer::Healing()
 
 void CPlayer::ShowWalkEffect()
 {
-	// プレイヤー移動エフェクト作成
-	m_pWalkEffectMng->Create(m_Transform.fPos);
+	m_nShowEffectCnt++;
+	if (m_nShowEffectCnt % 30 == 0)
+	{
+		// プレイヤー移動エフェクト作成
+		m_pWalkEffectMng->Create(m_Transform);
+		
+	}
+	
 }

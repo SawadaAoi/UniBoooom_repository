@@ -19,6 +19,7 @@
 const float TOTAL_WALK_EFFECT_TIME = 10.0f;
 
 CWalkEffectManager::CWalkEffectManager()
+	: m_fRandSize(0.0f)
 {
 	
 	// プレイヤー移動エフェクト配列の初期化
@@ -74,8 +75,9 @@ CWalkEffect * CWalkEffectManager::GetWalkPtr(int num)
 	return m_pwalkEffect[num];
 }
 
-void CWalkEffectManager::Create(TTriType<float> pos)
+void CWalkEffectManager::Create(tagTransform3d transform)
 {
+	
 	// プレイヤー移動エフェクトを検索
 	for (int i = 0; i < MAX_STEP_NUM; i++)
 	{
@@ -83,7 +85,7 @@ void CWalkEffectManager::Create(TTriType<float> pos)
 		if (m_pwalkEffect[i] != nullptr) continue;
 
 		// 座標、エフェクト時間、Effekseerファイル、カメラを指定して生成
-		m_pwalkEffect[i] = new CWalkEffect(pos, TOTAL_WALK_EFFECT_TIME, m_walkEffect, m_pCamera);
+		m_pwalkEffect[i] = new CWalkEffect(transform.fPos,transform.fRadian, TOTAL_WALK_EFFECT_TIME, GetRandomSize() , m_walkEffect, m_pCamera);
 		m_pwalkEffect[i]->SetCamera(m_pCamera);		//カメラセット
 		break;
 	}
@@ -107,4 +109,12 @@ void CWalkEffectManager::DeleteCheck()
 		delete m_pwalkEffect[i]; m_pwalkEffect[i] = nullptr;	// プレイヤー移動エフェクトを削除する
 
 	}
+}
+
+float CWalkEffectManager::GetRandomSize()
+{
+	
+	srand((unsigned int)time(NULL));
+	m_fRandSize = ((rand() % 10 + 1) - 5) * 0.1f;	// -0.5	～ 0.5
+	return m_fRandSize;
 }

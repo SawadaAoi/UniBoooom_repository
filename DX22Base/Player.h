@@ -120,6 +120,7 @@ private:
 	CFrameCnt* m_pWaitFrameCnt;			// 待機モーション用フレームカウントダウン
 	CWalkEffectManager* m_pWalkEffectMng;	// プレイヤー移動エフェクト用
 
+	int m_nShowEffectCnt;
 
 	int m_nHp;							// プレイヤーの体力
 	bool m_bDieFlg;						// プレイヤー死亡フラグ(trueの場合死亡)

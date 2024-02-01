@@ -25,12 +25,13 @@ class CWalkEffect
 {
 public:
 	// ===メンバ関数宣言===
-	CWalkEffect(TPos3d<float> fPos, float fTime, Effekseer::EffectRef walkEffect, const CCamera* pCamera);	//コンストラクタ
+	CWalkEffect(TPos3d<float> fPos, TPos3d<float> fRadian, float fTime, float fSize, Effekseer::EffectRef walkEffect, const CCamera* pCamera);	//コンストラクタ
 	~CWalkEffect();												// デストラクタ
 	void Update();												// 更新関数
 	void Draw();												// 描画関数
 	void DisplayTimeAdd();										// プレイヤー移動エフェクト表示カウント加算処理関数
-
+	
+	
 	// セット関数
 	void SetCamera(const CCamera* pCamera);	// 他のオブジェクトと同一のカメラをセット
 
@@ -45,7 +46,8 @@ private:
 	bool			m_bDelFlg;			// プレイヤー移動エフェクト終了フラグ
 	int				m_nDelFrame;		// プレイヤー移動エフェクト表示カウント
 	float			m_fEffectTime;		// プレイヤー移動エフェクト総時間
-
+	float			m_fRandSize;		// ランダムサイズ調整値
+	float			m_fRadian;			// 角度
 	Effekseer::EffectRef m_walkEffect;
 	Effekseer::Handle m_efcWalkHandle;
 };
