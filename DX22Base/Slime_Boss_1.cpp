@@ -108,15 +108,13 @@ CSlime_Boss_1::~CSlime_Boss_1()
 =========================================== */
 void CSlime_Boss_1::Update(tagTransform3d playerTransform)
 {
-	m_fAnimeTime += ADD_ANIME;
+	m_fAnimeTime += ADD_ANIME * 0.5f;
 
 	m_PlayerTran = playerTransform;
 	
 	if (!m_bHitMove)	//敵が通常の移動状態の時
 	{
 		NormalMove();	// 通常行動処理
-
-		m_eCurAnime = ROCK_SLIME_MOVE;	// アニメーションを移動に変更
 	}
 	else
 	{
@@ -126,21 +124,27 @@ void CSlime_Boss_1::Update(tagTransform3d playerTransform)
 			HitMove();		// 敵の吹き飛び移動
 			ResetAssault();	// 突撃リセット
 
-			m_eCurAnime = ROCK_SLIME_HIT;	// アニメーションを被ダメージに変更
+			if (m_eCurAnime != ROCK_SLIME_HIT)
+			{
+				m_eCurAnime = ROCK_SLIME_HIT;	// アニメーションを移動に変更
+				m_fAnimeTime = 0.0f;			// アニメーションタイムのリセット
+			}
 		}
 
 		// 突撃状態は"吹き飛び"を考慮しない
 		if (m_nMoveState == ASSAULT)
 		{
 			m_bHitMove = false;
-
-			m_eCurAnime = ROCK_SLIME_ROLLING;	// アニメーションを移動に変更
 		}
 		else
 		{
 			HitMove(); //敵の吹き飛び移動
 
-			m_eCurAnime = ROCK_SLIME_HIT;	// アニメーションを被ダメージに変更
+			if (m_eCurAnime != ROCK_SLIME_HIT)
+			{
+				m_eCurAnime = ROCK_SLIME_HIT;	// アニメーションを移動に変更
+				m_fAnimeTime = 0.0f;			// アニメーションタイムのリセット
+			}
 		}
 	}
 
@@ -165,14 +169,13 @@ void CSlime_Boss_1::Update(tagTransform3d playerTransform)
 		{
 			m_bDrawFlg = true;	// false→true
 		}
-
 	}
 	// 総点滅時間を過ぎたら終了
 	if (m_nInvFrame >= BOSS_DAMAGE_FLASH_TOTAL_FRAME)
 	{
-		m_bFlash = false;
-		m_nInvFrame = 0;
-		m_bDrawFlg = true;
+		m_bFlash = false;	
+		m_nInvFrame = 0;	
+		m_bDrawFlg = true;	
 	}
 }
 
@@ -206,7 +209,7 @@ void CSlime_Boss_1::Draw()
 		m_pModel->Play(m_eCurAnime, true);
 		m_pModel->SetAnimationTime(m_eCurAnime, m_fAnimeTime);	// アニメーションタイムをセット
 		// アニメーションタイムをセットしてから動かさないと反映されないため少しだけ進める
-		m_pModel->Step(0.00000001f);
+		m_pModel->Step(0.000001f);
 
 		// レンダーターゲット、深度バッファの設定
 		RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得
@@ -352,6 +355,12 @@ void CSlime_Boss_1::NormalMove()
 		{
 			m_nMoveState = CHARGE;	// "チャージ"状態に遷移
 			m_nFrame = 0;		// フレームリセット
+
+			if (m_eCurAnime != ROCK_SLIME_ROLLING)
+			{
+				m_eCurAnime = ROCK_SLIME_ROLLING;	// アニメーションを攻撃に変更
+				m_fAnimeTime = 0.0f;				// アニメーションタイムのリセット
+			}
 		}
 		break;
 		
@@ -413,7 +422,7 @@ void CSlime_Boss_1::Charge(TPos3d<float> playerPos, TPos3d<float> movePos)
 	{
 		m_assaultDistancePlayer = distancePlayer;	// 現状の距離を保存
 		m_assaultMovePos = movePos;					// 移動量を保存
-		m_nMoveState = ASSAULT;							// "突撃"状態へ
+		m_nMoveState = ASSAULT;						// "突撃"状態へ
 		m_nFrame = 0;								// フレームリセット
 	}
 }
@@ -440,6 +449,12 @@ void CSlime_Boss_1::Assault()
 	if (m_nFrame >= ASSAULT_TIME)
 	{
 		ResetAssault();	// 突撃リセット
+
+		if (m_eCurAnime != ROCK_SLIME_MOVE)
+		{
+			m_eCurAnime = ROCK_SLIME_MOVE;	// アニメーションを移動に変更
+			m_fAnimeTime = 0.0f;			// アニメーションタイムのリセット
+		}
 	}
 }
 
@@ -455,8 +470,8 @@ void CSlime_Boss_1::Assault()
 void CSlime_Boss_1::ResetAssault()
 {
 	m_nMoveState = NORMAL;	// "ノーマル"状態へ
-	SetNormalSpeed();	// スピードを通常状態に戻す
-	m_nFrame = 0;		//フレームリセット
+	SetNormalSpeed();		// スピードを通常状態に戻す
+	m_nFrame = 0;			//フレームリセット
 }
 
 /* ========================================
