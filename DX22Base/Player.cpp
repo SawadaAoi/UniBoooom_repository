@@ -102,6 +102,7 @@ CPlayer::CPlayer()
 	, m_pWaitFrameCnt(nullptr)
 	, m_bDieInvFlg(false)
 	, m_fDieInvCnt(0.0f)
+	, m_pWalkEffectMng(nullptr)
 {
 	m_pHammer = new CHammer();								// Hammerクラスをインスタンス
 
@@ -119,6 +120,8 @@ CPlayer::CPlayer()
 
 	LoadAnime();	//アニメーションの読み込み
 	m_pShadow = new CShadow();
+	m_pWalkEffectMng = new CWalkEffectManager();
+	SetWalkEffect(m_pWalkEffectMng);
 }
 /* ========================================
    関数：デストラクタ
@@ -131,6 +134,7 @@ CPlayer::CPlayer()
 ======================================== */
 CPlayer::~CPlayer()
 {
+	SAFE_DELETE(m_pWalkEffectMng);
 	SAFE_DELETE(m_pShadow);
 	SAFE_DELETE(m_pModel);
 	SAFE_DELETE(m_pHammer);
@@ -253,7 +257,7 @@ void CPlayer::Update()
 	{
 		m_pModel->Step(ADD_ANIM_FRAME);
 	}
-
+	
 
 }
 
@@ -372,23 +376,40 @@ void CPlayer::MoveKeyboard()
 
 	// キー入力
 	// 上下
-	if (IsKeyPress('W')) { fMoveInput.z = KEYBOARD_INPUT_SIZE; }	// ↑
-	else if (IsKeyPress('S')) { fMoveInput.z = -KEYBOARD_INPUT_SIZE; }	// ↓
-	else { fMoveInput.z = 0.0f; }					// 入力無し
+	if (IsKeyPress('W')) 
+	{ 
+		fMoveInput.z = KEYBOARD_INPUT_SIZE;		// ↑
+		// プレイイヤー移動エフェクト表示
+		ShowWalkEffect();
+	}	
+	else if (IsKeyPress('S')) 
+	{ 
+		fMoveInput.z = -KEYBOARD_INPUT_SIZE;	// ↓
+		// プレイイヤー移動エフェクト表示
+		ShowWalkEffect();
+	}	
+	else { fMoveInput.z = 0.0f; }				// 入力無し
 	// 左右
-	if (IsKeyPress('D')) { fMoveInput.x = KEYBOARD_INPUT_SIZE; }	// →
-	else if (IsKeyPress('A')) { fMoveInput.x = -KEYBOARD_INPUT_SIZE; }	// ←
-	else { fMoveInput.x = 0.0f; }					// 入力無し
-
+	if (IsKeyPress('D')) 
+	{ 
+		fMoveInput.x = KEYBOARD_INPUT_SIZE;		// →
+		// プレイイヤー移動エフェクト表示
+		ShowWalkEffect();
+	}	
+	else if (IsKeyPress('A')) 
+	{ 
+		fMoveInput.x = -KEYBOARD_INPUT_SIZE;	// ←
+		// プレイイヤー移動エフェクト表示
+		ShowWalkEffect();
+	}	
+	else { fMoveInput.x = 0.0f; }				// 入力無し
 
 	MoveSizeInputSet(fMoveInput);	// 入力値から移動量と向きをセット
 
 	// 座標を移動
 	m_Transform.fPos.x += m_fMove.x;
 	m_Transform.fPos.z += m_fMove.z;
-
-
-
+	
 }
 
 /* ========================================
@@ -414,7 +435,6 @@ void CPlayer::MoveController()
 	// 座標を移動
 	m_Transform.fPos.x += m_fMove.x;
 	m_Transform.fPos.z += m_fMove.z;
-
 
 }
 
@@ -565,6 +585,12 @@ bool CPlayer::GetAttackFlg()
 {
 	return m_bAttackFlg;
 }
+
+void CPlayer::SetWalkEffect(CWalkEffectManager * pEffectMng)
+{
+	m_pWalkEffectMng = pEffectMng;
+}
+
 
 /* ========================================
    アニメーション読み込み関数
@@ -741,4 +767,10 @@ void CPlayer::Healing()
 	m_nHp += HEAL_NUM;
 	if (m_nHp >= PLAYER_HP) { m_nHp = PLAYER_HP; }
 	PlaySE(SE_HEAL);
+}
+
+void CPlayer::ShowWalkEffect()
+{
+	// プレイヤー移動エフェクト作成
+	m_pWalkEffectMng->Create(m_Transform.fPos);
 }

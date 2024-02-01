@@ -52,6 +52,8 @@
 #include "Shadow.h"
 #include "AnimeModel.h"
 #include "FrameCnt.h"
+#include "WalkEffectManager.h"
+
 // =============== クラス定義 =====================
 class CPlayer
 	: public CObject
@@ -88,6 +90,7 @@ public:
 	void LoadSound();	//サウンド読み込み関数
 	void PlaySE(SE se, float volume = 1.0f);
 	void Healing();
+	void ShowWalkEffect();
 
 	// ゲット関数
 	tagSphereInfo GetHammerSphere();	//当たり判定を取るためゲッター
@@ -100,7 +103,7 @@ public:
 	// セット関数
 	void SetCamera(CCamera* pCamera);
 	bool GetAttackFlg();
-	
+	void SetWalkEffect(CWalkEffectManager* pEffectMng);
 
 private:
 	// ===プロトタイプ宣言===
@@ -115,6 +118,8 @@ private:
 
 	CShadow* m_pShadow;
 	CFrameCnt* m_pWaitFrameCnt;			// 待機モーション用フレームカウントダウン
+	CWalkEffectManager* m_pWalkEffectMng;	// プレイヤー移動エフェクト用
+
 
 	int m_nHp;							// プレイヤーの体力
 	bool m_bDieFlg;						// プレイヤー死亡フラグ(trueの場合死亡)

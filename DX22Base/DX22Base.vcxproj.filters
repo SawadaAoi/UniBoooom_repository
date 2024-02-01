@@ -513,6 +513,12 @@
     <ClCompile Include="HitSlimeEffect.cpp">
       <Filter>ソース ファイル\2dObject\Effect</Filter>
     </ClCompile>
+    <ClCompile Include="WalkEffectManager.cpp">
+      <Filter>ソース ファイル\2dObject\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="WalkEffect.cpp">
+      <Filter>ソース ファイル\2dObject\Effect</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Defines.h">
@@ -852,6 +858,12 @@
       <Filter>ヘッダー ファイル\2dObject\Effect</Filter>
     </ClInclude>
     <ClInclude Include="HitSlimeEffectManager.h">
+      <Filter>ヘッダー ファイル\2dObject\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="WalkEffectManager.h">
+      <Filter>ヘッダー ファイル\2dObject\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="WalkEffect.h">
       <Filter>ヘッダー ファイル\2dObject\Effect</Filter>
     </ClInclude>
   </ItemGroup>

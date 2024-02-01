@@ -51,6 +51,7 @@
 #include "Sound.h"
 #include "UIStageManager.h"
 #include "HitSlimeEffectManager.h"
+#include "WalkEffectManager.h"
 #include "BattleData.h"			//メンバのヘッダ
 #include "GameStartText.h"
 
@@ -105,7 +106,7 @@ protected:
 	BattleData m_Data;	//戦闘データ記録用変数
 	CStartText* m_pStartText;	// ゲームスタート描画
 	CHitSlimeEffectManager* m_pHitEffectMng;
-
+	CWalkEffectManager* m_pWalkEffectMng;
 	const int* m_pPlayerHp;		// プレイヤーHP取得用
 	const int* m_pTimeCnt;		// 制限時間取得用
 

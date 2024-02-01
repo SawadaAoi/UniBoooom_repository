@@ -113,7 +113,7 @@ void CStage3::Update()
 		PlayerHealItemCollision();		// 回復アイテム取る判定
 		Collision();					// 当たり判定更新
 		m_pHitEffectMng->Update();		// ヒットエフェクトマネージャー更新
-
+		m_pWalkEffectMng->Update();		// プレイヤー移動エフェクトマネージャー更新
 
 	}
 
@@ -181,8 +181,9 @@ void CStage3::Draw()
 		m_pPause->Draw();
 	}
 
-	// ヒットエフェクト描画
+	// エフェクト描画
 	m_pHitEffectMng->Draw();
+	m_pWalkEffectMng->Draw();
 }
 
 /* ========================================
