@@ -120,6 +120,9 @@ CStage::CStage(CUIStageManager::E_STAGE_NUM eStage)
 
 	// データ受け継ぎ
 	m_Data.Load();	//ファイルに上がっている情報を読み込む
+
+	// プレイイヤー ← プレイヤー移動エフェクトマネージャ―
+	m_pPlayer->SetWalkEffect(m_pWalkEffectMng);
 }
 
 /* ========================================

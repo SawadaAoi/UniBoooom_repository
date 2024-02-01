@@ -13,7 +13,7 @@
 ========================================== */
 
 // =============== 定数定義 =======================
-const float WALK_EFFECT_STANDARD_ONE_FRAME = 1.67f * 60.0f;
+const float WALK_EFFECT_STANDARD_ONE_FRAME = 0.083f * 60.0f;
 const float WALK_EFFECT_SIZE = 0.075f;
 
 // =============== インクルード ===================

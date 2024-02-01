@@ -120,8 +120,6 @@ CPlayer::CPlayer()
 
 	LoadAnime();	//アニメーションの読み込み
 	m_pShadow = new CShadow();
-	m_pWalkEffectMng = new CWalkEffectManager();
-	SetWalkEffect(m_pWalkEffectMng);
 }
 /* ========================================
    関数：デストラクタ
