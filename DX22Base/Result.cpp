@@ -63,7 +63,7 @@ const std::map<int, std::string> MAP_TEX_PATH = {
 	{CResult::WARNING_STAGE_2,	"Assets/Texture/Result/Lv2.png"},				// ステージ2の手配書
 	{CResult::WARNING_STAGE_3,	"Assets/Texture/Result/Lv3.png"},				// ステージ3の手配書
 	{CResult::CLEAR_STAMP,		"Assets/Texture/Result/stamp.png"},				// CLEARスタンプ
-	{CResult::SELECT,			"Assets/Texture/Result/Result_Button.png"},	// 決定ボタン
+	{CResult::SELECT,			"Assets/Texture/Result/Result_Button.png"},		// 決定ボタン
 };	
 
 
