@@ -61,7 +61,7 @@ const float PLAYER_RADIUS = 0.3f;			// プレイヤーの当たり判定の大きさ
 const float PLAYER_SIZE = 1.0f;			// プレイヤーの大きさ
 const int	NO_DAMAGE_TIME = 3 * 60;		//プレイヤーの無敵時間
 const int	DAMAGE_FLASH_FRAME = 0.1f * 60;	// プレイヤーのダメージ点滅の切り替え間隔
-const float PLAYER_ROTATE_X = DirectX::XMConvertToRadians(30.0f);	// プレイヤーの傾き
+const float PLAYER_ROTATE_X_NORMAL = DirectX::XMConvertToRadians(30.0f);	// プレイヤーの傾き
 #endif
 const int	HEAL_NUM = 2;									// プレイヤーの回復量
 const float HAMMER_INTERVAL_TIME = 0.0f * 60;				// ハンマー振り間隔
@@ -102,6 +102,7 @@ CPlayer::CPlayer()
 	, m_pWaitFrameCnt(nullptr)
 	, m_bDieInvFlg(false)
 	, m_fDieInvCnt(0.0f)
+	, m_fRotate_x(PLAYER_ROTATE_X_NORMAL)
 {
 	m_pHammer = new CHammer();								// Hammerクラスをインスタンス
 
@@ -284,10 +285,13 @@ void CPlayer::Draw()
 		DirectX::XMFLOAT4X4 mat[3];
 
 		//拡縮、回転、移動(Y軸回転を先にしたかったのでSRTは使わない)
-		DirectX::XMStoreFloat4x4(&mat[0], DirectX::XMMatrixTranspose(DirectX::XMMatrixScaling(m_Transform.fScale.x, m_Transform.fScale.y, m_Transform.fScale.z)
-			* DirectX::XMMatrixRotationY(m_Transform.fRadian.y)
-			* DirectX::XMMatrixRotationX(PLAYER_ROTATE_X) * DirectX::XMMatrixRotationZ(m_Transform.fRadian.z)
-			* DirectX::XMMatrixTranslation(m_Transform.fPos.x, m_Transform.fPos.y, m_Transform.fPos.z)));
+		DirectX::XMStoreFloat4x4(&mat[0], 
+			DirectX::XMMatrixTranspose(
+				DirectX::XMMatrixScaling(m_Transform.fScale.x, m_Transform.fScale.y, m_Transform.fScale.z)		// 大きさ
+				* DirectX::XMMatrixRotationY(m_Transform.fRadian.y)	// Y角度
+				* DirectX::XMMatrixRotationX(m_fRotate_x)			// X角度
+				* DirectX::XMMatrixRotationZ(m_Transform.fRadian.z)	// Z角度
+				* DirectX::XMMatrixTranslation(m_Transform.fPos.x, m_Transform.fPos.y, m_Transform.fPos.z)));	// 座標
 		mat[1] = m_pCamera->GetViewMatrix();
 		mat[2] = m_pCamera->GetProjectionMatrix();
 
@@ -352,8 +356,8 @@ void CPlayer::Damage(int DmgNum)
 	if (m_nHp <= 0)
 	{
 		m_bDieInvFlg = true;
-
-		m_pModel->Play(m_Anime[MOTION_DIE],false);	//アニメーションの再生
+		m_fRotate_x = PLAYER_ROTATE_X_DIE;			// プレイヤーの傾きをセット(地面に埋まらないように)
+		m_pModel->Play(m_Anime[MOTION_DIE],false);	// アニメーションの再生
 
 	}
 }

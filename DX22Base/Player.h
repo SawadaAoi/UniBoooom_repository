@@ -135,6 +135,8 @@ private:
 	bool m_bDieInvFlg;					// 死亡猶予時間フラグ
 	float m_fDieInvCnt;					// 死亡猶予時間カウント
 
+	float m_fRotate_x;					// プレイヤーの表示用傾き
+
 	// ===列挙===
 	enum MOTION
 	{
