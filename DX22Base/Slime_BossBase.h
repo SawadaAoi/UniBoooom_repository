@@ -32,6 +32,16 @@ class CSlime_BossBase :
 	public CSlimeBase
 {
 public:
+	// ===== 列挙 =====
+	enum ROCK_SLIME_MOTION	// 岩スライムのモーション
+	{
+		ROCK_SLIME_MOVE,	// 移動
+		ROCK_SLIME_HIT,		// 叩かれたとき
+		ROCK_SLIME_ROLLING,	// 回転攻撃
+
+		ROCK_SLIME_MAX,
+	};
+
 	// ===プロトタイプ宣言======
 	CSlime_BossBase();
 	~CSlime_BossBase();
@@ -59,11 +69,10 @@ protected:
 	bool m_bDrawFlg;	// 描画を行うかどうかのフラグ
 	bool m_bFlash;		// ダメージを受けて一定時間点滅させるためのフラグ
 
-
-private:
 	bool m_bDead;		// 死んでいるかどうか
 	Texture* m_pBossHpTexture;
 	Texture* m_pHpFrameTexture;
+private:
 };
 
 

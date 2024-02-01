@@ -108,7 +108,7 @@ CPlayer::CPlayer()
 
 	m_Sphere.fRadius = PLAYER_RADIUS;						// 当たり判定用の球体の半径
 	m_Transform.fScale = PLAYER_SIZE;
-	LoadSound();	//サウンドファイル読み込み
+	LoadSound();							//サウンドファイル読み込み
 
 	//プレイヤーのモデル読み込み
 	m_pModel = new AnimeModel();

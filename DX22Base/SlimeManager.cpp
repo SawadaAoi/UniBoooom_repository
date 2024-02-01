@@ -1257,12 +1257,22 @@ void CSlimeManager::LoadModel()
 
 	m_pBossModel->SetVertexShader(m_pVS);
 
-
+	//レベル4スライムのモデル読み込み
 	m_pBossRockModel = new AnimeModel;
-	if (!m_pBossRockModel->Load("Assets/Model/boss_slime_rock/boss_slime_rock.fbx", 0.5f, AnimeModel::ZFlip)) {		//倍率と反転は省略可
-		MessageBox(NULL, "Boss_Slime_Rock", "Error", MB_OK);	//ここでエラーメッセージ表示
+	if (!m_pBossRockModel->Load("Assets/Model/boss_slime_rock/rock_walk_2.0.fbx", 0.5f, AnimeModel::ZFlip)) {			//倍率と反転は省略可
+		MessageBox(NULL, "slime_red", "Error", MB_OK);		//ここでエラーメッセージ表示
 	}
-	m_pBossRockModel->SetVertexShader(m_pVS);
+	for (int i = 0; i < CSlime_BossBase::ROCK_SLIME_MAX; i++)
+	{
+		//各アニメーションの読み込み
+		m_pBossRockModel->AddAnimation(m_sRockSlime_Motion[i].c_str());
+		//読み込みに失敗したらエラーメッセージ
+		if (!m_pBossRockModel->GetAnimation(i))
+		{
+			MessageBox(NULL, m_sRockSlime_Motion[i].c_str(), "Error", MB_OK);	//ここでエラーメッセージ表示
+		}
+	}
+	m_pBossRockModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));		//頂点シェーダーをセット
 }
 
 /* ========================================
