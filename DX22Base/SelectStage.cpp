@@ -229,7 +229,7 @@ void CSelectStage::StageSelect()
 	}
 
 	// 決定
-	if ( (IsKeyTrigger(VK_SPACE) || IsKeyTrigger(VK_RETURN)) || IsKeyTriggerController(BUTTON_B) && m_pFrameCntFall)
+	if ( (IsKeyTrigger(VK_SPACE) || IsKeyTrigger(VK_RETURN) || IsKeyTriggerController(BUTTON_B)) && !m_pFrameCntFall)
 	{
 		m_pFrameCntFall = new CFrameCnt(FALL_TIME_ARR_LET);	//カウンタ作成
 		PlaySE(SE_DECISION);	// SEの再生 
@@ -237,7 +237,7 @@ void CSelectStage::StageSelect()
 	}
 
 	// タイトル画面に戻る
-	if (IsKeyTrigger('B') || IsKeyTriggerController(BUTTON_A) && m_pFrameCntFall)
+	if ((IsKeyTrigger('B') || IsKeyTriggerController(BUTTON_A) )&& !m_pFrameCntFall)
 	{
 		m_eNextType = E_TYPE::E_TYPE_TITLE;
 		m_bFinish = true;

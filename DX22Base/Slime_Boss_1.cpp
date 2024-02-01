@@ -282,12 +282,13 @@ void CSlime_Boss_1::Draw()
 	Sprite::Draw();
 
 
-	float width = (BOSS_HP_SIZEX / 2)*(BOSS_HP_POSX - m_nHp);
+	HPWidth = 3.0f / m_nMaxHp;
+	float width = (HPWidth / 2)*(m_nMaxHp - m_nHp);
 
 
 	world = matInv * DirectX::XMMatrixTranslation(m_Transform.fPos.x - width, m_Transform.fPos.y + SLIME_HP_HEIGHT, m_Transform.fPos.z);
 	DirectX::XMStoreFloat4x4(&mat[0], DirectX::XMMatrixTranspose(world));
-	Sprite::SetSize(DirectX::XMFLOAT2(BOSS_HP_SIZEX*m_nHp, BOSS_HP_SIZEY));
+	Sprite::SetSize(DirectX::XMFLOAT2(HPWidth * m_nHp, BOSS_HP_SIZEY));
 
 	Sprite::SetUVPos(DirectX::XMFLOAT2(1.0f, 1.0f));
 	Sprite::SetUVScale(DirectX::XMFLOAT2(1.0f, 1.0f));
