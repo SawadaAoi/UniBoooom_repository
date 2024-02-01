@@ -36,11 +36,11 @@ const TTriType<float> HISCORE_BASE_POS[3] = {	// ハイスコアのステージ別の位置(背
 	{ 1000.0f, 150.0f, 0.0f},	// ステージ3
 };
 
-const float FLASH_BUTTON_TEXT_ADJUST = 0.03f;	//「戻る」「決定」テキストの点滅間隔調整
+const float FLASH_BUTTON_TEXT_ADJUST = 0.02f;	//「戻る」「決定」テキストの点滅間隔調整
 
 // 手配書の揺れ関係
-const float STAGE_TEX_ANIM_ANGLE = 15.0f;			// ステージ手配書画像の揺れの角度限界値
-const int	CHANGE_ROTATE_HALF_TIME = 0.7f * 60;	// 揺れ半周あたりにかかる時間
+const float STAGE_TEX_ANIM_ANGLE = 10.0f;			// ステージ手配書画像の揺れの角度限界値
+const int	CHANGE_ROTATE_HALF_TIME = 1.5f * 60;	// 揺れ半周あたりにかかる時間
 
 // ステージセレクト処理関係
 const int SELECT_MOVE_RIGHT = 1;	// 右に選択移動

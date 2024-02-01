@@ -97,7 +97,7 @@ private:
 	{ E_2D_OBJECT_HISCORE_BG,		{ 0.0f	, 0.0f	, 1.0f }},								// ハイスコア背景
 	{ E_2D_OBJECT_HISCORE_TEXT,		{ -45.0f, 20.0f	, 1.0f }},								// ハイスコアテキスト
 	{ E_2D_OBJECT_HISCORE_NUM,		{ 110.0f, -20.0f, 1.0f }},								// ハイスコア数字
-	{ E_2D_OBJECT_BUTTON_EXPLANATION,	{ 1150.0f	, 50.0f	, 1.0f }},						// 操作ボタン指示
+	{ E_2D_OBJECT_BUTTON_EXPLANATION,	{ 1120.0f	, 50.0f	, 1.0f }},						// 操作ボタン指示
 	};	//オブジェクト毎の初期位置
 
 
@@ -129,7 +129,7 @@ private:
 	{ E_2D_OBJECT_HISCORE_BG, { 280.0f, 100.0f  ,1.0f }},								// ハイスコア背景
 	{ E_2D_OBJECT_HISCORE_TEXT, { 150.0f, 60.0f  ,1.0f }},								// ハイスコアテキスト
 	{ E_2D_OBJECT_HISCORE_NUM, { 50.0f, 55.0f  ,1.0f }},								// ハイスコア数字
-	{ E_2D_OBJECT_BUTTON_EXPLANATION, { 250.0f, 60.0f  ,1.0f }},						// 操作ボタン指示
+	{ E_2D_OBJECT_BUTTON_EXPLANATION, { 280.0f, 80.0f  ,1.0f }},						// 操作ボタン指示
 	};	//オブジェクト毎の大きさ
 
 public:

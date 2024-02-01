@@ -63,6 +63,7 @@ const std::map<int, std::string> MAP_TEX_PATH = {
 	{CResult::WARNING_STAGE_2,	"Assets/Texture/Result/Lv2.png"},				// ステージ2の手配書
 	{CResult::WARNING_STAGE_3,	"Assets/Texture/Result/Lv3.png"},				// ステージ3の手配書
 	{CResult::CLEAR_STAMP,		"Assets/Texture/Result/stamp.png"},				// CLEARスタンプ
+	{CResult::SELECT,			"Assets/Texture/Result/Result_Button.png"},	// 決定ボタン
 };	
 
 
@@ -73,8 +74,8 @@ typedef struct
 	TDiType<float> fSize;
 }Display_Param;
 
-const Display_Param WARNING_TEXTURE_PARAM	= { {260.0f, 420.0f} ,{480.0f, 600.0f} };	// 手配書
-const Display_Param CLEAR_STAMP_PARAM		= { {260.0f, 420.0f} ,{400.0f, 400.0f} };	// スタンプ
+const Display_Param WARNING_TEXTURE_PARAM	= { {260.0f, 380.0f} ,{460.0f, 580.0f} };	// 手配書
+const Display_Param CLEAR_STAMP_PARAM		= { {260.0f, 380.0f} ,{460.0f, 580.0f} };	// スタンプ
 
 const float DEF_NUM_SPACE = 55.0f;
 const TDiType<int> NUM_SPLIT = { 5, 2 };
@@ -114,6 +115,8 @@ const Display_Param HUNT_LINE_PARAM			= { { 907.0f, 620.0f } , { 729.0f, 5.0f } 
 const Display_Param MAX_COMBO_TEXT_PARAM	= { { 695.0f, 655.0f } , {  300.0f, 90.0f } };	// 最大コンボ数(文字)
 const Display_Param MAX_COMBO_NUM_PARAM		= { { 1200.0f, 670.0f } ,{ 85.0f, 105.0f } };	// 最大コンボ数(数字)
 
+const Display_Param SELECT_PARAM			= { { 75.0f, 680.0f } ,{ 140.0f, 70.0f } };		// 決定ボタン
+
 
 
 /* ========================================
@@ -142,7 +145,7 @@ CResult::CResult()
 	// リザルト文字のアニメーションの初期化
 	m_pDrawAnim = new CDrawAnim(60, TDiType <int>(5, 12), 2);
 	m_pDrawAnim->SetTexture(m_pTexture[E_TEXTURE::RESULT_TEXT]);
-	m_pDrawAnim->SetPos(TPos3d<float>(275.0f, 630.0f, 0.0f));
+	m_pDrawAnim->SetPos(TPos3d<float>(275.0f, 660.0f, 0.0f));
 	m_pDrawAnim->SetSize(TPos3d<float>(640.0f, 280.0f, 0.0f));
 	m_pDrawAnim->SetLoopFlg(true);
 
@@ -292,6 +295,14 @@ void CResult::DrawWarningTexture()
 			CLEAR_STAMP_PARAM.fSize.y,
 			m_pTexture[E_TEXTURE::CLEAR_STAMP]);
 	}
+
+	// 決定ボタン表示
+	Draw2d(
+		SELECT_PARAM.fPos.x,
+		SELECT_PARAM.fPos.y,
+		SELECT_PARAM.fSize.x,
+		SELECT_PARAM.fSize.y,
+		m_pTexture[E_TEXTURE::SELECT]);
 }
 
 
