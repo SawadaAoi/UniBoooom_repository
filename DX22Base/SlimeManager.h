@@ -194,6 +194,13 @@ private:
 		"Assets/Model/slime/Red/slime_red_walk_1.0.fbx",		// レベル1スライムの移動モーション
 		"Assets/Model/slime/Red/slime_red_damaged_1.0.fbx",	// レベル1スライムの叩かれたときのモーション
 	};
+
+	// 岩スライム
+	const std::string m_sRockSlime_Motion[CSlime_BossBase::ROCK_SLIME_MAX] = {
+		"Assets/Model/boss_slime_rock/rock_walk_2.0.fbx",		// 岩スライムの移動モーション
+		"Assets/Model/boss_slime_rock/rock_damaged_2.0.fbx",	// 岩スライムの被ダメモーション
+		"Assets/Model/boss_slime_rock/rock_rolling_2.0.fbx",	// 岩スライムの攻撃モーション
+	};
 };
 
 #endif // __SLIME_MANAGER_H__
