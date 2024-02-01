@@ -1,128 +1,129 @@
 /* ========================================
 	HEW/UniBoooom!!
 	---------------------------------------
-	ƒŠƒUƒ‹ƒgƒV[ƒ“À‘•
+	ãƒªã‚¶ãƒ«ãƒˆã‚·ãƒ¼ãƒ³å®Ÿè£…
 	---------------------------------------
 	Result.cpp
 
-	ì¬Ò
+	ä½œæˆè€…
 			takagi
 			nieda
 
-	•ÏX—š—ğ
-	E2023/11/16 §ì takagi
-	E2023/11/20 ‰¼ƒeƒNƒXƒ`ƒƒ•\¦A‰æ–Ê‘JˆÚ nieda
-	E2023/11/23 ƒRƒ“ƒgƒ[ƒ‰[‚É‘Î‰ nieda
-	E2023/11/24 ƒRƒƒ“ƒgA’è”’è‹`A—ñ‹“’Ç‰Á nieda
-	E2023/12/08 ƒV[ƒ“‘JˆÚ—p‚É•Ï”’Ç‰Á takagi
-	E2023/12/11 ¬Ñ‰¼•\¦ takagi
-	E2023/12/25 •\¦“à—e‚Ì•ÏX Sawada
-	E2024/01/26 Œˆ’èSE’Ç‰Á suzumura
-	E2024/01/26 ƒAƒjƒ[ƒVƒ‡ƒ“’Ç‰Á goto
-	E2024/02/01 ‘JˆÚæ•ÏX sawada
+	å¤‰æ›´å±¥æ­´
+	ãƒ»2023/11/16 åˆ¶ä½œ takagi
+	ãƒ»2023/11/20 ä»®ãƒ†ã‚¯ã‚¹ãƒãƒ£è¡¨ç¤ºã€ç”»é¢é·ç§» nieda
+	ãƒ»2023/11/23 ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼ã«å¯¾å¿œ nieda
+	ãƒ»2023/11/24 ã‚³ãƒ¡ãƒ³ãƒˆã€å®šæ•°å®šç¾©ã€åˆ—æŒ™è¿½åŠ  nieda
+	ãƒ»2023/12/08 ã‚·ãƒ¼ãƒ³é·ç§»ç”¨ã«å¤‰æ•°è¿½åŠ  takagi
+	ãƒ»2023/12/11 æˆç¸¾ä»®è¡¨ç¤º takagi
+	ãƒ»2023/12/25 è¡¨ç¤ºå†…å®¹ã®å¤‰æ›´ Sawada
+	ãƒ»2024/01/26 æ±ºå®šSEè¿½åŠ  suzumura
+	ãƒ»2024/01/26 ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³è¿½åŠ  goto
+	ãƒ»2024/02/01 é·ç§»å…ˆå¤‰æ›´ sawada
+
 
 ========================================== */
 
-// =============== ƒCƒ“ƒNƒ‹[ƒh ===================
-#include "Result.h"	//©g‚Ìƒwƒbƒ_
+// =============== ã‚¤ãƒ³ã‚¯ãƒ«ãƒ¼ãƒ‰ ===================
+#include "Result.h"	//è‡ªèº«ã®ãƒ˜ãƒƒãƒ€
 #include "DirectXTex/TextureLoad.h"	
-#include "FixedCamera.h"	//ƒCƒ“ƒXƒ^ƒ“ƒXŒó•â
+#include "FixedCamera.h"	//ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹å€™è£œ
 #include "Pos3d.h"
 #include "Sprite.h"
 #include "GameParameter.h"
 #include "Input.h"
-#include <array>					//”z—ñ
-#include <map>						//˜A‘zŒ^ƒRƒ“ƒeƒi
-#include "Defines.h"				//‰æ–ÊƒTƒCƒYî•ñ
+#include <array>					//é…åˆ—
+#include <map>						//é€£æƒ³å‹ã‚³ãƒ³ãƒ†ãƒŠ
+#include "Defines.h"				//ç”»é¢ã‚µã‚¤ã‚ºæƒ…å ±
 
 
-// =============== ’è”’è‹` ===================
+// =============== å®šæ•°å®šç¾© ===================
 const std::map<int, std::string> MAP_TEX_PATH = {
-	{CResult::BG_SCREEN,		"Assets/Texture/Result/ResultBG.png"},			// ‰æ–Ê‘S‘Ì‚Ì”wŒi
-	{CResult::BG_PANEL,			"Assets/Texture/Result/result_waku.png"},		// Še€–Ú‚Ì”wŒi(•‚¢”wŒi)
-	{CResult::RESULT_TEXT,		"Assets/Texture/Result/result.png"},			// •¶š(Result)
-	{CResult::SVL_TIME_TEXT,	"Assets/Texture/Result/SurvivalTime.png"},		// •¶š(¶‘¶ŠÔ)
-	{CResult::SCORE_TEXT,		"Assets/Texture/Result/SCORE.png"},				// •¶š(SCORE)	
-	{CResult::HIGH_SCORE_TEXT,	"Assets/Texture/Result/HISCORE.png"},			// •¶š(HISCORE)
-	{CResult::NEW_RECORD_TEXT,	"Assets/Texture/Result/NewRecord.png"},			// •¶š(NEW RECORD)
-	{CResult::TOTAL_HUNT_TEXT,	"Assets/Texture/Result/TotalHunt.png"},			// •¶š(ƒXƒ‰ƒCƒ€“¢”°”)
-	{CResult::HUNT_TEXT,		"Assets/Texture/Result/slimeCnt.png"},			// •¶š(‘“¢”°”)
-	{CResult::SLIME_BLUE,		"Assets/Texture/Result/Slime_Blue.png"},		// ƒXƒ‰ƒCƒ€‰æ‘œ(Â)
-	{CResult::SLIME_GREEN,		"Assets/Texture/Result/Slime_Green.png"},		// ƒXƒ‰ƒCƒ€‰æ‘œ(—Î)
-	{CResult::SLIME_YELLOW,		"Assets/Texture/Result/Slime_Yellow.png"},		// ƒXƒ‰ƒCƒ€‰æ‘œ(‰©)
-	{CResult::SLIME_RED,		"Assets/Texture/Result/Slime_Red.png"},			// ƒXƒ‰ƒCƒ€‰æ‘œ(Ô)
-	{CResult::SLIME_BOSS,		"Assets/Texture/Result/Slime_Boss.png"},		// ƒXƒ‰ƒCƒ€‰æ‘œ(ƒ{ƒX)
-	{CResult::MAX_COMBO_TEXT,	"Assets/Texture/Result/MaxCombo.png"},			// •¶š(Å‘åƒRƒ“ƒ{”)
-	{CResult::NUM,				"Assets/Texture/Result/ResultSpliteSheet.png"},	// ”š
-	{CResult::COLON,			"Assets/Texture/Result/Colon.png"},				// ƒRƒƒ“
-	{CResult::LINE,				"Assets/Texture/Result/Line.png"},				// ü
-	{CResult::MULTI,			"Assets/Texture/Result/kakeru.png"},			// ~
+	{CResult::BG_SCREEN,		"Assets/Texture/Result/ResultBG.png"},			// ç”»é¢å…¨ä½“ã®èƒŒæ™¯
+	{CResult::BG_PANEL,			"Assets/Texture/Result/result_waku.png"},		// å„é …ç›®ã®èƒŒæ™¯(é»’ã„èƒŒæ™¯)
+	{CResult::RESULT_TEXT,		"Assets/Texture/Result/result.png"},			// æ–‡å­—(Result)
+	{CResult::SVL_TIME_TEXT,	"Assets/Texture/Result/SurvivalTime.png"},		// æ–‡å­—(ç”Ÿå­˜æ™‚é–“)
+	{CResult::SCORE_TEXT,		"Assets/Texture/Result/SCORE.png"},				// æ–‡å­—(SCORE)	
+	{CResult::HIGH_SCORE_TEXT,	"Assets/Texture/Result/HISCORE.png"},			// æ–‡å­—(HISCORE)
+	{CResult::NEW_RECORD_TEXT,	"Assets/Texture/Result/NewRecord.png"},			// æ–‡å­—(NEW RECORD)
+	{CResult::TOTAL_HUNT_TEXT,	"Assets/Texture/Result/TotalHunt.png"},			// æ–‡å­—(ã‚¹ãƒ©ã‚¤ãƒ è¨ä¼æ•°)
+	{CResult::HUNT_TEXT,		"Assets/Texture/Result/slimeCnt.png"},			// æ–‡å­—(ç·è¨ä¼æ•°)
+	{CResult::SLIME_BLUE,		"Assets/Texture/Result/Slime_Blue.png"},		// ã‚¹ãƒ©ã‚¤ãƒ ç”»åƒ(é’)
+	{CResult::SLIME_GREEN,		"Assets/Texture/Result/Slime_Green.png"},		// ã‚¹ãƒ©ã‚¤ãƒ ç”»åƒ(ç·‘)
+	{CResult::SLIME_YELLOW,		"Assets/Texture/Result/Slime_Yellow.png"},		// ã‚¹ãƒ©ã‚¤ãƒ ç”»åƒ(é»„)
+	{CResult::SLIME_RED,		"Assets/Texture/Result/Slime_Red.png"},			// ã‚¹ãƒ©ã‚¤ãƒ ç”»åƒ(èµ¤)
+	{CResult::SLIME_BOSS,		"Assets/Texture/Result/Slime_Boss.png"},		// ã‚¹ãƒ©ã‚¤ãƒ ç”»åƒ(ãƒœã‚¹)
+	{CResult::MAX_COMBO_TEXT,	"Assets/Texture/Result/MaxCombo.png"},			// æ–‡å­—(æœ€å¤§ã‚³ãƒ³ãƒœæ•°)
+	{CResult::NUM,				"Assets/Texture/Result/ResultSpliteSheet.png"},	// æ•°å­—
+	{CResult::COLON,			"Assets/Texture/Result/Colon.png"},				// ã‚³ãƒ­ãƒ³
+	{CResult::LINE,				"Assets/Texture/Result/Line.png"},				// ç·š
+	{CResult::MULTI,			"Assets/Texture/Result/kakeru.png"},			// Ã—
 	{CResult::PARENTHESIS,		"Assets/Texture/Result/parenthesis.png"},		// ()
-	{CResult::WARNING_STAGE_1,	"Assets/Texture/Result/Lv1.png"},				// ƒXƒe[ƒW1‚Ìè”z‘
-	{CResult::WARNING_STAGE_2,	"Assets/Texture/Result/Lv2.png"},				// ƒXƒe[ƒW2‚Ìè”z‘
-	{CResult::WARNING_STAGE_3,	"Assets/Texture/Result/Lv3.png"},				// ƒXƒe[ƒW3‚Ìè”z‘
-	{CResult::CLEAR_STAMP,		"Assets/Texture/Result/stamp.png"},				// CLEARƒXƒ^ƒ“ƒv
+	{CResult::WARNING_STAGE_1,	"Assets/Texture/Result/Lv1.png"},				// ã‚¹ãƒ†ãƒ¼ã‚¸1ã®æ‰‹é…æ›¸
+	{CResult::WARNING_STAGE_2,	"Assets/Texture/Result/Lv2.png"},				// ã‚¹ãƒ†ãƒ¼ã‚¸2ã®æ‰‹é…æ›¸
+	{CResult::WARNING_STAGE_3,	"Assets/Texture/Result/Lv3.png"},				// ã‚¹ãƒ†ãƒ¼ã‚¸3ã®æ‰‹é…æ›¸
+	{CResult::CLEAR_STAMP,		"Assets/Texture/Result/stamp.png"},				// CLEARã‚¹ã‚¿ãƒ³ãƒ—
 };	
 
 
-// ‰æ‘œ•\¦—pƒpƒ‰ƒ[ƒ^‚Ü‚Æ‚ß
+// ç”»åƒè¡¨ç¤ºç”¨ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã¾ã¨ã‚
 typedef struct
 {
 	TDiType<float> fPos;
 	TDiType<float> fSize;
 }Display_Param;
 
-const Display_Param WARNING_TEXTURE_PARAM	= { {260.0f, 420.0f} ,{480.0f, 600.0f} };	// è”z‘
-const Display_Param CLEAR_STAMP_PARAM		= { {260.0f, 420.0f} ,{400.0f, 400.0f} };	// ƒXƒ^ƒ“ƒv
+const Display_Param WARNING_TEXTURE_PARAM	= { {260.0f, 420.0f} ,{480.0f, 600.0f} };	// æ‰‹é…æ›¸
+const Display_Param CLEAR_STAMP_PARAM		= { {260.0f, 420.0f} ,{400.0f, 400.0f} };	// ã‚¹ã‚¿ãƒ³ãƒ—
 
 const float DEF_NUM_SPACE = 55.0f;
 const TDiType<int> NUM_SPLIT = { 5, 2 };
 const TDiType<float> NUM_UVSCALE = { (1.0f / 5) ,(1.0f / 2) };
 
-const Display_Param BG_SCREEN_PARAM		= { { SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 },{ SCREEN_WIDTH, SCREEN_HEIGHT } };	// ”wŒi
-const Display_Param BG_PANEL_PARAM		= { { 905.0f, SCREEN_HEIGHT / 2 } ,{ 750.0f, SCREEN_HEIGHT } };					// €–Ú”wŒi
-//const Display_Param RESULT_TEXT_PARAM = { { 265.0f, 90.0f },{ 400.0f, 100.0f } };										// ƒŠƒUƒ‹ƒg
+const Display_Param BG_SCREEN_PARAM		= { { SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 },{ SCREEN_WIDTH, SCREEN_HEIGHT } };	// èƒŒæ™¯
+const Display_Param BG_PANEL_PARAM		= { { 905.0f, SCREEN_HEIGHT / 2 } ,{ 750.0f, SCREEN_HEIGHT } };					// é …ç›®èƒŒæ™¯
+//const Display_Param RESULT_TEXT_PARAM = { { 265.0f, 90.0f },{ 400.0f, 100.0f } };										// ãƒªã‚¶ãƒ«ãƒˆ
 
-const Display_Param SVL_TIME_TEXT_PARAM = { { 650.0f, 30.0f },{ 200.0f, 80.0f } };	// ¶‘¶ŠÔ(•¶š)
-const Display_Param SVL_TIME_NUM__PARAM = { { 1200.0f, 50.0f },{ 85.0f, 95.0f } };	// ¶‘¶ŠÔ(”š)
-const Display_Param SVL_TIME_LINE_PARAM = { { 907.0f, 100.0f },{ 729.0f, 5.0f } };	// ü
-const float SVL_TIME_NUM_SPACE = 55.0f;		// ŠÔ‚ÌŠÔ(12^:^33)
+const Display_Param SVL_TIME_TEXT_PARAM = { { 650.0f, 30.0f },{ 200.0f, 80.0f } };	// ç”Ÿå­˜æ™‚é–“(æ–‡å­—)
+const Display_Param SVL_TIME_NUM__PARAM = { { 1200.0f, 50.0f },{ 85.0f, 95.0f } };	// ç”Ÿå­˜æ™‚é–“(æ•°å­—)
+const Display_Param SVL_TIME_LINE_PARAM = { { 907.0f, 100.0f },{ 729.0f, 5.0f } };	// ç·š
+const float SVL_TIME_NUM_SPACE = 55.0f;		// æ™‚é–“ã®é–“(12^:^33)
 
-const Display_Param SCORE_TEXT_PARAM		= { { 655.0f, 130.0f },{ 220.0f, 75.0f } };	// ƒXƒRƒA(•¶š)
-const Display_Param NEW_RECORD_TEXT_PARAM	= { { 820.0f,180.0f },{ 170.0f, 55.0f } };	// V‹L˜^(•¶š)
-const Display_Param SCORE_NUM_PARAM			= { { 1200.0f, 160.0f },{ 85.0f, 105.0f } };	// ƒXƒRƒA(”š)
-const Display_Param HIGH_SCORE_TEXT_PARAM	= { { 645.0f, 240.0f },{ 180.0f, 75.0f } };		// ƒnƒCƒXƒRƒA(•¶š)
-const Display_Param HIGH_SCORE_NUM_PARAM	= { { 1200.0f, 260.0f },{ 55.0f, 55.0f } };		// ƒnƒCƒXƒRƒA(”š)
-const Display_Param SCORE_LINE_PARAM		= { { 907.0f, 300.0f },{ 729.0f, 5.0f } };		// ü
+const Display_Param SCORE_TEXT_PARAM		= { { 655.0f, 130.0f },{ 220.0f, 75.0f } };	// ã‚¹ã‚³ã‚¢(æ–‡å­—)
+const Display_Param NEW_RECORD_TEXT_PARAM	= { { 820.0f,180.0f },{ 170.0f, 55.0f } };	// æ–°è¨˜éŒ²(æ–‡å­—)
+const Display_Param SCORE_NUM_PARAM			= { { 1200.0f, 160.0f },{ 85.0f, 105.0f } };	// ã‚¹ã‚³ã‚¢(æ•°å­—)
+const Display_Param HIGH_SCORE_TEXT_PARAM	= { { 645.0f, 240.0f },{ 180.0f, 75.0f } };		// ãƒã‚¤ã‚¹ã‚³ã‚¢(æ–‡å­—)
+const Display_Param HIGH_SCORE_NUM_PARAM	= { { 1200.0f, 260.0f },{ 55.0f, 55.0f } };		// ãƒã‚¤ã‚¹ã‚³ã‚¢(æ•°å­—)
+const Display_Param SCORE_LINE_PARAM		= { { 907.0f, 300.0f },{ 729.0f, 5.0f } };		// ç·š
 const float SCORE_NUM_SPACE = 65.0f;
 const float HIGH_SCORE_NUM_SPACE = 45.0f;
 
 
-const Display_Param HUNT_TEXT_PARAM			= { { 710.0f, 340.0f },{ 330.0f, 110.0f } };	// “¢”°”(•¶š)
-const Display_Param SLIME_TEXTURE_PARAM		= { { 650.0f, 430.0f },{ 160.0f, 160.0f } };	// ƒXƒ‰ƒCƒ€‰æ‘œ
-const float SLIME_SPACE_Y = 130.0f;	// ƒXƒ‰ƒCƒ€‰æ‘œ‚ÌŠÔ
-const Display_Param SLIME_HUNT_NUM_PARAM	= { { 650.0f, 430.0f },{ 60.0f, 60.0f } };		// ƒXƒ‰ƒCƒ€•Ê“¢”°”
+const Display_Param HUNT_TEXT_PARAM			= { { 710.0f, 340.0f },{ 330.0f, 110.0f } };	// è¨ä¼æ•°(æ–‡å­—)
+const Display_Param SLIME_TEXTURE_PARAM		= { { 650.0f, 430.0f },{ 160.0f, 160.0f } };	// ã‚¹ãƒ©ã‚¤ãƒ ç”»åƒ
+const float SLIME_SPACE_Y = 130.0f;	// ã‚¹ãƒ©ã‚¤ãƒ ç”»åƒã®é–“
+const Display_Param SLIME_HUNT_NUM_PARAM	= { { 650.0f, 430.0f },{ 60.0f, 60.0f } };		// ã‚¹ãƒ©ã‚¤ãƒ åˆ¥è¨ä¼æ•°
 const Display_Param PARENTHESIS_PARAM		= { { 650.0f, 530.0f },{ 0.0f, 0.0f } };		// ()
-const Display_Param MULTI_PARAM				= { { 650.0f, 510.0f },{ 40.0f, 40.0f } };		// ~
-const Display_Param MULTI_SLIME_PARAM		= { { 615.0f, 510.0f },{ 30.0f, 30.0f } };		// ÂƒXƒ‰ƒCƒ€‰æ‘œ‚ÌˆÊ’u
-const Display_Param MULTI_NUM_PARAM			= { { 685.0f, 510.0f },{ 40.0f, 40.0f } };		// ÂƒXƒ‰ƒCƒ€‚Ì”{”
-const Display_Param TOTAL_HUNT_TEXT_PARAM	= { { 670.0f, 560.0f },{ 250.0f, 80.0f } };		// ‘“¢”°”(•¶š)
-const Display_Param TOTAL_HUNT_NUM_PARAM	= { { 1200.0f, 580.0f },{ 85.0f, 105.0f } };	// ‘“¢”°”(”š)
-const Display_Param HUNT_LINE_PARAM			= { { 907.0f, 620.0f } , { 729.0f, 5.0f } };	// ü
+const Display_Param MULTI_PARAM				= { { 650.0f, 510.0f },{ 40.0f, 40.0f } };		// Ã—
+const Display_Param MULTI_SLIME_PARAM		= { { 615.0f, 510.0f },{ 30.0f, 30.0f } };		// é’ã‚¹ãƒ©ã‚¤ãƒ ç”»åƒã®ä½ç½®
+const Display_Param MULTI_NUM_PARAM			= { { 685.0f, 510.0f },{ 40.0f, 40.0f } };		// é’ã‚¹ãƒ©ã‚¤ãƒ ã®å€æ•°
+const Display_Param TOTAL_HUNT_TEXT_PARAM	= { { 670.0f, 560.0f },{ 250.0f, 80.0f } };		// ç·è¨ä¼æ•°(æ–‡å­—)
+const Display_Param TOTAL_HUNT_NUM_PARAM	= { { 1200.0f, 580.0f },{ 85.0f, 105.0f } };	// ç·è¨ä¼æ•°(æ•°å­—)
+const Display_Param HUNT_LINE_PARAM			= { { 907.0f, 620.0f } , { 729.0f, 5.0f } };	// ç·š
 
-const Display_Param MAX_COMBO_TEXT_PARAM	= { { 695.0f, 655.0f } , {  300.0f, 90.0f } };	// Å‘åƒRƒ“ƒ{”(•¶š)
-const Display_Param MAX_COMBO_NUM_PARAM		= { { 1200.0f, 670.0f } ,{ 85.0f, 105.0f } };	// Å‘åƒRƒ“ƒ{”(”š)
+const Display_Param MAX_COMBO_TEXT_PARAM	= { { 695.0f, 655.0f } , {  300.0f, 90.0f } };	// æœ€å¤§ã‚³ãƒ³ãƒœæ•°(æ–‡å­—)
+const Display_Param MAX_COMBO_NUM_PARAM		= { { 1200.0f, 670.0f } ,{ 85.0f, 105.0f } };	// æœ€å¤§ã‚³ãƒ³ãƒœæ•°(æ•°å­—)
 
 
 
 /* ========================================
-	ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	----------------------------------------
-	“à—eF¶¬‚És‚¤ˆ—
+	å†…å®¹ï¼šç”Ÿæˆæ™‚ã«è¡Œã†å‡¦ç†
 	----------------------------------------
-	ˆø”1F‚È‚µ
+	å¼•æ•°1ï¼šãªã—
 	----------------------------------------
-	–ß’lF‚È‚µ
+	æˆ»å€¤ï¼šãªã—
 =========================================== */
 CResult::CResult()
 	: m_pSE{ nullptr }
@@ -130,7 +131,7 @@ CResult::CResult()
 {
 	for (int i = 0; i < E_TEXTURE::TEXTURE_MAX; i++)
 	{
-		// ƒŠƒUƒ‹ƒg‰æ‘œ“Ç
+		// ãƒªã‚¶ãƒ«ãƒˆç”»åƒèª­è¾¼
 		m_pTexture[i] = new Texture();
 		if (FAILED(m_pTexture[i]->Create(MAP_TEX_PATH.at(i).c_str())))
 		{
@@ -138,36 +139,36 @@ CResult::CResult()
 		}
 	}
 	
-	// ƒŠƒUƒ‹ƒg•¶š‚ÌƒAƒjƒ[ƒVƒ‡ƒ“‚Ì‰Šú‰»
+	// ãƒªã‚¶ãƒ«ãƒˆæ–‡å­—ã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã®åˆæœŸåŒ–
 	m_pDrawAnim = new CDrawAnim(60, TDiType <int>(5, 12), 2);
 	m_pDrawAnim->SetTexture(m_pTexture[E_TEXTURE::RESULT_TEXT]);
 	m_pDrawAnim->SetPos(TPos3d<float>(275.0f, 630.0f, 0.0f));
 	m_pDrawAnim->SetSize(TPos3d<float>(640.0f, 280.0f, 0.0f));
 	m_pDrawAnim->SetLoopFlg(true);
 
-	// ƒf[ƒ^ó‚¯Œp‚¬
-	m_Data.Load();	//ƒtƒ@ƒCƒ‹‚Éã‚ª‚Á‚Ä‚¢‚éî•ñ‚ğ“Ç‚İ‚Ş
+	// ãƒ‡ãƒ¼ã‚¿å—ã‘ç¶™ã
+	m_Data.Load();	//ãƒ•ã‚¡ã‚¤ãƒ«ã«ä¸ŠãŒã£ã¦ã„ã‚‹æƒ…å ±ã‚’èª­ã¿è¾¼ã‚€
 
-	//=== ƒTƒEƒ“ƒhƒtƒ@ƒCƒ‹“Ç‚İ‚İ =====
+	//=== ã‚µã‚¦ãƒ³ãƒ‰ãƒ•ã‚¡ã‚¤ãƒ«èª­ã¿è¾¼ã¿ =====
 	LoadSound();
 
 }
 
 /* ========================================
-	ƒfƒXƒgƒ‰ƒNƒ^
+	ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	----------------------------------------
-	“à—eF”jŠü‚És‚¤ˆ—
+	å†…å®¹ï¼šç ´æ£„æ™‚ã«è¡Œã†å‡¦ç†
 	----------------------------------------
-	ˆø”1F‚È‚µ
+	å¼•æ•°1ï¼šãªã—
 	----------------------------------------
-	–ß’lF‚È‚µ
+	æˆ»å€¤ï¼šãªã—
 =========================================== */
 CResult::~CResult()
 {
-	// =============== ƒZ[ƒu =====================
-	m_Data.Save();	//ƒXƒe[ƒW‚Ìƒf[ƒ^ƒZ[ƒu
+	// =============== ã‚»ãƒ¼ãƒ– =====================
+	m_Data.Save();	//ã‚¹ãƒ†ãƒ¼ã‚¸ã®ãƒ‡ãƒ¼ã‚¿ã‚»ãƒ¼ãƒ–
 
-	// ”jŠüˆ—
+	// ç ´æ£„å‡¦ç†
 	for (int i = 0; i < E_TEXTURE::TEXTURE_MAX; i++)
 	{
 		SAFE_DELETE(m_pTexture[i]);
@@ -176,67 +177,67 @@ CResult::~CResult()
 }
 
 /* ========================================
-	XVŠÖ”
+	æ›´æ–°é–¢æ•°
 	----------------------------------------
-	“à—eFXVˆ—
+	å†…å®¹ï¼šæ›´æ–°å‡¦ç†
 	----------------------------------------
-	ˆø”1F‚È‚µ
+	å¼•æ•°1ï¼šãªã—
 	----------------------------------------
-	–ß’lF‚È‚µ
+	æˆ»å€¤ï¼šãªã—
 =========================================== */
 void CResult::Update()
 {
-	// ƒXƒy[ƒXƒL[‚ğ‰Ÿ‚µ‚½A‚Ü‚½‚ÍƒRƒ“ƒgƒ[ƒ‰‚ÌBƒ{ƒ^ƒ“‚ğ‰Ÿ‚µ‚½ 
+	// ã‚¹ãƒšãƒ¼ã‚¹ã‚­ãƒ¼ã‚’æŠ¼ã—ãŸæ™‚ã€ã¾ãŸã¯ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ã®Bãƒœã‚¿ãƒ³ã‚’æŠ¼ã—ãŸæ™‚ 
 	if (IsKeyTrigger(VK_SPACE) || IsKeyTriggerController(BUTTON_B))
 	{
-		m_bFinish = true;	// ƒ^ƒCƒgƒ‹ƒV[ƒ“I—¹ƒtƒ‰ƒOON
-		//===== SE‚ÌÄ¶ =======
+		m_bFinish = true;	// ã‚¿ã‚¤ãƒˆãƒ«ã‚·ãƒ¼ãƒ³çµ‚äº†ãƒ•ãƒ©ã‚°ON
+		//===== SEã®å†ç”Ÿ =======
 		PlaySE(SE_DECISION);
 	}
 
-	// ƒŠƒUƒ‹ƒg‚Ì•¶š‚ÌƒAƒjƒ[ƒVƒ‡ƒ“
+	// ãƒªã‚¶ãƒ«ãƒˆã®æ–‡å­—ã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³
 	m_pDrawAnim->Update();
 }
 
 /* ========================================
-	•`‰æŠÖ”
+	æç”»é–¢æ•°
 	----------------------------------------
-	“à—eF•`‰æˆ—
+	å†…å®¹ï¼šæç”»å‡¦ç†
 	----------------------------------------
-	ˆø”1F‚È‚µ
+	å¼•æ•°1ï¼šãªã—
 	----------------------------------------
-	–ß’lF‚È‚µ
+	æˆ»å€¤ï¼šãªã—
 	======================================== */
 void CResult::Draw()
 {
 	
-	DrawBgScreen();			// ”wŒi
-	DrawWarningTexture();	// Result••è”z‘
-	m_pDrawAnim->Draw();	// ƒŠƒUƒ‹ƒg‚Ì•¶š‚ÌƒAƒjƒ[ƒVƒ‡ƒ“
-	DrawSurvivalTime();		// ¶‘¶ŠÔ
-	DrawScore();			// ƒXƒRƒA
-	DrawHunt();				// “¢”°”
-	DrawMaxCombo();			// ƒRƒ“ƒ{”
+	DrawBgScreen();			// èƒŒæ™¯
+	DrawWarningTexture();	// Resultï¼†ï¼†æ‰‹é…æ›¸
+	m_pDrawAnim->Draw();	// ãƒªã‚¶ãƒ«ãƒˆã®æ–‡å­—ã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³
+	DrawSurvivalTime();		// ç”Ÿå­˜æ™‚é–“
+	DrawScore();			// ã‚¹ã‚³ã‚¢
+	DrawHunt();				// è¨ä¼æ•°
+	DrawMaxCombo();			// ã‚³ãƒ³ãƒœæ•°
 }
 
 /* ========================================
-	”wŒi•`‰æŠÖ”
+	èƒŒæ™¯æç”»é–¢æ•°
 	----------------------------------------
-	“à—eF”wŒi‚ğ•`‰æ‚·‚é
+	å†…å®¹ï¼šèƒŒæ™¯ã‚’æç”»ã™ã‚‹
 	----------------------------------------
-	ˆø”1F‚È‚µ
+	å¼•æ•°1ï¼šãªã—
 	----------------------------------------
-	–ß’lF‚È‚µ
+	æˆ»å€¤ï¼šãªã—
 =========================================== */
 void CResult::DrawBgScreen()
 {
-	// ‘S‘Ì‚Ì”wŒi
+	// å…¨ä½“ã®èƒŒæ™¯
 	Draw2d(
 		BG_SCREEN_PARAM.fPos.x, BG_SCREEN_PARAM.fPos.y,
 		BG_SCREEN_PARAM.fSize.x, BG_SCREEN_PARAM.fSize.y,
 		m_pTexture[E_TEXTURE::BG_SCREEN]);
 
-	// ‰E”¼•ª‚ÌŠe€–Ú‚Ì”wŒi
+	// å³åŠåˆ†ã®å„é …ç›®ã®èƒŒæ™¯
 	Draw2d(
 		BG_PANEL_PARAM.fPos.x,BG_PANEL_PARAM.fPos.y,
 		BG_PANEL_PARAM.fSize.x,BG_PANEL_PARAM.fSize.y,
@@ -244,19 +245,19 @@ void CResult::DrawBgScreen()
 }
 
 /* ========================================
-	è”z‘•`‰æŠÖ”
+	æ‰‹é…æ›¸æç”»é–¢æ•°
 	----------------------------------------
-	“à—eFè”z‘‚ğ•`‰æ‚·‚é
+	å†…å®¹ï¼šæ‰‹é…æ›¸ã‚’æç”»ã™ã‚‹
 	----------------------------------------
-	ˆø”1F‚È‚µ
+	å¼•æ•°1ï¼šãªã—
 	----------------------------------------
-	–ß’lF‚È‚µ
+	æˆ»å€¤ï¼šãªã—
 =========================================== */
 void CResult::DrawWarningTexture()
 {
-	Texture* pWarningTex;	// è”z‘‰æ‘œ
+	Texture* pWarningTex;	// æ‰‹é…æ›¸ç”»åƒ
 
-	// ƒŠƒUƒ‹ƒg•¶š
+	// ãƒªã‚¶ãƒ«ãƒˆæ–‡å­—
 	//Draw2d(
 	//	RESULT_TEXT_PARAM.fPos.x,
 	//	RESULT_TEXT_PARAM.fPos.y,
@@ -264,7 +265,7 @@ void CResult::DrawWarningTexture()
 	//	RESULT_TEXT_PARAM.fSize.y,
 	//	m_pTexture[E_TEXTURE::RESULT_TEXT]);
 
-	// ƒvƒŒƒC‚µ‚½ƒXƒe[ƒW‚É‚æ‚Á‚Äè”z‘‚Ì‰æ‘œ‚ğ•Ï‚¦‚é
+	// ãƒ—ãƒ¬ã‚¤ã—ãŸã‚¹ãƒ†ãƒ¼ã‚¸ã«ã‚ˆã£ã¦æ‰‹é…æ›¸ã®ç”»åƒã‚’å¤‰ãˆã‚‹
 	switch (m_Data.nStageNum)
 	{
 	case 1: pWarningTex = m_pTexture[E_TEXTURE::WARNING_STAGE_1]; break;
@@ -272,7 +273,7 @@ void CResult::DrawWarningTexture()
 	case 3: pWarningTex = m_pTexture[E_TEXTURE::WARNING_STAGE_3]; break;
 	}
 	
-	// è”z‘•\¦
+	// æ‰‹é…æ›¸è¡¨ç¤º
 	Draw2d(
 		WARNING_TEXTURE_PARAM.fPos.x,
 		WARNING_TEXTURE_PARAM.fPos.y,
@@ -280,10 +281,10 @@ void CResult::DrawWarningTexture()
 		WARNING_TEXTURE_PARAM.fSize.y,
 		pWarningTex);
 
-	// ƒNƒŠƒA‚µ‚½ê‡
+	// ã‚¯ãƒªã‚¢ã—ãŸå ´åˆ
 	if (m_Data.bClearFlg)
 	{
-		// ƒXƒ^ƒ“ƒv‚ğ•\¦‚·‚é
+		// ã‚¹ã‚¿ãƒ³ãƒ—ã‚’è¡¨ç¤ºã™ã‚‹
 		Draw2d(
 			CLEAR_STAMP_PARAM.fPos.x,
 			CLEAR_STAMP_PARAM.fPos.y,
@@ -295,17 +296,17 @@ void CResult::DrawWarningTexture()
 
 
 /* ========================================
-	¶‘¶ŠÔ•`‰æŠÖ”
+	ç”Ÿå­˜æ™‚é–“æç”»é–¢æ•°
 	----------------------------------------
-	“à—eF¶‘¶ŠÔ‚ğ•`‰æ‚·‚é
+	å†…å®¹ï¼šç”Ÿå­˜æ™‚é–“ã‚’æç”»ã™ã‚‹
 	----------------------------------------
-	ˆø”1F‚È‚µ
+	å¼•æ•°1ï¼šãªã—
 	----------------------------------------
-	–ß’lF‚È‚µ
+	æˆ»å€¤ï¼šãªã—
 =========================================== */
 void CResult::DrawSurvivalTime()
 {
-	// ¶‘¶ŠÔ(•¶š)
+	// ç”Ÿå­˜æ™‚é–“(æ–‡å­—)
 	Draw2d(
 		SVL_TIME_TEXT_PARAM.fPos.x,
 		SVL_TIME_TEXT_PARAM.fPos.y,
@@ -313,10 +314,10 @@ void CResult::DrawSurvivalTime()
 		SVL_TIME_TEXT_PARAM.fSize.y,
 		m_pTexture[E_TEXTURE::SVL_TIME_TEXT]);
 
-	// ¶‘¶ŠÔ(”š)
+	// ç”Ÿå­˜æ™‚é–“(æ•°å­—)
 	DispTime();
 
-	// ü
+	// ç·š
 	Draw2d(
 		SVL_TIME_LINE_PARAM.fPos.x,
 		SVL_TIME_LINE_PARAM.fPos.y,
@@ -327,17 +328,17 @@ void CResult::DrawSurvivalTime()
 
 
 /* ========================================
-	ƒXƒRƒA•`‰æŠÖ”
+	ã‚¹ã‚³ã‚¢æç”»é–¢æ•°
 	----------------------------------------
-	“à—eFƒXƒRƒA‚ğ•`‰æ‚·‚é
+	å†…å®¹ï¼šã‚¹ã‚³ã‚¢ã‚’æç”»ã™ã‚‹
 	----------------------------------------
-	ˆø”1F‚È‚µ
+	å¼•æ•°1ï¼šãªã—
 	----------------------------------------
-	–ß’lF‚È‚µ
+	æˆ»å€¤ï¼šãªã—
 =========================================== */
 void CResult::DrawScore()
 {
-	// ƒXƒRƒA(•¶š)
+	// ã‚¹ã‚³ã‚¢(æ–‡å­—)
 	Draw2d(
 		SCORE_TEXT_PARAM.fPos.x,
 		SCORE_TEXT_PARAM.fPos.y,
@@ -346,10 +347,10 @@ void CResult::DrawScore()
 		m_pTexture[E_TEXTURE::SCORE_TEXT]);
 
 
-	// ‘ƒXƒRƒA(”š)
+	// ç·ã‚¹ã‚³ã‚¢(æ•°å­—)
 	DispNum(m_Data.nTotalScore, 5, SCORE_NUM_PARAM.fPos, SCORE_NUM_PARAM.fSize, SCORE_NUM_SPACE);
 
-	// ƒnƒCƒXƒRƒA(•¶š)
+	// ãƒã‚¤ã‚¹ã‚³ã‚¢(æ–‡å­—)
 	Draw2d(
 		HIGH_SCORE_TEXT_PARAM.fPos.x,
 		HIGH_SCORE_TEXT_PARAM.fPos.y,
@@ -357,10 +358,10 @@ void CResult::DrawScore()
 		HIGH_SCORE_TEXT_PARAM.fSize.y,
 		m_pTexture[E_TEXTURE::HIGH_SCORE_TEXT]);
 
-	// ƒnƒCƒXƒRƒA‚ğXV‚µ‚Ä‚¢‚½‚ç(ƒQ[ƒ€I—¹‚ÉƒnƒCƒXƒRƒA‚ğXV‚·‚éˆ×)
+	// ãƒã‚¤ã‚¹ã‚³ã‚¢ã‚’æ›´æ–°ã—ã¦ã„ãŸã‚‰(ã‚²ãƒ¼ãƒ çµ‚äº†æ™‚ã«ãƒã‚¤ã‚¹ã‚³ã‚¢ã‚’æ›´æ–°ã™ã‚‹ç‚º)
 	if (m_Data.nHighScore[m_Data.nStageNum-1] == m_Data.nTotalScore)
 	{
-		// ƒjƒ…[ƒŒƒR[ƒh(•¶š)
+		// ãƒ‹ãƒ¥ãƒ¼ãƒ¬ã‚³ãƒ¼ãƒ‰(æ–‡å­—)
 		Draw2d(
 			NEW_RECORD_TEXT_PARAM.fPos.x,
 			NEW_RECORD_TEXT_PARAM.fPos.y,
@@ -370,11 +371,11 @@ void CResult::DrawScore()
 
 	}
 
-	// ƒnƒCƒXƒRƒA(”š)
+	// ãƒã‚¤ã‚¹ã‚³ã‚¢(æ•°å­—)
 	DispNum(m_Data.nHighScore[m_Data.nStageNum - 1], 5, HIGH_SCORE_NUM_PARAM.fPos, HIGH_SCORE_NUM_PARAM.fSize, HIGH_SCORE_NUM_SPACE);
 	
 
-	// ü
+	// ç·š
 	Draw2d(
 		SCORE_LINE_PARAM.fPos.x,
 		SCORE_LINE_PARAM.fPos.y,
@@ -385,17 +386,17 @@ void CResult::DrawScore()
 
 
 /* ========================================
-	“¢”°”•`‰æŠÖ”
+	è¨ä¼æ•°æç”»é–¢æ•°
 	----------------------------------------
-	“à—eF“¢”°”‚ğ•`‰æ‚·‚é
+	å†…å®¹ï¼šè¨ä¼æ•°ã‚’æç”»ã™ã‚‹
 	----------------------------------------
-	ˆø”1F‚È‚µ
+	å¼•æ•°1ï¼šãªã—
 	----------------------------------------
-	–ß’lF‚È‚µ
+	æˆ»å€¤ï¼šãªã—
 =========================================== */
 void CResult::DrawHunt()
 {
-	// “¢”°”(•¶š)
+	// è¨ä¼æ•°(æ–‡å­—)
 	Draw2d(
 		HUNT_TEXT_PARAM.fPos.x,
 		HUNT_TEXT_PARAM.fPos.y,
@@ -403,10 +404,10 @@ void CResult::DrawHunt()
 		HUNT_TEXT_PARAM.fSize.y,
 		m_pTexture[E_TEXTURE::HUNT_TEXT]);
 
-	// ƒXƒ‰ƒCƒ€‚Ìí—Ş”•ª‰æ‘œ‚ğ•\¦
+	// ã‚¹ãƒ©ã‚¤ãƒ ã®ç¨®é¡æ•°åˆ†ç”»åƒã‚’è¡¨ç¤º
 	for (int i = 0; i < 5; i++)
 	{
-		// ƒXƒ‰ƒCƒ€‚Ì‰æ‘œ
+		// ã‚¹ãƒ©ã‚¤ãƒ ã®ç”»åƒ
 		Draw2d(
 			SLIME_TEXTURE_PARAM.fPos.x + (i * SLIME_SPACE_Y),
 			SLIME_TEXTURE_PARAM.fPos.y,
@@ -414,7 +415,7 @@ void CResult::DrawHunt()
 			SLIME_TEXTURE_PARAM.fSize.y,
 			m_pTexture[E_TEXTURE::SLIME_BLUE + i]);
 
-		// ƒXƒ‰ƒCƒ€—Î`Ô‚Ì‰º‚ÉÂ‚Ì”{”‚ğ•\¦‚·‚é
+		// ã‚¹ãƒ©ã‚¤ãƒ ç·‘ï½èµ¤ã®ä¸‹ã«é’ã®å€æ•°ã‚’è¡¨ç¤ºã™ã‚‹
 		if (1 <= i && i <= 3)
 		{
 			// ()
@@ -425,7 +426,7 @@ void CResult::DrawHunt()
 				PARENTHESIS_PARAM.fSize.y,
 				m_pTexture[E_TEXTURE::PARENTHESIS]);
 
-			// ÂƒXƒ‰ƒCƒ€‰æ‘œ
+			// é’ã‚¹ãƒ©ã‚¤ãƒ ç”»åƒ
 			Draw2d(
 				MULTI_SLIME_PARAM.fPos.x + (i*SLIME_SPACE_Y),
 				MULTI_SLIME_PARAM.fPos.y,
@@ -433,7 +434,7 @@ void CResult::DrawHunt()
 				MULTI_SLIME_PARAM.fSize.y,
 				m_pTexture[E_TEXTURE::SLIME_BLUE]);
 
-			// ~
+			// Ã—
 			Draw2d(
 				MULTI_PARAM.fPos.x + (i*SLIME_SPACE_Y),
 				MULTI_PARAM.fPos.y,
@@ -442,12 +443,12 @@ void CResult::DrawHunt()
 				m_pTexture[E_TEXTURE::MULTI]);
 	
 		}
-		// ”{”
+		// å€æ•°
 		DispNum(2, 1, { MULTI_NUM_PARAM.fPos.x + (1 * SLIME_SPACE_Y), MULTI_NUM_PARAM.fPos.y }, MULTI_NUM_PARAM.fSize, DEF_NUM_SPACE);
 		DispNum(4, 1, { MULTI_NUM_PARAM.fPos.x + (2 * SLIME_SPACE_Y), MULTI_NUM_PARAM.fPos.y }, MULTI_NUM_PARAM.fSize, DEF_NUM_SPACE);
 		DispNum(8, 1, { MULTI_NUM_PARAM.fPos.x + (3 * SLIME_SPACE_Y), MULTI_NUM_PARAM.fPos.y }, MULTI_NUM_PARAM.fSize, DEF_NUM_SPACE);
 
-		// ƒXƒ‰ƒCƒ€•Ê“¢”°”
+		// ã‚¹ãƒ©ã‚¤ãƒ åˆ¥è¨ä¼æ•°
 		DispNum(m_Data.nKill[i], 1,{
 			SLIME_HUNT_NUM_PARAM.fPos.x + (i*SLIME_SPACE_Y),
 			SLIME_HUNT_NUM_PARAM.fPos.y },
@@ -455,7 +456,7 @@ void CResult::DrawHunt()
 
 	}
 
-	// ‘“¢”°”(•¶š)
+	// ç·è¨ä¼æ•°(æ–‡å­—)
 	Draw2d(
 		TOTAL_HUNT_TEXT_PARAM.fPos.x,
 		TOTAL_HUNT_TEXT_PARAM.fPos.y,
@@ -463,10 +464,10 @@ void CResult::DrawHunt()
 		TOTAL_HUNT_TEXT_PARAM.fSize.y,
 		m_pTexture[E_TEXTURE::TOTAL_HUNT_TEXT]);
 
-	// ‘“¢”°”(”š)
+	// ç·è¨ä¼æ•°(æ•°å­—)
 	DispNum(m_Data.nTotalKill, 1, TOTAL_HUNT_NUM_PARAM.fPos, TOTAL_HUNT_NUM_PARAM.fSize, DEF_NUM_SPACE);
 
-	// ü
+	// ç·š
 	Draw2d(
 		HUNT_LINE_PARAM.fPos.x,
 		HUNT_LINE_PARAM.fPos.y,
@@ -477,17 +478,17 @@ void CResult::DrawHunt()
 
 
 /* ========================================
-	Å‘åƒRƒ“ƒ{”•`‰æŠÖ”
+	æœ€å¤§ã‚³ãƒ³ãƒœæ•°æç”»é–¢æ•°
 	----------------------------------------
-	“à—eFÅ‘åƒRƒ“ƒ{”‚ğ•`‰æ‚·‚é
+	å†…å®¹ï¼šæœ€å¤§ã‚³ãƒ³ãƒœæ•°ã‚’æç”»ã™ã‚‹
 	----------------------------------------
-	ˆø”1F‚È‚µ
+	å¼•æ•°1ï¼šãªã—
 	----------------------------------------
-	–ß’lF‚È‚µ
+	æˆ»å€¤ï¼šãªã—
 =========================================== */
 void CResult::DrawMaxCombo()
 {
-	// Å‘åƒRƒ“ƒ{”(•¶š)
+	// æœ€å¤§ã‚³ãƒ³ãƒœæ•°(æ–‡å­—)
 	Draw2d(
 		MAX_COMBO_TEXT_PARAM.fPos.x,
 		MAX_COMBO_TEXT_PARAM.fPos.y,
@@ -495,26 +496,26 @@ void CResult::DrawMaxCombo()
 		MAX_COMBO_TEXT_PARAM.fSize.y,
 		m_pTexture[E_TEXTURE::MAX_COMBO_TEXT]);
 
-	// Å‘åƒRƒ“ƒ{”(”š)
+	// æœ€å¤§ã‚³ãƒ³ãƒœæ•°(æ•°å­—)
 	DispNum(m_Data.nMaxCombo, 1, MAX_COMBO_NUM_PARAM.fPos, MAX_COMBO_NUM_PARAM.fSize, DEF_NUM_SPACE);
 }
 
 
 /* ========================================
-	§ŒÀŠÔ•`‰æŠÖ”
+	åˆ¶é™æ™‚é–“æç”»é–¢æ•°
 	----------------------------------------
-	“à—eF§ŒÀŠÔ‚ğ•`‰æ‚·‚é
+	å†…å®¹ï¼šåˆ¶é™æ™‚é–“ã‚’æç”»ã™ã‚‹
 	----------------------------------------
-	ˆø”1F‚È‚µ
+	å¼•æ•°1ï¼šãªã—
 	----------------------------------------
-	–ß’lF‚È‚µ
+	æˆ»å€¤ï¼šãªã—
 =========================================== */
 void CResult::DispTime()
 {
-	// •b”
+	// ç§’æ•°
 	DispNum(m_Data.GetSecond(), 2, SVL_TIME_NUM__PARAM.fPos, SVL_TIME_NUM__PARAM.fSize, DEF_NUM_SPACE);
 
-	// ƒRƒƒ“
+	// ã‚³ãƒ­ãƒ³
 	Draw2d(
 		SVL_TIME_NUM__PARAM.fPos.x - (SVL_TIME_NUM_SPACE * 2),
 		SVL_TIME_NUM__PARAM.fPos.y,
@@ -526,22 +527,22 @@ void CResult::DispTime()
 		SVL_TIME_NUM__PARAM.fPos.x - (SVL_TIME_NUM_SPACE * 3) ,
 		SVL_TIME_NUM__PARAM.fPos.y };
 
-	// •ª”
+	// åˆ†æ•°
 	DispNum(m_Data.GetMinute(), 2, pos, SVL_TIME_NUM__PARAM.fSize, DEF_NUM_SPACE);
 }
 
 /* ========================================
-	”š•`‰æŠÖ”
+	æ•°å­—æç”»é–¢æ•°
 	----------------------------------------
-	“à—eF”š‚ğ•`‰æ‚·‚é
+	å†…å®¹ï¼šæ•°å­—ã‚’æç”»ã™ã‚‹
 	----------------------------------------
-	ˆø”1F•`‰æ‚·‚é”š
-	ˆø”2FŒ…”
-	ˆø”3FˆÊ’u
-	ˆø”4F‘å‚«‚³
-	ˆø”5F”šŠÔ‚Ì‘å‚«‚³
+	å¼•æ•°1ï¼šæç”»ã™ã‚‹æ•°å­—
+	å¼•æ•°2ï¼šæ¡æ•°
+	å¼•æ•°3ï¼šä½ç½®
+	å¼•æ•°4ï¼šå¤§ãã•
+	å¼•æ•°5ï¼šæ•°å­—é–“ã®å¤§ãã•
 	----------------------------------------
-	–ß’lF‚È‚µ
+	æˆ»å€¤ï¼šãªã—
 =========================================== */
 void CResult::DispNum(int dispNum, int nDigits, TDiType<float> pos, TDiType<float> size, float NumSpace)
 {
@@ -560,15 +561,15 @@ void CResult::DispNum(int dispNum, int nDigits, TDiType<float> pos, TDiType<floa
 	{
 
 		int width = NumSpace * i;
-		//ƒ[ƒ‹ƒhs—ñ‚ÍX‚ÆY‚Ì‚İ‚ğl—¶‚µ‚Äì¬(Z‚Í10‚®‚ç‚¢‚É”z’u
+		//ãƒ¯ãƒ¼ãƒ«ãƒ‰è¡Œåˆ—ã¯Xã¨Yã®ã¿ã‚’è€ƒæ…®ã—ã¦ä½œæˆ(Zã¯10ãã‚‰ã„ã«é…ç½®
 		DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(pos.x - width, pos.y, 0.0f);
 		DirectX::XMStoreFloat4x4(&mat, DirectX::XMMatrixTranspose(world));
 
-		//ƒXƒvƒ‰ƒCƒg‚Ìİ’è
+		//ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®è¨­å®š
 		Sprite::SetWorld(mat);
 
-		int x = digitArray[i] % NUM_SPLIT.x;	//‚±‚±–¼‘O•åW‚µ‚Ü‚·
-		int y = digitArray[i] / NUM_SPLIT.x;	//”z—ñ‚É“ü‚Á‚Ä‚é”š‚ÌêŠ‚ğŒvZ‚µ‚Ä‚Ü‚·
+		int x = digitArray[i] % NUM_SPLIT.x;	//ã“ã“åå‰å‹Ÿé›†ã—ã¾ã™
+		int y = digitArray[i] / NUM_SPLIT.x;	//é…åˆ—ã«å…¥ã£ã¦ã‚‹æ•°å­—ã®å ´æ‰€ã‚’è¨ˆç®—ã—ã¦ã¾ã™
 
 		Sprite::SetSize(DirectX::XMFLOAT2(size.x, -size.y));
 		Sprite::SetUVPos(DirectX::XMFLOAT2(NUM_UVSCALE.x * x, NUM_UVSCALE.y * y));
@@ -580,35 +581,35 @@ void CResult::DispNum(int dispNum, int nDigits, TDiType<float> pos, TDiType<floa
 
 
 /* ========================================
-	”šŒ…Ši”[ˆ—
+	æ•°å­—æ¡æ ¼ç´å‡¦ç†
 	----------------------------------------
-	“à—eF”z—ñ‚É”š‚ğŒ…‚²‚Æ‚ÉŠi”[‚·‚é
+	å†…å®¹ï¼šé…åˆ—ã«æ•°å­—ã‚’æ¡ã”ã¨ã«æ ¼ç´ã™ã‚‹
 	----------------------------------------
-	ˆø”1FŒ…Ši”[”z—ñ
-	ˆø”1FŠi”[‚·‚é”š
-	ˆø”1FŒ…”
+	å¼•æ•°1ï¼šæ¡æ ¼ç´é…åˆ—
+	å¼•æ•°1ï¼šæ ¼ç´ã™ã‚‹æ•°å­—
+	å¼•æ•°1ï¼šæ¡æ•°
 	----------------------------------------
-	–ß’lF–³‚µ
+	æˆ»å€¤ï¼šç„¡ã—
 =========================================== */
 void CResult::NumStorage(std::vector<int>* digitArray, int nNumber, int nDigits)
 {
-	// ”šŒ…”z—ñ‚ğƒŠƒZƒbƒg
+	// æ•°å­—æ¡é…åˆ—ã‚’ãƒªã‚»ãƒƒãƒˆ
 	(*digitArray).clear();
 
-	// •\¦‚·‚é”š‚ª0ˆÈã‚Ìê‡
+	// è¡¨ç¤ºã™ã‚‹æ•°å­—ãŒ0ä»¥ä¸Šã®å ´åˆ
 	if (0 < nNumber)
 	{
-		// nNumber‚ğ‘S‚ÄŠi”[‚·‚é‚Ü‚ÅŒJ‚è•Ô‚·
+		// nNumberã‚’å…¨ã¦æ ¼ç´ã™ã‚‹ã¾ã§ç¹°ã‚Šè¿”ã™
 		while (0 != nNumber) 
 		{
-			(*digitArray).push_back(nNumber % 10);	// nNumber‚Ì‰º1Œ…‚ğŠi”[‚·‚é
-			nNumber /= 10;							// nNumber‚ğ1Œ…ƒXƒ‰ƒCƒh‚³‚¹‚é
+			(*digitArray).push_back(nNumber % 10);	// nNumberã®ä¸‹1æ¡ã‚’æ ¼ç´ã™ã‚‹
+			nNumber /= 10;							// nNumberã‚’1æ¡ã‚¹ãƒ©ã‚¤ãƒ‰ã•ã›ã‚‹
 			
 		}
 
 	}
 
-	// w’èŒ…”‚Ü‚Å0–„‚ß‚·‚é
+	// æŒ‡å®šæ¡æ•°ã¾ã§0åŸ‹ã‚ã™ã‚‹
 	while ((*digitArray).size() < nDigits)
 	{
 		(*digitArray).push_back(0);
@@ -618,69 +619,69 @@ void CResult::NumStorage(std::vector<int>* digitArray, int nNumber, int nDigits)
 
 
 /* ========================================
-	í—ŞƒQƒbƒ^
+	ç¨®é¡ã‚²ãƒƒã‚¿
 	----------------------------------------
-	“à—eF©g‚ªƒŠƒUƒ‹ƒgƒV[ƒ“‚Å‚ ‚é‚±‚Æ‚ğ¦‚·
+	å†…å®¹ï¼šè‡ªèº«ãŒãƒªã‚¶ãƒ«ãƒˆã‚·ãƒ¼ãƒ³ã§ã‚ã‚‹ã“ã¨ã‚’ç¤ºã™
 	----------------------------------------
-	ˆø”1F‚È‚µ
+	å¼•æ•°1ï¼šãªã—
 	----------------------------------------
-	–ß’lF©g‚Ìí—Ş
+	æˆ»å€¤ï¼šè‡ªèº«ã®ç¨®é¡
 =========================================== */
 CResult::E_TYPE CResult::GetType() const
 {
-	// =============== ’ñ‹Ÿ ===================
-	return CResult::E_TYPE_RESULT;	//©g‚Ìí—Ş
+	// =============== æä¾› ===================
+	return CResult::E_TYPE_RESULT;	//è‡ªèº«ã®ç¨®é¡
 }
 
 /* ========================================
-	ŸƒV[ƒ“ƒQƒbƒ^
+	æ¬¡ã‚·ãƒ¼ãƒ³ã‚²ãƒƒã‚¿
 	----------------------------------------
-	“à—eF‘JˆÚ‚µ‚½‚¢ƒV[ƒ“‚ª‰½‚©‚ğ¦‚·
+	å†…å®¹ï¼šé·ç§»ã—ãŸã„ã‚·ãƒ¼ãƒ³ãŒä½•ã‹ã‚’ç¤ºã™
 	----------------------------------------
-	ˆø”1F‚È‚µ
+	å¼•æ•°1ï¼šãªã—
 	----------------------------------------
-	–ß’lF‘JˆÚæƒV[ƒ“‚Ìí—Ş
+	æˆ»å€¤ï¼šé·ç§»å…ˆã‚·ãƒ¼ãƒ³ã®ç¨®é¡
 =========================================== */
 CResult::E_TYPE CResult::GetNext() const
 {
-	// =============== ’ñ‹Ÿ ===================
-	return CResult::E_TYPE_SELECT_STAGE;	//‘JˆÚæƒV[ƒ“‚Ìí—Ş
+	// =============== æä¾› ===================
+	return CResult::E_TYPE_SELECT_STAGE;	//é·ç§»å…ˆã‚·ãƒ¼ãƒ³ã®ç¨®é¡
 }
 
 /* ========================================
-	ƒŠƒUƒ‹ƒg—pSE“Ç‚İ‚İŠÖ”
+	ãƒªã‚¶ãƒ«ãƒˆç”¨SEèª­ã¿è¾¼ã¿é–¢æ•°
    ----------------------------------------
-   “à—eFƒŠƒUƒ‹ƒg—p‚ÌSE‚Ìƒtƒ@ƒCƒ‹‚ğ“Ç‚İ‚Ş
+   å†…å®¹ï¼šãƒªã‚¶ãƒ«ãƒˆç”¨ã®SEã®ãƒ•ã‚¡ã‚¤ãƒ«ã‚’èª­ã¿è¾¼ã‚€
    ----------------------------------------
-   ˆø”F–³‚µ
+   å¼•æ•°ï¼šç„¡ã—
    ----------------------------------------
-   –ß’lF–³‚µ
+   æˆ»å€¤ï¼šç„¡ã—
 ======================================== */
 void CResult::LoadSound()
 {
-	//SE‚Ì“Ç‚İ‚İ
+	//SEã®èª­ã¿è¾¼ã¿
 	for (int i = 0; i < SE_MAX; i++)
 	{
 		m_pSE[i] = CSound::LoadSound(m_sSEFile[i].c_str());
 		if (!m_pSE[i])
 		{
-			MessageBox(NULL, m_sSEFile[i].c_str(), "Error", MB_OK);	//‚±‚±‚ÅƒGƒ‰[ƒƒbƒZ[ƒW•\¦
+			MessageBox(NULL, m_sSEFile[i].c_str(), "Error", MB_OK);	//ã“ã“ã§ã‚¨ãƒ©ãƒ¼ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸è¡¨ç¤º
 		}
 	}
 }
 
 /* ========================================
-	SE‚ÌÄ¶ŠÖ”
+	SEã®å†ç”Ÿé–¢æ•°
 	----------------------------------------
-	“à—eFSE‚ÌÄ¶
+	å†…å®¹ï¼šSEã®å†ç”Ÿ
 	----------------------------------------
-	ˆø”1FSE‚Ìí—Ş(enum)
-	ˆø”2F‰¹—Ê
+	å¼•æ•°1ï¼šSEã®ç¨®é¡(enum)
+	å¼•æ•°2ï¼šéŸ³é‡
 	----------------------------------------
-	–ß’lF‚È‚µ
+	æˆ»å€¤ï¼šãªã—
 ======================================== */
 void CResult::PlaySE(SE se, float volume)
 {
-	m_pSESpeaker[se] = CSound::PlaySound(m_pSE[se]);	//SEÄ¶
-	m_pSESpeaker[se]->SetVolume(volume);				//‰¹—Ê‚Ìİ’è
+	m_pSESpeaker[se] = CSound::PlaySound(m_pSE[se]);	//SEå†ç”Ÿ
+	m_pSESpeaker[se]->SetVolume(volume);				//éŸ³é‡ã®è¨­å®š
 }
