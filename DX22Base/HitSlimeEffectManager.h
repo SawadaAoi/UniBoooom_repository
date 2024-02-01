@@ -32,7 +32,7 @@ public:
 	void Draw();		 			//描画関数
 	void Update();
 
-	CHitEffect* GetHitPtr(int num);				//ヒットエフェクト配列をゲット
+	CHitSlimeEffect* GetHitPtr(int num);				//ヒットエフェクト配列をゲット
 	void Create(TTriType<float> pos);   		//ヒットエフェクト生成関数
 	void SetCamera(const CCamera* pCamera);		//他のオブジェクトと同一のカメラをセット
 	void DeleteCheck();							// 使ったエフェクトを削除関数
@@ -40,7 +40,7 @@ public:
 
 private:
 	// ===メンバ変数宣言===
-	CHitEffect* m_phitEffect[MAX_HIT_NUM];		//ヒットエフェクトの配列
+	CHitSlimeEffect* m_phitEffect[MAX_HIT_NUM];		//ヒットエフェクトの配列
 
 	const CCamera* m_pCamera;					//カメラ
 
