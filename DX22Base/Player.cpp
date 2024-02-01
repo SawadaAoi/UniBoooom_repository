@@ -352,6 +352,7 @@ void CPlayer::Damage(int DmgNum)
 	if (m_nHp <= 0)
 	{
 		m_bDieInvFlg = true;
+
 		m_pModel->Play(m_Anime[MOTION_DIE],false);	//アニメーションの再生
 
 	}

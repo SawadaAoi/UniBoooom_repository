@@ -258,11 +258,8 @@ void CSceneManager::ChangeScene()
 	if (m_pScene)	//ヌルチェック
 	{
 		//BGMの削除
-		if (m_pScene->GetType() != CScene::E_TYPE_TITLE)	//タイトルからセレクトシーンの時は消さない
-		{
-			m_pBGMSpeaker->Stop();
-			m_pBGMSpeaker->DestroyVoice();	//BGMの削除
-		}
+		m_pBGMSpeaker->Stop();
+		m_pBGMSpeaker->DestroyVoice();	//BGMの削除
 		//シーンの削除
 		m_ePastScene = m_pScene->GetType();	//現在シーン種退避
 		delete m_pScene;					//メモリ解放
@@ -313,6 +310,8 @@ void CSceneManager::MakeNewScene()
 		// =============== ステージセレクト =====================
 	case CScene::E_TYPE_SELECT_STAGE:	//遷移先：ステージセレクト
 		m_pScene = new CSelectStage();	//動的確保
+		PlayBGM(m_eNextScene);		//BGMの再生
+
 		break;							//分岐処理終了
 
 		// =============== ステージ1 =====================
