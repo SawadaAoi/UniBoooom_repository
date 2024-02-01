@@ -270,7 +270,7 @@ void CSelectStage::Select()
 		if (m_nSelectNum > 2)m_nSelectNum = 2;
 	}
 
-	if (IsKeyTrigger(VK_SPACE) || IsKeyTriggerController(BUTTON_B))
+	if (IsKeyTrigger(VK_SPACE) || IsKeyTrigger(VK_RETURN) || IsKeyTriggerController(BUTTON_B))
 	{
 		m_bFinish = true;	// タイトルシーン終了フラグON
 	}
