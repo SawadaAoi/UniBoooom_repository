@@ -222,10 +222,10 @@ void CHammer::SwingSpeedAdd()
 {
 	m_fAddAngle = SWING_ANGLE / m_fSwingSpeed;
 	m_fSwingSpeed*=SwingSpeed_PLUS; 
-		if (m_fSwingSpeed >= SwingSpeed_SIOW)
-		{
-			m_fSwingSpeed = SwingSpeed_SIOW;
-		}
+	if (m_fSwingSpeed >= SwingSpeed_SIOW)
+	{
+		m_fSwingSpeed = SwingSpeed_SIOW;
+	}
 	
 }
 /* ========================================

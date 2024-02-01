@@ -10,6 +10,7 @@
 
    変更履歴
 	・2024/01/25 HitSlimeEffectクラス作成 Tei
+	・2024/02/01 表示の不具合を修正 sawada
 
 ========================================== */
 
@@ -32,7 +33,7 @@ const float HIT_EFFECT_SIZE = 0.6f;
 	-------------------------------------
 	戻値：無し
 =========================================== */
-CHitEffect::CHitEffect(TPos3d<float> fPos, float fTime, Effekseer::EffectRef hitEffect, const CCamera * pCamera)
+CHitSlimeEffect::CHitSlimeEffect(TPos3d<float> fPos, float fTime, Effekseer::EffectRef hitEffect, const CCamera * pCamera)
 	: m_pCamera(nullptr)
 	, m_bDelFlg(false)
 	, m_fEffectTime(fTime)
@@ -44,10 +45,17 @@ CHitEffect::CHitEffect(TPos3d<float> fPos, float fTime, Effekseer::EffectRef hit
 	m_hitEffect = hitEffect;	//エフェクトのEffekseerファイル
 	m_efcHitHandle = LibEffekseer::GetManager()->Play(m_hitEffect, 	//エフェクトの開始
 		m_Transform.fPos.x,
-		m_Transform.fPos.y + 1.0f,
-		m_Transform.fPos.z - 0.5f);
+		m_Transform.fPos.y,
+		m_Transform.fPos.z);
 	LibEffekseer::GetManager()->SetScale(m_efcHitHandle, HIT_EFFECT_SIZE, HIT_EFFECT_SIZE, HIT_EFFECT_SIZE);	//エフェクトサイズ設定
 	LibEffekseer::GetManager()->SetSpeed(m_efcHitHandle, m_fEffectTime / HIT_EFFECT_STANDARD_ONE_FRAME );		//エフェクト再生速度設定
+	m_pCamera = pCamera;
+
+	//エフェクトの描画(一度カメラの描画を入れないと表示がおかしくなる為)
+	TPos3d<float> cameraPos = m_pCamera->GetPos();							//カメラ座標を取得
+	DirectX::XMFLOAT3 fCameraPos(cameraPos.x, cameraPos.y, cameraPos.z);	//XMFLOAT3に変換
+	LibEffekseer::SetViewPosition(fCameraPos);								//カメラ座標をセット
+	LibEffekseer::SetCameraMatrix(m_pCamera->GetViewWithoutTranspose(), m_pCamera->GetProjectionWithoutTranspose());	//転置前のviewとprojectionをセット
 
 }
 
@@ -60,7 +68,7 @@ CHitEffect::CHitEffect(TPos3d<float> fPos, float fTime, Effekseer::EffectRef hit
 	-------------------------------------
 	戻値：無し
 =========================================== */
-CHitEffect::~CHitEffect()
+CHitSlimeEffect::~CHitSlimeEffect()
 {
 	
 }
@@ -74,7 +82,7 @@ CHitEffect::~CHitEffect()
 	-------------------------------------
 	戻値：無し
 =========================================== */
-void CHitEffect::Update()
+void CHitSlimeEffect::Update()
 {
 	DisplayTimeAdd();	//	ヒットエフェクト再生時間加算
 }
@@ -88,7 +96,7 @@ void CHitEffect::Update()
 	-------------------------------------
 	戻値：無し
 =========================================== */
-void CHitEffect::Draw()
+void CHitSlimeEffect::Draw()
 {
 	//エフェクトの描画
 	TPos3d<float> cameraPos = m_pCamera->GetPos();							//カメラ座標を取得
@@ -106,7 +114,7 @@ void CHitEffect::Draw()
 	-------------------------------------
 	戻値：無し
 =========================================== */
-void CHitEffect::DisplayTimeAdd()
+void CHitSlimeEffect::DisplayTimeAdd()
 {
 	m_nDelFrame++;	// フレーム加算
 
@@ -126,7 +134,7 @@ void CHitEffect::DisplayTimeAdd()
 	----------------------------------------
 	戻値：なし
 ======================================== */
-void CHitEffect::SetCamera(const CCamera * pCamera)
+void CHitSlimeEffect::SetCamera(const CCamera * pCamera)
 {
 	m_pCamera = pCamera;
 }
@@ -140,7 +148,7 @@ void CHitEffect::SetCamera(const CCamera * pCamera)
 	-------------------------------------
 	戻値：削除フラグ(bool)
 =========================================== */
-bool CHitEffect::GetDelFlg()
+bool CHitSlimeEffect::GetDelFlg()
 {
 	return m_bDelFlg;
 }

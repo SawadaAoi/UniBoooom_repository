@@ -17,6 +17,10 @@
 	・2023/12/08 シーン遷移用に変数追加 takagi
 	・2023/12/11 成績仮表示 takagi
 	・2023/12/25 表示内容の変更 Sawada
+	・2024/01/26 決定SE追加 suzumura
+	・2024/01/26 アニメーション追加 goto
+	・2024/02/01 遷移先変更 sawada
+
 
 ========================================== */
 
@@ -59,6 +63,7 @@ const std::map<int, std::string> MAP_TEX_PATH = {
 	{CResult::WARNING_STAGE_2,	"Assets/Texture/Result/Lv2.png"},				// ステージ2の手配書
 	{CResult::WARNING_STAGE_3,	"Assets/Texture/Result/Lv3.png"},				// ステージ3の手配書
 	{CResult::CLEAR_STAMP,		"Assets/Texture/Result/stamp.png"},				// CLEARスタンプ
+	{CResult::SELECT,			"Assets/Texture/Result/Result_Button.png"},		// 決定ボタン
 };	
 
 
@@ -69,46 +74,48 @@ typedef struct
 	TDiType<float> fSize;
 }Display_Param;
 
-const Display_Param WARNING_TEXTURE_PARAM	= { {300.0f, 360.0f} ,{480.0f, 600.0f} };	// 手配書
-const Display_Param CLEAR_STAMP_PARAM		= { {300.0f, 360.0f} ,{400.0f, 400.0f} };	// スタンプ
+const Display_Param WARNING_TEXTURE_PARAM	= { {260.0f, 380.0f} ,{460.0f, 580.0f} };	// 手配書
+const Display_Param CLEAR_STAMP_PARAM		= { {260.0f, 380.0f} ,{460.0f, 580.0f} };	// スタンプ
 
 const float DEF_NUM_SPACE = 55.0f;
 const TDiType<int> NUM_SPLIT = { 5, 2 };
 const TDiType<float> NUM_UVSCALE = { (1.0f / 5) ,(1.0f / 2) };
 
 const Display_Param BG_SCREEN_PARAM		= { { SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 },{ SCREEN_WIDTH, SCREEN_HEIGHT } };	// 背景
-const Display_Param BG_PANEL_PARAM		= { { 900.0f, SCREEN_HEIGHT / 2 } ,{ 750.0f, SCREEN_HEIGHT } };					// 項目背景
-const Display_Param RESULT_TEXT_PARAM = { { 200.0f, 37.0f },{ 320.0f, 85.0f } };										// リザルト
+const Display_Param BG_PANEL_PARAM		= { { 905.0f, SCREEN_HEIGHT / 2 } ,{ 750.0f, SCREEN_HEIGHT } };					// 項目背景
+//const Display_Param RESULT_TEXT_PARAM = { { 265.0f, 90.0f },{ 400.0f, 100.0f } };										// リザルト
 
-const Display_Param SVL_TIME_TEXT_PARAM = { { 700.0f, 30.0f },{ 300.0f, 100.0f } };	// 生存時間(文字)
-const Display_Param SVL_TIME_NUM__PARAM = { { 1200.0f, 50.0f },{ 75.0f, 75.0f } };	// 生存時間(数字)
-const Display_Param SVL_TIME_LINE_PARAM = { { 900.0f, 100.0f },{ 700.0f, 5.0f } };	// 線
+const Display_Param SVL_TIME_TEXT_PARAM = { { 650.0f, 30.0f },{ 200.0f, 80.0f } };	// 生存時間(文字)
+const Display_Param SVL_TIME_NUM__PARAM = { { 1200.0f, 50.0f },{ 85.0f, 95.0f } };	// 生存時間(数字)
+const Display_Param SVL_TIME_LINE_PARAM = { { 907.0f, 100.0f },{ 729.0f, 5.0f } };	// 線
 const float SVL_TIME_NUM_SPACE = 55.0f;		// 時間の間(12^:^33)
 
-const Display_Param SCORE_TEXT_PARAM		= { { 700.0f, 130.0f },{ 300.0f, 100.0f } };	// スコア(文字)
-const Display_Param NEW_RECORD_TEXT_PARAM	= { { 1100.0f, 130.0f },{ 170.0f, 55.0f } };	// 新記録(文字)
-const Display_Param SCORE_NUM_PARAM			= { { 1200.0f, 170.0f },{ 80.0f, 80.0f } };		// スコア(数字)
-const Display_Param HIGH_SCORE_TEXT_PARAM	= { { 660.0f, 240.0f },{ 200.0f, 75.0f } };		// ハイスコア(文字)
+const Display_Param SCORE_TEXT_PARAM		= { { 655.0f, 130.0f },{ 220.0f, 75.0f } };	// スコア(文字)
+const Display_Param NEW_RECORD_TEXT_PARAM	= { { 820.0f,180.0f },{ 170.0f, 55.0f } };	// 新記録(文字)
+const Display_Param SCORE_NUM_PARAM			= { { 1200.0f, 160.0f },{ 85.0f, 105.0f } };	// スコア(数字)
+const Display_Param HIGH_SCORE_TEXT_PARAM	= { { 645.0f, 240.0f },{ 180.0f, 75.0f } };		// ハイスコア(文字)
 const Display_Param HIGH_SCORE_NUM_PARAM	= { { 1200.0f, 260.0f },{ 55.0f, 55.0f } };		// ハイスコア(数字)
-const Display_Param SCORE_LINE_PARAM		= { { 900.0f, 300.0f },{ 700.0f, 5.0f } };		// 線
+const Display_Param SCORE_LINE_PARAM		= { { 907.0f, 300.0f },{ 729.0f, 5.0f } };		// 線
 const float SCORE_NUM_SPACE = 65.0f;
 const float HIGH_SCORE_NUM_SPACE = 45.0f;
 
 
-const Display_Param HUNT_TEXT_PARAM			= { { 750.0f, 350.0f },{ 400.0f, 150.0f } };	// 討伐数(文字)
-const Display_Param SLIME_TEXTURE_PARAM		= { { 650.0f, 430.0f },{ 90.0f, 90.0f } };		// スライム画像
-const float SLIME_SPACE_Y = 120.0f;	// スライム画像の間
+const Display_Param HUNT_TEXT_PARAM			= { { 710.0f, 340.0f },{ 330.0f, 110.0f } };	// 討伐数(文字)
+const Display_Param SLIME_TEXTURE_PARAM		= { { 650.0f, 430.0f },{ 160.0f, 160.0f } };	// スライム画像
+const float SLIME_SPACE_Y = 130.0f;	// スライム画像の間
 const Display_Param SLIME_HUNT_NUM_PARAM	= { { 650.0f, 430.0f },{ 60.0f, 60.0f } };		// スライム別討伐数
 const Display_Param PARENTHESIS_PARAM		= { { 650.0f, 530.0f },{ 0.0f, 0.0f } };		// ()
 const Display_Param MULTI_PARAM				= { { 650.0f, 510.0f },{ 40.0f, 40.0f } };		// ×
 const Display_Param MULTI_SLIME_PARAM		= { { 615.0f, 510.0f },{ 30.0f, 30.0f } };		// 青スライム画像の位置
 const Display_Param MULTI_NUM_PARAM			= { { 685.0f, 510.0f },{ 40.0f, 40.0f } };		// 青スライムの倍数
-const Display_Param TOTAL_HUNT_TEXT_PARAM	= { { 700.0f, 570.0f },{ 300.0f, 100.0f } };	// 総討伐数(文字)
-const Display_Param TOTAL_HUNT_NUM_PARAM	= { { 1200.0f, 570.0f },{ 70.0f, 70.0f } };		// 総討伐数(数字)
-const Display_Param HUNT_LINE_PARAM			= { { 900.0f, 620.0f } , { 700.0f, 5.0f } };	// 線
+const Display_Param TOTAL_HUNT_TEXT_PARAM	= { { 670.0f, 560.0f },{ 250.0f, 80.0f } };		// 総討伐数(文字)
+const Display_Param TOTAL_HUNT_NUM_PARAM	= { { 1200.0f, 580.0f },{ 85.0f, 105.0f } };	// 総討伐数(数字)
+const Display_Param HUNT_LINE_PARAM			= { { 907.0f, 620.0f } , { 729.0f, 5.0f } };	// 線
 
-const Display_Param MAX_COMBO_TEXT_PARAM	= { { 750.0f, 670.0f } , { 400.0f, 150.0f } };	// 最大コンボ数(文字)
-const Display_Param MAX_COMBO_NUM_PARAM		= { { 1200.0f, 670.0f } ,{ 75.0f, 75.0f } };	// 最大コンボ数(数字)
+const Display_Param MAX_COMBO_TEXT_PARAM	= { { 695.0f, 655.0f } , {  300.0f, 90.0f } };	// 最大コンボ数(文字)
+const Display_Param MAX_COMBO_NUM_PARAM		= { { 1200.0f, 670.0f } ,{ 85.0f, 105.0f } };	// 最大コンボ数(数字)
+
+const Display_Param SELECT_PARAM			= { { 75.0f, 680.0f } ,{ 140.0f, 70.0f } };		// 決定ボタン
 
 
 
@@ -122,6 +129,8 @@ const Display_Param MAX_COMBO_NUM_PARAM		= { { 1200.0f, 670.0f } ,{ 75.0f, 75.0f
 	戻値：なし
 =========================================== */
 CResult::CResult()
+	: m_pSE{ nullptr }
+	, m_pSESpeaker{ nullptr }
 {
 	for (int i = 0; i < E_TEXTURE::TEXTURE_MAX; i++)
 	{
@@ -133,9 +142,18 @@ CResult::CResult()
 		}
 	}
 	
+	// リザルト文字のアニメーションの初期化
+	m_pDrawAnim = new CDrawAnim(60, TDiType <int>(5, 12), 2);
+	m_pDrawAnim->SetTexture(m_pTexture[E_TEXTURE::RESULT_TEXT]);
+	m_pDrawAnim->SetPos(TPos3d<float>(275.0f, 660.0f, 0.0f));
+	m_pDrawAnim->SetSize(TPos3d<float>(640.0f, 280.0f, 0.0f));
+	m_pDrawAnim->SetLoopFlg(true);
 
 	// データ受け継ぎ
 	m_Data.Load();	//ファイルに上がっている情報を読み込む
+
+	//=== サウンドファイル読み込み =====
+	LoadSound();
 
 }
 
@@ -158,6 +176,7 @@ CResult::~CResult()
 	{
 		SAFE_DELETE(m_pTexture[i]);
 	}
+	delete m_pDrawAnim;
 }
 
 /* ========================================
@@ -175,9 +194,12 @@ void CResult::Update()
 	if (IsKeyTrigger(VK_SPACE) || IsKeyTrigger(VK_RETURN) || IsKeyTriggerController(BUTTON_B))
 	{
 		m_bFinish = true;	// タイトルシーン終了フラグON
+		//===== SEの再生 =======
+		PlaySE(SE_DECISION);
 	}
 
-
+	// リザルトの文字のアニメーション
+	m_pDrawAnim->Update();
 }
 
 /* ========================================
@@ -191,8 +213,10 @@ void CResult::Update()
 	======================================== */
 void CResult::Draw()
 {
+	
 	DrawBgScreen();			// 背景
 	DrawWarningTexture();	// Result＆＆手配書
+	m_pDrawAnim->Draw();	// リザルトの文字のアニメーション
 	DrawSurvivalTime();		// 生存時間
 	DrawScore();			// スコア
 	DrawHunt();				// 討伐数
@@ -237,12 +261,12 @@ void CResult::DrawWarningTexture()
 	Texture* pWarningTex;	// 手配書画像
 
 	// リザルト文字
-	Draw2d(
-		RESULT_TEXT_PARAM.fPos.x,
-		RESULT_TEXT_PARAM.fPos.y,
-		RESULT_TEXT_PARAM.fSize.x,
-		RESULT_TEXT_PARAM.fSize.y,
-		m_pTexture[E_TEXTURE::RESULT_TEXT]);
+	//Draw2d(
+	//	RESULT_TEXT_PARAM.fPos.x,
+	//	RESULT_TEXT_PARAM.fPos.y,
+	//	RESULT_TEXT_PARAM.fSize.x,
+	//	RESULT_TEXT_PARAM.fSize.y,
+	//	m_pTexture[E_TEXTURE::RESULT_TEXT]);
 
 	// プレイしたステージによって手配書の画像を変える
 	switch (m_Data.nStageNum)
@@ -271,6 +295,14 @@ void CResult::DrawWarningTexture()
 			CLEAR_STAMP_PARAM.fSize.y,
 			m_pTexture[E_TEXTURE::CLEAR_STAMP]);
 	}
+
+	// 決定ボタン表示
+	Draw2d(
+		SELECT_PARAM.fPos.x,
+		SELECT_PARAM.fPos.y,
+		SELECT_PARAM.fSize.x,
+		SELECT_PARAM.fSize.y,
+		m_pTexture[E_TEXTURE::SELECT]);
 }
 
 
@@ -428,7 +460,7 @@ void CResult::DrawHunt()
 		DispNum(8, 1, { MULTI_NUM_PARAM.fPos.x + (3 * SLIME_SPACE_Y), MULTI_NUM_PARAM.fPos.y }, MULTI_NUM_PARAM.fSize, DEF_NUM_SPACE);
 
 		// スライム別討伐数
-		DispNum(m_Data.nKill[i], 1,{ 
+		DispNum(m_Data.nKill[i], 1,{
 			SLIME_HUNT_NUM_PARAM.fPos.x + (i*SLIME_SPACE_Y),
 			SLIME_HUNT_NUM_PARAM.fPos.y },
 			SLIME_HUNT_NUM_PARAM.fSize, DEF_NUM_SPACE);
@@ -624,5 +656,43 @@ CResult::E_TYPE CResult::GetType() const
 CResult::E_TYPE CResult::GetNext() const
 {
 	// =============== 提供 ===================
-	return CResult::E_TYPE_TITLE;	//遷移先シーンの種類
+	return CResult::E_TYPE_SELECT_STAGE;	//遷移先シーンの種類
+}
+
+/* ========================================
+	リザルト用SE読み込み関数
+   ----------------------------------------
+   内容：リザルト用のSEのファイルを読み込む
+   ----------------------------------------
+   引数：無し
+   ----------------------------------------
+   戻値：無し
+======================================== */
+void CResult::LoadSound()
+{
+	//SEの読み込み
+	for (int i = 0; i < SE_MAX; i++)
+	{
+		m_pSE[i] = CSound::LoadSound(m_sSEFile[i].c_str());
+		if (!m_pSE[i])
+		{
+			MessageBox(NULL, m_sSEFile[i].c_str(), "Error", MB_OK);	//ここでエラーメッセージ表示
+		}
+	}
+}
+
+/* ========================================
+	SEの再生関数
+	----------------------------------------
+	内容：SEの再生
+	----------------------------------------
+	引数1：SEの種類(enum)
+	引数2：音量
+	----------------------------------------
+	戻値：なし
+======================================== */
+void CResult::PlaySE(SE se, float volume)
+{
+	m_pSESpeaker[se] = CSound::PlaySound(m_pSE[se]);	//SE再生
+	m_pSESpeaker[se]->SetVolume(volume);				//音量の設定
 }

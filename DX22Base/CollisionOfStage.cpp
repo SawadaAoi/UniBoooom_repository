@@ -16,6 +16,7 @@
 	・2023/12/01 ハンマーとスライムの当たり判定持にSEを再生 yamashita
 	・2023/12/07 ゲームパラメータから一部定数移動 takagi
 	・2023/12/15 SEの変数を削除 yamashita
+	・2024/01/29 スライム殴打時に画面の振動を追加 sawada
 
 ========================================== */
 
@@ -29,6 +30,8 @@
 // =============== 定数定義 =======================
 const float HAMMER_HIT_MOVE_SPEED = 1.0f;		// ハンマーに吹き飛ばされた時のスピード
 const float HIT_HAMMER_VOLUME = 1.0f;
+const CCamera::E_BIT_FLAG HAMMER_HIT_VIB_NORMAL = CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_WEAK;	// スライムとハンマーのヒット振動
+const CCamera::E_BIT_FLAG HAMMER_HIT_VIB_BOSS = CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_WEAK;		// ボススライムとハンマーのヒット振動
 
 /* ========================================
    当たり判定まとめ関数
@@ -72,7 +75,7 @@ void CStage::Collision()
    ======================================== */
 void CStage::PlayerSlimeCollision()
 {
-	if (m_pPlayer->GetCollide()) return;	//	無敵時間の時はスルー
+	if (m_pPlayer->GetSafeTime()) return;	//	無敵時間の時はスルー
 
 	// スライム
 	for (int i = 0; i < MAX_SLIME_NUM; i++)
@@ -100,7 +103,7 @@ void CStage::PlayerSlimeCollision()
    ======================================== */
 void CStage::PlayerBossCollision()
 {
-	if (m_pPlayer->GetCollide()) return;	//	無敵時間の時はスルー
+	if (m_pPlayer->GetSafeTime()) return;	//	無敵時間の時はスルー
 
 // ボススライム
 	for (int i = 0; i < MAX_BOSS_SLIME_NUM; i++)
@@ -175,14 +178,11 @@ void CStage::HammerSlimeCollision()
 		{
 			
 			//赤スライムと激突したときだけヒットストップの時間を長くする
-			if (typeid(CSlime_4) == typeid(*pSlimeNow))
-			{
-				CHitStop::UpFlag(CHitStop::E_BIT_FLAG_STOP_NORMAL);	//ヒットストップ
-			}
-			else
-			{
-				CHitStop::UpFlag(CHitStop::E_BIT_FLAG_STOP_SOFT);	//ヒットストップ
-			}
+			if (typeid(CSlime_4) == typeid(*pSlimeNow))	CHitStop::UpFlag(CHitStop::E_BIT_FLAG_STOP_NORMAL);	//ヒットストップ
+			else										CHitStop::UpFlag(CHitStop::E_BIT_FLAG_STOP_SOFT);	//ヒットストップ
+		
+			m_pCamera->UpFlag(HAMMER_HIT_VIB_NORMAL);	// 画面の振動
+
 			float fAngleSlime
 				= m_pPlayer->GetTransform().Angle(pSlimeNow->GetTransform());	// スライムが飛ぶ角度を取得
 
@@ -228,6 +228,8 @@ void CStage::HammerBossCollision()
 			}
 
 			CHitStop::UpFlag(CHitStop::E_BIT_FLAG_STOP_NORMAL);	//ヒットストップ
+
+			m_pCamera->UpFlag(HAMMER_HIT_VIB_BOSS);	// 画面の振動
 
 			float fAngleSlime
 				= m_pPlayer->GetTransform().Angle(pBossNow->GetTransform());	// スライムが飛ぶ角度を取得

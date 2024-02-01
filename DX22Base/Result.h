@@ -14,6 +14,8 @@
 	・2023/12/08 シーン遷移用に変数追加 takagi
 	・2023/12/11 成績仮表示 takagi
 	・2023/12/25 表示内容の変更 Sawada
+	・2024/01/26 決定SE追加 suzumura
+	・2024/01/26 アニメーション追加 goto
 
 ========================================== */
 
@@ -27,6 +29,8 @@
 #include <vector>		//配列型コンテナ
 #include "2dPolygon.h"	// 2Dオブジェクト用
 #include "NumberText.h"
+#include "DrawAnimation.h"
+#include "Sound.h"
 
 // =============== クラス定義 =====================
 class CResult :public CScene	//シーン
@@ -61,10 +65,18 @@ public:
 		WARNING_STAGE_2,	// ステージ2の手配書
 		WARNING_STAGE_3,	// ステージ3の手配書
 		CLEAR_STAMP,		// CLEARスタンプ
+		SELECT,				// 決定ボタン
 
 		TEXTURE_MAX,
 
 	};
+
+	enum SE
+	{
+		SE_DECISION,	//決定音
+
+		SE_MAX			//SEの総数
+	}; //SE
 
 
 public:
@@ -87,10 +99,21 @@ private:
 	void DispNum(int dispNum, int nDigits, TDiType<float> pos, TDiType<float> size, float NumSpace);
 	void NumStorage(std::vector<int>* digitArray,int nNumber, int nDigits);
 
+	void LoadSound();								//サウンドをロード
+	void PlaySE(SE se, float volume = 1.0f);		//SEを再生する
 	// =============== メンバ変数定義 ===============
 	
 	Texture* m_pTexture[TEXTURE_MAX];
 	BattleData m_Data;					//戦闘結果
+	CDrawAnim *m_pDrawAnim;				//リザルトの文字のアニメーション
+
+	//=====SE関連=====
+	XAUDIO2_BUFFER* m_pSE[SE_MAX];
+	IXAudio2SourceVoice* m_pSESpeaker[SE_MAX];
+	const std::string m_sSEFile[SE_MAX] = {
+		"Assets/Sound/SE/Decision.mp3",				// 決定音
+	};
+
 
 };	//リザルト
 

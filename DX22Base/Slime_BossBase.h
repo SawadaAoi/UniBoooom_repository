@@ -61,8 +61,9 @@ protected:
 	// ===メンバ変数======
 	int m_nMoveState;	// 継承先の各Bossで列挙型を作って入れる(共通で0は通常)
 
-	int m_nMaxHp;		// 最大HPはボスによって変更したいためprotectedに
+	float m_nMaxHp;		// 最大HPはボスによって変更したいためprotectedに
 	int m_nHp;			// 現HP
+	float HPWidth;		// 1HP分の幅
 
 	int m_nInvFrame;	// 点滅で扱うフレーム
 	bool m_bDrawFlg;	// 描画を行うかどうかのフラグ

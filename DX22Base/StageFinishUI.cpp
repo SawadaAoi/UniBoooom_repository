@@ -15,6 +15,8 @@
 	・2023/11/30 素材変更 nieda
 	・2023/12/07 自動でシーン遷移させるためのフラグ取得関数追加 nieda
 	・2023/12/16 アニメーション描画書き変え nieda
+	・2024/01/28 処理の流れを修正 Sawada
+
 
 ========================================== */
 #include "DirectXTex/TextureLoad.h"		
@@ -35,13 +37,12 @@
 	----------------------------------------
 	戻値：なし
 =========================================== */
-CStageFinish::CStageFinish(CCamera* pCamera, int* pPlayerHp, int* pTimeCnt)
+CStageFinish::CStageFinish(CCamera* pCamera, CPlayer* pPlayer, int* pTimeCnt)
 	: m_eGameState(GAME_PLAY)
-	, m_pPlayerHp(nullptr)
+	, m_pPlayer(pPlayer)	// プレイヤーのポインタをセット
 	, m_pTimeCnt(nullptr)
 	, m_bGameEnd(false)
 {
-	m_pPlayerHp = pPlayerHp;	//プレイヤーのHPのポインタを取得
 	m_pTimeCnt = pTimeCnt;		//制限時間のポインタを取得
 
 	m_pClear = new CClearText(pCamera);
@@ -61,6 +62,7 @@ CStageFinish::~CStageFinish()
 {
 	SAFE_DELETE(m_pOver);
 	SAFE_DELETE(m_pClear);
+
 }
 
 /* ========================================
@@ -74,36 +76,32 @@ CStageFinish::~CStageFinish()
 =========================================== */
 void CStageFinish::Update()
 {
-	//ゲームクリアかゲームオーバーを判断
-	//※ゲーム終了後にクリアとゲームオーバーが勝手に切り替わらないように「&&」で「GAME_PLAY」状態だったらを入れた
-	if (0 >= *m_pPlayerHp && m_eGameState == GAME_PLAY)
-	{	//タイマーが0になったらクリア状態に遷移
-		m_eGameState = GAME_OVER;
-	}
-	else if (0 >= *m_pTimeCnt && m_eGameState == GAME_PLAY)
-	{	//体力が0になったらゲームオーバー状態に遷移
-		m_eGameState = GAME_CLEAR;
-	}
+	switch (m_eGameState)
+	{
+	case CStageFinish::GAME_PLAY:
+		ChangeGameState();
 
-	// ゲームオーバー
-	if (m_eGameState == GAME_OVER)
-	{
-		m_pOver->Update();
-		// アニメーションが終了したら
-		if (!m_pOver->GetAnimFlg())
-		{
-			m_bGameEnd = true;
-		}
-	}
-	// ゲームクリア
-	else if (m_eGameState == GAME_CLEAR)
-	{
+		break;
+
+	case CStageFinish::GAME_CLEAR:	// ゲームクリア
+
 		m_pClear->Update();
 		// アニメーションが終了したら
 		if (!m_pClear->GetAnimFlg())
 		{
 			m_bGameEnd = true;
 		}
+		break;
+
+	case CStageFinish::GAME_OVER:	// ゲームオーバー
+
+		m_pOver->Update();
+		// アニメーションが終了したら
+		if (!m_pOver->GetAnimFlg())
+		{
+			m_bGameEnd = true;
+		}
+		break;
 	}
 }
 
@@ -134,6 +132,30 @@ void CStageFinish::Draw()
 		m_pOver->Draw();
 		break;
 	}
+}
+
+/* ========================================
+	ゲームシーン状態変更関数
+	----------------------------------------
+	内容：ゲームクリアorオーバー状態に変化する
+	----------------------------------------
+	引数1：なし
+	----------------------------------------
+	戻値：なし
+=========================================== */
+void CStageFinish::ChangeGameState()
+{
+	// プレイヤーが死亡したら
+	if (m_pPlayer->GetDieFlg())
+	{
+		m_eGameState = GAME_OVER;	// ゲームオーバー
+	}
+	// 制限時間タイマーが終了したら
+	else if ( *m_pTimeCnt <= 0 )
+	{
+		m_eGameState = GAME_CLEAR;	// ゲームクリア
+	}
+
 }
 
 /* ========================================
@@ -172,3 +194,5 @@ bool CStageFinish::GetClearFlg()
 	}
 	
 }
+
+

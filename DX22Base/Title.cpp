@@ -21,6 +21,7 @@
 	・2023/12/16 描画物改善 takagi
 	・2023/12/17 コマンドが表示されていないときは決定キーを受け付けないように takagi
 	・2023/12/18 画像差し替え・コマンド位置調整・オープニング使用切換作成 takagi
+	・2024/01/26 選択、決定SE追加
 	
 ========================================== */
 
@@ -92,6 +93,8 @@ const std::map<int, TPos3d<float>> MAP_POS = {
 =========================================== */
 CTitle::CTitle()
 	:m_ucFlag(E_FLAG_COMMAND_CONTINUE)	//フラグ
+	, m_pSE{ nullptr,nullptr}
+	, m_pSESpeaker{ nullptr ,nullptr}
 {
 	// =============== レンダラー ===================
 	RenderTarget*  p = GetDefaultRTV();	//2D描画用レンダラー
@@ -151,6 +154,9 @@ CTitle::CTitle()
 		static_cast<CTitleLogo*>(m_p2dObj[E_2D_LOGO])->ChangeLtoS(ZOOMOUT_FRAME);	//ロゴ縮小開始
 	}
 #endif
+	//===サウンドファイル読み込み=====
+	LoadSound();
+
 }
 
 /* ========================================
@@ -250,8 +256,12 @@ void CTitle::Update()
 					{
 						static_cast<CCommandTitle*>(m_p2dObj[E_2D_FINISH])->UnSelected();	//選択状態遷移
 						DownFlag(E_FLAG_COMMAND_FINISH);									//下のコマンド不採用
+
+						//===== SEの再生 =======
+						PlaySE(SE_CHOOSE);
 					}
 				}
+
 			}
 			if (IsStickLeft().y > 0)	//↓入力時
 			{
@@ -272,8 +282,12 @@ void CTitle::Update()
 					{
 						static_cast<CCommandTitle*>(m_p2dObj[E_2D_START])->UnSelected();	//選択状態遷移
 						DownFlag(E_FLAG_COMMAND_CONTINUE);									//上のコマンド不採用
+
+						//===== SEの再生 =======
+						PlaySE(SE_CHOOSE);
 					}
 				}
+
 			}
 
 			// =============== 決定 ===================
@@ -288,6 +302,9 @@ void CTitle::Update()
 					{
 						// =============== フラグ操作 ===================
 						UpFlag(E_FLAG_DECIDE_COMMAND);	//決定
+
+						//===== SEの再生 =======
+						PlaySE(SE_DECISION);
 					}
 				}
 			}
@@ -314,8 +331,12 @@ void CTitle::Update()
 					{
 						static_cast<CCommandTitle*>(m_p2dObj[E_2D_FINISH])->UnSelected();	//選択状態遷移
 						DownFlag(E_FLAG_COMMAND_FINISH);									//下のコマンド不採用
+
+						//===== SEの再生 =======
+						PlaySE(SE_CHOOSE);
 					}
 				}
+
 			}
 			if (IsKeyTrigger(VK_DOWN) || IsKeyTrigger('S'))	//↓・S入力時
 			{
@@ -336,8 +357,11 @@ void CTitle::Update()
 					{
 						static_cast<CCommandTitle*>(m_p2dObj[E_2D_START])->UnSelected();	//選択状態遷移
 						DownFlag(E_FLAG_COMMAND_CONTINUE);									//上のコマンド不採用
+						//===== SEの再生 =======
+						PlaySE(SE_CHOOSE);
 					}
 				}
+
 			}
 
 			// =============== 決定 ===================
@@ -352,6 +376,9 @@ void CTitle::Update()
 					{
 						// =============== フラグ操作 ===================
 						UpFlag(E_FLAG_DECIDE_COMMAND);	//決定
+
+						//===== SEの再生 =======
+						PlaySE(SE_DECISION);
 					}
 				}
 			}
@@ -388,6 +415,8 @@ void CTitle::Update()
 			DownFlag(E_FLAG_DECIDE_COMMAND);	//決定処理完了
 		}
 	}
+
+
 
 	// =============== 更新 ===================
 	if (m_pCamera)	//ヌルチェック
@@ -497,4 +526,42 @@ void CTitle::SetFlag(const unsigned char & ucBitFlag)
 {
 	// =============== 代入 ===================
 	m_ucFlag ^= ucBitFlag;	//フラグ操作
+}
+
+/* ========================================
+   タイトル用SE読み込み関数
+   ----------------------------------------
+   内容：タイトル用のSEのファイルを読み込む
+   ----------------------------------------
+   引数：無し
+   ----------------------------------------
+   戻値：無し
+======================================== */
+void CTitle::LoadSound()
+{
+	//SEの読み込み
+	for (int i = 0; i < SE_MAX; i++)
+	{
+		m_pSE[i] = CSound::LoadSound(m_sSEFile[i].c_str());
+		if (!m_pSE[i])
+		{
+			MessageBox(NULL, m_sSEFile[i].c_str(), "Error", MB_OK);	//ここでエラーメッセージ表示
+		}
+	}
+}
+
+/* ========================================
+	SEの再生関数
+	----------------------------------------
+	内容：SEの再生
+	----------------------------------------
+	引数1：SEの種類(enum)
+	引数2：音量
+	----------------------------------------
+	戻値：なし
+======================================== */
+void CTitle::PlaySE(SE se, float volume)
+{
+	m_pSESpeaker[se] = CSound::PlaySound(m_pSE[se]);	//SE再生
+	m_pSESpeaker[se]->SetVolume(volume);				//音量の設定
 }

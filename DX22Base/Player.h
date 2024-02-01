@@ -30,7 +30,9 @@
 	・2023/12/14 SE用の列挙を作成 yamashita
 	・2023/12/15 SEを外から再生できるように変更 yamashita
 	・2023/12/15 回復SE追加 yamashita
-	・2023/01/25 待機モーションを変更 takagi
+	・2024/01/25 待機モーションを変更 takagi
+	・2024/01/26 警告SE追加 suzumura
+	・2024/01/28 死亡モーション追加 Sawada
 
 ========================================== */
 #ifndef __PLAYER_H__
@@ -58,11 +60,12 @@ public:
 	// === 列挙 ===
 	enum SE
 	{
-		SE_SWING,	//ハンマーを振るSE
+		SE_SWING,		//ハンマーを振るSE
 		SE_RUN,			//移動のSE
 		SE_DAMAGED,		//被ダメージのSE
 		SE_HIT_HAMMER,	//ハンマーとスライムの接触SE
-		SE_HEAL,
+		SE_HEAL,		//回復SE
+		SE_WARNING,		//残り体力１
 
 		SE_MAX			//SEの総数
 	};
@@ -90,8 +93,10 @@ public:
 	tagSphereInfo GetHammerSphere();	//当たり判定を取るためゲッター
 	TPos3d<float>* GetPosAddress();
 	CHammer* GetHammerPtr();
-	bool GetCollide();							//当たり判定があるかの確認
+	bool GetSafeTime();							//当たり判定があるかの確認
 	int* GetHpPtr();
+	bool GetDieFlg() const;
+
 	// セット関数
 	void SetCamera(CCamera* pCamera);
 	bool GetAttackFlg();
@@ -104,26 +109,42 @@ private:
 	// ===メンバ変数宣言=====
 	TPos3d<float> m_fMove;				// 移動量
 	AnimeModel* m_pModel;				// プレイヤーのモデル
-	int m_nHp;							// プレイヤーの体力
-	bool m_bAttackFlg;					// 攻撃中かどうかのフラグ
-	int m_nNoDamageCnt;					// プレイヤーの無敵時間をカウント
-	bool m_bCollide;					// プレイヤーの無敵状態のフラグ(当たり判定をOFF)
+
 	CHammer* m_pHammer;					// ハンマークラスのポインタ(プレイヤーが管理する)
 	CCamera* m_pCamera;					// プレイヤーを追従するカメラ
-	bool m_DrawFlg;						// プレイヤーがダメージを受けたら点滅するフラグ
-	int m_FlashCnt;						// 点滅の時間の長さ
-	int m_nWalkSECnt;					// プレイヤーの移動によるSEの間隔
-	bool m_bIntFlg;						// ハンマー間隔時間フラグ
-	float m_fIntCnt;					// ハンマー間隔時間カウント
+
 	CShadow* m_pShadow;
 	CFrameCnt* m_pWaitFrameCnt;			// 待機モーション用フレームカウントダウン
+
+	int m_nHp;							// プレイヤーの体力
+	bool m_bDieFlg;						// プレイヤー死亡フラグ(trueの場合死亡)
+
+	bool m_bAttackFlg;					// 攻撃中かどうかのフラグ
+
+	int m_nSafeTimeCnt;					// プレイヤーの無敵時間をカウント
+	bool m_bSafeTimeFlg;				// プレイヤーの無敵状態のフラグ(当たり判定をOFF)
+
+	bool m_DrawFlg;						// プレイヤーがダメージを受けたら点滅するフラグ(trueの場合表示)
+	int m_FlashCnt;						// 点滅の時間の長さ
+
+	int m_nWalkSECnt;					// プレイヤーの移動によるSEの間隔
+
+	bool m_bHumInvFlg;						// ハンマー間隔時間フラグ
+	float m_fHumInvCnt;					// ハンマー間隔時間カウント
+
+	bool m_bDieInvFlg;					// 死亡猶予時間フラグ
+	float m_fDieInvCnt;					// 死亡猶予時間カウント
+
+	float m_fRotate_x;					// プレイヤーの表示用傾き
 
 	// ===列挙===
 	enum MOTION
 	{
-		MOTION_STOP,	//待機
-		MOTION_MOVE,	//移動
-		MOTION_SWING,	//ハンマーを振る
+		MOTION_STOP,	// 待機
+		MOTION_MOVE,	// 移動
+		MOTION_SWING,	// ハンマーを振る
+		MOTION_DIE,		// 死亡
+
 		MOTION_MAX,	//モーションの総数
 	};
 
@@ -134,8 +155,11 @@ private:
 		"Assets/Sound/SE/Swing.mp3",			//ハンマーを振る
 		"Assets/Sound/SE/Run.mp3",				//移動のSE
 		"Assets/Sound/SE/PlayerDamage.mp3",		//プレイヤーの被ダメージ時
-		"Assets/Sound/SE/HammerHit.mp3",			//ハンマーとスライムの接触SE
-		"Assets/Sound/SE/HealSE.mp3" };			//回復アイテム取得時
+		"Assets/Sound/SE/HammerHit.mp3",		//ハンマーとスライムの接触SE
+		"Assets/Sound/SE/HealSE.mp3",			//回復アイテム取得時
+		"Assets/Sound/SE/Warning.mp3"			//残りHPが１の時
+
+	};
 
 	//=====アニメーション関連=====
 	AnimeModel::AnimeNo m_Anime[MOTION_MAX];		//プレイヤーのアニメーション
@@ -143,6 +167,7 @@ private:
 		"Assets/Model/player/wait_end.FBX",			//待機
 		"Assets/Model/player/Dash.FBX",				//移動
 		"Assets/Model/player/pow.FBX",				//スイング
+		"Assets/Model/player/down.fbx",				//死亡
 	};			
 };
 

@@ -21,9 +21,9 @@
 #include "DirectWrite.h"
 // =============== íËêîíËã` =====================
 const TDiType<float> FLOOR_OFFSET[3] = {	//â∫ÇÃîzóÒî‘çÜÇÃ¢-2£ÇÕí≤êÆóp
-	{47.7f * FLOOR_SCALE[CFloor::Stage1].x,47.7f * FLOOR_SCALE[CFloor::Stage1].x},
-	{47.7f * FLOOR_SCALE[CFloor::Stage2].x,47.8f * FLOOR_SCALE[CFloor::Stage2].x},
-	{47.7f * FLOOR_SCALE[CFloor::Stage3].x,47.7f * FLOOR_SCALE[CFloor::Stage3].x} };
+	{47.842f * FLOOR_SCALE[CFloor::Stage1].x,47.842f * FLOOR_SCALE[CFloor::Stage1].x},
+	{47.842f * FLOOR_SCALE[CFloor::Stage2].x,47.842f * FLOOR_SCALE[CFloor::Stage2].x},
+	{47.842f * FLOOR_SCALE[CFloor::Stage3].x,47.842f * FLOOR_SCALE[CFloor::Stage3].x} };
 #if MODE_GAME_PARAMETER
 #else
 const float STAGE1_FLOOR_SCALE_X = 1.1f;
