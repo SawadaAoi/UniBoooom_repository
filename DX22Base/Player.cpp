@@ -40,6 +40,7 @@
 	・2023/01/25 待機モーションを変更 takagi
 	・2024/01/26 警告SE追加 suzumura
 	・2024/01/28 死亡モーション追加 Sawada
+	・2024/01/28 プレイヤーを傾けてカメラからよく見えるように変更 Yamashita
 
 ======================================== */
 
@@ -60,6 +61,7 @@ const float PLAYER_RADIUS = 0.3f;			// プレイヤーの当たり判定の大きさ
 const float PLAYER_SIZE = 1.0f;			// プレイヤーの大きさ
 const int	NO_DAMAGE_TIME = 3 * 60;		//プレイヤーの無敵時間
 const int	DAMAGE_FLASH_FRAME = 0.1f * 60;	// プレイヤーのダメージ点滅の切り替え間隔
+const float PLAYER_ROTATE_X = DirectX::XMConvertToRadians(30.0f);	// プレイヤーの傾き
 #endif
 const int	HEAL_NUM = 2;									// プレイヤーの回復量
 const float HAMMER_INTERVAL_TIME = 0.0f * 60;				// ハンマー振り間隔
@@ -279,11 +281,17 @@ void CPlayer::Draw()
 			//m_pModel->Draw();
 		}
 
-		DirectX::XMFLOAT4X4 mat[3] = {
-			m_Transform.GetWorldMatrixSRT(),
-			m_pCamera->GetViewMatrix(),
-			m_pCamera->GetProjectionMatrix()
-		};
+		DirectX::XMFLOAT4X4 mat[3];
+
+		//拡縮、回転、移動(Y軸回転を先にしたかったのでSRTは使わない)
+		DirectX::XMStoreFloat4x4(&mat[0], DirectX::XMMatrixTranspose(DirectX::XMMatrixScaling(m_Transform.fScale.x, m_Transform.fScale.y, m_Transform.fScale.z)
+			* DirectX::XMMatrixRotationY(m_Transform.fRadian.y)
+			* DirectX::XMMatrixRotationX(PLAYER_ROTATE_X) * DirectX::XMMatrixRotationZ(m_Transform.fRadian.z)
+			* DirectX::XMMatrixTranslation(m_Transform.fPos.x, m_Transform.fPos.y, m_Transform.fPos.z)));
+		mat[1] = m_pCamera->GetViewMatrix();
+		mat[2] = m_pCamera->GetProjectionMatrix();
+
+
 		ShaderList::SetWVP(mat);
 
 		//アニメーション対応したプレイヤーの描画
@@ -344,6 +352,7 @@ void CPlayer::Damage(int DmgNum)
 	if (m_nHp <= 0)
 	{
 		m_bDieInvFlg = true;
+
 		m_pModel->Play(m_Anime[MOTION_DIE],false);	//アニメーションの再生
 
 	}

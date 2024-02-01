@@ -58,6 +58,7 @@ const float PLAYER_RADIUS		= 0.12f;				// プレイヤーの当たり判定の大きさ
 const float PLAYER_SIZE			= PLAYER_RADIUS * 2.0f;	// プレイヤーの大きさ
 const int	NO_DAMAGE_TIME		= 3 * 60;				// プレイヤーの無敵時間
 const int	DAMAGE_FLASH_FRAME	= int(0.1f * 60);		// プレイヤーのダメージ点滅の切り替え間隔
+const float PLAYER_ROTATE_X = DirectX::XMConvertToRadians(35.0f);	// プレイヤーの傾き
 
 
 // ハンマー
