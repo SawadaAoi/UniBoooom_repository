@@ -18,7 +18,8 @@
 	・2023/12/11 成績仮表示 takagi
 	・2023/12/25 表示内容の変更 Sawada
 	・2024/01/26 決定SE追加 suzumura
-	//・2024/01/30 遷移先変更 sawada
+	・2024/01/26 アニメーション追加 goto
+	・2024/02/01 遷移先変更 sawada
 
 ========================================== */
 
@@ -643,7 +644,7 @@ CResult::E_TYPE CResult::GetType() const
 CResult::E_TYPE CResult::GetNext() const
 {
 	// =============== 提供 ===================
-	return CResult::E_TYPE_TITLE;	//遷移先シーンの種類
+	return CResult::E_TYPE_SELECT_STAGE;	//遷移先シーンの種類
 }
 
 /* ========================================
