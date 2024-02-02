@@ -80,7 +80,7 @@ public:
 
 public:
 	// =============== プロトタイプ宣言 ===============
-	CResult(CScene::E_TYPE pastScene);	//コンストラクタ
+	CResult();							//コンストラクタ
 	~CResult();							//デストラクタ
 	void Update();						//更新
 	void Draw();						//描画	
@@ -113,7 +113,6 @@ private:
 		"Assets/Sound/SE/Decision.mp3",				// 決定音
 	};
 
-	CScene::E_TYPE m_ePastScene;	// 前のシーン
 
 };	//リザルト
 

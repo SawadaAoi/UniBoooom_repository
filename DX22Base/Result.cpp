@@ -125,10 +125,9 @@ const Display_Param MAX_COMBO_NUM_PARAM		= { { 1200.0f, 670.0f } ,{ 85.0f, 105.0
 	----------------------------------------
 	戻値：なし
 =========================================== */
-CResult::CResult(CScene::E_TYPE pastScene)
+CResult::CResult()
 	: m_pSE{ nullptr }
 	, m_pSESpeaker{ nullptr }
-	, m_ePastScene(pastScene)
 {
 	for (int i = 0; i < E_TEXTURE::TEXTURE_MAX; i++)
 	{
@@ -407,7 +406,7 @@ void CResult::DrawHunt()
 
 	// ステージ１ならボス討伐数を表示しない
 	int nDispHuntNum = 5;	// 青＋緑＋黄＋赤＋ボス＝５
-	if (m_ePastScene == E_TYPE_STAGE1) nDispHuntNum = 4;	//ーボス＝４
+	if (m_Data.nStageNum == 1) nDispHuntNum = 4;	//ーボス＝４
 
 	// スライムの種類数分画像を表示
 	for (int i = 0; i < nDispHuntNum; i++)

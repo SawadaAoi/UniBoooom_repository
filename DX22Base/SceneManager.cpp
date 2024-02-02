@@ -334,7 +334,7 @@ void CSceneManager::MakeNewScene()
 
 		// =============== リザルトシーン =====================
 	case CScene::E_TYPE_RESULT:					//遷移先：リザルト
-		m_pScene = new CResult(m_ePastScene);	//動的確保
+		m_pScene = new CResult();				//動的確保
 		PlayBGM(m_eNextScene);					//BGMの再生
 		break;									//分岐処理終了
 
