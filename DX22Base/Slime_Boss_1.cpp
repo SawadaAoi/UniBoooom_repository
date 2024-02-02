@@ -108,7 +108,7 @@ CSlime_Boss_1::~CSlime_Boss_1()
 =========================================== */
 void CSlime_Boss_1::Update(tagTransform3d playerTransform)
 {
-	m_fAnimeTime += ADD_ANIME * 0.5f;
+	m_fAnimeTime += ADD_ANIME * 0.6f;
 
 	m_PlayerTran = playerTransform;
 	
@@ -453,6 +453,9 @@ void CSlime_Boss_1::Assault()
 
 		if (m_eCurAnime != ROCK_SLIME_MOVE)
 		{
+			m_pModel->SetAnimationTime(ROCK_SLIME_ROLLING, 0.0f);	//アニメーションをリセットする
+			m_pModel->Step(0.00001f);
+
 			m_eCurAnime = ROCK_SLIME_MOVE;	// アニメーションを移動に変更
 			m_fAnimeTime = 0.0f;			// アニメーションタイムのリセット
 		}
