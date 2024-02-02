@@ -33,6 +33,7 @@
 	・2024/01/25 待機モーションを変更 takagi
 	・2024/01/26 警告SE追加 suzumura
 	・2024/01/28 死亡モーション追加 Sawada
+	・2024/01/30 プレイヤー移動エフェクト用変数、関数追加
 
 ========================================== */
 #ifndef __PLAYER_H__
@@ -99,6 +100,8 @@ public:
 	bool GetSafeTime();							//当たり判定があるかの確認
 	int* GetHpPtr();
 	bool GetDieFlg() const;
+	tagTransform3d GetPlayerOldPos17f();	//プレイヤーの17フレーム前の位置を取得
+	tagTransform3d GetPlayerOldPos25f();	//プレイヤーの25フレーム前の位置を取得
 
 	// セット関数
 	void SetCamera(CCamera* pCamera);
@@ -141,6 +144,10 @@ private:
 	bool m_bDieInvFlg;					// 死亡猶予時間フラグ
 	float m_fDieInvCnt;					// 死亡猶予時間カウント
 
+	tagTransform3d m_OldTransform17f;		// プレイヤー17フレーム前の位置
+	tagTransform3d m_OldTransform25f;		// プレイヤー25フレーム前の位置
+	int m_nGetPosCnt17f;					// プレイヤーの位置を取得するカウント
+	int m_nGetPosCnt25f;					// プレイヤーの位置を取得するカウント
 	// ===列挙===
 	enum MOTION
 	{

@@ -16,10 +16,19 @@
 #include "WalkEffectManager.h"
 
 // =============== 定数定義 =======================
-const float TOTAL_WALK_EFFECT_TIME = 10.0f;
+const float TOTAL_WALK_EFFECT_TIME = 10.0f;		//エフェクト総時間（フレーム
 
+/* ========================================
+	関数：コンストラクタ
+	-------------------------------------
+	内容：実行時に行う処理
+	-------------------------------------
+	引数1：なし
+	-------------------------------------
+	戻値：なし
+=========================================== */
 CWalkEffectManager::CWalkEffectManager()
-	: m_fRandSize(0.0f)
+	: m_fRandNum(0.0f)
 {
 	
 	// プレイヤー移動エフェクト配列の初期化
@@ -32,6 +41,15 @@ CWalkEffectManager::CWalkEffectManager()
 	m_walkEffect = LibEffekseer::Create("Assets/Effect/walk_effect/step_smoke.efkefc");
 }
 
+/* ========================================
+   関数：デストラクタ
+   ----------------------------------------
+   内容：破棄時に行う処理
+   ----------------------------------------
+   引数：なし
+   ----------------------------------------
+   戻値：なし
+======================================== */
 CWalkEffectManager::~CWalkEffectManager()
 {
 	// メモリ削除
@@ -41,6 +59,37 @@ CWalkEffectManager::~CWalkEffectManager()
 	}
 }
 
+/* ========================================
+   更新処理関数関数
+   ----------------------------------------
+   内容：更新処理
+   ----------------------------------------
+   引数：なし
+   ----------------------------------------
+   戻値：なし
+======================================== */
+void CWalkEffectManager::Update()
+{
+	// プレイヤー移動エフェクトを検索
+	for (int i = 0; i < MAX_STEP_NUM; i++)
+	{
+		// 未使用のプレイヤー移動エフェクトはスルー
+		if (m_pwalkEffect[i] == nullptr) continue;
+		m_pwalkEffect[i]->Update();
+		
+	}
+	DeleteCheck();	// 削除チェック
+}
+
+/* ========================================
+   描画処理関数
+   ----------------------------------------
+   内容：描画処理
+   ----------------------------------------
+   引数：なし
+   ----------------------------------------
+   戻値：なし
+======================================== */
 void CWalkEffectManager::Draw()
 {
 	// ヒットエフェクトの検索
@@ -55,27 +104,33 @@ void CWalkEffectManager::Draw()
 	}
 }
 
-void CWalkEffectManager::Update()
-{
-	// プレイヤー移動エフェクトを検索
-	for (int i = 0; i < MAX_STEP_NUM; i++)
-	{
-		// 未使用のプレイヤー移動エフェクトはスルー
-		if (m_pwalkEffect[i] == nullptr) continue;
-		m_pwalkEffect[i]->Update();
-		
-	}
-	DeleteCheck();	// 削除チェック
-	
-}
-
+/* ========================================
+	移動エフェクト配列取得関数
+	----------------------------------------
+	内容：移動エフェクト配列の取得
+	----------------------------------------
+	引数1：なし
+	----------------------------------------
+	戻値：移動エフェクトの配列
+======================================== */
 CWalkEffect * CWalkEffectManager::GetWalkPtr(int num)
 {
 	if (!m_pwalkEffect[num]) { return nullptr; }
 	return m_pwalkEffect[num];
 }
 
-void CWalkEffectManager::Create(tagTransform3d transform)
+/* ========================================
+	エフェクト作成関数
+	----------------------------------------
+	内容：プレイヤーからの座標を用いて移動エフェクトを生成
+	----------------------------------------
+	引数1：プレイヤーのトランスフォーム
+	引数2：プレイヤー17フレーム前のトランスフォーム
+	引数3：プレイヤー25フレーム前のトランスフォーム
+	----------------------------------------
+	戻値：移動エフェクトの配列
+======================================== */
+void CWalkEffectManager::Create(tagTransform3d transform, tagTransform3d oldtransform17, tagTransform3d oldtransform25)
 {
 	
 	// プレイヤー移動エフェクトを検索
@@ -85,17 +140,35 @@ void CWalkEffectManager::Create(tagTransform3d transform)
 		if (m_pwalkEffect[i] != nullptr) continue;
 
 		// 座標、エフェクト時間、Effekseerファイル、カメラを指定して生成
-		m_pwalkEffect[i] = new CWalkEffect(transform.fPos,transform.fRadian, TOTAL_WALK_EFFECT_TIME, GetRandomSize() , m_walkEffect, m_pCamera);
+		m_pwalkEffect[i] = new CWalkEffect(transform.fPos,oldtransform17.fPos, oldtransform25.fPos, transform.fRadian, TOTAL_WALK_EFFECT_TIME, GetRandom() , m_walkEffect, m_pCamera);
 		m_pwalkEffect[i]->SetCamera(m_pCamera);		//カメラセット
 		break;
 	}
 }
 
+/* ========================================
+	カメラ情報セット関数
+	----------------------------------------
+	内容：描画処理で使用するカメラ情報セット
+	----------------------------------------
+	引数1：なし
+	----------------------------------------
+	戻値：なし
+======================================== */
 void CWalkEffectManager::SetCamera(const CCamera * pCamera)
 {
 	m_pCamera = pCamera;
 }
 
+/* ========================================
+	移動エフェクト削除関数
+	----------------------------------------
+	内容：移動エフェクトが生成したらチェックしてから削除
+	----------------------------------------
+	引数：なし
+	----------------------------------------
+	戻値：なし
+======================================== */
 void CWalkEffectManager::DeleteCheck()
 {
 	// プレイヤー移動エフェクトを検索
@@ -111,10 +184,19 @@ void CWalkEffectManager::DeleteCheck()
 	}
 }
 
-float CWalkEffectManager::GetRandomSize()
+/* ========================================
+	乱数生成関数
+	----------------------------------------
+	内容：エフェクトで使う乱数を生成する
+	----------------------------------------
+	引数：なし
+	----------------------------------------
+	戻値：生成した乱数
+======================================== */
+float CWalkEffectManager::GetRandom()
 {
 	
 	srand((unsigned int)time(NULL));
-	m_fRandSize = ((rand() % 10 + 1) - 5) * 0.1f;	// -0.5	～ 0.5
-	return m_fRandSize;
+	m_fRandNum = ((rand() % 6 + 1) - 3) * 0.1f;	// -0.3	～ 0.3
+	return m_fRandNum;
 }
