@@ -12,6 +12,7 @@
 	・2023/11/23　score構造体、comboの構造体の情報取得処理追加 yamamoto
 	・2023/12/07 ゲームパラメータに依存していたので修正 takagi
 	・2024/01/26 処理を見やすく修正&&トータルスコア加算アニメ処理追加 sawada
+	・2024/02/02 ゲーム終了間際の加算スコアがトータルスコアに反映されるように suzumura
 
 ========================================== */
 #ifndef __TOTALSCORE_H__
@@ -23,6 +24,8 @@
 #include <vector>
 #include "Defines.h"
 #include "DiType.h"
+#include "Timer.h"
+#include "Player.h"
 // =============== クラス定義 =====================
 class CTotalScore
 {
@@ -36,7 +39,8 @@ public:
 		int   nDispFrame;				// 残描画用加算値
 		bool  bDispEndFlg;				// スコア加算値表示終了フラグ
 		int	  nDispComMultFrame;		// コンボ倍率表示用加算値
-		bool  bDispComMultEndFlg;				// スコア加算値表示終了フラグ
+		bool  bDispComMultEndFlg;		// スコア加算値表示終了フラグ
+		bool  bDispGameEndFlg;				// スコア加算におけるプレイ終了時フラグ
 
 	}PlusScore;	// スコア処理情報まとめ
 
@@ -64,7 +68,7 @@ public:
 	};
 
 public:
-	CTotalScore();
+	CTotalScore(CPlayer* player, CTimer* timer);
 	~CTotalScore();
 
 	void Update();		 		//更新関数
@@ -102,6 +106,9 @@ private:
 	CCombo* m_pCombo;
 	int nArraySize;
 	std::vector<int> TotalScoreArray;	//各桁1ずつ入れるための配列
+
+	CPlayer* m_pPlayer;
+	CTimer* m_pTimer;
 	
 
 };

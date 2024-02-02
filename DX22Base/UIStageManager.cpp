@@ -62,7 +62,7 @@ CUIStageManager::CUIStageManager(CPlayer* pPlayer,CCamera * pCamera, CSlimeManag
 
 	m_pBossgauge = new CBossgauge(m_pTimer);
 	m_pHpMng = new CHP_UI(pPlayer->GetHpPtr());
-	m_pTotalScore = new CTotalScore();
+	m_pTotalScore = new CTotalScore(pPlayer, m_pTimer);
 	m_pScoreOHMng = new CScoreOHManager();
 	m_pStageFin = new CStageFinish(pCamera, pPlayer, m_pTimer->GetTimePtr());
 	m_pBossArrow = new CBossArrow();

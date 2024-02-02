@@ -14,6 +14,7 @@
 	E2023/11/26@ƒRƒ“ƒ{”{—¦‚Ì•\¦‚Ì•ÏX yamamoto
 	E2023/12/07 ƒQ[ƒ€ƒpƒ‰ƒ[ƒ^‚©‚çˆê•”’è”ˆÚ“®EƒCƒ“ƒNƒ‹[ƒh’Ç‰Á takagi
 	E2024/01/26 ˆ—‚ğŒ©‚â‚·‚­C³&&ƒg[ƒ^ƒ‹ƒXƒRƒA‰ÁZƒAƒjƒˆ—’Ç‰Á sawada
+	E2024/02/02 ƒQ[ƒ€I—¹ŠÔÛ‚Ì‰ÁZƒXƒRƒA‚ªƒg[ƒ^ƒ‹ƒXƒRƒA‚É”½‰f‚³‚ê‚é‚æ‚¤‚É suzumura
 
 ========================================== */
 
@@ -80,10 +81,12 @@ const DirectX::XMFLOAT2 PLUS_SCORE_BG_SIZE(200.0f, -50.0f);	// ƒg[ƒ^ƒ‹ƒXƒRƒA‚Ì”
 	-------------------------------------
 	–ß’lF‚È‚µ
 =========================================== */
-CTotalScore::CTotalScore()
+CTotalScore::CTotalScore(CPlayer* player,CTimer* timer)
 	: m_nTotalScoreDisp(0)
 	, m_nTotalScore(0)
 	, m_nToScoreAddCnt(0)
+	, m_pPlayer(player)
+	, m_pTimer(timer)
 
 {
 	for (int i = 0; i < TextureType::TEXTURE_MAX; i++)
@@ -95,10 +98,13 @@ CTotalScore::CTotalScore()
 		}
 	}
 
-	// ƒXƒRƒA‰ÁZ’l”z—ñƒŠƒZƒbƒg
 	for (int i = 0; i < MAX_COMBO_NUM; i++)
 	{
+		// ƒXƒRƒA‰ÁZ’l”z—ñƒŠƒZƒbƒg
 		m_AddScore[i] = ResetPlusScore();
+
+		// ƒQ[ƒ€I—¹‚É—§‚Ä‚éƒtƒ‰ƒO‚ğ‰Šú‰»
+		m_AddScore[i].bDispGameEndFlg = false;
 	}
 
 }
@@ -177,6 +183,19 @@ void CTotalScore::Update()
 
 		}
 
+		//-- ƒQ[ƒ€I—¹Aƒg[ƒ^ƒ‹ƒXƒRƒA‚ğXV‚·‚é
+		// ƒQ[ƒ€I—¹‚ğŒŸ’m‚·‚é‚½‚ß‚ÌQÆ
+		int nSecond = m_pTimer->GetSecond();	// c‚è•b”
+		bool bDead = m_pPlayer->GetDieFlg();	// ƒvƒŒƒCƒ„[€–Sƒtƒ‰ƒO
+
+		if ((nSecond <= 0/*ƒ^ƒCƒ€ƒAƒbƒv*/ || bDead == true/*€–S*/)
+			&& m_AddScore[i].bDispGameEndFlg == false /* ƒQ[ƒ€I—¹‚µ‚Ä‚¢‚È‚¢ */)
+		{
+			m_AddScore[i].bDispGameEndFlg == true;	// I—¹ƒtƒ‰ƒO
+			m_AddScore[i].bDispEndFlg = true;		// ‰ÁZƒXƒRƒA•\¦‚ğI—¹
+
+		}
+
 		// •\¦ƒtƒ‰ƒO‚ªƒIƒt‚É‚È‚Á‚Ä‚¢‚é‚©
 		if (m_AddScore[i].bDispEndFlg)
 		{
@@ -211,6 +230,10 @@ void CTotalScore::Draw()
 	DrawBGTotalScore();		// ƒg[ƒ^ƒ‹ƒXƒRƒA”wŒi•`‰æ
 	DrawTotalScore();		// ƒg[ƒ^ƒ‹ƒXƒRƒA•`‰æ
 	
+	// ƒQ[ƒ€‚ªI—¹‚µ‚Ä‚¢‚½‚ç‰ÁZƒXƒRƒA‚Í•\¦‚µ‚È‚¢
+	int nSecond = m_pTimer->GetSecond();	// c‚è•b”
+	bool bDead = m_pPlayer->GetDieFlg();	// ƒvƒŒƒCƒ„[€–Sƒtƒ‰ƒO
+	if (nSecond <= 0/*ƒ^ƒCƒ€ƒAƒbƒv*/ || bDead == true/*€–S*/) return;
 
 	// ‰ÁZƒXƒRƒA•\¦	-----------
 	// “¯ƒRƒ“ƒ{”•ª•¡”s‚Å•\¦‚·‚é
