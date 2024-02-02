@@ -76,7 +76,7 @@ typedef struct
 const Display_Param WARNING_TEXTURE_PARAM	= { {260.0f, 420.0f} ,{480.0f, 600.0f} };	// 手配書
 const Display_Param CLEAR_STAMP_PARAM		= { {260.0f, 420.0f} ,{400.0f, 400.0f} };	// スタンプ
 
-const float DEF_NUM_SPACE = 55.0f;
+const float DEF_NUM_SPACE = 68.0f;
 const TDiType<int> NUM_SPLIT = { 5, 2 };
 const TDiType<float> NUM_UVSCALE = { (1.0f / 5) ,(1.0f / 2) };
 
@@ -125,9 +125,10 @@ const Display_Param MAX_COMBO_NUM_PARAM		= { { 1200.0f, 670.0f } ,{ 85.0f, 105.0
 	----------------------------------------
 	戻値：なし
 =========================================== */
-CResult::CResult()
+CResult::CResult(CScene::E_TYPE pastScene)
 	: m_pSE{ nullptr }
 	, m_pSESpeaker{ nullptr }
+	, m_ePastScene(pastScene)
 {
 	for (int i = 0; i < E_TEXTURE::TEXTURE_MAX; i++)
 	{
@@ -404,8 +405,12 @@ void CResult::DrawHunt()
 		HUNT_TEXT_PARAM.fSize.y,
 		m_pTexture[E_TEXTURE::HUNT_TEXT]);
 
+	// ステージ１ならボス討伐数を表示しない
+	int nDispHuntNum = 5;	// 青＋緑＋黄＋赤＋ボス＝５
+	if (m_ePastScene == E_TYPE_STAGE1) nDispHuntNum = 4;	//ーボス＝４
+
 	// スライムの種類数分画像を表示
-	for (int i = 0; i < 5; i++)
+	for (int i = 0; i < nDispHuntNum; i++)
 	{
 		// スライムの画像
 		Draw2d(
@@ -449,7 +454,15 @@ void CResult::DrawHunt()
 		DispNum(8, 1, { MULTI_NUM_PARAM.fPos.x + (3 * SLIME_SPACE_Y), MULTI_NUM_PARAM.fPos.y }, MULTI_NUM_PARAM.fSize, DEF_NUM_SPACE);
 
 		// スライム別討伐数
+		//２桁以上の場合
+		if(m_Data.nKill[i] >= 10)
 		DispNum(m_Data.nKill[i], 1,{
+			SLIME_HUNT_NUM_PARAM.fPos.x + (i*SLIME_SPACE_Y) - (SLIME_HUNT_NUM_PARAM.fSize.x / 2),
+			SLIME_HUNT_NUM_PARAM.fPos.y },
+			SLIME_HUNT_NUM_PARAM.fSize, DEF_NUM_SPACE);
+		//１桁の場合
+		else 
+		DispNum(m_Data.nKill[i], 1, {
 			SLIME_HUNT_NUM_PARAM.fPos.x + (i*SLIME_SPACE_Y),
 			SLIME_HUNT_NUM_PARAM.fPos.y },
 			SLIME_HUNT_NUM_PARAM.fSize, DEF_NUM_SPACE);
@@ -517,7 +530,7 @@ void CResult::DispTime()
 
 	// コロン
 	Draw2d(
-		SVL_TIME_NUM__PARAM.fPos.x - (SVL_TIME_NUM_SPACE * 2),
+		SVL_TIME_NUM__PARAM.fPos.x - (SVL_TIME_NUM_SPACE * 2) -7.0f,	// -7.0fはコロンの位置の微調整
 		SVL_TIME_NUM__PARAM.fPos.y,
 		SVL_TIME_NUM__PARAM.fSize.x,
 		SVL_TIME_NUM__PARAM.fSize.y,
