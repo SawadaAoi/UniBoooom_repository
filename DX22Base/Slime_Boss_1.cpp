@@ -72,7 +72,7 @@ CSlime_Boss_1::CSlime_Boss_1()
 	-------------------------------------
 	戻値：無し
 =========================================== */
-CSlime_Boss_1::CSlime_Boss_1(TPos3d<float> pos, VertexShader* pVS, AnimeModel* pModel)
+CSlime_Boss_1::CSlime_Boss_1(TPos3d<float> pos, AnimeModel* pModel)
 	: CSlime_Boss_1()
 {
 	m_Transform.fPos = pos;			// 初期座標を指定

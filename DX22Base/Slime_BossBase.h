@@ -33,13 +33,23 @@ class CSlime_BossBase :
 {
 public:
 	// ===== 列挙 =====
-	enum ROCK_SLIME_MOTION	// 岩スライムのモーション
+	// 岩スライムのモーション
+	enum ROCK_SLIME_MOTION	
 	{
 		ROCK_SLIME_MOVE,	// 移動
 		ROCK_SLIME_HIT,		// 叩かれたとき
 		ROCK_SLIME_ROLLING,	// 回転攻撃
 
 		ROCK_SLIME_MAX,
+	};
+
+	// デビルスライムのモーション
+	enum DEVIL_SLIME_MOTION	
+	{
+		DEVIL_SLIME_MOVE,	// 移動
+		DEVIL_SLIME_HIT,	// 叩かれたとき
+
+		DEVIL_SLIME_MAX,
 	};
 
 	// ===プロトタイプ宣言======
