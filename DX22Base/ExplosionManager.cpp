@@ -304,8 +304,9 @@ void CExplosionManager::ComboEndCheck()
 	// コンボ数分確認
 	for (int i = 0; i < MAX_COMBO_NUM; i++)
 	{
-		// コンボ数が入ってない所はスルー
-		if (m_pCombo->GetCombo(i) == 0) continue;
+		if (m_pCombo->GetComboNum(i) == 0)	continue;	// コンボ数が入ってない所はスルー
+		if (m_pCombo->GetComboEndFlg(i))	continue;	// コンボが終了済みの場合はスルー
+
 		bool bComboFlg = false;	// 爆発連鎖有効フラグ
 
 		// 爆発数分チェック
