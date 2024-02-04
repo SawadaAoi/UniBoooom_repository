@@ -404,7 +404,7 @@ void CSlime_Boss_2::MoveNormal()
 		// 攻撃処理→ジャンプ　切り替え時間
 		if ((STATE_CHANGE_ATTACK_INTERVAL * 60) <= m_nMoveCnt[MOVE_STATE::NORMAL])
 		{
-			m_nMoveState = MOVE_STATE::JUMP_CHARGE;		// 状態を切り替え
+			m_nMoveState = MOVE_STATE::JUMP_CHARGE;	// 状態を切り替え
 			m_nMoveCnt[MOVE_STATE::NORMAL] = 0;		// 加算をリセット
 		}
 

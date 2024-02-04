@@ -141,9 +141,15 @@ void CSlime_4::Draw()
 {
 	if (!m_pCamera) { return; }	//ヌルチェック
 
-//行列状態を取得してセット
+	//行列状態を取得してセット
+	DirectX::XMFLOAT4X4 world;
+	DirectX::XMStoreFloat4x4(&world, XMMatrixTranspose(
+		DirectX::XMMatrixScaling(m_Transform.fScale.x, m_Transform.fScale.y, m_Transform.fScale.z) *
+		DirectX::XMMatrixRotationY(m_Transform.fRadian.y) *
+		DirectX::XMMatrixTranslation(m_Transform.fPos.x, m_Transform.fPos.y, m_Transform.fPos.z)));
+
 	DirectX::XMFLOAT4X4 mat[3] = {
-	m_Transform.GetWorldMatrixSRT(),
+	world,
 	m_pCamera->GetViewMatrix(),
 	m_pCamera->GetProjectionMatrix()
 	};
@@ -202,7 +208,7 @@ void CSlime_4::NormalMove()
 		// プレイヤーと反対方向に移動
 		m_move.x = -(cosf(rad)) * m_fSpeed;
 		m_move.z = -(sinf(rad)) * m_fSpeed;
-		m_Transform.fRadian.y = atan2f(m_move.x, m_move.z);
+		m_Transform.fRadian.y = atan2f(-m_move.x, -m_move.z);
 	}
 	else
 	{

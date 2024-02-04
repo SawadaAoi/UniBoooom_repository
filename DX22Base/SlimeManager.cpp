@@ -1172,7 +1172,7 @@ void CSlimeManager::LoadModel()
 	}
 	//レベル1スライムのモデル読み込み
 	m_pBlueModel = new AnimeModel;
-	if (!m_pBlueModel->Load("Assets/Model/slime/Blue/slime_blue_walk_1.0.fbx", 0.15f, AnimeModel::ZFlip)) {		//倍率と反転は省略可
+	if (!m_pBlueModel->Load("Assets/Model/slime/Blue/slime_blue_walk_1.0.fbx", 0.15f, AnimeModel::XFlip)) {		//倍率と反転は省略可
 		MessageBox(NULL, "slime_blue", "Error", MB_OK);	//ここでエラーメッセージ表示
 	}
 	for (int i = 0; i < CSlimeBase::MOTION_LEVEL1_MAX; i++)
@@ -1189,7 +1189,7 @@ void CSlimeManager::LoadModel()
 
 	//レベル2スライムのモデル読み込み
 	m_pGreenModel = new AnimeModel;
-	if (!m_pGreenModel->Load(m_sLevel2_Motion[0].c_str(), 0.15f, AnimeModel::ZFlip)) {		//倍率と反転は省略可
+	if (!m_pGreenModel->Load(m_sLevel2_Motion[0].c_str(), 0.15f, AnimeModel::XFlip)) {		//倍率と反転は省略可
 		MessageBox(NULL, "slime_blue", "Error", MB_OK);	//ここでエラーメッセージ表示
 	}
 	for (int i = 0; i < CSlimeBase::MOTION_LEVEL2_MAX; i++)
@@ -1206,7 +1206,7 @@ void CSlimeManager::LoadModel()
 
 	//レベル3スライムのモデル読み込み
 	m_pYellowModel = new AnimeModel;
-	if (!m_pYellowModel->Load("Assets/Model/slime/Yellow/slime_yellow_walk_1.0.fbx", 0.15f, AnimeModel::ZFlip)) {	//倍率と反転は省略可
+	if (!m_pYellowModel->Load("Assets/Model/slime/Yellow/slime_yellow_walk_1.0.fbx", 0.15f, AnimeModel::XFlip)) {	//倍率と反転は省略可
 		MessageBox(NULL, "slime_yellow", "Error", MB_OK);	//ここでエラーメッセージ表示
 	}
 	for (int i = 0; i < CSlimeBase::MOTION_LEVEL3_MAX; i++)
@@ -1222,7 +1222,7 @@ void CSlimeManager::LoadModel()
 	m_pYellowModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));		//頂点シェーダーをセット
 	//レベル4スライムのモデル読み込み
 	m_pRedModel = new AnimeModel;
-	if (!m_pRedModel->Load("Assets/Model/slime/Red/slime_red_walk_1.0.fbx", 0.18f, AnimeModel::ZFlip)) {			//倍率と反転は省略可
+	if (!m_pRedModel->Load("Assets/Model/slime/Red/slime_red_walk_1.0.fbx", 0.18f, AnimeModel::XFlip)) {			//倍率と反転は省略可
 		MessageBox(NULL, "slime_red", "Error", MB_OK);		//ここでエラーメッセージ表示
 	}
 	for (int i = 0; i < CSlimeBase::MOTION_LEVEL4_MAX; i++)
