@@ -65,6 +65,7 @@ public:
 		WARNING_STAGE_2,	// ステージ2の手配書
 		WARNING_STAGE_3,	// ステージ3の手配書
 		CLEAR_STAMP,		// CLEARスタンプ
+		SELECT,				// 決定ボタン
 
 		TEXTURE_MAX,
 

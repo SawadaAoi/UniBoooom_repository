@@ -18,6 +18,7 @@
 // =============== インクルード ===================
 #include "Slime_Boss_1.h"
 #include "GameParameter.h"		//定数定義用ヘッダー
+#include "Sprite.h"
 
 
 // =============== 定数定義 =======================
@@ -71,13 +72,15 @@ CSlime_Boss_1::CSlime_Boss_1()
 	-------------------------------------
 	戻値：無し
 =========================================== */
-CSlime_Boss_1::CSlime_Boss_1(TPos3d<float> pos, VertexShader* pVS, AnimeModel* pModel)
+CSlime_Boss_1::CSlime_Boss_1(TPos3d<float> pos, AnimeModel* pModel)
 	: CSlime_Boss_1()
 {
 	m_Transform.fPos = pos;			// 初期座標を指定
-	m_pVS = pVS;
 	m_pModel = pModel;
-	m_pShadow->SetPos(m_Transform.fPos);
+	m_eCurAnime = ROCK_SLIME_MOVE;		// アニメーションを移動にセット
+	m_pModel->Play(m_eCurAnime,true);	// アニメーションをスタート
+
+	m_pShadow->SetPos(m_Transform.fPos);	// 影の座標をセット
 
 }
 
@@ -105,6 +108,8 @@ CSlime_Boss_1::~CSlime_Boss_1()
 =========================================== */
 void CSlime_Boss_1::Update(tagTransform3d playerTransform)
 {
+	m_fAnimeTime += ADD_ANIME * 0.65f;
+
 	m_PlayerTran = playerTransform;
 	
 	if (!m_bHitMove)	//敵が通常の移動状態の時
@@ -118,6 +123,12 @@ void CSlime_Boss_1::Update(tagTransform3d playerTransform)
 		{
 			HitMove();		// 敵の吹き飛び移動
 			ResetAssault();	// 突撃リセット
+
+			if (m_eCurAnime != ROCK_SLIME_HIT)
+			{
+				m_eCurAnime = ROCK_SLIME_HIT;	// アニメーションを移動に変更
+				m_fAnimeTime = 0.0f;			// アニメーションタイムのリセット
+			}
 		}
 
 		// 突撃状態は"吹き飛び"を考慮しない
@@ -128,6 +139,12 @@ void CSlime_Boss_1::Update(tagTransform3d playerTransform)
 		else
 		{
 			HitMove(); //敵の吹き飛び移動
+
+			if (m_eCurAnime != ROCK_SLIME_HIT)
+			{
+				m_eCurAnime = ROCK_SLIME_HIT;	// アニメーションを移動に変更
+				m_fAnimeTime = 0.0f;			// アニメーションタイムのリセット
+			}
 		}
 	}
 
@@ -152,15 +169,137 @@ void CSlime_Boss_1::Update(tagTransform3d playerTransform)
 		{
 			m_bDrawFlg = true;	// false→true
 		}
-
 	}
 	// 総点滅時間を過ぎたら終了
 	if (m_nInvFrame >= BOSS_DAMAGE_FLASH_TOTAL_FRAME)
 	{
-		m_bFlash = false;
-		m_nInvFrame = 0;
-		m_bDrawFlg = true;
+		m_bFlash = false;	
+		m_nInvFrame = 0;	
+		m_bDrawFlg = true;	
 	}
+}
+
+/* ========================================
+	描画処理関数
+	-------------------------------------
+	内容：描画処理
+	-------------------------------------
+	引数1：なし
+	-------------------------------------
+	戻値：無し
+=========================================== */
+void CSlime_Boss_1::Draw()
+{
+	// DrawFlgがtrueなら描画処理を行う
+	if (m_bDrawFlg == false) return;
+
+	//行列状態を取得してセット
+	DirectX::XMFLOAT4X4 mat[3] = {
+	m_Transform.GetWorldMatrixSRT(),
+	m_pCamera->GetViewMatrix(),
+	m_pCamera->GetProjectionMatrix()
+	};
+
+	//-- モデル表示
+	if (m_pModel) {
+
+		ShaderList::SetWVP(mat);
+
+		// 複数体を共通のモデルで扱っているため描画のタイミングでモーションの種類と時間をセットする
+		m_pModel->Play(m_eCurAnime, true);
+		m_pModel->SetAnimationTime(m_eCurAnime, m_fAnimeTime);	// アニメーションタイムをセット
+		// アニメーションタイムをセットしてから動かさないと反映されないため少しだけ進める
+		m_pModel->Step(0.000001f);
+
+		// レンダーターゲット、深度バッファの設定
+		RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得
+		DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
+		SetRenderTargets(1, &pRTV, pDSV);		//DSVがnullだと2D表示になる
+
+		//-- モデル表示(アニメーション対応ver)
+		if (m_pModel) {
+			//アニメーション対応したプレイヤーの描画
+			m_pModel->Draw(nullptr, [this](int index)
+			{
+				const AnimeModel::Mesh* pMesh = m_pModel->GetMesh(index);
+				const AnimeModel::Material* pMaterial = m_pModel->GetMaterial(pMesh->materialID);
+				ShaderList::SetMaterial(*pMaterial);
+
+				DirectX::XMFLOAT4X4 bones[200];
+				for (int i = 0; i < pMesh->bones.size() && i < 200; ++i)
+				{
+					// この計算はゲームつくろー「スキンメッシュの仕組み」が参考になる
+					DirectX::XMStoreFloat4x4(&bones[i], DirectX::XMMatrixTranspose(
+						pMesh->bones[i].invOffset *
+						m_pModel->GetBone(pMesh->bones[i].index)
+					));
+				}
+				ShaderList::SetBones(bones);
+			});
+			//m_pModel->DrawBone();
+		}
+	}
+
+	//-- 影の描画
+	m_pShadow->Draw(m_pCamera);
+
+	//HP表示
+	RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得
+	DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
+	SetRenderTargets(1, &pRTV, nullptr);		//DSVがnullだと2D表示になる
+
+	mat[1] = m_pCamera->GetViewMatrix();
+	mat[2] = m_pCamera->GetProjectionMatrix();
+	DirectX::XMFLOAT4X4 inv;//逆行列の格納先
+	inv = m_pCamera->GetViewMatrix();
+
+	//カメラの行列はGPUに渡す際に転置されているため、逆行列のために一度元に戻す
+	DirectX::XMMATRIX matInv = DirectX::XMLoadFloat4x4(&inv);
+	matInv = DirectX::XMMatrixTranspose(matInv);
+
+	//移動成分は逆行列で打ち消す必要が無いので0を設定して移動を無視する
+	DirectX::XMStoreFloat4x4(&inv, matInv);
+	inv._41 = inv._42 = inv._43 = 0.0f;
+
+	matInv = DirectX::XMLoadFloat4x4(&inv);
+	matInv = DirectX::XMMatrixInverse(nullptr, matInv);
+
+
+
+	//フレーム
+	DirectX::XMMATRIX world = matInv * DirectX::XMMatrixTranslation(m_Transform.fPos.x, m_Transform.fPos.y + SLIME_HP_HEIGHT, m_Transform.fPos.z);
+	DirectX::XMStoreFloat4x4(&mat[0], DirectX::XMMatrixTranspose(world));
+	Sprite::SetSize(DirectX::XMFLOAT2(3.2f, 0.7f));
+
+	Sprite::SetUVPos(DirectX::XMFLOAT2(1.0f, 1.0f));
+	Sprite::SetUVScale(DirectX::XMFLOAT2(1.0f, 1.0f));
+
+
+	Sprite::SetWorld(mat[0]);
+	Sprite::SetView(mat[1]);
+	Sprite::SetProjection(mat[2]);
+	Sprite::SetTexture(m_pHpFrameTexture);
+	Sprite::Draw();
+
+
+	HPWidth = 3.0f / m_nMaxHp;
+	float width = (HPWidth / 2)*(m_nMaxHp - m_nHp);
+
+
+	world = matInv * DirectX::XMMatrixTranslation(m_Transform.fPos.x - width, m_Transform.fPos.y + SLIME_HP_HEIGHT, m_Transform.fPos.z);
+	DirectX::XMStoreFloat4x4(&mat[0], DirectX::XMMatrixTranspose(world));
+	Sprite::SetSize(DirectX::XMFLOAT2(HPWidth * m_nHp, BOSS_HP_SIZEY));
+
+	Sprite::SetUVPos(DirectX::XMFLOAT2(1.0f, 1.0f));
+	Sprite::SetUVScale(DirectX::XMFLOAT2(1.0f, 1.0f));
+
+	Sprite::SetWorld(mat[0]);
+	Sprite::SetView(mat[1]);
+	Sprite::SetProjection(mat[2]);
+	Sprite::SetTexture(m_pBossHpTexture);
+	Sprite::Draw();
+
+
 }
 
 /* ========================================
@@ -217,6 +356,12 @@ void CSlime_Boss_1::NormalMove()
 		{
 			m_nMoveState = CHARGE;	// "チャージ"状態に遷移
 			m_nFrame = 0;		// フレームリセット
+
+			if (m_eCurAnime != ROCK_SLIME_ROLLING)
+			{
+				m_eCurAnime = ROCK_SLIME_ROLLING;	// アニメーションを攻撃に変更
+				m_fAnimeTime = 0.0f;				// アニメーションタイムのリセット
+			}
 		}
 		break;
 		
@@ -278,7 +423,7 @@ void CSlime_Boss_1::Charge(TPos3d<float> playerPos, TPos3d<float> movePos)
 	{
 		m_assaultDistancePlayer = distancePlayer;	// 現状の距離を保存
 		m_assaultMovePos = movePos;					// 移動量を保存
-		m_nMoveState = ASSAULT;							// "突撃"状態へ
+		m_nMoveState = ASSAULT;						// "突撃"状態へ
 		m_nFrame = 0;								// フレームリセット
 	}
 }
@@ -305,6 +450,15 @@ void CSlime_Boss_1::Assault()
 	if (m_nFrame >= ASSAULT_TIME)
 	{
 		ResetAssault();	// 突撃リセット
+
+		if (m_eCurAnime != ROCK_SLIME_MOVE)
+		{
+			m_pModel->SetAnimationTime(ROCK_SLIME_ROLLING, 0.0f);	//アニメーションをリセットする
+			m_pModel->Step(0.0f);	// セットしたアニメーションタイムを反映させる
+
+			m_eCurAnime = ROCK_SLIME_MOVE;	// アニメーションを移動に変更
+			m_fAnimeTime = 0.0f;			// アニメーションタイムのリセット
+		}
 	}
 }
 
@@ -320,8 +474,8 @@ void CSlime_Boss_1::Assault()
 void CSlime_Boss_1::ResetAssault()
 {
 	m_nMoveState = NORMAL;	// "ノーマル"状態へ
-	SetNormalSpeed();	// スピードを通常状態に戻す
-	m_nFrame = 0;		//フレームリセット
+	SetNormalSpeed();		// スピードを通常状態に戻す
+	m_nFrame = 0;			//フレームリセット
 }
 
 /* ========================================

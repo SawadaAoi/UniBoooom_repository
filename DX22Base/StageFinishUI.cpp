@@ -121,7 +121,8 @@ void CStageFinish::Draw()
 	DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
 	SetRenderTargets(1, &pRTV, nullptr);	//DSVがnullだと2D表示になる
 
-	switch (m_eGameState)	//ゲームの状態によって分岐
+	// ゲームの状態によって分岐
+	switch (m_eGameState)	
 	{
 	case (GAME_PLAY):	//ゲームをプレイ中の描画
 		break;

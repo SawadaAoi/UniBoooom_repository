@@ -144,6 +144,8 @@ private:
 	bool m_bDieInvFlg;					// 死亡猶予時間フラグ
 	float m_fDieInvCnt;					// 死亡猶予時間カウント
 
+	float m_fRotate_x;					// プレイヤーの表示用傾き
+
 	tagTransform3d m_OldTransform17f;		// プレイヤー17フレーム前の位置
 	tagTransform3d m_OldTransform25f;		// プレイヤー25フレーム前の位置
 	int m_nGetPosCnt17f;					// プレイヤーの位置を取得するカウント

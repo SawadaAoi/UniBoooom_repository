@@ -18,6 +18,7 @@
 	・2023/12/17 引数参照化 takagi
 	・2023/12/20 継承先がやりにくかったのでワールド変数をprotected化 takagi
 	・2024/01/16 統一のため、インクルードガードの___を__に変更	takagi
+	・2024/01/30 オフセットを変更できるように修正 sawada
 
 ========================================== */
 
@@ -51,33 +52,35 @@ private:
 	}Vertex;	//頂点情報
 	typedef struct
 	{
-		TDiType<float> fUvOffset;	//UV座標のズレ
-		TDiType<float> fUvScale;	//UV拡縮
-		TTriType<float> fColor;		//色
-		float fAlpha;				//透明度
+		TDiType<float> fUvOffset;	// UV座標のズレ
+		TDiType<float> fUvScale;	// UV拡縮
+		TTriType<float> fColor;		// 色
+		float fAlpha;				// 透明度
+		TDiType<float> fOffSet;		// 画像の中心位置のズレ
 	}Param;	//シェーダーに送る情報
 public:
 	// ===プロトタイプ宣言===
-	C2dPolygon();																//コンストラクタ
-	C2dPolygon(const C2dPolygon& Obj);											//コピーコンストラクタ
-	virtual ~C2dPolygon();														//デストラクタ
-	virtual void Update();														//更新
-	virtual void Draw(const E_DRAW_MODE& eMode = E_DRAW_MODE_NORMAL);			//描画
-	virtual void SetCamera(const CCamera* pCamera);								//カメラセッタ
-	virtual void SetPos(const TPos3d<float>& fPos);								//位置セッタ
-	virtual void SetSize(const TTriType<float>& fScale);						//大きさセッタ
-	virtual void SetRotate(const TTriType<float>& fRotate);						//回転セッタ
-	virtual void SetTransform(const tagTransform3d& Transform);					//ワールド座標セッタ
-	virtual void SetUvOffset(const TDiType<float>& fUvOffset);					//UVずれセッタ
-	virtual void SetUvScale(const TDiType<float>& fUvScale);					//UV拡縮セッタ
-	virtual void SetColor(const TTriType<float>& fRGB, const float& fAlpha);	//色セッタRGBA
-	virtual void SetColor(const TTriType<float>& fRGB);							//色セッタRGB
-	virtual void SetColor(const float& fColor);									//色セッタ(同一値)
-	virtual void SetAlpha(const float& fAlpha);									//透明度セッタ
-	virtual void SetTexture(const char* pcTexPass);								//テクスチャ登録
-	virtual void SetTexture(Texture* pTexture);									//テクスチャ登録
-	virtual void SetVertexShader(VertexShader* pVs);							//頂点シェーダセッタ
-	virtual void SetPixelShader(PixelShader* pPs);								//ピクセルシェーダセッタ
+	C2dPolygon();																// コンストラクタ
+	C2dPolygon(const C2dPolygon& Obj);											// コピーコンストラクタ
+	virtual ~C2dPolygon();														// デストラクタ
+	virtual void Update();														// 更新
+	virtual void Draw(const E_DRAW_MODE& eMode = E_DRAW_MODE_NORMAL);			// 描画
+	virtual void SetCamera(const CCamera* pCamera);								// カメラセッタ
+	virtual void SetPos(const TPos3d<float>& fPos);								// 位置セッタ
+	virtual void SetSize(const TTriType<float>& fScale);						// 大きさセッタ
+	virtual void SetRotate(const TTriType<float>& fRotate);						// 回転セッタ
+	virtual void SetTransform(const tagTransform3d& Transform);					// ワールド座標セッタ
+	virtual void SetUvOffset(const TDiType<float>& fUvOffset);					// UVずれセッタ
+	virtual void SetUvScale(const TDiType<float>& fUvScale);					// UV拡縮セッタ
+	virtual void SetColor(const TTriType<float>& fRGB, const float& fAlpha);	// 色セッタRGBA
+	virtual void SetColor(const TTriType<float>& fRGB);							// 色セッタRGB
+	virtual void SetColor(const float& fColor);									// 色セッタ(同一値)
+	virtual void SetAlpha(const float& fAlpha);									// 透明度セッタ
+	virtual void SetOffSet(const TDiType<float>& fOffSet);						// 画像の中心位置のズレ
+	virtual void SetTexture(const char* pcTexPass);								// テクスチャ登録
+	virtual void SetTexture(Texture* pTexture);									// テクスチャ登録
+	virtual void SetVertexShader(VertexShader* pVs);							// 頂点シェーダセッタ
+	virtual void SetPixelShader(PixelShader* pPs);								// ピクセルシェーダセッタ
 protected:
 	// ===メンバ変数宣言=====
 	tagTransform3d m_Transform;	//ワールド座標
