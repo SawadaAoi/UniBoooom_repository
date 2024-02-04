@@ -15,6 +15,7 @@
 	E2023/12/07 ƒQ[ƒ€ƒpƒ‰ƒ[ƒ^‚©‚çˆê•”’è”ˆÚ“®EƒCƒ“ƒNƒ‹[ƒh’Ç‰Á takagi
 	E2024/01/26 ˆ—‚ğŒ©‚â‚·‚­C³&&ƒg[ƒ^ƒ‹ƒXƒRƒA‰ÁZƒAƒjƒˆ—’Ç‰Á sawada
 	E2024/02/02 ƒQ[ƒ€I—¹ŠÔÛ‚Ì‰ÁZƒXƒRƒA‚ªƒg[ƒ^ƒ‹ƒXƒRƒA‚É”½‰f‚³‚ê‚é‚æ‚¤‚É suzumura
+	E2024/02/05 ƒQ[ƒ€I—¹ŠÔÛ‚Ì‰ÁZƒXƒRƒA‚ªƒg[ƒ^ƒ‹ƒXƒRƒA‚É”½‰f‚³‚ê‚é‚æ‚¤‚É(‰ü) sawada
 
 ========================================== */
 
@@ -36,6 +37,24 @@ const int ADD_SCORE_DISP_FRAME = 1.5f * 60;		// ‰ÁZƒXƒRƒA•\¦ŠÔ
 const int COMBO_MULT_DISP_FRAME = 1.0f * 60;	// ƒRƒ“ƒ{”{—¦•\¦ŠÔ
 const int TOTAL_SCORE_MOVE_FRAME = 0.05f * 60;	// ƒg[ƒ^ƒ‹ƒXƒRƒA‰ÁZƒAƒjƒˆ—Ø‚è‘Ö‚¦ŠÔ
 const int TOTAL_SCORE_MOVE_ADD_POINT = 100;		// ƒg[ƒ^ƒ‹ƒXƒRƒA‰ÁZƒAƒjƒˆ—‰ÁZ’l
+
+
+const int COMBO_MULTI_DISPLAY_NUM	= 6;					// ”{—¦•\¦Å¬ƒRƒ“ƒ{”
+const int COMBO_MULTI_MAX_NUM		= 10;					// ”{—¦•Ï‰»Å‘åƒRƒ“ƒ{”
+
+const float COMBO_MULTI_NUM[COMBO_MULTI_MAX_NUM + 1] = {	// ƒRƒ“ƒ{”‚É‚æ‚é‰ÁZƒXƒRƒA‚Ì”{—¦
+	1.0f,	// 0
+	1.0f,	// 1
+	1.0f,	// 2
+	1.0f,	// 3
+	1.0f,	// 4
+	1.0f,	// 5
+	1.1f,	// 6
+	1.2f,	// 7
+	1.3f,	// 8
+	1.4f,	// 9
+	1.5f,	// 10
+};
 
 
 const int TOTAL_SCORE_DIGIT = 5;						//ƒg[ƒ^ƒ‹ƒXƒRƒA‚ÌŒ…”
@@ -81,12 +100,10 @@ const DirectX::XMFLOAT2 PLUS_SCORE_BG_SIZE(200.0f, -50.0f);	// ƒg[ƒ^ƒ‹ƒXƒRƒA‚Ì”
 	-------------------------------------
 	–ß’lF‚È‚µ
 =========================================== */
-CTotalScore::CTotalScore(CPlayer* player,CTimer* timer)
+CTotalScore::CTotalScore()
 	: m_nTotalScoreDisp(0)
 	, m_nTotalScore(0)
 	, m_nToScoreAddCnt(0)
-	, m_pPlayer(player)
-	, m_pTimer(timer)
 
 {
 	for (int i = 0; i < TextureType::TEXTURE_MAX; i++)
@@ -101,10 +118,8 @@ CTotalScore::CTotalScore(CPlayer* player,CTimer* timer)
 	for (int i = 0; i < MAX_COMBO_NUM; i++)
 	{
 		// ƒXƒRƒA‰ÁZ’l”z—ñƒŠƒZƒbƒg
-		m_AddScore[i] = ResetPlusScore();
+		m_AddScore[i] = ResetAddScore();
 
-		// ƒQ[ƒ€I—¹‚É—§‚Ä‚éƒtƒ‰ƒO‚ğ‰Šú‰»
-		m_AddScore[i].bDispGameEndFlg = false;
 	}
 
 }
@@ -137,76 +152,69 @@ CTotalScore::~CTotalScore()
 =========================================== */
 void CTotalScore::Update()
 {
-	TotalScoreMove();
+	TotalScoreMove();	// ƒg[ƒ^ƒ‹ƒXƒRƒA
 
 	// ‰ÁZƒXƒRƒA
 	for (int i = 0, lineNum = 1; i < MAX_COMBO_NUM; i++)
 	{
-		if (m_AddScore[i].nAddScore == 0)continue; // ’l‚Ì‚È‚¢•¨‚ÍƒXƒ‹[
+		if (m_AddScore[i].nAddScore == 0)	continue;	// ’l‚Ì‚È‚¢•¨‚ÍƒXƒ‹[
 
-		// ƒRƒ“ƒ{‚ªI—¹‚µ‚½ê‡
-		if (m_AddScore[i].bEndComboFlg)
+		if (!m_AddScore[i].bEndComboFlg)	continue;	// ƒRƒ“ƒ{Œp‘±’†‚Ìê‡‚ÍŒã‘±‚Ìˆ—‚Ís‚í‚È‚¢
+
+		// ƒRƒ“ƒ{I—¹Œã------------------------------
+
+		// ƒRƒ“ƒ{”{—¦•\¦‚ªI—¹‚µ‚Ä‚¢‚È‚¢ê‡
+		if (!m_AddScore[i].bDispCombMultEndFlg)
 		{
-			// ƒRƒ“ƒ{”{—¦•\¦‚ªI—¹‚µ‚Ä‚¢‚éê‡
-			if (m_AddScore[i].bDispComMultEndFlg)
+			// ƒRƒ“ƒ{”‚ª1`5‚Ìê‡
+			if (m_AddScore[i].nComboCnt < COMBO_MULTI_DISPLAY_NUM)
 			{
-				m_AddScore[i].nDispFrame++;	// ‰ÁZƒXƒRƒA•\¦ƒJƒEƒ“ƒg‰ÁZ
+				m_AddScore[i].bDispCombMultEndFlg = true; // ƒRƒ“ƒ{”{—¦‚Í•\¦‚µ‚È‚¢ˆ×A•\¦I—¹
 			}
+			// ƒRƒ“ƒ{”{—¦‚ª6ˆÈã‚Ìê‡
 			else
 			{
-				// ƒRƒ“ƒ{”{—¦‚ª1.1ˆÈã‚Ìê‡
-				if (m_AddScore[i].fCombScoreMult >= 1.1f)
-				{
-					m_AddScore[i].nDispComMultFrame++;	// ƒRƒ“ƒ{”{—¦•\¦ƒJƒEƒ“ƒg‰ÁZ
+				m_AddScore[i].nDispCombMultCnt++;	// ƒRƒ“ƒ{”{—¦•\¦ƒJƒEƒ“ƒg‰ÁZ
 
-					// ˆê’è•b”ƒRƒ“ƒ{”{—¦‚ğ•\¦‚µ‚½‚©
-					if (m_AddScore[i].nDispComMultFrame >= COMBO_MULT_DISP_FRAME)
-					{
-						m_AddScore[i].bDispComMultEndFlg = true;
-						m_AddScore[i].nAddScore = static_cast<int>(m_AddScore[i].nAddScore * m_AddScore[i].fCombScoreMult);
-					}
-				}
-				else
+				// ˆê’è•b”ƒRƒ“ƒ{”{—¦‚ğ•\¦‚µ‚½‚©
+				if (m_AddScore[i].nDispCombMultCnt >= COMBO_MULT_DISP_FRAME)
 				{
-					m_AddScore[i].bDispComMultEndFlg = true;
+					m_AddScore[i].nAddScore = static_cast<int>
+						( m_AddScore[i].nAddScore * m_AddScore[i].fCombScoreMult );	// ƒRƒ“ƒ{”{—¦‚ğ‰ÁZƒXƒRƒA‚ÉŠ|‚¯‚é
+					m_AddScore[i].bDispCombMultEndFlg = true;						// ƒRƒ“ƒ{”{—¦•\¦I—¹
 				}
 			}
+			
+			continue;	// ‚±‚±‚Åˆ—‚ÍI—¹
+		}
+		
+		// ƒRƒ“ƒ{”{—¦•\¦I—¹Œã ----------------------------------
 
+		// ‰ÁZƒXƒRƒA•\¦’†‚Ìê‡
+		if (!m_AddScore[i].bDispAddScoreEndFlg)
+		{
+			m_AddScore[i].nDispAddScoreCnt++;	// ‰ÁZƒXƒRƒA•\¦ƒJƒEƒ“ƒg‰ÁZ
 
 			// ˆê’èŠÔ‰ÁZƒXƒRƒA‚ğ•\¦‚µ‚½‚©
-			if (m_AddScore[i].nDispFrame >= ADD_SCORE_DISP_FRAME)
+			if (ADD_SCORE_DISP_FRAME <= m_AddScore[i].nDispAddScoreCnt)
 			{
-				m_AddScore[i].bDispEndFlg = true;
-
+				AddTotalScore(m_AddScore[i].nAddScore);		// ƒg[ƒ^ƒ‹ƒXƒRƒA‚É‰ÁZ
+				m_AddScore[i].bDispAddScoreEndFlg = true;	// ‰ÁZƒXƒRƒA•`‰æ‚ğ«‚ß‚é
 			}
-
-
 		}
-
-		//-- ƒQ[ƒ€I—¹Aƒg[ƒ^ƒ‹ƒXƒRƒA‚ğXV‚·‚é
-		// ƒQ[ƒ€I—¹‚ğŒŸ’m‚·‚é‚½‚ß‚ÌQÆ
-		int nSecond = m_pTimer->GetSecond();	// c‚è•b”
-		bool bDead = m_pPlayer->GetDieFlg();	// ƒvƒŒƒCƒ„[€–Sƒtƒ‰ƒO
-
-		if ((nSecond <= 0/*ƒ^ƒCƒ€ƒAƒbƒv*/ || bDead == true/*€–S*/)
-			&& m_AddScore[i].bDispGameEndFlg == false /* ƒQ[ƒ€I—¹‚µ‚Ä‚¢‚È‚¢ */)
+		// ‰ÁZƒXƒRƒA•\¦I—¹Œã‚Ìê‡
+		else
 		{
-			m_AddScore[i].bDispGameEndFlg == true;	// I—¹ƒtƒ‰ƒO
-			m_AddScore[i].bDispEndFlg = true;		// ‰ÁZƒXƒRƒA•\¦‚ğI—¹
+			m_AddScore[i] = ResetAddScore();		// ‰ÁZƒXƒRƒA”z—ñ’lƒŠƒZƒbƒg
 
 		}
 
-		// •\¦ƒtƒ‰ƒO‚ªƒIƒt‚É‚È‚Á‚Ä‚¢‚é‚©
-		if (m_AddScore[i].bDispEndFlg)
-		{
-			AddTotalScore(m_AddScore[i].nAddScore);	// ƒg[ƒ^ƒ‹ƒXƒRƒA‚É‰ÁZ
+		//// ƒvƒŒƒCƒ„[‚ª€–S‚µ‚½‚©A
+		//if (*m_pTimer->GetTimePtr() <= 0 || m_pPlayer->GetDieFlg())
+		//{
+		//	m_AddScore[i].bDispAddScoreEndFlg = true;		// ‰ÁZƒXƒRƒA•\¦‚ğI—¹
 
-			// ˆÈ‰º‰ÁZƒXƒRƒA”z—ñ’lƒŠƒZƒbƒg
-			m_AddScore[i] = ResetPlusScore();
-
-			continue;
-
-		}
+		//}
 
 
 	}
@@ -229,11 +237,6 @@ void CTotalScore::Draw()
 
 	DrawBGTotalScore();		// ƒg[ƒ^ƒ‹ƒXƒRƒA”wŒi•`‰æ
 	DrawTotalScore();		// ƒg[ƒ^ƒ‹ƒXƒRƒA•`‰æ
-	
-	// ƒQ[ƒ€‚ªI—¹‚µ‚Ä‚¢‚½‚ç‰ÁZƒXƒRƒA‚Í•\¦‚µ‚È‚¢
-	int nSecond = m_pTimer->GetSecond();	// c‚è•b”
-	bool bDead = m_pPlayer->GetDieFlg();	// ƒvƒŒƒCƒ„[€–Sƒtƒ‰ƒO
-	if (nSecond <= 0/*ƒ^ƒCƒ€ƒAƒbƒv*/ || bDead == true/*€–S*/) return;
 
 	// ‰ÁZƒXƒRƒA•\¦	-----------
 	// “¯ƒRƒ“ƒ{”•ª•¡”s‚Å•\¦‚·‚é
@@ -243,20 +246,17 @@ void CTotalScore::Draw()
 
 		DrawBGAddScore(lineNum);	// ‰ÁZƒXƒRƒA‚Ì”wŒi•`‰æ
 		DrawAddScore(i, lineNum);	// ‰ÁZƒXƒRƒA•`‰æ
-		lineNum++;
+		lineNum++;					// ’i—Ø‚è‘Ö‚¦
 
-		// ƒRƒ“ƒ{‚ªI—¹‚µ‚½ê‡
-		if (m_AddScore[i].bEndComboFlg)
+		if (!m_AddScore[i].bEndComboFlg) continue;	// ƒRƒ“ƒ{Œp‘±’†‚Ìê‡‚ÍŒã‘±‚Ìˆ—‚Ís‚í‚È‚¢
+
+		// ƒRƒ“ƒ{”{—¦•\¦ƒtƒ‰ƒO‚ª—LŒø‚Ìê‡(ƒRƒ“ƒ{”‚ª6–¢–‚Ìê‡‚Ís‚í‚È‚¢)
+		if (!m_AddScore[i].bDispCombMultEndFlg)
 		{
-			// ”{—¦‚ğ•\¦‚·‚éê‡
-			if (!m_AddScore[i].bDispComMultEndFlg)
-			{
-				DrawBGAddScore(lineNum);	// ‰ÁZƒXƒRƒA‚Ì”wŒi•`‰æ
-				DrawScoreComboMulti(i, lineNum);
-				lineNum++;
+			DrawBGAddScore(lineNum);			// ”wŒi•`‰æ(‰ÁZƒXƒRƒA‚Æ“¯—l‚Ì‚à‚Ì)
+			DrawScoreComboMulti(i, lineNum);	// ”{—¦•`‰æ(—á:1.2)
+			lineNum++;							// ’i—Ø‚è‘Ö‚¦
 
-			}
-			
 		}
 
 	}
@@ -313,6 +313,7 @@ void CTotalScore::DrawAddScore(int nNum, int lineNum)
 		ADD_SCORE_POS.x - (ADD_SCORE_SIZE.x * AdScoDigi), 
 		ADD_SCORE_POS.y + (ADD_SCORE_HIGHT * lineNum) 
 	};
+
 	DrawTexture(
 		PLUS_SYMBOL_SIZE, 
 		fSetPos, 
@@ -320,8 +321,6 @@ void CTotalScore::DrawAddScore(int nNum, int lineNum)
 		PLUS_SYMBOL_UVPOS,
 		m_pTexture[TextureType::NUM_ADD_SCORE]);
 
-
-	
 }
 
 /* ========================================
@@ -557,19 +556,20 @@ void CTotalScore::DrawNumber(int dispNum, TDiType<float> fSize, TDiType<float> f
 	----------------------------------------
 	–ß’lF‰ÁZƒXƒRƒA\‘¢‘Ì
 ======================================== */
-CTotalScore::PlusScore CTotalScore::ResetPlusScore()
+CTotalScore::PlusScore CTotalScore::ResetAddScore()
 {
-	PlusScore rePlusScore;	// •Ô‚·’l
+	PlusScore reAddScore;	// •Ô‚·’l
 		
-	rePlusScore.nAddScore			= 0;
-	rePlusScore.fCombScoreMult		= 0.0f;	// ƒRƒ“ƒ{ƒXƒRƒA”{—¦
-	rePlusScore.bEndComboFlg		= false;
-	rePlusScore.nDispFrame			= 0;
-	rePlusScore.bDispEndFlg			= false;
-	rePlusScore.nDispComMultFrame	= 0;
-	rePlusScore.bDispComMultEndFlg	= false;
+	reAddScore.nAddScore			= 0;
+	reAddScore.nComboCnt			= 0;
+	reAddScore.fCombScoreMult		= 0.0f;	// ƒRƒ“ƒ{ƒXƒRƒA”{—¦
+	reAddScore.bEndComboFlg			= false;
+	reAddScore.nDispAddScoreCnt		= 0;
+	reAddScore.bDispAddScoreEndFlg	= false;
+	reAddScore.nDispCombMultCnt		= 0;
+	reAddScore.bDispCombMultEndFlg	= false;
 
-	return rePlusScore;
+	return reAddScore;
 }
 
 /* ========================================
@@ -582,12 +582,10 @@ CTotalScore::PlusScore CTotalScore::ResetPlusScore()
 	----------------------------------------
 	–ß’lF‚È‚µ
 ======================================== */
-void CTotalScore::SetAddScore(CCombo::ComboInfo comboInfo,int num)
+void CTotalScore::SetAddScore(CCombo::ComboInfo comboInfo, int num)
 {
-	// ‰ÁZƒXƒRƒA‚ÉƒRƒ“ƒ{”{—¦‚ğæZÏ‚İ‚Ìê‡‚ÍƒZƒbƒg‚µ‚È‚¢
-	if (m_AddScore[num].bDispComMultEndFlg) return;
-
 	m_AddScore[num].nAddScore = comboInfo.dScore;	// ƒRƒ“ƒ{‚ÌƒXƒRƒA‚ğXV‚·‚é
+	m_AddScore[num].nComboCnt = comboInfo.dCnt;		// ƒRƒ“ƒ{”XV‚·‚é
 	
 }
 
@@ -602,25 +600,8 @@ void CTotalScore::SetAddScore(CCombo::ComboInfo comboInfo,int num)
 ======================================== */
 void CTotalScore::ComboCheck(CCombo::ComboInfo comboInfo, int num)
 {
-	float fMult = 1.0f;	// ‰ÁZƒXƒRƒA’l‚ÉŠ|‚¯‚é”{—¦(ƒfƒtƒHƒ‹ƒg‚Í1.0f)
-
-	// ƒRƒ“ƒ{”‚ª6ˆÈã‚Ìê‡
-	if (6 <= comboInfo.dCnt)
-	{
-		switch (comboInfo.dCnt)	// ƒRƒ“ƒ{”‚É‚æ‚Á‚Ä”{—¦‚ª•Ï‚í‚é
-		{
-		case 6: fMult = 1.1f; break;
-		case 7: fMult = 1.2f; break;
-		case 8: fMult = 1.3f; break;
-		case 9: fMult = 1.4f; break;
-		default:fMult = 1.5f; break;	// 10ˆÈã‚Ìê‡‚ÍŒÅ’è
-		}
-	}
-
-	m_AddScore[num].fCombScoreMult = fMult;	// ƒRƒ“ƒ{‰ÁZƒXƒRƒA”{—¦ƒZƒbƒg
-
+	SetCombScoreMult(num);						// ƒRƒ“ƒ{ƒXƒRƒA”{—¦ƒZƒbƒg
 	m_AddScore[num].bEndComboFlg = true;		// ƒRƒ“ƒ{I—¹ƒtƒ‰ƒO
-	m_AddScore[num].nDispFrame = 0;
 	
 }
 
@@ -638,12 +619,42 @@ void CTotalScore::AddTotalScore(int addScore)
 	m_nTotalScore += addScore;	// ƒg[ƒ^ƒ‹ƒXƒRƒA‚É‰ÁZƒXƒRƒA‚ğ‘«‚·
 
 	// Å‘å’l’´‚¦‚µ‚È‚¢‚æ‚¤‚É‚·‚é
-	if (m_nTotalScore > MAX_TOTALSCORE)
+	if ( MAX_TOTALSCORE < m_nTotalScore)
 	{
 		m_nTotalScore = MAX_TOTALSCORE;
 	}
 
 
+}
+
+/* ========================================
+	ƒQ[ƒ€I—¹ƒg[ƒ^ƒ‹ƒXƒRƒA‰ÁZŠÖ”
+	----------------------------------------
+	“à—eFƒQ[ƒ€I—¹‚É“r’†‚Ìƒg[ƒ^ƒ‹ƒXƒRƒA‚Ì‰ÁZ
+	----------------------------------------
+	ˆø”1F‰ÁZ‚·‚éƒXƒRƒA’l
+	----------------------------------------
+	–ß’lF‚È‚µ
+======================================== */
+void CTotalScore::GameEndAddTotal()
+{
+	for (int i = 0; i < MAX_COMBO_NUM; i++)
+	{
+		if (m_AddScore[i].nAddScore == 0)	continue;		// ’l‚Ì‚È‚¢•¨‚ÍƒXƒ‹[
+		if (m_AddScore[i].bDispAddScoreEndFlg)	continue;	// ƒg[ƒ^ƒ‹ƒXƒRƒA‚É‰ÁZÏ‚İ‚Ì‚à‚Ì‚ÍƒXƒ‹[
+
+		if (!m_AddScore[i].bDispCombMultEndFlg						// ƒRƒ“ƒ{”{—¦•`‰æ‚ª–¢I—¹
+			&& COMBO_MULTI_DISPLAY_NUM <= m_AddScore[i].nComboCnt )	// ƒRƒ“ƒ{”‚ª6ˆÈã‚Ìê‡
+		{
+			// ƒRƒ“ƒ{”{—¦‚ğ‹‚ß‚é
+			SetCombScoreMult(i);
+			// ƒRƒ“ƒ{”{—¦‚ğ‰ÁZƒXƒRƒA‚ÉŠ|‚¯‚é
+			m_AddScore[i].nAddScore = static_cast<int>(m_AddScore[i].nAddScore * m_AddScore[i].fCombScoreMult);	
+		}
+
+		AddTotalScore(m_AddScore[i].nAddScore);	// ƒg[ƒ^ƒ‹ƒXƒRƒA‚É‰ÁZ
+
+	}
 }
 
 /* ========================================
@@ -705,27 +716,53 @@ std::vector<int> CTotalScore::digitsToArray(int score, int digits)
 =========================================== */
 void CTotalScore::TotalScoreMove()
 {
-	// •\¦—pƒg[ƒ^ƒ‹ƒXƒRƒA‚ª‰ÁZŒãƒg[ƒ^ƒ‹ƒXƒRƒA‚É’Ç‚¢‚Â‚¢‚Ä‚¢‚È‚¢
-	if (m_nTotalScoreDisp < m_nTotalScore)
+	// •\¦—pƒg[ƒ^ƒ‹ƒXƒRƒA‚ª‰ÁZŒãƒg[ƒ^ƒ‹ƒXƒRƒA‚ªˆÙ‚È‚é
+	if (m_nTotalScoreDisp != m_nTotalScore)
 	{
 		m_nToScoreAddCnt++;	// •\¦—pƒg[ƒ^ƒ‹ƒXƒRƒA‚Ì”šØ‚è‘Ö‚¦ƒJƒEƒ“ƒg‰ÁZ
 
 		// Ø‚è‘Ö‚¦ŠÔ‚ª‰ß‚¬‚Ä‚¢‚é‚©
 		if (TOTAL_SCORE_MOVE_FRAME <= m_nToScoreAddCnt)
 		{
-			m_nTotalScoreDisp += TOTAL_SCORE_MOVE_ADD_POINT;
+			m_nTotalScoreDisp += TOTAL_SCORE_MOVE_ADD_POINT;	// •\¦—pƒXƒRƒA‚ğ‰ÁZ‚·‚é
+
+			// •\¦—pƒg[ƒ^ƒ‹ƒXƒRƒA‚É’l‚ğ‘«‚µ‚·‚¬‚½ê‡
+			if (m_nTotalScore < m_nTotalScoreDisp)
+			{
+				m_nTotalScoreDisp = m_nTotalScore;	// ’l‚ğ‡‚í‚¹‚é
+			}
+
 			m_nToScoreAddCnt = 0;
 		}
 	}
-	// •\¦—pƒg[ƒ^ƒ‹ƒXƒRƒA‚ª‰ÁZŒãƒg[ƒ^ƒ‹ƒXƒRƒA‚É’Ç‚¢‚Â‚¢‚Ä‚¢‚é
+}
+
+
+/* ========================================
+	ƒRƒ“ƒ{””{—¦ƒZƒbƒgŠÖ”
+	-------------------------------------
+	“à—eFƒRƒ“ƒ{”‚É‰‚¶‚Ä”{—¦‚ğƒZƒbƒg‚·‚é
+	-------------------------------------
+	ˆø”1FƒXƒRƒA‰ÁZ”z—ñ‚Ì“Y‚¦š
+	-------------------------------------
+	–ß’lF–³‚µ
+=========================================== */
+void CTotalScore::SetCombScoreMult(int num)
+{
+	int comboCnt	= m_AddScore[num].nComboCnt;	// ƒRƒ“ƒ{”‚ğƒZƒbƒg(Œ©‚â‚·‚³d‹)
+	float fMult		= 1.0f;							// ‰ÁZƒXƒRƒA’l‚ÉŠ|‚¯‚é”{—¦(ƒfƒtƒHƒ‹ƒg‚Í1.0f)
+
+	// ƒRƒ“ƒ{”‚ª1`9
+	if (comboCnt < COMBO_MULTI_MAX_NUM)
+	{
+		fMult = COMBO_MULTI_NUM[comboCnt];				// İ’è‚µ‚½ƒRƒ“ƒ{”‚É‚æ‚é”{—¦‚ğƒZƒbƒg‚·‚é
+	}
+	// ƒRƒ“ƒ{”‚ª10ˆÈã‚Ìê‡
 	else
 	{
-		// •\¦—pƒg[ƒ^ƒ‹ƒXƒRƒA‚É’l‚ğ‘«‚µ‚·‚¬‚½ê‡
-		if (m_nTotalScore != m_nTotalScoreDisp)
-		{
-			m_nTotalScoreDisp = m_nTotalScore;	// ’l‚ğ‡‚í‚¹‚é
-		}
-		m_nToScoreAddCnt = 0;
+		fMult = COMBO_MULTI_NUM[COMBO_MULTI_MAX_NUM];	// ”{—¦‚ÍŒÅ’è
 	}
+
+	m_AddScore[num].fCombScoreMult = fMult;	// ƒRƒ“ƒ{‰ÁZƒXƒRƒA”{—¦ƒZƒbƒg
 }
 

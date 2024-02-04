@@ -62,7 +62,7 @@ CUIStageManager::CUIStageManager(CPlayer* pPlayer,CCamera * pCamera, CSlimeManag
 
 	m_pBossgauge = new CBossgauge(m_pTimer);
 	m_pHpMng = new CHP_UI(pPlayer->GetHpPtr());
-	m_pTotalScore = new CTotalScore(pPlayer, m_pTimer);
+	m_pTotalScore = new CTotalScore();
 	m_pScoreOHMng = new CScoreOHManager();
 	m_pStageFin = new CStageFinish(pCamera, pPlayer, m_pTimer->GetTimePtr());
 	m_pBossArrow = new CBossArrow();
@@ -143,28 +143,78 @@ void CUIStageManager::Draw()
 	m_pScoreOHMng->Draw();	// スコアマネージャー描画
 }
 
-CScoreOHManager* CUIStageManager::GetScoreMng()
+/* ========================================
+   頭上スコアマネージャーポインタ取得処理関数
+   -------------------------------------
+   内容：頭上スコアマネージャーのポインタを返す
+   -------------------------------------
+   引数：無し
+   -------------------------------------
+   戻値：頭上スコアマネージャーのポインタ
+=========================================== */
+CScoreOHManager* CUIStageManager::GetScoreOHMngPtr()
 {
 	return m_pScoreOHMng;
 }
 
-CCombo * CUIStageManager::GetCombo()
+/* ========================================
+   コンボポインタ取得処理関数
+   -------------------------------------
+   内容：コンボのポインタを返す
+   -------------------------------------
+   引数：無し
+   -------------------------------------
+   戻値：コンボのポインタ
+=========================================== */
+CCombo* CUIStageManager::GetComboPtr()
 {
 	return m_pCombo;
 }
 
-CTimer * CUIStageManager::GetTimer()
+
+/* ========================================
+   タイマーポインタ取得処理関数
+   -------------------------------------
+   内容：タイマーのポインタを返す
+   -------------------------------------
+   引数：無し
+   -------------------------------------
+   戻値：タイマーのポインタ
+=========================================== */
+CTimer* CUIStageManager::GetTimerPtr()
 {
 	return m_pTimer;
 }
 
-CStageFinish * CUIStageManager::GetStageFinish()
+
+/* ========================================
+   ステージ終了判断オブジェクトポインタ取得処理関数
+   -------------------------------------
+   内容：ステージ終了判断オブジェクトのポインタを返す
+   -------------------------------------
+   引数：無し
+   -------------------------------------
+   戻値：ステージ終了判断オブジェクトのポインタ
+=========================================== */
+CStageFinish * CUIStageManager::GetStageFinishPtr()
 {
 	return m_pStageFin;
 }
 
 
-
+/* ========================================
+   総スコアポインタ取得処理関数
+   -------------------------------------
+   内容：総スコアのポインタを返す
+   -------------------------------------
+   引数：無し
+   -------------------------------------
+   戻値：総スコアのポインタ
+=========================================== */
+CTotalScore * CUIStageManager::GetTotalScorePtr()
+{
+	return m_pTotalScore;
+}
 
 
 /* ========================================

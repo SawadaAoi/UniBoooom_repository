@@ -111,11 +111,11 @@ SceneGame::SceneGame()
 
 	
 	//オブジェクトのUIのセット
-	m_pSlimeMng->SetScoreOHMng(m_pUIStageMng->GetScoreMng());
-	m_pExplosionMng->SetCombo(m_pUIStageMng->GetCombo());
+	m_pSlimeMng->SetScoreOHMng(m_pUIStageMng->GetScoreOHMngPtr());
+	m_pExplosionMng->SetCombo(m_pUIStageMng->GetComboPtr());
 	m_pSlimeMng->SetExplosionMng(m_pExplosionMng);
 	m_pSlimeMng->SetHealMng(m_pHealItemMng);
-	m_pSlimeMng->SetTimer(m_pUIStageMng->GetTimer());
+	m_pSlimeMng->SetTimer(m_pUIStageMng->GetTimerPtr());
 	// 各オブジェクトのカメラーセット
 	m_pPlayer->SetCamera(m_pCamera);
 	m_pSlimeMng->SetCamera(m_pCamera);
