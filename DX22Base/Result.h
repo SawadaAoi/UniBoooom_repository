@@ -32,6 +32,8 @@
 #include "NumberText.h"
 #include "DrawAnimation.h"
 #include "Sound.h"
+#include "FrameCnt.h"	//割合検出用
+
 
 // =============== クラス定義 =====================
 class CResult :public CScene	//シーン
@@ -105,8 +107,10 @@ private:
 	// =============== メンバ変数定義 ===============
 	
 	Texture* m_pTexture[TEXTURE_MAX];
-	BattleData m_Data;					//戦闘結果
-	CDrawAnim *m_pDrawAnim;				//リザルトの文字のアニメーション
+	BattleData m_Data;					// 戦闘結果
+	CDrawAnim* m_pTextureResultText;	// リザルトの文字
+	C2dPolygon* m_pSelectButton;	// 決定ボタン
+	int m_nButtonAlphaCnt;			// 点滅用
 
 	//=====SE関連=====
 	XAUDIO2_BUFFER* m_pSE[SE_MAX];
