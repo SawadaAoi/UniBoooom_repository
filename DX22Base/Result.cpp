@@ -96,7 +96,7 @@ const Display_Param SCORE_NUM_PARAM			= { { 1200.0f, 160.0f },{ 85.0f, 105.0f } 
 const Display_Param HIGH_SCORE_TEXT_PARAM	= { { 645.0f, 240.0f },{ 180.0f, 75.0f } };		// ハイスコア(文字)
 const Display_Param HIGH_SCORE_NUM_PARAM	= { { 1200.0f, 260.0f },{ 55.0f, 55.0f } };		// ハイスコア(数字)
 const Display_Param SCORE_LINE_PARAM		= { { 907.0f, 300.0f },{ 729.0f, 5.0f } };		// 線
-const float SCORE_NUM_SPACE = 65.0f;
+const float SCORE_NUM_SPACE = 70.0f;
 const float HIGH_SCORE_NUM_SPACE = 45.0f;
 
 
@@ -111,6 +111,8 @@ const Display_Param MULTI_NUM_PARAM			= { { 685.0f, 510.0f },{ 40.0f, 40.0f } };
 const Display_Param TOTAL_HUNT_TEXT_PARAM	= { { 670.0f, 560.0f },{ 250.0f, 80.0f } };		// 総討伐数(文字)
 const Display_Param TOTAL_HUNT_NUM_PARAM	= { { 1200.0f, 580.0f },{ 85.0f, 105.0f } };	// 総討伐数(数字)
 const Display_Param HUNT_LINE_PARAM			= { { 907.0f, 620.0f } , { 729.0f, 5.0f } };	// 線
+const float HUNT_NUM_SPACE = 45.0f;															// 数字間の距離
+
 
 const Display_Param MAX_COMBO_TEXT_PARAM	= { { 695.0f, 655.0f } , {  300.0f, 90.0f } };	// 最大コンボ数(文字)
 const Display_Param MAX_COMBO_NUM_PARAM		= { { 1200.0f, 670.0f } ,{ 85.0f, 105.0f } };	// 最大コンボ数(数字)
@@ -467,15 +469,15 @@ void CResult::DrawHunt()
 		//２桁以上の場合
 		if(m_Data.nKill[i] >= 10)
 		DispNum(m_Data.nKill[i], 1,{
-			SLIME_HUNT_NUM_PARAM.fPos.x + (i*SLIME_SPACE_Y) - (SLIME_HUNT_NUM_PARAM.fSize.x / 2),
+			SLIME_HUNT_NUM_PARAM.fPos.x + (i*SLIME_SPACE_Y) + (SLIME_HUNT_NUM_PARAM.fSize.x / 4),
 			SLIME_HUNT_NUM_PARAM.fPos.y },
-			SLIME_HUNT_NUM_PARAM.fSize, DEF_NUM_SPACE);
+			SLIME_HUNT_NUM_PARAM.fSize, HUNT_NUM_SPACE);
 		//１桁の場合
 		else 
 		DispNum(m_Data.nKill[i], 1, {
 			SLIME_HUNT_NUM_PARAM.fPos.x + (i*SLIME_SPACE_Y),
 			SLIME_HUNT_NUM_PARAM.fPos.y },
-			SLIME_HUNT_NUM_PARAM.fSize, DEF_NUM_SPACE);
+			SLIME_HUNT_NUM_PARAM.fSize, HUNT_NUM_SPACE);
 
 	}
 
