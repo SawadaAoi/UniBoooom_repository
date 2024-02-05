@@ -194,8 +194,14 @@ void CSlime_Boss_1::Draw()
 	if (m_bDrawFlg == false) return;
 
 	//行列状態を取得してセット
+	DirectX::XMFLOAT4X4 worldMat;
+	DirectX::XMStoreFloat4x4(&worldMat, XMMatrixTranspose(
+		DirectX::XMMatrixScaling(m_Transform.fScale.x, m_Transform.fScale.y, m_Transform.fScale.z) *
+		DirectX::XMMatrixRotationY(m_Transform.fRadian.y) *
+		DirectX::XMMatrixTranslation(m_Transform.fPos.x, m_Transform.fPos.y, m_Transform.fPos.z)));
+
 	DirectX::XMFLOAT4X4 mat[3] = {
-	m_Transform.GetWorldMatrixSRT(),
+	worldMat,
 	m_pCamera->GetViewMatrix(),
 	m_pCamera->GetProjectionMatrix()
 	};
@@ -346,7 +352,7 @@ void CSlime_Boss_1::NormalMove()
 		// ベクトルを正規化して方向ベクトルを得る
 		direction = DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&directionVector));
 		// 方向ベクトルから回転行列を計算
-		m_Transform.fRadian.y = atan2(-directionVector.x, -directionVector.z);
+		m_Transform.fRadian.y = atan2(directionVector.x, directionVector.z);
 
 		// クールタイムが終わってないならNORMALのまま
 		if (m_nFrame <= ASSAULT_COOL_TIME)	break;
@@ -416,7 +422,7 @@ void CSlime_Boss_1::Charge(TPos3d<float> playerPos, TPos3d<float> movePos)
 	// ベクトルを正規化して方向ベクトルを得る
 	direction = DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&directionVector));
 	// 方向ベクトルから回転行列を計算
-	m_Transform.fRadian.y = atan2(-directionVector.x, -directionVector.z);
+	m_Transform.fRadian.y = atan2(directionVector.x, directionVector.z);
 
 	// チャージタイムが終わったら"突撃"
 	if (m_nFrame >= ASSAULT_CHARGE_TIME)

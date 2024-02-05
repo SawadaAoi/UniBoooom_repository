@@ -209,8 +209,14 @@ void CSlime_Boss_2::Draw()
 	if (m_bDrawFlg == false) return;
 
 	//行列状態を取得してセット
+	DirectX::XMFLOAT4X4 worldMat;
+	DirectX::XMStoreFloat4x4(&worldMat, XMMatrixTranspose(
+		DirectX::XMMatrixScaling(m_Transform.fScale.x, m_Transform.fScale.y, m_Transform.fScale.z) *
+		DirectX::XMMatrixRotationY(m_Transform.fRadian.y) *
+		DirectX::XMMatrixTranslation(m_Transform.fPos.x, m_Transform.fPos.y, m_Transform.fPos.z)));
+
 	DirectX::XMFLOAT4X4 mat[3] = {
-	m_Transform.GetWorldMatrixSRT(),
+	worldMat,
 	m_pCamera->GetViewMatrix(),
 	m_pCamera->GetProjectionMatrix()
 	};
@@ -408,7 +414,7 @@ void CSlime_Boss_2::MoveNormal()
 		// 攻撃処理→ジャンプ　切り替え時間
 		if ((STATE_CHANGE_ATTACK_INTERVAL * 60) <= m_nMoveCnt[MOVE_STATE::NORMAL])
 		{
-			m_nMoveState = MOVE_STATE::JUMP_CHARGE;		// 状態を切り替え
+			m_nMoveState = MOVE_STATE::JUMP_CHARGE;	// 状態を切り替え
 			m_nMoveCnt[MOVE_STATE::NORMAL] = 0;		// 加算をリセット
 		}
 
