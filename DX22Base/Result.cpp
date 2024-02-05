@@ -20,6 +20,7 @@
 	・2024/01/26 決定SE追加 suzumura
 	・2024/01/26 アニメーション追加 goto
 	・2024/02/01 遷移先変更 sawada
+	・2024/02/03 リザルト表示位置等微調整 suzumura
 
 
 ========================================== */
@@ -469,7 +470,7 @@ void CResult::DrawHunt()
 		//２桁以上の場合
 		if(m_Data.nKill[i] >= 10)
 		DispNum(m_Data.nKill[i], 1,{
-			SLIME_HUNT_NUM_PARAM.fPos.x + (i*SLIME_SPACE_Y) + (SLIME_HUNT_NUM_PARAM.fSize.x / 4),
+			SLIME_HUNT_NUM_PARAM.fPos.x + (i*SLIME_SPACE_Y) + (SLIME_HUNT_NUM_PARAM.fSize.x / 3),
 			SLIME_HUNT_NUM_PARAM.fPos.y },
 			SLIME_HUNT_NUM_PARAM.fSize, HUNT_NUM_SPACE);
 		//１桁の場合
