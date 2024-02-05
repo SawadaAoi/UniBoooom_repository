@@ -204,10 +204,10 @@ void CSlime_4::NormalMove()
 	if (distancePlayer < 5)
 	{
 		// プレイヤーへの角度を取得
-		float rad = atan2f(playerPos.z - m_Transform.fPos.z, playerPos.x - m_Transform.fPos.x);
+		float rad = atan2f(playerPos.x - m_Transform.fPos.x, playerPos.z - m_Transform.fPos.z);
 		// プレイヤーと反対方向に移動
-		m_move.x = -(cosf(rad)) * m_fSpeed;
-		m_move.z = -(sinf(rad)) * m_fSpeed;
+		m_move.x = -(sinf(rad)) * m_fSpeed;
+		m_move.z = -(cosf(rad)) * m_fSpeed;
 		m_Transform.fRadian.y = atan2f(-m_move.x, -m_move.z);
 	}
 	else

@@ -1239,19 +1239,19 @@ void CSlimeManager::LoadModel()
 
 	//フレイムスライムのモデル読み込み
 	m_pFlameModel = new AnimeModel();
-	if (!m_pFlameModel->Load("Assets/Model/slime/slime_fire1.FBX", 0.30f, AnimeModel::ZFlip)) {		//倍率と反転は省略可
+	if (!m_pFlameModel->Load("Assets/Model/slime/slime_fire1.FBX", 0.30f, AnimeModel::XFlip)) {		//倍率と反転は省略可
 		MessageBox(NULL, "Flame_Slime", "Error", MB_OK);	//ここでエラーメッセージ表示
 	}
 	m_pFlameModel->SetVertexShader(m_pVS);
 	//ヒールスライムのモデル読み込み
 	m_pHealModel = new AnimeModel();
-	if (!m_pHealModel->Load("Assets/Model/slime/slime_heal_mesh.FBX", 0.45f, AnimeModel::ZFlip)) {		//倍率と反転は省略可
+	if (!m_pHealModel->Load("Assets/Model/slime/slime_heal_mesh.FBX", 0.45f, AnimeModel::XFlip)) {		//倍率と反転は省略可
 		MessageBox(NULL, "Heal_Slime", "Error", MB_OK);	//ここでエラーメッセージ表示
 	}
 	m_pHealModel->SetVertexShader(m_pVS);
 	//デビルスライムのモデル読み込み
 	m_pDevilSlimeModel = new AnimeModel;
-	if (!m_pDevilSlimeModel->Load("Assets/Model/boss_slime_devil/devil_walk.fbx", 0.23f, AnimeModel::ZFlip)) {			//倍率と反転は省略可
+	if (!m_pDevilSlimeModel->Load("Assets/Model/boss_slime_devil/devil_walk.fbx", 0.23f, AnimeModel::XFlip)) {			//倍率と反転は省略可
 		MessageBox(NULL, "devil_slime_model", "Error", MB_OK);		//ここでエラーメッセージ表示
 	}
 	for (int i = 0; i < CSlime_BossBase::DEVIL_SLIME_MAX; i++)
@@ -1268,7 +1268,7 @@ void CSlimeManager::LoadModel()
 
 	//岩スライムのモデル読み込み
 	m_pBossRockModel = new AnimeModel;
-	if (!m_pBossRockModel->Load("Assets/Model/boss_slime_rock/rock_walk_2.0.fbx", 0.5f, AnimeModel::ZFlip)) {			//倍率と反転は省略可
+	if (!m_pBossRockModel->Load("Assets/Model/boss_slime_rock/rock_walk_2.0.fbx", 0.5f, AnimeModel::XFlip)) {			//倍率と反転は省略可
 		MessageBox(NULL, "rock_slime_model", "Error", MB_OK);		//ここでエラーメッセージ表示
 	}
 	for (int i = 0; i < CSlime_BossBase::ROCK_SLIME_MAX; i++)

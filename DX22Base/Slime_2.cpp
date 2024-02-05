@@ -287,7 +287,7 @@ void CSlime_2::NormalMove()
 		// ベクトルを正規化して方向ベクトルを得る
 		tackleDirection = DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&directionVector));
 		// 方向ベクトルから回転行列を計算
-		m_Transform.fRadian.y = (atan2(-tackleDirection.m128_f32[0], -tackleDirection.m128_f32[2]));
+		m_Transform.fRadian.y = (atan2(tackleDirection.m128_f32[0], tackleDirection.m128_f32[2]));
 
 		//移動を0に
 		m_move = TTriType<float>(0.0f, 0.0f, 0.0f);
@@ -297,8 +297,8 @@ void CSlime_2::NormalMove()
 		if (m_nTackleCnt < LEVEL2_ATTACK_TACKLE_CNT)
 		{	//タックル時間に満たないならタックル継続
 			m_nTackleCnt++;
-			m_move.x = sin(m_Transform.fRadian.y) * LEVEL2_TACKLE_SPEED;
-			m_move.z = cos(m_Transform.fRadian.y) * LEVEL2_TACKLE_SPEED;
+			m_move.x = -(sin(m_Transform.fRadian.y)) * LEVEL2_TACKLE_SPEED;
+			m_move.z = -(cos(m_Transform.fRadian.y)) * LEVEL2_TACKLE_SPEED;
 
 			return;
 		}
