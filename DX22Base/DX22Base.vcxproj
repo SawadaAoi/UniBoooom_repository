@@ -260,6 +260,8 @@
     <ClCompile Include="StageFinishUI.cpp" />
     <ClCompile Include="Startup.cpp" />
     <ClCompile Include="StripeParticle.cpp" />
+    <ClCompile Include="SweatEffect.cpp" />
+    <ClCompile Include="SweatEffectManager.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="SceneGame.cpp" />
     <ClCompile Include="Timer.cpp" />
@@ -376,6 +378,8 @@
     <ClInclude Include="Stage3.h" />
     <ClInclude Include="StageFinishUI.h" />
     <ClInclude Include="StripeParticle.h" />
+    <ClInclude Include="SweatEffect.h" />
+    <ClInclude Include="SweatEffectManager.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="TimerStage1.h" />

@@ -33,6 +33,7 @@
 	・2024/01/25 待機モーションを変更 takagi
 	・2024/01/26 警告SE追加 suzumura
 	・2024/01/28 死亡モーション追加 Sawada
+	・2024/02/02 汗エフェクト処理追加 Tei
 
 ========================================== */
 #ifndef __PLAYER_H__
@@ -52,6 +53,8 @@
 #include "Shadow.h"
 #include "AnimeModel.h"
 #include "FrameCnt.h"
+#include "SweatEffectManager.h"
+
 // =============== クラス定義 =====================
 class CPlayer
 	: public CObject
@@ -96,11 +99,12 @@ public:
 	bool GetSafeTime();							//当たり判定があるかの確認
 	int* GetHpPtr();
 	bool GetDieFlg() const;
+	
 
 	// セット関数
 	void SetCamera(CCamera* pCamera);
 	bool GetAttackFlg();
-	
+	void SetSweatEffectMng(CSweatEffectManager* pSweatefcMng);
 
 private:
 	// ===プロトタイプ宣言===
@@ -115,6 +119,9 @@ private:
 
 	CShadow* m_pShadow;
 	CFrameCnt* m_pWaitFrameCnt;			// 待機モーション用フレームカウントダウン
+
+	CSweatEffectManager* m_pSweatEffectMng;
+	float m_fHammerSpeed;
 
 	int m_nHp;							// プレイヤーの体力
 	bool m_bDieFlg;						// プレイヤー死亡フラグ(trueの場合死亡)

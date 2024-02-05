@@ -41,6 +41,7 @@
 	・2024/01/26 警告SE追加 suzumura
 	・2024/01/28 死亡モーション追加 Sawada
 	・2024/01/28 プレイヤーを傾けてカメラからよく見えるように変更 Yamashita
+	・2024/02/02 汗エフェクト処理追加 Tei
 
 ======================================== */
 
@@ -103,6 +104,7 @@ CPlayer::CPlayer()
 	, m_bDieInvFlg(false)
 	, m_fDieInvCnt(0.0f)
 	, m_fRotate_x(PLAYER_ROTATE_X_NORMAL)
+	, m_fHammerSpeed(5.0f)
 {
 	m_pHammer = new CHammer();								// Hammerクラスをインスタンス
 
@@ -208,10 +210,13 @@ void CPlayer::Update()
 		{
 			SAFE_DELETE(m_pWaitFrameCnt);	//カウンタ削除
 
+			m_fHammerSpeed = PLAYER_SWING_ANIME_SPEED + (SwingSpeed_MIN - m_pHammer->GetInterval()) * 0.092f;
+
 			m_pModel->Play(
 				m_Anime[MOTION_SWING],
 				false, 
-				PLAYER_SWING_ANIME_SPEED + (SwingSpeed_MIN - m_pHammer->GetInterval()) * 0.092f);	//アニメーションの再生
+				m_fHammerSpeed);	//アニメーションの再生
+			
 
 			m_pModel->SetAnimationTime(m_Anime[MOTION_SWING], 0.0f);					//アニメーションタイムをスタート位置にセット
 
@@ -254,7 +259,13 @@ void CPlayer::Update()
 	{
 		m_pModel->Step(ADD_ANIM_FRAME);
 	}
-
+	
+	// 疲れ状態になったら汗が出る
+	if (m_fHammerSpeed <= 4.2f)
+	{
+		// 汗エフェクト作成
+		m_pSweatEffectMng->Create(m_Transform.fPos,m_OldTransform.fPos, m_Transform.fRadian);
+	}
 
 }
 
@@ -569,6 +580,11 @@ void CPlayer::SetCamera(CCamera * pCamera)
 bool CPlayer::GetAttackFlg()
 {
 	return m_bAttackFlg;
+}
+
+void CPlayer::SetSweatEffectMng(CSweatEffectManager* pSweatefcMng)
+{
+	m_pSweatEffectMng = pSweatefcMng;
 }
 
 /* ========================================

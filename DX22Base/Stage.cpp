@@ -23,6 +23,7 @@
 	・2023/12/28 BattleData格納処理をまとめた関数を追加	Sawada
 	・2024/01/01 ステージ分岐 Takagi
 	・2024/01/25 ヒットエフェクト関係の処理追加 Tei
+	・2024/02/02 汗エフェクト処理追加 Tei
 
 ========================================== */
 
@@ -92,10 +93,12 @@ CStage::CStage(CUIStageManager::E_STAGE_NUM eStage)
 
 	//================エフェクト動的確保================
 	m_pHitEffectMng = new CHitSlimeEffectManager();
+	m_pSweatEffectMng = new CSweatEffectManager();
 
 	//================セット================
 	// カメラ
 	m_pHitEffectMng->SetCamera(m_pCamera);
+	m_pSweatEffectMng->SetCamera(m_pCamera);
 	m_pPlayer->SetCamera(m_pCamera);
 	m_pExplosionMng->SetCamera(m_pCamera);
 	m_pSlimeMng->SetCamera(m_pCamera);
@@ -116,6 +119,9 @@ CStage::CStage(CUIStageManager::E_STAGE_NUM eStage)
 
 	//爆発マネージャー　←　タイマー
 	m_pSlimeMng->SetTimer(m_pUIStageManager->GetTimer());
+
+	//プレイヤー ← 汗エフェクトマネージャ―
+	m_pPlayer->SetSweatEffectMng(m_pSweatEffectMng);
 
 	// データ受け継ぎ
 	m_Data.Load();	//ファイルに上がっている情報を読み込む
@@ -147,6 +153,7 @@ CStage::~CStage()
 	SAFE_DELETE(m_pSlimeMng);
 	SAFE_DELETE(m_pExplosionMng);
 	SAFE_DELETE(m_pHitEffectMng);
+	SAFE_DELETE(m_pSweatEffectMng);
 	SAFE_DELETE(m_pCollision);
 	SAFE_DELETE(m_pFade);
 	SAFE_DELETE(m_pTexture);

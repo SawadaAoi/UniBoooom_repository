@@ -18,6 +18,7 @@
 	・2024/01/01 親コンストラクタ呼び出し takagi
 	・2024/01/15 GameFinish()関数修正・RecordData()関数追加 takagi
 	・2024/01/25 ヒットエフェクト関係の処理追加 Tei
+	・2024/02/02 汗エフェクト処理追加 Tei
 
 ========================================== */
 
@@ -115,6 +116,7 @@ void CStage2::Update()
 		PlayerHealItemCollision();		// 回復アイテム取る判定
 		Collision();					// 当たり判定更新
 		m_pHitEffectMng->Update();		// ヒットエフェクトマネージャー更新
+		m_pSweatEffectMng->Update(m_pPlayer->GetTransform().fPos);
 
 
 	}
@@ -185,6 +187,9 @@ void CStage2::Draw()
 
 	// ヒットエフェクト描画
 	m_pHitEffectMng->Draw();
+
+	// 汗エフェクト描画
+	m_pSweatEffectMng->Draw();
 }
 
 /* ========================================
