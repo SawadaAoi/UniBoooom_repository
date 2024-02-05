@@ -22,12 +22,12 @@
 
 // =============== クラス定義 =====================
 
-class CHitEffect
+class CHitSlimeEffect
 {
 public:
 	// ===メンバ関数宣言===
-	CHitEffect(TPos3d<float> fPos, float fTime, Effekseer::EffectRef hitEffect, const CCamera* pCamera);	//コンストラクタ
-	~CHitEffect();												// デストラクタ
+	CHitSlimeEffect(TPos3d<float> fPos, float fTime, Effekseer::EffectRef hitEffect, const CCamera* pCamera);	//コンストラクタ
+	~CHitSlimeEffect();												// デストラクタ
 	void Update();												// 更新関数
 	void Draw();												// 描画関数
 	void DisplayTimeAdd();										// ヒットエフェクト表示カウント加算処理関数
