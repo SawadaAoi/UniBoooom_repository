@@ -14,6 +14,8 @@
 	・2023/11/26　コンボ倍率の表示の変更 yamamoto
 	・2023/12/07 ゲームパラメータから一部定数移動・インクルード追加 takagi
 	・2024/01/26 処理を見やすく修正&&トータルスコア加算アニメ処理追加 sawada
+	・2024/02/02 ゲーム終了間際の加算スコアがトータルスコアに反映されるように suzumura
+	・2024/02/05 ゲーム終了間際の加算スコアがトータルスコアに反映されるように(改) sawada
 
 ========================================== */
 
@@ -35,6 +37,24 @@ const int ADD_SCORE_DISP_FRAME = 1.5f * 60;		// 加算スコア表示時間
 const int COMBO_MULT_DISP_FRAME = 1.0f * 60;	// コンボ倍率表示時間
 const int TOTAL_SCORE_MOVE_FRAME = 0.05f * 60;	// トータルスコア加算アニメ処理切り替え時間
 const int TOTAL_SCORE_MOVE_ADD_POINT = 100;		// トータルスコア加算アニメ処理加算値
+
+
+const int COMBO_MULTI_DISPLAY_NUM	= 6;					// 倍率表示最小コンボ数
+const int COMBO_MULTI_MAX_NUM		= 10;					// 倍率変化最大コンボ数
+
+const float COMBO_MULTI_NUM[COMBO_MULTI_MAX_NUM + 1] = {	// コンボ数による加算スコアの倍率
+	1.0f,	// 0
+	1.0f,	// 1
+	1.0f,	// 2
+	1.0f,	// 3
+	1.0f,	// 4
+	1.0f,	// 5
+	1.1f,	// 6
+	1.2f,	// 7
+	1.3f,	// 8
+	1.4f,	// 9
+	1.5f,	// 10
+};
 
 
 const int TOTAL_SCORE_DIGIT = 5;						//トータルスコアの桁数
@@ -95,10 +115,11 @@ CTotalScore::CTotalScore()
 		}
 	}
 
-	// スコア加算値配列リセット
 	for (int i = 0; i < MAX_COMBO_NUM; i++)
 	{
-		m_AddScore[i] = ResetPlusScore();
+		// スコア加算値配列リセット
+		m_AddScore[i] = ResetAddScore();
+
 	}
 
 }
@@ -131,63 +152,69 @@ CTotalScore::~CTotalScore()
 =========================================== */
 void CTotalScore::Update()
 {
-	TotalScoreMove();
+	TotalScoreMove();	// トータルスコア
 
 	// 加算スコア
 	for (int i = 0, lineNum = 1; i < MAX_COMBO_NUM; i++)
 	{
-		if (m_AddScore[i].nAddScore == 0)continue; // 値のない物はスルー
+		if (m_AddScore[i].nAddScore == 0)	continue;	// 値のない物はスルー
 
-		// コンボが終了した場合
-		if (m_AddScore[i].bEndComboFlg)
+		if (!m_AddScore[i].bEndComboFlg)	continue;	// コンボ継続中の場合は後続の処理は行わない
+
+		// コンボ終了後------------------------------
+
+		// コンボ倍率表示が終了していない場合
+		if (!m_AddScore[i].bDispCombMultEndFlg)
 		{
-			// コンボ倍率表示が終了している場合
-			if (m_AddScore[i].bDispComMultEndFlg)
+			// コンボ数が1～5の場合
+			if (m_AddScore[i].nComboCnt < COMBO_MULTI_DISPLAY_NUM)
 			{
-				m_AddScore[i].nDispFrame++;	// 加算スコア表示カウント加算
+				m_AddScore[i].bDispCombMultEndFlg = true; // コンボ倍率は表示しない為、表示終了
 			}
+			// コンボ倍率が6以上の場合
 			else
 			{
-				// コンボ倍率が1.1以上の場合
-				if (m_AddScore[i].fCombScoreMult >= 1.1f)
-				{
-					m_AddScore[i].nDispComMultFrame++;	// コンボ倍率表示カウント加算
+				m_AddScore[i].nDispCombMultCnt++;	// コンボ倍率表示カウント加算
 
-					// 一定秒数コンボ倍率を表示したか
-					if (m_AddScore[i].nDispComMultFrame >= COMBO_MULT_DISP_FRAME)
-					{
-						m_AddScore[i].bDispComMultEndFlg = true;
-						m_AddScore[i].nAddScore = static_cast<int>(m_AddScore[i].nAddScore * m_AddScore[i].fCombScoreMult);
-					}
-				}
-				else
+				// 一定秒数コンボ倍率を表示したか
+				if (m_AddScore[i].nDispCombMultCnt >= COMBO_MULT_DISP_FRAME)
 				{
-					m_AddScore[i].bDispComMultEndFlg = true;
+					m_AddScore[i].nAddScore = static_cast<int>
+						( m_AddScore[i].nAddScore * m_AddScore[i].fCombScoreMult );	// コンボ倍率を加算スコアに掛ける
+					m_AddScore[i].bDispCombMultEndFlg = true;						// コンボ倍率表示終了
 				}
 			}
+			
+			continue;	// ここで処理は終了
+		}
+		
+		// コンボ倍率表示終了後 ----------------------------------
 
+		// 加算スコア表示中の場合
+		if (!m_AddScore[i].bDispAddScoreEndFlg)
+		{
+			m_AddScore[i].nDispAddScoreCnt++;	// 加算スコア表示カウント加算
 
 			// 一定時間加算スコアを表示したか
-			if (m_AddScore[i].nDispFrame >= ADD_SCORE_DISP_FRAME)
+			if (ADD_SCORE_DISP_FRAME <= m_AddScore[i].nDispAddScoreCnt)
 			{
-				m_AddScore[i].bDispEndFlg = true;
-
+				AddTotalScore(m_AddScore[i].nAddScore);		// トータルスコアに加算
+				m_AddScore[i].bDispAddScoreEndFlg = true;	// 加算スコア描画を辞める
 			}
-
-
 		}
-
-		// 表示フラグがオフになっているか
-		if (m_AddScore[i].bDispEndFlg)
+		// 加算スコア表示終了後の場合
+		else
 		{
-			AddTotalScore(m_AddScore[i].nAddScore);	// トータルスコアに加算
-
-			// 以下加算スコア配列値リセット
-			m_AddScore[i] = ResetPlusScore();
-
-			continue;
+			m_AddScore[i] = ResetAddScore();		// 加算スコア配列値リセット
 
 		}
+
+		//// プレイヤーが死亡したか、
+		//if (*m_pTimer->GetTimePtr() <= 0 || m_pPlayer->GetDieFlg())
+		//{
+		//	m_AddScore[i].bDispAddScoreEndFlg = true;		// 加算スコア表示を終了
+
+		//}
 
 
 	}
@@ -210,7 +237,6 @@ void CTotalScore::Draw()
 
 	DrawBGTotalScore();		// トータルスコア背景描画
 	DrawTotalScore();		// トータルスコア描画
-	
 
 	// 加算スコア表示	-----------
 	// 同時コンボ数分複数行で表示する
@@ -220,20 +246,17 @@ void CTotalScore::Draw()
 
 		DrawBGAddScore(lineNum);	// 加算スコアの背景描画
 		DrawAddScore(i, lineNum);	// 加算スコア描画
-		lineNum++;
+		lineNum++;					// 段落切り替え
 
-		// コンボが終了した場合
-		if (m_AddScore[i].bEndComboFlg)
+		if (!m_AddScore[i].bEndComboFlg) continue;	// コンボ継続中の場合は後続の処理は行わない
+
+		// コンボ倍率表示フラグが有効の場合(コンボ数が6未満の場合は行わない)
+		if (!m_AddScore[i].bDispCombMultEndFlg)
 		{
-			// 倍率を表示する場合
-			if (!m_AddScore[i].bDispComMultEndFlg)
-			{
-				DrawBGAddScore(lineNum);	// 加算スコアの背景描画
-				DrawScoreComboMulti(i, lineNum);
-				lineNum++;
+			DrawBGAddScore(lineNum);			// 背景描画(加算スコアと同様のもの)
+			DrawScoreComboMulti(i, lineNum);	// 倍率描画(例:1.2)
+			lineNum++;							// 段落切り替え
 
-			}
-			
 		}
 
 	}
@@ -290,6 +313,7 @@ void CTotalScore::DrawAddScore(int nNum, int lineNum)
 		ADD_SCORE_POS.x - (ADD_SCORE_SIZE.x * AdScoDigi), 
 		ADD_SCORE_POS.y + (ADD_SCORE_HIGHT * lineNum) 
 	};
+
 	DrawTexture(
 		PLUS_SYMBOL_SIZE, 
 		fSetPos, 
@@ -297,8 +321,6 @@ void CTotalScore::DrawAddScore(int nNum, int lineNum)
 		PLUS_SYMBOL_UVPOS,
 		m_pTexture[TextureType::NUM_ADD_SCORE]);
 
-
-	
 }
 
 /* ========================================
@@ -534,19 +556,20 @@ void CTotalScore::DrawNumber(int dispNum, TDiType<float> fSize, TDiType<float> f
 	----------------------------------------
 	戻値：加算スコア構造体
 ======================================== */
-CTotalScore::PlusScore CTotalScore::ResetPlusScore()
+CTotalScore::PlusScore CTotalScore::ResetAddScore()
 {
-	PlusScore rePlusScore;	// 返す値
+	PlusScore reAddScore;	// 返す値
 		
-	rePlusScore.nAddScore			= 0;
-	rePlusScore.fCombScoreMult		= 0.0f;	// コンボスコア倍率
-	rePlusScore.bEndComboFlg		= false;
-	rePlusScore.nDispFrame			= 0;
-	rePlusScore.bDispEndFlg			= false;
-	rePlusScore.nDispComMultFrame	= 0;
-	rePlusScore.bDispComMultEndFlg	= false;
+	reAddScore.nAddScore			= 0;
+	reAddScore.nComboCnt			= 0;
+	reAddScore.fCombScoreMult		= 0.0f;	// コンボスコア倍率
+	reAddScore.bEndComboFlg			= false;
+	reAddScore.nDispAddScoreCnt		= 0;
+	reAddScore.bDispAddScoreEndFlg	= false;
+	reAddScore.nDispCombMultCnt		= 0;
+	reAddScore.bDispCombMultEndFlg	= false;
 
-	return rePlusScore;
+	return reAddScore;
 }
 
 /* ========================================
@@ -559,12 +582,10 @@ CTotalScore::PlusScore CTotalScore::ResetPlusScore()
 	----------------------------------------
 	戻値：なし
 ======================================== */
-void CTotalScore::SetAddScore(CCombo::ComboInfo comboInfo,int num)
+void CTotalScore::SetAddScore(CCombo::ComboInfo comboInfo, int num)
 {
-	// 加算スコアにコンボ倍率を乗算済みの場合はセットしない
-	if (m_AddScore[num].bDispComMultEndFlg) return;
-
 	m_AddScore[num].nAddScore = comboInfo.dScore;	// コンボのスコアを更新する
+	m_AddScore[num].nComboCnt = comboInfo.dCnt;		// コンボ数更新する
 	
 }
 
@@ -579,25 +600,8 @@ void CTotalScore::SetAddScore(CCombo::ComboInfo comboInfo,int num)
 ======================================== */
 void CTotalScore::ComboCheck(CCombo::ComboInfo comboInfo, int num)
 {
-	float fMult = 1.0f;	// 加算スコア値に掛ける倍率(デフォルトは1.0f)
-
-	// コンボ数が6以上の場合
-	if (6 <= comboInfo.dCnt)
-	{
-		switch (comboInfo.dCnt)	// コンボ数によって倍率が変わる
-		{
-		case 6: fMult = 1.1f; break;
-		case 7: fMult = 1.2f; break;
-		case 8: fMult = 1.3f; break;
-		case 9: fMult = 1.4f; break;
-		default:fMult = 1.5f; break;	// 10以上の場合は固定
-		}
-	}
-
-	m_AddScore[num].fCombScoreMult = fMult;	// コンボ加算スコア倍率セット
-
+	SetCombScoreMult(num);						// コンボスコア倍率セット
 	m_AddScore[num].bEndComboFlg = true;		// コンボ終了フラグ
-	m_AddScore[num].nDispFrame = 0;
 	
 }
 
@@ -615,12 +619,42 @@ void CTotalScore::AddTotalScore(int addScore)
 	m_nTotalScore += addScore;	// トータルスコアに加算スコアを足す
 
 	// 最大値超えしないようにする
-	if (m_nTotalScore > MAX_TOTALSCORE)
+	if ( MAX_TOTALSCORE < m_nTotalScore)
 	{
 		m_nTotalScore = MAX_TOTALSCORE;
 	}
 
 
+}
+
+/* ========================================
+	ゲーム終了トータルスコア加算関数
+	----------------------------------------
+	内容：ゲーム終了時に途中のトータルスコアの加算
+	----------------------------------------
+	引数1：加算するスコア値
+	----------------------------------------
+	戻値：なし
+======================================== */
+void CTotalScore::GameEndAddTotal()
+{
+	for (int i = 0; i < MAX_COMBO_NUM; i++)
+	{
+		if (m_AddScore[i].nAddScore == 0)	continue;		// 値のない物はスルー
+		if (m_AddScore[i].bDispAddScoreEndFlg)	continue;	// トータルスコアに加算済みのものはスルー
+
+		if (!m_AddScore[i].bDispCombMultEndFlg						// コンボ倍率描画が未終了
+			&& COMBO_MULTI_DISPLAY_NUM <= m_AddScore[i].nComboCnt )	// コンボ数が6以上の場合
+		{
+			// コンボ倍率を求める
+			SetCombScoreMult(i);
+			// コンボ倍率を加算スコアに掛ける
+			m_AddScore[i].nAddScore = static_cast<int>(m_AddScore[i].nAddScore * m_AddScore[i].fCombScoreMult);	
+		}
+
+		AddTotalScore(m_AddScore[i].nAddScore);	// トータルスコアに加算
+
+	}
 }
 
 /* ========================================
@@ -682,27 +716,53 @@ std::vector<int> CTotalScore::digitsToArray(int score, int digits)
 =========================================== */
 void CTotalScore::TotalScoreMove()
 {
-	// 表示用トータルスコアが加算後トータルスコアに追いついていない
-	if (m_nTotalScoreDisp < m_nTotalScore)
+	// 表示用トータルスコアが加算後トータルスコアが異なる
+	if (m_nTotalScoreDisp != m_nTotalScore)
 	{
 		m_nToScoreAddCnt++;	// 表示用トータルスコアの数字切り替えカウント加算
 
 		// 切り替え時間が過ぎているか
 		if (TOTAL_SCORE_MOVE_FRAME <= m_nToScoreAddCnt)
 		{
-			m_nTotalScoreDisp += TOTAL_SCORE_MOVE_ADD_POINT;
+			m_nTotalScoreDisp += TOTAL_SCORE_MOVE_ADD_POINT;	// 表示用スコアを加算する
+
+			// 表示用トータルスコアに値を足しすぎた場合
+			if (m_nTotalScore < m_nTotalScoreDisp)
+			{
+				m_nTotalScoreDisp = m_nTotalScore;	// 値を合わせる
+			}
+
 			m_nToScoreAddCnt = 0;
 		}
 	}
-	// 表示用トータルスコアが加算後トータルスコアに追いついている
+}
+
+
+/* ========================================
+	コンボ数倍率セット関数
+	-------------------------------------
+	内容：コンボ数に応じて倍率をセットする
+	-------------------------------------
+	引数1：スコア加算配列の添え字
+	-------------------------------------
+	戻値：無し
+=========================================== */
+void CTotalScore::SetCombScoreMult(int num)
+{
+	int comboCnt	= m_AddScore[num].nComboCnt;	// コンボ数をセット(見やすさ重視)
+	float fMult		= 1.0f;							// 加算スコア値に掛ける倍率(デフォルトは1.0f)
+
+	// コンボ数が1～9
+	if (comboCnt < COMBO_MULTI_MAX_NUM)
+	{
+		fMult = COMBO_MULTI_NUM[comboCnt];				// 設定したコンボ数による倍率をセットする
+	}
+	// コンボ数が10以上の場合
 	else
 	{
-		// 表示用トータルスコアに値を足しすぎた場合
-		if (m_nTotalScore != m_nTotalScoreDisp)
-		{
-			m_nTotalScoreDisp = m_nTotalScore;	// 値を合わせる
-		}
-		m_nToScoreAddCnt = 0;
+		fMult = COMBO_MULTI_NUM[COMBO_MULTI_MAX_NUM];	// 倍率は固定
 	}
+
+	m_AddScore[num].fCombScoreMult = fMult;	// コンボ加算スコア倍率セット
 }
 

@@ -1251,7 +1251,7 @@ void CSlimeManager::LoadModel()
 	m_pHealModel->SetVertexShader(m_pVS);
 	//デビルスライムのモデル読み込み
 	m_pDevilSlimeModel = new AnimeModel;
-	if (!m_pDevilSlimeModel->Load("Assets/Model/boss_slime_devil/devil_walk.fbx", 0.23f, AnimeModel::ZFlip)) {			//倍率と反転は省略可
+	if (!m_pDevilSlimeModel->Load("Assets/Model/boss_slime_devil/devil_walk.fbx", 0.23f, AnimeModel::XFlip)) {			//倍率と反転は省略可
 		MessageBox(NULL, "devil_slime_model", "Error", MB_OK);		//ここでエラーメッセージ表示
 	}
 	for (int i = 0; i < CSlime_BossBase::DEVIL_SLIME_MAX; i++)
