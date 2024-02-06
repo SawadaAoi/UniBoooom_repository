@@ -11,6 +11,7 @@
 	・2023/12/20 制作 takagi
 	・2023/12/24 サイズ・フレーム変更をマネージャへ takagi
 	・2024/01/11 ブレンドステート修正に伴う透明度調整 takagi
+	・2024/02/06 継承元修正 takagi
 
 ========================================== */
 
@@ -33,7 +34,7 @@ const TDiType<int> MAX_SEAT(1);	//1x1
 	戻値：なし
 =========================================== */
 CUnion::CUnion(const int & nFrame)
-	:CTitleAnime(MAX_ANIM, MAX_SEAT)	//委譲
+	:CDrawAnim(MAX_ANIM, MAX_SEAT)	//委譲
 	,m_pCnt(nullptr)					//縮小用カウンタ
 {
 	// =============== 初期化 ===================
@@ -65,7 +66,7 @@ CUnion::~CUnion()
 void CUnion::Update()
 {
 	// =============== 更新 ===================
-	CTitleAnime::Update();	//親の関数使用
+	CDrawAnim::Update();	//親の関数使用
 	if (m_pCnt)	//ヌルチェック
 	{
 		--*m_pCnt;	//カウントダウン

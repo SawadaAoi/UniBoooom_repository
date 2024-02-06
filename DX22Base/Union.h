@@ -10,6 +10,7 @@
 	変更履歴
 	・2023/12/20 制作 takagi
 	・2023/12/24 フレーム変更をマネージャへ takagi
+	・2024/02/06 継承元修正 takagi
 
 ========================================== */
 
@@ -17,11 +18,11 @@
 #define __UNION_H__
 
 // =============== インクルード =====================
-#include "TitleAnime.h"	//親のヘッダ
+#include "DrawAnimation.h"	//親のヘッダ
 #include "FrameCnt.h"	//メンバのヘッダ
 
 // =============== クラス定義 =====================
-class CUnion :public CTitleAnime	//アニメーション
+class CUnion :public CDrawAnim	//アニメーション
 {
 public:
 	// ===プロトタイプ宣言===

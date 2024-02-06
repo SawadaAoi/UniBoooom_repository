@@ -10,6 +10,8 @@
 	変更履歴
 	・2023/12/16 制作 takagi
 	・2023/12/17 引数参照化 takagi
+	・2024/02/02 リファクタリング takagi
+	・2024/02/05 リファクタリング takagi
 
 ========================================== */
 
@@ -17,22 +19,16 @@
 #define __TITLE_LOGO_H__
 
 // =============== インクルード =====================
-#include "TitleAnime.h"	//親のヘッダ
-#include "FrameCnt.h"	//メンバのヘッダ
+#include "TitleInitZoomOut.h"	//親のヘッダ
 
 // =============== クラス定義 =====================
-class CTitleLogo :public CTitleAnime	//アニメーション
+class CTitleLogo :public CTitleInitZoomOut	//開始時ズームアウトするタイトル用平面オブジェ
 {
 public:
 	// ===プロトタイプ宣言===
-	CTitleLogo(const int& nWaitTime = 0);								//コンストラクタ
-	~CTitleLogo();														//デストラクタ
-	void Update() override;												//更新
-	void Draw(const E_DRAW_MODE & eMode = E_DRAW_MODE_NORMAL) override;	//描画
-	void ChangeLtoS(const int& nFrame);									//縮小
-private:
-	// ===変数宣言===========
-	CFrameCnt* m_pCntLtoS;	//縮小カウンタ
+	CTitleLogo();					//コンストラクタ
+	virtual ~CTitleLogo();			//デストラクタ
+	virtual void Update() final;	//更新
 };	//タイトルロゴ
 
 #endif	//!__TITLE_LOGO_H__

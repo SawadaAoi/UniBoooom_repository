@@ -10,6 +10,7 @@
 	変更履歴
 	・2023/12/16 制作 takagi
 	・2023/12/17 ChackPutOut()関数追加・引数参照化 takagi
+	・2024/02/05 リファクタリング takagi
 
 ========================================== */
 
@@ -24,14 +25,8 @@ class CTitleObj :public C2dPolygon	//平面オブジェ
 {
 public:
 	// ===プロトタイプ宣言===
-	CTitleObj(const int& nWaitTime = 0);								//コンストラクタ
-	~CTitleObj();														//デストラクタ
-	void Update() override;												//更新
-	void Draw(const E_DRAW_MODE & eMode = E_DRAW_MODE_NORMAL) override;	//描画
-	bool ChackDraw();													//表示しているか
-private:
-	// ===メンバ変数宣言=====
-	int* m_pnWaitTime;	//初動待機時間計測
+	CTitleObj();			//コンストラクタ
+	virtual ~CTitleObj();	//デストラクタ
 };	//タイトル用オブジェ
 
 #endif	//!__TITLE_OBJ_H__
