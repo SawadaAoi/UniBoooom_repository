@@ -571,7 +571,7 @@ void CResult::DispNum(int dispNum, int nDigits, TDiType<float> pos, TDiType<floa
 	for (int i = 0; i < digitArray.size(); i++)
 	{
 
-		int width = NumSpace * i;
+		int width = int(NumSpace * i);
 		//ワールド行列はXとYのみを考慮して作成(Zは10ぐらいに配置
 		DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(pos.x - width, pos.y, 0.0f);
 		DirectX::XMStoreFloat4x4(&mat, DirectX::XMMatrixTranspose(world));

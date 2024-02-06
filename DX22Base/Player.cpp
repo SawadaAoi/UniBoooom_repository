@@ -74,7 +74,8 @@ const float PLAYER_SWING_ANIME_SPEED = 5.0f;				// ƒvƒŒƒCƒ„[‚ÌˆÚ“®ƒAƒjƒ[ƒVƒ‡ƒ
 const float	ADD_ANIM_FRAME = 1.0f / 60.0f;
 const int   PLAYER_WARNING_HP = 1;							//•m€‚ÌŒx‚ğs‚¤ƒvƒŒƒCƒ„[c‚èHP
 
-const int	DIE_AFTER_INTERVAL = 2.0f * 60;					// €–S‚µ‚Ä‚©‚çGameOverƒeƒLƒXƒg‚ªo‚é‚Ü‚Å‚Ì—P—\ŠÔ
+const int	DIE_AFTER_INTERVAL = int(2.0f * 60);	// €–S‚µ‚Ä‚©‚çGameOverƒeƒLƒXƒg‚ªo‚é‚Ü‚Å‚Ì—P—\ŠÔ
+const float EFFECT_SWING_SPEED = 4.2f;				// Š¾‚ÌƒGƒtƒFƒNƒg‚ªon‚ß‚éƒnƒ“ƒ}[‚ÌƒXƒCƒ“ƒO‘¬“x
 
 /* ========================================
    ŠÖ”FƒRƒ“ƒXƒgƒ‰ƒNƒ^
@@ -261,7 +262,7 @@ void CPlayer::Update()
 	}
 	
 	// ”æ‚êó‘Ô‚É‚È‚Á‚½‚çŠ¾‚ªo‚é
-	if (m_fHammerSpeed <= 4.2f)
+	if (m_fHammerSpeed <= EFFECT_SWING_SPEED)
 	{
 		// Š¾ƒGƒtƒFƒNƒgì¬
 		m_pSweatEffectMng->Create(m_Transform.fPos, m_Transform.fRadian);
