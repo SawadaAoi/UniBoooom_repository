@@ -18,6 +18,7 @@
 	・2024/01/01 親コンストラクタ呼び出し takagi
 	・2024/01/15 GameFinish()関数修正・RecordData()関数追加 takagi
 	・2024/01/25 ヒットエフェクト関係の処理追加 Tei
+	・2024/01/30 プレイヤー移動エフェクト関係の処理追加 Tei
 	・2024/02/05 ゲーム終了間際の加算スコアがトータルスコアに反映されるように(改) sawada
 
 ========================================== */
@@ -115,7 +116,6 @@ void CStage3::Update()
 		Collision();					// 当たり判定更新
 		m_pHitEffectMng->Update();		// ヒットエフェクトマネージャー更新
 
-
 	}
 
 #if SCENE_TRANSITION
@@ -182,7 +182,7 @@ void CStage3::Draw()
 		m_pPause->Draw();
 	}
 
-	// ヒットエフェクト描画
+	// エフェクト描画
 	m_pHitEffectMng->Draw();
 }
 

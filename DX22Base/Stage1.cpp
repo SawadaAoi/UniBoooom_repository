@@ -31,6 +31,7 @@
 	・2024/01/01 親コンストラクタ呼び出し takagi
 	・2024/01/15 GameFinish()関数修正・RecordData()関数追加 takagi
 	・2024/01/25 ヒットエフェクト関係の処理追加 Tei
+	・2024/01/30 プレイヤー移動エフェクト関係の処理追加 Tei
 	・2024/02/05 ゲーム終了間際の加算スコアがトータルスコアに反映されるように(改) sawada
 
 ========================================== */
@@ -60,7 +61,6 @@ CStage1::CStage1()
 	m_pFloor = new CFloor(m_pPlayer->GetPosAddress(), CFloor::Stage1);	// 床生成
 	//================セット================
 	m_pFloor->SetCamera(m_pCamera);
-
 }
 
 /* ========================================
@@ -129,7 +129,6 @@ void CStage1::Update()
 		PlayerHealItemCollision();		// 回復アイテム取る判定
 		Collision();					// 当たり判定更新
 		m_pHitEffectMng->Update();		// ヒットエフェクトマネージャー更新
-		
 	}
 
 #if SCENE_TRANSITION
@@ -196,8 +195,9 @@ void CStage1::Draw()
 		m_pPause->Draw();
 	}
 
-	// ヒットエフェクト描画
+	// エフェクト描画
 	m_pHitEffectMng->Draw();
+
 }
 
 /* ========================================
