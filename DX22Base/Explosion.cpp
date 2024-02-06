@@ -295,17 +295,17 @@ bool CExplosion::GetSeFlg()
 =========================================== */
 void CExplosion::EffectStart()
 {
-	m_efcHnadle = LibEffekseer::GetManager()->Play(m_explodeEffect, 	//エフェクトの開始
+	m_efcHandle = LibEffekseer::GetManager()->Play(m_explodeEffect, 	//エフェクトの開始
 		m_Transform.fPos.x, 
 		m_Transform.fPos.y, 
 		m_Transform.fPos.z);
 
-	LibEffekseer::GetManager()->SetScale(m_efcHnadle, 					//エフェクトのサイズを設定
+	LibEffekseer::GetManager()->SetScale(m_efcHandle, 					//エフェクトのサイズを設定
 		EXPLODE_STANDARD_SIZE * m_fMaxSize, 
 		EXPLODE_STANDARD_SIZE * m_fMaxSize, 
 		EXPLODE_STANDARD_SIZE * m_fMaxSize);	
 
-	LibEffekseer::GetManager()->SetSpeed(m_efcHnadle,					//エフェクトの再生速度を設定
+	LibEffekseer::GetManager()->SetSpeed(m_efcHandle,					//エフェクトの再生速度を設定
 		EXPLODE_STANDARD_ONE_FRAME / m_fExplodeTime);		
 }
 

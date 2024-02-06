@@ -84,7 +84,7 @@ private:
 	int m_nSeCnt;
 
 	Effekseer::EffectRef m_explodeEffect;
-	Effekseer::Handle m_efcHnadle;
+	Effekseer::Handle m_efcHandle;
 };
 
 #endif // __EXPLOSION_H__

@@ -27,15 +27,16 @@ class CSlime_Flame :
 public:
 	// ===プロトタイプ宣言===
 	CSlime_Flame();
-	CSlime_Flame(TPos3d<float> pos, Effekseer::EffectRef flameSlimeEffect, VertexShader* pVS, AnimeModel* pModel);
+	CSlime_Flame(TPos3d<float> pos, Effekseer::EffectRef flameSlimeEffect, AnimeModel* pModel);
 	~CSlime_Flame();
+	void Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)override;
 	void NormalMove() override;
 	void SetNormalSpeed() override;
 
 private:
 	////=======Effekseer=======
 	//Effekseer::EffectRef m_flameSlimeEffect;
-	//Effekseer::Handle m_efcslimeHnadle;
+	//Effekseer::Handle m_efcFlameHandle;
 };
 
 

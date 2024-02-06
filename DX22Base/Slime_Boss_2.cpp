@@ -11,6 +11,7 @@
 	・2023/12/12 クラス作成 Sawada
 	・2023/12/14 攻撃動作を追加 Sawada
 	・2024/01/23 着地時の高速移動バグを修正 Sawada
+	・2023/02/02 アニメーションの追加 yamashita
 
 ========================================== */
 
@@ -288,7 +289,7 @@ void CSlime_Boss_2::Draw()
 
 
 	//フレーム
-	DirectX::XMMATRIX world = matInv * DirectX::XMMatrixTranslation(m_Transform.fPos.x + 0.2f, m_Transform.fPos.y + SLIME_HP_HEIGHT, m_Transform.fPos.z);
+	DirectX::XMMATRIX world = matInv * DirectX::XMMatrixTranslation(m_Transform.fPos.x, m_Transform.fPos.y + SLIME_HP_HEIGHT, m_Transform.fPos.z);
 	DirectX::XMStoreFloat4x4(&mat[0], DirectX::XMMatrixTranspose(world));
 	Sprite::SetSize(DirectX::XMFLOAT2(3.2f, 0.7f));
 

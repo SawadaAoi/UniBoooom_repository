@@ -81,7 +81,7 @@ CFloor::CFloor(TPos3d<float>* pPlayerPos, StageKinds stageKind)
 			break;
 		}
 
-		m_Transform[i].fPos		= { pos.x, -0.1f, pos.z };					//ポジションの初期化
+		m_Transform[i].fPos		= { pos.x, -0.6f, pos.z };					//ポジションの初期化
 		m_Transform[i].fScale	= { FLOOR_SCALE[(int)m_stage].x, 1.0f, FLOOR_SCALE[(int)m_stage].y };	//スケールの初期化
 		m_Transform[i].fRadian	= { 0.0f, 0.0f, 0.0f };						//回転角を初期化
 	}	
@@ -196,7 +196,7 @@ void CFloor::calculationPosition()
 			break;
 		}
 
-		m_Transform[i].fPos = { pos.x, -0.1f, pos.z };	//座標を確定
+		m_Transform[i].fPos = { pos.x, -0.6f, pos.z };	//座標を確定
 	}
 }
 
