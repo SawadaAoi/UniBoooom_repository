@@ -56,8 +56,6 @@ CStage::CStage(CUIStageManager::E_STAGE_NUM eStage)
 	, m_pHealItemMng(nullptr)
 	, m_pUIStageManager(nullptr)
 	, m_pPause(nullptr)	//ポーズ
-	, m_pPlayerHp(nullptr)
-	, m_pTimeCnt(nullptr)
 	, m_pSEHitHammer(nullptr)
 	, m_pSEHitHammerSpeaker(nullptr)
 {
@@ -106,10 +104,10 @@ CStage::CStage(CUIStageManager::E_STAGE_NUM eStage)
 	m_pPause = new CPause(m_pCamera);
 
 	//スライムマネージャー　←　スコアマネージャー
-	m_pSlimeMng->SetScoreOHMng(m_pUIStageManager->GetScoreMng());
+	m_pSlimeMng->SetScoreOHMng(m_pUIStageManager->GetScoreOHMngPtr());
 
 	//爆発マネージャー　←　コンボ
-	m_pExplosionMng->SetCombo(m_pUIStageManager->GetCombo());
+	m_pExplosionMng->SetCombo(m_pUIStageManager->GetComboPtr());
 
 	//スライムマネージャー　←　爆発マネージャー
 	m_pSlimeMng->SetExplosionMng(m_pExplosionMng);
@@ -118,7 +116,7 @@ CStage::CStage(CUIStageManager::E_STAGE_NUM eStage)
 	m_pSlimeMng->SetHealMng(m_pHealItemMng);
 
 	//爆発マネージャー　←　タイマー
-	m_pSlimeMng->SetTimer(m_pUIStageManager->GetTimer());
+	m_pSlimeMng->SetTimer(m_pUIStageManager->GetTimerPtr());
 
 	//プレイヤー ← 汗エフェクトマネージャ―
 	m_pPlayer->SetSweatEffectMng(m_pSweatEffectMng);
@@ -176,7 +174,7 @@ CStage::~CStage()
 void CStage::GameFinish()
 {
 	// ゲームが終了したか？
-	if (m_pUIStageManager->GetStageFinish()->GetGameEndFlg())
+	if (m_pUIStageManager->GetStageFinishPtr()->GetGameEndFlg())
 	{
 		// =============== フラグ管理 =====================
 		m_bFinish = true;	// タイトルシーン終了フラグON

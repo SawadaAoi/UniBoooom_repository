@@ -72,6 +72,8 @@ public:
 	//virtual void Draw() const;			//描画	
 	//virtual E_TYPE GetType() const = 0;	//自身の種類ゲッタ
 	void Collision();
+
+
 protected:
 	virtual void RecordData() = 0;	//データ記録
 	void GameFinish();
@@ -107,9 +109,6 @@ protected:
 	CStartText* m_pStartText;	// ゲームスタート描画
 	CHitSlimeEffectManager* m_pHitEffectMng;
 	CSweatEffectManager* m_pSweatEffectMng;
-
-	const int* m_pPlayerHp;		// プレイヤーHP取得用
-	const int* m_pTimeCnt;		// 制限時間取得用
 
 	//サウンド
 	XAUDIO2_BUFFER* m_pSEHitHammer;

@@ -49,12 +49,16 @@ public:
 	int FirstComboSet();
 	void AddCombo(int num);
 	void AddScore(int num,int combo);
-	int GetCombo(int num);
 	void EndCombo(int num);
+
+
 	void DisplayNumber(int cnt, float shiftPosY);
 	void DrawTexture(float posX, float posY, float h, float w, Texture* pTexture);
 	void SetTotalScore(CTotalScore* pTotalScore);
 
+
+	int GetComboNum(int num);
+	int GetComboEndFlg(int num);
 	int GetMaxCombo();
 private:
 	// ===ƒƒ“ƒo•Ï”éŒ¾===

@@ -45,10 +45,11 @@ public:
 	~CUIStageManager();
 	void Update();
 	void Draw();
-	CScoreOHManager* GetScoreMng();	//スコアマネージャーポインタを取得
-	CCombo* GetCombo();	//コンボのポインタを取得
-	CTimer* GetTimer();	//タイマーのポインタを取得
-	CStageFinish* GetStageFinish();
+	CScoreOHManager* GetScoreOHMngPtr();	//スコアマネージャーポインタを取得
+	CCombo* GetComboPtr();	//コンボのポインタを取得
+	CTimer* GetTimerPtr();	//タイマーのポインタを取得
+	CStageFinish* GetStageFinishPtr();
+	CTotalScore* GetTotalScorePtr();
 
 	int GetTotalScore();	//総スコアゲッタ
 

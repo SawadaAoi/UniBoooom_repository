@@ -151,6 +151,10 @@ void CSlime_Boss_2::Update(tagTransform3d playerTransform)
 			// アニメーションを被ダメに変更
 			if (m_eCurAnime != DEVIL_SLIME_HIT)
 			{	
+				// アニメーションを変更する前に現在のアニメを初期化
+				m_pModel->SetAnimationTime(m_eCurAnime, 0.0f);
+				m_pModel->Step(0.0f);
+
 				m_eCurAnime = DEVIL_SLIME_HIT;	// アニメーションを被ダメに変更
 				m_fAnimeTime = 0.0f;			// アニメーションタイムをリセット
 			}
@@ -205,8 +209,14 @@ void CSlime_Boss_2::Draw()
 	if (m_bDrawFlg == false) return;
 
 	//行列状態を取得してセット
+	DirectX::XMFLOAT4X4 worldMat;
+	DirectX::XMStoreFloat4x4(&worldMat, XMMatrixTranspose(
+		DirectX::XMMatrixScaling(m_Transform.fScale.x, m_Transform.fScale.y, m_Transform.fScale.z) *
+		DirectX::XMMatrixRotationY(m_Transform.fRadian.y) *
+		DirectX::XMMatrixTranslation(m_Transform.fPos.x, m_Transform.fPos.y, m_Transform.fPos.z)));
+
 	DirectX::XMFLOAT4X4 mat[3] = {
-	m_Transform.GetWorldMatrixSRT(),
+	worldMat,
 	m_pCamera->GetViewMatrix(),
 	m_pCamera->GetProjectionMatrix()
 	};
@@ -217,10 +227,10 @@ void CSlime_Boss_2::Draw()
 		ShaderList::SetWVP(mat);
 
 		// 複数体を共通のモデルで扱っているため描画のタイミングでモーションの種類と時間をセットする
-		m_pModel->Play(m_eCurAnime, true);
-		m_pModel->SetAnimationTime(m_eCurAnime, m_fAnimeTime);	// アニメーションタイムをセット
+		m_pModel->Play(DEVIL_SLIME_HIT, true);
+		m_pModel->SetAnimationTime(DEVIL_SLIME_HIT, m_fAnimeTime);	// アニメーションタイムをセット
 		// アニメーションタイムをセットしてから動かさないと反映されないため少しだけ進める
-		m_pModel->Step(0.000001f);
+		m_pModel->Step(0.0f);
 
 		// レンダーターゲット、深度バッファの設定
 		RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得
@@ -397,14 +407,14 @@ void CSlime_Boss_2::MoveNormal()
 		// ベクトルを正規化して方向ベクトルを得る
 		DirectX::XMVECTOR direction = DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&directionVector));
 		// 方向ベクトルから回転行列を計算
-		m_Transform.fRadian.y = atan2(-directionVector.x, -directionVector.z);
+		m_Transform.fRadian.y = atan2(directionVector.x, directionVector.z);
 
 		// 攻撃処理に切り替え
 		m_nMoveCnt[MOVE_STATE::NORMAL]++;
 		// 攻撃処理→ジャンプ　切り替え時間
 		if ((STATE_CHANGE_ATTACK_INTERVAL * 60) <= m_nMoveCnt[MOVE_STATE::NORMAL])
 		{
-			m_nMoveState = MOVE_STATE::JUMP_CHARGE;		// 状態を切り替え
+			m_nMoveState = MOVE_STATE::JUMP_CHARGE;	// 状態を切り替え
 			m_nMoveCnt[MOVE_STATE::NORMAL] = 0;		// 加算をリセット
 		}
 

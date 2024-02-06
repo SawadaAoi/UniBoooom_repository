@@ -333,10 +333,10 @@ void CSceneManager::MakeNewScene()
 		break;						//分岐処理終了
 
 		// =============== リザルトシーン =====================
-	case CScene::E_TYPE_RESULT:		//遷移先：リザルト
-		m_pScene = new CResult();	//動的確保
-		PlayBGM(m_eNextScene);		//BGMの再生
-		break;						//分岐処理終了
+	case CScene::E_TYPE_RESULT:					//遷移先：リザルト
+		m_pScene = new CResult();				//動的確保
+		PlayBGM(m_eNextScene);					//BGMの再生
+		break;									//分岐処理終了
 
 		// =============== 前のシーン =====================
 	case CScene::E_TYPE_PAST:			//遷移：戻る
