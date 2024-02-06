@@ -33,6 +33,7 @@
 	・2024/01/25 待機モーションを変更 takagi
 	・2024/01/26 警告SE追加 suzumura
 	・2024/01/28 死亡モーション追加 Sawada
+	・2024/01/30 プレイヤー移動エフェクト用変数、関数追加
 	・2024/02/02 汗エフェクト処理追加 Tei
 
 ========================================== */
@@ -53,6 +54,8 @@
 #include "Shadow.h"
 #include "AnimeModel.h"
 #include "FrameCnt.h"
+#include "WalkEffectManager.h"
+
 #include "SweatEffectManager.h"
 
 // =============== クラス定義 =====================
@@ -91,6 +94,7 @@ public:
 	void LoadSound();	//サウンド読み込み関数
 	void PlaySE(SE se, float volume = 1.0f);
 	void Healing();
+	void ShowWalkEffect();
 
 	// ゲット関数
 	tagSphereInfo GetHammerSphere();	//当たり判定を取るためゲッター
@@ -118,7 +122,10 @@ private:
 	CCamera* m_pCamera;					// プレイヤーを追従するカメラ
 
 	CShadow* m_pShadow;
-	CFrameCnt* m_pWaitFrameCnt;			// 待機モーション用フレームカウントダウン
+	CFrameCnt* m_pWaitFrameCnt;				// 待機モーション用フレームカウントダウン
+	CWalkEffectManager* m_pWalkEffectMng;	// プレイヤー移動エフェクト用
+
+	int m_nShowEffectCnt;
 
 	CSweatEffectManager* m_pSweatEffectMng;
 	float m_fHammerSpeed;
@@ -143,6 +150,10 @@ private:
 	float m_fDieInvCnt;					// 死亡猶予時間カウント
 
 	float m_fRotate_x;					// プレイヤーの表示用傾き
+
+	int m_nWalkEffeCnt;
+
+
 
 	// ===列挙===
 	enum MOTION

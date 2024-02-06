@@ -51,6 +51,7 @@
 #include "Sound.h"
 #include "UIStageManager.h"
 #include "HitSlimeEffectManager.h"
+#include "WalkEffectManager.h"
 #include "SweatEffectManager.h"
 #include "BattleData.h"			//メンバのヘッダ
 #include "GameStartText.h"
@@ -115,7 +116,7 @@ protected:
 	IXAudio2SourceVoice* m_pSEHitHammerSpeaker;
 
 private:
-	void LoadSE();
+
 };	//ステージ
 
 #endif	//!__STAGE_H__

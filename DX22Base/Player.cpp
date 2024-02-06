@@ -41,6 +41,7 @@
 	E2024/01/26 ŒxSE’Ç‰Á suzumura
 	E2024/01/28 €–Sƒ‚[ƒVƒ‡ƒ“’Ç‰Á Sawada
 	E2024/01/28 ƒvƒŒƒCƒ„[‚ğŒX‚¯‚ÄƒJƒƒ‰‚©‚ç‚æ‚­Œ©‚¦‚é‚æ‚¤‚É•ÏX Yamashita
+	E2024/01/30 ƒvƒŒƒCƒ„[ˆÚ“®ƒGƒtƒFƒNƒg—pˆ—’Ç‰Á Tei
 	E2024/02/02 Š¾ƒGƒtƒFƒNƒgˆ—’Ç‰Á Tei
 
 ======================================== */
@@ -74,6 +75,7 @@ const float PLAYER_SWING_ANIME_SPEED = 5.0f;				// ƒvƒŒƒCƒ„[‚ÌˆÚ“®ƒAƒjƒ[ƒVƒ‡ƒ
 const float	ADD_ANIM_FRAME = 1.0f / 60.0f;
 const int   PLAYER_WARNING_HP = 1;							//•m€‚ÌŒx‚ğs‚¤ƒvƒŒƒCƒ„[c‚èHP
 
+const int	WALK_EFFECT_INTERVAL = 0.2f * 60;				// •à‚­ƒGƒtƒFƒNƒg‚ÌoŒ»ŠÔŠu
 const int	DIE_AFTER_INTERVAL = int(2.0f * 60);	// €–S‚µ‚Ä‚©‚çGameOverƒeƒLƒXƒg‚ªo‚é‚Ü‚Å‚Ì—P—\ŠÔ
 const float EFFECT_SWING_SPEED = 4.2f;				// Š¾‚ÌƒGƒtƒFƒNƒg‚ªon‚ß‚éƒnƒ“ƒ}[‚ÌƒXƒCƒ“ƒO‘¬“x
 
@@ -104,8 +106,9 @@ CPlayer::CPlayer()
 	, m_pWaitFrameCnt(nullptr)
 	, m_bDieInvFlg(false)
 	, m_fDieInvCnt(0.0f)
+	, m_pWalkEffectMng(nullptr)
+	, m_nShowEffectCnt(0)
 	, m_fRotate_x(PLAYER_ROTATE_X_NORMAL)
-	, m_fHammerSpeed(5.0f)
 {
 	m_pHammer = new CHammer();								// HammerƒNƒ‰ƒX‚ğƒCƒ“ƒXƒ^ƒ“ƒX
 
@@ -123,6 +126,8 @@ CPlayer::CPlayer()
 
 	LoadAnime();	//ƒAƒjƒ[ƒVƒ‡ƒ“‚Ì“Ç‚İ‚İ
 	m_pShadow = new CShadow();
+
+	m_pWalkEffectMng = new CWalkEffectManager();
 }
 /* ========================================
    ŠÖ”FƒfƒXƒgƒ‰ƒNƒ^
@@ -135,6 +140,7 @@ CPlayer::CPlayer()
 ======================================== */
 CPlayer::~CPlayer()
 {
+	SAFE_DELETE(m_pWalkEffectMng);
 	SAFE_DELETE(m_pShadow);
 	SAFE_DELETE(m_pModel);
 	SAFE_DELETE(m_pHammer);
@@ -235,8 +241,6 @@ void CPlayer::Update()
 	}
 
 
-
-
 	// –³“Gó‘Ô‚É‚È‚Á‚Ä‚¢‚éê‡
 	if (m_bSafeTimeFlg)
 	{
@@ -268,6 +272,9 @@ void CPlayer::Update()
 		m_pSweatEffectMng->Create(m_Transform.fPos, m_Transform.fRadian);
 	}
 
+	
+	//SetOldPos();	//	ƒvƒŒƒCƒ„[17ƒtƒŒ[ƒ€‘O‚Æ30ƒtƒŒ[ƒ€‘O‚ÌˆÊ’u‚ğXV
+	m_pWalkEffectMng->Update();
 }
 
 /* ========================================
@@ -341,6 +348,8 @@ void CPlayer::Draw()
 	}
 
 	m_pShadow->Draw(m_Transform, PLAYER_SHADOW_SCALE, m_pCamera);	// ‰e‚Ì•`‰æ
+	m_nWalkEffeCnt++;
+	m_pWalkEffectMng->Draw();
 }
 
 /* ========================================
@@ -389,23 +398,21 @@ void CPlayer::MoveKeyboard()
 
 	// ƒL[“ü—Í
 	// ã‰º
-	if (IsKeyPress('W')) { fMoveInput.z = KEYBOARD_INPUT_SIZE; }	// ª
+	if (IsKeyPress('W')) { fMoveInput.z = KEYBOARD_INPUT_SIZE; }		// ª	
 	else if (IsKeyPress('S')) { fMoveInput.z = -KEYBOARD_INPUT_SIZE; }	// «
-	else { fMoveInput.z = 0.0f; }					// “ü—Í–³‚µ
-	// ¶‰E
-	if (IsKeyPress('D')) { fMoveInput.x = KEYBOARD_INPUT_SIZE; }	// ¨
-	else if (IsKeyPress('A')) { fMoveInput.x = -KEYBOARD_INPUT_SIZE; }	// ©
-	else { fMoveInput.x = 0.0f; }					// “ü—Í–³‚µ
+	else { fMoveInput.z = 0.0f; }										// “ü—Í–³‚µ
 
+	// ¶‰E
+	if (IsKeyPress('D')) { fMoveInput.x = KEYBOARD_INPUT_SIZE; }		// ¨	
+	else if (IsKeyPress('A')) { fMoveInput.x = -KEYBOARD_INPUT_SIZE; }	// ©
+	else { fMoveInput.x = 0.0f; }										// “ü—Í–³‚µ
 
 	MoveSizeInputSet(fMoveInput);	// “ü—Í’l‚©‚çˆÚ“®—Ê‚ÆŒü‚«‚ğƒZƒbƒg
 
 	// À•W‚ğˆÚ“®
 	m_Transform.fPos.x += m_fMove.x;
 	m_Transform.fPos.z += m_fMove.z;
-
-
-
+	
 }
 
 /* ========================================
@@ -431,7 +438,6 @@ void CPlayer::MoveController()
 	// À•W‚ğˆÚ“®
 	m_Transform.fPos.x += m_fMove.x;
 	m_Transform.fPos.z += m_fMove.z;
-
 
 }
 
@@ -459,6 +465,13 @@ void CPlayer::MoveSizeInputSet(TPos3d<float> fInput)
 		m_Transform.fRadian.y =
 			(atan2(fInput.z * -1, fInput.x)			// DirectX‚ÆOŠpŠÖ”‚Å‰ñ“]•ûŒü‚ª‹t‚È‚Ì‚Å’²®
 				- DirectX::XMConvertToRadians(90.0f));	// DirectX‚ÆOŠpŠÖ”‚Å0“x‚ÌˆÊ’u‚ª90“x‚¸‚ê‚Ä‚¢‚é(ª‚ª0)‚Ì‚Å’²®
+		
+		// ƒvƒŒƒCƒ„[ˆÚ“®‰ŒƒGƒtƒFƒNƒg•\¦
+		if (WALK_EFFECT_INTERVAL <= m_nWalkEffeCnt)
+		{
+			ShowWalkEffect();
+			m_nWalkEffeCnt = 0;
+		}
 	}
 	// ƒL[“ü—Í‚ª‚È‚¢ê‡
 	else
@@ -554,6 +567,7 @@ bool CPlayer::GetDieFlg() const
 	return m_bDieFlg;
 }
 
+
 /* ========================================
    ƒJƒƒ‰‚ÌƒZƒbƒgŠÖ”
    ----------------------------------------
@@ -567,6 +581,7 @@ void CPlayer::SetCamera(CCamera * pCamera)
 {
 	m_pCamera = pCamera;	//’†g‚Í•Ï‚¦‚ç‚ê‚È‚¢‚¯‚Çƒ|ƒCƒ“ƒ^‚Í‚©‚¦‚ê‚é‚Ì‚ÅƒˆƒVI
 	m_pHammer->SetCamera(m_pCamera);
+	m_pWalkEffectMng->SetCamera(m_pCamera);
 }
 
 /* ========================================
@@ -763,4 +778,19 @@ void CPlayer::Healing()
 	m_nHp += HEAL_NUM;
 	if (m_nHp >= PLAYER_HP) { m_nHp = PLAYER_HP; }
 	PlaySE(SE_HEAL);
+}
+
+/* ========================================
+   ƒGƒtƒFƒNƒg•\¦ŠÖ”
+   ----------------------------------------
+   “à—eFƒvƒŒƒCƒ„[ˆÚ“®‚ÌƒGƒtƒFƒNƒg‚ğì¬
+   ----------------------------------------
+   ˆø”F–³‚µ
+   ----------------------------------------
+   –ß’lF–³‚µ
+======================================== */
+void CPlayer::ShowWalkEffect()
+{	
+	// ƒvƒŒƒCƒ„[ˆÚ“®ƒGƒtƒFƒNƒgì¬
+	m_pWalkEffectMng->Create(m_Transform);
 }

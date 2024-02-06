@@ -173,7 +173,8 @@
     <ClCompile Include="AnimeModel.cpp" />
     <ClCompile Include="BattleData.cpp" />
     <ClCompile Include="BgPause.cpp" />
-    <ClCompile Include="BgTitle.cpp" />
+    <ClCompile Include="TitleBgAnimeScaling.cpp" />
+    <ClCompile Include="TitleBgBase.cpp" />
     <ClCompile Include="BoooomUI.cpp" />
     <ClCompile Include="BossArrow.cpp" />
     <ClCompile Include="BossGauge.cpp" />
@@ -213,7 +214,6 @@
     <ClCompile Include="ModelParticle.cpp" />
     <ClCompile Include="NumberText.cpp" />
     <ClCompile Include="Object.cpp" />
-    <ClCompile Include="OpeninigTitle.cpp" />
     <ClCompile Include="Particle.cpp" />
     <ClCompile Include="Pause.cpp" />
     <ClCompile Include="PauseObj.cpp" />
@@ -269,8 +269,15 @@
     <ClCompile Include="TimerStage2.cpp" />
     <ClCompile Include="TimerStage3.cpp" />
     <ClCompile Include="Title.cpp" />
-    <ClCompile Include="CommandTitle.cpp" />
-    <ClCompile Include="TitleAnime.cpp" />
+    <ClCompile Include="TitleCommand.cpp" />
+    <ClCompile Include="TitleBgGrass.cpp" />
+    <ClCompile Include="TitleBgPlayer.cpp" />
+    <ClCompile Include="TitleBgCloud.cpp" />
+    <ClCompile Include="TitleBgReaf.cpp" />
+    <ClCompile Include="TitleCommandStart.cpp" />
+    <ClCompile Include="TitleCommandFinish.cpp" />
+    <ClCompile Include="TitleInitCounter.cpp" />
+    <ClCompile Include="TitleInitZoomOut.cpp" />
     <ClCompile Include="TitleLogo.cpp" />
     <ClCompile Include="TitleObj.cpp" />
     <ClCompile Include="TotalScore.cpp" />
@@ -279,6 +286,9 @@
     <ClCompile Include="UIStageManager.cpp" />
     <ClCompile Include="Union.cpp" />
     <ClCompile Include="UnionManager.cpp" />
+    <ClCompile Include="WalkEffect.cpp" />
+    <ClCompile Include="WalkEffectManager.cpp" />
+    <ClCompile Include="UsingCamera.cpp" />
     <ClCompile Include="_model.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -286,7 +296,9 @@
     <ClInclude Include="AnimeModel.h" />
     <ClInclude Include="BattleData.h" />
     <ClInclude Include="BgPause.h" />
-    <ClInclude Include="BgTitle.h" />
+    <ClInclude Include="TitleBgAnimeScaling.h" />
+    <ClInclude Include="TitleInitCounter.h" />
+    <ClInclude Include="TitleBgBase.h" />
     <ClInclude Include="BoooomUI.h" />
     <ClInclude Include="BossArrow.h" />
     <ClInclude Include="BossGauge.h" />
@@ -330,7 +342,6 @@
     <ClInclude Include="NumberText.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="HP_UI.h" />
-    <ClInclude Include="OpeningTitle.h" />
     <ClInclude Include="PauseObj.h" />
     <ClInclude Include="Pos2d.h" />
     <ClInclude Include="Pos3d.h" />
@@ -386,8 +397,14 @@
     <ClInclude Include="TimerStage2.h" />
     <ClInclude Include="TimerStage3.h" />
     <ClInclude Include="Title.h" />
-    <ClInclude Include="CommandTitle.h" />
-    <ClInclude Include="TitleAnime.h" />
+    <ClInclude Include="TitleCommand.h" />
+    <ClInclude Include="TitleBgPlayer.h" />
+    <ClInclude Include="TitleBgCloud.h" />
+    <ClInclude Include="TitleBgGrass.h" />
+    <ClInclude Include="TitleBgReaf.h" />
+    <ClInclude Include="TitleCommandStart.h" />
+    <ClInclude Include="TitleCommandFinish.h" />
+    <ClInclude Include="TitleInitZoomOut.h" />
     <ClInclude Include="TitleLogo.h" />
     <ClInclude Include="TitleObj.h" />
     <ClInclude Include="TotalScore.h" />
@@ -397,6 +414,9 @@
     <ClInclude Include="UIStageManager.h" />
     <ClInclude Include="Union.h" />
     <ClInclude Include="UnionManager.h" />
+    <ClInclude Include="WalkEffect.h" />
+    <ClInclude Include="WalkEffectManager.h" />
+    <ClInclude Include="UsingCamera.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="PsFade.hlsl">
