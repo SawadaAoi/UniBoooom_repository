@@ -142,7 +142,7 @@ CSlimeManager::CSlimeManager(CPlayer* pPlayer)
 	, m_pFlameModel(nullptr)
 	, m_pHealModel(nullptr)
 	, m_pBossRockModel(nullptr)
-	, m_pBossModel(nullptr)
+	, m_pDevilSlimeModel(nullptr)
 	, m_oldCreatePos{ 0.0f,0.0f,0.0f }
 	, m_pPlayer(pPlayer)
 	, m_pExpMng(nullptr)
@@ -218,7 +218,7 @@ CSlimeManager::~CSlimeManager()
 	SAFE_DELETE(m_pGreenModel);
 	SAFE_DELETE(m_pBlueModel);
 	SAFE_DELETE(m_pBossRockModel);
-	SAFE_DELETE(m_pBossModel);
+	SAFE_DELETE(m_pDevilSlimeModel);
 
 	// スライム削除
 	for (int i = 0; i <MAX_SLIME_NUM; i++)
@@ -424,11 +424,11 @@ void CSlimeManager::CreateBoss(int BossNum)
 		switch (BossNum)
 		{
 		case 1:
-			m_pBoss[i] = new CSlime_Boss_1(createPos, m_pVS, m_pBossRockModel);	//動的生成(取り合えず位置は仮)
+			m_pBoss[i] = new CSlime_Boss_1(createPos, m_pBossRockModel);	//動的生成(取り合えず位置は仮)
 
 			break;
 		case 2:
-			m_pBoss[i] = new CSlime_Boss_2(createPos, m_pVS, m_pBossModel);	//動的生成(取り合えず位置は仮)
+			m_pBoss[i] = new CSlime_Boss_2(createPos, m_pDevilSlimeModel);	//動的生成(取り合えず位置は仮)
 
 			break;
 		}
@@ -1172,7 +1172,7 @@ void CSlimeManager::LoadModel()
 	}
 	//レベル1スライムのモデル読み込み
 	m_pBlueModel = new AnimeModel;
-	if (!m_pBlueModel->Load("Assets/Model/slime/Blue/slime_blue_walk_1.0.fbx", 0.15f, AnimeModel::ZFlip)) {		//倍率と反転は省略可
+	if (!m_pBlueModel->Load("Assets/Model/slime/Blue/slime_blue_walk_1.0.fbx", 0.15f, AnimeModel::XFlip)) {		//倍率と反転は省略可
 		MessageBox(NULL, "slime_blue", "Error", MB_OK);	//ここでエラーメッセージ表示
 	}
 	for (int i = 0; i < CSlimeBase::MOTION_LEVEL1_MAX; i++)
@@ -1189,7 +1189,7 @@ void CSlimeManager::LoadModel()
 
 	//レベル2スライムのモデル読み込み
 	m_pGreenModel = new AnimeModel;
-	if (!m_pGreenModel->Load(m_sLevel2_Motion[0].c_str(), 0.15f, AnimeModel::ZFlip)) {		//倍率と反転は省略可
+	if (!m_pGreenModel->Load(m_sLevel2_Motion[0].c_str(), 0.15f, AnimeModel::XFlip)) {		//倍率と反転は省略可
 		MessageBox(NULL, "slime_blue", "Error", MB_OK);	//ここでエラーメッセージ表示
 	}
 	for (int i = 0; i < CSlimeBase::MOTION_LEVEL2_MAX; i++)
@@ -1206,7 +1206,7 @@ void CSlimeManager::LoadModel()
 
 	//レベル3スライムのモデル読み込み
 	m_pYellowModel = new AnimeModel;
-	if (!m_pYellowModel->Load("Assets/Model/slime/Yellow/slime_yellow_walk_1.0.fbx", 0.15f, AnimeModel::ZFlip)) {	//倍率と反転は省略可
+	if (!m_pYellowModel->Load("Assets/Model/slime/Yellow/slime_yellow_walk_1.0.fbx", 0.15f, AnimeModel::XFlip)) {	//倍率と反転は省略可
 		MessageBox(NULL, "slime_yellow", "Error", MB_OK);	//ここでエラーメッセージ表示
 	}
 	for (int i = 0; i < CSlimeBase::MOTION_LEVEL3_MAX; i++)
@@ -1222,7 +1222,7 @@ void CSlimeManager::LoadModel()
 	m_pYellowModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));		//頂点シェーダーをセット
 	//レベル4スライムのモデル読み込み
 	m_pRedModel = new AnimeModel;
-	if (!m_pRedModel->Load("Assets/Model/slime/Red/slime_red_walk_1.0.fbx", 0.18f, AnimeModel::ZFlip)) {			//倍率と反転は省略可
+	if (!m_pRedModel->Load("Assets/Model/slime/Red/slime_red_walk_1.0.fbx", 0.18f, AnimeModel::XFlip)) {			//倍率と反転は省略可
 		MessageBox(NULL, "slime_red", "Error", MB_OK);		//ここでエラーメッセージ表示
 	}
 	for (int i = 0; i < CSlimeBase::MOTION_LEVEL4_MAX; i++)
@@ -1239,30 +1239,49 @@ void CSlimeManager::LoadModel()
 
 	//フレイムスライムのモデル読み込み
 	m_pFlameModel = new AnimeModel();
-	if (!m_pFlameModel->Load("Assets/Model/slime/slime_fire1.FBX", 0.30f, AnimeModel::ZFlip)) {		//倍率と反転は省略可
+	if (!m_pFlameModel->Load("Assets/Model/slime/slime_fire1.FBX", 0.30f, AnimeModel::XFlip)) {		//倍率と反転は省略可
 		MessageBox(NULL, "Flame_Slime", "Error", MB_OK);	//ここでエラーメッセージ表示
 	}
 	m_pFlameModel->SetVertexShader(m_pVS);
 	//ヒールスライムのモデル読み込み
 	m_pHealModel = new AnimeModel();
-	if (!m_pHealModel->Load("Assets/Model/slime/slime_heal_mesh.FBX", 0.45f, AnimeModel::ZFlip)) {		//倍率と反転は省略可
+	if (!m_pHealModel->Load("Assets/Model/slime/slime_heal_mesh.FBX", 0.45f, AnimeModel::XFlip)) {		//倍率と反転は省略可
 		MessageBox(NULL, "Heal_Slime", "Error", MB_OK);	//ここでエラーメッセージ表示
 	}
 	m_pHealModel->SetVertexShader(m_pVS);
-	//ボススライムのモデル読み込み
-	m_pBossModel= new AnimeModel;
-	if (!m_pBossModel->Load("Assets/Model/boss_slime_devil/boss_slime_1.fbx", 0.23f, AnimeModel::ZFlip)) {		//倍率と反転は省略可
-		MessageBox(NULL, "Boss_Slime", "Error", MB_OK);	//ここでエラーメッセージ表示
+	//デビルスライムのモデル読み込み
+	m_pDevilSlimeModel = new AnimeModel;
+	if (!m_pDevilSlimeModel->Load("Assets/Model/boss_slime_devil/devil_walk.fbx", 0.23f, AnimeModel::XFlip)) {			//倍率と反転は省略可
+		MessageBox(NULL, "devil_slime_model", "Error", MB_OK);		//ここでエラーメッセージ表示
 	}
+	for (int i = 0; i < CSlime_BossBase::DEVIL_SLIME_MAX; i++)
+	{
+		//各アニメーションの読み込み
+		m_pDevilSlimeModel->AddAnimation(m_sDevilSlime_Motion[i].c_str());
+		//読み込みに失敗したらエラーメッセージ
+		if (!m_pDevilSlimeModel->GetAnimation(i))
+		{
+			MessageBox(NULL, m_sDevilSlime_Motion[i].c_str(), "Error", MB_OK);	//ここでエラーメッセージ表示
+		}
+	}
+	m_pDevilSlimeModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));		//頂点シェーダーをセット
 
-	m_pBossModel->SetVertexShader(m_pVS);
-
-
+	//岩スライムのモデル読み込み
 	m_pBossRockModel = new AnimeModel;
-	if (!m_pBossRockModel->Load("Assets/Model/boss_slime_rock/boss_slime_rock.fbx", 0.5f, AnimeModel::ZFlip)) {		//倍率と反転は省略可
-		MessageBox(NULL, "Boss_Slime_Rock", "Error", MB_OK);	//ここでエラーメッセージ表示
+	if (!m_pBossRockModel->Load("Assets/Model/boss_slime_rock/rock_walk_2.0.fbx", 0.5f, AnimeModel::XFlip)) {			//倍率と反転は省略可
+		MessageBox(NULL, "rock_slime_model", "Error", MB_OK);		//ここでエラーメッセージ表示
 	}
-	m_pBossRockModel->SetVertexShader(m_pVS);
+	for (int i = 0; i < CSlime_BossBase::ROCK_SLIME_MAX; i++)
+	{
+		//各アニメーションの読み込み
+		m_pBossRockModel->AddAnimation(m_sRockSlime_Motion[i].c_str());
+		//読み込みに失敗したらエラーメッセージ
+		if (!m_pBossRockModel->GetAnimation(i))
+		{
+			MessageBox(NULL, m_sRockSlime_Motion[i].c_str(), "Error", MB_OK);	//ここでエラーメッセージ表示
+		}
+	}
+	m_pBossRockModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));		//頂点シェーダーをセット
 }
 
 /* ========================================

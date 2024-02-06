@@ -113,6 +113,8 @@ void CCombo::Update()
 	for (int i = 0; i < MAX_COMBO_NUM; i++)
 	{
 		if (m_dComboInfo[i].dCnt == 0) continue;
+		if (m_dComboInfo[i].bEndFlg)	continue;	// コンボが終了済みの場合はスルー
+
 		m_pTotalScore->SetAddScore(m_dComboInfo[i],i);
 
 		// コンボ背景UIアニメーション再生
@@ -369,9 +371,23 @@ void CCombo::AddScore(int num, int combo)
 	----------------------------------------
 	戻値：コンボ数
 ======================================== */
-int CCombo::GetCombo(int num)
+int CCombo::GetComboNum(int num)
 {
 	return m_dComboInfo[num].dCnt;
+}
+
+/* ========================================
+	コンボ終了フラグ取得関数
+	----------------------------------------
+	内容：対応添え字のコンボ終了フラグを取得する
+	----------------------------------------
+	引数：配列の添え字
+	----------------------------------------
+	戻値：コンボ終了フラグ
+======================================== */
+int CCombo::GetComboEndFlg(int num)
+{
+	return m_dComboInfo[num].bEndFlg;
 }
 
 /* ========================================
@@ -399,9 +415,9 @@ int CCombo::GetMaxCombo()
 ======================================== */
 void CCombo::EndCombo(int num)
 {
-	m_dComboInfo[num].bEndFlg = true;	// コンボ終了フラグをオン
+	m_dComboInfo[num].bEndFlg = true;					// コンボ終了フラグをオン
 	
-	m_pTotalScore->ComboCheck(m_dComboInfo[num], num);	//倍率を決める
+	m_pTotalScore->ComboCheck(m_dComboInfo[num], num);	// 倍率を決める
 }
 
 /* ========================================

@@ -284,6 +284,8 @@
     <ClCompile Include="UIStageManager.cpp" />
     <ClCompile Include="Union.cpp" />
     <ClCompile Include="UnionManager.cpp" />
+    <ClCompile Include="WalkEffect.cpp" />
+    <ClCompile Include="WalkEffectManager.cpp" />
     <ClCompile Include="UsingCamera.cpp" />
     <ClCompile Include="_model.cpp" />
   </ItemGroup>
@@ -408,6 +410,8 @@
     <ClInclude Include="UIStageManager.h" />
     <ClInclude Include="Union.h" />
     <ClInclude Include="UnionManager.h" />
+    <ClInclude Include="WalkEffect.h" />
+    <ClInclude Include="WalkEffectManager.h" />
     <ClInclude Include="UsingCamera.h" />
   </ItemGroup>
   <ItemGroup>

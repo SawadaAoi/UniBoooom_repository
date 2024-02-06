@@ -40,7 +40,8 @@
 	・2023/01/25 待機モーションを変更 takagi
 	・2024/01/26 警告SE追加 suzumura
 	・2024/01/28 死亡モーション追加 Sawada
-
+	・2024/01/28 プレイヤーを傾けてカメラからよく見えるように変更 Yamashita
+	・2024/01/30 プレイヤー移動エフェクト用処理追加 Tei
 ======================================== */
 
 // =============== インクルード ===================
@@ -60,6 +61,7 @@ const float PLAYER_RADIUS = 0.3f;			// プレイヤーの当たり判定の大きさ
 const float PLAYER_SIZE = 1.0f;			// プレイヤーの大きさ
 const int	NO_DAMAGE_TIME = 3 * 60;		//プレイヤーの無敵時間
 const int	DAMAGE_FLASH_FRAME = 0.1f * 60;	// プレイヤーのダメージ点滅の切り替え間隔
+const float PLAYER_ROTATE_X_NORMAL = DirectX::XMConvertToRadians(30.0f);	// プレイヤーの傾き
 #endif
 const int	HEAL_NUM = 2;									// プレイヤーの回復量
 const float HAMMER_INTERVAL_TIME = 0.0f * 60;				// ハンマー振り間隔
@@ -72,6 +74,7 @@ const float	ADD_ANIM_FRAME = 1.0f / 60.0f;
 const int   PLAYER_WARNING_HP = 1;							//瀕死の警告を行うプレイヤー残りHP
 
 const int	DIE_AFTER_INTERVAL = 2.0f * 60;					// 死亡してからGameOverテキストが出るまでの猶予時間
+const int	WALK_EFFECT_INTERVAL = 0.2f * 60;				// 歩くエフェクトの出現間隔
 
 /* ========================================
    関数：コンストラクタ
@@ -100,12 +103,16 @@ CPlayer::CPlayer()
 	, m_pWaitFrameCnt(nullptr)
 	, m_bDieInvFlg(false)
 	, m_fDieInvCnt(0.0f)
+	, m_pWalkEffectMng(nullptr)
+	, m_nShowEffectCnt(0)
+	, m_fRotate_x(PLAYER_ROTATE_X_NORMAL)
+	, m_nWalkEffeCnt(0)
 {
 	m_pHammer = new CHammer();								// Hammerクラスをインスタンス
 
 	m_Sphere.fRadius = PLAYER_RADIUS;						// 当たり判定用の球体の半径
 	m_Transform.fScale = PLAYER_SIZE;
-	LoadSound();	//サウンドファイル読み込み
+	LoadSound();							//サウンドファイル読み込み
 
 	//プレイヤーのモデル読み込み
 	m_pModel = new AnimeModel();
@@ -117,6 +124,8 @@ CPlayer::CPlayer()
 
 	LoadAnime();	//アニメーションの読み込み
 	m_pShadow = new CShadow();
+
+	m_pWalkEffectMng = new CWalkEffectManager();
 }
 /* ========================================
    関数：デストラクタ
@@ -129,6 +138,7 @@ CPlayer::CPlayer()
 ======================================== */
 CPlayer::~CPlayer()
 {
+	SAFE_DELETE(m_pWalkEffectMng);
 	SAFE_DELETE(m_pShadow);
 	SAFE_DELETE(m_pModel);
 	SAFE_DELETE(m_pHammer);
@@ -226,8 +236,6 @@ void CPlayer::Update()
 	}
 
 
-
-
 	// 無敵状態になっている場合
 	if (m_bSafeTimeFlg)
 	{
@@ -251,8 +259,9 @@ void CPlayer::Update()
 	{
 		m_pModel->Step(ADD_ANIM_FRAME);
 	}
-
-
+	
+	//SetOldPos();	//	プレイヤー17フレーム前と30フレーム前の位置を更新
+	m_pWalkEffectMng->Update();
 }
 
 /* ========================================
@@ -279,11 +288,20 @@ void CPlayer::Draw()
 			//m_pModel->Draw();
 		}
 
-		DirectX::XMFLOAT4X4 mat[3] = {
-			m_Transform.GetWorldMatrixSRT(),
-			m_pCamera->GetViewMatrix(),
-			m_pCamera->GetProjectionMatrix()
-		};
+		DirectX::XMFLOAT4X4 mat[3];
+
+		//拡縮、回転、移動(Y軸回転を先にしたかったのでSRTは使わない)
+		DirectX::XMStoreFloat4x4(&mat[0], 
+			DirectX::XMMatrixTranspose(
+				DirectX::XMMatrixScaling(m_Transform.fScale.x, m_Transform.fScale.y, m_Transform.fScale.z)		// 大きさ
+				* DirectX::XMMatrixRotationY(m_Transform.fRadian.y)	// Y角度
+				* DirectX::XMMatrixRotationX(m_fRotate_x)			// X角度
+				* DirectX::XMMatrixRotationZ(m_Transform.fRadian.z)	// Z角度
+				* DirectX::XMMatrixTranslation(m_Transform.fPos.x, m_Transform.fPos.y, m_Transform.fPos.z)));	// 座標
+		mat[1] = m_pCamera->GetViewMatrix();
+		mat[2] = m_pCamera->GetProjectionMatrix();
+
+
 		ShaderList::SetWVP(mat);
 
 		//アニメーション対応したプレイヤーの描画
@@ -317,6 +335,8 @@ void CPlayer::Draw()
 	}
 
 	m_pShadow->Draw(m_Transform, PLAYER_SHADOW_SCALE, m_pCamera);	// 影の描画
+	m_nWalkEffeCnt++;
+	m_pWalkEffectMng->Draw();
 }
 
 /* ========================================
@@ -344,7 +364,8 @@ void CPlayer::Damage(int DmgNum)
 	if (m_nHp <= 0)
 	{
 		m_bDieInvFlg = true;
-		m_pModel->Play(m_Anime[MOTION_DIE],false);	//アニメーションの再生
+		m_fRotate_x = PLAYER_ROTATE_X_DIE;			// プレイヤーの傾きをセット(地面に埋まらないように)
+		m_pModel->Play(m_Anime[MOTION_DIE],false);	// アニメーションの再生
 
 	}
 }
@@ -364,23 +385,21 @@ void CPlayer::MoveKeyboard()
 
 	// キー入力
 	// 上下
-	if (IsKeyPress('W')) { fMoveInput.z = KEYBOARD_INPUT_SIZE; }	// ↑
+	if (IsKeyPress('W')) { fMoveInput.z = KEYBOARD_INPUT_SIZE; }		// ↑	
 	else if (IsKeyPress('S')) { fMoveInput.z = -KEYBOARD_INPUT_SIZE; }	// ↓
-	else { fMoveInput.z = 0.0f; }					// 入力無し
-	// 左右
-	if (IsKeyPress('D')) { fMoveInput.x = KEYBOARD_INPUT_SIZE; }	// →
-	else if (IsKeyPress('A')) { fMoveInput.x = -KEYBOARD_INPUT_SIZE; }	// ←
-	else { fMoveInput.x = 0.0f; }					// 入力無し
+	else { fMoveInput.z = 0.0f; }										// 入力無し
 
+	// 左右
+	if (IsKeyPress('D')) { fMoveInput.x = KEYBOARD_INPUT_SIZE; }		// →	
+	else if (IsKeyPress('A')) { fMoveInput.x = -KEYBOARD_INPUT_SIZE; }	// ←
+	else { fMoveInput.x = 0.0f; }										// 入力無し
 
 	MoveSizeInputSet(fMoveInput);	// 入力値から移動量と向きをセット
 
 	// 座標を移動
 	m_Transform.fPos.x += m_fMove.x;
 	m_Transform.fPos.z += m_fMove.z;
-
-
-
+	
 }
 
 /* ========================================
@@ -406,7 +425,6 @@ void CPlayer::MoveController()
 	// 座標を移動
 	m_Transform.fPos.x += m_fMove.x;
 	m_Transform.fPos.z += m_fMove.z;
-
 
 }
 
@@ -434,6 +452,13 @@ void CPlayer::MoveSizeInputSet(TPos3d<float> fInput)
 		m_Transform.fRadian.y =
 			(atan2(fInput.z * -1, fInput.x)			// DirectXと三角関数で回転方向が逆なので調整
 				- DirectX::XMConvertToRadians(90.0f));	// DirectXと三角関数で0度の位置が90度ずれている(↑が0)ので調整
+		
+		// プレイヤー移動煙エフェクト表示
+		if (WALK_EFFECT_INTERVAL <= m_nWalkEffeCnt)
+		{
+			ShowWalkEffect();
+			m_nWalkEffeCnt = 0;
+		}
 	}
 	// キー入力がない場合
 	else
@@ -529,6 +554,7 @@ bool CPlayer::GetDieFlg() const
 	return m_bDieFlg;
 }
 
+
 /* ========================================
    カメラのセット関数
    ----------------------------------------
@@ -542,6 +568,7 @@ void CPlayer::SetCamera(CCamera * pCamera)
 {
 	m_pCamera = pCamera;	//中身は変えられないけどポインタはかえれるのでヨシ！
 	m_pHammer->SetCamera(m_pCamera);
+	m_pWalkEffectMng->SetCamera(m_pCamera);
 }
 
 /* ========================================
@@ -557,6 +584,8 @@ bool CPlayer::GetAttackFlg()
 {
 	return m_bAttackFlg;
 }
+
+
 
 /* ========================================
    アニメーション読み込み関数
@@ -733,4 +762,19 @@ void CPlayer::Healing()
 	m_nHp += HEAL_NUM;
 	if (m_nHp >= PLAYER_HP) { m_nHp = PLAYER_HP; }
 	PlaySE(SE_HEAL);
+}
+
+/* ========================================
+   エフェクト表示関数
+   ----------------------------------------
+   内容：プレイヤー移動のエフェクトを作成
+   ----------------------------------------
+   引数：無し
+   ----------------------------------------
+   戻値：無し
+======================================== */
+void CPlayer::ShowWalkEffect()
+{	
+	// プレイヤー移動エフェクト作成
+	m_pWalkEffectMng->Create(m_Transform);
 }

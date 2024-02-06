@@ -12,6 +12,8 @@
 	・2023/11/23　score構造体、comboの構造体の情報取得処理追加 yamamoto
 	・2023/12/07 ゲームパラメータに依存していたので修正 takagi
 	・2024/01/26 処理を見やすく修正&&トータルスコア加算アニメ処理追加 sawada
+	・2024/02/02 ゲーム終了間際の加算スコアがトータルスコアに反映されるように suzumura
+	・2024/02/05 ゲーム終了間際の加算スコアがトータルスコアに反映されるように(改) sawada
 
 ========================================== */
 #ifndef __TOTALSCORE_H__
@@ -23,6 +25,8 @@
 #include <vector>
 #include "Defines.h"
 #include "DiType.h"
+#include "Timer.h"
+#include "Player.h"
 // =============== クラス定義 =====================
 class CTotalScore
 {
@@ -31,12 +35,13 @@ public:
 	typedef struct
 	{
 		int   nAddScore;				// スコア
+		int	  nComboCnt;				// コンボ数
 		float fCombScoreMult;			// コンボスコア倍率
 		bool  bEndComboFlg;				// コンボ表示終了フラグ(true:コンボ終了)
-		int   nDispFrame;				// 残描画用加算値
-		bool  bDispEndFlg;				// スコア加算値表示終了フラグ
-		int	  nDispComMultFrame;		// コンボ倍率表示用加算値
-		bool  bDispComMultEndFlg;				// スコア加算値表示終了フラグ
+		int   nDispAddScoreCnt;			// スコア加算描画用加算値
+		bool  bDispAddScoreEndFlg;		// スコア加算値表示終了フラグ
+		int	  nDispCombMultCnt;			// コンボ倍率表示用加算値
+		bool  bDispCombMultEndFlg;		// スコア加算値表示終了フラグ
 
 	}PlusScore;	// スコア処理情報まとめ
 
@@ -73,10 +78,14 @@ public:
 	void ComboCheck(CCombo::ComboInfo comboInfo, int num);
 	void AddTotalScore(int addScore);
 
+	void GameEndAddTotal();
+
 	int GetTotalScore();
 	std::vector<int> digitsToArray(int score, int digits);	//引数の数字を各桁1ずつ配列に入れる
 private:
+	CTotalScore::PlusScore ResetAddScore();
 	void TotalScoreMove();
+	void SetCombScoreMult(int num);
 
 	void DrawBGTotalScore();			// トータルスコアの背景描画
 	void DrawTotalScore();
@@ -87,7 +96,6 @@ private:
 	void DrawTexture(TDiType<float> fSize, TDiType<float> fPos, TDiType<float> fUVSize, TDiType<float> fUVPos, Texture * pTexture);
 	void DrawNumber(int dispNum, TDiType<float> fSize, TDiType<float> fPos, TDiType<float> fUVSize, float spaceW, float spaceH, Texture* pTexture, int digits);
 
-	CTotalScore::PlusScore ResetPlusScore();
 
 	int m_nTotalScoreDisp;
 	int m_nTotalScore;
@@ -102,7 +110,7 @@ private:
 	CCombo* m_pCombo;
 	int nArraySize;
 	std::vector<int> TotalScoreArray;	//各桁1ずつ入れるための配列
-	
+
 
 };
 

@@ -33,6 +33,7 @@
 	・2024/01/25 待機モーションを変更 takagi
 	・2024/01/26 警告SE追加 suzumura
 	・2024/01/28 死亡モーション追加 Sawada
+	・2024/01/30 プレイヤー移動エフェクト用変数、関数追加
 
 ========================================== */
 #ifndef __PLAYER_H__
@@ -52,6 +53,8 @@
 #include "Shadow.h"
 #include "AnimeModel.h"
 #include "FrameCnt.h"
+#include "WalkEffectManager.h"
+
 // =============== クラス定義 =====================
 class CPlayer
 	: public CObject
@@ -88,6 +91,7 @@ public:
 	void LoadSound();	//サウンド読み込み関数
 	void PlaySE(SE se, float volume = 1.0f);
 	void Healing();
+	void ShowWalkEffect();
 
 	// ゲット関数
 	tagSphereInfo GetHammerSphere();	//当たり判定を取るためゲッター
@@ -100,7 +104,6 @@ public:
 	// セット関数
 	void SetCamera(CCamera* pCamera);
 	bool GetAttackFlg();
-	
 
 private:
 	// ===プロトタイプ宣言===
@@ -114,7 +117,10 @@ private:
 	CCamera* m_pCamera;					// プレイヤーを追従するカメラ
 
 	CShadow* m_pShadow;
-	CFrameCnt* m_pWaitFrameCnt;			// 待機モーション用フレームカウントダウン
+	CFrameCnt* m_pWaitFrameCnt;				// 待機モーション用フレームカウントダウン
+	CWalkEffectManager* m_pWalkEffectMng;	// プレイヤー移動エフェクト用
+
+	int m_nShowEffectCnt;
 
 	int m_nHp;							// プレイヤーの体力
 	bool m_bDieFlg;						// プレイヤー死亡フラグ(trueの場合死亡)
@@ -134,6 +140,12 @@ private:
 
 	bool m_bDieInvFlg;					// 死亡猶予時間フラグ
 	float m_fDieInvCnt;					// 死亡猶予時間カウント
+
+	float m_fRotate_x;					// プレイヤーの表示用傾き
+
+	int m_nWalkEffeCnt;
+
+
 
 	// ===列挙===
 	enum MOTION

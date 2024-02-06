@@ -135,7 +135,7 @@ private:
 	AnimeModel* m_pRedModel;
 	AnimeModel* m_pFlameModel;
 	AnimeModel* m_pHealModel;
-	AnimeModel* m_pBossModel;
+	AnimeModel* m_pDevilSlimeModel;
 	AnimeModel* m_pBossRockModel;
 
 	CScoreOHManager* m_pScoreOHMng;		// スコアマネージャ―ポインタ
@@ -193,6 +193,19 @@ private:
 	const std::string m_sLevel4_Motion[CSlimeBase::MOTION_LEVEL4_MAX] = {
 		"Assets/Model/slime/Red/slime_red_walk_1.0.fbx",		// レベル1スライムの移動モーション
 		"Assets/Model/slime/Red/slime_red_damaged_1.0.fbx",	// レベル1スライムの叩かれたときのモーション
+	};
+
+	// 岩スライム
+	const std::string m_sRockSlime_Motion[CSlime_BossBase::ROCK_SLIME_MAX] = {
+		"Assets/Model/boss_slime_rock/rock_walk_2.0.fbx",		// 岩スライムの移動モーション
+		"Assets/Model/boss_slime_rock/rock_damaged_2.0.fbx",	// 岩スライムの被ダメモーション
+		"Assets/Model/boss_slime_rock/rock_rolling_2.0.fbx",	// 岩スライムの攻撃モーション
+	};
+
+	// デビルスライム
+	const std::string m_sDevilSlime_Motion[CSlime_BossBase::DEVIL_SLIME_MAX] = {
+		"Assets/Model/boss_slime_devil/devil_walk.fbx",		// デビルスライムの移動モーション
+		"Assets/Model/boss_slime_devil/devil_damaged.fbx",	// デビルスライムの被ダメモーション
 	};
 };
 

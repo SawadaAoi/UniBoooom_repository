@@ -19,6 +19,7 @@
 					・コンストラクタでカメラが作られない問題修正 takagi
 	・2023/12/17 引数参照化 takagi
 	・2023/12/20 ビルボードの処理修正 takagi
+	・2024/01/30 オフセットを変更できるように修正 sawada
 
 ========================================== */
 
@@ -67,10 +68,13 @@ cbuffer Param : register(b1) {
 	float2 uvPos;
 	float2 uvScale;
 	float4 color;
+	float2 offset;
+
 };
 VS_OUT main(VS_IN vin) {
 	VS_OUT vout;
 	vout.pos = float4(vin.pos, 1.0f);
+	vout.pos.xy += offset;
 	vout.pos = mul(vout.pos, world);
 	vout.pos = mul(vout.pos, view);
 	vout.pos = mul(vout.pos, proj);
@@ -116,13 +120,13 @@ const CCamera* C2dPolygon::ms_pCameraDef;						//疑似カメラ
 	戻値：なし
 =========================================== */
 C2dPolygon::C2dPolygon()
-	:m_Transform(INIT_POS, INIT_SCALE, INIT_RADIAN)	//ワールド座標
-	,m_Param{{0.0f}, {1.0f, 1.0f}, {1.0f}, 1.0f}	//シェーダーに書き込む情報
-	,m_pVs(nullptr)									//頂点シェーダー
-	,m_pPs(nullptr)									//ピクセルシェーダー
-	,m_pTexture(nullptr)							//テクスチャ
-	,m_pTextureLoad(nullptr)						//テクスチャアドレス格納専用
-	,m_pCamera(nullptr)								//カメラ
+	: m_Transform(INIT_POS, INIT_SCALE, INIT_RADIAN)					// ワールド座標
+	, m_Param{ {0.0f}, {1.0f, 1.0f}, {1.0f}, 1.0f ,{ 0.0f ,0.0f } }		// シェーダーに書き込む情報
+	, m_pVs(nullptr)													// 頂点シェーダー
+	, m_pPs(nullptr)													// ピクセルシェーダー
+	, m_pTexture(nullptr)												// テクスチャ
+	, m_pTextureLoad(nullptr)											// テクスチャアドレス格納専用
+	, m_pCamera(nullptr)												// カメラ
 {
 	// =============== 静的作成 ===================
 	if (0 == ms_nCnt2dPolygon)	//現在、他にこのクラスが作成されていない時
@@ -254,8 +258,8 @@ void C2dPolygon::Draw(const E_DRAW_MODE & eMode)
 	}
 
 	// =============== 変数宣言 ===================
-	float Param[8] = { m_Param.fUvOffset.x, m_Param.fUvOffset.y, m_Param.fUvScale.x, m_Param.fUvScale.y,
-			m_Param.fColor.x, m_Param.fColor.y, m_Param.fColor.z, m_Param.fAlpha};	//定数バッファ書き込み用
+	float Param[10] = { m_Param.fUvOffset.x, m_Param.fUvOffset.y, m_Param.fUvScale.x, m_Param.fUvScale.y,
+			m_Param.fColor.x, m_Param.fColor.y, m_Param.fColor.z, m_Param.fAlpha, m_Param.fOffSet.x ,m_Param.fOffSet.y };	//定数バッファ書き込み用
 
 	// =============== シェーダー使用 ===================
 	m_pVs->WriteBuffer(0, m_aMatrix);	//定数バッファに行列情報書き込み
@@ -478,6 +482,21 @@ void C2dPolygon::SetAlpha(const float & fAlpha)
 {
 	// =============== 格納 ===================
 	m_Param.fAlpha = fAlpha;	//透明度格納
+}
+
+/* ========================================
+	オフセットセッタ関数
+	-------------------------------------
+	内容：オフセット情報登録(画像の中心点をずらす)
+	-------------------------------------
+	引数1：const TDiType<float>& fOffSet：透明度
+	-------------------------------------
+	戻値：なし
+=========================================== */
+void C2dPolygon::SetOffSet(const TDiType<float>& fOffSet)
+{
+	// =============== 格納 ===================
+	m_Param.fOffSet = fOffSet;	//透明度格納
 }
 
 

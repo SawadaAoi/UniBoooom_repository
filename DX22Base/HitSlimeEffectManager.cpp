@@ -77,7 +77,6 @@ void CHitSlimeEffectManager::Draw()
 
 		m_phitEffect[i]->Draw(); // ヒットエフェクトの描画
 
-		break;
 	}
 }
 
@@ -111,7 +110,7 @@ void CHitSlimeEffectManager::Update()
 	----------------------------------------
 	戻値：ヒットエフェクトの配列
 ======================================== */
-CHitEffect * CHitSlimeEffectManager::GetHitPtr(int num)
+CHitSlimeEffect * CHitSlimeEffectManager::GetHitPtr(int num)
 {
 	if (!m_phitEffect[num]) { return nullptr; }
 	return m_phitEffect[num];
@@ -135,9 +134,9 @@ void CHitSlimeEffectManager::Create(TTriType<float> pos)
 		if (m_phitEffect[i] != nullptr) continue;
 
 		// 座標、エフェクト時間、Effekseerファイル、カメラを指定して生成
-		m_phitEffect[i] = new CHitEffect(pos, TOTAL_HIT_EFFECT_TIME, m_hitEffect, m_pCamera);	
-		//m_phitEffect[i]->SetCamera(m_pCamera);		//カメラセット
-		break;	
+		m_phitEffect[i] = new CHitSlimeEffect(pos, TOTAL_HIT_EFFECT_TIME, m_hitEffect, m_pCamera);	
+
+		return;	
 	}
 }
 

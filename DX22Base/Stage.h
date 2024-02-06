@@ -51,6 +51,7 @@
 #include "Sound.h"
 #include "UIStageManager.h"
 #include "HitSlimeEffectManager.h"
+#include "WalkEffectManager.h"
 #include "BattleData.h"			//メンバのヘッダ
 #include "GameStartText.h"
 
@@ -71,6 +72,8 @@ public:
 	//virtual void Draw() const;			//描画	
 	//virtual E_TYPE GetType() const = 0;	//自身の種類ゲッタ
 	void Collision();
+
+
 protected:
 	virtual void RecordData() = 0;	//データ記録
 	void GameFinish();
@@ -106,15 +109,12 @@ protected:
 	CStartText* m_pStartText;	// ゲームスタート描画
 	CHitSlimeEffectManager* m_pHitEffectMng;
 
-	const int* m_pPlayerHp;		// プレイヤーHP取得用
-	const int* m_pTimeCnt;		// 制限時間取得用
-
 	//サウンド
 	XAUDIO2_BUFFER* m_pSEHitHammer;
 	IXAudio2SourceVoice* m_pSEHitHammerSpeaker;
 
 private:
-	void LoadSE();
+
 };	//ステージ
 
 #endif	//!__STAGE_H__

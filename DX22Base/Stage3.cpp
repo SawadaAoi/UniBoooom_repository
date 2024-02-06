@@ -18,6 +18,8 @@
 	・2024/01/01 親コンストラクタ呼び出し takagi
 	・2024/01/15 GameFinish()関数修正・RecordData()関数追加 takagi
 	・2024/01/25 ヒットエフェクト関係の処理追加 Tei
+	・2024/01/30 プレイヤー移動エフェクト関係の処理追加 Tei
+	・2024/02/05 ゲーム終了間際の加算スコアがトータルスコアに反映されるように(改) sawada
 
 ========================================== */
 
@@ -114,11 +116,10 @@ void CStage3::Update()
 		Collision();					// 当たり判定更新
 		m_pHitEffectMng->Update();		// ヒットエフェクトマネージャー更新
 
-
 	}
 
 #if SCENE_TRANSITION
-	if (m_pUIStageManager->GetStageFinish()->GetDispFlg())
+	if (m_pUIStageManager->GetStageFinishPtr()->GetDispFlg())
 	{
 		if (IsKeyTrigger(VK_RETURN) || IsKeyTriggerController(BUTTON_A))
 		{
@@ -181,7 +182,7 @@ void CStage3::Draw()
 		m_pPause->Draw();
 	}
 
-	// ヒットエフェクト描画
+	// エフェクト描画
 	m_pHitEffectMng->Draw();
 }
 
@@ -226,6 +227,8 @@ CStage3::E_TYPE CStage3::GetNext() const
 =========================================== */
 void CStage3::RecordData()
 {
+	m_pUIStageManager->GetTotalScorePtr()->GameEndAddTotal();	// トータルスコアコンボ途中加算処理
+
 	// =============== 退避 =====================
 	m_Data.nTotalScore = m_pUIStageManager->GetTotalScore();				// スコア退避
 
@@ -234,9 +237,9 @@ void CStage3::RecordData()
 	{
 		m_Data.nHighScore[STAGE_NUM - 1] = m_Data.nTotalScore;	// ハイスコア更新
 	}
-	m_Data.nAliveTime = m_pUIStageManager->GetTimer()->GetErapsedTime();	// 経過時間退避
-	m_Data.nMaxCombo = m_pUIStageManager->GetCombo()->GetMaxCombo();		// 最大コンボ数退避
-	m_Data.bClearFlg = m_pUIStageManager->GetStageFinish()->GetClearFlg();	// ゲームクリアしたか
+	m_Data.nAliveTime = m_pUIStageManager->GetTimerPtr()->GetErapsedTime();	// 経過時間退避
+	m_Data.nMaxCombo = m_pUIStageManager->GetComboPtr()->GetMaxCombo();		// 最大コンボ数退避
+	m_Data.bClearFlg = m_pUIStageManager->GetStageFinishPtr()->GetClearFlg();	// ゲームクリアしたか
 	if (m_pSlimeMng)	//ヌルチェック
 	{
 		m_Data.nTotalKill = m_pSlimeMng->GetTotalKillCnt();					// 総討伐数退避

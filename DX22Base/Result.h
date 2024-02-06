@@ -15,6 +15,8 @@
 	・2023/12/11 成績仮表示 takagi
 	・2023/12/25 表示内容の変更 Sawada
 	・2024/01/26 決定SE追加 suzumura
+	・2024/01/26 アニメーション追加 goto
+	・2024/02/03 リザルト表示位置等微調整 suzumura
 
 ========================================== */
 
@@ -30,6 +32,8 @@
 #include "NumberText.h"
 #include "DrawAnimation.h"
 #include "Sound.h"
+#include "FrameCnt.h"	//割合検出用
+
 
 // =============== クラス定義 =====================
 class CResult :public CScene	//シーン
@@ -64,6 +68,7 @@ public:
 		WARNING_STAGE_2,	// ステージ2の手配書
 		WARNING_STAGE_3,	// ステージ3の手配書
 		CLEAR_STAMP,		// CLEARスタンプ
+		SELECT,				// 決定ボタン
 
 		TEXTURE_MAX,
 
@@ -82,7 +87,7 @@ public:
 	CResult();							//コンストラクタ
 	~CResult();							//デストラクタ
 	void Update();						//更新
-	void Draw();					//描画	
+	void Draw();						//描画	
 	E_TYPE GetType() const override;	//自身の種類ゲッタ
 	E_TYPE GetNext() const override;	//次のシーンゲッタ
 private:
@@ -102,8 +107,10 @@ private:
 	// =============== メンバ変数定義 ===============
 	
 	Texture* m_pTexture[TEXTURE_MAX];
-	BattleData m_Data;					//戦闘結果
-	CDrawAnim *m_pDrawAnim;				//リザルトの文字のアニメーション
+	BattleData m_Data;					// 戦闘結果
+	CDrawAnim* m_pTextureResultText;	// リザルトの文字
+	C2dPolygon* m_pSelectButton;	// 決定ボタン
+	int m_nButtonAlphaCnt;			// 点滅用
 
 	//=====SE関連=====
 	XAUDIO2_BUFFER* m_pSE[SE_MAX];
