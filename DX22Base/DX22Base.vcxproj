@@ -276,7 +276,9 @@
     <ClCompile Include="Transform3d.cpp" />
     <ClCompile Include="UIStageManager.cpp" />
     <ClCompile Include="Union.cpp" />
+    <ClCompile Include="UnionSmokeEffect.cpp" />
     <ClCompile Include="UnionManager.cpp" />
+    <ClCompile Include="UnionSmokeEffectManager.cpp" />
     <ClCompile Include="_model.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -392,7 +394,9 @@
     <ClInclude Include="TriType.h" />
     <ClInclude Include="UIStageManager.h" />
     <ClInclude Include="Union.h" />
+    <ClInclude Include="UnionSmokeEffect.h" />
     <ClInclude Include="UnionManager.h" />
+    <ClInclude Include="UnionSmokeEffectManager.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="PsFade.hlsl">
