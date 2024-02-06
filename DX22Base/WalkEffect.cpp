@@ -15,6 +15,8 @@
 // =============== 定数定義 =======================
 const float WALK_EFFECT_STANDARD_ONE_FRAME = 0.1f * 60.0f;
 const float WALK_EFFECT_SIZE = 0.9f;
+const float WALK_EFFECT_HEIGHT = 0.5f;
+const int	WALK_EFFECT_ALPHA = 3;	// エフェクトの濃さ(元々が薄いので重ねて表示)
 
 // =============== インクルード ===================
 #include "WalkEffect.h"
@@ -25,43 +27,36 @@ const float WALK_EFFECT_SIZE = 0.9f;
 	-------------------------------------
 	内容：実行時に行う処理
 	-------------------------------------
-	引数1：プレイイヤーの位置
-	引数2：プレイヤー17フレーム前の位置
-	引数3：プレイヤー25フレ―ム前の位置
-	引数4：プレイヤーの角度
-	引数5：エフェクトの総時間
-	引数6：位置とサイズ調整用乱数
-	引数7：エフェクトのeffekseerファイル
-	引数8：カメラポインタ
+	引数1：プレイヤーの	トランスフォーム
+	引数2：エフェクトの総時間
+	引数3：位置調整用乱数
+	引数4：エフェクトのeffekseerファイル
+	引数5：カメラポインタ
 	-------------------------------------
 	戻値：なし
 =========================================== */
-CWalkEffect::CWalkEffect(TPos3d<float> fPos, TPos3d<float> fOldPos15, TPos3d<float> fOldPos30, TPos3d<float> fRadian, float fTime, float fNum, Effekseer::EffectRef walkEffect, const CCamera * pCamera)
+CWalkEffect::CWalkEffect(tagTransform3d tTransForm, int nDelFrame, float fPosRan, Effekseer::EffectRef walkEffect, const CCamera * pCamera)
 	: m_bDelFlg(false)
 	, m_nDelFrame(0)
-	, m_pCamera(nullptr)
-	, m_fEffectTime(fTime)
-	, m_fRandNum(fNum)
+	, m_pCamera(pCamera)
+	, m_fDispMaxFlame(nDelFrame)
 {
 	//プレイヤー移動エフェクト初期化
-	m_fEffectTime = fTime;			//エフェクトの総時間		
-	m_OldTransform17f.fPos = fOldPos15;	//プレイヤー15フレーム前の位置
-	m_OldTransform25f.fPos = fOldPos30; //プレイヤー30フレーム前の位置
-	m_Transform.fPos = fPos;		//プレイヤーの位置
-	m_Transform.fRadian = fRadian;	//エフェクトの角度
 	m_walkEffect = walkEffect;		//エフェクトのEffekseerファイル
 	
-	m_pCamera = pCamera;
 	//移動エフェクトの煙を濃くするために、同じところで3回生成する
-	for (int i = 0; i < 3; i++)
+	for (int j = 0; j < WALK_EFFECT_ALPHA; j++)
 	{
-		LibEffekseer::GetManager()->Play(m_walkEffect, m_OldTransform17f.fPos.x+ m_fRandNum, m_OldTransform17f.fPos.y + 0.2f, m_OldTransform17f.fPos.z + m_fRandNum);
-		LibEffekseer::GetManager()->Play(m_walkEffect, m_OldTransform25f.fPos.x, m_OldTransform25f.fPos.y + 0.15f, m_OldTransform25f.fPos.z);
-		LibEffekseer::GetManager()->SetScale(m_efcWalkHandle, WALK_EFFECT_SIZE + m_fRandNum, WALK_EFFECT_SIZE + m_fRandNum, WALK_EFFECT_SIZE + m_fRandNum);	//エフェクトサイズ設定
-	}
-	LibEffekseer::GetManager()->SetSpeed(m_efcWalkHandle, WALK_EFFECT_STANDARD_ONE_FRAME / m_fEffectTime);			//エフェクト再生速度設定
-	LibEffekseer::GetManager()->SetRotation(m_efcWalkHandle, m_Transform.fRadian.x, m_Transform.fRadian.y, m_Transform.fRadian.z);	//エフェクトの回転を設定
+		m_efcWalkHandle = LibEffekseer::GetManager()->Play(
+			m_walkEffect, tTransForm.fPos.x + fPosRan, tTransForm.fPos.y + WALK_EFFECT_HEIGHT, tTransForm.fPos.z + fPosRan);
 
+		LibEffekseer::GetManager()->SetScale(m_efcWalkHandle,
+			WALK_EFFECT_SIZE,
+			WALK_EFFECT_SIZE,
+			WALK_EFFECT_SIZE);	//エフェクトサイズ設定
+
+		LibEffekseer::GetManager()->SetSpeed(m_efcWalkHandle, WALK_EFFECT_STANDARD_ONE_FRAME * 0.05f);			//エフェクト再生速度設定
+	}
 }
 
 /* ========================================
@@ -122,26 +117,12 @@ void CWalkEffect::DisplayTimeAdd()
 {
 	m_nDelFrame++;	// フレーム加算
 
-// 再生秒数経ったら削除
-	if (m_fEffectTime  <= m_nDelFrame)
+	// 再生秒数経ったら削除
+	if (m_fDispMaxFlame  <= m_nDelFrame)
 	{
 		m_bDelFlg = true;	// 削除フラグを立てる
 	}
 
-}
-
-/* ========================================
-	カメラ情報セット関数
-	----------------------------------------
-	内容：描画処理で使用するカメラ情報セット
-	----------------------------------------
-	引数1：カメラポインタ
-	----------------------------------------
-	戻値：なし
-======================================== */
-void CWalkEffect::SetCamera(const CCamera * pCamera)
-{
-	m_pCamera = pCamera;
 }
 
 /* ========================================

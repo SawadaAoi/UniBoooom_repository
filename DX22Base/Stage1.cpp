@@ -129,7 +129,6 @@ void CStage1::Update()
 		PlayerHealItemCollision();		// 回復アイテム取る判定
 		Collision();					// 当たり判定更新
 		m_pHitEffectMng->Update();		// ヒットエフェクトマネージャー更新
-		m_pWalkEffectMng->Update();		// プレイヤー移動エフェクトマネージャー更新
 	}
 
 #if SCENE_TRANSITION
@@ -198,7 +197,6 @@ void CStage1::Draw()
 
 	// エフェクト描画
 	m_pHitEffectMng->Draw();
-	m_pWalkEffectMng->Draw();
 
 }
 

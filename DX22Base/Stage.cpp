@@ -91,11 +91,10 @@ CStage::CStage(CUIStageManager::E_STAGE_NUM eStage)
 
 	//================エフェクト動的確保================
 	m_pHitEffectMng = new CHitSlimeEffectManager();
-	m_pWalkEffectMng = new CWalkEffectManager();
+
 	//================セット================
 	// カメラ
 	m_pHitEffectMng->SetCamera(m_pCamera);
-	m_pWalkEffectMng->SetCamera(m_pCamera);
 	m_pPlayer->SetCamera(m_pCamera);
 	m_pExplosionMng->SetCamera(m_pCamera);
 	m_pSlimeMng->SetCamera(m_pCamera);
@@ -120,8 +119,7 @@ CStage::CStage(CUIStageManager::E_STAGE_NUM eStage)
 	// データ受け継ぎ
 	m_Data.Load();	//ファイルに上がっている情報を読み込む
 
-	// プレイイヤー ← プレイヤー移動エフェクトマネージャ―
-	m_pPlayer->SetWalkEffect(m_pWalkEffectMng);
+
 }
 
 /* ========================================
@@ -150,7 +148,6 @@ CStage::~CStage()
 	SAFE_DELETE(m_pSlimeMng);
 	SAFE_DELETE(m_pExplosionMng);
 	SAFE_DELETE(m_pHitEffectMng);
-	SAFE_DELETE(m_pWalkEffectMng);
 	SAFE_DELETE(m_pCollision);
 	SAFE_DELETE(m_pFade);
 	SAFE_DELETE(m_pTexture);

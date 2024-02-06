@@ -100,13 +100,10 @@ public:
 	bool GetSafeTime();							//当たり判定があるかの確認
 	int* GetHpPtr();
 	bool GetDieFlg() const;
-	tagTransform3d GetPlayerOldPos17f();	//プレイヤーの17フレーム前の位置を取得
-	tagTransform3d GetPlayerOldPos25f();	//プレイヤーの25フレーム前の位置を取得
 
 	// セット関数
 	void SetCamera(CCamera* pCamera);
 	bool GetAttackFlg();
-	void SetWalkEffect(CWalkEffectManager* pEffectMng);
 
 private:
 	// ===プロトタイプ宣言===
@@ -120,7 +117,7 @@ private:
 	CCamera* m_pCamera;					// プレイヤーを追従するカメラ
 
 	CShadow* m_pShadow;
-	CFrameCnt* m_pWaitFrameCnt;			// 待機モーション用フレームカウントダウン
+	CFrameCnt* m_pWaitFrameCnt;				// 待機モーション用フレームカウントダウン
 	CWalkEffectManager* m_pWalkEffectMng;	// プレイヤー移動エフェクト用
 
 	int m_nShowEffectCnt;
@@ -146,10 +143,10 @@ private:
 
 	float m_fRotate_x;					// プレイヤーの表示用傾き
 
-	tagTransform3d m_OldTransform17f;		// プレイヤー17フレーム前の位置
-	tagTransform3d m_OldTransform25f;		// プレイヤー25フレーム前の位置
-	int m_nGetPosCnt17f;					// プレイヤーの位置を取得するカウント
-	int m_nGetPosCnt25f;					// プレイヤーの位置を取得するカウント
+	int m_nWalkEffeCnt;
+
+
+
 	// ===列挙===
 	enum MOTION
 	{

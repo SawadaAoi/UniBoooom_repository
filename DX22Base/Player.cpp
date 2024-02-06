@@ -74,6 +74,7 @@ const float	ADD_ANIM_FRAME = 1.0f / 60.0f;
 const int   PLAYER_WARNING_HP = 1;							//瀕死の警告を行うプレイヤー残りHP
 
 const int	DIE_AFTER_INTERVAL = 2.0f * 60;					// 死亡してからGameOverテキストが出るまでの猶予時間
+const int	WALK_EFFECT_INTERVAL = 0.2f * 60;				// 歩くエフェクトの出現間隔
 
 /* ========================================
    関数：コンストラクタ
@@ -105,6 +106,7 @@ CPlayer::CPlayer()
 	, m_pWalkEffectMng(nullptr)
 	, m_nShowEffectCnt(0)
 	, m_fRotate_x(PLAYER_ROTATE_X_NORMAL)
+	, m_nWalkEffeCnt(0)
 {
 	m_pHammer = new CHammer();								// Hammerクラスをインスタンス
 
@@ -122,6 +124,8 @@ CPlayer::CPlayer()
 
 	LoadAnime();	//アニメーションの読み込み
 	m_pShadow = new CShadow();
+
+	m_pWalkEffectMng = new CWalkEffectManager();
 }
 /* ========================================
    関数：デストラクタ
@@ -134,6 +138,7 @@ CPlayer::CPlayer()
 ======================================== */
 CPlayer::~CPlayer()
 {
+	SAFE_DELETE(m_pWalkEffectMng);
 	SAFE_DELETE(m_pShadow);
 	SAFE_DELETE(m_pModel);
 	SAFE_DELETE(m_pHammer);
@@ -231,8 +236,6 @@ void CPlayer::Update()
 	}
 
 
-
-
 	// 無敵状態になっている場合
 	if (m_bSafeTimeFlg)
 	{
@@ -257,10 +260,8 @@ void CPlayer::Update()
 		m_pModel->Step(ADD_ANIM_FRAME);
 	}
 	
-	//	プレイヤー17フレーム前と30フレーム前の位置を更新
-	GetPlayerOldPos17f();
-	GetPlayerOldPos25f();
-	
+	//SetOldPos();	//	プレイヤー17フレーム前と30フレーム前の位置を更新
+	m_pWalkEffectMng->Update();
 }
 
 /* ========================================
@@ -334,6 +335,8 @@ void CPlayer::Draw()
 	}
 
 	m_pShadow->Draw(m_Transform, PLAYER_SHADOW_SCALE, m_pCamera);	// 影の描画
+	m_nWalkEffeCnt++;
+	m_pWalkEffectMng->Draw();
 }
 
 /* ========================================
@@ -382,33 +385,14 @@ void CPlayer::MoveKeyboard()
 
 	// キー入力
 	// 上下
-	if (IsKeyPress('W')) 
-	{ 
-		fMoveInput.z = KEYBOARD_INPUT_SIZE;		// ↑
-		// プレイイヤー移動エフェクト表示
-		ShowWalkEffect();
-	}	
-	else if (IsKeyPress('S')) 
-	{ 
-		fMoveInput.z = -KEYBOARD_INPUT_SIZE;	// ↓
-		// プレイイヤー移動エフェクト表示
-		ShowWalkEffect();
-	}	
-	else { fMoveInput.z = 0.0f; }				// 入力無し
+	if (IsKeyPress('W')) { fMoveInput.z = KEYBOARD_INPUT_SIZE; }		// ↑	
+	else if (IsKeyPress('S')) { fMoveInput.z = -KEYBOARD_INPUT_SIZE; }	// ↓
+	else { fMoveInput.z = 0.0f; }										// 入力無し
+
 	// 左右
-	if (IsKeyPress('D')) 
-	{ 
-		fMoveInput.x = KEYBOARD_INPUT_SIZE;		// →
-		// プレイイヤー移動エフェクト表示
-		ShowWalkEffect();
-	}	
-	else if (IsKeyPress('A')) 
-	{ 
-		fMoveInput.x = -KEYBOARD_INPUT_SIZE;	// ←
-		// プレイイヤー移動エフェクト表示
-		ShowWalkEffect();
-	}	
-	else { fMoveInput.x = 0.0f; }				// 入力無し
+	if (IsKeyPress('D')) { fMoveInput.x = KEYBOARD_INPUT_SIZE; }		// →	
+	else if (IsKeyPress('A')) { fMoveInput.x = -KEYBOARD_INPUT_SIZE; }	// ←
+	else { fMoveInput.x = 0.0f; }										// 入力無し
 
 	MoveSizeInputSet(fMoveInput);	// 入力値から移動量と向きをセット
 
@@ -468,8 +452,13 @@ void CPlayer::MoveSizeInputSet(TPos3d<float> fInput)
 		m_Transform.fRadian.y =
 			(atan2(fInput.z * -1, fInput.x)			// DirectXと三角関数で回転方向が逆なので調整
 				- DirectX::XMConvertToRadians(90.0f));	// DirectXと三角関数で0度の位置が90度ずれている(↑が0)ので調整
-		// プレイイヤー移動エフェクト表示
-		ShowWalkEffect();
+		
+		// プレイヤー移動煙エフェクト表示
+		if (WALK_EFFECT_INTERVAL <= m_nWalkEffeCnt)
+		{
+			ShowWalkEffect();
+			m_nWalkEffeCnt = 0;
+		}
 	}
 	// キー入力がない場合
 	else
@@ -565,45 +554,6 @@ bool CPlayer::GetDieFlg() const
 	return m_bDieFlg;
 }
 
-/* ========================================
-   プレイヤー位置ゲット関数
-   ----------------------------------------
-   内容：プレイヤー17フレーム前の位置を取得する
-   ----------------------------------------
-   引数：なし
-   ----------------------------------------
-   戻値：プレイヤー17フレーム前の位置
-======================================== */
-tagTransform3d CPlayer::GetPlayerOldPos17f()
-{
-	m_nGetPosCnt17f++;
-	if (m_nGetPosCnt17f % 17 == 0)	
-	{
-		m_OldTransform17f = m_Transform;
-	}
-	
-	return m_OldTransform17f;
-}
-
-/* ========================================
-   プレイヤー位置ゲット関数
-   ----------------------------------------
-   内容：プレイヤー25フレーム前の位置を取得する
-   ----------------------------------------
-   引数：なし
-   ----------------------------------------
-   戻値：プレイヤー25フレーム前の位置
-======================================== */
-tagTransform3d CPlayer::GetPlayerOldPos25f()
-{
-	m_nGetPosCnt25f++;
-	if (m_nGetPosCnt25f % 25 == 0)
-	{
-		m_OldTransform25f = m_Transform;
-	}
-
-	return m_OldTransform25f;
-}
 
 /* ========================================
    カメラのセット関数
@@ -618,6 +568,7 @@ void CPlayer::SetCamera(CCamera * pCamera)
 {
 	m_pCamera = pCamera;	//中身は変えられないけどポインタはかえれるのでヨシ！
 	m_pHammer->SetCamera(m_pCamera);
+	m_pWalkEffectMng->SetCamera(m_pCamera);
 }
 
 /* ========================================
@@ -634,10 +585,6 @@ bool CPlayer::GetAttackFlg()
 	return m_bAttackFlg;
 }
 
-void CPlayer::SetWalkEffect(CWalkEffectManager * pEffectMng)
-{
-	m_pWalkEffectMng = pEffectMng;
-}
 
 
 /* ========================================
@@ -829,5 +776,5 @@ void CPlayer::Healing()
 void CPlayer::ShowWalkEffect()
 {	
 	// プレイヤー移動エフェクト作成
-	m_pWalkEffectMng->Create(m_Transform, m_OldTransform17f, m_OldTransform25f);
+	m_pWalkEffectMng->Create(m_Transform);
 }

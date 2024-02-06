@@ -108,14 +108,13 @@ protected:
 	BattleData m_Data;	//戦闘データ記録用変数
 	CStartText* m_pStartText;	// ゲームスタート描画
 	CHitSlimeEffectManager* m_pHitEffectMng;
-	CWalkEffectManager* m_pWalkEffectMng;
 
 	//サウンド
 	XAUDIO2_BUFFER* m_pSEHitHammer;
 	IXAudio2SourceVoice* m_pSEHitHammerSpeaker;
 
 private:
-	void LoadSE();
+
 };	//ステージ
 
 #endif	//!__STAGE_H__

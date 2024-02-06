@@ -16,7 +16,7 @@
 #include "WalkEffectManager.h"
 
 // =============== 定数定義 =======================
-const float TOTAL_WALK_EFFECT_TIME = 10.0f;		//エフェクト総時間（フレーム
+const int TOTAL_WALK_EFFECT_TIME = 0.5f * 60;		//エフェクト総時間（フレーム
 
 /* ========================================
 	関数：コンストラクタ
@@ -28,8 +28,8 @@ const float TOTAL_WALK_EFFECT_TIME = 10.0f;		//エフェクト総時間（フレーム
 	戻値：なし
 =========================================== */
 CWalkEffectManager::CWalkEffectManager()
-	: m_fRandNum(0.0f)
 {
+	srand((unsigned int)time(NULL));
 	
 	// プレイヤー移動エフェクト配列の初期化
 	for (int i = 0; i < MAX_STEP_NUM; i++)
@@ -125,14 +125,11 @@ CWalkEffect * CWalkEffectManager::GetWalkPtr(int num)
 	内容：プレイヤーからの座標を用いて移動エフェクトを生成
 	----------------------------------------
 	引数1：プレイヤーのトランスフォーム
-	引数2：プレイヤー17フレーム前のトランスフォーム
-	引数3：プレイヤー25フレーム前のトランスフォーム
 	----------------------------------------
-	戻値：移動エフェクトの配列
+	戻値：無し
 ======================================== */
-void CWalkEffectManager::Create(tagTransform3d transform, tagTransform3d oldtransform17, tagTransform3d oldtransform25)
+void CWalkEffectManager::Create(tagTransform3d tTransForm)
 {
-	
 	// プレイヤー移動エフェクトを検索
 	for (int i = 0; i < MAX_STEP_NUM; i++)
 	{
@@ -140,8 +137,13 @@ void CWalkEffectManager::Create(tagTransform3d transform, tagTransform3d oldtran
 		if (m_pwalkEffect[i] != nullptr) continue;
 
 		// 座標、エフェクト時間、Effekseerファイル、カメラを指定して生成
-		m_pwalkEffect[i] = new CWalkEffect(transform.fPos,oldtransform17.fPos, oldtransform25.fPos, transform.fRadian, TOTAL_WALK_EFFECT_TIME, GetRandom() , m_walkEffect, m_pCamera);
-		m_pwalkEffect[i]->SetCamera(m_pCamera);		//カメラセット
+		m_pwalkEffect[i] = new CWalkEffect(
+			tTransForm,
+			TOTAL_WALK_EFFECT_TIME,
+			(GetRandom(6) * 0.1f),
+			m_walkEffect,
+			m_pCamera);
+
 		break;
 	}
 }
@@ -189,14 +191,12 @@ void CWalkEffectManager::DeleteCheck()
 	----------------------------------------
 	内容：エフェクトで使う乱数を生成する
 	----------------------------------------
-	引数：なし
+	引数：範囲指定(6と入力した場合、-3 ～ 3)
 	----------------------------------------
 	戻値：生成した乱数
 ======================================== */
-float CWalkEffectManager::GetRandom()
+int CWalkEffectManager::GetRandom(int nRange)
 {
-	
-	srand((unsigned int)time(NULL));
-	m_fRandNum = ((rand() % 6 + 1) - 3) * 0.1f;	// -0.3	～ 0.3
-	return m_fRandNum;
+	int reRandNum = ((rand() % nRange + 1) - (nRange / 2));	// -nRange	～ nRange
+	return reRandNum;
 }
