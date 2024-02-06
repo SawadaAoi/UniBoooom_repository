@@ -264,7 +264,7 @@ void CPlayer::Update()
 	if (m_fHammerSpeed <= 4.2f)
 	{
 		// 汗エフェクト作成
-		m_pSweatEffectMng->Create(m_Transform.fPos,m_OldTransform.fPos, m_Transform.fRadian);
+		m_pSweatEffectMng->Create(m_Transform.fPos, m_Transform.fRadian);
 	}
 
 }
