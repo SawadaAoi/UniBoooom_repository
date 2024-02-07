@@ -18,6 +18,7 @@
 	・2023/11/14 SphereInfoの変更に対応 takagi
 	・2023/11/15 スライムのモデルと頂点シェーダーをmanagerから受け取るように変更 yamashita
 	・2023/11/28 影の大きさを設定する変数追加 nieda
+	・2024/01/31 アニメーションの追加 yamashita
 
 ========================================== */
 
@@ -145,7 +146,8 @@ void CSlime_4::Draw()
 	DirectX::XMFLOAT4X4 world;
 	DirectX::XMStoreFloat4x4(&world, XMMatrixTranspose(
 		DirectX::XMMatrixScaling(m_Transform.fScale.x, m_Transform.fScale.y, m_Transform.fScale.z) *
-		DirectX::XMMatrixRotationY(m_Transform.fRadian.y) *
+		DirectX::XMMatrixRotationY(m_Transform.fRadian.y + DirectX::g_XMPi[0]) *
+		//DirectX::XMMatrixRotationY(m_Transform.fRadian.x + DirectX::XMConvertToRadians(20.0f)) *
 		DirectX::XMMatrixTranslation(m_Transform.fPos.x, m_Transform.fPos.y, m_Transform.fPos.z)));
 
 	DirectX::XMFLOAT4X4 mat[3] = {
@@ -159,7 +161,7 @@ void CSlime_4::Draw()
 	m_pModel->Play(m_eCurAnime, true);
 	m_pModel->SetAnimationTime(m_eCurAnime, m_fAnimeTime);	// アニメーションタイムをセット
 	// アニメーションタイムをセットしてから動かさないと反映されないため少しだけ進める
-	m_pModel->Step(0.00000001f);
+	m_pModel->Step(0.0f);
 
 	// レンダーターゲット、深度バッファの設定
 	RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得
@@ -208,7 +210,7 @@ void CSlime_4::NormalMove()
 		// プレイヤーと反対方向に移動
 		m_move.x = -(sinf(rad)) * m_fSpeed;
 		m_move.z = -(cosf(rad)) * m_fSpeed;
-		m_Transform.fRadian.y = atan2f(-m_move.x, -m_move.z);
+		m_Transform.fRadian.y = atan2f(m_move.x, m_move.z);
 	}
 	else
 	{

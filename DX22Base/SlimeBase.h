@@ -133,6 +133,22 @@ public:
 		MOTION_LEVEL4_MAX,
 	};
 
+	// 炎スライム
+	enum FLAME_SLIME_MOTION {
+		FLAME_SLIME_MOVE,		// 炎スライムの移動
+		FLAME_SLIME_HIT,		// 炎スライムがハンマーに殴られる挙動
+
+		FLAME_SLIME_MAX,
+	};
+
+	// ヒールスライム
+	enum HEAL_SLIME_MOTION {
+		HEAL_SLIME_MOVE,	// 回復スライムの移動
+		HEAL_SLIME_HIT,		// 回復スライムがハンマーに殴られる挙動
+
+		HEAL_SLIME_MAX,
+	};	
+
 	// ===プロトタイプ宣言===
 	CSlimeBase();
 	~CSlimeBase();
@@ -162,7 +178,7 @@ public:
 
 protected:
 	AnimeModel* m_pModel;			//3Dモデル
-	VertexShader* m_pVS;			// バーテックスシェーダーのポインタ
+	//VertexShader* m_pVS;			// バーテックスシェーダーのポインタ
 	TTriType<float> m_move;			// 移動量
 	TPos3d<float> m_fStpDirPos;		// 停止状態時に向く対象のオブジェクトの座標
 	float m_fSpeed;					// スライムの移動速度
@@ -170,7 +186,7 @@ protected:
 	bool m_bHitMove;				// 吹っ飛び中かどうか
 	float m_fVecAngle;				// 敵の吹き飛ぶ方向
 									   
-	bool m_bMvStpFlg;					// スライムが逃げる状態かどうか
+	bool m_bMvStpFlg;				// スライムが逃げる状態かどうか
 	int m_nMvStpCnt;				// 逃げる状態になった時
 	TPos3d<float> m_ExpPos;			//最も近い爆発の座標
 
@@ -190,7 +206,7 @@ protected:
 
 	//=======Effekseer=======
 	Effekseer::EffectRef m_flameSlimeEffect;
-	Effekseer::Handle m_efcslimeHnadle;
+	Effekseer::Handle m_efcFlameHandle;
 
 	float m_fAnimeTime;		// アニメーションの現在の時間
 	int m_eCurAnime;		// 現在のアニメーション

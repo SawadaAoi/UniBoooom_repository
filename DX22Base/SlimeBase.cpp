@@ -60,7 +60,7 @@ const float MOVE_DISTANCE_PLAYER = 15;			// プレイヤー追跡移動に切り替える距離
 =========================================== */
 CSlimeBase::CSlimeBase()
 	: m_pModel(nullptr)
-	, m_pVS(nullptr)
+	//, m_pVS(nullptr)
 	, m_move(0.0f, 0.0f, 0.0f)
 	, m_fSpeed(ENEMY_MOVE_SPEED)
 	, m_fVecAngle(0.0f)
@@ -101,7 +101,7 @@ CSlimeBase::~CSlimeBase()
 	SAFE_DELETE(m_pShadow);	//影解放
 
 	//--エフェクト停止--
-	LibEffekseer::GetManager()->StopEffect(m_efcslimeHnadle);
+	LibEffekseer::GetManager()->StopEffect(m_efcFlameHandle);
 }
 
 /* ========================================
@@ -141,8 +141,8 @@ void CSlimeBase::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
 	if (GetSlimeLevel() == LEVEL_FLAME)
 	{
 		//エフェクト位置、回転角度更新
-		LibEffekseer::GetManager()->SetLocation(m_efcslimeHnadle, m_Transform.fPos.x, m_Transform.fPos.y, m_Transform.fPos.z + 0.5f);
-		LibEffekseer::GetManager()->SetRotation(m_efcslimeHnadle, m_Transform.fRadian.x, m_Transform.fRadian.y, m_Transform.fRadian.z);
+		LibEffekseer::GetManager()->SetLocation(m_efcFlameHandle, m_Transform.fPos.x, m_Transform.fPos.y, m_Transform.fPos.z + 0.5f);
+		LibEffekseer::GetManager()->SetRotation(m_efcFlameHandle, m_Transform.fRadian.x, m_Transform.fRadian.y, m_Transform.fRadian.z);
 	}
 
 }
@@ -160,34 +160,58 @@ void CSlimeBase::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
 =========================================== */
 void CSlimeBase::Draw()
 {
-	if (!m_pCamera) { return; }
+	if (!m_pCamera) { return; }	//ヌルチェック
 
-	DirectX::XMFLOAT4X4 mat[3];
+	//行列状態を取得してセット
+	DirectX::XMFLOAT4X4 world;
+	DirectX::XMStoreFloat4x4(&world, XMMatrixTranspose(
+		DirectX::XMMatrixScaling(m_Transform.fScale.x, m_Transform.fScale.y, m_Transform.fScale.z) *
+		DirectX::XMMatrixRotationY(m_Transform.fRadian.y + DirectX::g_XMPi[0]) *
+		DirectX::XMMatrixTranslation(m_Transform.fPos.x, m_Transform.fPos.y, m_Transform.fPos.z)));
 
-	mat[0] = m_Transform.GetWorldMatrixSRT();
-	mat[1] = m_pCamera->GetViewMatrix();
-	mat[2] = m_pCamera->GetProjectionMatrix();
-	
-	//-- 行列をシェーダーへ設定
-	m_pVS->WriteBuffer(0, mat);
+	DirectX::XMFLOAT4X4 mat[3] = {
+	world,
+	m_pCamera->GetViewMatrix(),
+	m_pCamera->GetProjectionMatrix()
+	};
+	ShaderList::SetWVP(mat);
 
-	//-- モデル表示
+	// 複数体を共通のモデルで扱っているため描画のタイミングでモーションの種類と時間をセットする
+	m_pModel->Play(m_eCurAnime, true);
+	m_pModel->SetAnimationTime(m_eCurAnime, m_fAnimeTime);	// アニメーションタイムをセット
+	// アニメーションタイムをセットしてから動かさないと反映されないため少しだけ進める
+	m_pModel->Step(0.0f);
+
+	// レンダーターゲット、深度バッファの設定
+	RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得
+	DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
+	SetRenderTargets(1, &pRTV, pDSV);		//DSVがnullだと2D表示になる
+
+	//-- モデル表示(アニメーション対応ver)
 	if (m_pModel) {
-		m_pModel->Draw();
+		//アニメーション対応したプレイヤーの描画
+		m_pModel->Draw(nullptr, [this](int index)
+		{
+			const AnimeModel::Mesh* pMesh = m_pModel->GetMesh(index);
+			const AnimeModel::Material* pMaterial = m_pModel->GetMaterial(pMesh->materialID);
+			ShaderList::SetMaterial(*pMaterial);
+
+			DirectX::XMFLOAT4X4 bones[200];
+			for (int i = 0; i < pMesh->bones.size() && i < 200; ++i)
+			{
+				// この計算はゲームつくろー「スキンメッシュの仕組み」が参考になる
+				DirectX::XMStoreFloat4x4(&bones[i], DirectX::XMMatrixTranspose(
+					pMesh->bones[i].invOffset *
+					m_pModel->GetBone(pMesh->bones[i].index)
+				));
+			}
+			ShaderList::SetBones(bones);
+		});
+		//m_pModel->DrawBone();
 	}
 
 	//-- 影の描画
 	m_pShadow->Draw(m_Transform, m_fScaleShadow, m_pCamera);
-
-	if (GetSlimeLevel() == LEVEL_FLAME)
-	{
-		//エフェクトの描画
-		TPos3d<float> cameraPos = m_pCamera->GetPos();							//カメラ座標を取得
-		DirectX::XMFLOAT3 fCameraPos(cameraPos.x, cameraPos.y, cameraPos.z);	//XMFLOAT3に変換
-		LibEffekseer::SetViewPosition(fCameraPos);								//カメラ座標をセット
-		LibEffekseer::SetCameraMatrix(m_pCamera->GetViewWithoutTranspose(), m_pCamera->GetProjectionWithoutTranspose());	//転置前のviewとprojectionをセット
-	}
-	
 }
 
 
@@ -260,7 +284,7 @@ void CSlimeBase::RandomMove()
 		m_move.z = sinf(DirectX::XMConvertToRadians((float)ranAngle)) * m_fSpeed;
 
 		// 向きを変える
-		m_Transform.fRadian.y = DirectX::XMConvertToRadians((float)ranAngle - 90);
+		m_Transform.fRadian.y = DirectX::XMConvertToRadians((float)ranAngle - 90.0f);
 
 		m_RanMoveCnt = 0;	// 加算値をリセット
 	}
