@@ -59,18 +59,22 @@ CSlime_Flame::CSlime_Flame()
 	-------------------------------------
 	戻値：無し
 =========================================== */
-CSlime_Flame::CSlime_Flame(TPos3d<float> pos, Effekseer::EffectRef flameSlimeEffect, VertexShader* pVS, AnimeModel* pModel)
+CSlime_Flame::CSlime_Flame(TPos3d<float> pos, Effekseer::EffectRef flameSlimeEffect, AnimeModel* pModel)
 	: CSlime_Flame()
 {
 	m_Transform.fPos = pos;			// 初期座標を指定
-	m_pVS = pVS;
 	m_pModel = pModel;
+
+	// アニメーションのセット
+	m_eCurAnime = (int)FLAME_SLIME_MOVE;	// 現在のアニメーションをセット
+	m_pModel->Play(m_eCurAnime, true);
+
 	// エフェクト初期化
 	m_flameSlimeEffect = flameSlimeEffect;	//エフェクトをセット
-	m_efcslimeHnadle = LibEffekseer::GetManager()->Play(m_flameSlimeEffect, pos.x, pos.y, pos.z + 0.5f);	//エフェクトの開始
-	LibEffekseer::GetManager()->SetScale(m_efcslimeHnadle, FLAME_EFFECT_SCALE, FLAME_EFFECT_SCALE * 1.1f, FLAME_EFFECT_SCALE);	//エフェクトのサイズを設定
-	LibEffekseer::GetManager()->SetRotation(m_efcslimeHnadle, m_Transform.fRadian.x, m_Transform.fRadian.y, m_Transform.fRadian.z);					//エフェクトの回転角度を設定
-	LibEffekseer::GetManager()->SetLocation(m_efcslimeHnadle, pos.x, pos.y, pos.z);																	//エフェクトの位置を設定
+	m_efcFlameHandle = LibEffekseer::GetManager()->Play(m_flameSlimeEffect, pos.x, pos.y, pos.z + 0.5f);	//エフェクトの開始
+	LibEffekseer::GetManager()->SetScale(m_efcFlameHandle, FLAME_EFFECT_SCALE, FLAME_EFFECT_SCALE * 1.1f, FLAME_EFFECT_SCALE);	//エフェクトのサイズを設定
+	LibEffekseer::GetManager()->SetRotation(m_efcFlameHandle, m_Transform.fRadian.x, m_Transform.fRadian.y, m_Transform.fRadian.z);					//エフェクトの回転角度を設定
+	LibEffekseer::GetManager()->SetLocation(m_efcFlameHandle, pos.x, pos.y, pos.z);																	//エフェクトの位置を設定
 }
 
 /* ========================================
@@ -84,6 +88,67 @@ CSlime_Flame::CSlime_Flame(TPos3d<float> pos, Effekseer::EffectRef flameSlimeEff
 =========================================== */
 CSlime_Flame::~CSlime_Flame()
 {
+}
+
+/* ========================================
+	更新関数
+	-------------------------------------
+	内容：スライムの行動を毎フレーム更新する
+	-------------------------------------
+	引数1：プレイヤーの情報、スライムの移動速度
+	-------------------------------------
+	戻値：なし
+=========================================== */
+void CSlime_Flame::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
+{
+	m_PlayerTran = playerTransform;	// プレイヤーの最新パラメータを取得
+	m_fAnimeTime += ADD_ANIME;
+
+	//エフェクト位置、回転角度更新
+	LibEffekseer::GetManager()->SetLocation(m_efcFlameHandle, m_Transform.fPos.x, m_Transform.fPos.y, m_Transform.fPos.z + 0.5f);
+	LibEffekseer::GetManager()->SetRotation(m_efcFlameHandle, m_Transform.fRadian.x, m_Transform.fRadian.y, m_Transform.fRadian.z);
+
+	if (!m_bHitMove)	//敵が通常の移動状態の時
+	{
+		// 現在のアニメーションが「移動」以外なら移動モーションに変更
+		if (m_eCurAnime != (int)FLAME_SLIME_MOVE)
+		{
+			m_eCurAnime = (int)FLAME_SLIME_MOVE;
+			m_fAnimeTime = 0.0f;	//アニメーションタイムのリセット
+		}
+
+		if (!m_bMvStpFlg  && m_nMvStpCnt == 0)	//停止フラグがoffなら
+		{
+			NormalMove();	//通常移動
+		}
+		else
+		{
+			MoveStop();	//爆発から逃げる
+		}
+	}
+	else
+	{
+		//敵の吹き飛び移動
+		HitMove();
+
+		// 現在のアニメーションが「移動」以外なら移動モーションに変更
+		if (m_eCurAnime != (int)FLAME_SLIME_HIT)
+		{
+			m_eCurAnime = (int)FLAME_SLIME_HIT;
+			m_fAnimeTime = 0.0f;	//アニメーションタイムのリセット
+		}
+	}
+
+	// -- 座標更新
+	m_Transform.fPos.x += m_move.x * fSlimeMoveSpeed;
+	m_Transform.fPos.z += m_move.z * fSlimeMoveSpeed;
+
+	// エフェクトの描画
+	TPos3d<float> cameraPos = m_pCamera->GetPos();							//カメラ座標を取得
+	DirectX::XMFLOAT3 fCameraPos(cameraPos.x, cameraPos.y, cameraPos.z);	//XMFLOAT3に変換
+	LibEffekseer::SetViewPosition(fCameraPos);								//カメラ座標をセット
+	LibEffekseer::SetCameraMatrix(m_pCamera->GetViewWithoutTranspose(), m_pCamera->GetProjectionWithoutTranspose());	//転置前のviewとprojectionをセット
+
 }
 
 

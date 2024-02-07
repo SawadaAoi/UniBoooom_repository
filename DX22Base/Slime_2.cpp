@@ -22,6 +22,7 @@
 	・2023/12/07 ゲームパラメータから一部定数移動 takagi
 	・2024/1/26  アニメーションの実装 Yamashita
 	・2024/1/26  タックル中に叩くとタックルがまた再開される不具合を修正 Yamashita
+	・2024/01/29 アニメーションの追加 yamashita
 
 ========================================== */
 
@@ -265,16 +266,11 @@ void CSlime_2::NormalMove()
 			m_AtcMoveType = ATTACK_TACKLE;
 			m_nChargeCnt = 0;
 
-
 		}
 		else 
 		{ //まだだったらカウントを溜める
 			m_nChargeCnt++; 
 			CSlimeBase::NormalMove();
-
-			// アニメーションのカウントが一定以上ならアニメーションを止めるためにカウントをマイナス
-
-
 		}	
 
 		//タックルの角度を確定

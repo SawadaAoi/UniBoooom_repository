@@ -25,8 +25,9 @@ class CSlime_Heal :
 public:
 	// ===プロトタイプ宣言===
 	CSlime_Heal();
-	CSlime_Heal(TPos3d<float> pos, VertexShader* pVS, AnimeModel* pModel);
+	CSlime_Heal(TPos3d<float> pos, AnimeModel* pModel);
 	~CSlime_Heal();
+	void Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)override;
 	void NormalMove() override;
 	void SetNormalSpeed() override;
 
