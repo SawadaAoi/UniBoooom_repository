@@ -261,6 +261,8 @@
     <ClCompile Include="StageFinishUI.cpp" />
     <ClCompile Include="Startup.cpp" />
     <ClCompile Include="StripeParticle.cpp" />
+    <ClCompile Include="SweatEffect.cpp" />
+    <ClCompile Include="SweatEffectManager.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="SceneGame.cpp" />
     <ClCompile Include="Timer.cpp" />
@@ -284,10 +286,12 @@
     <ClCompile Include="Transform3d.cpp" />
     <ClCompile Include="UIStageManager.cpp" />
     <ClCompile Include="Union.cpp" />
+    <ClCompile Include="UnionSmokeEffect.cpp" />
     <ClCompile Include="UnionManager.cpp" />
     <ClCompile Include="WalkEffect.cpp" />
     <ClCompile Include="WalkEffectManager.cpp" />
     <ClCompile Include="UsingCamera.cpp" />
+    <ClCompile Include="UnionSmokeEffectManager.cpp" />
     <ClCompile Include="_model.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -389,6 +393,8 @@
     <ClInclude Include="Stage3.h" />
     <ClInclude Include="StageFinishUI.h" />
     <ClInclude Include="StripeParticle.h" />
+    <ClInclude Include="SweatEffect.h" />
+    <ClInclude Include="SweatEffectManager.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="TimerStage1.h" />
@@ -411,10 +417,12 @@
     <ClInclude Include="TriType.h" />
     <ClInclude Include="UIStageManager.h" />
     <ClInclude Include="Union.h" />
+    <ClInclude Include="UnionSmokeEffect.h" />
     <ClInclude Include="UnionManager.h" />
     <ClInclude Include="WalkEffect.h" />
     <ClInclude Include="WalkEffectManager.h" />
     <ClInclude Include="UsingCamera.h" />
+    <ClInclude Include="UnionSmokeEffectManager.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="PsFade.hlsl">

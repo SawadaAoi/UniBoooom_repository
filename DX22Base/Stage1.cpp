@@ -32,6 +32,7 @@
 	・2024/01/15 GameFinish()関数修正・RecordData()関数追加 takagi
 	・2024/01/25 ヒットエフェクト関係の処理追加 Tei
 	・2024/01/30 プレイヤー移動エフェクト関係の処理追加 Tei
+	・2024/02/02 汗エフェクト処理追加 Tei
 	・2024/02/05 ゲーム終了間際の加算スコアがトータルスコアに反映されるように(改) sawada
 
 ========================================== */
@@ -129,6 +130,7 @@ void CStage1::Update()
 		PlayerHealItemCollision();		// 回復アイテム取る判定
 		Collision();					// 当たり判定更新
 		m_pHitEffectMng->Update();		// ヒットエフェクトマネージャー更新
+
 	}
 
 #if SCENE_TRANSITION

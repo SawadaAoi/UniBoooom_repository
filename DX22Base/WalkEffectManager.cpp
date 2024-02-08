@@ -39,6 +39,7 @@ CWalkEffectManager::CWalkEffectManager()
 
 	//エフェクト初期化
 	m_walkEffect = LibEffekseer::Create("Assets/Effect/walk_effect/step_smoke.efkefc");
+
 }
 
 /* ========================================

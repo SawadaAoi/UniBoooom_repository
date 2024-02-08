@@ -22,22 +22,25 @@
 	・2023/11/29 Interval追加　yamamoto
 	・2023/12/01 IntervalをSwingSpeedに変更　yamamoto
 	・2023/12/07 ゲームパラメータから一部定数移動 takagi
-	
+	・2024/02/08 振る速度の増減について処理を修正 sawada
+
 ========================================== */
 
 // =============== インクルード ===================
 #include "hammer.h"				// 自身のヘッダ
 #include "Sphere.h"				// 球体の情報用ヘッダ
 #include "GameParameter.h"		// 定数定義用ヘッダー
-
+#include "TriType.h"
 
 // =============== 定数定義 =======================
 const float HALF_PI = 3.141592f / 2;	//ハンマーの開始地点のラジアン角(要修正)
 
-const float HAMMER_ANGLE_X = DirectX::XMConvertToRadians(180.0f);	//ハンマーの表示角度
-const float HAMMER_ANGLE_Y = DirectX::XMConvertToRadians(0.0f);		//ハンマーの表示角度
-const float HAMMER_ANGLE_Z = DirectX::XMConvertToRadians(0.0f);		//ハンマーの表示角度
-const float SWING_ANGLE = DirectX::XMConvertToRadians(90.0f);		//ハンマーを振る範囲(扇形の角度の大きさ)
+const TTriType<float> HAMMER_DISP_ANGLE = {	// ハンマーの表示角度
+	DirectX::XMConvertToRadians(180.0f),
+	DirectX::XMConvertToRadians(0.0f) ,
+	DirectX::XMConvertToRadians(0.0f) };
+
+const float SWING_ANGLE = DirectX::XMConvertToRadians(130.0f);		//ハンマーを振る範囲(扇形の角度の大きさ)
 #if MODE_GAME_PARAMETER
 #else
 const float SWING_TIME_FRAME = 0.15f * 60;						// ハンマーを振る時間(フレーム単位)
@@ -46,13 +49,13 @@ const float HAMMER_COL_SIZE = 0.75f;							// ハンマーの当たり判定の大きさ
 const float HAMMER_SIZE = 1.5f;									// ハンマーの大きさ
 
 const float SwingSpeed_INITIAL = 0.2f;									//ハンマー初期間隔
-const float SwingSpeed_PLUS = 3.2f;									//ハンマーを一回振るときに乗算される値
-const float SwingSpeed_MINUS = 0.97f;								//毎フレームハンマーを振る間隔を短くさせる値
-const float SwingSpeed_SIOW = 50.0f;								//毎フレームハンマーを振る間隔を短くさせる値
+const float SWING_TIME_ADD_MULT = 3.2f;									//ハンマーを一回振るときに乗算される値
+const float SWING_TIME_MINUS_MULT = 0.97f;								//毎フレームハンマーを振る間隔を短くさせる値
+const float SWING_TIME_MAX = 50.0f;								//毎フレームハンマーを振る間隔を短くさせる値
 #endif
 
 const float ADJUST_DIRECTX_TO_COSINE = DirectX::XMConvertToRadians(90.0f);	// 三角関数とDirectX角度の差分(DirectXの角度は↑が0度、三角関数は→が0度)
-const float ONE_FRAME_ADD_ANGLE = SWING_ANGLE / SWING_TIME_FRAME;			// 1フレームで移動する角度量
+const float FIRST_ADD_ANGLE = SWING_ANGLE / SWING_TIME_MIN;
 
 /* ========================================
    コンストラクタ関数
@@ -68,14 +71,16 @@ CHammer::CHammer()
 	, m_fAngleNow(0)
 	, m_dAddAngleCnt(0)
 	, m_pCamera(nullptr)
-	, m_fSwingSpeed(9.0f)
+	, m_nSwingTimeFrame(SWING_TIME_MIN)
+	, m_fSwingSpeed(1.0f)
 {
-	m_fAddAngle = SWING_ANGLE / m_fSwingSpeed;
-	m_Sphere.fRadius = HAMMER_COL_SIZE;
-	m_Transform.fScale = HAMMER_SIZE;
-	m_Transform.fRadian.x = HAMMER_ANGLE_X;
-	m_Transform.fRadian.y = HAMMER_ANGLE_Y;
-	m_Transform.fRadian.z = HAMMER_ANGLE_Z;
+	m_fAddAngle = float(SWING_ANGLE / m_nSwingTimeFrame);	// 1フレームの加算角度を計算
+
+	m_Sphere.fRadius	= HAMMER_COL_SIZE;
+	m_Transform.fScale	= HAMMER_SIZE;
+	m_Transform.fRadian = HAMMER_DISP_ANGLE;
+
+	m_fSwingSpeed = m_nSwingTimeFrame / SWING_TIME_MIN;
 
 	//頂点シェーダ読み込み
 	m_pVS = new VertexShader();
@@ -113,8 +118,9 @@ CHammer::~CHammer()
 bool CHammer::Update()
 {
 	Swing();		//回転による移動関数
+
 	// 設定値まで移動しきったら
-	if (m_dAddAngleCnt >= m_fSwingSpeed)
+	if (m_nSwingTimeFrame <= m_dAddAngleCnt  )
 	{
 		m_dAddAngleCnt = 0;		// 角度変更フレームカウントリセット
 		
@@ -197,6 +203,7 @@ void CHammer::AttackStart(TPos3d<float>pPos, float angle)
 {
 	float StartAngle =
 		  angle						// プレイヤーの向き
+		+ DirectX::XMConvertToRadians(180.0f)
 		+ ADJUST_DIRECTX_TO_COSINE	// ＋三角関数とDirectX角度の差分
 		+ (SWING_ANGLE / 2);		// ＋ハンマーを振る角度の半分(扇形の右端からスタートする為)
 
@@ -218,15 +225,19 @@ void CHammer::AttackStart(TPos3d<float>pPos, float angle)
    ----------------------------------------
    戻値：なし
    ======================================== */
-void CHammer::SwingSpeedAdd()
+void CHammer::SwingSpeedSlow()
 {
-	m_fAddAngle = SWING_ANGLE / m_fSwingSpeed;
-	m_fSwingSpeed*=SwingSpeed_PLUS; 
-	if (m_fSwingSpeed >= SwingSpeed_SIOW)
+	m_nSwingTimeFrame = m_nSwingTimeFrame * SWING_TIME_ADD_MULT;	// 一振りに掛かる時間を増やす
+
+	// 振る時間が最大値を超えた場合
+	if (SWING_TIME_MAX <= m_nSwingTimeFrame)
 	{
-		m_fSwingSpeed = SwingSpeed_SIOW;
+		m_nSwingTimeFrame = SWING_TIME_MAX;
 	}
-	
+
+
+	m_fAddAngle = float(SWING_ANGLE / m_nSwingTimeFrame);	// 1フレームの加算角度を計算
+	m_fSwingSpeed = m_fAddAngle / FIRST_ADD_ANGLE;			// 現在のハンマーの一振りの速度計算
 }
 /* ========================================
    ハンマーのスイングスピードを速くする関数
@@ -237,25 +248,30 @@ void CHammer::SwingSpeedAdd()
    ----------------------------------------
    戻値：なし
    ======================================== */
-void CHammer::SwingSpeedSubtract()
+void CHammer::SwingSpeedFast()
 {
-	m_fSwingSpeed *= SwingSpeed_MINUS;
-	if (m_fSwingSpeed <= SwingSpeed_MIN)
+	m_nSwingTimeFrame = m_nSwingTimeFrame * SWING_TIME_MINUS_MULT;	// 一振りに掛かる時間を減らす
+
+	// 振る時間が最小値を下回った場合
+	if (m_nSwingTimeFrame <= SWING_TIME_MIN)
 	{
-		m_fSwingSpeed = SwingSpeed_MIN;
+		m_nSwingTimeFrame = SWING_TIME_MIN;
 	}
-	
+
+
+	m_fAddAngle = float(SWING_ANGLE / m_nSwingTimeFrame);	// 1フレームの加算角度を計算
+	m_fSwingSpeed = m_fAddAngle / FIRST_ADD_ANGLE;			// 現在のハンマーの一振りの速度計算
 }
 /* ========================================
-   ハンマーの間隔取得関数
+   ハンマー速度取得関数
    ----------------------------------------
-   内容：ハンマーの間隔取得
+   内容：ハンマーの速度を取得
    ----------------------------------------
    引数1：なし
    ----------------------------------------
-   戻値：ハンマーを振る間隔
+   戻値：ハンマーを速度(初期値が1.0)
    ======================================== */
-float CHammer::GetInterval()
+float CHammer::GetSwingSpeed()
 {
 	return m_fSwingSpeed;
 }
