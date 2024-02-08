@@ -182,7 +182,7 @@ void CSlime_1::Draw()
 	m_pModel->Play(m_eCurAnime,true);
 	m_pModel->SetAnimationTime(m_eCurAnime, m_fAnimeTime);	// アニメーションタイムをセット
 	// アニメーションタイムをセットしてから動かさないと反映されないため少しだけ進める
-	m_pModel->Step(0.00000001f);	
+	m_pModel->Step(0.0f);
 
 	// レンダーターゲット、深度バッファの設定
 	RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得

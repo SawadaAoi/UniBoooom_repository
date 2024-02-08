@@ -210,6 +210,18 @@ private:
 		"Assets/Model/boss_slime_devil/devil_walk.fbx",		// デビルスライムの移動モーション
 		"Assets/Model/boss_slime_devil/devil_damaged.fbx",	// デビルスライムの被ダメモーション
 	};
+
+	// 炎スライム
+	const std::string m_sFlameSlime_Motion[CSlimeBase::FLAME_SLIME_MAX] = {
+		"Assets/Model/flameSlime/fire_walk.fbx",	// 炎スライムの移動モーション
+		"Assets/Model/flameSlime/fire_damaged.fbx",	// 炎スライムの被ダメモーション
+	};
+
+	// ヒールスライム
+	const std::string m_sHealSlime_Motion[CSlimeBase::HEAL_SLIME_MAX] = {
+		"Assets/Model/healSlime/heal_walk.fbx",		// ヒールスライムの移動モーション
+		"Assets/Model/healSlime/heal_damaged.fbx",	// ヒールスライムの被ダメモーション
+	};
 };
 
 #endif // __SLIME_MANAGER_H__

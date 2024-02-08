@@ -402,10 +402,10 @@ void CSlimeManager::Create(E_SLIME_LEVEL level)
 			m_pSlime[i] = new CSlime_4(CreatePos, m_pRedModel);		// 動的生成
 			break;
 		case LEVEL_FLAME:
-			m_pSlime[i] = new CSlime_Flame(CreatePos, m_flameSlimeEffect, m_pVS,m_pFlameModel);	// 動的生成
+			m_pSlime[i] = new CSlime_Flame(CreatePos, m_flameSlimeEffect,m_pFlameModel);	// 動的生成
 			break;
 		case LEVEL_HEAL:
-			m_pSlime[i] = new CSlime_Heal(CreatePos, m_pVS, m_pHealModel);	//動的生成
+			m_pSlime[i] = new CSlime_Heal(CreatePos, m_pHealModel);	//動的生成
 			break;
 		}
 
@@ -1253,18 +1253,40 @@ void CSlimeManager::LoadModel()
 	}
 	m_pRedModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));		//頂点シェーダーをセット
 
-	//フレイムスライムのモデル読み込み
-	m_pFlameModel = new AnimeModel();
-	if (!m_pFlameModel->Load("Assets/Model/slime/slime_fire1.FBX", 0.30f, AnimeModel::XFlip)) {		//倍率と反転は省略可
-		MessageBox(NULL, "Flame_Slime", "Error", MB_OK);	//ここでエラーメッセージ表示
+	//炎スライムのモデル読み込み
+	m_pFlameModel = new AnimeModel;
+	if (!m_pFlameModel->Load("Assets/Model/flameSlime/fire_walk.fbx", 0.30f, AnimeModel::XFlip)) {			//倍率と反転は省略可
+		MessageBox(NULL, "flame_slime_model", "Error", MB_OK);		//ここでエラーメッセージ表示
 	}
-	m_pFlameModel->SetVertexShader(m_pVS);
+	for (int i = 0; i < CSlimeBase::FLAME_SLIME_MAX; i++)
+	{
+		//各アニメーションの読み込み
+		m_pFlameModel->AddAnimation(m_sFlameSlime_Motion[i].c_str());
+		//読み込みに失敗したらエラーメッセージ
+		if (!m_pFlameModel->GetAnimation(i))
+		{
+			MessageBox(NULL, m_sFlameSlime_Motion[i].c_str(), "Error", MB_OK);	//ここでエラーメッセージ表示
+		}
+	}
+	m_pFlameModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));		//頂点シェーダーをセット
+
 	//ヒールスライムのモデル読み込み
-	m_pHealModel = new AnimeModel();
-	if (!m_pHealModel->Load("Assets/Model/slime/slime_heal_mesh.FBX", 0.45f, AnimeModel::XFlip)) {		//倍率と反転は省略可
-		MessageBox(NULL, "Heal_Slime", "Error", MB_OK);	//ここでエラーメッセージ表示
+	m_pHealModel = new AnimeModel;
+	if (!m_pHealModel->Load("Assets/Model/healSlime/heal_walk.fbx", 0.45f, AnimeModel::XFlip)) {			//倍率と反転は省略可
+		MessageBox(NULL, "heal_slime_model", "Error", MB_OK);		//ここでエラーメッセージ表示
 	}
-	m_pHealModel->SetVertexShader(m_pVS);
+	for (int i = 0; i < CSlimeBase::HEAL_SLIME_MAX; i++)
+	{
+		//各アニメーションの読み込み
+		m_pHealModel->AddAnimation(m_sHealSlime_Motion[i].c_str());
+		//読み込みに失敗したらエラーメッセージ
+		if (!m_pHealModel->GetAnimation(i))
+		{
+			MessageBox(NULL, m_sHealSlime_Motion[i].c_str(), "Error", MB_OK);	//ここでエラーメッセージ表示
+		}
+	}
+	m_pHealModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));		//頂点シェーダーをセット
+
 	//デビルスライムのモデル読み込み
 	m_pDevilSlimeModel = new AnimeModel;
 	if (!m_pDevilSlimeModel->Load("Assets/Model/boss_slime_devil/devil_walk.fbx", 0.23f, AnimeModel::XFlip)) {			//倍率と反転は省略可

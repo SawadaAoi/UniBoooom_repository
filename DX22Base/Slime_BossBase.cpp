@@ -160,9 +160,6 @@ void CSlime_BossBase::Draw()
 	mat[1] = m_pCamera->GetViewMatrix();
 	mat[2] = m_pCamera->GetProjectionMatrix();
 
-	//-- 行列をシェーダーへ設定
-	m_pVS->WriteBuffer(0, mat);
-
 	//-- モデル表示
 	if (m_pModel) {
 		// レンダーターゲット、深度バッファの設定

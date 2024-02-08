@@ -63,14 +63,13 @@ const float PLAYER_ROTATE_X_DIE = DirectX::XMConvertToRadians(0.0f);	// プレイヤ
 
 
 // ハンマー
-const float SWING_TIME_FRAME	= 0.15f * 60;			// ハンマーを振る時間(フレーム単位)
 const float ROTATE_RADIUS = 3.0f;						// ハンマーが回転するプレイヤーからの距離
-const float HAMMER_COL_SIZE = 2.0f;						//ハンマーの当たり判定の大きさ
-const float HAMMER_SIZE = HAMMER_COL_SIZE * 0.26666f;	//ハンマーの大きさ
-const float INTERVAL_INITIAL = 0.2f;					//ハンマー初期間隔
-const float SwingSpeed_PLUS = 1.4f;						//ハンマーを一回振るときに乗算される値
-const float SwingSpeed_MINUS = 0.99f;					//毎フレームハンマーを振る間隔を短くさせる値
-const float SwingSpeed_SIOW = 50.0f;
+const float HAMMER_COL_SIZE = 0.7f;						// ハンマーの当たり判定の大きさ
+const float HAMMER_SIZE = HAMMER_COL_SIZE * 0.26666f;	// ハンマーの大きさ
+const float	SWING_TIME_ADD_MULT		= 1.4f;				// ハンマーを一回振る度に長くなるハンマーの一振りの時間(この値を乗算する)
+const float	SWING_TIME_MINUS_MULT	= 0.99f;			// ハンマーを一回振る度に短くなるハンマーの一振りの時間(この値を乗算する)
+const int	SWING_TIME_MAX = int(0.84f * 60);			// ハンマーの一振りに掛かる時間の最大値
+const float SWING_ANIM_ADJUST = 4.2f;					// ハンマーの当たり判定とアニメのズレ調整
 
 
 // 敵キャラ ==================================================

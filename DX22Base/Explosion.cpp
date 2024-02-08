@@ -26,6 +26,7 @@
 	・2023/12/04 爆発のエフェクトを実装 yamasita
 	・2023/12/04 爆発の仮表示3Dモデルを削除 yamasita
 	・2023/12/07 ゲームパラメータから一部定数移動・暗黙の型キャスト除去 takagi
+	・2024/02/07 爆発のエフェクトが回転するように修正 sawada
 
 ======================================== */
 
@@ -47,7 +48,7 @@ const float EXPLODE_STANDARD_SIZE = 0.15f;
 const float EXPLODE_STANDARD_ONE_FRAME = 1.38f * 60.0f;
 
 const int	SE_DELAY_TIME = int(0.1f * 60);			// 遅延秒数
-
+const float EXPLODE_ROTATE_SPEED = 2.0f;			// 1フレームの回転角度数
 
 /* ========================================
 	コンストラクタ関数
@@ -90,6 +91,7 @@ CExplosion::CExplosion(TPos3d<float> fPos, float fSize, float fTime, int comboNu
 	{
 		EffectStart();			// エフェクト表示を開始する
 	}
+
 }
 	
 
@@ -195,8 +197,12 @@ void CExplosion::DisplayTimeAdd()
 		m_bDelFlg = true;	// 削除フラグを立てる
 	}
 
-	
 	m_Sphere.fRadius = m_Transform.fScale.y / 2;	// 当たり判定をセットする
+
+	// エフェクトの回転(m_nDelFrameは毎フレーム加算されるので回転角度に使用)
+	LibEffekseer::GetManager()->SetRotation(m_efcHandle,	
+		Effekseer::Vector3D(0.0f, 1.0f, 0.0f),
+		DirectX::XMConvertToRadians(m_nDelFrame * EXPLODE_ROTATE_SPEED));
 }
 
 
@@ -295,18 +301,20 @@ bool CExplosion::GetSeFlg()
 =========================================== */
 void CExplosion::EffectStart()
 {
-	m_efcHnadle = LibEffekseer::GetManager()->Play(m_explodeEffect, 	//エフェクトの開始
+	m_efcHandle = LibEffekseer::GetManager()->Play(m_explodeEffect, 	//エフェクトの開始
 		m_Transform.fPos.x, 
 		m_Transform.fPos.y, 
 		m_Transform.fPos.z);
 
-	LibEffekseer::GetManager()->SetScale(m_efcHnadle, 					//エフェクトのサイズを設定
+	LibEffekseer::GetManager()->SetScale(m_efcHandle, 					//エフェクトのサイズを設定
 		EXPLODE_STANDARD_SIZE * m_fMaxSize, 
 		EXPLODE_STANDARD_SIZE * m_fMaxSize, 
 		EXPLODE_STANDARD_SIZE * m_fMaxSize);	
 
-	LibEffekseer::GetManager()->SetSpeed(m_efcHnadle,					//エフェクトの再生速度を設定
+	LibEffekseer::GetManager()->SetSpeed(m_efcHandle,					//エフェクトの再生速度を設定
 		EXPLODE_STANDARD_ONE_FRAME / m_fExplodeTime);		
+
+
 }
 
 /* ========================================

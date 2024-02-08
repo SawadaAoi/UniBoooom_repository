@@ -154,18 +154,6 @@
     <Filter Include="ヘッダー ファイル\2dObject\TitleObj">
       <UniqueIdentifier>{228e780c-784e-48a4-932c-24c6226d2742}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ヘッダー ファイル\2dObject\TitleObj\TitleAnime">
-      <UniqueIdentifier>{cc408150-3ef6-4a8b-be89-def16511cd28}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\2dObject\TitleObj\TitleObj">
-      <UniqueIdentifier>{ca9b1b92-9244-44c9-934c-55ac16989745}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\2dObject\TitleObj\TitleObj">
-      <UniqueIdentifier>{bbdcebc3-fc02-4d89-b5bb-483bbfd1ae04}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\2dObject\TitleObj\TitleAnime">
-      <UniqueIdentifier>{3556d641-6391-4274-8832-782f464f2b39}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ヘッダー ファイル\2dObject\Union">
       <UniqueIdentifier>{ffebea4f-a2e3-4636-9822-1cac3c09d57b}</UniqueIdentifier>
     </Filter>
@@ -183,6 +171,63 @@
     </Filter>
     <Filter Include="ヘッダー ファイル\2dObject\Timer">
       <UniqueIdentifier>{87981910-2080-4eb9-98a8-b2c6f9dc57ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Info\ObjectDrawer">
+      <UniqueIdentifier>{01a48e43-b5ca-4e0b-bc58-59925d007bab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\2dObject\TitleObj\Anime">
+      <UniqueIdentifier>{3556d641-6391-4274-8832-782f464f2b39}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\2dObject\TitleObj\Anime\Background">
+      <UniqueIdentifier>{8be0ab61-bb86-4f4e-95bf-557516538199}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\2dObject\TitleObj\InitializeZoomOut">
+      <UniqueIdentifier>{3b5439a7-582c-44a2-a7a6-821730d223ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\2dObject\TitleObj\InitializeZoomOut">
+      <UniqueIdentifier>{b7073d2e-1ded-4d1a-abb7-5a11fc37dc07}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\2dObject\TitleObj\InitializeZoomOut\Conter">
+      <UniqueIdentifier>{ba725131-e9fc-4f58-b068-83b89de36547}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\2dObject\TitleObj\InitializeZoomOut\Logo">
+      <UniqueIdentifier>{0aa04e1e-c2b6-4507-9374-6b28bb9644bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\2dObject\TitleObj\InitializeZoomOut\Counter">
+      <UniqueIdentifier>{7ceadca8-1ce0-451a-bbee-e31a5740405c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\2dObject\TitleObj\InitializeZoomOut\Logo">
+      <UniqueIdentifier>{b8cf51ed-30b9-4206-961c-56425f33b142}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\2dObject\TitleObj\Anime">
+      <UniqueIdentifier>{cc408150-3ef6-4a8b-be89-def16511cd28}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\2dObject\TitleObj\Anime\Background">
+      <UniqueIdentifier>{1624b3d3-6be6-4c39-ab35-66a8e5a8e2be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\2dObject\TitleObj\TitleCommand">
+      <UniqueIdentifier>{ec6f0ea4-3694-4265-8a2a-a5c164caa0a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\2dObject\TitleObj\InitializeZoomOut\Background">
+      <UniqueIdentifier>{b971aa91-4f37-4cff-b11c-0c05c2ea7871}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\2dObject\TitleObj\Command">
+      <UniqueIdentifier>{ee1470bc-c4e1-4d9f-96b2-c5257397835d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\2dObject\TitleObj\InitializeZoomOut\Background">
+      <UniqueIdentifier>{6098d58b-d787-4f5e-96ee-77bbe1f8e9e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\System\Camera\Using">
+      <UniqueIdentifier>{31c48bec-2319-41d1-9b2c-d88db2cb8dc9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\System\Camera\Using">
+      <UniqueIdentifier>{01e3b99c-dd78-4930-ac26-251b2dbb3a3e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\2dObject\TitleObj\Anime\Background\Scaling">
+      <UniqueIdentifier>{790625a7-8d9a-4d35-bc55-0c1a7ff76d9b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\2dObject\TitleObj\Anime\Background\Scaling">
+      <UniqueIdentifier>{1e141588-474a-4886-ba13-bd6be87918b7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -450,24 +495,6 @@
     <ClCompile Include="2dPolygon.cpp">
       <Filter>ソース ファイル\2dObject</Filter>
     </ClCompile>
-    <ClCompile Include="CommandTitle.cpp">
-      <Filter>ソース ファイル\2dObject\TitleObj</Filter>
-    </ClCompile>
-    <ClCompile Include="BgTitle.cpp">
-      <Filter>ソース ファイル\2dObject\TitleObj</Filter>
-    </ClCompile>
-    <ClCompile Include="TitleLogo.cpp">
-      <Filter>ソース ファイル\2dObject\TitleObj</Filter>
-    </ClCompile>
-    <ClCompile Include="OpeninigTitle.cpp">
-      <Filter>ソース ファイル\2dObject\TitleObj</Filter>
-    </ClCompile>
-    <ClCompile Include="TitleObj.cpp">
-      <Filter>ソース ファイル\2dObject\TitleObj\TitleObj</Filter>
-    </ClCompile>
-    <ClCompile Include="TitleAnime.cpp">
-      <Filter>ソース ファイル\2dObject\TitleObj\TitleAnime</Filter>
-    </ClCompile>
     <ClCompile Include="FrameCnt.cpp">
       <Filter>ソース ファイル\System</Filter>
     </ClCompile>
@@ -507,10 +534,64 @@
     <ClCompile Include="SlimeManager.cpp">
       <Filter>ソース ファイル\3dObject\Enemy</Filter>
     </ClCompile>
+    <ClCompile Include="HitSlimeEffect.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
     <ClCompile Include="HitSlimeEffectManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="TitleBgPlayer.cpp">
+      <Filter>ソース ファイル\2dObject\TitleObj\Anime\Background</Filter>
+    </ClCompile>
+    <ClCompile Include="TitleBgCloud.cpp">
+      <Filter>ソース ファイル\2dObject\TitleObj\Anime\Background</Filter>
+    </ClCompile>
+    <ClCompile Include="TitleBgReaf.cpp">
+      <Filter>ソース ファイル\2dObject\TitleObj\Anime\Background</Filter>
+    </ClCompile>
+    <ClCompile Include="TitleObj.cpp">
+      <Filter>ソース ファイル\2dObject\TitleObj</Filter>
+    </ClCompile>
+    <ClCompile Include="TitleInitZoomOut.cpp">
+      <Filter>ソース ファイル\2dObject\TitleObj\InitializeZoomOut</Filter>
+    </ClCompile>
+    <ClCompile Include="TitleInitCounter.cpp">
+      <Filter>ソース ファイル\2dObject\TitleObj\InitializeZoomOut\Counter</Filter>
+    </ClCompile>
+    <ClCompile Include="TitleLogo.cpp">
+      <Filter>ソース ファイル\2dObject\TitleObj\InitializeZoomOut\Logo</Filter>
+    </ClCompile>
+    <ClCompile Include="TitleBgBase.cpp">
+      <Filter>ソース ファイル\2dObject\TitleObj\InitializeZoomOut\Background</Filter>
+    </ClCompile>
+    <ClCompile Include="TitleCommand.cpp">
+      <Filter>ソース ファイル\2dObject\TitleObj\TitleCommand</Filter>
+    </ClCompile>
+    <ClCompile Include="TitleCommandFinish.cpp">
+      <Filter>ソース ファイル\2dObject\TitleObj\TitleCommand</Filter>
+    </ClCompile>
+    <ClCompile Include="TitleCommandStart.cpp">
+      <Filter>ソース ファイル\2dObject\TitleObj\TitleCommand</Filter>
+    </ClCompile>
+    <ClCompile Include="UsingCamera.cpp">
+      <Filter>ソース ファイル\System\Camera\Using</Filter>
+    </ClCompile>
+    <ClCompile Include="TitleBgGrass.cpp">
+      <Filter>ソース ファイル\2dObject\TitleObj\Anime\Background</Filter>
+    </ClCompile>
+    <ClCompile Include="TitleBgAnimeScaling.cpp">
+      <Filter>ソース ファイル\2dObject\TitleObj\Anime\Background\Scaling</Filter>
+    </ClCompile>
+    <ClCompile Include="WalkEffectManager.cpp">
       <Filter>ソース ファイル\2dObject\Effect</Filter>
     </ClCompile>
-    <ClCompile Include="HitSlimeEffect.cpp">
+    <ClCompile Include="WalkEffect.cpp">
+      <Filter>ソース ファイル\2dObject\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="SweatEffect.cpp">
+      <Filter>ソース ファイル\2dObject\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="SweatEffectManager.cpp">
       <Filter>ソース ファイル\2dObject\Effect</Filter>
     </ClCompile>
     <ClCompile Include="UnionSmokeEffect.cpp">
@@ -797,24 +878,6 @@
     <ClInclude Include="2dPolygon.h">
       <Filter>ヘッダー ファイル\2dObject</Filter>
     </ClInclude>
-    <ClInclude Include="CommandTitle.h">
-      <Filter>ヘッダー ファイル\2dObject\TitleObj</Filter>
-    </ClInclude>
-    <ClInclude Include="BgTitle.h">
-      <Filter>ヘッダー ファイル\2dObject\TitleObj</Filter>
-    </ClInclude>
-    <ClInclude Include="TitleLogo.h">
-      <Filter>ヘッダー ファイル\2dObject\TitleObj</Filter>
-    </ClInclude>
-    <ClInclude Include="OpeningTitle.h">
-      <Filter>ヘッダー ファイル\2dObject\TitleObj</Filter>
-    </ClInclude>
-    <ClInclude Include="TitleObj.h">
-      <Filter>ヘッダー ファイル\2dObject\TitleObj\TitleObj</Filter>
-    </ClInclude>
-    <ClInclude Include="TitleAnime.h">
-      <Filter>ヘッダー ファイル\2dObject\TitleObj\TitleAnime</Filter>
-    </ClInclude>
     <ClInclude Include="FrameCnt.h">
       <Filter>ヘッダー ファイル\System</Filter>
     </ClInclude>
@@ -855,10 +918,64 @@
       <Filter>ヘッダー ファイル\Info</Filter>
     </ClInclude>
     <ClInclude Include="HitSlimeEffect.h">
-      <Filter>ヘッダー ファイル\2dObject\Effect</Filter>
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="HitSlimeEffectManager.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="TitleBgCloud.h">
+      <Filter>ヘッダー ファイル\2dObject\TitleObj\Anime\Background</Filter>
+    </ClInclude>
+    <ClInclude Include="TitleBgPlayer.h">
+      <Filter>ヘッダー ファイル\2dObject\TitleObj\Anime\Background</Filter>
+    </ClInclude>
+    <ClInclude Include="TitleBgReaf.h">
+      <Filter>ヘッダー ファイル\2dObject\TitleObj\Anime\Background</Filter>
+    </ClInclude>
+    <ClInclude Include="TitleCommand.h">
+      <Filter>ヘッダー ファイル\2dObject\TitleObj\Command</Filter>
+    </ClInclude>
+    <ClInclude Include="TitleCommandFinish.h">
+      <Filter>ヘッダー ファイル\2dObject\TitleObj\Command</Filter>
+    </ClInclude>
+    <ClInclude Include="TitleInitZoomOut.h">
+      <Filter>ヘッダー ファイル\2dObject\TitleObj\InitializeZoomOut</Filter>
+    </ClInclude>
+    <ClInclude Include="TitleInitCounter.h">
+      <Filter>ヘッダー ファイル\2dObject\TitleObj\InitializeZoomOut\Conter</Filter>
+    </ClInclude>
+    <ClInclude Include="TitleLogo.h">
+      <Filter>ヘッダー ファイル\2dObject\TitleObj\InitializeZoomOut\Logo</Filter>
+    </ClInclude>
+    <ClInclude Include="TitleObj.h">
+      <Filter>ヘッダー ファイル\2dObject\TitleObj</Filter>
+    </ClInclude>
+    <ClInclude Include="TitleBgBase.h">
+      <Filter>ヘッダー ファイル\2dObject\TitleObj\InitializeZoomOut\Background</Filter>
+    </ClInclude>
+    <ClInclude Include="TitleCommandStart.h">
+      <Filter>ヘッダー ファイル\2dObject\TitleObj\Command</Filter>
+    </ClInclude>
+    <ClInclude Include="UsingCamera.h">
+      <Filter>ヘッダー ファイル\System\Camera\Using</Filter>
+    </ClInclude>
+    <ClInclude Include="TitleBgGrass.h">
+      <Filter>ヘッダー ファイル\2dObject\TitleObj\Anime\Background</Filter>
+    </ClInclude>
+    <ClInclude Include="TitleBgAnimeScaling.h">
+      <Filter>ヘッダー ファイル\2dObject\TitleObj\Anime\Background\Scaling</Filter>
+    </ClInclude>
+    <ClInclude Include="WalkEffectManager.h">
       <Filter>ヘッダー ファイル\2dObject\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="WalkEffect.h">
+      <Filter>ヘッダー ファイル\2dObject\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="SweatEffect.h">
+      <Filter>ヘッダー ファイル\2dObject\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="SweatEffectManager.h">
+      <Filter>ヘッダー ファイル\2dObject\Effect\Particle</Filter>
     </ClInclude>
     <ClInclude Include="UnionSmokeEffect.h">
       <Filter>ヘッダー ファイル\2dObject\Union</Filter>
