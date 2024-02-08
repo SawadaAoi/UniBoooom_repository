@@ -86,15 +86,12 @@ public:
 	void Update();	//更新
 	void Draw();	//描画
 	void Damage(int DmgNum);	//自身のHPを減らす
-	void MoveKeyboard();	// キーボード用入力移動
-	void MoveController();	// コントローラ用入力移動
-	void MoveSizeInputSet(TPos3d<float> fInput);
+	
 	void DamageAnimation();
 	void MoveCheck();
 	void LoadSound();	//サウンド読み込み関数
 	void PlaySE(SE se, float volume = 1.0f);
 	void Healing();
-	void ShowWalkEffect();
 
 	// ゲット関数
 	tagSphereInfo GetHammerSphere();	//当たり判定を取るためゲッター
@@ -111,6 +108,11 @@ public:
 	void SetSweatEffectMng(CSweatEffectManager* pSweatefcMng);
 
 private:
+	void MoveKeyboard();	// キーボード用入力移動
+	void MoveController();	// コントローラ用入力移動
+	void MoveSizeInputSet(TPos3d<float> fInput);
+	void DisplaySweatEffect();
+
 	// ===プロトタイプ宣言===
 	void LoadAnime();	//アニメーション読み込み関数
 
@@ -124,11 +126,7 @@ private:
 	CShadow* m_pShadow;
 	CFrameCnt* m_pWaitFrameCnt;				// 待機モーション用フレームカウントダウン
 	CWalkEffectManager* m_pWalkEffectMng;	// プレイヤー移動エフェクト用
-
-	int m_nShowEffectCnt;
-
 	CSweatEffectManager* m_pSweatEffectMng;
-	float m_fHammerSpeed;
 
 	int m_nHp;							// プレイヤーの体力
 	bool m_bDieFlg;						// プレイヤー死亡フラグ(trueの場合死亡)
@@ -151,8 +149,9 @@ private:
 
 	float m_fRotate_x;					// プレイヤーの表示用傾き
 
-	int m_nWalkEffeCnt;
-
+	int m_nWalkEffeCnt;					// 歩き煙エフェクトの表示間隔加算値
+	int m_nSweatEffeCnt;				// 汗エフェクトの表示間隔加算値
+	int m_nSwingFastCnt;				// ハンマーを振る時間の加算間隔
 
 
 	// ===列挙===

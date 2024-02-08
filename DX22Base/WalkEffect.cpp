@@ -57,6 +57,7 @@ CWalkEffect::CWalkEffect(tagTransform3d tTransForm, int nDelFrame, float fPosRan
 
 		LibEffekseer::GetManager()->SetSpeed(m_efcWalkHandle, WALK_EFFECT_STANDARD_ONE_FRAME * 0.05f);			//エフェクト再生速度設定
 	}
+
 }
 
 /* ========================================

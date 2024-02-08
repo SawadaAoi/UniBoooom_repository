@@ -109,7 +109,6 @@ protected:
 	BattleData m_Data;	//戦闘データ記録用変数
 	CStartText* m_pStartText;	// ゲームスタート描画
 	CHitSlimeEffectManager* m_pHitEffectMng;
-	CSweatEffectManager* m_pSweatEffectMng;
 
 	//サウンド
 	XAUDIO2_BUFFER* m_pSEHitHammer;

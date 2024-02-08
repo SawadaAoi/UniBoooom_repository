@@ -169,6 +169,8 @@ public:
 	// アニメーションの現在再生時間を変更
 	void SetAnimationTime(AnimeNo no, float time);
 
+	void SetAnimationSpeed(AnimeNo no, float speed);
+
 	// 再生フラグ
 	bool IsPlay(AnimeNo no);
 	// 現在再生中のアニメ番号

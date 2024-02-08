@@ -156,7 +156,7 @@ void CSweatEffectManager::DeleteCheck()
 		// 削除フラグがたってない汗エフェクトはスルー
 		if (m_pSweatEffect[i]->GetDelFlg() == false) continue;
 
-		delete m_pSweatEffect[i]; m_pSweatEffect[i] = nullptr;	// 汗エフェクトを削除する
+		SAFE_DELETE(m_pSweatEffect[i]);	// 汗エフェクトを削除する
 	}
 
 }

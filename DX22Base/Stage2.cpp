@@ -118,7 +118,6 @@ void CStage2::Update()
 		PlayerHealItemCollision();		// 回復アイテム取る判定
 		Collision();					// 当たり判定更新
 		m_pHitEffectMng->Update();		// ヒットエフェクトマネージャー更新
-		m_pSweatEffectMng->Update(m_pPlayer->GetTransform().fPos);
 
 	}
 
@@ -189,8 +188,6 @@ void CStage2::Draw()
 	// エフェクト描画
 	m_pHitEffectMng->Draw();
 
-	// 汗エフェクト描画
-	m_pSweatEffectMng->Draw();
 }
 
 /* ========================================
