@@ -30,6 +30,7 @@
 	・2024/01/03 UnionSlime関数に移動速度と角度の引数を追加 nieda
 	・2024/01/01 ボス落下のスライム硬直てょり追加 Tei
 	・2024/01/18 炎スライムエフェクト追加 Tei
+	・2024/02/06 結合エフェクト処理追加 Tei
 
    ======================================== */
 
@@ -47,6 +48,7 @@
 #include "ScoreOHManager.h"
 #include "HealItemManager.h"
 #include "UnionManager.h"		//UNION
+#include "UnionSmokeEffectManager.h"	//	UNIONエフェクト
 #include "Player.h"
 #include "Timer.h"
 #include "Sound.h"
@@ -141,6 +143,7 @@ private:
 	CScoreOHManager* m_pScoreOHMng;		// スコアマネージャ―ポインタ
 	CHealItemManager* m_pHealItemMng;	// 回復アイテムマネージャーポインタ
 	CUnionManager* m_pUnionMng;			// UNION管理
+	CUnionSmokeEffectManager* m_pUnionEfcMng;	// UNIONエフェクト管理
 	CTimer* m_pTimer;					// タイマーポインタ
 
 	int m_CreateCnt;			// 生成間隔用カウント
