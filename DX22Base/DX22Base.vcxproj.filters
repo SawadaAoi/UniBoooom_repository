@@ -229,6 +229,12 @@
     <Filter Include="ヘッダー ファイル\2dObject\TitleObj\Anime\Background\Scaling">
       <UniqueIdentifier>{1e141588-474a-4886-ba13-bd6be87918b7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\System\Manager">
+      <UniqueIdentifier>{c85efb6f-4645-434d-9031-0d1c9ce3cda1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\System\Manager">
+      <UniqueIdentifier>{b208ac54-6d55-4e50-a1e7-68ee542c4172}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -587,6 +593,9 @@
     </ClCompile>
     <ClCompile Include="WalkEffect.cpp">
       <Filter>ソース ファイル\2dObject\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelManager.cpp">
+      <Filter>ソース ファイル\System\Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -958,6 +967,9 @@
     </ClInclude>
     <ClInclude Include="WalkEffect.h">
       <Filter>ヘッダー ファイル\2dObject\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelManager.h">
+      <Filter>ヘッダー ファイル\System\Manager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
