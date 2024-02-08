@@ -34,6 +34,7 @@
 	・2024/01/26 警告SE追加 suzumura
 	・2024/01/28 死亡モーション追加 Sawada
 	・2024/01/30 プレイヤー移動エフェクト用変数、関数追加
+	・2024/02/02 汗エフェクト処理追加 Tei
 
 ========================================== */
 #ifndef __PLAYER_H__
@@ -54,6 +55,8 @@
 #include "AnimeModel.h"
 #include "FrameCnt.h"
 #include "WalkEffectManager.h"
+
+#include "SweatEffectManager.h"
 
 // =============== クラス定義 =====================
 class CPlayer
@@ -83,15 +86,12 @@ public:
 	void Update();	//更新
 	void Draw();	//描画
 	void Damage(int DmgNum);	//自身のHPを減らす
-	void MoveKeyboard();	// キーボード用入力移動
-	void MoveController();	// コントローラ用入力移動
-	void MoveSizeInputSet(TPos3d<float> fInput);
+	
 	void DamageAnimation();
 	void MoveCheck();
 	void LoadSound();	//サウンド読み込み関数
 	void PlaySE(SE se, float volume = 1.0f);
 	void Healing();
-	void ShowWalkEffect();
 
 	// ゲット関数
 	tagSphereInfo GetHammerSphere();	//当たり判定を取るためゲッター
@@ -100,12 +100,19 @@ public:
 	bool GetSafeTime();							//当たり判定があるかの確認
 	int* GetHpPtr();
 	bool GetDieFlg() const;
+	
 
 	// セット関数
 	void SetCamera(CCamera* pCamera);
 	bool GetAttackFlg();
+	void SetSweatEffectMng(CSweatEffectManager* pSweatefcMng);
 
 private:
+	void MoveKeyboard();	// キーボード用入力移動
+	void MoveController();	// コントローラ用入力移動
+	void MoveSizeInputSet(TPos3d<float> fInput);
+	void DisplaySweatEffect();
+
 	// ===プロトタイプ宣言===
 	void LoadAnime();	//アニメーション読み込み関数
 
@@ -119,8 +126,7 @@ private:
 	CShadow* m_pShadow;
 	CFrameCnt* m_pWaitFrameCnt;				// 待機モーション用フレームカウントダウン
 	CWalkEffectManager* m_pWalkEffectMng;	// プレイヤー移動エフェクト用
-
-	int m_nShowEffectCnt;
+	CSweatEffectManager* m_pSweatEffectMng;
 
 	int m_nHp;							// プレイヤーの体力
 	bool m_bDieFlg;						// プレイヤー死亡フラグ(trueの場合死亡)
@@ -143,8 +149,9 @@ private:
 
 	float m_fRotate_x;					// プレイヤーの表示用傾き
 
-	int m_nWalkEffeCnt;
-
+	int m_nWalkEffeCnt;					// 歩き煙エフェクトの表示間隔加算値
+	int m_nSweatEffeCnt;				// 汗エフェクトの表示間隔加算値
+	int m_nSwingFastCnt;				// ハンマーを振る時間の加算間隔
 
 
 	// ===列挙===

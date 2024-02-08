@@ -588,6 +588,12 @@
     <ClCompile Include="WalkEffect.cpp">
       <Filter>ソース ファイル\2dObject\Effect</Filter>
     </ClCompile>
+    <ClCompile Include="SweatEffect.cpp">
+      <Filter>ソース ファイル\2dObject\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="SweatEffectManager.cpp">
+      <Filter>ソース ファイル\2dObject\Effect</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Defines.h">
@@ -958,6 +964,12 @@
     </ClInclude>
     <ClInclude Include="WalkEffect.h">
       <Filter>ヘッダー ファイル\2dObject\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="SweatEffect.h">
+      <Filter>ヘッダー ファイル\2dObject\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="SweatEffectManager.h">
+      <Filter>ヘッダー ファイル\2dObject\Effect\Particle</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
