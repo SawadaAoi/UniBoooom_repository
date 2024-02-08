@@ -20,7 +20,7 @@
 #include "UnionSmokeEffect.h"
 
 // =============== 定数定義 ===================
-const int MAX_UNION_SMOKE_NUM = 5;
+const int MAX_UNION_SMOKE_NUM = 55;
 
 // =============== クラス定義 =====================
 class CUnionSmokeEffectManager
@@ -38,7 +38,7 @@ public:
 public:
 	CUnionSmokeEffectManager();
 	~CUnionSmokeEffectManager();
-	void Create(TPos3d<float> fpos, TPos3d<float> fsize, int slimelevel);
+	void Create(TPos3d<float> fpos, int slimelevel);
 	void Update();
 	void Draw();
 	void DeleteCheck();							// 使ったエフェクトを削除関数

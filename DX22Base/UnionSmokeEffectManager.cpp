@@ -10,6 +10,7 @@
 
 	変更履歴
 	・2024/02/06 クラス作成 Tei
+	・2024/02/08 エフェクトサイズを定数に修正 sawada
 
 ========================================== */
 
@@ -23,7 +24,15 @@ const std::map<int, std::string> MAP_TEX_PATH = {
 	{CUnionSmokeEffectManager::RED_SMOKE,		"Assets/Effect/Union/red_v1.png"},			// 結合煙の画像（赤）
 	
 };
-const int	EFFECT_SPEED = 0.02 * 60;		// エフェクト再生スピード
+
+// エフェクトのサイズ
+const TPos3d<float> UNION_SMOKE_EFFECT_SIZE[CUnionSmokeEffectManager::SMOKE_MAX] =
+{
+	{1.7f, 1.7f, 1.7f},		// 青スライム同士
+	{3.5f, 3.5f, 3.5f},		// 緑スライム同士
+	{5.5f, 5.5f, 5.5f},		// 黄スライム同士
+};
+
 
 /* ========================================
 	関数：コンストラクタ
@@ -64,6 +73,12 @@ CUnionSmokeEffectManager::CUnionSmokeEffectManager()
 CUnionSmokeEffectManager::~CUnionSmokeEffectManager()
 {
 	// メモリ削除
+	for (int i = 0; i < E_SMOKE::SMOKE_MAX; i++)
+	{
+		SAFE_DELETE(m_pTexture[i]);
+	}
+
+	// メモリ削除
 	for (int i = 0; i < MAX_UNION_SMOKE_NUM; i++)
 	{
 		SAFE_DELETE(m_pUnionSmokeEffect[i]);
@@ -76,12 +91,11 @@ CUnionSmokeEffectManager::~CUnionSmokeEffectManager()
 	内容：結合エフェクトの生成
 	-------------------------------------
 	引数1：生成座標(x,y,z)
-	引数2：生成サイズ(x,y,z)
-	引数3：スライムのレベル(緑、黄、赤)
+	引数2：スライムのレベル(緑、黄、赤)
 	-------------------------------------
 	戻値：なし
 =========================================== */
-void CUnionSmokeEffectManager::Create(TPos3d<float> fpos, TPos3d<float> fsize, int slimelevel)
+void CUnionSmokeEffectManager::Create(TPos3d<float> fpos, int slimelevel)
 {
 	// 結合エフェクトを検索
 	for (int i = 0; i < MAX_UNION_SMOKE_NUM; i++)
@@ -90,7 +104,7 @@ void CUnionSmokeEffectManager::Create(TPos3d<float> fpos, TPos3d<float> fsize, i
 		if (m_pUnionSmokeEffect[i] != nullptr) continue;
 
 		// 座標、大きさ、使用のテクスチャ、カメラを指定して生成
-		m_pUnionSmokeEffect[i] = new CUnionSmokeEffect(fpos, fsize, m_pTexture[slimelevel - 1], m_pCamera);
+		m_pUnionSmokeEffect[i] = new CUnionSmokeEffect(fpos, UNION_SMOKE_EFFECT_SIZE[slimelevel - 1], m_pTexture[slimelevel - 1], m_pCamera);
 
 		return;
 	}
@@ -158,7 +172,7 @@ void CUnionSmokeEffectManager::DeleteCheck()
 		// 削除フラグがたってない結合エフェクトはスルー
 		if (m_pUnionSmokeEffect[i]->GetDelFlg() == false) continue;
 
-		delete m_pUnionSmokeEffect[i]; m_pUnionSmokeEffect[i] = nullptr;	// 結合エフェクトを削除する
+		SAFE_DELETE(m_pUnionSmokeEffect[i]);	// 結合エフェクトを削除する
 
 	}
 }

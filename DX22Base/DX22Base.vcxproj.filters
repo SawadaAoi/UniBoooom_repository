@@ -534,12 +534,6 @@
     <ClCompile Include="SlimeManager.cpp">
       <Filter>ソース ファイル\3dObject\Enemy</Filter>
     </ClCompile>
-    <ClCompile Include="HitSlimeEffect.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="HitSlimeEffectManager.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="TitleBgPlayer.cpp">
       <Filter>ソース ファイル\2dObject\TitleObj\Anime\Background</Filter>
     </ClCompile>
@@ -594,11 +588,17 @@
     <ClCompile Include="SweatEffectManager.cpp">
       <Filter>ソース ファイル\2dObject\Effect</Filter>
     </ClCompile>
+    <ClCompile Include="HitSlimeEffectManager.cpp">
+      <Filter>ソース ファイル\2dObject\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="HitSlimeEffect.cpp">
+      <Filter>ソース ファイル\2dObject\Effect</Filter>
+    </ClCompile>
     <ClCompile Include="UnionSmokeEffect.cpp">
-      <Filter>ソース ファイル\2dObject\Union</Filter>
+      <Filter>ソース ファイル\2dObject\Effect</Filter>
     </ClCompile>
     <ClCompile Include="UnionSmokeEffectManager.cpp">
-      <Filter>ソース ファイル\2dObject\Union</Filter>
+      <Filter>ソース ファイル\2dObject\Effect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -917,12 +917,6 @@
     <ClInclude Include="Delete.h">
       <Filter>ヘッダー ファイル\Info</Filter>
     </ClInclude>
-    <ClInclude Include="HitSlimeEffect.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="HitSlimeEffectManager.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="TitleBgCloud.h">
       <Filter>ヘッダー ファイル\2dObject\TitleObj\Anime\Background</Filter>
     </ClInclude>
@@ -974,14 +968,20 @@
     <ClInclude Include="SweatEffect.h">
       <Filter>ヘッダー ファイル\2dObject\Effect</Filter>
     </ClInclude>
+    <ClInclude Include="HitSlimeEffect.h">
+      <Filter>ヘッダー ファイル\2dObject\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="HitSlimeEffectManager.h">
+      <Filter>ヘッダー ファイル\2dObject\Effect</Filter>
+    </ClInclude>
     <ClInclude Include="SweatEffectManager.h">
-      <Filter>ヘッダー ファイル\2dObject\Effect\Particle</Filter>
+      <Filter>ヘッダー ファイル\2dObject\Effect</Filter>
     </ClInclude>
     <ClInclude Include="UnionSmokeEffect.h">
-      <Filter>ヘッダー ファイル\2dObject\Union</Filter>
+      <Filter>ヘッダー ファイル\2dObject\Effect</Filter>
     </ClInclude>
     <ClInclude Include="UnionSmokeEffectManager.h">
-      <Filter>ヘッダー ファイル\2dObject\Union</Filter>
+      <Filter>ヘッダー ファイル\2dObject\Effect</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

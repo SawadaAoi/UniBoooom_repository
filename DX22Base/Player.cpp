@@ -150,6 +150,7 @@ CPlayer::CPlayer()
 ======================================== */
 CPlayer::~CPlayer()
 {
+	SAFE_DELETE(m_pSweatEffectMng);
 	SAFE_DELETE(m_pWalkEffectMng);
 	SAFE_DELETE(m_pShadow);
 	SAFE_DELETE(m_pModel);

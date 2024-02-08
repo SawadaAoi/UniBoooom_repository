@@ -38,7 +38,6 @@ public:
 
 protected:
 	// ===メンバ変数宣言=====
-	CDrawAnim* m_pTexUnionSmoke;		// 結合の煙
 	bool			m_bDelFlg;			// 結合エフェクト終了フラグ
 	int				m_nDelFrame;		// 結合エフェクト表示カウント
 	float			m_fEffectTime;		// ヒットエフェクト総時間

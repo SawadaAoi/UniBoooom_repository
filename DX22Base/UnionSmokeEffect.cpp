@@ -22,6 +22,7 @@
 const int UNION_SMOKE_SPLIT_NUM_MAX = 55;				// 結合の煙アニメーションの分割数の最大数
 const TDiType<int> UNION_SMOKE_SPLIT_NUM = { 5, 11 };	// 結合の煙アニメーションの縦横分割数の最大数
 const int UNION_SMOKE_SWITCH_CNT = 1;					// アニメーション切り替え間隔
+const int ANIM_PLAY_SPEED_MULTI = 2;					// アニメの再生スピード倍率
 
 /* ========================================
 	コンストラクタ
@@ -41,12 +42,11 @@ CUnionSmokeEffect::CUnionSmokeEffect(TPos3d<float> pos, TPos3d<float> size, Text
 	, m_nDelFrame(0)
 	, m_fEffectTime(UNION_SMOKE_SPLIT_NUM_MAX)
 {
-	m_pTexUnionSmoke = new CDrawAnim(UNION_SMOKE_SPLIT_NUM_MAX, UNION_SMOKE_SPLIT_NUM, UNION_SMOKE_SWITCH_CNT);
-	m_pTexUnionSmoke->SetCamera(pCamera);
-	m_pTexUnionSmoke->SetTexture(pTex);
-	m_pTexUnionSmoke->SetPos(pos);
-	m_pTexUnionSmoke->SetSize(size);
-	m_pTexUnionSmoke->SetLoopFlg(false);
+	CDrawAnim::SetCamera(pCamera);
+	CDrawAnim::SetTexture(pTex);
+	CDrawAnim::SetPos(pos);
+	CDrawAnim::SetSize(size);
+	CDrawAnim::SetLoopFlg(false);
 }
 
 /* ========================================
@@ -60,7 +60,6 @@ CUnionSmokeEffect::CUnionSmokeEffect(TPos3d<float> pos, TPos3d<float> size, Text
 =========================================== */
 CUnionSmokeEffect::~CUnionSmokeEffect()
 {
-	SAFE_DELETE(m_pTexUnionSmoke);
 }
 
 /* ========================================
@@ -75,8 +74,11 @@ CUnionSmokeEffect::~CUnionSmokeEffect()
 void CUnionSmokeEffect::Update()
 {
 	// アニメションの速度速くするため、二回行う（力技）
-	m_pTexUnionSmoke->Update();
-	m_pTexUnionSmoke->Update();
+	for (int i = 0; i < ANIM_PLAY_SPEED_MULTI; i++)
+	{
+		CDrawAnim::Update();
+		CDrawAnim::Update();
+	}
 	DisplayTimeAdd();
 }
 
@@ -91,7 +93,7 @@ void CUnionSmokeEffect::Update()
 =========================================== */
 void CUnionSmokeEffect::Draw()
 {
-	m_pTexUnionSmoke->Draw(E_DRAW_MODE_BILLBOARD);
+	CDrawAnim::Draw(E_DRAW_MODE_BILLBOARD);
 }
 
 /* ========================================

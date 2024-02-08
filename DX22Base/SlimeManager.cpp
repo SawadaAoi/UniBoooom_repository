@@ -750,19 +750,16 @@ void CSlimeManager::UnionSlime(E_SLIME_LEVEL level ,TPos3d<float> pos, float spe
 			//サイズ2のスライムを生成
 			m_pSlime[i] = new CSlime_2(pos, m_pGreenModel);
 			m_pSlime[i]->HitMoveStart(speed, angle);
-			m_pUnionEfcMng->Create(pos, m_pSlime[i]->GetScale(), level);
 			break;
 		case LEVEL_2:
 			//サイズ3のスライムを生成
 			m_pSlime[i] = new CSlime_3(pos, m_pYellowModel);
 			m_pSlime[i]->HitMoveStart(speed, angle);
-			m_pUnionEfcMng->Create(pos, m_pSlime[i]->GetScale(), level);
 			break;
 		case LEVEL_3:
 			//サイズ4のスライムを生成
 			m_pSlime[i] = new CSlime_4(pos, m_pRedModel);
 			m_pSlime[i]->HitMoveStart(speed, angle);
-			m_pUnionEfcMng->Create(pos, m_pSlime[i]->GetScale(), level);
 			break;
 		}
 
@@ -778,6 +775,7 @@ void CSlimeManager::UnionSlime(E_SLIME_LEVEL level ,TPos3d<float> pos, float spe
 
 		m_pSlime[i]->SetCamera(m_pCamera);	//カメラをセット
 		PlaySE(SE_UNION);	//SEの再生
+		m_pUnionEfcMng->Create(pos, level);
 
 		break;
 	}
