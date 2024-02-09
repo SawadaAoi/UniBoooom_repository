@@ -51,7 +51,7 @@ private:
 
 
 public:
-	~CModelManager() {};
+	~CModelManager();
 	// 使用するためにこれを呼ぶ
 	static CModelManager& GetInstance();
 	// 呼び出しをマクロにして簡略化
