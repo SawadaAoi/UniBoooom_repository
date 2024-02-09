@@ -52,6 +52,7 @@ CUnion::CUnion(const int & nFrame)
 =========================================== */
 CUnion::~CUnion()
 {
+	SAFE_DELETE(m_pCnt);
 }
 
 /* ========================================

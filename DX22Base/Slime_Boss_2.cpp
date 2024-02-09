@@ -128,13 +128,6 @@ void CSlime_Boss_2::Update(tagTransform3d playerTransform)
 	if (!m_bHitMove)	
 	{
 		MoveSwitch();	// 通常移動切り替え
-
-		// アニメーションを移動に変更
-		if (m_eCurAnime != DEVIL_SLIME_MOVE)
-		{
-			m_eCurAnime = DEVIL_SLIME_MOVE;	// アニメーションを被ダメに変更
-			m_fAnimeTime = 0.0f;			// アニメーションタイムをリセット
-		}
 	}
 	// ハンマーで殴られた時
 	else
@@ -339,6 +332,13 @@ void CSlime_Boss_2::MoveSwitch()
 	case MOVE_STATE::NORMAL:
 		SetNormalSpeed();	// 移動スピードをリセット(直前の吹き飛び速度を無くす為)
 		MoveNormal();
+
+		// アニメーションを移動に変更
+		if (m_eCurAnime != DEVIL_SLIME_MOVE)
+		{
+			m_eCurAnime = DEVIL_SLIME_MOVE;	// アニメーションを被ダメに変更
+			m_fAnimeTime = 0.0f;			// アニメーションタイムをリセット
+		}
 
 		break;
 	// ジャンプ予備動作処理

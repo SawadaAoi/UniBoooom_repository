@@ -99,7 +99,7 @@ CSlimeBase::~CSlimeBase()
 {
 	// =============== メモリ開放 ===================
 	SAFE_DELETE(m_pShadow);	//影解放
-
+	
 	//--エフェクト停止--
 	LibEffekseer::GetManager()->StopEffect(m_efcFlameHandle);
 }

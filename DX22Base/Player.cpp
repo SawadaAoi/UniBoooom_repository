@@ -53,6 +53,7 @@
 #include "Sphere.h"
 #include "GameParameter.h"		//定数定義用ヘッダー
 #include "ShaderList.h"
+#include "ModelManager.h"
 
 // =============== 定数定義 =======================
 const float KEYBOARD_INPUT_SIZE = 1.0f;						// キーボードの入力値の大きさ
@@ -118,25 +119,26 @@ CPlayer::CPlayer()
 	, m_nSwingFastCnt(0)
 	, m_fRotate_x(PLAYER_ROTATE_X_NORMAL)
 {
-	m_pHammer = new CHammer();								// Hammerクラスをインスタンス
+	m_pHammer = new CHammer();			// Hammerクラスをインスタンス
 
-	m_Sphere.fRadius = PLAYER_RADIUS;						// 当たり判定用の球体の半径
+	m_Sphere.fRadius = PLAYER_RADIUS;	// 当たり判定用の球体の半径
 	m_Transform.fScale = PLAYER_SIZE;
-	LoadSound();							//サウンドファイル読み込み
+	LoadSound();						//サウンドファイル読み込み
 
 	//プレイヤーのモデル読み込み
-	m_pModel = new AnimeModel();
-	if (!m_pModel->Load("Assets/Model/player/POW.fbx", 1.0f, AnimeModel::Flip::XFlip)) {		//倍率と反転は省略可
-		MessageBox(NULL, "player", "Error", MB_OK);	//ここでエラーメッセージ表示
-	}
-	m_pModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));		//頂点シェーダーをセット
-	//m_pModel->SetPixelShader(ShaderList::GetPS(ShaderList::PS_LAMBERT));	//ピクセルシェーダーをセット
+	m_pModel = GetModelMng.GetModelPtr(MODEL_PLAYER);
+	m_pModel->Play(MOTION_PLAYER_MOVE,true);
+	m_pModel->Step(0.0f);	// Tポーズから立ち状態に移行
+	// プレイヤーが最初に地面に埋まらないように座標を調整
+	m_Transform.fPos = { 0.0f,1.0f,0.0f };
 
-	LoadAnime();	//アニメーションの読み込み
+	//LoadAnime();	//アニメーションの読み込み
 	m_pShadow = new CShadow();
 
+	// エフェクトマネージャーを作成
 	m_pWalkEffectMng = new CWalkEffectManager();
 	m_pSweatEffectMng = new CSweatEffectManager();
+
 
 }
 /* ========================================
@@ -150,10 +152,10 @@ CPlayer::CPlayer()
 ======================================== */
 CPlayer::~CPlayer()
 {
+	SAFE_DELETE(m_pWaitFrameCnt);
 	SAFE_DELETE(m_pSweatEffectMng);
 	SAFE_DELETE(m_pWalkEffectMng);
 	SAFE_DELETE(m_pShadow);
-	SAFE_DELETE(m_pModel);
 	SAFE_DELETE(m_pHammer);
 }
 
@@ -190,7 +192,7 @@ void CPlayer::Update()
 		if (m_pHammer->Update() == false)
 		{
 			m_pHammer->SwingSpeedSlow();	// ハンマーのスイングスピードを遅くする
-			m_pModel->SetAnimationSpeed(m_Anime[MOTION_SWING], m_pHammer->GetSwingSpeed() * SWING_ANIM_ADJUST);	// アニメの速さを設定
+			m_pModel->SetAnimationSpeed(MOTION_PLAYER_SWING, m_pHammer->GetSwingSpeed() * SWING_ANIM_ADJUST);	// アニメの速さを設定
 			m_bAttackFlg = false;			// 攻撃中フラグをオフにする
 			m_bHumInvFlg = true;			// ハンマー振り間隔フラグオン
 		}
@@ -230,8 +232,8 @@ void CPlayer::Update()
 		{
 			SAFE_DELETE(m_pWaitFrameCnt);	//カウンタ削除
 
- 			m_pModel->Play(m_Anime[MOTION_SWING], false, m_pHammer->GetSwingSpeed() * SWING_ANIM_ADJUST);	//アニメーションの再生
-			m_pModel->SetAnimationTime(m_Anime[MOTION_SWING], 0.0f);		//アニメーションタイムをスタート位置にセット
+ 			m_pModel->Play(MOTION_PLAYER_SWING, false, m_pHammer->GetSwingSpeed() * SWING_ANIM_ADJUST);	//アニメーションの再生
+			m_pModel->SetAnimationTime(MOTION_PLAYER_SWING, 0.0f);		//アニメーションタイムをスタート位置にセット
 
 			m_pHammer->AttackStart(m_Transform.fPos, m_Transform.fRadian.y);	// ハンマー攻撃開始
 			m_bAttackFlg = true;	// 攻撃フラグを有効にする
@@ -248,7 +250,7 @@ void CPlayer::Update()
 				// 攻撃ボタンを押してない時はハンマーのスイングスピードを通常に戻していく
 				m_pHammer->SwingSpeedFast();
 				m_pModel->SetAnimationSpeed(
-					m_Anime[MOTION_SWING],
+					MOTION_PLAYER_SWING,
 					m_pHammer->GetSwingSpeed() * SWING_ANIM_ADJUST);	// アニメの速さを設定
 				m_nSwingFastCnt = 0;
 			}
@@ -393,7 +395,7 @@ void CPlayer::Damage(int DmgNum)
 	{
 		m_bDieInvFlg = true;
 		m_fRotate_x = PLAYER_ROTATE_X_DIE;			// プレイヤーの傾きをセット(地面に埋まらないように)
-		m_pModel->Play(m_Anime[MOTION_DIE],false);	// アニメーションの再生
+		m_pModel->Play(MOTION_PLAYER_DIE,false);	// アニメーションの再生
 
 	}
 }
@@ -660,16 +662,16 @@ void CPlayer::SetSweatEffectMng(CSweatEffectManager* pSweatefcMng)
 ======================================== */
 void CPlayer::LoadAnime()
 {
-	for (int i = 0; i < MOTION_MAX; i++)
-	{
-		//各アニメーションの読み込み
-		m_Anime[i] = m_pModel->AddAnimation(m_sAnimeFile[i].c_str());
-		//読み込みに失敗したらエラーメッセージ
-		if (!m_pModel->GetAnimation(m_Anime[i]))
-		{
-			MessageBox(NULL, m_sAnimeFile[i].c_str(), "Error", MB_OK);	//ここでエラーメッセージ表示
-		}
-	}
+	//for (int i = 0; i < MOTION_PLAYER_MAX; i++)
+	//{
+	//	//各アニメーションの読み込み
+	//	m_Anime[i] = m_pModel->AddAnimation(m_sAnimeFile[i].c_str());
+	//	//読み込みに失敗したらエラーメッセージ
+	//	if (!m_pModel->GetAnimation(m_Anime[i]))
+	//	{
+	//		MessageBox(NULL, m_sAnimeFile[i].c_str(), "Error", MB_OK);	//ここでエラーメッセージ表示
+	//	}
+	//}
 }
 
 /* ========================================
@@ -719,8 +721,8 @@ void CPlayer::MoveCheck()
 	if (m_fMove.x == 0.0f && m_fMove.z == 0.0f)
 	{
 		// 待機中のアニメーションを再生してない、なおかつ攻撃中じゃない場合
-		if (m_pModel->GetPlayNo() != m_Anime[MOTION_STOP] 
-			&& !m_bAttackFlg && !m_pModel->IsPlay(m_Anime[MOTION_SWING]))	
+		if (m_pModel->GetPlayNo() != MOTION_PLAYER_STOP
+			&& !m_bAttackFlg && !m_pModel->IsPlay(MOTION_PLAYER_SWING))
 		{
 			// カウントダウン開始前の場合
 			if (!m_pWaitFrameCnt)	// 値がnullptr
@@ -736,8 +738,8 @@ void CPlayer::MoveCheck()
 			// カウントダウン完了
 			if (m_pWaitFrameCnt->IsFin())
 			{
-				SAFE_DELETE(m_pWaitFrameCnt);					// カウンタ削除
-				m_pModel->Play(m_Anime[MOTION_STOP], false);	// 待機モーション開始
+				SAFE_DELETE(m_pWaitFrameCnt);						// カウンタ削除
+				m_pModel->Play(MOTION_PLAYER_STOP, false);	// 待機モーション開始
 			}
 		}
 	}
@@ -760,10 +762,9 @@ void CPlayer::MoveCheck()
 		}
 
 		// 移動中のアニメーションを再生してない場合、なおかつ攻撃中じゃない場合
-		if (m_pModel->GetPlayNo() != m_Anime[MOTION_MOVE] && !m_pModel->IsPlay(m_Anime[MOTION_SWING]))
+		if (m_pModel->GetPlayNo() != MOTION_PLAYER_MOVE && !m_pModel->IsPlay(MOTION_PLAYER_SWING))
 		{	
-			m_pModel->Play(m_Anime[MOTION_MOVE], true, PLAYER_MOVE_ANIME_SPEED);	// アニメーションを再生
-
+			m_pModel->Play(MOTION_PLAYER_MOVE, true, PLAYER_MOVE_ANIME_SPEED);	// アニメーションを再生
 		}
 
 	}
