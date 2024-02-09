@@ -25,6 +25,7 @@
 	・2024/01/25 ヒットエフェクト関係の処理追加 Tei
 	・2024/01/30 プレイヤー移動エフェクト関係の処理追加 Tei
 	・2024/02/02 汗エフェクト処理追加 Tei
+	・2024/02/09 UsingCamera使用 takagi
 
 ========================================== */
 
@@ -34,6 +35,7 @@
 #include "Stage1.h"	//ステージ1
 #include "Stage2.h"	//ステージ2
 #include "Stage3.h"	//ステージ3
+#include "UsingCamera.h"	//カメラ使用
 
 //* ========================================
 //	コンストラクタ
@@ -70,12 +72,7 @@ CStage::CStage(CUIStageManager::E_STAGE_NUM eStage)
 	RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得
 	DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
 	SetRenderTargets(1, &pRTV, pDSV);		//DSVがnullだと2D表示になる
-
-#if MODE_COORD_AXIS
-	// 軸線の表示
-	CLine::Init();
-#endif
-
+	
 	//================3dObject動的確保================
 	m_pPlayer = new CPlayer();							// プレイヤー生成
 	m_pExplosionMng = new CExplosionManager();			// 爆発マネージャー生成
@@ -83,24 +80,18 @@ CStage::CStage(CUIStageManager::E_STAGE_NUM eStage)
 	m_pHealItemMng = new CHealItemManager();			// 回復アイテムマネージャー生成
 
 	//================System動的確保================
-	m_pCamera = new CCameraChase(m_pPlayer->GetPosAddress());	//カメラ生成
-	m_pCollision = new CCOLLISION();							//衝突判定チェック生成
+	m_pMainCamera = std::make_shared<CCameraChase>(m_pPlayer->GetPosAddress());	//カメラ生成
+	CUsingCamera::GetThis().SetCamera(m_pMainCamera);							//カメラ登録
+	m_pCollision = new CCOLLISION();											//衝突判定チェック生成
 
 	//================2dObject動的確保================
-	m_pUIStageManager = new CUIStageManager(m_pPlayer, m_pCamera, m_pSlimeMng, eStage);	// UIマネージャー生成
-	m_pStartText = new CStartText(m_pCamera);
+	m_pUIStageManager = new CUIStageManager(m_pPlayer, m_pSlimeMng, eStage);	// UIマネージャー生成
+	m_pStartText = new CStartText();
 
 	//================エフェクト動的確保================
 	m_pHitEffectMng = new CHitSlimeEffectManager();
 
-	//================セット================
-	// カメラ
-	m_pHitEffectMng->SetCamera(m_pCamera);
-	m_pPlayer->SetCamera(m_pCamera);
-	m_pExplosionMng->SetCamera(m_pCamera);
-	m_pSlimeMng->SetCamera(m_pCamera);
-	m_pHealItemMng->SetCamera(m_pCamera);
-	m_pPause = new CPause(m_pCamera);
+	m_pPause = new CPause();
 
 	//スライムマネージャー　←　スコアマネージャー
 	m_pSlimeMng->SetScoreOHMng(m_pUIStageManager->GetScoreOHMngPtr());
@@ -150,7 +141,6 @@ CStage::~CStage()
 	SAFE_DELETE(m_pExplosionMng);
 	SAFE_DELETE(m_pHitEffectMng);
 	SAFE_DELETE(m_pCollision);
-	SAFE_DELETE(m_pFade);
 	SAFE_DELETE(m_pTexture);
 	SAFE_DELETE(m_pScoreOHMng);
 	SAFE_DELETE(m_pHealItemMng);

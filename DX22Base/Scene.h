@@ -21,12 +21,16 @@
 	・2023/11/23 サウンドファイル読み込み関数用変数追加 nieda
 	・2023/12/14 BGMの管理をSceneManagerに移動 yamashita
 	・2023/12/15 列挙中身追加 takagi
-	・2024/02/09 GetType()関数削除 takagi
+	・2024/02/09 GetType()関数削除・カメラ変更 takagi
 
 ========================================== */
 
 #ifndef __SCENE_H__	//Scene.hインクルードガード
 #define __SCENE_H__
+
+// =============== インクルード =====================
+#include "Camera.h"	//カメラ
+#include <memory>	//ptr管理
 
 // =============== クラス定義 =====================
 class CScene
@@ -57,7 +61,8 @@ public:
 	virtual E_TYPE GetNext() const = 0;	//次のシーンゲッタ
 protected:
 	// ===メンバ変数宣言=====
-	bool m_bFinish;	//終了予約用(trueで終了)
+	bool m_bFinish;							//終了予約用(trueで終了)
+	std::shared_ptr<CCamera> m_pMainCamera;	//メインで使用するカメラ
 };	//シーン
 
 #endif	//!__SCENE_H__

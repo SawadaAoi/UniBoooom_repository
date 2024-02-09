@@ -21,13 +21,12 @@
 	・2024/01/30 プレイヤー移動エフェクト関係の処理追加 Tei
 	・2024/02/02 汗エフェクト処理追加 Tei
 	・2024/02/05 ゲーム終了間際の加算スコアがトータルスコアに反映されるように(改) sawada
-	・2024/02/09 GetType()関数削除 takagi
+	・2024/02/09 GetType()関数削除・カメラ削除 takagi
 
 ========================================== */
 
 // =============== インクルード ===================
-#include "Stage2.h"	//自身のヘッダ
-#include "CameraChase.h"
+#include "Stage2.h"			//自身のヘッダ
 #include "Input.h"
 #include "HitStop.h"	//ヒットストップ
 #include "Fade.h"
@@ -49,7 +48,6 @@ CStage2::CStage2()
 {
 	m_pFloor = new CFloor(m_pPlayer->GetPosAddress(), CFloor::Stage2);	// 床生成
 	//================セット================
-	m_pFloor->SetCamera(m_pCamera);
 	m_pUIStageManager->GetBossGauge()->AddBossGauge(BOSS_GAUGE_S2[0].BossNum, BOSS_GAUGE_S2[0].startTime, BOSS_GAUGE_S2[0].maxTime);
 }
 
@@ -88,9 +86,6 @@ void CStage2::Update()
 	}
 	else
 	{
-		// カメラ更新
-		m_pCamera->Update();
-
 		//ポーズ更新
 		if (m_pPause)	//ヌルチェック
 		{

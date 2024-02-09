@@ -19,6 +19,7 @@
 	・2023/12/12 型チェック修正 takagi
 	・2023/12/17 ゲームパラメータ無効化 takagi
 	・2024/01/26 選択.決定.ポーズSE追加 suzumura
+	・2024/02/09 カメラ削除 takagi
 
 ========================================== */
 
@@ -26,7 +27,6 @@
 #include "Pause.h"			//自身のヘッダ
 #include <map>				//関係性コンテナ
 #include <array>			//配列
-#include "CameraDef.h"		//疑似カメラ
 #include "Input.h"			//キー入力
 #include "CharPause.h"		//インスタンス候補
 #include "BgPause.h"		//インスタンス候補
@@ -63,20 +63,20 @@ const float CHARA_SPACE = 85.0f;		//ポーズ表記の横の間
 const float CHARA_WIDTH = 100.0f;		//ポーズ表記横幅
 const float CHARA_HEIGHT = 100.0f;		//ポーズ表記縦幅
 const std::map<int, int> MAP_WAIT_START = {	//更新順
-	{E_2D_BACK, 0},		//背景
-	{E_2D_PA, 0},		//ポーズの”ポ”
-	{E_2D_U, 15},		//ポーズの”ー”
-	{E_2D_SE, 30},		//ポーズの”ズ”
+	{E_2D_BACK, 0},			//背景
+	{E_2D_PA, 0},			//ポーズの”ポ”
+	{E_2D_U, 15},			//ポーズの”ー”
+	{E_2D_SE, 30},			//ポーズの”ズ”
 	{E_2D_CONTINUE, 15},	//継続コマンド
-	{E_2D_FINISH, 30},	//終了コマンド
+	{E_2D_FINISH, 30},		//終了コマンド
 };	//ポリゴンと表示開始待機時間の対応表
 const std::map<int, int> MAP_WAIT_FIN = {	//更新順
 	{E_2D_BACK, 30},		//背景
-	{E_2D_PA, 30},		//ポーズの”ポ”
-	{E_2D_U, 15},		//ポーズの”ー”
-	{E_2D_SE, 0},		//ポーズの”ズ”
+	{E_2D_PA, 30},			//ポーズの”ポ”
+	{E_2D_U, 15},			//ポーズの”ー”
+	{E_2D_SE, 0},			//ポーズの”ズ”
 	{E_2D_CONTINUE, 15},	//継続コマンド
-	{E_2D_FINISH, 30},	//終了コマンド
+	{E_2D_FINISH, 30},		//終了コマンド
 };	//ポリゴンと表示終了待機時間の対応表
 const std::map<int, std::string> MAP_TEXTURE = {	//更新順
 	{E_2D_BACK, "Assets/Texture/Pause/PauseBg.png"},			//背景
@@ -108,13 +108,9 @@ CPause::CPause(const CCamera* pCamera)
 	:m_ucFlag(0x00)			//フラグ
 	, m_pSE{ nullptr,nullptr,nullptr }
 	, m_pSESpeaker{ nullptr ,nullptr,nullptr }
-{	
-	// =============== 初期化 ===================
-	m_pCamera = pCamera;	//カメラ初期化
-
+{
 	//=== サウンドファイル読み込み =====
 	LoadSound();
-
 }
 
 /* ========================================
@@ -420,20 +416,6 @@ bool CPause::IsFin() const
 }
 
 /* ========================================
-	カメラ登録関数
-	----------------------------------------
-	内容：nullptrでないカメラのアドレスを受け取り使用する。
-	----------------------------------------
-	引数1：const CCamera * pCamera：カメラのポインタ
-	----------------------------------------
-	戻値：なし
-	======================================== */
-void CPause::SetCamera(const CCamera * pCamera)
-{
-	m_pCamera = pCamera;
-}
-
-/* ========================================
 	ポーズ判定関数
 	----------------------------------------
 	内容：ポーズ中かどうかを返す
@@ -499,9 +481,6 @@ void CPause::InitObjects()
 		{
 			(*Iterator)->SetTexture(MAP_TEXTURE.at(nCnt).c_str());	//テクスチャ登録
 		}
-
-		// =============== カメラ登録 ===================
-		(*Iterator)->SetCamera(m_pCamera);	//カメラ登録
 
 		// =============== 状態 ===================
 		if (m_p2dObj[E_2D_CONTINUE] && typeid(CCommandPause) == typeid(*m_p2dObj[E_2D_CONTINUE]))	//ヌルチェック、型チェック

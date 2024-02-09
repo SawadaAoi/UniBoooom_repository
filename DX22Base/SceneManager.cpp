@@ -26,6 +26,7 @@
 	・2024/01/20 音関係リファクタリング takagi
 	・2024/01/21 コメント改修・bgmバグ修正・MessageBox改善 takagi
 	・2024/01/25 オブジェクトチェック追加
+	・2024/02/09 カメラ削除 takagi
 
 ========================================== */
 
@@ -248,7 +249,7 @@ void CSceneManager::ChangeScene()
 	}
 	if (m_pScene)	//新規シーンが作られている
 	{
-		m_pFade = new CFade(m_pScene->GetCamera());	//動的確保
+		m_pFade = new CFade();	//動的確保
 	}
 }
 

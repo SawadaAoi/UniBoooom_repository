@@ -47,7 +47,6 @@
 #include "SphereInfo.h"
 #include "Transform3d.h"
 #include "Pos3d.h"
-#include "Camera.h"
 #include "Object.h"
 #include "Sound.h"
 #include "Model.h"
@@ -55,12 +54,10 @@
 #include "AnimeModel.h"
 #include "FrameCnt.h"
 #include "WalkEffectManager.h"
-
 #include "SweatEffectManager.h"
 
 // =============== クラス定義 =====================
-class CPlayer
-	: public CObject
+class CPlayer: public CObject
 {
 public:
 	// === 列挙 ===
@@ -72,7 +69,6 @@ public:
 		SE_HIT_HAMMER,	//ハンマーとスライムの接触SE
 		SE_HEAL,		//回復SE
 		SE_WARNING,		//残り体力１
-
 		SE_MAX			//SEの総数
 	};
 private:
@@ -121,7 +117,6 @@ private:
 	AnimeModel* m_pModel;				// プレイヤーのモデル
 
 	CHammer* m_pHammer;					// ハンマークラスのポインタ(プレイヤーが管理する)
-	CCamera* m_pCamera;					// プレイヤーを追従するカメラ
 
 	CShadow* m_pShadow;
 	CFrameCnt* m_pWaitFrameCnt;				// 待機モーション用フレームカウントダウン
@@ -161,7 +156,6 @@ private:
 		MOTION_MOVE,	// 移動
 		MOTION_SWING,	// ハンマーを振る
 		MOTION_DIE,		// 死亡
-
 		MOTION_MAX,	//モーションの総数
 	};
 
@@ -175,7 +169,6 @@ private:
 		"Assets/Sound/SE/HammerHit.mp3",		//ハンマーとスライムの接触SE
 		"Assets/Sound/SE/HealSE.mp3",			//回復アイテム取得時
 		"Assets/Sound/SE/Warning.mp3"			//残りHPが１の時
-
 	};
 
 	//=====アニメーション関連=====
@@ -188,8 +181,4 @@ private:
 	};			
 };
 
-
 #endif // !__PLAYER_H__
-
-
-

@@ -16,6 +16,7 @@
 	・2023/12/10 制作進行 takagi
 	・2023/12/12 フラグ追加 takagi
 	・2024/01/26 選択.決定.ポーズSE追加 suzumura
+	・2024/02/09 カメラ削除 takagi
 
 ========================================== */
 
@@ -24,7 +25,6 @@
 
 // =============== インクルード =====================
 #include "Sound.h"		//音
-#include "Camera.h"		//カメラ
 #include "PauseObj.h"	//メンバのヘッダ
 #include <vector>		//配列コンテナ
 
@@ -48,24 +48,20 @@ private:
 		SE_DECISION,	//決定音
 		SE_CHOOSE,		//項目選択SE
 		SE_PAUSE,		//ポーズ音
-
 		SE_MAX			//SEの総数
 	}; //SE
 public:
 	// ===プロトタイプ宣言===
-	CPause(const CCamera* pCamera);						//コンストラクタ
-	~CPause();											//デストラクタ
-	void Update();										//更新
-	void Draw();										//描画
-	bool IsFin() const;									//終了確認
-	void SetCamera(const CCamera* pCamera = nullptr);	//カメラセッタ
-	bool IsPause() const;								//ポーズ中か
+	CPause();				//コンストラクタ
+	~CPause();				//デストラクタ
+	void Update();			//更新
+	void Draw();			//描画
+	bool IsFin() const;		//終了確認
+	bool IsPause() const;	//ポーズ中か
 private:
 	// ===メンバ変数宣言=====
-	unsigned char m_ucFlag;							//フラグ
-	std::vector<CPauseObj*> m_p2dObj;				//平面ポリゴン
-	const CCamera* m_pCamera;						//カメラ	※参照のみに使用、削除しない
-
+	unsigned char m_ucFlag;				//フラグ
+	std::vector<CPauseObj*> m_p2dObj;	//平面ポリゴン
 	// ===プロトタイプ宣言===
 	void Boot();									//ポーズモード起動
 	void InitObjects();								//初期化・動的確保
@@ -84,7 +80,6 @@ private:
 		"Assets/Sound/SE/Select_Cursor.mp3", 		// 選択音
 		"Assets/Sound/SE/Pause.mp3" 				// ポーズ音
 	};
-
 };
 
 #endif	//!__PAUSE_H__
