@@ -229,6 +229,12 @@
     <Filter Include="ヘッダー ファイル\2dObject\TitleObj\Anime\Background\Scaling">
       <UniqueIdentifier>{1e141588-474a-4886-ba13-bd6be87918b7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\Info\Flag">
+      <UniqueIdentifier>{a65f3470-a9e5-496f-971e-befb88a737ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Info\Flag">
+      <UniqueIdentifier>{0a65a912-79f9-44bc-bcb1-3c8d4b0cd0b3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -599,6 +605,9 @@
     </ClCompile>
     <ClCompile Include="UnionSmokeEffectManager.cpp">
       <Filter>ソース ファイル\2dObject\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="UcFlag.cpp">
+      <Filter>ソース ファイル\Info\Flag</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -982,6 +991,9 @@
     </ClInclude>
     <ClInclude Include="UnionSmokeEffectManager.h">
       <Filter>ヘッダー ファイル\2dObject\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="UcFlag.h">
+      <Filter>ヘッダー ファイル\Info\Flag</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

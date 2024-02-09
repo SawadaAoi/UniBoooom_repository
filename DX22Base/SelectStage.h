@@ -16,6 +16,7 @@
 	・2024/01/26 選択、決定SE追加 suzumura
 	・2024/01/28 落下実装 takagi
 	・2024/01/29 画像修正 takagi
+	・2024/02/09 GetType()関数削除 takagi
 
 ========================================== */
 
@@ -148,7 +149,6 @@ public:
 	void Update();						// 更新
 	void Draw();// const;				// 描画	
 	void StageSelect();						   
-	E_TYPE GetType() const override;	// 自身の種類ゲッタ
 	E_TYPE GetNext() const override;	// 次のシーンゲッタ
 	void LoadSound();								// シーンセレクト用のサウンドをロード
 	void PlaySE(SE se, float volume = 1.0f);		// SEを再生する
