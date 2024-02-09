@@ -100,7 +100,8 @@ SceneGame::SceneGame()
 
 	m_pCollision		= new CCOLLISION();
 	m_pPlayer			= new CPlayer();
-	m_pCamera			= new CCameraChase(m_pPlayer->GetPosAddress());
+	m_pCamera			= new CCameraChase();
+	static_cast<CCameraChase*>(m_pCamera)->SetTarget(m_pPlayer->GetPosAddress());	// 位置登録
 	m_pFloor			= new CFloor(m_pPlayer->GetPosAddress(),CFloor::Stage1);	// 地面生成
 	m_pHealItemMng		= new CHealItemManager();	// 回復アイテムマネージャー
 	m_pExplosionMng		= new CExplosionManager();	// 爆発マネージャー生成

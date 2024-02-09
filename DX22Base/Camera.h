@@ -3,7 +3,7 @@
 	------------------------------------
 	カメラ用抽象クラス定義
 	------------------------------------
-	CameraChase.h
+	Camera.h
 	------------------------------------
 	作成者	takagi
 
@@ -25,10 +25,12 @@
 	・2023/12/05 揺れのカウンタ追加 takagi
 	・2023/12/16 ズーム機能追加 takagi
 	・2024/01/16 統一のため、インクルードガードの___を__に変更	takagi
+	・2024/01/20 コメント改修 takagi
+	・2024/01/21 コメント改修 takagi
 
 ========================================== */
 
-#ifndef __CAMERA_H__
+#ifndef __CAMERA_H__	//Camera.hインクルードガード
 #define __CAMERA_H__
 
 // =============== インクルード ===================
@@ -75,7 +77,7 @@ public:
 		const E_DRAW_TYPE& eDraw = E_DRAW_TYPE_3D) const;							//プロジェクション行列変換
 	virtual DirectX::XMFLOAT4X4 GetViewWithoutTranspose() const;					//転置無しビュー行列取得
 	DirectX::XMFLOAT4X4 GetProjectionWithoutTranspose() const;						//転置無しプロジェクション行列取得
-	TPos3d<float> GetPos() const;													//カメラ位置提供
+	virtual TPos3d<float> GetPos() const;											//カメラ位置提供
 	void ChangeScaleVibrate(const int& nChangeFrame, const float& fChangegRateAmp);	//振動の規模を変更する
 	void BootZoom(const float& fFinRadius, const int& nFrame = 0,
 		const bool& bDefMode = true, const float& fStartRadius = 1.0f);				//ズーム/インアウト起動
@@ -107,4 +109,4 @@ private:
 	float* m_pfStartRadius;							//ズーム開始距離
 };	//カメラ
 
-#endif // !__CAMERA_H__
+#endif	//!__CAMERA_H__
