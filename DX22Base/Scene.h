@@ -27,11 +27,6 @@
 #ifndef __SCENE_H__	//Scene.hインクルードガード
 #define __SCENE_H__
 
-// =============== インクルード ===================
-#include "Texture.h"
-#include "Camera.h"
-#include "Fade.h"
-
 // =============== クラス定義 =====================
 class CScene
 {
@@ -60,13 +55,9 @@ public:
 	bool IsFin() const;					//終了確認
 	virtual E_TYPE GetType() const = 0;	//自身の種類ゲッタ
 	virtual E_TYPE GetNext() const = 0;	//次のシーンゲッタ
-	void Draw2d(float, float, float, float, Texture*);	// 分割なしの2Dテクスチャ表示
-	CCamera* GetCamera();
 protected:
 	// ===メンバ変数宣言=====
 	bool m_bFinish;	//終了予約用(trueで終了)
-	CCamera* m_pCamera;
-	CFade* m_pFade;
 };	//シーン
 
 #endif	//!__SCENE_H__
