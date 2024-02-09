@@ -387,19 +387,19 @@ CExplosion* CExplosionManager::GetExplosionPtr(int num)
 ======================================== */
 void CExplosionManager::SwitchExplode(E_SLIME_LEVEL slimeLevel, TPos3d<float> pos, TTriType<float> slimeSize)
 {
-	float ExplosionSize = slimeSize.x * EXPLODE_BASE_RATIO;
+	float ExplosionSize;
 	float ExplodeTime;
 	int ExplodeDamage;
 
 	// ぶつけられたスライムのレベルによって分岐
 	switch (slimeLevel) {
-	case LEVEL_1:		ExplodeTime = LEVEL_1_EXPLODE_TIME;		ExplodeDamage = LEVEL_1_EXPLODE_DAMAGE; break;
-	case LEVEL_2:		ExplodeTime = LEVEL_2_EXPLODE_TIME;		ExplodeDamage = LEVEL_2_EXPLODE_DAMAGE; break;
-	case LEVEL_3:		ExplodeTime = LEVEL_3_EXPLODE_TIME;		ExplodeDamage = LEVEL_3_EXPLODE_DAMAGE; break;
-	case LEVEL_4:		ExplodeTime = LEVEL_4_EXPLODE_TIME;		ExplodeDamage = LEVEL_4_EXPLODE_DAMAGE; break;
-	case LEVEL_FLAME:	ExplodeTime = LEVEL_1_EXPLODE_TIME;		ExplodeDamage = LEVEL_1_EXPLODE_DAMAGE; break;	// 炎スライムと爆発が接触した際は一番小さい爆発
-	case LEVEL_HEAL:	ExplodeTime = LEVEL_1_EXPLODE_TIME;		ExplodeDamage = LEVEL_1_EXPLODE_DAMAGE; break;	// 回復スライムと爆発が接触した際は一番小さい爆発
-	case LEVEL_BOSS:	ExplodeTime = LEVEL_BOSS_EXPLODE_TIME;	ExplodeDamage = LEVEL_4_EXPLODE_DAMAGE; break;
+	case LEVEL_1:		ExplodeTime = LEVEL_1_EXPLODE_TIME;		ExplodeDamage = LEVEL_1_EXPLODE_DAMAGE;	ExplosionSize = slimeSize.x * EXPLODE_BASE_RATIO; break;
+	case LEVEL_2:		ExplodeTime = LEVEL_2_EXPLODE_TIME;		ExplodeDamage = LEVEL_2_EXPLODE_DAMAGE; ExplosionSize = slimeSize.x * EXPLODE_BASE_RATIO; break;
+	case LEVEL_3:		ExplodeTime = LEVEL_3_EXPLODE_TIME;		ExplodeDamage = LEVEL_3_EXPLODE_DAMAGE; ExplosionSize = slimeSize.x * EXPLODE_BASE_RATIO; break;
+	case LEVEL_4:		ExplodeTime = LEVEL_4_EXPLODE_TIME;		ExplodeDamage = LEVEL_4_EXPLODE_DAMAGE; ExplosionSize = slimeSize.x * EXPLODE_BASE_RATIO; break;
+	case LEVEL_FLAME:	ExplodeTime = LEVEL_1_EXPLODE_TIME;		ExplodeDamage = LEVEL_1_EXPLODE_DAMAGE; ExplosionSize = slimeSize.x * EXPLODE_BASE_RATIO; break;	// 炎スライムと爆発が接触した際は一番小さい爆発
+	case LEVEL_HEAL:	ExplodeTime = LEVEL_1_EXPLODE_TIME;		ExplodeDamage = LEVEL_1_EXPLODE_DAMAGE; ExplosionSize = slimeSize.x * EXPLODE_BASE_RATIO; break;	// 回復スライムと爆発が接触した際は一番小さい爆発
+	case LEVEL_BOSS:	ExplodeTime = LEVEL_BOSS_EXPLODE_TIME;	ExplodeDamage = LEVEL_4_EXPLODE_DAMAGE; ExplosionSize = slimeSize.x * EXPLODE_BOSS_RATIO; break;
 	}
 
 	Create(pos, ExplosionSize, ExplodeTime, ExplodeDamage, slimeLevel);	// 爆発生成
@@ -425,13 +425,13 @@ void CExplosionManager::SwitchExplode(E_SLIME_LEVEL slimeLevel, TPos3d<float> po
 
 	// ぶつけられたスライムのレベルによって分岐
 	switch (slimeLevel) {
-	case LEVEL_1:		ExplodeTime = LEVEL_1_EXPLODE_TIME;		ExplodeDamage = LEVEL_1_EXPLODE_DAMAGE; break;
-	case LEVEL_2:		ExplodeTime = LEVEL_2_EXPLODE_TIME;		ExplodeDamage = LEVEL_2_EXPLODE_DAMAGE; break;
-	case LEVEL_3:		ExplodeTime = LEVEL_3_EXPLODE_TIME;		ExplodeDamage = LEVEL_3_EXPLODE_DAMAGE; break;
-	case LEVEL_4:		ExplodeTime = LEVEL_4_EXPLODE_TIME;		ExplodeDamage = LEVEL_4_EXPLODE_DAMAGE; break;
-	case LEVEL_FLAME:	ExplodeTime = LEVEL_1_EXPLODE_TIME;		ExplodeDamage = LEVEL_1_EXPLODE_DAMAGE; break;	// 炎スライムと爆発が接触した際は一番小さい爆発
-	case LEVEL_HEAL:	ExplodeTime = LEVEL_1_EXPLODE_TIME;		ExplodeDamage = LEVEL_1_EXPLODE_DAMAGE; break;	// 回復スライムと爆発が接触した際は一番小さい爆発
-	case LEVEL_BOSS:	ExplodeTime = LEVEL_BOSS_EXPLODE_TIME;	ExplodeDamage = LEVEL_4_EXPLODE_DAMAGE; break;
+	case LEVEL_1:		ExplodeTime = LEVEL_1_EXPLODE_TIME;		ExplodeDamage = LEVEL_1_EXPLODE_DAMAGE;	ExplosionSize = slimeSize.x * EXPLODE_BASE_RATIO; break;
+	case LEVEL_2:		ExplodeTime = LEVEL_2_EXPLODE_TIME;		ExplodeDamage = LEVEL_2_EXPLODE_DAMAGE; ExplosionSize = slimeSize.x * EXPLODE_BASE_RATIO; break;
+	case LEVEL_3:		ExplodeTime = LEVEL_3_EXPLODE_TIME;		ExplodeDamage = LEVEL_3_EXPLODE_DAMAGE; ExplosionSize = slimeSize.x * EXPLODE_BASE_RATIO; break;
+	case LEVEL_4:		ExplodeTime = LEVEL_4_EXPLODE_TIME;		ExplodeDamage = LEVEL_4_EXPLODE_DAMAGE; ExplosionSize = slimeSize.x * EXPLODE_BASE_RATIO; break;
+	case LEVEL_FLAME:	ExplodeTime = LEVEL_1_EXPLODE_TIME;		ExplodeDamage = LEVEL_1_EXPLODE_DAMAGE; ExplosionSize = slimeSize.x * EXPLODE_BASE_RATIO; break;	// 炎スライムと爆発が接触した際は一番小さい爆発
+	case LEVEL_HEAL:	ExplodeTime = LEVEL_1_EXPLODE_TIME;		ExplodeDamage = LEVEL_1_EXPLODE_DAMAGE; ExplosionSize = slimeSize.x * EXPLODE_BASE_RATIO; break;	// 回復スライムと爆発が接触した際は一番小さい爆発
+	case LEVEL_BOSS:	ExplodeTime = LEVEL_BOSS_EXPLODE_TIME;	ExplodeDamage = LEVEL_4_EXPLODE_DAMAGE; ExplosionSize = slimeSize.x * EXPLODE_BOSS_RATIO; break;
 
 	}
 
