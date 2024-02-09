@@ -21,6 +21,7 @@
 	・2023/11/23 サウンドファイル読み込み関数用変数追加 nieda
 	・2023/12/14 BGMの管理をSceneManagerに移動 yamashita
 	・2023/12/15 列挙中身追加 takagi
+	・2024/02/09 GetType()関数削除 takagi
 
 ========================================== */
 
@@ -58,7 +59,6 @@ public:
 	virtual void Update();				//更新
 	virtual void Draw();				//描画
 	bool IsFin() const;					//終了確認
-	virtual E_TYPE GetType() const = 0;	//自身の種類ゲッタ
 	virtual E_TYPE GetNext() const = 0;	//次のシーンゲッタ
 	void Draw2d(float, float, float, float, Texture*);	// 分割なしの2Dテクスチャ表示
 	CCamera* GetCamera();

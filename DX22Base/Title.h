@@ -19,6 +19,7 @@
 	・2024/02/02 リファクタリング takagi
 	・2024/02/05 リファクタリング takagi
 	・2024/02/06 リファクタリング takagi
+	・2024/02/09 GetType()関数削除 takagi
 
 ========================================== */
 
@@ -66,7 +67,6 @@ public:
 	~CTitle();							//デストラクタ
 	void Update() override;				//更新
 	void Draw() override;				//描画	
-	E_TYPE GetType() const override;	//自身の種類ゲッタ
 	E_TYPE GetNext() const override;	//次のシーンゲッタ
 private:
 	// ===メンバ変数宣言=====

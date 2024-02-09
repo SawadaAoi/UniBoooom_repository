@@ -45,6 +45,7 @@
 	・2024/01/01 ボス落下のスライム硬直処理追加 Tei
 	・2024/01/13 ボス落下の画面揺れ処理追加 Tei
 	・2024/01/18 炎スライムエフェクト追加 Tei
+	・2024/02/06 結合エフェクト処理追加 Tei
 	・2024/02/08 レベル３スライムのモデル読み込みサイズを調整(1.6⇒2.1) suzumura
 
 =========================================== */
@@ -148,6 +149,7 @@ CSlimeManager::CSlimeManager(CPlayer* pPlayer)
 	, m_pPlayer(pPlayer)
 	, m_pExpMng(nullptr)
 	, m_pUnionMng(nullptr)	//UNION管理
+	, m_pUnionEfcMng(nullptr)	//UNIONエフェクト管理
 	, m_pTimer(nullptr)
 	, m_nKill(0)			//被討伐数
 	, m_pSE{ nullptr,nullptr,nullptr }
@@ -195,7 +197,7 @@ CSlimeManager::CSlimeManager(CPlayer* pPlayer)
 
 	// =============== UNION ===================
 	m_pUnionMng = new CUnionManager;	//UNION管理
-
+	m_pUnionEfcMng = new CUnionSmokeEffectManager();
 	for (int i = 0; i < 5; i++) m_nKills[i] = 0;
 }
 
@@ -211,6 +213,7 @@ CSlimeManager::CSlimeManager(CPlayer* pPlayer)
 CSlimeManager::~CSlimeManager()
 {
 	SAFE_DELETE(m_pUnionMng);	//UNION削除
+	SAFE_DELETE(m_pUnionEfcMng);
 	SAFE_DELETE(m_pVS);
 	SAFE_DELETE(m_pHealModel);
 	SAFE_DELETE(m_pFlameModel);
@@ -287,7 +290,10 @@ void CSlimeManager::Update(CExplosionManager* pExpMng)
 	{
 		m_pUnionMng->Update();	//更新
 	}
-
+	if (m_pUnionEfcMng)
+	{
+		m_pUnionEfcMng->Update();
+	}
 	
 }
 
@@ -325,6 +331,13 @@ void CSlimeManager::Draw()
 		m_pUnionMng->Draw();	//描画
 		SetRenderTargets(1, &rtv, GetDefaultDSV());
 
+	}
+	if (m_pUnionEfcMng)
+	{
+		auto rtv = GetDefaultRTV();
+		SetRenderTargets(1, &rtv, nullptr);
+		m_pUnionEfcMng->Draw();
+		SetRenderTargets(1, &rtv, GetDefaultDSV());
 	}
 
 }
@@ -763,6 +776,7 @@ void CSlimeManager::UnionSlime(E_SLIME_LEVEL level ,TPos3d<float> pos, float spe
 
 		m_pSlime[i]->SetCamera(m_pCamera);	//カメラをセット
 		PlaySE(SE_UNION);	//SEの再生
+		m_pUnionEfcMng->Create(pos, level);
 
 		break;
 	}
@@ -1425,7 +1439,10 @@ void CSlimeManager::SetCamera(CCamera * pCamera)
 	{
 		m_pUnionMng->SetCamera(pCamera);	//カメラ登録
 	}
-
+	if (m_pUnionEfcMng)
+	{
+		m_pUnionEfcMng->SetCamera(pCamera);
+	}
 	// すでに生成されているスライムにもカメラをセット
 	for (int i = 0; i < MAX_SLIME_NUM; i++)
 	{
