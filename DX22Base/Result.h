@@ -17,6 +17,7 @@
 	・2024/01/26 決定SE追加 suzumura
 	・2024/01/26 アニメーション追加 goto
 	・2024/02/03 リザルト表示位置等微調整 suzumura
+	・2024/02/09 GetType()関数削除 takagi
 
 ========================================== */
 
@@ -87,8 +88,7 @@ public:
 	CResult();							//コンストラクタ
 	~CResult();							//デストラクタ
 	void Update();						//更新
-	void Draw();						//描画	
-	E_TYPE GetType() const override;	//自身の種類ゲッタ
+	void Draw();						//描画
 	E_TYPE GetNext() const override;	//次のシーンゲッタ
 private:
 	void DrawBgScreen();
