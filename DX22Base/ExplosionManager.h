@@ -33,11 +33,8 @@
 
 // =============== 定数定義 =======================
 const int	MAX_EXPLOSION_NUM = 20;			// 最大爆発数
-const int	MAX_BOOOOM_NUM = 10;					//最大boom数
-const int	LEVEL_1_EXPLODE_DAMAGE = 1;
-const int	LEVEL_2_EXPLODE_DAMAGE = 2;
-const int	LEVEL_3_EXPLODE_DAMAGE = 3;
-const int	LEVEL_4_EXPLODE_DAMAGE = 4;
+const int	MAX_BOOOOM_NUM = 10;			//最大boom数
+
 #if MODE_GAME_PARAMETER
 #else
 const int MAX_BOOOOM_NUM = 10;		//最大boom数
@@ -47,7 +44,17 @@ const float LEVEL_1_EXPLODE_TIME	= 0.5f * 60.0f;	// スライム_1の爆発総時間
 const float LEVEL_2_EXPLODE_TIME	= 1.0f * 60.0f;	// スライム_2の爆発総時間
 const float LEVEL_3_EXPLODE_TIME	= 2.0f * 60.0f;	// スライム_3の爆発総時間
 const float LEVEL_4_EXPLODE_TIME	= 3.0f * 60.0f;	// スライム_4の爆発総時間
+const float LEVEL_4X4_EXPLODE_TIME = 3.5f * 60.0f;	// スライム_4x4の爆発総時間
+
 const float LEVEL_BOSS_EXPLODE_TIME = 4.0f * 60.0f;	// スライム_ボスの爆発総時間
+
+const int	LEVEL_1_EXPLODE_DAMAGE = 1;
+const int	LEVEL_2_EXPLODE_DAMAGE = 2;
+const int	LEVEL_3_EXPLODE_DAMAGE = 3;
+const int	LEVEL_4_EXPLODE_DAMAGE = 4;
+const int	LEVEL_4X4_EXPLODE_DAMAGE = 5;
+
+const float EXPLODE_BOSS_RATIO = 2.3f;				// ボス撃破時の爆発の大きさ倍率
 #endif
 
 // =============== クラス定義 =====================
