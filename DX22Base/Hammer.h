@@ -36,7 +36,7 @@
 #include "Sphere.h"
 
 // =============== 定数定義 =======================
-const float SwingSpeed_MIN = 9.0f;		// ハンマーの振りの最速値
+const int SWING_TIME_MIN = int(0.15f * 60);		// ハンマーの振りの最速値
 
 
 // =============== クラス定義 =====================
@@ -53,19 +53,20 @@ public:
 	void Draw();			// 描画関数
 	void Swing();											// 移動による回転移動
 	void AttackStart(TPos3d<float>pPos, float angle);		// 攻撃開始処理
-	void SwingSpeedAdd();
-	void SwingSpeedSubtract();
-	float GetInterval();
+	void SwingSpeedSlow();
+	void SwingSpeedFast();
+	float GetSwingSpeed();
 	void SetCamera(const CCamera* pCamera);
 private:
 	// ===メンバ変数宣言=====
-	VertexShader* m_pVS;			//頂点シェーダーのポインタ
+	VertexShader* m_pVS;			// 頂点シェーダーのポインタ
 	TPos3d<float> m_tPlayerPos;		// 現在のプレイヤー座標
 	float m_fAngleNow;				// 今の角度
 	int m_dAddAngleCnt;				// 角度加算フレーム値
 	const CCamera* m_pCamera;		//	
-	float m_fSwingSpeed;			//ハンマーを振る時間
+	int m_nSwingTimeFrame;			// ハンマーの一振りに掛かる時間
 	float m_fAddAngle;				// 1フレームで移動する角度量
+	float m_fSwingSpeed;			// ハンマーの振る速度の割合(通常時が1.0)
 
 	CSphere* m_pSphere;
 };

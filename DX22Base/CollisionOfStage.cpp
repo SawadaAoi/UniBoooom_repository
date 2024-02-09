@@ -1,51 +1,51 @@
 /* ========================================
 	HEW/UniBoooom!!
 	---------------------------------------
-	ステージの当たり判定処理実装
+	�X�e�[�W�̓����蔻�菈������
 	---------------------------------------
 	CollisionOfStage.cpp
 
-	作成者
+	�쐬��
 			takagi
 			nieda
 
-	変更履歴
-	・2023/11/16 制作 takagi
-	・2023/11/29 ヒットストップ仕様変更対応 takagi
-	・2023/11/30 ヒットストップをハンマー激突時に変更 takagi
-	・2023/12/01 ハンマーとスライムの当たり判定持にSEを再生 yamashita
-	・2023/12/07 ゲームパラメータから一部定数移動 takagi
-	・2023/12/15 SEの変数を削除 yamashita
-	・2024/01/29 スライム殴打時に画面の振動を追加 sawada
+	�ύX����
+	�E2023/11/16 ���� takagi
+	�E2023/11/29 �q�b�g�X�g�b�v�d�l�ύX�Ή� takagi
+	�E2023/11/30 �q�b�g�X�g�b�v���n���}�[���ˎ��ɕύX takagi
+	�E2023/12/01 �n���}�[�ƃX���C���̓����蔻�莝��SE���Đ� yamashita
+	�E2023/12/07 �Q�[���p�����[�^����ꕔ�萔�ړ� takagi
+	�E2023/12/15 SE�̕ϐ����폜 yamashita
+	�E2024/01/29 �X���C�����Ŏ��ɉ�ʂ̐U����ǉ� sawada
 
 ========================================== */
 
-// =============== インクルード ===================
-#include "Stage.h"	//自身のヘッダ
+// =============== �C���N���[�h ===================
+#include "Stage.h"	//���g�̃w�b�_
 #include "GameParameter.h"
-#include "HitStop.h"	//ヒットストップ
-#include "Slime_4.h"	//赤スライム種分けよう
-#include <typeinfo.h>	//typeid使用
+#include "HitStop.h"	//�q�b�g�X�g�b�v
+#include "Slime_4.h"	//�ԃX���C���핪���悤
+#include <typeinfo.h>	//typeid�g�p
 
-// =============== 定数定義 =======================
-const float HAMMER_HIT_MOVE_SPEED = 1.0f;		// ハンマーに吹き飛ばされた時のスピード
+// =============== �萔��` =======================
+const float HAMMER_HIT_MOVE_SPEED = 1.0f;		// �n���}�[�ɐ�����΂��ꂽ���̃X�s�[�h
 const float HIT_HAMMER_VOLUME = 1.0f;
-const CCamera::E_BIT_FLAG HAMMER_HIT_VIB_NORMAL = CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_WEAK;	// スライムとハンマーのヒット振動
-const CCamera::E_BIT_FLAG HAMMER_HIT_VIB_BOSS = CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_WEAK;		// ボススライムとハンマーのヒット振動
+const CCamera::E_BIT_FLAG HAMMER_HIT_VIB_NORMAL = CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_WEAK;	// �X���C���ƃn���}�[�̃q�b�g�U��
+const CCamera::E_BIT_FLAG HAMMER_HIT_VIB_BOSS = CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_WEAK;		// �{�X�X���C���ƃn���}�[�̃q�b�g�U��
 
 /* ========================================
-   当たり判定まとめ関数
+   �����蔻��܂Ƃߊ֐�
    ----------------------------------------
-   内容：Stage当たり判定をまとめる関数
+   ���e�FStage�����蔻����܂Ƃ߂�֐�
    ----------------------------------------
-   引数：なし
+   �����F�Ȃ�
    ----------------------------------------
-   戻値：なし
+   �ߒl�F�Ȃ�
    ======================================== */
 void CStage::Collision()
 {
-	// =============== ヒットストップ検査 ===================
-	if (!CHitStop::IsStop())	//ヒットストップ時処理しない
+	// =============== �q�b�g�X�g�b�v���� ===================
+	if (!CHitStop::IsStop())	//�q�b�g�X�g�b�v���������Ȃ�
 	{
 		PlayerSlimeCollision();
 		PlayerBossCollision();
@@ -65,26 +65,26 @@ void CStage::Collision()
 }
 
 /* ========================================
-   プレイヤースライム当たり判定関数
+   �v���C���[�X���C�������蔻��֐�
    ----------------------------------------
-   内容：プレイヤーとスライムが衝突した際に行う処理
+   ���e�F�v���C���[�ƃX���C�����Փ˂����ۂɍs������
    ----------------------------------------
-   引数：なし
+   �����F�Ȃ�
    ----------------------------------------
-   戻値：なし
+   �ߒl�F�Ȃ�
    ======================================== */
 void CStage::PlayerSlimeCollision()
 {
-	if (m_pPlayer->GetSafeTime()) return;	//	無敵時間の時はスルー
+	if (m_pPlayer->GetSafeTime()) return;	//	���G���Ԃ̎��̓X���[
 
-	// スライム
+	// �X���C��
 	for (int i = 0; i < MAX_SLIME_NUM; i++)
 	{
-		CSlimeBase* pSlimeNow = m_pSlimeMng->GetSlimePtr(i);	// スライム情報
+		CSlimeBase* pSlimeNow = m_pSlimeMng->GetSlimePtr(i);	// �X���C�����
 
-		if (pSlimeNow == nullptr)				continue;	// 無効なスライムはスルー
+		if (pSlimeNow == nullptr)				continue;	// �����ȃX���C���̓X���[
 
-		// スライムとハンマーが衝突した場合
+		// �X���C���ƃn���}�[���Փ˂����ꍇ
 		if (m_pCollision->CheckCollisionSphere(m_pPlayer->GetSphere(), pSlimeNow->GetSphere(), m_pPlayer->GetPos(), pSlimeNow->GetPos()))
 		{
 			m_pPlayer->Damage(pSlimeNow->GetAttack());
@@ -93,26 +93,26 @@ void CStage::PlayerSlimeCollision()
 	}
 }
 /* ========================================
-   プレイヤーボス当たり判定関数
+   �v���C���[�{�X�����蔻��֐�
    ----------------------------------------
-   内容：プレイヤーとボスが衝突した際に行う処理
+   ���e�F�v���C���[�ƃ{�X���Փ˂����ۂɍs������
    ----------------------------------------
-   引数：なし
+   �����F�Ȃ�
    ----------------------------------------
-   戻値：なし
+   �ߒl�F�Ȃ�
    ======================================== */
 void CStage::PlayerBossCollision()
 {
-	if (m_pPlayer->GetSafeTime()) return;	//	無敵時間の時はスルー
+	if (m_pPlayer->GetSafeTime()) return;	//	���G���Ԃ̎��̓X���[
 
-// ボススライム
+// �{�X�X���C��
 	for (int i = 0; i < MAX_BOSS_SLIME_NUM; i++)
 	{
-		CSlime_BossBase* pBossNow = m_pSlimeMng->GetBossSlimePtr(i);	// スライム情報
+		CSlime_BossBase* pBossNow = m_pSlimeMng->GetBossSlimePtr(i);	// �X���C�����
 
-		if (pBossNow == nullptr)				continue;	// 無効なスライムはスルー
+		if (pBossNow == nullptr)				continue;	// �����ȃX���C���̓X���[
 
-		// ボスとハンマーが衝突した場合
+		// �{�X�ƃn���}�[���Փ˂����ꍇ
 		if (m_pCollision->CheckCollisionSphere(m_pPlayer->GetSphere(), pBossNow->GetSphere(), m_pPlayer->GetPos(), pBossNow->GetPos()))
 		{
 			m_pPlayer->Damage(pBossNow->GetAttack());
@@ -122,158 +122,158 @@ void CStage::PlayerBossCollision()
 }
 
 /* ========================================
-   回復アイテム当たり判定関数
+   �񕜃A�C�e�������蔻��֐�
    ----------------------------------------
-   内容：回復アイテムとプレイヤーの当たり判定
+   ���e�F�񕜃A�C�e���ƃv���C���[�̓����蔻��
    ----------------------------------------
-   引数：なし
+   �����F�Ȃ�
    ----------------------------------------
-   戻値：なし
+   �ߒl�F�Ȃ�
    ======================================== */
 void CStage::PlayerHealItemCollision()
 {
 	std::vector<CHealItem*>* pHealItemList = m_pHealItemMng->GetHealItemConPtr();
-	if (pHealItemList->size() == 0) { return; }	//中身が空ならスキップ
+	if (pHealItemList->size() == 0) { return; }	//���g����Ȃ�X�L�b�v
 
 	for (auto i = pHealItemList->begin(); i != pHealItemList->end();)
 	{
 		if (m_pCollision->CheckCollisionSphere(m_pPlayer->GetSphere(), (*i)->GetSphere(), m_pPlayer->GetPos(), (*i)->GetPos()))
 		{
 			delete (*i);
-			i = pHealItemList->erase(i);	//アイテムの消去
-			m_pPlayer->Healing();		//プレイヤーのHPの回復
+			i = pHealItemList->erase(i);	//�A�C�e���̏���
+			m_pPlayer->Healing();		//�v���C���[��HP�̉�
 		}
 		else
 		{
-			i++;	//アイテムが機内場合はイテレータを進める
+			i++;	//�A�C�e�����@���ꍇ�̓C�e���[�^��i�߂�
 		}
 	}
 }
 
 /* ========================================
-   ハンマースライム当たり判定関数
+   �n���}�[�X���C�������蔻��֐�
    ----------------------------------------
-   内容：ハンマーとスライムが衝突した際に行う処理
+   ���e�F�n���}�[�ƃX���C�����Փ˂����ۂɍs������
    ----------------------------------------
-   引数：なし
+   �����F�Ȃ�
    ----------------------------------------
-   戻値：なし
+   �ߒl�F�Ȃ�
    ======================================== */
 void CStage::HammerSlimeCollision()
 {
-	CHammer* playerHammer = m_pPlayer->GetHammerPtr();	// プレイヤーのハンマー
+	CHammer* playerHammer = m_pPlayer->GetHammerPtr();	// �v���C���[�̃n���}�[
 
-	if (m_pPlayer->GetAttackFlg() == false) return;	// ハンマー攻撃してない場合は返す
+	if (m_pPlayer->GetAttackFlg() == false) return;	// �n���}�[�U�����ĂȂ��ꍇ�͕Ԃ�
 
-	// スライム
+	// �X���C��
 	for (int i = 0; i < MAX_SLIME_NUM; i++)
 	{
-		CSlimeBase* pSlimeNow = m_pSlimeMng->GetSlimePtr(i);	// スライム情報
+		CSlimeBase* pSlimeNow = m_pSlimeMng->GetSlimePtr(i);	// �X���C�����
 
-		if (pSlimeNow == nullptr)				continue;	// 無効なスライムはスルー
-		if (pSlimeNow->GetHitMoveFlg() == true)	continue; 	// 吹飛状態のスライムはスルー
+		if (pSlimeNow == nullptr)				continue;	// �����ȃX���C���̓X���[
+		if (pSlimeNow->GetHitMoveFlg() == true)	continue; 	// �����Ԃ̃X���C���̓X���[
 
-		// スライムとハンマーが衝突した場合
+		// �X���C���ƃn���}�[���Փ˂����ꍇ
 		if (m_pCollision->CheckCollisionSphere(playerHammer->GetSphere(), pSlimeNow->GetSphere(), playerHammer->GetPos(), pSlimeNow->GetPos()))
 		{
 			
-			//赤スライムと激突したときだけヒットストップの時間を長くする
-			if (typeid(CSlime_4) == typeid(*pSlimeNow))	CHitStop::UpFlag(CHitStop::E_BIT_FLAG_STOP_NORMAL);	//ヒットストップ
-			else										CHitStop::UpFlag(CHitStop::E_BIT_FLAG_STOP_SOFT);	//ヒットストップ
+			//�ԃX���C���ƌ��˂����Ƃ������q�b�g�X�g�b�v�̎��Ԃ𒷂�����
+			if (typeid(CSlime_4) == typeid(*pSlimeNow))	CHitStop::UpFlag(CHitStop::E_BIT_FLAG_STOP_NORMAL);	//�q�b�g�X�g�b�v
+			else										CHitStop::UpFlag(CHitStop::E_BIT_FLAG_STOP_SOFT);	//�q�b�g�X�g�b�v
 		
-			m_pCamera->UpFlag(HAMMER_HIT_VIB_NORMAL);	// 画面の振動
+			m_pCamera->UpFlag(HAMMER_HIT_VIB_NORMAL);	// ��ʂ̐U��
 
 			float fAngleSlime
-				= m_pPlayer->GetTransform().Angle(pSlimeNow->GetTransform());	// スライムが飛ぶ角度を取得
+				= m_pPlayer->GetTransform().Angle(pSlimeNow->GetTransform());	// �X���C������Ԋp�x���擾
 
-			pSlimeNow->HitMoveStart(HAMMER_HIT_MOVE_SPEED, fAngleSlime);	// スライムを飛ばす
-			m_pPlayer->PlaySE(CPlayer::SE_HIT_HAMMER, HIT_HAMMER_VOLUME);	// ハンマーとスライムの接触SEを再生
+			pSlimeNow->HitMoveStart(HAMMER_HIT_MOVE_SPEED, fAngleSlime);	// �X���C�����΂�
+			m_pPlayer->PlaySE(CPlayer::SE_HIT_HAMMER, HIT_HAMMER_VOLUME);	// �n���}�[�ƃX���C���̐ڐGSE���Đ�
 
-			m_pHitEffectMng->Create(pSlimeNow->GetPos());	//ヒットエフェクト生成
+			m_pHitEffectMng->Create(pSlimeNow->GetPos());	//�q�b�g�G�t�F�N�g����
 
 		}
 	}
 }
 /* ========================================
-   ハンマーボス当たり判定関数
+   �n���}�[�{�X�����蔻��֐�
    ----------------------------------------
-   内容：ハンマーとボスが衝突した際に行う処理
+   ���e�F�n���}�[�ƃ{�X���Փ˂����ۂɍs������
    ----------------------------------------
-   引数：なし
+   �����F�Ȃ�
    ----------------------------------------
-   戻値：なし
+   �ߒl�F�Ȃ�
    ======================================== */
 void CStage::HammerBossCollision()
 {
-	CHammer* playerHammer = m_pPlayer->GetHammerPtr();	// プレイヤーのハンマー
+	CHammer* playerHammer = m_pPlayer->GetHammerPtr();	// �v���C���[�̃n���}�[
 
-	if (m_pPlayer->GetAttackFlg() == false) return;	// ハンマー攻撃してない場合は返す
+	if (m_pPlayer->GetAttackFlg() == false) return;	// �n���}�[�U�����ĂȂ��ꍇ�͕Ԃ�
 
-	// ボススライム
+	// �{�X�X���C��
 	for (int i = 0; i < MAX_BOSS_SLIME_NUM; i++)
 	{
-		CSlime_BossBase* pBossNow = m_pSlimeMng->GetBossSlimePtr(i);	// スライム情報
+		CSlime_BossBase* pBossNow = m_pSlimeMng->GetBossSlimePtr(i);	// �X���C�����
 
-		if (pBossNow == nullptr)				continue;	// 無効なスライムはスルー
-		if (pBossNow->GetHitMoveFlg() == true)	continue; 	// 吹飛状態のスライムはスルー
+		if (pBossNow == nullptr)				continue;	// �����ȃX���C���̓X���[
+		if (pBossNow->GetHitMoveFlg() == true)	continue; 	// �����Ԃ̃X���C���̓X���[
 
-		// スライムとハンマーが衝突した場合
+		// �X���C���ƃn���}�[���Փ˂����ꍇ
 		if (m_pCollision->CheckCollisionSphere(playerHammer->GetSphere(), pBossNow->GetSphere(), playerHammer->GetPos(), pBossNow->GetPos()))
 		{
-			m_pHitEffectMng->Create(pBossNow->GetPos());	//ヒットエフェクト生成
-			// 通常移動中にしかヒットストップしない
+			m_pHitEffectMng->Create(pBossNow->GetPos());	//�q�b�g�G�t�F�N�g����
+			// �ʏ�ړ����ɂ����q�b�g�X�g�b�v���Ȃ�
 			if(pBossNow->GetMoveState() != 0)
 			{ 
 				return;
 			}
 
-			CHitStop::UpFlag(CHitStop::E_BIT_FLAG_STOP_NORMAL);	//ヒットストップ
+			CHitStop::UpFlag(CHitStop::E_BIT_FLAG_STOP_NORMAL);	//�q�b�g�X�g�b�v
 
-			m_pCamera->UpFlag(HAMMER_HIT_VIB_BOSS);	// 画面の振動
+			m_pCamera->UpFlag(HAMMER_HIT_VIB_BOSS);	// ��ʂ̐U��
 
 			float fAngleSlime
-				= m_pPlayer->GetTransform().Angle(pBossNow->GetTransform());	// スライムが飛ぶ角度を取得
+				= m_pPlayer->GetTransform().Angle(pBossNow->GetTransform());	// �X���C������Ԋp�x���擾
 
-			pBossNow->HitMoveStart(HAMMER_HIT_MOVE_SPEED, fAngleSlime);	// スライムを飛ばす
-			m_pPlayer->PlaySE(CPlayer::SE_HIT_HAMMER, HIT_HAMMER_VOLUME);	//ハンマーとスライムの接触SEを再生
+			pBossNow->HitMoveStart(HAMMER_HIT_MOVE_SPEED, fAngleSlime);	// �X���C�����΂�
+			m_pPlayer->PlaySE(CPlayer::SE_HIT_HAMMER, HIT_HAMMER_VOLUME);	//�n���}�[�ƃX���C���̐ڐGSE���Đ�
 		}
 	}
 }
 
 /* ========================================
-   スライム同士当たり判定関数(吹飛状態)
+   �X���C�����m�����蔻��֐�(������)
    ----------------------------------------
-   内容：スライムとスライムが衝突した際に行う処理
+   ���e�F�X���C���ƃX���C�����Փ˂����ۂɍs������
    ----------------------------------------
-   引数：なし
+   �����F�Ȃ�
    ----------------------------------------
-   戻値：なし
+   �ߒl�F�Ȃ�
    ======================================== */
 void CStage::SlimeSlimeCollision()
 {
-	// 衝突するスライム
+	// �Փ˂���X���C��
 	for (int i = 0; i < MAX_SLIME_NUM; i++)
 	{
-		CSlimeBase* pSlimeFly = m_pSlimeMng->GetSlimePtr(i);	// 衝突するスライムのポインタ
+		CSlimeBase* pSlimeFly = m_pSlimeMng->GetSlimePtr(i);	// �Փ˂���X���C���̃|�C���^
 
-		if (pSlimeFly == nullptr)					continue;	// 無効なスライムはスルー
-		if (pSlimeFly->GetHitMoveFlg() == false)	continue; 	// 通常状態のスライムはスルー
+		if (pSlimeFly == nullptr)					continue;	// �����ȃX���C���̓X���[
+		if (pSlimeFly->GetHitMoveFlg() == false)	continue; 	// �ʏ��Ԃ̃X���C���̓X���[
 
-		// 衝突されるスライム
+		// �Փ˂����X���C��
 		for (int j = 0; j < MAX_SLIME_NUM; j++)
 		{
-			CSlimeBase* pSlimeTarget = m_pSlimeMng->GetSlimePtr(j);	// 衝突されるスライムのポインタ
+			CSlimeBase* pSlimeTarget = m_pSlimeMng->GetSlimePtr(j);	// �Փ˂����X���C���̃|�C���^
 
-			if (pSlimeTarget == nullptr)	continue;	// 無効なスライムはスルー
-			if (i == j)						continue;	// 自分と同じスライムはスルー
-			if (pSlimeTarget->GetHitMoveFlg() == true)	continue; 	// 通常状態のスライムはスルー
+			if (pSlimeTarget == nullptr)	continue;	// �����ȃX���C���̓X���[
+			if (i == j)						continue;	// �����Ɠ����X���C���̓X���[
+			if (pSlimeTarget->GetHitMoveFlg() == true)	continue; 	// �ʏ��Ԃ̃X���C���̓X���[
 
 
-			// スライム同士が衝突した場合
+			// �X���C�����m���Փ˂����ꍇ
 			if (m_pCollision->CheckCollisionSphere(pSlimeFly->GetSphere(), pSlimeTarget->GetSphere(), pSlimeFly->GetPos(), pSlimeTarget->GetPos()))
 			{
 
-				m_pSlimeMng->HitBranch(i, j, m_pExplosionMng);	// 爆発処理、結合処理(スライム同士の情報によって処理を変える)
+				m_pSlimeMng->HitBranch(i, j, m_pExplosionMng);	// ���������A��������(�X���C�����m�̏��ɂ���ď�����ς���)
 				break;
 			}
 		}
@@ -281,75 +281,75 @@ void CStage::SlimeSlimeCollision()
 }
 
 /* ========================================
-   スライム→ボスの当たり判定関数(吹飛状態)
+   �X���C�����{�X�̓����蔻��֐�(������)
    ----------------------------------------
-   内容：スライムからボスに衝突した際に行う処理
+   ���e�F�X���C������{�X�ɏՓ˂����ۂɍs������
    ----------------------------------------
-   引数：なし
+   �����F�Ȃ�
    ----------------------------------------
-   戻値：なし
+   �ߒl�F�Ȃ�
    ======================================== */
 void CStage::SlimeBossCollision()
 {
-	// 衝突するスライム
+	// �Փ˂���X���C��
 	for (int i = 0; i < MAX_SLIME_NUM; i++)
 	{
-		CSlimeBase* pSlimeFly = m_pSlimeMng->GetSlimePtr(i);	// 衝突するスライムのポインタ
+		CSlimeBase* pSlimeFly = m_pSlimeMng->GetSlimePtr(i);	// �Փ˂���X���C���̃|�C���^
 
-		if (pSlimeFly == nullptr)					continue;	// 無効なスライムはスルー
-		if (pSlimeFly->GetHitMoveFlg() == false)	continue; 	// 通常状態のスライムはスルー
+		if (pSlimeFly == nullptr)					continue;	// �����ȃX���C���̓X���[
+		if (pSlimeFly->GetHitMoveFlg() == false)	continue; 	// �ʏ��Ԃ̃X���C���̓X���[
 
-		// 衝突されるボス
+		// �Փ˂����{�X
 		for (int j = 0; j < MAX_BOSS_SLIME_NUM; j++)
 		{
-			CSlime_BossBase* pBossTarget = m_pSlimeMng->GetBossSlimePtr(j);	// 衝突されるスライムのポインタ
+			CSlime_BossBase* pBossTarget = m_pSlimeMng->GetBossSlimePtr(j);	// �Փ˂����X���C���̃|�C���^
 
-			if (pBossTarget == nullptr)					continue;	// 無効なスライムはスルー
-			if (pBossTarget->GetHitMoveFlg() == true)	continue; 	// 通常状態のスライムはスルー
+			if (pBossTarget == nullptr)					continue;	// �����ȃX���C���̓X���[
+			if (pBossTarget->GetHitMoveFlg() == true)	continue; 	// �ʏ��Ԃ̃X���C���̓X���[
 
-			// スライム同士が衝突した場合
+			// �X���C�����m���Փ˂����ꍇ
 			if (m_pCollision->CheckCollisionSphere(pSlimeFly->GetSphere(), pBossTarget->GetSphere(), pSlimeFly->GetPos(), pBossTarget->GetPos()))
 			{
 
-				m_pSlimeMng->HitSlimeBossBranch(i, j, m_pExplosionMng);	// 爆発処理、結合処理(スライム同士の情報によって処理を変える)
+				m_pSlimeMng->HitSlimeBossBranch(i, j, m_pExplosionMng);	// ���������A��������(�X���C�����m�̏��ɂ���ď�����ς���)
 				break;
 			}
 		}
 	}
 }
 /* ========================================
-   ボス→スライム当たり判定関数(吹飛状態)
+   �{�X���X���C�������蔻��֐�(������)
    ----------------------------------------
-   内容：ボスとスライムが衝突した際に行う処理
+   ���e�F�{�X�ƃX���C�����Փ˂����ۂɍs������
    ----------------------------------------
-   引数：なし
+   �����F�Ȃ�
    ----------------------------------------
-   戻値：なし
+   �ߒl�F�Ȃ�
    ======================================== */
 void CStage::BossSlimeCollision()
 {
-	// 衝突するボス
+	// �Փ˂���{�X
 	for (int i = 0; i < MAX_BOSS_SLIME_NUM; i++)
 	{
-		CSlime_BossBase* pBossFly = m_pSlimeMng->GetBossSlimePtr(i);	// 衝突するスライムのポインタ
+		CSlime_BossBase* pBossFly = m_pSlimeMng->GetBossSlimePtr(i);	// �Փ˂���X���C���̃|�C���^
 
-		if (pBossFly == nullptr)					continue;	// 無効なスライムはスルー
-		if (pBossFly->GetHitMoveFlg() == false)		continue; 	// 通常状態のスライムはスルー
+		if (pBossFly == nullptr)					continue;	// �����ȃX���C���̓X���[
+		if (pBossFly->GetHitMoveFlg() == false)		continue; 	// �ʏ��Ԃ̃X���C���̓X���[
 
-		// 衝突されるスライム
+		// �Փ˂����X���C��
 		for (int j = 0; j < MAX_SLIME_NUM; j++)
 		{
-			CSlimeBase* pSlimeTarget = m_pSlimeMng->GetSlimePtr(j);	// 衝突されるスライムのポインタ
+			CSlimeBase* pSlimeTarget = m_pSlimeMng->GetSlimePtr(j);	// �Փ˂����X���C���̃|�C���^
 
-			if (pSlimeTarget == nullptr)				continue;	// 無効なスライムはスルー
-			if (pSlimeTarget->GetHitMoveFlg() == true)	continue; 	// 通常状態のスライムはスルー
+			if (pSlimeTarget == nullptr)				continue;	// �����ȃX���C���̓X���[
+			if (pSlimeTarget->GetHitMoveFlg() == true)	continue; 	// �ʏ��Ԃ̃X���C���̓X���[
 
 
-			// スライム同士が衝突した場合
+			// �X���C�����m���Փ˂����ꍇ
 			if (m_pCollision->CheckCollisionSphere(pBossFly->GetSphere(), pSlimeTarget->GetSphere(), pBossFly->GetPos(), pSlimeTarget->GetPos()))
 			{
 
-				m_pSlimeMng->HitBossSlimeBranch(i, j, m_pExplosionMng);	// 爆発処理、結合処理(スライム同士の情報によって処理を変える)
+				m_pSlimeMng->HitBossSlimeBranch(i, j, m_pExplosionMng);	// ���������A��������(�X���C�����m�̏��ɂ���ď�����ς���)
 				break;
 			}
 		}
@@ -357,39 +357,39 @@ void CStage::BossSlimeCollision()
 	}
 }
 /* ========================================
-   ボス同士当たり判定関数(吹飛状態)
+   �{�X���m�����蔻��֐�(������)
    ----------------------------------------
-   内容：ボスとボスが衝突した際に行う処理
+   ���e�F�{�X�ƃ{�X���Փ˂����ۂɍs������
    ----------------------------------------
-   引数：なし
+   �����F�Ȃ�
    ----------------------------------------
-   戻値：なし
+   �ߒl�F�Ȃ�
    ======================================== */
 void CStage::BossBossCollision()
 {
-	// 衝突するボス
+	// �Փ˂���{�X
 	for (int i = 0; i < MAX_BOSS_SLIME_NUM; i++)
 	{
-		CSlime_BossBase* pBossFly = m_pSlimeMng->GetBossSlimePtr(i);	// 衝突するスライムのポインタ
+		CSlime_BossBase* pBossFly = m_pSlimeMng->GetBossSlimePtr(i);	// �Փ˂���X���C���̃|�C���^
 
-		if (pBossFly == nullptr)					continue;	// 無効なスライムはスルー
-		if (pBossFly->GetHitMoveFlg() == false)		continue; 	// 通常状態のスライムはスルー
+		if (pBossFly == nullptr)					continue;	// �����ȃX���C���̓X���[
+		if (pBossFly->GetHitMoveFlg() == false)		continue; 	// �ʏ��Ԃ̃X���C���̓X���[
 
-		// 衝突されるボス
+		// �Փ˂����{�X
 		for (int j = 0; j < MAX_BOSS_SLIME_NUM; j++)
 		{
-			CSlime_BossBase* pBossTarget = m_pSlimeMng->GetBossSlimePtr(j);	// 衝突されるスライムのポインタ
+			CSlime_BossBase* pBossTarget = m_pSlimeMng->GetBossSlimePtr(j);	// �Փ˂����X���C���̃|�C���^
 
-			if (pBossTarget == nullptr)					continue;	// 無効なスライムはスルー
-			if (i == j)									continue;	// 自分と同じスライムはスルー
-			if (pBossTarget->GetHitMoveFlg() == true)	continue; 	// 通常状態のスライムはスルー
+			if (pBossTarget == nullptr)					continue;	// �����ȃX���C���̓X���[
+			if (i == j)									continue;	// �����Ɠ����X���C���̓X���[
+			if (pBossTarget->GetHitMoveFlg() == true)	continue; 	// �ʏ��Ԃ̃X���C���̓X���[
 
 
-			// スライム同士が衝突した場合
+			// �X���C�����m���Փ˂����ꍇ
 			if (m_pCollision->CheckCollisionSphere(pBossFly->GetSphere(), pBossTarget->GetSphere(), pBossFly->GetPos(), pBossTarget->GetPos()))
 			{
 
-				m_pSlimeMng->HitBossBossBranch(i, j, m_pExplosionMng);	// 爆発処理、結合処理(スライム同士の情報によって処理を変える)
+				m_pSlimeMng->HitBossBossBranch(i, j, m_pExplosionMng);	// ���������A��������(�X���C�����m�̏��ɂ���ď�����ς���)
 				break;
 			}
 		}
@@ -397,30 +397,30 @@ void CStage::BossBossCollision()
 	}
 }
 /* ========================================
-   爆発スライム当たり判定関数
+   �����X���C�������蔻��֐�
    ----------------------------------------
-   内容：爆発とスライムが衝突した際に行う処理
+   ���e�F�����ƃX���C�����Փ˂����ۂɍs������
    ----------------------------------------
-   引数：なし
+   �����F�Ȃ�
    ----------------------------------------
-   戻値：なし
+   �ߒl�F�Ȃ�
    ======================================== */
 void CStage::ExplosionBossCollision()
 {
-	for (int i = 0; i < MAX_EXPLOSION_NUM; ++i)    // 爆発
+	for (int i = 0; i < MAX_EXPLOSION_NUM; ++i)    // ����
 	{
-		CExplosion* pExplosion = m_pExplosionMng->GetExplosionPtr(i);    // 衝突する爆発のポインタ
-		if (pExplosion == nullptr) { continue; }    // 未使用の爆発はスルー
+		CExplosion* pExplosion = m_pExplosionMng->GetExplosionPtr(i);    // �Փ˂��锚���̃|�C���^
+		if (pExplosion == nullptr) { continue; }    // ���g�p�̔����̓X���[
 
-		for (int j = 0; j < MAX_BOSS_SLIME_NUM; ++j)    // スライム
+		for (int j = 0; j < MAX_BOSS_SLIME_NUM; ++j)    // �X���C��
 		{
-			CSlime_BossBase* pBossTarget = m_pSlimeMng->GetBossSlimePtr(j);    // 衝突されるスライムのポインタ
+			CSlime_BossBase* pBossTarget = m_pSlimeMng->GetBossSlimePtr(j);    // �Փ˂����X���C���̃|�C���^
 
-			if (pBossTarget == nullptr)    continue;    // 無効なスライムはスルー
+			if (pBossTarget == nullptr)    continue;    // �����ȃX���C���̓X���[
 
 			if (m_pCollision->CheckCollisionSphere(pExplosion->GetSphere(), pBossTarget->GetSphere(), pExplosion->GetPos(), pBossTarget->GetPos()))
 			{
-				m_pSlimeMng->TouchBossExplosion(j, m_pExplosionMng, i);// スライムの爆発処理
+				m_pSlimeMng->TouchBossExplosion(j, m_pExplosionMng, i);// �X���C���̔�������
 				break;
 			}
 		}
@@ -429,30 +429,30 @@ void CStage::ExplosionBossCollision()
 }
 
 /* ========================================
-   爆発スライム当たり判定関数
+   �����X���C�������蔻��֐�
    ----------------------------------------
-   内容：爆発とスライムが衝突した際に行う処理
+   ���e�F�����ƃX���C�����Փ˂����ۂɍs������
    ----------------------------------------
-   引数：なし
+   �����F�Ȃ�
    ----------------------------------------
-   戻値：なし
+   �ߒl�F�Ȃ�
    ======================================== */
 void CStage::ExplosionSlimeCollision()
 {
-	for (int i = 0; i < MAX_EXPLOSION_NUM; ++i)	// 爆発
+	for (int i = 0; i < MAX_EXPLOSION_NUM; ++i)	// ����
 	{
-		CExplosion* pExplosion = m_pExplosionMng->GetExplosionPtr(i);	// 衝突する爆発のポインタ
-		if (pExplosion == nullptr) { continue; }	// 未使用の爆発はスルー
+		CExplosion* pExplosion = m_pExplosionMng->GetExplosionPtr(i);	// �Փ˂��锚���̃|�C���^
+		if (pExplosion == nullptr) { continue; }	// ���g�p�̔����̓X���[
 
-		for (int j = 0; j < MAX_SLIME_NUM; ++j)	// スライム
+		for (int j = 0; j < MAX_SLIME_NUM; ++j)	// �X���C��
 		{
-			CSlimeBase* pSlimeTarget = m_pSlimeMng->GetSlimePtr(j);	// 衝突されるスライムのポインタ
+			CSlimeBase* pSlimeTarget = m_pSlimeMng->GetSlimePtr(j);	// �Փ˂����X���C���̃|�C���^
 
-			if (pSlimeTarget == nullptr)	continue;	// 無効なスライムはスルー
+			if (pSlimeTarget == nullptr)	continue;	// �����ȃX���C���̓X���[
 
 			if (m_pCollision->CheckCollisionSphere(pExplosion->GetSphere(), pSlimeTarget->GetSphere(), pExplosion->GetPos(), pSlimeTarget->GetPos()))
 			{
-				m_pSlimeMng->TouchExplosion(j, m_pExplosionMng, pExplosion->GetComboNum());// スライムの爆発処理
+				m_pSlimeMng->TouchExplosion(j, m_pExplosionMng, pExplosion->GetComboNum());// �X���C���̔�������
 				break;
 			}
 		}
@@ -460,50 +460,50 @@ void CStage::ExplosionSlimeCollision()
 }
 
 /* ========================================
-   スライム同士重複防止関数
+   �X���C�����m�d���h�~�֐�
    ----------------------------------------
-   内容：スライム同士が通常移動で重ならないようにする関数
+   ���e�F�X���C�����m���ʏ�ړ��ŏd�Ȃ�Ȃ��悤�ɂ���֐�
    ----------------------------------------
-   引数：なし
+   �����F�Ȃ�
    ----------------------------------------
-   戻値：なし
+   �ߒl�F�Ȃ�
    ======================================== */
 void CStage::SlimeSlimeNormalMoveCollision()
 {
-	// 衝突するスライム
+	// �Փ˂���X���C��
 	for (int i = 0; i < MAX_SLIME_NUM; i++)
 	{
-		CSlimeBase* pMoveSlime = m_pSlimeMng->GetSlimePtr(i);	//移動するスライムのポインタ
+		CSlimeBase* pMoveSlime = m_pSlimeMng->GetSlimePtr(i);	//�ړ�����X���C���̃|�C���^
 
-		if (pMoveSlime == nullptr)					continue;	// 無効なスライムはスルー
-		if (pMoveSlime->GetHitMoveFlg() == true)	continue;	// 吹き飛び中のスライムはスルー
+		if (pMoveSlime == nullptr)					continue;	// �����ȃX���C���̓X���[
+		if (pMoveSlime->GetHitMoveFlg() == true)	continue;	// ������ђ��̃X���C���̓X���[
 
-		// 衝突されるスライム
+		// �Փ˂����X���C��
 		for (int j = 0; j < MAX_SLIME_NUM; j++)
 		{
-			CSlimeBase* pStandSlime = m_pSlimeMng->GetSlimePtr(j);	// 止まっているスライムのポインタ
+			CSlimeBase* pStandSlime = m_pSlimeMng->GetSlimePtr(j);	// �~�܂��Ă���X���C���̃|�C���^
 
-			if (pStandSlime == nullptr)					continue;	// 無効なスライムはスルー
-			if (pMoveSlime->GetHitMoveFlg() == true)	continue;	// 吹き飛び中のスライムはスルー
-			if (i == j)									continue;	// 自分と同じスライムはスルー
+			if (pStandSlime == nullptr)					continue;	// �����ȃX���C���̓X���[
+			if (pMoveSlime->GetHitMoveFlg() == true)	continue;	// ������ђ��̃X���C���̓X���[
+			if (i == j)									continue;	// �����Ɠ����X���C���̓X���[
 
 			//if (int(pStandSlime->GetSlimeLevel()) < int(pMoveSlime->GetSlimeLevel())) continue;
-			// スライム同士が衝突した場合(青、緑、炎)
+			// �X���C�����m���Փ˂����ꍇ(�A�΁A��)
 			if (int(pStandSlime->GetSlimeLevel()) <= 3 && int(pMoveSlime->GetSlimeLevel()) <= 3)
 			{
 				if (m_pCollision->CheckCollisionSphere(pMoveSlime->GetSphere(), pStandSlime->GetSphere(), pMoveSlime->GetPos(), pStandSlime->GetPos()))
 				{
-					m_pSlimeMng->PreventSlimeSlimeOverlap(pMoveSlime, pStandSlime);	//スライムの位置を押し戻す処理
+					m_pSlimeMng->PreventSlimeSlimeOverlap(pMoveSlime, pStandSlime);	//�X���C���̈ʒu�������߂�����
 
 					break;
 				}
 			}
 			else
-			{//（黄色または赤のどちらかがはいってたらこっち）
+			{//�i���F�܂��͐Ԃ̂ǂ��炩���͂����Ă��炱�����j
 				if (int(pStandSlime->GetSlimeLevel()) < int(pMoveSlime->GetSlimeLevel())) continue;
 				if (m_pCollision->CheckCollisionSphere(pMoveSlime->GetSphere(), pStandSlime->GetSphere(), pMoveSlime->GetPos(), pStandSlime->GetPos()))
 				{
-					m_pSlimeMng->PreventSlimeSlimeOverlap(pMoveSlime, pStandSlime);	//スライムの位置を押し戻す処理
+					m_pSlimeMng->PreventSlimeSlimeOverlap(pMoveSlime, pStandSlime);	//�X���C���̈ʒu�������߂�����
 
 					break;
 				}
@@ -512,36 +512,36 @@ void CStage::SlimeSlimeNormalMoveCollision()
 	}
 }
 /* ========================================
-   スライム→ボス重複防止関数
+   �X���C�����{�X�d���h�~�֐�
    ----------------------------------------
-   内容：スライムからボスが通常移動で重ならないようにする関数
+   ���e�F�X���C������{�X���ʏ�ړ��ŏd�Ȃ�Ȃ��悤�ɂ���֐�
    ----------------------------------------
-   引数：なし
+   �����F�Ȃ�
    ----------------------------------------
-   戻値：なし
+   �ߒl�F�Ȃ�
    ======================================== */
 void CStage::SlimeBossNormalMoveCollision()
 {
-	// 衝突するスライム
+	// �Փ˂���X���C��
 	for (int i = 0; i < MAX_SLIME_NUM; i++)
 	{
-		CSlimeBase* pMoveSlime = m_pSlimeMng->GetSlimePtr(i);	//移動するスライムのポインタ
+		CSlimeBase* pMoveSlime = m_pSlimeMng->GetSlimePtr(i);	//�ړ�����X���C���̃|�C���^
 
-		if (pMoveSlime == nullptr)					continue;	// 無効なスライムはスルー
-		if (pMoveSlime->GetHitMoveFlg() == true)	continue;	// 吹き飛び中のスライムはスルー
+		if (pMoveSlime == nullptr)					continue;	// �����ȃX���C���̓X���[
+		if (pMoveSlime->GetHitMoveFlg() == true)	continue;	// ������ђ��̃X���C���̓X���[
 
-		// 衝突されるボス
+		// �Փ˂����{�X
 		for (int j = 0; j < MAX_BOSS_SLIME_NUM; j++)
 		{
-			CSlime_BossBase* pStandBoss = m_pSlimeMng->GetBossSlimePtr(j);	// 止まっているスライムのポインタ
+			CSlime_BossBase* pStandBoss = m_pSlimeMng->GetBossSlimePtr(j);	// �~�܂��Ă���X���C���̃|�C���^
 
-			if (pStandBoss == nullptr)					continue;	// 無効なスライムはスルー
-			if (pMoveSlime->GetHitMoveFlg() == true)	continue;	// 吹き飛び中のスライムはスルー
+			if (pStandBoss == nullptr)					continue;	// �����ȃX���C���̓X���[
+			if (pMoveSlime->GetHitMoveFlg() == true)	continue;	// ������ђ��̃X���C���̓X���[
 
-			// スライム同士が衝突した場合
+			// �X���C�����m���Փ˂����ꍇ
 			if (m_pCollision->CheckCollisionSphere(pMoveSlime->GetSphere(), pStandBoss->GetSphere(), pMoveSlime->GetPos(), pStandBoss->GetPos()))
 			{
-				m_pSlimeMng->PreventSlimeBossOverlap(pMoveSlime, pStandBoss);	//スライムの位置を押し戻す処理
+				m_pSlimeMng->PreventSlimeBossOverlap(pMoveSlime, pStandBoss);	//�X���C���̈ʒu�������߂�����
 
 
 				break;
@@ -551,36 +551,36 @@ void CStage::SlimeBossNormalMoveCollision()
 	}
 }
 /* ========================================
-   ボス→スライム重複防止関数
+   �{�X���X���C���d���h�~�֐�
    ----------------------------------------
-   内容：ボスからスライムが通常移動で重ならないようにする関数
+   ���e�F�{�X����X���C�����ʏ�ړ��ŏd�Ȃ�Ȃ��悤�ɂ���֐�
    ----------------------------------------
-   引数：なし
+   �����F�Ȃ�
    ----------------------------------------
-   戻値：なし
+   �ߒl�F�Ȃ�
    ======================================== */
 void CStage::BossSlimeNormalMoveCollision()
 {
-	// 衝突するボス
+	// �Փ˂���{�X
 	for (int i = 0; i < MAX_BOSS_SLIME_NUM; i++)
 	{
-		CSlime_BossBase* pMoveBoss = m_pSlimeMng->GetBossSlimePtr(i);	//移動するスライムのポインタ
+		CSlime_BossBase* pMoveBoss = m_pSlimeMng->GetBossSlimePtr(i);	//�ړ�����X���C���̃|�C���^
 
-		if (pMoveBoss == nullptr)					continue;	// 無効なスライムはスルー
-		if (pMoveBoss->GetHitMoveFlg() == true)		continue;	// 吹き飛び中のスライムはスルー
+		if (pMoveBoss == nullptr)					continue;	// �����ȃX���C���̓X���[
+		if (pMoveBoss->GetHitMoveFlg() == true)		continue;	// ������ђ��̃X���C���̓X���[
 
-		// 衝突されるスライム
+		// �Փ˂����X���C��
 		for (int j = 0; j < MAX_SLIME_NUM; j++)
 		{
-			CSlimeBase* pStandSlime = m_pSlimeMng->GetSlimePtr(j);	// 止まっているスライムのポインタ
+			CSlimeBase* pStandSlime = m_pSlimeMng->GetSlimePtr(j);	// �~�܂��Ă���X���C���̃|�C���^
 
-			if (pStandSlime == nullptr)					continue;	// 無効なスライムはスルー
-			if (pMoveBoss->GetHitMoveFlg() == true)		continue;	// 吹き飛び中のスライムはスルー
+			if (pStandSlime == nullptr)					continue;	// �����ȃX���C���̓X���[
+			if (pMoveBoss->GetHitMoveFlg() == true)		continue;	// ������ђ��̃X���C���̓X���[
 
-			// スライム同士が衝突した場合
+			// �X���C�����m���Փ˂����ꍇ
 			if (m_pCollision->CheckCollisionSphere(pMoveBoss->GetSphere(), pStandSlime->GetSphere(), pMoveBoss->GetPos(), pStandSlime->GetPos()))
 			{
-				m_pSlimeMng->PreventBossSlimeOverlap(pMoveBoss, pStandSlime);	//スライムの位置を押し戻す処理
+				m_pSlimeMng->PreventBossSlimeOverlap(pMoveBoss, pStandSlime);	//�X���C���̈ʒu�������߂�����
 
 
 				break;
@@ -590,37 +590,37 @@ void CStage::BossSlimeNormalMoveCollision()
 	}
 }
 /* ========================================
-   ボス→ボス重複防止関数
+   �{�X���{�X�d���h�~�֐�
    ----------------------------------------
-   内容：ボスからボスが通常移動で重ならないようにする関数
+   ���e�F�{�X����{�X���ʏ�ړ��ŏd�Ȃ�Ȃ��悤�ɂ���֐�
    ----------------------------------------
-   引数：なし
+   �����F�Ȃ�
    ----------------------------------------
-   戻値：なし
+   �ߒl�F�Ȃ�
    ======================================== */
 void CStage::BossBossNormalMoveCollision()
 {
-	// 衝突するボス
+	// �Փ˂���{�X
 	for (int i = 0; i < MAX_BOSS_SLIME_NUM; i++)
 	{
-		CSlime_BossBase* pMoveBoss = m_pSlimeMng->GetBossSlimePtr(i);	//移動するスライムのポインタ
+		CSlime_BossBase* pMoveBoss = m_pSlimeMng->GetBossSlimePtr(i);	//�ړ�����X���C���̃|�C���^
 
-		if (pMoveBoss == nullptr)					continue;	// 無効なスライムはスルー
-		if (pMoveBoss->GetHitMoveFlg() == true)		continue;	// 吹き飛び中のスライムはスルー
+		if (pMoveBoss == nullptr)					continue;	// �����ȃX���C���̓X���[
+		if (pMoveBoss->GetHitMoveFlg() == true)		continue;	// ������ђ��̃X���C���̓X���[
 
-		// 衝突されるボス
+		// �Փ˂����{�X
 		for (int j = 0; j < MAX_BOSS_SLIME_NUM; j++)
 		{
-			CSlime_BossBase* pStandBoss = m_pSlimeMng->GetBossSlimePtr(j);	// 止まっているスライムのポインタ
+			CSlime_BossBase* pStandBoss = m_pSlimeMng->GetBossSlimePtr(j);	// �~�܂��Ă���X���C���̃|�C���^
 
-			if (pStandBoss == nullptr)					continue;	// 無効なスライムはスルー
-			if (pMoveBoss->GetHitMoveFlg() == true)		continue;	// 吹き飛び中のスライムはスルー
-			if (i == j)									continue;	// 自分と同じスライムはスルー
+			if (pStandBoss == nullptr)					continue;	// �����ȃX���C���̓X���[
+			if (pMoveBoss->GetHitMoveFlg() == true)		continue;	// ������ђ��̃X���C���̓X���[
+			if (i == j)									continue;	// �����Ɠ����X���C���̓X���[
 
-			// スライム同士が衝突した場合
+			// �X���C�����m���Փ˂����ꍇ
 			if (m_pCollision->CheckCollisionSphere(pMoveBoss->GetSphere(), pStandBoss->GetSphere(), pMoveBoss->GetPos(), pStandBoss->GetPos()))
 			{
-				m_pSlimeMng->PreventBossBossOverlap(pMoveBoss, pStandBoss);	//スライムの位置を押し戻す処理
+				m_pSlimeMng->PreventBossBossOverlap(pMoveBoss, pStandBoss);	//�X���C���̈ʒu�������߂�����
 
 
 				break;

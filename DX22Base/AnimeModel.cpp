@@ -684,6 +684,19 @@ void AnimeModel::SetAnimationTime(AnimeNo no, float time)
 }
 
 /*
+* @brief アニメーションの再生速度を変更(澤田追加)
+* @param[in] no 変更するアニメ
+* @param[in] speed 新しい再生速度
+*/
+void AnimeModel::SetAnimationSpeed(AnimeNo no, float speed)
+{
+	// アニメーションチェック
+	if (!AnimeNoCheck(no)) { return; }
+
+	m_animes[no].speed = speed;
+}
+
+/*
 * @brief 再生フラグの取得
 * @param[in] no 調べるアニメ番号
 * @return 現在再生中ならtrue

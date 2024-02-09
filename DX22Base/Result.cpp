@@ -21,7 +21,7 @@
 	・2024/01/26 アニメーション追加 goto
 	・2024/02/01 遷移先変更 sawada
 	・2024/02/03 リザルト表示位置等微調整 suzumura
-
+	・2024/02/09 GetType()関数削除 takagi
 
 ========================================== */
 
@@ -36,7 +36,6 @@
 #include <array>					//配列
 #include <map>						//連想型コンテナ
 #include "Defines.h"				//画面サイズ情報
-
 
 // =============== 定数定義 ===================
 const std::map<int, std::string> MAP_TEX_PATH = {
@@ -66,7 +65,6 @@ const std::map<int, std::string> MAP_TEX_PATH = {
 	{CResult::CLEAR_STAMP,		"Assets/Texture/Result/stamp.png"},				// CLEARスタンプ
 	{CResult::SELECT,			"Assets/Texture/Result/Result_Button.png"},		// 決定ボタン
 };	
-
 
 // 画像表示用パラメータまとめ
 typedef struct
@@ -599,7 +597,7 @@ void CResult::DispNum(int dispNum, int nDigits, TDiType<float> pos, TDiType<floa
 	for (int i = 0; i < digitArray.size(); i++)
 	{
 
-		int width = NumSpace * i;
+		int width = int(NumSpace * i);
 		//ワールド行列はXとYのみを考慮して作成(Zは10ぐらいに配置
 		DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(pos.x - width, pos.y, 0.0f);
 		DirectX::XMStoreFloat4x4(&mat, DirectX::XMMatrixTranspose(world));
@@ -653,23 +651,6 @@ void CResult::NumStorage(std::vector<int>* digitArray, int nNumber, int nDigits)
 	{
 		(*digitArray).push_back(0);
 	}
-}
-
-
-
-/* ========================================
-	種類ゲッタ
-	----------------------------------------
-	内容：自身がリザルトシーンであることを示す
-	----------------------------------------
-	引数1：なし
-	----------------------------------------
-	戻値：自身の種類
-=========================================== */
-CResult::E_TYPE CResult::GetType() const
-{
-	// =============== 提供 ===================
-	return CResult::E_TYPE_RESULT;	//自身の種類
 }
 
 /* ========================================

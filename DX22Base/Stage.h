@@ -52,6 +52,7 @@
 #include "UIStageManager.h"
 #include "HitSlimeEffectManager.h"
 #include "WalkEffectManager.h"
+#include "SweatEffectManager.h"
 #include "BattleData.h"			//ƒƒ“ƒo‚Ìƒwƒbƒ_
 #include "GameStartText.h"
 
