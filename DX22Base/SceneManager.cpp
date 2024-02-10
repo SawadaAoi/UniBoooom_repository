@@ -40,6 +40,7 @@
 #include "Stage3.h"			//インスタンス候補
 #include "Result.h"			//インスタンス候補
 #include "HitStop.h"		//ヒットストップ
+#include "ModelManager.h"	// モデルの一括管理クラスの最初のインスタンス用
 
 #if _DEBUG
 #include <Windows.h>		//メッセージボックス用
@@ -86,6 +87,8 @@ CSceneManager::CSceneManager()
 	{
 		ChangeScene();	//最初に始めるシーン作成
 	}
+
+	GetModelMng;	// モデルマネージャーを作成してシーン遷移を早くする
 }
 
 /* ========================================
