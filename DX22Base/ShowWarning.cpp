@@ -100,9 +100,9 @@ CShowWarning::~CShowWarning()
    -------------------------------------
    内容：更新処理
    -------------------------------------
-   引数：無し
+   引数：なし
    -------------------------------------
-   戻値：無し
+   戻値：なし
 =========================================== */
 void CShowWarning::Update()
 {
@@ -133,9 +133,9 @@ void CShowWarning::Update()
    -------------------------------------
    内容：描画処理
    -------------------------------------
-   引数：無し
+   引数：なし
    -------------------------------------
-   戻値：無し
+   戻値：なし
 =========================================== */
 void CShowWarning::Draw()
 {
@@ -177,7 +177,7 @@ void CShowWarning::Draw()
    引数2：描画サイズ(x,y)
    引数3：描画移動量(float)
    -------------------------------------
-   戻値：無し
+   戻値：なし
 =========================================== */
 void CShowWarning::DrawWarningBG(TPos2d<float> fpos, TPos2d<float> fsize, float xMove)
 {
@@ -303,8 +303,8 @@ void CShowWarning::ArrangementAdjust()
 	{
 		m_fArrangementAlpha = 0.9f;		// 0.9に越えたら0.9にする
 	}
+
 	// 手配書のサイズ変動量調整
-	
 	m_fArrangementSizeAdjust.x -= 15.0f;
 	m_fArrangementSizeAdjust.y += 20.0f;
 	if (m_fArrangementSizeAdjust.x <= 0 )
