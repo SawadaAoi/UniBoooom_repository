@@ -31,7 +31,10 @@ public:
 	void Draw();
 	void DrawWarningBG(TPos2d<float> fpos, TPos2d<float> fsize, float xMove);
 	void DrawWarningTex(TPos2d<float> fpos, TPos2d<float> fsize, float xMove);
-	void DrawWarningBoss(TPos2d<float> fpos, TPos2d<float> fsize, Texture* pBoss, float fSping);
+	void DrawWarningBoss(TPos2d<float> fpos, TPos2d<float> fsize, Texture* pBoss);
+	void ArrangementAdjust();
+
+	// ƒZƒbƒgŠÖ”
 	void SetTimer(CTimer* pTimer);
 	void SetSlimeMng(CSlimeManager* pBoss);
 private:
@@ -44,8 +47,8 @@ private:
 	float m_fBGMove;			// Œx”wŒiˆÚ“®—Ê
 	float m_fTopTexMove;		// ãŒx•¶šˆÚ“®—Ê
 	float m_fBotTexMove;		// ‰ºŒx•¶šˆÚ“®—Ê
-	float m_fBGalpha;			// Œx”wŒi‚Ì“§–¾“x
-	float m_fArrangementSping;
+	float m_fBGAlpha;			// Œx”wŒi‚Ì“§–¾“x
+	float m_fArrangementAlpha;
 	TPos2d<float> m_fArrangementSizeAdjust;
 	
 };
