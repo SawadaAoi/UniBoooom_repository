@@ -29,7 +29,7 @@ CModelManager::CModelManager()
 	m_fModelSize[MODEL_PLAYER] = 1.0f;			// プレイヤーのモデルサイズの倍率
 	m_fModelSize[MODEL_SLIME_BLUE] = 0.15f;		// 青スライムのモデルサイズの倍率
 	m_fModelSize[MODEL_SLIME_GREEN] = 0.15f;	// 緑スライムのモデルサイズの倍率
-	m_fModelSize[MODEL_SLIME_YELLOW] = 0.15f;	// 黄色スライムのモデルサイズの倍率
+	m_fModelSize[MODEL_SLIME_YELLOW] = 0.21f;	// 黄色スライムのモデルサイズの倍率
 	m_fModelSize[MODEL_SLIME_RED] = 0.18f;		// 赤スライムのモデルサイズの倍率
 	m_fModelSize[MODEL_SLIME_FLAME] = 0.3f;		// 炎スライムのモデルサイズの倍率
 	m_fModelSize[MODEL_SLIME_HEAL] = 0.45f;		// 回復スライムのモデルサイズの倍率
