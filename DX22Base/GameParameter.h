@@ -88,7 +88,6 @@ const int SLIME_LEVEL2_PER = 20;								// ƒXƒ‰ƒCƒ€_2‚Ì¶¬Šm—§
 const int SLIME_LEVEL3_PER = 5;									// ƒXƒ‰ƒCƒ€_3‚Ì¶¬Šm—§
 const int SLIME_LEVEL_FLAME_PER = 5;							// ƒXƒ‰ƒCƒ€_ƒtƒŒƒCƒ€‚Ì¶¬Šm—¦
 const int SLIME_LEVEL_HEAL_PER = 5;								// ƒXƒ‰ƒCƒ€_ƒq[ƒ‹‚Ì¶¬Šm—¦
-const float MAX_SIZE_EXPLODE		= 7.0f;						// ƒXƒ‰ƒCƒ€4“¯Žm‚Ì”š”­‚Ì‘å‚«‚³
 const float EXPLODE_BASE_RATIO		= 1.8f;						// ƒXƒ‰ƒCƒ€‚Ì”š”­ÚG‚Å‚Ì”š”­‚Ì‘å‚«‚³‚Ìƒx[ƒX
 const float ESCAPE_DISTANCE			= 15.0f;					// ”š”­‚ª‚±‚Ì‹——£‚æ‚è‹ß‚©‚Á‚½‚ç“¦‚°‚é”ÍˆÍ
 const int ESCAPE_TIME				= int(60 * 0.8f);			// ‚±‚ÌŠÔŠu‚Å“¦‚°‚éˆ—‚ªI—¹‚·‚é
@@ -151,14 +150,28 @@ const int BOSS_DAMAGE_FLASH_FRAME = int(0.1f * 60);					// ƒ_ƒ[ƒWŽó‚¯‚½Û‚Ì“_–
 const int BOSS_DAMAGE_FLASH_TOTAL_FRAME = int(0.5f * 60);			// ƒ_ƒ[ƒW‚ðŽó‚¯‚½Û‚Ì“_–Å‚ð‰½ƒtƒŒ[ƒ€s‚¤‚©
 const float ADD_CREATE_BOSS_POS_Z = 20.0f;							// ƒ{ƒX‚Ì¶¬ˆÊ’u(ƒvƒŒƒCƒ„[‚Ì¶¬ˆÊ’u‚É‘Î‚µ‚Ä‚Ç‚ê‚¾‚¯‰œ‚Éo‚·‚©)
 
+const float EXPLODE_BOSS_RATIO = 2.3f;						// ƒ{ƒXŒ‚”jŽž‚Ì”š”­‚Ì‘å‚«‚³”{—¦
+
 
 // ”š”­ =====================================================
 const float LEVEL_1_EXPLODE_TIME = 0.5f * 60.0f;	// ƒXƒ‰ƒCƒ€_1‚Ì”š”­‘ŽžŠÔ
 const float LEVEL_2_EXPLODE_TIME = 1.0f * 60.0f;	// ƒXƒ‰ƒCƒ€_2‚Ì”š”­‘ŽžŠÔ
 const float LEVEL_3_EXPLODE_TIME = 2.0f * 60.0f;	// ƒXƒ‰ƒCƒ€_3‚Ì”š”­‘ŽžŠÔ
 const float LEVEL_4_EXPLODE_TIME = 3.0f * 60.0f;	// ƒXƒ‰ƒCƒ€_4‚Ì”š”­‘ŽžŠÔ
+const float LEVEL_4X4_EXPLODE_TIME = 3.5f * 60.0f;	// ƒXƒ‰ƒCƒ€_4x4‚Ì”š”­‘ŽžŠÔ
 const float LEVEL_BOSS_EXPLODE_TIME = 4.0f * 60.0f;	// ƒXƒ‰ƒCƒ€_ƒ{ƒX‚Ì”š”­‘ŽžŠÔ
+
+const int	LEVEL_1_EXPLODE_DAMAGE = 1;		// ƒXƒ‰ƒCƒ€_1‚Ì”š”­ƒ_ƒ[ƒW
+const int	LEVEL_2_EXPLODE_DAMAGE = 2;		// ƒXƒ‰ƒCƒ€_2‚Ì”š”­ƒ_ƒ[ƒW
+const int	LEVEL_3_EXPLODE_DAMAGE = 3;		// ƒXƒ‰ƒCƒ€_3‚Ì”š”­ƒ_ƒ[ƒW
+const int	LEVEL_4_EXPLODE_DAMAGE = 4;		// ƒXƒ‰ƒCƒ€_4‚Ì”š”­ƒ_ƒ[ƒW
+const int	LEVEL_4X4_EXPLODE_DAMAGE = 5;	// ƒXƒ‰ƒCƒ€_4x4‚Ì”š”­ƒ_ƒ[ƒW
+
+const float MAX_SIZE_EXPLODE = 9.0f;						// ƒXƒ‰ƒCƒ€4x4‚Ì”š”­‚Ì‘å‚«‚³
+
 const int	DELAY_TIME = int(0.2f * 60);			// ’x‰„•b”
+const float EXPAND_QUICK_RATE = 0.2f;				// –c’£‰Á‘¬Š„‡ (“–‚½‚è”»’è‚Ì‚Ý)
+
 
 
 // ƒ{ƒXƒQ[ƒW =====================================================

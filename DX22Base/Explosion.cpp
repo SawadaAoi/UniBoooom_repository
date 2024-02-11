@@ -38,11 +38,12 @@
 #include "DirectWrite.h"
 
 // =============== íËêîíËã` =======================
-const float EXPAND_QUICK_RATE = 0.2f;			// ñcí£â¡ë¨äÑçá 
 #if MODE_GAME_PARAMETER
 #else
 //const float MAX_DISPLAY_TIME = 3.0f * 60;	// îöî≠éùë±ïbêî
 const int DELAY_TIME = 0.5f * 60;
+const float EXPAND_QUICK_RATE = 0.2f;			// ñcí£â¡ë¨äÑçá 
+
 #endif
 const float EXPLODE_STANDARD_SIZE = 0.15f;
 const float EXPLODE_STANDARD_ONE_FRAME = 1.38f * 60.0f;

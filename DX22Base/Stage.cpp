@@ -83,8 +83,9 @@ CStage::CStage(CUIStageManager::E_STAGE_NUM eStage)
 	m_pHealItemMng = new CHealItemManager();			// 回復アイテムマネージャー生成
 
 	//================System動的確保================
-	m_pCamera = new CCameraChase(m_pPlayer->GetPosAddress());	//カメラ生成
-	m_pCollision = new CCOLLISION();							//衝突判定チェック生成
+	m_pCamera = new CCameraChase();													//カメラ生成
+	static_cast<CCameraChase*>(m_pCamera)->SetTarget(m_pPlayer->GetPosAddress());	//位置登録
+	m_pCollision = new CCOLLISION();												//衝突判定チェック生成
 
 	//================2dObject動的確保================
 	m_pUIStageManager = new CUIStageManager(m_pPlayer, m_pCamera, m_pSlimeMng, eStage);	// UIマネージャー生成
