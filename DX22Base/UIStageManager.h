@@ -26,6 +26,7 @@
 #include "Player.h"
 #include "SlimeManager.h"
 #include "BossArrow.h"
+#include "ShowWarning.h"
 
 
 // =============== ƒNƒ‰ƒX’è‹` =====================
@@ -68,6 +69,7 @@ private:
 	CScoreOHManager* m_pScoreOHMng;
 	CStageFinish* m_pStageFin;
 	CBossArrow* m_pBossArrow;
+	CShowWarning* m_pShowWarning;
 
 };
 

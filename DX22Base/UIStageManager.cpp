@@ -39,6 +39,7 @@ CUIStageManager::CUIStageManager(CPlayer* pPlayer,CCamera * pCamera, CSlimeManag
 	, m_pTimer(nullptr)
 	, m_pTotalScore(nullptr)
 	, m_pBossArrow(nullptr)
+	, m_pShowWarning(nullptr)
 {
 	m_pCombo = new CCombo();
 
@@ -66,6 +67,7 @@ CUIStageManager::CUIStageManager(CPlayer* pPlayer,CCamera * pCamera, CSlimeManag
 	m_pScoreOHMng = new CScoreOHManager();
 	m_pStageFin = new CStageFinish(pCamera, pPlayer, m_pTimer->GetTimePtr());
 	m_pBossArrow = new CBossArrow();
+	m_pShowWarning = new CShowWarning();
 
 	m_pCombo->SetTotalScore(m_pTotalScore);
 	m_pTimer->TimeStart();
@@ -73,6 +75,8 @@ CUIStageManager::CUIStageManager(CPlayer* pPlayer,CCamera * pCamera, CSlimeManag
 	m_pScoreOHMng->SetCamera(pCamera);
 	m_pBossArrow->SetSlimeMng(pSlimeMng);
 	m_pBossArrow->SetPlayer(pPlayer);
+	m_pShowWarning->SetTimer(m_pTimer);
+	m_pShowWarning->SetSlimeMng(pSlimeMng);
 
 	/*
 	m_pBossgauge->AddBossGauge(BOSS_GAUGE_S1[0].startTime, BOSS_GAUGE_S1[0].maxTime);
@@ -91,6 +95,7 @@ CUIStageManager::CUIStageManager(CPlayer* pPlayer,CCamera * pCamera, CSlimeManag
 =========================================== */
 CUIStageManager::~CUIStageManager()
 {
+	SAFE_DELETE(m_pShowWarning);
 	SAFE_DELETE(m_pBossArrow);
 	SAFE_DELETE(m_pStageFin);
 	SAFE_DELETE(m_pHpMng);
@@ -120,6 +125,7 @@ void CUIStageManager::Update()
 	m_pTotalScore->Update();
 	m_pScoreOHMng->Update();
 	m_pBossArrow->Update();
+	m_pShowWarning->Update();
 }
 
 /* ========================================
@@ -141,6 +147,8 @@ void CUIStageManager::Draw()
 	m_pTotalScore->Draw();	// トータルスコア描画
 	m_pBossgauge->Draw();	// ボスゲージ描画
 	m_pScoreOHMng->Draw();	// スコアマネージャー描画
+	m_pShowWarning->Draw();	// 警告描画
+	
 }
 
 /* ========================================

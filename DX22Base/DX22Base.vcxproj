@@ -173,6 +173,7 @@
     <ClCompile Include="AnimeModel.cpp" />
     <ClCompile Include="BattleData.cpp" />
     <ClCompile Include="BgPause.cpp" />
+    <ClCompile Include="ShowWarning.cpp" />
     <ClCompile Include="TitleBgAnimeScaling.cpp" />
     <ClCompile Include="TitleBgBase.cpp" />
     <ClCompile Include="BoooomUI.cpp" />
@@ -299,6 +300,7 @@
     <ClInclude Include="AnimeModel.h" />
     <ClInclude Include="BattleData.h" />
     <ClInclude Include="BgPause.h" />
+    <ClInclude Include="ShowWarning.h" />
     <ClInclude Include="TitleBgAnimeScaling.h" />
     <ClInclude Include="TitleInitCounter.h" />
     <ClInclude Include="TitleBgBase.h" />

@@ -609,6 +609,9 @@
     <ClCompile Include="UcFlag.cpp">
       <Filter>ソース ファイル\Info\Flag</Filter>
     </ClCompile>
+    <ClCompile Include="ShowWarning.cpp">
+      <Filter>ソース ファイル\2dObject</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Defines.h">
@@ -994,6 +997,9 @@
     </ClInclude>
     <ClInclude Include="UcFlag.h">
       <Filter>ヘッダー ファイル\Info\Flag</Filter>
+    </ClInclude>
+    <ClInclude Include="ShowWarning.h">
+      <Filter>ヘッダー ファイル\2dObject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
