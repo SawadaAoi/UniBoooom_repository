@@ -35,8 +35,7 @@ public:
 	void SetCamera(const CCamera* pCamera);
 private:
 	std::vector<CHealItem*> m_pHealItemList;
-	Model* m_pModel;
-	VertexShader* m_pVS;
+	AnimeModel* m_pModel;
 	const CCamera* m_pCamera;
 };
 
