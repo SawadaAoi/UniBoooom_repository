@@ -235,7 +235,7 @@ void CTitle::Update()
 		}
 
 		// =============== 決定 ===================
-		if ((IsKeyTrigger(VK_RETURN) || IsKeyTrigger(VK_SPACE)) && (m_ucFlag & E_FLAG_DECIDE_COMMAND))	//Enter・Space入力かつ非決定時
+		if ((IsKeyTrigger(VK_RETURN) || IsKeyTrigger(VK_SPACE)) && !(m_ucFlag & E_FLAG_DECIDE_COMMAND))	//Enter・Space入力かつ非決定時
 		{
 			// =============== 選択状態判定 ===================
 			if (m_ucFlag & E_FLAG_COMMAND_START && m_pCommandStart)	//開始コマンド・ヌルチェック
