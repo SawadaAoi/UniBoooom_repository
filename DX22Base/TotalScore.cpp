@@ -585,7 +585,7 @@ CTotalScore::PlusScore CTotalScore::ResetAddScore()
 void CTotalScore::SetAddScore(CCombo::ComboInfo comboInfo, int num)
 {
 	m_AddScore[num].nAddScore = comboInfo.dScore;	// コンボのスコアを更新する
-	m_AddScore[num].nComboCnt = comboInfo.dCnt;		// コンボ数更新する
+	m_AddScore[num].nComboCnt = comboInfo.dComboCnt;		// コンボ数更新する
 	
 }
 
