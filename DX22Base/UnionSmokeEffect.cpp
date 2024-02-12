@@ -77,7 +77,7 @@ void CUnionSmokeEffect::Update()
 	for (int i = 0; i < ANIM_PLAY_SPEED_MULTI; i++)
 	{
 		CDrawAnim::Update();
-		CDrawAnim::Update();
+		//CDrawAnim::Update();
 	}
 	DisplayTimeAdd();
 }

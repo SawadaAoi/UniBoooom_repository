@@ -19,7 +19,7 @@
 
 // =============== 定数定義 =======================
 const float HIT_EFFECT_STANDARD_ONE_FRAME = 0.8f * 60.0f;
-const float HIT_EFFECT_SIZE = 0.6f;
+const float HIT_EFFECT_SIZE = 1.0f;
 
 /* ========================================
 	コンストラクタ関数

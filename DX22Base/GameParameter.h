@@ -133,7 +133,7 @@ const int	LEVEL_HEAL_ATTACK = 1;							// 攻撃力 （いる？
 // ボススライム
 const float LEVEL_BOSS_1_SCALE = 7.5f;								// ボス１の大きさ
 const float LEVEL_BOSS_1_SPEED = ENEMY_MOVE_SPEED * 0.4f;			// ボス１のスピード
-const int	BOSS_1_MAX_HP = 20;								// ボス１の最大HP
+const int	BOSS_1_MAX_HP = 10;								// ボス１の最大HP
 const int	BOSS_1_ATTACK = 2;								// ボス１の攻撃力
 const float SLIME_HP_HEIGHT = 5.0f;							//ボスの体力表示位置（Y）
 const float ASSAULT_DISTANCE = 0.2f;								// 突撃反応距離

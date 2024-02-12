@@ -21,16 +21,15 @@
 const std::map<int, std::string> MAP_TEX_PATH = {
 	{CUnionSmokeEffectManager::GREEN_SMOKE,		"Assets/Effect/Union/green_v1.png"},		// 結合煙の画像（緑）
 	{CUnionSmokeEffectManager::YELLOW_SMOKE,	"Assets/Effect/Union/yellow_v1.png"},		// 結合煙の画像（黄）
-	{CUnionSmokeEffectManager::RED_SMOKE,		"Assets/Effect/Union/red_v1.png"},			// 結合煙の画像（赤）
-	
+	{CUnionSmokeEffectManager::RED_SMOKE,		"Assets/Effect/Union/RedW_v2.png"},			// 結合煙の画像（赤）
 };
 
 // エフェクトのサイズ
 const TPos3d<float> UNION_SMOKE_EFFECT_SIZE[CUnionSmokeEffectManager::SMOKE_MAX] =
 {
-	{1.7f, 1.7f, 1.7f},		// 青スライム同士
-	{3.5f, 3.5f, 3.5f},		// 緑スライム同士
-	{5.5f, 5.5f, 5.5f},		// 黄スライム同士
+	{5.0f, 5.0f, 5.0f},			// 青スライム同士
+	{7.0f, 7.0f, 7.0f,},		// 緑スライム同士
+	{10.0f, 10.0f, 10.0f},		// 黄スライム同士
 };
 
 
