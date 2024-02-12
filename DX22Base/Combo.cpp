@@ -21,24 +21,31 @@
 #include "GameParameter.h"
 #include "Pos2d.h"
 #include "TotalScore.h"
+#include "DiType.h"	//2つの同じ型を持つ型
+
 
 // =============== 定数定義 =======================
-const TPos2d<float> COMBO_UI_POSITION = { 930.0f, 600.0f };	// コンボUIの描画位置
-const TPos2d<float> COMBO_UI_SIZE = { 70.0f, 130.0f };	// コンボUIの大きさ
-const float COMBO_UI_NUM_SPACE = 80.0f;				// 数字の間スペース
-const float COMBO_UI_MULTI_DISP_SPACE = 100.0f;			// 同時コンボ描画時の上下の空白
-const int COMBO_UI_DISP_DILAY_TIME = int(2.0f * 60);			// 残コンボ数表示の秒数
+const TTriType<float> COMBO_NUM_POS = { 930.0f, 120.0f, 1.0f };	// コンボUIの大きさ
+const TTriType<float> COMBO_NUM_SIZE = { 70.0f, 130.0f, 1.0f };	// コンボUIの大きさ
+const TDiType<float> COMBO_NUM_UV_SCALE = { 0.2f, 0.5f };
 
-const TPos2d<float> COMBO_UI_BACK_POS = { 1030.0f, 600.0f };	// コンボUIの背景の描画位置
-const TPos2d<float> COMBO_UI_BACK_SIZE = { 370.0f, 300.0f };	// コンボUIの背景の大きさ
-const TPos2d<float> COMBO_UI_STRING_POS = { 1150.0f, 615.5f };	// コンボUIの文字の描画位置
-const TPos2d<float> COMBO_UI_STRING_SIZE = { 180.0f, 100.0f };		// コンボUIの文字の大きさ
+const float COMBO_UI_NUM_SPACE = 80.0f;							// 数字の間スペース
+const float COMBO_UI_LINE_SPACE_X = 50.0f;						// 同時コンボ描画時の上下の空白
+const float COMBO_UI_LINE_SPACE_Y = 100.0f;						// 同時コンボ描画時の上下の空白
+const int COMBO_END_DISP_DILAY_TIME = int(2.0f * 60);			// 残コンボ数表示の秒数
 
-const int SWITCH_COMBO_ANIM = 5;			// アニメーション切り替えの間隔
-const int COMBO_ANIM_WIDTH_NUM_MAX = 3;		// 横分割数最大数
-const int COMBO_ANIM_HEIGHT_NUM_MAX = 3;	// 縦分割数最大数
-const float COMBO_ANIM_SIZEX = 1.0f / COMBO_ANIM_WIDTH_NUM_MAX;		// テクスチャ横分割サイズ
-const float COMBO_ANIM_SIZEY = 1.0f / COMBO_ANIM_HEIGHT_NUM_MAX;	// テクスチャ縦分割サイズ
+const TTriType<float> COMBO_UI_BG_POS = { 1030.0f, 120.0f, 1.0f };	// コンボUIの背景の描画位置
+const TTriType<float> COMBO_UI_BG_SIZE = { 370.0f, 300.0f, 1.0f };	// コンボUIの背景の大きさ
+const TDiType<int> COMBO_UI_BG_SPLIT_NUM = { 3,3 };					// コンボUIの画像の縦横の分割数
+
+const int COMBO_UI_BG_MAX_NUM = 7;					// BGアニメーション最大コマ数
+const int SWITCH_COMBO_BG_ANIM_FLAME = 5;			// BGアニメーション切り替えの間隔
+
+const std::string TEXTURE_PATH[CCombo::TEXTURE_KIND::TEX_MAX] =	// 画像パス
+{
+	{"Assets/Texture/Combo/combo_numbers.png"},
+	{"Assets/Texture/Combo/combo_back_sprite_1.png"},
+};
 
 /* ========================================
 	コンストラクタ
@@ -50,36 +57,37 @@ const float COMBO_ANIM_SIZEY = 1.0f / COMBO_ANIM_HEIGHT_NUM_MAX;	// テクスチャ縦
 	戻値：なし
 =========================================== */
 CCombo::CCombo()
-	:m_fSizeX(0.0f)
-	,m_fSizeY(0.0f)
-	,m_nCntWidth(0)
-	,m_nCntHeight(0)
-	,m_nCnt(0)
-	, m_nMaxComboNum(0)
+	: m_nMaxComboNum(0)
+	, m_pTexNumber(nullptr)
 {
-	// 数字画像を読み込む
-	m_pTextureNum[0] = new Texture();
-	if (FAILED(m_pTextureNum[0]->Create("Assets/Texture/Combo/combo_numbers.png")))
+	// 画像初期化
+	for (int i = 0; i < TEXTURE_KIND::TEX_MAX; i++)
 	{
-		MessageBox(NULL, "combo_numbers.png", "Error", MB_OK);
-	}
-
-	// コンボ背景画像読み込み
-	m_pTextureNum[1] = new Texture();
-	if (FAILED(m_pTextureNum[1]->Create("Assets/Texture/Combo/combo_back_sprite_1.png")))
-	{
-		MessageBox(NULL, "combo_back_sprite_1.png", "Error", MB_OK);
+		// 画像を読み込む
+		m_pTexture[i] = new Texture();
+		if (FAILED(m_pTexture[i]->Create(TEXTURE_PATH[i].c_str())))
+		{
+			MessageBox(NULL, "combo Texture", "Error", MB_OK);
+		}
 	}
 
 	// コンボ情報の初期化
 	for (int i = 0; i < MAX_COMBO_NUM; i++)
 	{
-		m_dComboInfo[i].dCnt = 0;
+		m_dComboInfo[i].dComboCnt = 0;
 		m_dComboInfo[i].dDispFrame = 0;
 		m_dComboInfo[i].bEndFlg = false;
 		m_dComboInfo[i].dScore = 0;
-		m_nCntOldCombo[i] = 0;		// 直前までのコンボ数格納用変数を初期化
+		m_dComboInfo[i].nOldComboCnt = 0;		// 直前までのコンボ数格納用変数を初期化
+
+
+		m_pComboBG[i] = new CDrawAnim(COMBO_UI_BG_MAX_NUM, COMBO_UI_BG_SPLIT_NUM, SWITCH_COMBO_BG_ANIM_FLAME);
+		m_pComboBG[i]->SetTexture(m_pTexture[TEXTURE_KIND::TEX_BG]);
+		m_pComboBG[i]->SetSize(COMBO_UI_BG_SIZE);
 	}
+
+	m_pTexNumber = new C2dPolygon();	// 数字画像初期化
+
 }
 
 /* ========================================
@@ -93,9 +101,11 @@ CCombo::CCombo()
 =========================================== */
 CCombo::~CCombo()
 {
+	SAFE_DELETE(m_pTexNumber);
+
 	for (int i = 0; i < 2; ++i)
 	{
-		SAFE_DELETE(m_pTextureNum[i]);
+		SAFE_DELETE(m_pTexture[i]);
 	}
 }
 
@@ -110,48 +120,24 @@ CCombo::~CCombo()
 =========================================== */
 void CCombo::Update()
 {
+	// 発生コンボ数分
 	for (int i = 0; i < MAX_COMBO_NUM; i++)
 	{
-		if (m_dComboInfo[i].dCnt == 0) continue;
-		if (m_dComboInfo[i].bEndFlg)	continue;	// コンボが終了済みの場合はスルー
+		if (m_dComboInfo[i].dComboCnt == 0) continue;	// コンボが発生してない場合はスルー
+		if (m_dComboInfo[i].bEndFlg)	continue;		// コンボが終了済みの場合はスルー
 
-		m_pTotalScore->SetAddScore(m_dComboInfo[i],i);
+		m_pTotalScore->SetAddScore(m_dComboInfo[i],i);	// 加算スコアの値をセット
 
-		// コンボ背景UIアニメーション再生
-		if (m_nCntOldCombo[i] != m_dComboInfo[i].dCnt)	// コンボ数が直前と違ったら
+		m_pComboBG[i]->Update();	// コンボ背景のアニメーション更新
+
+		// コンボ数が直前と違ったら
+		if (m_dComboInfo[i].nOldComboCnt != m_dComboInfo[i].dComboCnt)	
 		{
-			m_nCntWidth = 0;	// アニメーションをリセット
-			m_nCntHeight = 0;
-			m_nCntOldCombo[i] = m_dComboInfo[i].dCnt;	// 現在のコンボ数を格納
+			m_pComboBG[i]->AnimReset();									// アニメーションをリセット
+			m_dComboInfo[i].nOldComboCnt = m_dComboInfo[i].dComboCnt;	// 現在のコンボ数を格納
 		}
 
-		m_nCnt++;	// カウントを進める
 
-		if (m_nCnt > SWITCH_COMBO_ANIM)	// 一定時間経過したらアニメーションを進める
-		{
-			m_nCnt = 0;		// カウントをリセット
-
-			m_fSizeX = COMBO_ANIM_SIZEX * m_nCntWidth;		// 横方向のUV座標計算
-			m_fSizeY = COMBO_ANIM_SIZEY * m_nCntHeight;		// 縦方向のUV座標計算
-
-			++m_nCntWidth;	// 横に1進める
-
-			if (m_nCntWidth == COMBO_ANIM_WIDTH_NUM_MAX)	// 右端まで行ったら
-			{
-				m_nCntWidth = 0;	// 横方向のカウントをリセット
-				++m_nCntHeight;		// 縦に1進める
-			}
-
-			if (m_nCntHeight == 2)	// 一番下の段が右端のみなのでそこで止める
-			{
-				m_nCntWidth = 0;
-			}
-
-			if (m_dComboInfo[i].bEndFlg)	// コンボが途切れたら
-			{
-				m_nCnt = 0;		// カウントをリセット
-			}
-		}
 	}
 }
 
@@ -166,46 +152,78 @@ void CCombo::Update()
 =========================================== */
 void CCombo::Draw()
 {
-	int dispCnt = 0;	// 描画コンボ数
+	int lineCnt = 0;	// 表示するコンボUIの行番号
 
+	// 発生コンボ数分
 	for (int i = 0; i < MAX_COMBO_NUM; i++)
 	{
 		// 0コンボは表示しない
-		if (m_dComboInfo[i].dCnt == 0) continue;
+		if (m_dComboInfo[i].dComboCnt == 0) continue;
 
-		// コンボ背景表示
-		DrawTexture(COMBO_UI_BACK_POS.x,
-					COMBO_UI_BACK_POS.y,
-					COMBO_UI_BACK_SIZE.x,
-					COMBO_UI_BACK_SIZE.y,
-					m_pTextureNum[1]);
-
-		float shiftPosY = dispCnt * COMBO_UI_MULTI_DISP_SPACE;	// コンボ同時表示の際の上下の空白をセット
-		DisplayNumber(m_dComboInfo[i].dCnt, shiftPosY);			// 数字の表示
+		DispComboBG(i, lineCnt);							// コンボ背景
+		DisplayNumber(m_dComboInfo[i].dComboCnt, lineCnt);	// 数字の表示
 
 		// コンボが途切れた場合
-		if (m_dComboInfo[i].bEndFlg == true)
-		{	
+		if (m_dComboInfo[i].bEndFlg)
+		{
 			// 暫くコンボ数を表示する
 			m_dComboInfo[i].dDispFrame++;
-			// 指定時間表示したらコンボ数の表示を消す
-			if (m_dComboInfo[i].dDispFrame >= COMBO_UI_DISP_DILAY_TIME)
-			{
-				if (m_nMaxComboNum < m_dComboInfo[i].dCnt) m_nMaxComboNum = m_dComboInfo[i].dCnt;
 
-				m_dComboInfo[i].dCnt = 0;
-				m_dComboInfo[i].dDispFrame = 0;
-				m_dComboInfo[i].bEndFlg = false;
-				m_dComboInfo[i].dScore = 0;
-				m_nCntOldCombo[i] = 0;		// コンボ数をリセット
+			// 指定時間表示したらコンボ数の表示を消す
+			if (COMBO_END_DISP_DILAY_TIME <= m_dComboInfo[i].dDispFrame )
+			{
+				if (m_nMaxComboNum < m_dComboInfo[i].dComboCnt)
+				{
+					m_nMaxComboNum = m_dComboInfo[i].dComboCnt;	// 最大コンボ数更新(リザルト用)
+				}
+
+				m_dComboInfo[i].dComboCnt		= 0;
+				m_dComboInfo[i].dDispFrame		= 0;
+				m_dComboInfo[i].bEndFlg			= false;
+				m_dComboInfo[i].dScore			= 0;	
+				m_dComboInfo[i].nOldComboCnt	= 0;	// コンボ数をリセット
+				m_pComboBG[i]->AnimReset();
 			}
 		}
 
-		dispCnt++;	// 同時に発生しているコンボ数を数える
+		lineCnt++;	// 同時に発生しているコンボ数を数える
 
 	}
 }
 
+/* ========================================
+	コンボ背景画像関数
+	----------------------------------------
+	内容：コンボ背景画像を表示する
+	----------------------------------------
+	引数1：配列番号
+	引数2：同時発生の表示位置の調節値
+	----------------------------------------
+	戻値：なし
+=========================================== */
+void CCombo::DispComboBG(int ArrayNum, int lineNum)
+{
+
+	float shiftPosX = lineNum * COMBO_UI_LINE_SPACE_X;	// 横の表示位置調整値
+	float shiftPosY = lineNum * COMBO_UI_LINE_SPACE_Y;	// 縦の表示位置調整値
+
+	TTriType<float> pos = {
+			COMBO_UI_BG_POS.x + shiftPosX,
+			COMBO_UI_BG_POS.y + shiftPosY,
+			1.0f };
+
+	m_pComboBG[ArrayNum]->SetPos(pos);
+
+	if (m_pComboBG[ArrayNum]->GetAnimFlg())
+	{
+		m_pComboBG[ArrayNum]->Draw();
+	}
+	else
+	{
+		m_pComboBG[ArrayNum]->SetAnimNum(COMBO_UI_BG_MAX_NUM);
+		m_pComboBG[ArrayNum]->C2dPolygon::Draw();
+	}
+}
 
 /* ========================================
 	数字描画関数
@@ -217,95 +235,44 @@ void CCombo::Draw()
 	----------------------------------------
 	戻値：なし
 =========================================== */
-void CCombo::DisplayNumber(int cnt, float shiftPosY)
+void CCombo::DisplayNumber(int cnt, int lineNum)
 {
-	DirectX::XMFLOAT4X4 mat[3];	// 描画用の行列
-
 	int num[2];			// 各桁数をセットする
 	num[0] = cnt % 10;	// 一桁目
 	num[1] = cnt / 10;	// 十桁目
 
+	float shiftPosX = lineNum * COMBO_UI_LINE_SPACE_X;	// 横の表示位置調整値
+	float shiftPosY = lineNum * COMBO_UI_LINE_SPACE_Y;	// 縦の表示位置調整値
+
 	// 桁数分回す
-	for (int j = 0; j < 2; j++)
+	for (int i = 0; i < 2; i++)
 	{
 		// コンボ数が2桁以下で、一の桁以外の場合は表示しない(0埋めしない)
-		if (cnt < 10 && j != 0 ) continue;
+		if (cnt < 10 && i != 0 ) continue;
 
 		// 桁ごとに位置をずらす
-		float width = j * COMBO_UI_NUM_SPACE;
+		float width = i * COMBO_UI_NUM_SPACE;
 
-		//ワールド行列はXとYのみを考慮して作成
-		DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(COMBO_UI_POSITION.x - width, COMBO_UI_POSITION.y - shiftPosY, 0.0f);
-		DirectX::XMStoreFloat4x4(&mat[0], DirectX::XMMatrixTranspose(world));
+		TTriType<float> pos = {
+			COMBO_NUM_POS.x - width + shiftPosX,
+			COMBO_NUM_POS.y + shiftPosY,
+			1.0f };
 
-		//ビュー行列は2Dだとカメラの位置があまり関係ないので、単位行列を設定する
-		DirectX::XMStoreFloat4x4(&mat[1], DirectX::XMMatrixIdentity());
+		int x = num[i] % 5;	// 数字テクスチャの横方向位置
+		int y = num[i] / 5;	// 数字テクスチャの縦方向位置
 
-		//プロジェクション行列には2Dとして表示するための行列を設定する
-		//この行列で2Dのスクリーンの多いさが決まる
-		DirectX::XMMATRIX proj = DirectX::XMMatrixOrthographicOffCenterLH(0.0f, 1280.0f, 720.0f, 0.0f, 0.1f, 10.0f);
-		DirectX::XMStoreFloat4x4(&mat[2], DirectX::XMMatrixTranspose(proj));
+		m_pTexNumber->SetPos(pos);
+		m_pTexNumber->SetSize(COMBO_NUM_SIZE);
+		m_pTexNumber->SetUvOffset({ COMBO_NUM_UV_SCALE.x * x, COMBO_NUM_UV_SCALE.y * y });// テクスチャUV座標
+		m_pTexNumber->SetUvScale(COMBO_NUM_UV_SCALE);
+		m_pTexNumber->SetTexture(m_pTexture[0]);
 
-		//スプライトの設定
-		Sprite::SetWorld(mat[0]);
-		Sprite::SetView(mat[1]);
-		Sprite::SetProjection(mat[2]);
-		Sprite::SetSize(DirectX::XMFLOAT2(COMBO_UI_SIZE.x, -COMBO_UI_SIZE.y));
-		//spriteシートの上部分表示（0～4）
-		if (num[j] < 5)
-		{
-			Sprite::SetUVPos(DirectX::XMFLOAT2(0.2f * num[j], 0.0f));
-		}
-		//spriteシートの下部分表示（5～9）
-		else
-		{
-			Sprite::SetUVPos(DirectX::XMFLOAT2(0.2f * (num[j] - 5), 0.5f));
-		}
-		Sprite::SetUVScale(DirectX::XMFLOAT2(0.2f, 0.5f));
-		Sprite::SetTexture(m_pTextureNum[0]);
-		Sprite::Draw();
+		m_pTexNumber->Draw();
+
 	}
 }
 
-/* ========================================
-	テクスチャ描画関数
-	-------------------------------------
-	内容：数字以外のコンボ関係テクスチャの描画処理
-	-------------------------------------
-	引数1：表示位置のX座標
-	引数2：表示位置のY座標
-	引数3：表示するテクスチャの縦幅
-	引数4：表示するテクスチャの横幅
-	引数5：表示するテクスチャのポインタ
-	-------------------------------------
-	戻値：なし
-========================================== = */
-void CCombo::DrawTexture(float posX, float posY, float h, float w, Texture* pTexture)
-{
-	DirectX::XMFLOAT4X4 mat[3];
 
-	// ワールド行列はXとYのみを考慮して作成
-	DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(posX, posY, 0.0f);	// ワールド行列（必要に応じて変数を増やしたり、複数処理を記述したりする）
-	DirectX::XMStoreFloat4x4(&mat[0], DirectX::XMMatrixTranspose(world));
-
-	// ビュー行列は2Dだとカメラの位置があまり関係ないので、単位行列を設定する
-	DirectX::XMStoreFloat4x4(&mat[1], DirectX::XMMatrixIdentity());
-
-	// プロジェクション行列には2Dとして表示するための行列を設定する
-	// この行列で2Dのスクリーンの大きさが決まる
-	DirectX::XMMATRIX proj = DirectX::XMMatrixOrthographicOffCenterLH(0.0f, 1280.0f, 720.0f, 0.0f, 0.1f, 10.0f);	// 平衡投影行列を設定
-	DirectX::XMStoreFloat4x4(&mat[2], DirectX::XMMatrixTranspose(proj));
-
-	// スプライトの設定
-	Sprite::SetWorld(mat[0]);
-	Sprite::SetView(mat[1]);
-	Sprite::SetProjection(mat[2]);
-	Sprite::SetSize(DirectX::XMFLOAT2(h, -w));
-	Sprite::SetUVPos(DirectX::XMFLOAT2(m_fSizeX, m_fSizeY));
-	Sprite::SetUVScale(DirectX::XMFLOAT2(COMBO_ANIM_SIZEX, COMBO_ANIM_SIZEY));
-	Sprite::SetTexture(pTexture);
-	Sprite::Draw();
-}
 
 /* ========================================
 	コンボ配列値セット関数
@@ -323,9 +290,9 @@ int CCombo::FirstComboSet()
 	for (int i = 0; i < MAX_COMBO_NUM; i++)
 	{
 		// 既にコンボ数を数えている配列は飛ばす
-		if (m_dComboInfo[i].dCnt != 0) continue;
+		if (m_dComboInfo[i].dComboCnt != 0) continue;
 
-		m_dComboInfo[i].dCnt++;	// 1コンボ目をセット
+		m_dComboInfo[i].dComboCnt++;	// 1コンボ目をセット
 		num = i;				// 添え字を記録する
 		break;					// コンボを記録したので抜ける
 	}
@@ -344,7 +311,7 @@ int CCombo::FirstComboSet()
 ======================================== */
 void CCombo::AddCombo(int num)
 {
-	m_dComboInfo[num].dCnt++;
+	m_dComboInfo[num].dComboCnt++;
 
 }
 
@@ -373,7 +340,7 @@ void CCombo::AddScore(int num, int combo)
 ======================================== */
 int CCombo::GetComboNum(int num)
 {
-	return m_dComboInfo[num].dCnt;
+	return m_dComboInfo[num].dComboCnt;
 }
 
 /* ========================================

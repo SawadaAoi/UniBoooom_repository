@@ -21,6 +21,7 @@
 #include "Sprite.h"
 #include <Texture.h>
 #include "Object.h"
+#include "DrawAnimation.h"
 class CTotalScore;
 
 // =============== 定数定義 =======================
@@ -33,11 +34,21 @@ public:
 	// ===構造体定義=========
 	typedef struct
 	{
-		int dCnt;		// コンボ数
+		int dComboCnt;		// コンボ数
+		int nOldComboCnt;	// コンボ数（増加したかのチェックに使用）
+
 		int dDispFrame;	// 残描画用加算値
 		bool bEndFlg;	// コンボ終了フラグ
 		int dScore;		// スコア（連鎖のたびに加算される）
 	}ComboInfo;	// コンボ処理情報まとめ
+
+	enum TEXTURE_KIND
+	{
+		TEX_NUM,
+		TEX_BG,
+
+		TEX_MAX,
+	};
 
 public:
 	// ===プロトタイプ宣言===
@@ -52,8 +63,6 @@ public:
 	void EndCombo(int num);
 
 
-	void DisplayNumber(int cnt, float shiftPosY);
-	void DrawTexture(float posX, float posY, float h, float w, Texture* pTexture);
 	void SetTotalScore(CTotalScore* pTotalScore);
 
 
@@ -61,19 +70,18 @@ public:
 	int GetComboEndFlg(int num);
 	int GetMaxCombo();
 private:
+	void DisplayNumber(int cnt, int lineNum);
+	void DispComboBG(int ArrayNum, int lineNum);
+
 	// ===メンバ変数宣言===
-	Texture* m_pTextureNum[3];		// 数字画像
+	Texture* m_pTexture[TEX_MAX];		// 数字画像
 	ComboInfo m_dComboInfo[MAX_COMBO_NUM];	// コンボ用情報まとめ
 	CTotalScore* m_pTotalScore;	
 
-	int m_nMaxComboNum;
+	CDrawAnim* m_pComboBG[MAX_COMBO_NUM];		// コンボの背景アニメーション
+	C2dPolygon* m_pTexNumber;
 
-	float m_fSizeX;		// 横UV座標格納用
-	float m_fSizeY;		// 縦UV座標格納用
-	int m_nCntWidth;	// テクスチャの横分割数カウント用
-	int m_nCntHeight;	// テクスチャの縦分割数カウント用
-	int m_nCntOldCombo[MAX_COMBO_NUM];	// コンボ数増加確認用
-	int m_nCnt;			// アニメーション切り替えカウント用
+	int m_nMaxComboNum;
 };
 
 
