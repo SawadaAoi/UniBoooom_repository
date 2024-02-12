@@ -66,6 +66,12 @@ CTitle::CTitle()
 	m_pBgCloud = std::make_shared<CTitleBgCloud>();	//背景の雲
 	m_pBgGrass = std::make_shared<CTitleBgGrass>();	//背景の草
 	m_pCamera = new CFixedCamera();					//固定カメラ
+	m_pCommandStart = std::make_shared<CTitleCommandStart>();	//開始コマンド
+	m_pCommandFinish = std::make_shared<CTitleCommandFinish>();	//終了コマンド
+	m_pBgPlayer = std::make_shared<CTitleBgPlayer>();			//背景のプレイヤー
+	m_pCommandStart->SetCamera(m_pCamera);						//カメラ登録
+	m_pCommandFinish->SetCamera(m_pCamera);						//カメラ登録
+	m_pBgPlayer->SetCamera(m_pCamera);							//カメラ登録
 
 	// =============== カメラ登録 ===================
 	m_pLogo->SetCamera(m_pCamera);		//カメラ登録
@@ -113,17 +119,6 @@ void CTitle::Update()
 		m_pBgPlayer.reset();	//削除
 	}
 
-	// =============== 動的確保 ===================
-	if (pCounter && pCounter->IsFin())	//ヌルチェック
-	{
-		m_pCommandStart = std::make_shared<CTitleCommandStart>();	//開始コマンド
-		m_pCommandFinish = std::make_shared<CTitleCommandFinish>();	//終了コマンド
-		m_pBgPlayer = std::make_shared<CTitleBgPlayer>();			//背景のプレイヤー
-		m_pCommandStart->SetCamera(m_pCamera);						//カメラ登録
-		m_pCommandFinish->SetCamera(m_pCamera);						//カメラ登録
-		m_pBgPlayer->SetCamera(m_pCamera);							//カメラ登録
-	}
-
 	// =============== 入力受付 ===================
 	if (GetUseVController())	// コントローラが接続されている場合
 	{
@@ -168,7 +163,7 @@ void CTitle::Update()
 		}
 
 		// =============== 決定 ===================
-		if (IsKeyTriggerController(BUTTON_B))	//Bボタン入力時
+		if (IsKeyTriggerController(BUTTON_B) && !E_FLAG_DECIDE_COMMAND)	//Bボタン入力時
 		{
 			// =============== 選択状態判定 ===================
 			if (m_ucFlag & E_FLAG_COMMAND_START && m_pCommandStart)	//開始コマンド・ヌルチェック
@@ -238,7 +233,7 @@ void CTitle::Update()
 		}
 
 		// =============== 決定 ===================
-		if (IsKeyTrigger(VK_RETURN) || IsKeyTrigger(VK_SPACE))	//Enter・Space入力時
+		if ((IsKeyTrigger(VK_RETURN) || IsKeyTrigger(VK_SPACE)) && !E_FLAG_DECIDE_COMMAND)	//Enter・Space入力時
 		{
 			// =============== 選択状態判定 ===================
 			if (m_ucFlag & E_FLAG_COMMAND_START && m_pCommandStart)	//開始コマンド・ヌルチェック
@@ -290,11 +285,17 @@ void CTitle::Update()
 	PTR_UPDATE(m_pCamera);					//カメラ更新
 	CTitleInitCounter::GetThis().Update();	//カウンタ更新
 	PTR_UPDATE(m_pBgBase);					//背景更新
-	PTR_UPDATE(m_pBgCloud);					//雲描画
-	PTR_UPDATE(m_pBgPlayer);				//プレイヤー描画
-	PTR_UPDATE(m_pBgGrass);					//草原描画
-	PTR_UPDATE(m_pCommandStart);			//開始コマンド更新
-	PTR_UPDATE(m_pCommandFinish);			//終了コマンド更新
+	PTR_UPDATE(m_pBgCloud);					//雲更新
+	if (!pCounter || pCounter->IsFin())	//ヌル・時間チェック
+	{
+		PTR_UPDATE(m_pBgPlayer);			//プレイヤー更新
+	}
+	PTR_UPDATE(m_pBgGrass);					//草原更新
+	if (!pCounter || pCounter->IsFin())	//ヌル・時間チェック
+	{
+		PTR_UPDATE(m_pCommandStart);		//開始コマンド更新
+		PTR_UPDATE(m_pCommandFinish);		//終了コマンド更新
+	}
 	PTR_UPDATE(m_pLogo);					//タイトルロゴ更新
 }
 
@@ -309,13 +310,22 @@ void CTitle::Update()
 	======================================== */
 void CTitle::Draw()
 {
+	// =============== 変数宣言 ===================
+	auto pCounter = CTitleInitCounter::GetThis().GetCounter().lock();	//カウンタ
+
 	// =============== 描画 ===================
 	PTR_DRAW(m_pBgBase);		//背景描画
 	PTR_DRAW(m_pBgCloud);		//雲描画
+	if (!pCounter || pCounter->IsFin())	//ヌル・時間チェック
+	{
 	PTR_DRAW(m_pBgPlayer);		//プレイヤー描画
+	}
 	PTR_DRAW(m_pBgGrass);		//草原描画
-	PTR_DRAW(m_pCommandStart);	//開始コマンド描画
-	PTR_DRAW(m_pCommandFinish);	//終了コマンド描画
+	if (!pCounter || pCounter->IsFin())	//ヌル・時間チェック
+	{
+		PTR_DRAW(m_pCommandStart);	//開始コマンド描画
+		PTR_DRAW(m_pCommandFinish);	//終了コマンド描画
+	}
 	PTR_DRAW(m_pLogo);			//タイトルロゴ描画
 }
 

@@ -10,12 +10,14 @@
 	変更履歴
 	・2024/01/29 制作 takagi
 	・2024/02/06 制作進行 takagi
+	・2024/02/12 テクスチャdelete系変更 takagi
 
 ========================================== */
 
 // =============== インクルード ===================
 #include "TitleBgPlayer.h"	//自身のヘッダ
 #include "Defines.h"		//画面情報用
+#include "Delete.h"			//削除マクロ
 
 // =============== 定数定義 ===================
 const TPos3d<float> POS{ static_cast<float>(SCREEN_WIDTH) / 2.0f, static_cast<float>(SCREEN_HEIGHT) / 2.0f, 0.0f };	//位置
@@ -40,8 +42,22 @@ CTitleBgPlayer::CTitleBgPlayer()
 	// =============== 初期化 ===================
 	SetPos(POS);										//位置初期化
 	SetSize(SCALE);										//大きさ初期化
-	m_DushAnimeIterator = LIST_ANIMATION_DUSH.begin();	//イテレータ
-	SetTexture(m_DushAnimeIterator->c_str());			//テクスチャ登録
+	for (auto Iterator = LIST_ANIMATION_DUSH.begin(); Iterator != LIST_ANIMATION_DUSH.end(); Iterator++)
+	{
+		// =============== 変数宣言 ===================
+		Texture* pTex;	//リストに登録するテクスチャのポインタ
+
+		// =============== 動的確保 ===================
+		pTex = new Texture;	//ポインタの中身確保
+
+		// =============== 初期化 ===================
+		pTex->Create(Iterator->c_str());		//テクスチャ生成
+
+		// =============== 格納 ===================
+		m_pDushAnimeTexture.push_back(pTex);	//テクスチャ格納
+	}
+	m_DushAnimeIterator = m_pDushAnimeTexture.begin();	//イテレータ初期化
+	SetTexture(*m_DushAnimeIterator);					//テクスチャ登録
 }
 
 /* ========================================
@@ -55,6 +71,8 @@ CTitleBgPlayer::CTitleBgPlayer()
 =========================================== */
 CTitleBgPlayer::~CTitleBgPlayer()
 {
+	// =============== 削除 ===================
+	SAFE_DELETE_POINTER_VECTOR(m_pDushAnimeTexture);	//リスト削除
 }
 
 /* ========================================
@@ -95,11 +113,11 @@ void CTitleBgPlayer::Update()
 		//	m_bAnim = true;								//アニメーション描画をやり直す(完了扱いさせない)	TODO:分かりやすく書く
 		//}
 		// =============== 補正 ===================
-		if (m_DushAnimeIterator == LIST_ANIMATION_DUSH.end())	//リストの範囲外
+		if (m_DushAnimeIterator == m_pDushAnimeTexture.end())	//リストの範囲外
 		{
-			m_DushAnimeIterator = LIST_ANIMATION_DUSH.begin();	//イテレータ循環
+			m_DushAnimeIterator = m_pDushAnimeTexture.begin();	//イテレータ循環
 		}
-		SetTexture(m_DushAnimeIterator->c_str());	//listのファイル読み込み
+		SetTexture(*m_DushAnimeIterator);	//listのテクスチャ切換
 
 		m_bAnim = true;								//アニメーション描画をやり直す(完了扱いさせない)	TODO:分かりやすく書く
 
