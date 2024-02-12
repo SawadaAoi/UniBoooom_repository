@@ -27,6 +27,8 @@
 	・2024/02/05 リファクタリング takagi
 	・2024/02/06 リファクタリング takagi
 	・2024/02/09 GetType()関数削除 takagi
+	・2024/02/12 テクスチャ管理法変更に伴う修正 takagi
+	・2024/02/13 コマンド選択時のバグ修正 takagi
 	
 ========================================== */
 
@@ -163,7 +165,7 @@ void CTitle::Update()
 		}
 
 		// =============== 決定 ===================
-		if (IsKeyTriggerController(BUTTON_B) && !E_FLAG_DECIDE_COMMAND)	//Bボタン入力時
+		if (IsKeyTriggerController(BUTTON_B) && !(m_ucFlag & E_FLAG_DECIDE_COMMAND))	//Bボタン入力かつ非決定時
 		{
 			// =============== 選択状態判定 ===================
 			if (m_ucFlag & E_FLAG_COMMAND_START && m_pCommandStart)	//開始コマンド・ヌルチェック
@@ -233,7 +235,7 @@ void CTitle::Update()
 		}
 
 		// =============== 決定 ===================
-		if ((IsKeyTrigger(VK_RETURN) || IsKeyTrigger(VK_SPACE)) && !E_FLAG_DECIDE_COMMAND)	//Enter・Space入力時
+		if ((IsKeyTrigger(VK_RETURN) || IsKeyTrigger(VK_SPACE)) && (m_ucFlag & E_FLAG_DECIDE_COMMAND))	//Enter・Space入力かつ非決定時
 		{
 			// =============== 選択状態判定 ===================
 			if (m_ucFlag & E_FLAG_COMMAND_START && m_pCommandStart)	//開始コマンド・ヌルチェック
