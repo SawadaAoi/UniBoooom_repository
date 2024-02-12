@@ -10,6 +10,7 @@
 	変更履歴
 	・2024/01/29 制作 takagi
 	・2024/02/06 制作進行 takagi
+	・2024/02/12 テクスチャdelete系変更 takagi
 
 ========================================== */
 
@@ -19,6 +20,7 @@
 // =============== インクルード =====================
 #include "DrawAnimation.h"	//親のヘッダ
 #include <list>				//双方向非アクセス式配列コンテナ
+#include <Texture.h>		//テクスチャ管理
 
 // =============== クラス定義 =====================
 class CTitleBgPlayer :public CDrawAnim	//背景アニメーション
@@ -38,7 +40,8 @@ public:
 private:
 	// ===変数宣言===========
 	std::shared_ptr<CFrameCnt> m_pCounter;						//カウンタ
-	std::list<std::string>::const_iterator m_DushAnimeIterator;	//走るアニメーション用イテレータ
+	std::list<Texture*> m_pDushAnimeTexture;					//走るアニメーション用テクスチャ管理	TODO:shared_ptrにする
+	std::list<Texture*>::const_iterator m_DushAnimeIterator;	//走るアニメーション用イテレータ
 };	//タイトル開始映像
 
 #endif	//!__TITLE_BG_PLAYER_H__
