@@ -77,7 +77,7 @@ CModelManager::CModelManager()
 CModelManager::~CModelManager()
 {
 	// “®“IŠm•Û‚µ‚½ƒ‚ƒm‚ğíœ
-	for (int i = 0; i, MODEL_KIND(i); i++)
+	for (int i = 0; i < m_ModelList.size(); i++)
 	{
 		SAFE_DELETE(m_ModelList.at(MODEL_KIND(i)));
 	}
