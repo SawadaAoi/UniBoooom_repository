@@ -85,7 +85,7 @@ CSlime_Boss_2::CSlime_Boss_2(TPos3d<float> pos, AnimeModel * pModel)
 	m_Transform.fPos = pos;			// 初期座標を指定
 
 	m_pModel = pModel;
-	m_pShadow->SetPos(m_Transform.fPos);
+	m_pShadow->SetPos(TPos3d<float>(m_Transform.fPos.x, 0.0f, m_Transform.fPos.z));	// 影の座標を移動
 
 	m_eCurAnime = DEVIL_SLIME_MOVE;
 	m_pModel->Play(m_eCurAnime,true);
@@ -128,13 +128,6 @@ void CSlime_Boss_2::Update(tagTransform3d playerTransform)
 	if (!m_bHitMove)	
 	{
 		MoveSwitch();	// 通常移動切り替え
-
-		// アニメーションを移動に変更
-		if (m_eCurAnime != DEVIL_SLIME_MOVE)
-		{
-			m_eCurAnime = DEVIL_SLIME_MOVE;	// アニメーションを被ダメに変更
-			m_fAnimeTime = 0.0f;			// アニメーションタイムをリセット
-		}
 	}
 	// ハンマーで殴られた時
 	else
@@ -147,7 +140,8 @@ void CSlime_Boss_2::Update(tagTransform3d playerTransform)
 		else
 		{
 			HitMove();							// 敵の吹き飛び移動
-			m_pShadow->SetPos(m_Transform.fPos);// 吹き飛び移動中の影の座標の更新
+			m_pShadow->SetPos(TPos3d<float>(m_Transform.fPos.x, 0.0f, m_Transform.fPos.z));	// 影の座標を移動	
+
 
 			// アニメーションを被ダメに変更
 			if (m_eCurAnime != DEVIL_SLIME_HIT)
@@ -228,8 +222,8 @@ void CSlime_Boss_2::Draw()
 		ShaderList::SetWVP(mat);
 
 		// 複数体を共通のモデルで扱っているため描画のタイミングでモーションの種類と時間をセットする
-		m_pModel->Play(DEVIL_SLIME_HIT, true);
-		m_pModel->SetAnimationTime(DEVIL_SLIME_HIT, m_fAnimeTime);	// アニメーションタイムをセット
+		m_pModel->Play(m_eCurAnime, true);
+		m_pModel->SetAnimationTime(m_eCurAnime, m_fAnimeTime);	// アニメーションタイムをセット
 		// アニメーションタイムをセットしてから動かさないと反映されないため少しだけ進める
 		m_pModel->Step(0.0f);
 
@@ -340,6 +334,13 @@ void CSlime_Boss_2::MoveSwitch()
 		SetNormalSpeed();	// 移動スピードをリセット(直前の吹き飛び速度を無くす為)
 		MoveNormal();
 
+		// アニメーションを移動に変更
+		if (m_eCurAnime != DEVIL_SLIME_MOVE)
+		{
+			m_eCurAnime = DEVIL_SLIME_MOVE;	// アニメーションを被ダメに変更
+			m_fAnimeTime = 0.0f;			// アニメーションタイムをリセット
+		}
+
 		break;
 	// ジャンプ予備動作処理
 	case MOVE_STATE::JUMP_CHARGE:
@@ -426,7 +427,7 @@ void CSlime_Boss_2::MoveNormal()
 		m_nMoveCnt[MOVE_STATE::NORMAL] = 0;	
 	}
 
-	m_pShadow->SetPos(m_Transform.fPos);	// 影の座標を移動	
+	m_pShadow->SetPos(TPos3d<float>(m_Transform.fPos.x,0.0f, m_Transform.fPos.z));	// 影の座標を移動	
 
 }
 
@@ -461,7 +462,7 @@ void CSlime_Boss_2::MoveJumpCharge()
 		this->SetScale({ BOSS_2_SCALE, BOSS_2_SCALE, BOSS_2_SCALE });	// 大きさを戻しておく
 	}
 
-	m_pShadow->SetPos(m_Transform.fPos);	// 影の座標を移動	
+	m_pShadow->SetPos(TPos3d<float>(m_Transform.fPos.x, 0.0f, m_Transform.fPos.z));	// 影の座標を移動	
 
 }
 

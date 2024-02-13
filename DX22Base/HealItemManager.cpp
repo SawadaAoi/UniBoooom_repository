@@ -16,6 +16,7 @@
 
 // =============== インクルード ===================
 #include "HealItemManager.h"
+#include "ModelManager.h"
 
 /* ========================================
    コンストラクタ
@@ -28,19 +29,9 @@
 ======================================== */
 CHealItemManager::CHealItemManager()
 	:m_pModel(nullptr)
-	,m_pVS(nullptr)
 {
-	//頂点シェーダ読み込み
-	m_pVS = new VertexShader();
-	if (FAILED(m_pVS->Load("Assets/Shader/VS_Model.cso"))) {
-		MessageBox(nullptr, "VS_Model.cso", "Error", MB_OK);
-	}
 	//回復アイテムのモデル読み込み
-	m_pModel = new Model;
-	if (!m_pModel->Load("Assets/Model/heart/heart_1.FBX", 1.0f, Model::None)) {		//倍率と反転は省略可
-		MessageBox(NULL, "HealItem:Model", "Error", MB_OK);	//ここでエラーメッセージ表示
-	}
-	m_pModel->SetVertexShader(m_pVS);
+	m_pModel = GetModelMng.GetModelPtr(MODEL_KIND::MODEL_ITEM_HEART);
 }
 
 /* ========================================
@@ -54,9 +45,6 @@ CHealItemManager::CHealItemManager()
 ======================================== */
 CHealItemManager::~CHealItemManager()
 {
-	SAFE_DELETE(m_pVS);
-	SAFE_DELETE(m_pModel);
-
 	for (auto i = m_pHealItemList.begin(); i != m_pHealItemList.end();)
 	{
 		delete (*i);
@@ -111,7 +99,7 @@ void CHealItemManager::Draw()
 ======================================== */
 void CHealItemManager::Create(TPos3d<float> pos)
 {
-	m_pHealItemList.push_back(new CHealItem(pos, m_pModel, m_pVS));	//生成
+	m_pHealItemList.push_back(new CHealItem(pos, m_pModel));	//生成
 	m_pHealItemList.back()->SetCamera(m_pCamera);					//生成したアイテムにカメラをセット
 }
 

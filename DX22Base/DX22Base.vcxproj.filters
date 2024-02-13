@@ -235,6 +235,12 @@
     <Filter Include="ソース ファイル\Info\Flag">
       <UniqueIdentifier>{0a65a912-79f9-44bc-bcb1-3c8d4b0cd0b3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\System\Manager">
+      <UniqueIdentifier>{c85efb6f-4645-434d-9031-0d1c9ce3cda1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\System\Manager">
+      <UniqueIdentifier>{b208ac54-6d55-4e50-a1e7-68ee542c4172}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -608,6 +614,9 @@
     </ClCompile>
     <ClCompile Include="UcFlag.cpp">
       <Filter>ソース ファイル\Info\Flag</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelManager.cpp">
+      <Filter>ソース ファイル\System\Manager</Filter>
     </ClCompile>
     <ClCompile Include="ShowWarning.cpp">
       <Filter>ソース ファイル\2dObject</Filter>
@@ -997,6 +1006,9 @@
     </ClInclude>
     <ClInclude Include="UcFlag.h">
       <Filter>ヘッダー ファイル\Info\Flag</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelManager.h">
+      <Filter>ヘッダー ファイル\System\Manager</Filter>
     </ClInclude>
     <ClInclude Include="ShowWarning.h">
       <Filter>ヘッダー ファイル\2dObject</Filter>
