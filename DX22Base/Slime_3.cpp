@@ -154,7 +154,8 @@ void CSlime_3::Draw()
 	DirectX::XMFLOAT4X4 world;
 	DirectX::XMStoreFloat4x4(&world, XMMatrixTranspose(
 		DirectX::XMMatrixScaling(m_Transform.fScale.x, m_Transform.fScale.y, m_Transform.fScale.z) *
-		DirectX::XMMatrixRotationY(m_Transform.fRadian.y) *
+		DirectX::XMMatrixRotationY(m_Transform.fRadian.y + DirectX::g_XMPi[0]) *
+		//DirectX::XMMatrixRotationY(m_Transform.fRadian.x + DirectX::XMConvertToRadians(20.0f)) *
 		DirectX::XMMatrixTranslation(m_Transform.fPos.x, m_Transform.fPos.y, m_Transform.fPos.z)));
 
 	DirectX::XMFLOAT4X4 mat[3] = {
@@ -237,7 +238,7 @@ void CSlime_3::NormalMove()
 		if (checkRad < LEVEL3_STOP_RANGE)
 		{
 			m_move = TTriType<float>(0.0f, 0.0f, 0.0f);	//移動量を0にする
-			m_Transform.fRadian.y = -(m_Transform.Angle(m_PlayerTran) + DirectX::XMConvertToRadians(90.0f));	//角度をDirectX用に変更
+			m_Transform.fRadian.y = -(m_Transform.Angle(m_PlayerTran) - DirectX::XMConvertToRadians(90.0f));	//角度をDirectX用に変更
 
 			// 静止状態のアニメに遷移
 			if (m_eCurAnime != MOTION_LEVEL3_STOP)
@@ -266,7 +267,7 @@ void CSlime_3::NormalMove()
 			// ベクトルを正規化して方向ベクトルを得る
 			DirectX::XMVECTOR direction = DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&directionVector));
 			// 方向ベクトルから回転行列を計算
-			m_Transform.fRadian.y = atan2(directionVector.x, directionVector.z);
+			m_Transform.fRadian.y = atan2(-directionVector.x, -directionVector.z);
 		}
 	}
 	else	//索敵範囲外だったら

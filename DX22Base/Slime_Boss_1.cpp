@@ -338,6 +338,14 @@ void CSlime_Boss_1::NormalMove()
 		DirectX::XMFLOAT3 directionVector;
 		DirectX::XMVECTOR direction;
 
+		// アニメーションを移動に移行
+		if (m_eCurAnime != ROCK_SLIME_MOVE)
+		{
+			m_eCurAnime = ROCK_SLIME_MOVE;	// アニメーションを攻撃に変更
+			m_fAnimeTime = 0.0f;				// アニメーションタイムのリセット
+		}
+
+
 		// 敵からエネミーの距離、角度を計算
 		distancePlayer = m_Transform.fPos.Distance(playerPos);
 
@@ -366,6 +374,7 @@ void CSlime_Boss_1::NormalMove()
 			m_nMoveState = CHARGE;	// "チャージ"状態に遷移
 			m_nFrame = 0;		// フレームリセット
 
+			// アニメーションを回転に移行
 			if (m_eCurAnime != ROCK_SLIME_ROLLING)
 			{
 				m_eCurAnime = ROCK_SLIME_ROLLING;	// アニメーションを攻撃に変更

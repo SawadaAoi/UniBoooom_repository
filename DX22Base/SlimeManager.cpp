@@ -66,6 +66,8 @@
 #include "HitStop.h"
 #include <map>					//連想型コンテナ
 #include <typeinfo>				//型情報
+#include "ModelManager.h"
+
 #include <stdlib.h>
 #include "UsingCamera.h"	//カメラ使用
 
@@ -160,7 +162,7 @@ CSlimeManager::CSlimeManager(CPlayer* pPlayer)
 {
 	//スライムのモデルと頂点シェーダーの読み込み
 	LoadModel();
-	
+
 	// スライム初期化
 	for (int i = 0; i <MAX_SLIME_NUM; i++)
 	{
@@ -1216,7 +1218,7 @@ void CSlimeManager::LoadModel()
 
 	//レベル3スライムのモデル読み込み
 	m_pYellowModel = new AnimeModel;
-	if (!m_pYellowModel->Load("Assets/Model/slime/Yellow/slime_yellow_walk_1.0.fbx", 0.21f, AnimeModel::XFlip)) {	//倍率と反転は省略可
+	if (!m_pYellowModel->Load("Assets/Model/slime/Yellow/slime_yellow_walk_1.0.fbx", 0.15f, AnimeModel::XFlip)) {	//倍率と反転は省略可
 		MessageBox(NULL, "slime_yellow", "Error", MB_OK);	//ここでエラーメッセージ表示
 	}
 	for (int i = 0; i < CSlimeBase::MOTION_LEVEL3_MAX; i++)
@@ -1281,39 +1283,15 @@ void CSlimeManager::LoadModel()
 	}
 	m_pHealModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));		//頂点シェーダーをセット
 
-	//デビルスライムのモデル読み込み
-	m_pDevilSlimeModel = new AnimeModel;
-	if (!m_pDevilSlimeModel->Load("Assets/Model/boss_slime_devil/devil_walk.fbx", 0.23f, AnimeModel::XFlip)) {			//倍率と反転は省略可
-		MessageBox(NULL, "devil_slime_model", "Error", MB_OK);		//ここでエラーメッセージ表示
-	}
-	for (int i = 0; i < CSlime_BossBase::DEVIL_SLIME_MAX; i++)
-	{
-		//各アニメーションの読み込み
-		m_pDevilSlimeModel->AddAnimation(m_sDevilSlime_Motion[i].c_str());
-		//読み込みに失敗したらエラーメッセージ
-		if (!m_pDevilSlimeModel->GetAnimation(i))
-		{
-			MessageBox(NULL, m_sDevilSlime_Motion[i].c_str(), "Error", MB_OK);	//ここでエラーメッセージ表示
-		}
-	}
-	m_pDevilSlimeModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));		//頂点シェーダーをセット
+	m_pBlueModel = GetModelMng.GetModelPtr(MODEL_SLIME_BLUE);
+	m_pGreenModel = GetModelMng.GetModelPtr(MODEL_SLIME_GREEN);
+	m_pYellowModel = GetModelMng.GetModelPtr(MODEL_SLIME_YELLOW);
+	m_pRedModel = GetModelMng.GetModelPtr(MODEL_SLIME_RED);
+	m_pFlameModel = GetModelMng.GetModelPtr(MODEL_SLIME_FLAME);
+	m_pHealModel = GetModelMng.GetModelPtr(MODEL_SLIME_HEAL);
+	m_pBossRockModel = GetModelMng.GetModelPtr(MODEL_SLIME_ROCK);
+	m_pDevilSlimeModel = GetModelMng.GetModelPtr(MODEL_SLIME_DEVIL);
 
-	//岩スライムのモデル読み込み
-	m_pBossRockModel = new AnimeModel;
-	if (!m_pBossRockModel->Load("Assets/Model/boss_slime_rock/rock_walk_2.0.fbx", 0.5f, AnimeModel::XFlip)) {			//倍率と反転は省略可
-		MessageBox(NULL, "rock_slime_model", "Error", MB_OK);		//ここでエラーメッセージ表示
-	}
-	for (int i = 0; i < CSlime_BossBase::ROCK_SLIME_MAX; i++)
-	{
-		//各アニメーションの読み込み
-		m_pBossRockModel->AddAnimation(m_sRockSlime_Motion[i].c_str());
-		//読み込みに失敗したらエラーメッセージ
-		if (!m_pBossRockModel->GetAnimation(i))
-		{
-			MessageBox(NULL, m_sRockSlime_Motion[i].c_str(), "Error", MB_OK);	//ここでエラーメッセージ表示
-		}
-	}
-	m_pBossRockModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));		//頂点シェーダーをセット
 }
 
 /* ========================================

@@ -101,7 +101,7 @@ CSlimeBase::~CSlimeBase()
 {
 	// =============== メモリ開放 ===================
 	SAFE_DELETE(m_pShadow);	//影解放
-
+	
 	//--エフェクト停止--
 	LibEffekseer::GetManager()->StopEffect(m_efcFlameHandle);
 }
@@ -251,7 +251,7 @@ void CSlimeBase::NormalMove()
 		// ベクトルを正規化して方向ベクトルを得る
 		DirectX::XMVECTOR direction = DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&directionVector));
 		// 方向ベクトルから回転行列を計算
-		m_Transform.fRadian.y = atan2(directionVector.x, directionVector.z);
+		m_Transform.fRadian.y = atan2(-directionVector.x, -directionVector.z);
 	}
 	else
 	{

@@ -38,6 +38,8 @@
 // =============== インクルード ===================
 #include "SceneManager.h"	//自身のヘッダ
 #include "HitStop.h"		//ヒットストップ
+#include "ModelManager.h"	// モデルの一括管理クラスの最初のインスタンス用
+
 #if _DEBUG
 #include <Windows.h>		//メッセージボックス用
 #endif
@@ -67,6 +69,8 @@ CSceneManager::CSceneManager()
 	{
 		ChangeScene();	//最初に始めるシーン作成
 	}
+
+	GetModelMng;	// モデルマネージャーを作成してシーン遷移を早くする
 }
 
 /* ========================================

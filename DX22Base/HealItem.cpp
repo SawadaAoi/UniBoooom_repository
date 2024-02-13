@@ -39,7 +39,7 @@ const float	HEALITEM_HEIGHT = HEALITEM_MOVE_Y;	//  回復アイテムの初期の高さ
    ----------------------------------------
    戻値：なし
 ======================================== */
-CHealItem::CHealItem(TPos3d<float> pos, Model* pModel, VertexShader* pVS)
+CHealItem::CHealItem(TPos3d<float> pos, AnimeModel* pModel)
 	:m_fAnimeCnt(0.0f)
 	,m_pModel(nullptr)
 	,m_pVS(nullptr)
@@ -99,26 +99,48 @@ void CHealItem::Update()
 ======================================== */
 void CHealItem::Draw()
 {
+	if (!m_pCamera) { return; }
+
 	//-- モデル表示
 	if (m_pModel) {
+		// レンダーターゲット、深度バッファの設定
+		RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得
+		DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
+		SetRenderTargets(1, &pRTV, pDSV);		//DSVがnullだと2D表示になる
+
 		DirectX::XMFLOAT4X4 mat[3];
 
 		//拡縮、回転、移動(Y軸回転を先にしたかったのでSRTは使わない)
-		DirectX::XMStoreFloat4x4(&mat[0],DirectX::XMMatrixTranspose(DirectX::XMMatrixScaling(m_Transform.fScale.x, m_Transform.fScale.y, m_Transform.fScale.z)
+		DirectX::XMStoreFloat4x4(&mat[0], DirectX::XMMatrixTranspose(DirectX::XMMatrixScaling(m_Transform.fScale.x, m_Transform.fScale.y, m_Transform.fScale.z)
 			* DirectX::XMMatrixRotationY(m_Transform.fRadian.y)
 			* DirectX::XMMatrixRotationX(m_Transform.fRadian.x) * DirectX::XMMatrixRotationZ(m_Transform.fRadian.z)
 			* DirectX::XMMatrixTranslation(m_Transform.fPos.x, m_Transform.fPos.y, m_Transform.fPos.z)));
 		mat[1] = CUsingCamera::GetThis().GetCamera()->GetViewMatrix();
 		mat[2] = CUsingCamera::GetThis().GetCamera()->GetProjectionMatrix();
 
-		//-- 行列をシェーダーへ設定
-		m_pVS->WriteBuffer(0, mat);
+		ShaderList::SetWVP(mat);
 
-		// レンダーターゲット、深度バッファの設定
-		RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得
-		DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
-		SetRenderTargets(1, &pRTV, pDSV);		//DSVがnullだと2D表示になる
+		//-- モデル表示(アニメーション対応ver)
+		if (m_pModel) {
+			//アニメーション対応したプレイヤーの描画
+			m_pModel->Draw(nullptr, [this](int index)
+			{
+				const AnimeModel::Mesh* pMesh = m_pModel->GetMesh(index);
+				const AnimeModel::Material* pMaterial = m_pModel->GetMaterial(pMesh->materialID);
+				ShaderList::SetMaterial(*pMaterial);
 
-		m_pModel->Draw();
+				DirectX::XMFLOAT4X4 bones[200];
+				for (int i = 0; i < pMesh->bones.size() && i < 200; ++i)
+				{
+					// この計算はゲームつくろー「スキンメッシュの仕組み」が参考になる
+					DirectX::XMStoreFloat4x4(&bones[i], DirectX::XMMatrixTranspose(
+						pMesh->bones[i].invOffset *
+						m_pModel->GetBone(pMesh->bones[i].index)
+					));
+				}
+				ShaderList::SetBones(bones);
+			});
+			//m_pModel->DrawBone();
+		}
 	}
 }

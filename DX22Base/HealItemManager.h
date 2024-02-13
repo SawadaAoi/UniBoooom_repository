@@ -34,8 +34,7 @@ public:
 	std::vector<CHealItem*>* GetHealItemConPtr();
 private:
 	std::vector<CHealItem*> m_pHealItemList;
-	Model* m_pModel;
-	VertexShader* m_pVS;
+	AnimeModel* m_pModel;
 };
 
 #endif // !__HEALITEM_MANAGER_H__

@@ -40,6 +40,8 @@ public:
 	void Draw(const E_DRAW_MODE& = E_DRAW_MODE_NORMAL) override;	// 描画関数
 	void SetLoopFlg(bool);	// ループ再生フラグをセット
 	bool GetAnimFlg();	// フラグ取得
+	void SetAnimNum(int num);
+	void AnimReset();	// アニメーション番号リセット
 
 protected:
 	// ===メンバ変数宣言=====

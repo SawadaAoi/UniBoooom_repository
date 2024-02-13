@@ -72,6 +72,18 @@ public:
 		SE_WARNING,		//残り体力１
 		SE_MAX			//SEの総数
 	};
+
+	// ===列挙===
+	enum PLAYER_MOTION
+	{
+		MOTION_PLAYER_STOP,		// 待機
+		MOTION_PLAYER_MOVE,		// 移動
+		MOTION_PLAYER_SWING,	// ハンマーを振る
+		MOTION_PLAYER_DIE,		// 死亡
+
+		MOTION_PLAYER_MAX,		//モーションの総数
+	};
+
 private:
 	// ===定数定義===========
 	const int CNT_START_WAIT = 10;	//待機モーションを始めるまでの時間
@@ -148,17 +160,6 @@ private:
 	int m_nSweatEffeCnt;				// 汗エフェクトの表示間隔加算値
 	int m_nSwingFastCnt;				// ハンマーを振る時間の加算間隔
 
-
-	// ===列挙===
-	enum MOTION
-	{
-		MOTION_STOP,	// 待機
-		MOTION_MOVE,	// 移動
-		MOTION_SWING,	// ハンマーを振る
-		MOTION_DIE,		// 死亡
-		MOTION_MAX,	//モーションの総数
-	};
-
 	//=====SE関連=====
 	XAUDIO2_BUFFER* m_pSE[SE_MAX];
 	IXAudio2SourceVoice* m_pSESpeaker[SE_MAX];
@@ -172,8 +173,7 @@ private:
 	};
 
 	//=====アニメーション関連=====
-	AnimeModel::AnimeNo m_Anime[MOTION_MAX];		//プレイヤーのアニメーション
-	const std::string m_sAnimeFile[MOTION_MAX] = {	//アニメーションのファイル
+	const std::string m_sAnimeFile[MOTION_PLAYER_MAX] = {	//アニメーションのファイル
 		"Assets/Model/player/wait_end.FBX",			//待機
 		"Assets/Model/player/Dash.FBX",				//移動
 		"Assets/Model/player/pow.FBX",				//スイング
