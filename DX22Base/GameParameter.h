@@ -64,7 +64,7 @@ const float PLAYER_ROTATE_X_DIE = DirectX::XMConvertToRadians(0.0f);	// プレイヤ
 
 // ハンマー
 const float ROTATE_RADIUS = 3.0f;						// ハンマーが回転するプレイヤーからの距離
-const float HAMMER_COL_SIZE = 0.7f;						// ハンマーの当たり判定の大きさ
+const float HAMMER_COL_SIZE = 2.0f;						// ハンマーの当たり判定の大きさ
 const float HAMMER_SIZE = HAMMER_COL_SIZE * 0.26666f;	// ハンマーの大きさ
 const float	SWING_TIME_ADD_MULT		= 1.4f;				// ハンマーを一回振る度に長くなるハンマーの一振りの時間(この値を乗算する)
 const float	SWING_TIME_MINUS_MULT	= 0.99f;			// ハンマーを一回振る度に短くなるハンマーの一振りの時間(この値を乗算する)
