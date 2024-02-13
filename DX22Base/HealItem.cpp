@@ -42,7 +42,6 @@ const float	HEALITEM_HEIGHT = HEALITEM_MOVE_Y;	//  回復アイテムの初期の高さ
 CHealItem::CHealItem(TPos3d<float> pos, AnimeModel* pModel)
 	:m_fAnimeCnt(0.0f)
 	,m_pModel(nullptr)
-	,m_pVS(nullptr)
 {
 	m_Transform.fPos = pos;
 	m_Transform.fPos.y = HEALITEM_HEIGHT;		//表示される初期の高さ
@@ -52,8 +51,6 @@ CHealItem::CHealItem(TPos3d<float> pos, AnimeModel* pModel)
 	m_Sphere.fRadius = 1.0f;
 
 	m_pModel = pModel;
-	m_pVS = pVS;
-	m_pModel->SetVertexShader(m_pVS);
 }
 
 /* ========================================
@@ -99,8 +96,6 @@ void CHealItem::Update()
 ======================================== */
 void CHealItem::Draw()
 {
-	if (!m_pCamera) { return; }
-
 	//-- モデル表示
 	if (m_pModel) {
 		// レンダーターゲット、深度バッファの設定

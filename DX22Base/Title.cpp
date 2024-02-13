@@ -69,13 +69,10 @@ CTitle::CTitle()
 	m_pBgBase = std::make_shared<CTitleBgBase>();	//”wŒi
 	m_pBgCloud = std::make_shared<CTitleBgCloud>();	//”wŒi‚Ì‰_
 	m_pBgGrass = std::make_shared<CTitleBgGrass>();	//”wŒi‚Ì‘
-	m_pCamera = new CFixedCamera();					//ŒÅ’èƒJƒƒ‰
+	m_pMainCamera = std::make_shared<CFixedCamera>();	//ŒÅ’èƒJƒƒ‰
 	m_pCommandStart = std::make_shared<CTitleCommandStart>();	//ŠJnƒRƒ}ƒ“ƒh
 	m_pCommandFinish = std::make_shared<CTitleCommandFinish>();	//I—¹ƒRƒ}ƒ“ƒh
 	m_pBgPlayer = std::make_shared<CTitleBgPlayer>();			//”wŒi‚ÌƒvƒŒƒCƒ„[
-	m_pCommandStart->SetCamera(m_pCamera);						//ƒJƒƒ‰“o˜^
-	m_pCommandFinish->SetCamera(m_pCamera);						//ƒJƒƒ‰“o˜^
-	m_pBgPlayer->SetCamera(m_pCamera);							//ƒJƒƒ‰“o˜^
 
 	// =============== ƒJƒƒ‰“o˜^ ===================
 	CUsingCamera::GetThis().SetCamera(m_pMainCamera);	//ƒJƒƒ‰“o˜^

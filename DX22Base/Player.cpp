@@ -192,7 +192,7 @@ void CPlayer::Update()
 		if (m_pHammer->Update() == false)
 		{
 			m_pHammer->SwingSpeedSlow();	// ハンマーのスイングスピードを遅くする
-			m_pModel->SetAnimationSpeed(m_Anime[MOTION_SWING], m_pHammer->GetSwingSpeed() * SWING_ANIM_ADJUST);	// アニメの速さを設定
+			m_pModel->SetAnimationSpeed(MOTION_PLAYER_SWING, m_pHammer->GetSwingSpeed() * SWING_ANIM_ADJUST);	// アニメの速さを設定
 			m_bAttackFlg = false;			// 攻撃中フラグをオフにする
 			m_bHumInvFlg = true;			// ハンマー振り間隔フラグオン
 		}
@@ -322,8 +322,8 @@ void CPlayer::Draw()
 				* DirectX::XMMatrixRotationX(m_fRotate_x)			// X角度
 				* DirectX::XMMatrixRotationZ(m_Transform.fRadian.z)	// Z角度
 				* DirectX::XMMatrixTranslation(m_Transform.fPos.x, m_Transform.fPos.y, m_Transform.fPos.z)));	// 座標
-		CUsingCamera::GetThis().GetCamera()->GetViewMatrix();
-		CUsingCamera::GetThis().GetCamera()->GetProjectionMatrix();
+		mat[1] = CUsingCamera::GetThis().GetCamera()->GetViewMatrix();
+		mat[2] = CUsingCamera::GetThis().GetCamera()->GetProjectionMatrix();
 
 
 		ShaderList::SetWVP(mat);
@@ -358,7 +358,7 @@ void CPlayer::Draw()
 		//m_pHammer->Draw();		// ハンマーの描画
 	}
 
-	m_pShadow->Draw(m_Transform, PLAYER_SHADOW_SCALE);	// 影の描画
+	//m_pShadow->Draw(m_Transform, PLAYER_SHADOW_SCALE);	// 影の描画
 
 	m_nWalkEffeCnt++;
 	m_pWalkEffectMng->Draw();
