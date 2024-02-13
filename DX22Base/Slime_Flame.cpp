@@ -14,12 +14,14 @@
 	・2023/11/28 影の大きさを設定する変数追加 nieda
 	・2023/12/07 ゲームパラメータから一部定数移動 takagi
 	・2024/01/18 炎スライムエフェクト追加 Tei
+	・2024/02/09 UsingCamera使用 takagi
 
 ========================================== */
 
 // =============== インクルード ===================
 #include "Slime_Flame.h"
-#include "GameParameter.h"		//定数定義用ヘッダー
+#include "GameParameter.h"	//定数定義用ヘッダー
+#include "UsingCamera.h"	//カメラ使用
 
 // =============== 定数定義 =======================
 #if MODE_GAME_PARAMETER
@@ -144,10 +146,10 @@ void CSlime_Flame::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
 	m_Transform.fPos.z += m_move.z * fSlimeMoveSpeed;
 
 	// エフェクトの描画
-	TPos3d<float> cameraPos = m_pCamera->GetPos();							//カメラ座標を取得
+	TPos3d<float> cameraPos = CUsingCamera::GetThis().GetCamera()->GetPos();							//カメラ座標を取得
 	DirectX::XMFLOAT3 fCameraPos(cameraPos.x, cameraPos.y, cameraPos.z);	//XMFLOAT3に変換
 	LibEffekseer::SetViewPosition(fCameraPos);								//カメラ座標をセット
-	LibEffekseer::SetCameraMatrix(m_pCamera->GetViewWithoutTranspose(), m_pCamera->GetProjectionWithoutTranspose());	//転置前のviewとprojectionをセット
+	LibEffekseer::SetCameraMatrix(CUsingCamera::GetThis().GetCamera()->GetViewWithoutTranspose(), CUsingCamera::GetThis().GetCamera()->GetProjectionWithoutTranspose());	//転置前のviewとprojectionをセット
 
 }
 

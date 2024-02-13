@@ -44,7 +44,7 @@
 	・2024/01/30 プレイヤー移動エフェクト用処理追加 Tei
 	・2024/02/02 汗エフェクト処理追加 Tei
 	・2024/02/08 汗エフェクト処理修正&&ハンマーの振る速度もついでに修正 sawada
-	・2024/02/09 カメラ更新除去 takagi
+	・2024/02/09 カメラ更新除去・UsingCamera使用 takagi
 
 ======================================== */
 
@@ -54,6 +54,8 @@
 #include "Sphere.h"
 #include "GameParameter.h"		//定数定義用ヘッダー
 #include "ShaderList.h"
+#include "UsingCamera.h"	//カメラ使用
+
 
 // =============== 定数定義 =======================
 const float KEYBOARD_INPUT_SIZE = 1.0f;						// キーボードの入力値の大きさ
@@ -100,7 +102,6 @@ CPlayer::CPlayer()
 	, m_bAttackFlg(false)
 	, m_nHp(PLAYER_HP)		// プレイヤーのHPを決定
 	, m_bDieFlg(false)
-	, m_pCamera(nullptr)
 	, m_nSafeTimeCnt(0)
 	, m_bSafeTimeFlg(false)
 	, m_DrawFlg(true)
@@ -321,8 +322,8 @@ void CPlayer::Draw()
 				* DirectX::XMMatrixRotationX(m_fRotate_x)			// X角度
 				* DirectX::XMMatrixRotationZ(m_Transform.fRadian.z)	// Z角度
 				* DirectX::XMMatrixTranslation(m_Transform.fPos.x, m_Transform.fPos.y, m_Transform.fPos.z)));	// 座標
-		mat[1] = m_pCamera->GetViewMatrix();
-		mat[2] = m_pCamera->GetProjectionMatrix();
+		CUsingCamera::GetThis().GetCamera()->GetViewMatrix();
+		CUsingCamera::GetThis().GetCamera()->GetProjectionMatrix();
 
 
 		ShaderList::SetWVP(mat);
@@ -357,7 +358,7 @@ void CPlayer::Draw()
 		//m_pHammer->Draw();		// ハンマーの描画
 	}
 
-	m_pShadow->Draw(m_Transform, PLAYER_SHADOW_SCALE, m_pCamera);	// 影の描画
+	m_pShadow->Draw(m_Transform, PLAYER_SHADOW_SCALE);	// 影の描画
 
 	m_nWalkEffeCnt++;
 	m_pWalkEffectMng->Draw();
@@ -606,25 +607,6 @@ int* CPlayer::GetHpPtr()
 bool CPlayer::GetDieFlg() const
 {
 	return m_bDieFlg;
-}
-
-
-/* ========================================
-   カメラのセット関数
-   ----------------------------------------
-   内容：プレイヤー追従カメラをセットする
-   ----------------------------------------
-   引数：カメラ
-   ----------------------------------------
-   戻値：なし
-======================================== */
-void CPlayer::SetCamera(CCamera * pCamera)
-{
-	m_pCamera = pCamera;	//中身は変えられないけどポインタはかえれるのでヨシ！
-	m_pHammer->SetCamera(m_pCamera);
-	m_pWalkEffectMng->SetCamera(m_pCamera);
-	m_pSweatEffectMng->SetCamera(m_pCamera);
-
 }
 
 /* ========================================

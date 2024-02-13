@@ -11,11 +11,13 @@
    変更履歴
 	・2024/01/25 HitSlimeEffectクラス作成 Tei
 	・2024/02/01 表示の不具合を修正 sawada
+	・2024/02/13 UsingCamera使用 takagi
 
 ========================================== */
 
 // =============== インクルード ===================
 #include "HitSlimeEffect.h"
+#include "UsingCamera.h"	//カメラ使用
 
 // =============== 定数定義 =======================
 const float HIT_EFFECT_STANDARD_ONE_FRAME = 0.8f * 60.0f;
@@ -29,13 +31,11 @@ const float HIT_EFFECT_SIZE = 0.6f;
 	引数1：生成座標(x,y,z)
 	引数2：生成時間
 	引数3：ヒットのEffekseer
-	引数4：カメラ
 	-------------------------------------
 	戻値：無し
 =========================================== */
-CHitSlimeEffect::CHitSlimeEffect(TPos3d<float> fPos, float fTime, Effekseer::EffectRef hitEffect, const CCamera * pCamera)
-	: m_pCamera(nullptr)
-	, m_bDelFlg(false)
+CHitSlimeEffect::CHitSlimeEffect(TPos3d<float> fPos, float fTime, Effekseer::EffectRef hitEffect)
+	: m_bDelFlg(false)
 	, m_fEffectTime(fTime)
 	, m_nDelFrame(0)
 {
@@ -49,13 +49,12 @@ CHitSlimeEffect::CHitSlimeEffect(TPos3d<float> fPos, float fTime, Effekseer::Eff
 		m_Transform.fPos.z);
 	LibEffekseer::GetManager()->SetScale(m_efcHitHandle, HIT_EFFECT_SIZE, HIT_EFFECT_SIZE, HIT_EFFECT_SIZE);	//エフェクトサイズ設定
 	LibEffekseer::GetManager()->SetSpeed(m_efcHitHandle, m_fEffectTime / HIT_EFFECT_STANDARD_ONE_FRAME );		//エフェクト再生速度設定
-	m_pCamera = pCamera;
 
 	//エフェクトの描画(一度カメラの描画を入れないと表示がおかしくなる為)
-	TPos3d<float> cameraPos = m_pCamera->GetPos();							//カメラ座標を取得
+	TPos3d<float> cameraPos = CUsingCamera::GetThis().GetCamera()->GetPos();							//カメラ座標を取得
 	DirectX::XMFLOAT3 fCameraPos(cameraPos.x, cameraPos.y, cameraPos.z);	//XMFLOAT3に変換
 	LibEffekseer::SetViewPosition(fCameraPos);								//カメラ座標をセット
-	LibEffekseer::SetCameraMatrix(m_pCamera->GetViewWithoutTranspose(), m_pCamera->GetProjectionWithoutTranspose());	//転置前のviewとprojectionをセット
+	LibEffekseer::SetCameraMatrix(CUsingCamera::GetThis().GetCamera()->GetViewWithoutTranspose(), CUsingCamera::GetThis().GetCamera()->GetProjectionWithoutTranspose());	//転置前のviewとprojectionをセット
 
 }
 
@@ -99,10 +98,10 @@ void CHitSlimeEffect::Update()
 void CHitSlimeEffect::Draw()
 {
 	//エフェクトの描画
-	TPos3d<float> cameraPos = m_pCamera->GetPos();							//カメラ座標を取得
+	TPos3d<float> cameraPos = CUsingCamera::GetThis().GetCamera()->GetPos();							//カメラ座標を取得
 	DirectX::XMFLOAT3 fCameraPos(cameraPos.x, cameraPos.y, cameraPos.z);	//XMFLOAT3に変換
 	LibEffekseer::SetViewPosition(fCameraPos);								//カメラ座標をセット
-	LibEffekseer::SetCameraMatrix(m_pCamera->GetViewWithoutTranspose(), m_pCamera->GetProjectionWithoutTranspose());	//転置前のviewとprojectionをセット
+	LibEffekseer::SetCameraMatrix(CUsingCamera::GetThis().GetCamera()->GetViewWithoutTranspose(), CUsingCamera::GetThis().GetCamera()->GetProjectionWithoutTranspose());	//転置前のviewとprojectionをセット
 }
 
 /* ========================================
@@ -123,20 +122,6 @@ void CHitSlimeEffect::DisplayTimeAdd()
 	{
 		m_bDelFlg = true;	// 削除フラグを立てる
 	}
-}
-
-/* ========================================
-	カメラ情報セット関数
-	----------------------------------------
-	内容：描画処理で使用するカメラ情報セット
-	----------------------------------------
-	引数1：カメラポインタ
-	----------------------------------------
-	戻値：なし
-======================================== */
-void CHitSlimeEffect::SetCamera(const CCamera * pCamera)
-{
-	m_pCamera = pCamera;
 }
 
 /* ========================================

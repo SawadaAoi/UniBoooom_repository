@@ -11,6 +11,7 @@
 	・2023/11/18　作成 yamamoto
 	・2023/11/25　コメント訂正、使っていない関数削除 yamamoto
 	・2023/12/07 ゲームパラメータに依存していたので修正・不要箇所削除 takagi
+	・2024/02/13 カメラ削除 takagi
 
 ========================================== */
 
@@ -28,7 +29,6 @@
 	戻値：なし
 =========================================== */
 CScoreOHManager::CScoreOHManager()
-	: m_pCamera(nullptr)
 {
 	// スコア配列の初期化
 	for (int i = 0; i < MAX_EXPLOSION_NUM; i++)
@@ -120,7 +120,6 @@ void CScoreOHManager::DisplayOverheadScore(TTriType<float> pos,int score,float h
 		if (m_pScore[i] != nullptr) continue;
 
 		m_pScore[i] = new CScoreOverHead(pos,score, height, LEVEL_4_EXPLODE_TIME,false);
-		m_pScore[i]->SetCamera(m_pCamera);
 		break;
 	}
 }
@@ -154,7 +153,6 @@ void CScoreOHManager::DisplayOverheadScore(TTriType<float> pos, E_SLIME_LEVEL le
 		if (m_pScore[i] != nullptr) continue;
 
 		m_pScore[i] = new CScoreOverHead(pos, score, SLIME_SCORE_HEIGHT, ScoreTime,true);
-		m_pScore[i]->SetCamera(m_pCamera);
 		break;
 	}
 }
@@ -181,17 +179,4 @@ void CScoreOHManager::DeleteCheck()
 		delete m_pScore[i]; m_pScore[i] = nullptr;	// 爆発を削除する
 
 	}
-}
-/* ========================================
-   カメラのセット関数
-   ----------------------------------------
-   内容：プレイヤー追従カメラをセットする
-   ----------------------------------------
-   引数：カメラ
-   ----------------------------------------
-   戻値：なし
-======================================== */
-void CScoreOHManager::SetCamera(const CCamera * pCamera)
-{
-	m_pCamera = pCamera;	//中身は変えられないけどポインタはかえれるのでヨシ！
 }

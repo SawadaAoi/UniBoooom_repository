@@ -10,6 +10,7 @@
 
 	変更履歴
 	・2023/12/17 新規作成 nieda
+	・2024/02/13 カメラ削除 takagi
 
 ========================================== */
 
@@ -24,8 +25,8 @@ class COverText :public CDrawAnim	//UIアニメーション
 {
 public:
 	// ===プロトタイプ宣言===
-	COverText(CCamera*);	// コンストラクタ
-	~COverText() {};		// デストラクタ
+	COverText();		// コンストラクタ
+	~COverText() {};	// デストラクタ
 protected:
 	// ===メンバ変数宣言=====
 };	//ゲームスタートUIアニメーション

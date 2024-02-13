@@ -411,12 +411,6 @@
     <ClCompile Include="BoooomUI.cpp">
       <Filter>ソース ファイル\2dObject</Filter>
     </ClCompile>
-    <ClCompile Include="SceneGame.cpp">
-      <Filter>ソース ファイル\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="SceneGameCollision.cpp">
-      <Filter>ソース ファイル\Scene</Filter>
-    </ClCompile>
     <ClCompile Include="Slime_1.cpp">
       <Filter>ソース ファイル\3dObject\Enemy</Filter>
     </ClCompile>
@@ -796,9 +790,6 @@
     </ClInclude>
     <ClInclude Include="BoooomUI.h">
       <Filter>ヘッダー ファイル\2dObject</Filter>
-    </ClInclude>
-    <ClInclude Include="SceneGame.h">
-      <Filter>ヘッダー ファイル\Scene</Filter>
     </ClInclude>
     <ClInclude Include="Slime_1.h">
       <Filter>ヘッダー ファイル\3dObject\Enemy</Filter>

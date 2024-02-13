@@ -9,6 +9,7 @@
 
 	変更履歴
 	・2024/01/30 WalkEffectManagerクラス作成 Tei
+	・2024/02/13 カメラ削除 takagi
 
 ========================================== */
 
@@ -142,25 +143,11 @@ void CWalkEffectManager::Create(tagTransform3d tTransForm)
 			tTransForm,
 			TOTAL_WALK_EFFECT_TIME,
 			(GetRandom(6) * 0.1f),
-			m_walkEffect,
-			m_pCamera);
+			m_walkEffect
+		);
 
 		break;
 	}
-}
-
-/* ========================================
-	カメラ情報セット関数
-	----------------------------------------
-	内容：描画処理で使用するカメラ情報セット
-	----------------------------------------
-	引数1：なし
-	----------------------------------------
-	戻値：なし
-======================================== */
-void CWalkEffectManager::SetCamera(const CCamera * pCamera)
-{
-	m_pCamera = pCamera;
 }
 
 /* ========================================

@@ -20,6 +20,7 @@
 	・2023/12/17 ゲームパラメータ無効化 takagi
 	・2024/01/26 選択.決定.ポーズSE追加 suzumura
 	・2024/02/09 カメラ削除 takagi
+	・2024/02/13 カメラ削除 takagi
 
 ========================================== */
 
@@ -31,6 +32,7 @@
 #include "CharPause.h"		//インスタンス候補
 #include "BgPause.h"		//インスタンス候補
 #include "CommandPause.h"	//インスタンス候補
+#include "Defines.h"		//定数定義
 
 // =============== 列挙型定義 ===================
 enum E_2D
@@ -100,11 +102,11 @@ const std::map<int, TPos3d<float>> MAP_POS = {	//更新順
 	----------------------------------------
 	内容：生成時に行う処理
 	----------------------------------------
-	引数1：const CCamera* pCamera：カメラのポインタ
+	引数1：なし
 	----------------------------------------
 	戻値：なし
 =========================================== */
-CPause::CPause(const CCamera* pCamera)
+CPause::CPause()
 	:m_ucFlag(0x00)			//フラグ
 	, m_pSE{ nullptr,nullptr,nullptr }
 	, m_pSESpeaker{ nullptr ,nullptr,nullptr }

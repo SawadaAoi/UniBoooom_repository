@@ -241,7 +241,6 @@
     <ClCompile Include="QuadParticle.cpp" />
     <ClCompile Include="Result.cpp" />
     <ClCompile Include="Scene.cpp" />
-    <ClCompile Include="SceneGameCollision.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="SlimeBase.cpp" />
@@ -263,7 +262,6 @@
     <ClCompile Include="SweatEffect.cpp" />
     <ClCompile Include="SweatEffectManager.cpp" />
     <ClCompile Include="Texture.cpp" />
-    <ClCompile Include="SceneGame.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="TimerStage1.cpp" />
     <ClCompile Include="TimerStage2.cpp" />
@@ -374,7 +372,6 @@
     <ClInclude Include="QuadParticle.h" />
     <ClInclude Include="Result.h" />
     <ClInclude Include="Scene.h" />
-    <ClInclude Include="SceneGame.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Slime_2.h" />

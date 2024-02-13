@@ -16,7 +16,7 @@
 	・2023/12/07 自動でシーン遷移させるためのフラグ取得関数追加 nieda
 	・2023/12/16 アニメーション描画書き変え nieda
 	・2024/01/28 処理の流れを修正 Sawada
-
+	・2024/02/13 カメラ削除 takagi
 
 ========================================== */
 #include "DirectXTex/TextureLoad.h"		
@@ -33,11 +33,11 @@
 	内容：生成時に行う処理
 	----------------------------------------
 	引数1：プレイヤーのHPのポインタ
-	引数1：制限時間のポインタ
+	引数2：制限時間のポインタ
 	----------------------------------------
 	戻値：なし
 =========================================== */
-CStageFinish::CStageFinish(CCamera* pCamera, CPlayer* pPlayer, int* pTimeCnt)
+CStageFinish::CStageFinish(CPlayer* pPlayer, int* pTimeCnt)
 	: m_eGameState(GAME_PLAY)
 	, m_pPlayer(pPlayer)	// プレイヤーのポインタをセット
 	, m_pTimeCnt(nullptr)
@@ -45,8 +45,8 @@ CStageFinish::CStageFinish(CCamera* pCamera, CPlayer* pPlayer, int* pTimeCnt)
 {
 	m_pTimeCnt = pTimeCnt;		//制限時間のポインタを取得
 
-	m_pClear = new CClearText(pCamera);
-	m_pOver = new COverText(pCamera);
+	m_pClear = new CClearText();
+	m_pOver = new COverText();
 }
 
 /* ========================================

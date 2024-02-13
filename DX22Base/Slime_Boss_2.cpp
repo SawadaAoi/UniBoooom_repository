@@ -12,6 +12,8 @@
 	・2023/12/14 攻撃動作を追加 Sawada
 	・2024/01/23 着地時の高速移動バグを修正 Sawada
 	・2023/02/02 アニメーションの追加 yamashita
+	・2024/02/09 UsingCamera使用 takagi
+	・2024/02/13 カメラ削除 takagi
 
 ========================================== */
 
@@ -19,6 +21,7 @@
 // =============== インクルード ===================
 #include "Slime_Boss_2.h"
 #include "Sprite.h"
+#include "UsingCamera.h"	//カメラ使用
 
 // =============== 定数定義 =======================
 const float BOSS_2_SCALE = 6.0f;					// ボス2の大きさ
@@ -218,8 +221,8 @@ void CSlime_Boss_2::Draw()
 
 	DirectX::XMFLOAT4X4 mat[3] = {
 	worldMat,
-	m_pCamera->GetViewMatrix(),
-	m_pCamera->GetProjectionMatrix()
+	CUsingCamera::GetThis().GetCamera()->GetViewMatrix(),
+	CUsingCamera::GetThis().GetCamera()->GetProjectionMatrix()
 	};
 
 	//-- モデル表示
@@ -263,17 +266,17 @@ void CSlime_Boss_2::Draw()
 	}
 
 	//-- 影の描画
-	m_pShadow->Draw(m_pCamera);
+	m_pShadow->Draw();
 
 	//HP表示
 	RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得
 	DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
 	SetRenderTargets(1, &pRTV, nullptr);		//DSVがnullだと2D表示になる
 
-	mat[1] = m_pCamera->GetViewMatrix();
-	mat[2] = m_pCamera->GetProjectionMatrix();
+	mat[1] = CUsingCamera::GetThis().GetCamera()->GetViewMatrix();
+	mat[2] = CUsingCamera::GetThis().GetCamera()->GetProjectionMatrix();
 	DirectX::XMFLOAT4X4 inv;//逆行列の格納先
-	inv = m_pCamera->GetViewMatrix();
+	inv = CUsingCamera::GetThis().GetCamera()->GetViewMatrix();
 
 	//カメラの行列はGPUに渡す際に転置されているため、逆行列のために一度元に戻す
 	DirectX::XMMATRIX matInv = DirectX::XMLoadFloat4x4(&inv);

@@ -20,6 +20,7 @@
 // =============== インクルード =====================
 #include "TitleObj.h"	//親のヘッダ
 #include <memory>		//ptr管理
+#include "FrameCnt.h"	//カウンタ
 
 // =============== クラス定義 =====================
 class CTitleInitCounter

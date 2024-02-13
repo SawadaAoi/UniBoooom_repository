@@ -13,7 +13,7 @@
 	・2023/12/07 自動でシーン遷移させるためのフラグ取得関数追加 nieda
 	・2023/12/16 不要な変数など削除 nieda	
 	・2024/01/28 処理の流れを修正 Sawada
-
+	・2024/02/13 カメラ削除 takagi
 
 ========================================== */
 #ifndef __STAGE_FINISH_UI_H__
@@ -38,7 +38,7 @@ public:
 		MAX_STATE
 	};
 
-	CStageFinish(CCamera* pCamera, CPlayer* pPlayer,int* pTimeCnt);
+	CStageFinish(CPlayer* pPlayer,int* pTimeCnt);
 	~CStageFinish();
 	void Update();
 	void Draw();

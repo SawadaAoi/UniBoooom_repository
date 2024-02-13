@@ -11,17 +11,20 @@
 	・2023/11/20 cpp,作成 Tei
 	・2023/11/20 描画で必要な関数を作成 Tei
 	・2023/12/07 ゲームパラメータから定数移動 takagi
+	・2024/02/09 UsingCamera使用 takagi
+	・2024/02/13 カメラ削除 takagi
 
 ========================================== */
 
 // =============== インクルード ===================
 #include "BoooomUI.h"
+#include "UsingCamera.h"	//カメラ使用
 
 // =============== 定数定義 ===================
-const float BOOOOM_UI_SIZE_X = 1.0f;		//BoooomUIのXの長さ（textureの比率と合わせる）
-const float BOOOOM_UI_SIZE_Y = 0.565f;		//BoooomUIのYの長さ（textureの比率と合わせる）
-const float BOOOOM_UI_SCALE_X = 6.0f;		//BoooomUIサイズのスケール
-const float BOOOOM_UI_SCALE_Y = 6.0f;		//BoooomUIサイズのスケール
+const float BOOOOM_UI_SIZE_X = 1.0f;	//BoooomUIのXの長さ（textureの比率と合わせる）
+const float BOOOOM_UI_SIZE_Y = 0.565f;	//BoooomUIのYの長さ（textureの比率と合わせる）
+const float BOOOOM_UI_SCALE_X = 6.0f;	//BoooomUIサイズのスケール
+const float BOOOOM_UI_SCALE_Y = 6.0f;	//BoooomUIサイズのスケール
 
 /* ========================================
 	コンストラクタ
@@ -32,7 +35,7 @@ const float BOOOOM_UI_SCALE_Y = 6.0f;		//BoooomUIサイズのスケール
 	----------------------------------------
 	戻値：なし
 =========================================== */
-CBoooomUI::CBoooomUI(TPos3d<float> pos, Texture* pTex, const CCamera* pCamera, float fTime)
+CBoooomUI::CBoooomUI(TPos3d<float> pos, Texture* pTex, float fTime)
 	:m_pBoooomTex(pTex)
 	,m_pos(pos)
 	,m_scale{ BOOOOM_UI_SCALE_X, BOOOOM_UI_SCALE_Y, 0.0f}
@@ -40,10 +43,7 @@ CBoooomUI::CBoooomUI(TPos3d<float> pos, Texture* pTex, const CCamera* pCamera, f
 	,m_nDelFrame(0)
 	,m_bDelFlg(false)
 {
-	
-	m_pCamera = pCamera;		//カメラセット
 	m_fExplodeTime = fTime;		//爆発総時間をセットする
-		
 }
 
 /* ========================================
@@ -83,11 +83,11 @@ void CBoooomUI::Draw()
 	SetRenderTargets(1, &pRTV, nullptr);		//DSVがnullだと2D表示になる
 
 	DirectX::XMFLOAT4X4 mat[3];
-	mat[1] = m_pCamera->GetViewMatrix();
-	mat[2] = m_pCamera->GetProjectionMatrix();
+	mat[1] = CUsingCamera::GetThis().GetCamera()->GetViewMatrix();
+	mat[2] = CUsingCamera::GetThis().GetCamera()->GetProjectionMatrix();
 
 	DirectX::XMFLOAT4X4 inv;	//逆行列(inverse)の格納先
-	inv = m_pCamera->GetViewMatrix();
+	inv = CUsingCamera::GetThis().GetCamera()->GetViewMatrix();
 
 	//カメラの行列なGPUに渡す際に転置されているため、逆行列の計算のために一度元に戻す
 	DirectX::XMMATRIX matInv = DirectX::XMLoadFloat4x4(&inv);	//invに格納されたカメラ行列を変換
@@ -146,18 +146,4 @@ void CBoooomUI::DisplayTimeAdd()
 bool CBoooomUI::GetDelFlg()
 {
 	return m_bDelFlg;
-}
-
-/* ========================================
-	カメラ情報セット関数
-	----------------------------------------
-	内容：描画処理で使用するカメラ情報セット
-	----------------------------------------
-	引数1：なし
-	----------------------------------------
-	戻値：なし
-======================================== */
-void CBoooomUI::SetCamera(const CCamera * pCamera)
-{
-	m_pCamera = pCamera;
 }

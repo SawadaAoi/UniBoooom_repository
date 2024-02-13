@@ -253,16 +253,16 @@ void CResult::Draw()
 void CResult::DrawBgScreen()
 {
 	// 全体の背景
-	Draw2d(
-		BG_SCREEN_PARAM.fPos.x, BG_SCREEN_PARAM.fPos.y,
-		BG_SCREEN_PARAM.fSize.x, BG_SCREEN_PARAM.fSize.y,
-		m_pTexture[E_TEXTURE::BG_SCREEN]);
+	//Draw2d(
+	//	BG_SCREEN_PARAM.fPos.x, BG_SCREEN_PARAM.fPos.y,
+	//	BG_SCREEN_PARAM.fSize.x, BG_SCREEN_PARAM.fSize.y,
+	//	m_pTexture[E_TEXTURE::BG_SCREEN]);
 
-	// 右半分の各項目の背景
-	Draw2d(
-		BG_PANEL_PARAM.fPos.x,BG_PANEL_PARAM.fPos.y,
-		BG_PANEL_PARAM.fSize.x,BG_PANEL_PARAM.fSize.y,
-		m_pTexture[E_TEXTURE::BG_PANEL]);
+	//// 右半分の各項目の背景
+	//Draw2d(
+	//	BG_PANEL_PARAM.fPos.x,BG_PANEL_PARAM.fPos.y,
+	//	BG_PANEL_PARAM.fSize.x,BG_PANEL_PARAM.fSize.y,
+	//	m_pTexture[E_TEXTURE::BG_PANEL]);
 }
 
 /* ========================================
@@ -276,42 +276,42 @@ void CResult::DrawBgScreen()
 =========================================== */
 void CResult::DrawWarningTexture()
 {
-	Texture* pWarningTex;	// 手配書画像
+	//Texture* pWarningTex;	// 手配書画像
 
-	// リザルト文字
-	m_pTextureResultText->Draw();
+	//// リザルト文字
+	//m_pTextureResultText->Draw();
 
-	// プレイしたステージによって手配書の画像を変える
-	switch (m_Data.nStageNum)
-	{
-	case 1: pWarningTex = m_pTexture[E_TEXTURE::WARNING_STAGE_1]; break;
-	case 2: pWarningTex = m_pTexture[E_TEXTURE::WARNING_STAGE_2]; break;
-	case 3: pWarningTex = m_pTexture[E_TEXTURE::WARNING_STAGE_3]; break;
-	}
-	
-	// 手配書表示
-	Draw2d(
-		WARNING_TEXTURE_PARAM.fPos.x,
-		WARNING_TEXTURE_PARAM.fPos.y,
-		WARNING_TEXTURE_PARAM.fSize.x,
-		WARNING_TEXTURE_PARAM.fSize.y,
-		pWarningTex);
+	//// プレイしたステージによって手配書の画像を変える
+	//switch (m_Data.nStageNum)
+	//{
+	//case 1: pWarningTex = m_pTexture[E_TEXTURE::WARNING_STAGE_1]; break;
+	//case 2: pWarningTex = m_pTexture[E_TEXTURE::WARNING_STAGE_2]; break;
+	//case 3: pWarningTex = m_pTexture[E_TEXTURE::WARNING_STAGE_3]; break;
+	//}
+	//
+	//// 手配書表示
+	//Draw2d(
+	//	WARNING_TEXTURE_PARAM.fPos.x,
+	//	WARNING_TEXTURE_PARAM.fPos.y,
+	//	WARNING_TEXTURE_PARAM.fSize.x,
+	//	WARNING_TEXTURE_PARAM.fSize.y,
+	//	pWarningTex);
 
-	// クリアした場合
-	if (m_Data.bClearFlg)
-	{
-		// スタンプを表示する
-		Draw2d(
-			CLEAR_STAMP_PARAM.fPos.x,
-			CLEAR_STAMP_PARAM.fPos.y,
-			CLEAR_STAMP_PARAM.fSize.x,
-			CLEAR_STAMP_PARAM.fSize.y,
-			m_pTexture[E_TEXTURE::CLEAR_STAMP]);
-	}
+	//// クリアした場合
+	//if (m_Data.bClearFlg)
+	//{
+	//	// スタンプを表示する
+	//	Draw2d(
+	//		CLEAR_STAMP_PARAM.fPos.x,
+	//		CLEAR_STAMP_PARAM.fPos.y,
+	//		CLEAR_STAMP_PARAM.fSize.x,
+	//		CLEAR_STAMP_PARAM.fSize.y,
+	//		m_pTexture[E_TEXTURE::CLEAR_STAMP]);
+	//}
 
-	// 決定ボタン
-	m_pSelectButton->SetAlpha(fabs(cosf(m_nButtonAlphaCnt * FLASH_BUTTON_TEXT_ADJUST)));	// 点滅の為、透明度変更
-	m_pSelectButton->Draw();
+	//// 決定ボタン
+	//m_pSelectButton->SetAlpha(fabs(cosf(m_nButtonAlphaCnt * FLASH_BUTTON_TEXT_ADJUST)));	// 点滅の為、透明度変更
+	//m_pSelectButton->Draw();
 
 }
 
@@ -327,24 +327,24 @@ void CResult::DrawWarningTexture()
 =========================================== */
 void CResult::DrawSurvivalTime()
 {
-	// 生存時間(文字)
-	Draw2d(
-		SVL_TIME_TEXT_PARAM.fPos.x,
-		SVL_TIME_TEXT_PARAM.fPos.y,
-		SVL_TIME_TEXT_PARAM.fSize.x,
-		SVL_TIME_TEXT_PARAM.fSize.y,
-		m_pTexture[E_TEXTURE::SVL_TIME_TEXT]);
+	//// 生存時間(文字)
+	//Draw2d(
+	//	SVL_TIME_TEXT_PARAM.fPos.x,
+	//	SVL_TIME_TEXT_PARAM.fPos.y,
+	//	SVL_TIME_TEXT_PARAM.fSize.x,
+	//	SVL_TIME_TEXT_PARAM.fSize.y,
+	//	m_pTexture[E_TEXTURE::SVL_TIME_TEXT]);
 
-	// 生存時間(数字)
-	DispTime();
+	//// 生存時間(数字)
+	//DispTime();
 
-	// 線
-	Draw2d(
-		SVL_TIME_LINE_PARAM.fPos.x,
-		SVL_TIME_LINE_PARAM.fPos.y,
-		SVL_TIME_LINE_PARAM.fSize.x,
-		SVL_TIME_LINE_PARAM.fSize.y,
-		m_pTexture[E_TEXTURE::LINE]);
+	//// 線
+	//Draw2d(
+	//	SVL_TIME_LINE_PARAM.fPos.x,
+	//	SVL_TIME_LINE_PARAM.fPos.y,
+	//	SVL_TIME_LINE_PARAM.fSize.x,
+	//	SVL_TIME_LINE_PARAM.fSize.y,
+	//	m_pTexture[E_TEXTURE::LINE]);
 }
 
 
@@ -359,50 +359,50 @@ void CResult::DrawSurvivalTime()
 =========================================== */
 void CResult::DrawScore()
 {
-	// スコア(文字)
-	Draw2d(
-		SCORE_TEXT_PARAM.fPos.x,
-		SCORE_TEXT_PARAM.fPos.y,
-		SCORE_TEXT_PARAM.fSize.x,
-		SCORE_TEXT_PARAM.fSize.y,
-		m_pTexture[E_TEXTURE::SCORE_TEXT]);
+	//// スコア(文字)
+	//Draw2d(
+	//	SCORE_TEXT_PARAM.fPos.x,
+	//	SCORE_TEXT_PARAM.fPos.y,
+	//	SCORE_TEXT_PARAM.fSize.x,
+	//	SCORE_TEXT_PARAM.fSize.y,
+	//	m_pTexture[E_TEXTURE::SCORE_TEXT]);
 
 
-	// 総スコア(数字)
-	DispNum(m_Data.nTotalScore, 5, SCORE_NUM_PARAM.fPos, SCORE_NUM_PARAM.fSize, SCORE_NUM_SPACE);
+	//// 総スコア(数字)
+	//DispNum(m_Data.nTotalScore, 5, SCORE_NUM_PARAM.fPos, SCORE_NUM_PARAM.fSize, SCORE_NUM_SPACE);
 
-	// ハイスコア(文字)
-	Draw2d(
-		HIGH_SCORE_TEXT_PARAM.fPos.x,
-		HIGH_SCORE_TEXT_PARAM.fPos.y,
-		HIGH_SCORE_TEXT_PARAM.fSize.x,
-		HIGH_SCORE_TEXT_PARAM.fSize.y,
-		m_pTexture[E_TEXTURE::HIGH_SCORE_TEXT]);
+	//// ハイスコア(文字)
+	//Draw2d(
+	//	HIGH_SCORE_TEXT_PARAM.fPos.x,
+	//	HIGH_SCORE_TEXT_PARAM.fPos.y,
+	//	HIGH_SCORE_TEXT_PARAM.fSize.x,
+	//	HIGH_SCORE_TEXT_PARAM.fSize.y,
+	//	m_pTexture[E_TEXTURE::HIGH_SCORE_TEXT]);
 
-	// ハイスコアを更新していたら(ゲーム終了時にハイスコアを更新する為)
-	if (m_Data.nHighScore[m_Data.nStageNum-1] == m_Data.nTotalScore)
-	{
-		// ニューレコード(文字)
-		Draw2d(
-			NEW_RECORD_TEXT_PARAM.fPos.x,
-			NEW_RECORD_TEXT_PARAM.fPos.y,
-			NEW_RECORD_TEXT_PARAM.fSize.x,
-			NEW_RECORD_TEXT_PARAM.fSize.y,
-			m_pTexture[E_TEXTURE::NEW_RECORD_TEXT]);
+	//// ハイスコアを更新していたら(ゲーム終了時にハイスコアを更新する為)
+	//if (m_Data.nHighScore[m_Data.nStageNum-1] == m_Data.nTotalScore)
+	//{
+	//	// ニューレコード(文字)
+	//	Draw2d(
+	//		NEW_RECORD_TEXT_PARAM.fPos.x,
+	//		NEW_RECORD_TEXT_PARAM.fPos.y,
+	//		NEW_RECORD_TEXT_PARAM.fSize.x,
+	//		NEW_RECORD_TEXT_PARAM.fSize.y,
+	//		m_pTexture[E_TEXTURE::NEW_RECORD_TEXT]);
 
-	}
+	//}
 
-	// ハイスコア(数字)
-	DispNum(m_Data.nHighScore[m_Data.nStageNum - 1], 5, HIGH_SCORE_NUM_PARAM.fPos, HIGH_SCORE_NUM_PARAM.fSize, HIGH_SCORE_NUM_SPACE);
-	
+	//// ハイスコア(数字)
+	//DispNum(m_Data.nHighScore[m_Data.nStageNum - 1], 5, HIGH_SCORE_NUM_PARAM.fPos, HIGH_SCORE_NUM_PARAM.fSize, HIGH_SCORE_NUM_SPACE);
+	//
 
-	// 線
-	Draw2d(
-		SCORE_LINE_PARAM.fPos.x,
-		SCORE_LINE_PARAM.fPos.y,
-		SCORE_LINE_PARAM.fSize.x,
-		SCORE_LINE_PARAM.fSize.y,
-		m_pTexture[E_TEXTURE::LINE]);
+	//// 線
+	//Draw2d(
+	//	SCORE_LINE_PARAM.fPos.x,
+	//	SCORE_LINE_PARAM.fPos.y,
+	//	SCORE_LINE_PARAM.fSize.x,
+	//	SCORE_LINE_PARAM.fSize.y,
+	//	m_pTexture[E_TEXTURE::LINE]);
 }
 
 
@@ -417,100 +417,100 @@ void CResult::DrawScore()
 =========================================== */
 void CResult::DrawHunt()
 {
-	// 討伐数(文字)
-	Draw2d(
-		HUNT_TEXT_PARAM.fPos.x,
-		HUNT_TEXT_PARAM.fPos.y,
-		HUNT_TEXT_PARAM.fSize.x,
-		HUNT_TEXT_PARAM.fSize.y,
-		m_pTexture[E_TEXTURE::HUNT_TEXT]);
+	//// 討伐数(文字)
+	//Draw2d(
+	//	HUNT_TEXT_PARAM.fPos.x,
+	//	HUNT_TEXT_PARAM.fPos.y,
+	//	HUNT_TEXT_PARAM.fSize.x,
+	//	HUNT_TEXT_PARAM.fSize.y,
+	//	m_pTexture[E_TEXTURE::HUNT_TEXT]);
 
-	// ステージ１ならボス討伐数を表示しない
-	int nDispHuntNum = 5;	// 青＋緑＋黄＋赤＋ボス＝５
-	if (m_Data.nStageNum == 1) nDispHuntNum = 4;	// ーボス＝４
+	//// ステージ１ならボス討伐数を表示しない
+	//int nDispHuntNum = 5;	// 青＋緑＋黄＋赤＋ボス＝５
+	//if (m_Data.nStageNum == 1) nDispHuntNum = 4;	// ーボス＝４
 
-	// スライムの種類数分画像を表示
-	for (int i = 0; i < nDispHuntNum; i++)
-	{
-		// スライムの画像
-		Draw2d(
-			SLIME_TEXTURE_PARAM.fPos.x + (i * SLIME_SPACE_Y),
-			SLIME_TEXTURE_PARAM.fPos.y,
-			SLIME_TEXTURE_PARAM.fSize.x,
-			SLIME_TEXTURE_PARAM.fSize.y,
-			m_pTexture[E_TEXTURE::SLIME_BLUE + i]);
+	//// スライムの種類数分画像を表示
+	//for (int i = 0; i < nDispHuntNum; i++)
+	//{
+	//	// スライムの画像
+	//	Draw2d(
+	//		SLIME_TEXTURE_PARAM.fPos.x + (i * SLIME_SPACE_Y),
+	//		SLIME_TEXTURE_PARAM.fPos.y,
+	//		SLIME_TEXTURE_PARAM.fSize.x,
+	//		SLIME_TEXTURE_PARAM.fSize.y,
+	//		m_pTexture[E_TEXTURE::SLIME_BLUE + i]);
 
-		// スライム緑～赤の下に青の倍数を表示する
-		if (1 <= i && i <= 3)
-		{
-			// ()
-			Draw2d(
-				PARENTHESIS_PARAM.fPos.x + (i*SLIME_SPACE_Y),
-				PARENTHESIS_PARAM.fPos.y,
-				PARENTHESIS_PARAM.fSize.x,
-				PARENTHESIS_PARAM.fSize.y,
-				m_pTexture[E_TEXTURE::PARENTHESIS]);
+	//	// スライム緑～赤の下に青の倍数を表示する
+	//	if (1 <= i && i <= 3)
+	//	{
+	//		// ()
+	//		Draw2d(
+	//			PARENTHESIS_PARAM.fPos.x + (i*SLIME_SPACE_Y),
+	//			PARENTHESIS_PARAM.fPos.y,
+	//			PARENTHESIS_PARAM.fSize.x,
+	//			PARENTHESIS_PARAM.fSize.y,
+	//			m_pTexture[E_TEXTURE::PARENTHESIS]);
 
-			// 青スライム画像
-			Draw2d(
-				MULTI_SLIME_PARAM.fPos.x + (i*SLIME_SPACE_Y),
-				MULTI_SLIME_PARAM.fPos.y,
-				MULTI_SLIME_PARAM.fSize.x,
-				MULTI_SLIME_PARAM.fSize.y,
-				m_pTexture[E_TEXTURE::SLIME_BLUE]);
+	//		// 青スライム画像
+	//		Draw2d(
+	//			MULTI_SLIME_PARAM.fPos.x + (i*SLIME_SPACE_Y),
+	//			MULTI_SLIME_PARAM.fPos.y,
+	//			MULTI_SLIME_PARAM.fSize.x,
+	//			MULTI_SLIME_PARAM.fSize.y,
+	//			m_pTexture[E_TEXTURE::SLIME_BLUE]);
 
-			// ×
-			Draw2d(
-				MULTI_PARAM.fPos.x + (i*SLIME_SPACE_Y),
-				MULTI_PARAM.fPos.y,
-				MULTI_PARAM.fSize.x,
-				MULTI_PARAM.fSize.y,
-				m_pTexture[E_TEXTURE::MULTI]);
+	//		// ×
+	//		Draw2d(
+	//			MULTI_PARAM.fPos.x + (i*SLIME_SPACE_Y),
+	//			MULTI_PARAM.fPos.y,
+	//			MULTI_PARAM.fSize.x,
+	//			MULTI_PARAM.fSize.y,
+	//			m_pTexture[E_TEXTURE::MULTI]);
 
-		}
-		// 倍数
-		DispNum(2, 1, { MULTI_NUM_PARAM.fPos.x + (1 * SLIME_SPACE_Y), MULTI_NUM_PARAM.fPos.y }, MULTI_NUM_PARAM.fSize, DEF_NUM_SPACE);
-		DispNum(4, 1, { MULTI_NUM_PARAM.fPos.x + (2 * SLIME_SPACE_Y), MULTI_NUM_PARAM.fPos.y }, MULTI_NUM_PARAM.fSize, DEF_NUM_SPACE);
-		DispNum(8, 1, { MULTI_NUM_PARAM.fPos.x + (3 * SLIME_SPACE_Y), MULTI_NUM_PARAM.fPos.y }, MULTI_NUM_PARAM.fSize, DEF_NUM_SPACE);
+	//	}
+	//	// 倍数
+	//	DispNum(2, 1, { MULTI_NUM_PARAM.fPos.x + (1 * SLIME_SPACE_Y), MULTI_NUM_PARAM.fPos.y }, MULTI_NUM_PARAM.fSize, DEF_NUM_SPACE);
+	//	DispNum(4, 1, { MULTI_NUM_PARAM.fPos.x + (2 * SLIME_SPACE_Y), MULTI_NUM_PARAM.fPos.y }, MULTI_NUM_PARAM.fSize, DEF_NUM_SPACE);
+	//	DispNum(8, 1, { MULTI_NUM_PARAM.fPos.x + (3 * SLIME_SPACE_Y), MULTI_NUM_PARAM.fPos.y }, MULTI_NUM_PARAM.fSize, DEF_NUM_SPACE);
 
-		// スライム別討伐数
-		//２桁以上の場合
-		if (m_Data.nKill[i] >= 10)
-		{
-			DispNum(m_Data.nKill[i], 1, {
-			SLIME_HUNT_NUM_PARAM.fPos.x + (i*SLIME_SPACE_Y) + (SLIME_HUNT_NUM_PARAM.fSize.x / 3),
-			SLIME_HUNT_NUM_PARAM.fPos.y },
-			SLIME_HUNT_NUM_PARAM.fSize, HUNT_NUM_SPACE);
-		}
-		//１桁の場合
-		else
-		{
-			DispNum(m_Data.nKill[i], 1, {
-				SLIME_HUNT_NUM_PARAM.fPos.x + (i*SLIME_SPACE_Y),
-				SLIME_HUNT_NUM_PARAM.fPos.y },
-				SLIME_HUNT_NUM_PARAM.fSize, HUNT_NUM_SPACE);
-		}
+	//	// スライム別討伐数
+	//	//２桁以上の場合
+	//	if (m_Data.nKill[i] >= 10)
+	//	{
+	//		DispNum(m_Data.nKill[i], 1, {
+	//		SLIME_HUNT_NUM_PARAM.fPos.x + (i*SLIME_SPACE_Y) + (SLIME_HUNT_NUM_PARAM.fSize.x / 3),
+	//		SLIME_HUNT_NUM_PARAM.fPos.y },
+	//		SLIME_HUNT_NUM_PARAM.fSize, HUNT_NUM_SPACE);
+	//	}
+	//	//１桁の場合
+	//	else
+	//	{
+	//		DispNum(m_Data.nKill[i], 1, {
+	//			SLIME_HUNT_NUM_PARAM.fPos.x + (i*SLIME_SPACE_Y),
+	//			SLIME_HUNT_NUM_PARAM.fPos.y },
+	//			SLIME_HUNT_NUM_PARAM.fSize, HUNT_NUM_SPACE);
+	//	}
 
-	}
+	//}
 
-	// 総討伐数(文字)
-	Draw2d(
-		TOTAL_HUNT_TEXT_PARAM.fPos.x,
-		TOTAL_HUNT_TEXT_PARAM.fPos.y,
-		TOTAL_HUNT_TEXT_PARAM.fSize.x,
-		TOTAL_HUNT_TEXT_PARAM.fSize.y,
-		m_pTexture[E_TEXTURE::TOTAL_HUNT_TEXT]);
+	//// 総討伐数(文字)
+	//Draw2d(
+	//	TOTAL_HUNT_TEXT_PARAM.fPos.x,
+	//	TOTAL_HUNT_TEXT_PARAM.fPos.y,
+	//	TOTAL_HUNT_TEXT_PARAM.fSize.x,
+	//	TOTAL_HUNT_TEXT_PARAM.fSize.y,
+	//	m_pTexture[E_TEXTURE::TOTAL_HUNT_TEXT]);
 
-	// 総討伐数(数字)
-	DispNum(m_Data.nTotalKill, 1, TOTAL_HUNT_NUM_PARAM.fPos, TOTAL_HUNT_NUM_PARAM.fSize, DEF_NUM_SPACE);
+	//// 総討伐数(数字)
+	//DispNum(m_Data.nTotalKill, 1, TOTAL_HUNT_NUM_PARAM.fPos, TOTAL_HUNT_NUM_PARAM.fSize, DEF_NUM_SPACE);
 
-	// 線
-	Draw2d(
-		HUNT_LINE_PARAM.fPos.x,
-		HUNT_LINE_PARAM.fPos.y,
-		HUNT_LINE_PARAM.fSize.x,
-		HUNT_LINE_PARAM.fSize.y,
-		m_pTexture[E_TEXTURE::LINE]);
+	//// 線
+	//Draw2d(
+	//	HUNT_LINE_PARAM.fPos.x,
+	//	HUNT_LINE_PARAM.fPos.y,
+	//	HUNT_LINE_PARAM.fSize.x,
+	//	HUNT_LINE_PARAM.fSize.y,
+	//	m_pTexture[E_TEXTURE::LINE]);
 }
 
 
@@ -525,16 +525,16 @@ void CResult::DrawHunt()
 =========================================== */
 void CResult::DrawMaxCombo()
 {
-	// 最大コンボ数(文字)
-	Draw2d(
-		MAX_COMBO_TEXT_PARAM.fPos.x,
-		MAX_COMBO_TEXT_PARAM.fPos.y,
-		MAX_COMBO_TEXT_PARAM.fSize.x,
-		MAX_COMBO_TEXT_PARAM.fSize.y,
-		m_pTexture[E_TEXTURE::MAX_COMBO_TEXT]);
+	//// 最大コンボ数(文字)
+	//Draw2d(
+	//	MAX_COMBO_TEXT_PARAM.fPos.x,
+	//	MAX_COMBO_TEXT_PARAM.fPos.y,
+	//	MAX_COMBO_TEXT_PARAM.fSize.x,
+	//	MAX_COMBO_TEXT_PARAM.fSize.y,
+	//	m_pTexture[E_TEXTURE::MAX_COMBO_TEXT]);
 
-	// 最大コンボ数(数字)
-	DispNum(m_Data.nMaxCombo, 1, MAX_COMBO_NUM_PARAM.fPos, MAX_COMBO_NUM_PARAM.fSize, DEF_NUM_SPACE);
+	//// 最大コンボ数(数字)
+	//DispNum(m_Data.nMaxCombo, 1, MAX_COMBO_NUM_PARAM.fPos, MAX_COMBO_NUM_PARAM.fSize, DEF_NUM_SPACE);
 }
 
 
@@ -549,23 +549,23 @@ void CResult::DrawMaxCombo()
 =========================================== */
 void CResult::DispTime()
 {
-	// 秒数
-	DispNum(m_Data.GetSecond(), 2, SVL_TIME_NUM__PARAM.fPos, SVL_TIME_NUM__PARAM.fSize, DEF_NUM_SPACE);
+	//// 秒数
+	//DispNum(m_Data.GetSecond(), 2, SVL_TIME_NUM__PARAM.fPos, SVL_TIME_NUM__PARAM.fSize, DEF_NUM_SPACE);
 
-	// コロン
-	Draw2d(
-		SVL_TIME_NUM__PARAM.fPos.x - (SVL_TIME_NUM_SPACE * 2) -7.0f,	// -7.0fはコロンの位置の微調整
-		SVL_TIME_NUM__PARAM.fPos.y,
-		SVL_TIME_NUM__PARAM.fSize.x,
-		SVL_TIME_NUM__PARAM.fSize.y,
-		m_pTexture[E_TEXTURE::COLON]);
+	//// コロン
+	//Draw2d(
+	//	SVL_TIME_NUM__PARAM.fPos.x - (SVL_TIME_NUM_SPACE * 2) -7.0f,	// -7.0fはコロンの位置の微調整
+	//	SVL_TIME_NUM__PARAM.fPos.y,
+	//	SVL_TIME_NUM__PARAM.fSize.x,
+	//	SVL_TIME_NUM__PARAM.fSize.y,
+	//	m_pTexture[E_TEXTURE::COLON]);
 
-	TDiType<float> pos = { 
-		SVL_TIME_NUM__PARAM.fPos.x - (SVL_TIME_NUM_SPACE * 3) ,
-		SVL_TIME_NUM__PARAM.fPos.y };
+	//TDiType<float> pos = { 
+	//	SVL_TIME_NUM__PARAM.fPos.x - (SVL_TIME_NUM_SPACE * 3) ,
+	//	SVL_TIME_NUM__PARAM.fPos.y };
 
-	// 分数
-	DispNum(m_Data.GetMinute(), 2, pos, SVL_TIME_NUM__PARAM.fSize, DEF_NUM_SPACE);
+	//// 分数
+	//DispNum(m_Data.GetMinute(), 2, pos, SVL_TIME_NUM__PARAM.fSize, DEF_NUM_SPACE);
 }
 
 /* ========================================

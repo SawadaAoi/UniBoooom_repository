@@ -11,6 +11,7 @@
 	・2023/11/27 cpp作成 yamashita
 	・2023/11/28 生成関数を作成 yamashita
 	・2023/11/28 リストのポインタ取得関数を作成 yamashita
+	・2024/02/09 カメラ削除 takagi
 
 ========================================== */
 
@@ -112,7 +113,6 @@ void CHealItemManager::Draw()
 void CHealItemManager::Create(TPos3d<float> pos)
 {
 	m_pHealItemList.push_back(new CHealItem(pos, m_pModel, m_pVS));	//生成
-	m_pHealItemList.back()->SetCamera(m_pCamera);					//生成したアイテムにカメラをセット
 }
 
 /* ========================================
@@ -127,18 +127,4 @@ void CHealItemManager::Create(TPos3d<float> pos)
 std::vector<CHealItem*>* CHealItemManager::GetHealItemConPtr()
 {
 	return &m_pHealItemList;
-}
-
-/* ========================================
-   カメラ取得関数
-   ----------------------------------------
-   内容：カメラのポインタを取得する
-   ----------------------------------------
-   引数：カメラのポインタ
-   ----------------------------------------
-   戻値：なし
-======================================== */
-void CHealItemManager::SetCamera(const CCamera * pCamera)
-{
-	m_pCamera = pCamera;
 }

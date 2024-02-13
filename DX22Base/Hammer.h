@@ -19,6 +19,8 @@
 	・2023/11/23 ジオメトリーからモデルに差し替え　yamashita
 	・2023/11/29 Intervalの変数、関数追加　yamamoto
 	・2023/12/01 IntervalをSwingSpeedに変更　yamamoto
+	・2024/02/09 カメラ削除 takagi
+
 ========================================== */
 
 #ifndef __HAMMER_H__
@@ -30,7 +32,6 @@
 #include "Transform3d.h"
 #include "Geometry.h"
 #include <DirectXMath.h>
-#include "Camera.h"
 #include "Object.h"
 #include "Model.h"
 #include "Sphere.h"
@@ -56,14 +57,12 @@ public:
 	void SwingSpeedSlow();
 	void SwingSpeedFast();
 	float GetSwingSpeed();
-	void SetCamera(const CCamera* pCamera);
 private:
 	// ===メンバ変数宣言=====
 	VertexShader* m_pVS;			// 頂点シェーダーのポインタ
 	TPos3d<float> m_tPlayerPos;		// 現在のプレイヤー座標
 	float m_fAngleNow;				// 今の角度
 	int m_dAddAngleCnt;				// 角度加算フレーム値
-	const CCamera* m_pCamera;		//	
 	int m_nSwingTimeFrame;			// ハンマーの一振りに掛かる時間
 	float m_fAddAngle;				// 1フレームで移動する角度量
 	float m_fSwingSpeed;			// ハンマーの振る速度の割合(通常時が1.0)

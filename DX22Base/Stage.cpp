@@ -80,9 +80,10 @@ CStage::CStage(CUIStageManager::E_STAGE_NUM eStage)
 	m_pHealItemMng = new CHealItemManager();			// 回復アイテムマネージャー生成
 
 	//================System動的確保================
-	m_pMainCamera = std::make_shared<CCameraChase>(m_pPlayer->GetPosAddress());	//カメラ生成
-	CUsingCamera::GetThis().SetCamera(m_pMainCamera);							//カメラ登録
-	m_pCollision = new CCOLLISION();											//衝突判定チェック生成
+	m_pMainCamera = std::make_shared<CCameraChase>();												//カメラ生成
+	std::static_pointer_cast<CCameraChase>(m_pMainCamera)->SetTarget(m_pPlayer->GetPosAddress());	//注視点設定
+	CUsingCamera::GetThis().SetCamera(m_pMainCamera);												//カメラ登録
+	m_pCollision = new CCOLLISION();																//衝突判定チェック生成
 
 	//================2dObject動的確保================
 	m_pUIStageManager = new CUIStageManager(m_pPlayer, m_pSlimeMng, eStage);	// UIマネージャー生成

@@ -11,6 +11,7 @@
 	・2023/11/28 cpp作成UI用処理を入れます Tei
 	・2023/12/08 シーン遷移用に関数追加 takagi
 	・2024/01/01 タイマーを変更・ステージ管理 takagi
+	・2024/02/13 カメラ削除 takagi
 
 ========================================== */
 #include "UIStageManager.h"
@@ -24,13 +25,12 @@
 	内容：デストラクタ
 	-------------------------------------
 	引数1：プレイヤーのポインタ
-	引数2：カメラのポインタ
-	引数3：スライム管理
-	引数4：ステージ番号
+	引数2：スライム管理
+	引数3：ステージ番号
 	-------------------------------------
 	戻値：無し
 =========================================== */
-CUIStageManager::CUIStageManager(CPlayer* pPlayer,CCamera * pCamera, CSlimeManager* pSlimeMng, E_STAGE_NUM eStage)
+CUIStageManager::CUIStageManager(CPlayer* pPlayer,CSlimeManager* pSlimeMng, E_STAGE_NUM eStage)
 	: m_pBossgauge(nullptr)
 	, m_pCombo(nullptr)
 	, m_pHpMng(nullptr)
@@ -64,13 +64,12 @@ CUIStageManager::CUIStageManager(CPlayer* pPlayer,CCamera * pCamera, CSlimeManag
 	m_pHpMng = new CHP_UI(pPlayer->GetHpPtr());
 	m_pTotalScore = new CTotalScore();
 	m_pScoreOHMng = new CScoreOHManager();
-	m_pStageFin = new CStageFinish(pCamera, pPlayer, m_pTimer->GetTimePtr());
+	m_pStageFin = new CStageFinish(pPlayer, m_pTimer->GetTimePtr());
 	m_pBossArrow = new CBossArrow();
 
 	m_pCombo->SetTotalScore(m_pTotalScore);
 	m_pTimer->TimeStart();
 	m_pBossgauge->SetSlimeManager(pSlimeMng);
-	m_pScoreOHMng->SetCamera(pCamera);
 	m_pBossArrow->SetSlimeMng(pSlimeMng);
 	m_pBossArrow->SetPlayer(pPlayer);
 

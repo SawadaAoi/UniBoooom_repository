@@ -22,13 +22,17 @@
 	・2023/11/30 プレイヤーに見られていたら止まる処理を追加 yamashita
 	・2023/12/07 ゲームパラメータから一部定数移動 takagi
 	・2024/01/31 アニメーションの追加 yamashita
+	・2024/02/09 UsingCamera使用 takagi
+	・2024/02/13 カメラ削除 takagi
 
 ========================================== */
 
 // =============== インクルード ===================
 #include "Slime_3.h"
-#include "GameParameter.h"		//定数定義用ヘッダー
+#include "GameParameter.h"	//定数定義用ヘッダー
 #include "DirectWrite.h"
+#include "UsingCamera.h"	//カメラ使用
+
 // =============== 定数定義 =======================
 const int	LEVEL3_ATTACK = 1;						// 攻撃力
 #if MODE_GAME_PARAMETER
@@ -146,8 +150,6 @@ void CSlime_3::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
 =========================================== */
 void CSlime_3::Draw()
 {
-	if (!m_pCamera) { return; }
-
 	//行列状態を取得してセット
 	DirectX::XMFLOAT4X4 world;
 	DirectX::XMStoreFloat4x4(&world, XMMatrixTranspose(
@@ -157,8 +159,8 @@ void CSlime_3::Draw()
 
 	DirectX::XMFLOAT4X4 mat[3] = {
 	world,
-	m_pCamera->GetViewMatrix(),
-	m_pCamera->GetProjectionMatrix()
+	CUsingCamera::GetThis().GetCamera()->GetViewMatrix(),
+	CUsingCamera::GetThis().GetCamera()->GetProjectionMatrix()
 	};
 	ShaderList::SetWVP(mat);
 
@@ -197,7 +199,7 @@ void CSlime_3::Draw()
 	}
 
 	//-- 影の描画
-	m_pShadow->Draw(m_Transform, m_fScaleShadow, m_pCamera);
+	m_pShadow->Draw(m_Transform, m_fScaleShadow);
 }
 
 /* ========================================

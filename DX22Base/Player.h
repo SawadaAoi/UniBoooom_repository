@@ -35,6 +35,7 @@
 	・2024/01/28 死亡モーション追加 Sawada
 	・2024/01/30 プレイヤー移動エフェクト用変数、関数追加
 	・2024/02/02 汗エフェクト処理追加 Tei
+	・2024/02/09 カメラ削除 takagi
 
 ========================================== */
 #ifndef __PLAYER_H__
@@ -99,7 +100,6 @@ public:
 	
 
 	// セット関数
-	void SetCamera(CCamera* pCamera);
 	bool GetAttackFlg();
 	void SetSweatEffectMng(CSweatEffectManager* pSweatefcMng);
 

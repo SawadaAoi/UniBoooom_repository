@@ -10,6 +10,7 @@
 
 	変更履歴
 	・2024/02/06 クラス定義作成 Tei
+	・2024/02/13 カメラ削除 takagi
 
 ========================================== */
 
@@ -26,7 +27,7 @@ class CUnionSmokeEffect :public CDrawAnim	//UIアニメーション
 {
 public:
 	// ===プロトタイプ宣言===
-	CUnionSmokeEffect(TPos3d<float> pos, TPos3d<float> size, Texture* pTex, const CCamera* pCamera);	// コンストラクタ
+	CUnionSmokeEffect(TPos3d<float> pos, TPos3d<float> size, Texture* pTex);	// コンストラクタ
 	~CUnionSmokeEffect();
 	void Update();
 	void Draw();

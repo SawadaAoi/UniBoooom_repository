@@ -47,6 +47,7 @@
 	・2024/01/18 炎スライムエフェクト追加 Tei
 	・2024/02/06 結合エフェクト処理追加 Tei
 	・2024/02/08 レベル３スライムのモデル読み込みサイズを調整(1.6⇒2.1) suzumura
+	・2024/02/09 UsingCamera使用 takagi
 
 =========================================== */
 
@@ -65,8 +66,8 @@
 #include "HitStop.h"
 #include <map>					//連想型コンテナ
 #include <typeinfo>				//型情報
-
 #include <stdlib.h>
+#include "UsingCamera.h"	//カメラ使用
 
 // =============== 定数定義 =======================
 const float COL_SUB_HIT_TO_BIG = 0.1f;		// スライム衝突(小→大)の衝突側の減算値(反射する移動)				//1.0でそのまま
@@ -409,10 +410,7 @@ void CSlimeManager::Create(E_SLIME_LEVEL level)
 			m_pSlime[i] = new CSlime_Heal(CreatePos, m_pHealModel);	//動的生成
 			break;
 		}
-
-		m_pSlime[i]->SetCamera(m_pCamera);	//カメラをセット
 		break;						// 生成したら終了
-		
 	}
 }
 
@@ -446,7 +444,6 @@ void CSlimeManager::CreateBoss(int BossNum)
 
 			break;
 		}
-		m_pBoss[i]->SetCamera(m_pCamera);
 		m_bBossPtrExist = true;
 		break;
 	}
@@ -541,7 +538,7 @@ void CSlimeManager::HitBranch(int HitSlimeNum, int StandSlimeNum, CExplosionMana
 			m_pScoreOHMng->DisplayOverheadScore(pos, LEVEL_4_SCORE * 2, SLIME_SCORE_HEIGHT);
 			pExpMng->CreateUI(pos, LEVEL_4_EXPLODE_TIME);		//レベル４爆発した位置boooomUI表示
 
-			m_pCamera->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_STRONG | CCamera::E_BIT_FLAG_VIBRATION_SIDE_STRONG);
+			CUsingCamera::GetThis().GetCamera()->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_STRONG | CCamera::E_BIT_FLAG_VIBRATION_SIDE_STRONG);
 		}
 		else	//最大サイズじゃない場合は1段階大きいスライムを生成する
 		{
@@ -599,7 +596,7 @@ bool CSlimeManager::HitFlameBranch(int HitSlimeNum, int StandSlimeNum, CExplosio
 		m_pScoreOHMng->DisplayOverheadScore(standSlimeTransform.fPos, standSlimeLevel);
 
 		// 爆発の振動設定
-		m_pCamera->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_WEAK | CCamera::E_BIT_FLAG_VIBRATION_SIDE_WEAK);
+		CUsingCamera::GetThis().GetCamera()->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_WEAK | CCamera::E_BIT_FLAG_VIBRATION_SIDE_WEAK);
 
 		// 回復アイテムドロップ
 		m_pHealItemMng->Create(standSlimeTransform.fPos);
@@ -619,7 +616,7 @@ bool CSlimeManager::HitFlameBranch(int HitSlimeNum, int StandSlimeNum, CExplosio
 		m_pScoreOHMng->DisplayOverheadScore(standSlimeTransform.fPos, standSlimeLevel);
 
 		// 爆発の振動設定
-		m_pCamera->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_WEAK | CCamera::E_BIT_FLAG_VIBRATION_SIDE_WEAK);
+		CUsingCamera::GetThis().GetCamera()->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_WEAK | CCamera::E_BIT_FLAG_VIBRATION_SIDE_WEAK);
 
 		// 回復アイテムドロップ
 		m_pHealItemMng->Create(hitSlimeTransform.fPos);
@@ -639,11 +636,11 @@ bool CSlimeManager::HitFlameBranch(int HitSlimeNum, int StandSlimeNum, CExplosio
 		//赤スライム(Stand)と激突したときだけ爆発の振動を大きくする
 		if (typeid(CSlime_4) == typeid(*m_pSlime[HitSlimeNum]))
 		{
-			m_pCamera->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_STRONG | CCamera::E_BIT_FLAG_VIBRATION_SIDE_STRONG);
+			CUsingCamera::GetThis().GetCamera()->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_STRONG | CCamera::E_BIT_FLAG_VIBRATION_SIDE_STRONG);
 		}
 		else
 		{
-			m_pCamera->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_WEAK | CCamera::E_BIT_FLAG_VIBRATION_SIDE_WEAK);
+			CUsingCamera::GetThis().GetCamera()->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_WEAK | CCamera::E_BIT_FLAG_VIBRATION_SIDE_WEAK);
 		}
 
 		CntKill(m_pSlime[HitSlimeNum]);			//衝突するスライムが討伐された
@@ -663,11 +660,11 @@ bool CSlimeManager::HitFlameBranch(int HitSlimeNum, int StandSlimeNum, CExplosio
 		//赤スライム(Hit)と激突したときだけ爆発の振動を大きくする
 		if (typeid(CSlime_4) == typeid(*m_pSlime[HitSlimeNum]))
 		{
-			m_pCamera->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_STRONG | CCamera::E_BIT_FLAG_VIBRATION_SIDE_STRONG);
+			CUsingCamera::GetThis().GetCamera()->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_STRONG | CCamera::E_BIT_FLAG_VIBRATION_SIDE_STRONG);
 		}
 		else
 		{
-			m_pCamera->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_WEAK | CCamera::E_BIT_FLAG_VIBRATION_SIDE_WEAK);
+			CUsingCamera::GetThis().GetCamera()->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_WEAK | CCamera::E_BIT_FLAG_VIBRATION_SIDE_WEAK);
 		}
 
 		CntKill(m_pSlime[HitSlimeNum]);			//衝突するスライムが討伐された
@@ -773,8 +770,6 @@ void CSlimeManager::UnionSlime(E_SLIME_LEVEL level ,TPos3d<float> pos, float spe
 		{
 			m_pUnionMng->MakeUnion(typeid(*m_pSlime[i]).hash_code(), pos);	//UNION生成
 		}
-
-		m_pSlime[i]->SetCamera(m_pCamera);	//カメラをセット
 		PlaySE(SE_UNION);	//SEの再生
 		m_pUnionEfcMng->Create(pos, level);
 
@@ -810,8 +805,8 @@ void CSlimeManager::TouchExplosion(int DelSlime, CExplosionManager * pExpMng, in
 	CntKill(m_pSlime[DelSlime]);		//ぶつかりに来たスライムが討伐された
 	SAFE_DELETE(m_pSlime[DelSlime]);	//スライム削除
 
-	m_pCamera->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_WEAK | CCamera::E_BIT_FLAG_VIBRATION_SIDE_WEAK);
-	m_pCamera->ChangeScaleVibrate(10, 1.5f);
+	CUsingCamera::GetThis().GetCamera()->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_WEAK | CCamera::E_BIT_FLAG_VIBRATION_SIDE_WEAK);
+	CUsingCamera::GetThis().GetCamera()->ChangeScaleVibrate(10, 1.5f);
 }
 
 /* ========================================
@@ -1005,8 +1000,8 @@ void CSlimeManager::TouchBossExplosion(int BossNum, CExplosionManager* pExpMng, 
 		m_pScoreOHMng->DisplayOverheadScore(pos, LEVEL_Boss_SCORE, SLIME_SCORE_HEIGHT);
 		m_pHealItemMng->Create(pos);
 
-		m_pCamera->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_STRONG | CCamera::E_BIT_FLAG_VIBRATION_SIDE_STRONG);
-		m_pCamera->ChangeScaleVibrate(10, 1.5f);
+		CUsingCamera::GetThis().GetCamera()->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_STRONG | CCamera::E_BIT_FLAG_VIBRATION_SIDE_STRONG);
+		CUsingCamera::GetThis().GetCamera()->ChangeScaleVibrate(10, 1.5f);
 	}
 
 }
@@ -1422,39 +1417,6 @@ CSlime_BossBase* CSlimeManager::GetBossSlimePtr(int num)
 }
 
 /* ========================================
-	カメラ情報セット関数
-	----------------------------------------
-	内容：描画処理で使用するカメラ情報セット
-	----------------------------------------
-	引数1：カメラ
-	----------------------------------------
-	戻値：なし
-======================================== */
-void CSlimeManager::SetCamera(CCamera * pCamera)
-{
-	m_pCamera = pCamera;
-
-	// =============== UNION ===================
-	if (m_pUnionMng)	//ヌルチェック
-	{
-		m_pUnionMng->SetCamera(pCamera);	//カメラ登録
-	}
-	if (m_pUnionEfcMng)
-	{
-		m_pUnionEfcMng->SetCamera(pCamera);
-	}
-	// すでに生成されているスライムにもカメラをセット
-	for (int i = 0; i < MAX_SLIME_NUM; i++)
-	{
-		// 生成されているスライムにカメラをセット
-		if (m_pSlime[i])
-		{	
-			m_pSlime[i]->SetCamera(pCamera);
-		}
-	}
-}
-
-/* ========================================
 	爆発マネージャーのポインタセット関数
 	----------------------------------------
 	内容：爆発マネージャーのポインタをセットする
@@ -1677,7 +1639,7 @@ void CSlimeManager::RigidCheck(CSlime_BossBase* pBossSlime)
 ======================================== */
 void CSlimeManager::ScreenShake()
 {
-	m_pCamera->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_WEAK);
-	//m_pCamera->ChangeScaleVibrate(12, 1.2f);
+	CUsingCamera::GetThis().GetCamera()->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_WEAK);
+	//CUsingCamera::GetThis().GetCamera()->ChangeScaleVibrate(12, 1.2f);
 	
 }

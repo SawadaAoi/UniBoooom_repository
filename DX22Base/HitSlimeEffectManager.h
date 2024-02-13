@@ -9,6 +9,7 @@
 
    変更履歴
 	・2024/01/25 HitSlimeEffectManagerクラス作成 Tei
+	・2024/02/13 カメラ削除 takagi
 
 ========================================== */
 #ifndef __HIT_SLIME_EFFECT_MANAGER_H__	
@@ -34,15 +35,12 @@ public:
 
 	CHitSlimeEffect* GetHitPtr(int num);				//ヒットエフェクト配列をゲット
 	void Create(TTriType<float> pos);   		//ヒットエフェクト生成関数
-	void SetCamera(const CCamera* pCamera);		//他のオブジェクトと同一のカメラをセット
 	void DeleteCheck();							// 使ったエフェクトを削除関数
 
 
 private:
 	// ===メンバ変数宣言===
 	CHitSlimeEffect* m_phitEffect[MAX_HIT_NUM];		//ヒットエフェクトの配列
-
-	const CCamera* m_pCamera;					//カメラ
 
 	Effekseer::EffectRef m_hitEffect;			//ヒットのEffekseer
 };
