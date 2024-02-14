@@ -28,6 +28,9 @@
 #include "CameraChase.h"	//自身のヘッダ
 #include "Input.h"			//入力受付
 
+// =============== 定数定義 =======================
+const float CAMERE_TARGET_ADJUST_Z = 1.5f;
+
 /* ========================================
 	コンストラクタ関数
 	-------------------------------------
@@ -95,9 +98,9 @@ DirectX::XMFLOAT4X4 CCameraChase::GetViewWithoutTranspose() const
 	{
 		DirectX::XMStoreFloat4x4(&View, DirectX::XMMatrixLookAtLH(
 			DirectX::XMVectorSet(m_pTarget->x + m_fOffsetVibrateEye.x, m_pTarget->y + m_fRadius * sinf(m_fAngle),
-				m_pTarget->z + m_fOffsetVibrateEye.y - m_fRadius * cosf(m_fAngle), 0.0f),	//カメラ相対位置
+				m_pTarget->z + CAMERE_TARGET_ADJUST_Z + m_fOffsetVibrateEye.y - m_fRadius * cosf(m_fAngle), 0.0f),	//カメラ相対位置
 			DirectX::XMVectorSet(m_pTarget->x + m_fOffsetVibrateLook.x, m_pTarget->y,
-				m_pTarget->z + m_fOffsetVibrateLook.y, 0.0f),								//注視点
+				m_pTarget->z + CAMERE_TARGET_ADJUST_Z + m_fOffsetVibrateLook.y, 0.0f),								//注視点
 			DirectX::XMVectorSet(m_fUp.x, m_fUp.y, m_fUp.z, 0.0f)));						//アップベクトル
 	}
 	else
