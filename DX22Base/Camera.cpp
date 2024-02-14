@@ -27,6 +27,7 @@
 	・2023/12/06 ゲームパラメータ対応 takagi
 	・2023/12/07 ゲームパラメータから定数移動・不要物除去 takagi
 	・2024/01/21 リファクタリング takagi
+	・2024/02/15 カメラ移動 takagi
 
 ========================================== */
 
@@ -92,7 +93,12 @@ const std::vector<float> TABLE_AMPITUDE_STRONG[E_DIRECT_VIBRATE_MAX] = {
 	{ -1.25f, -0.7f, 0.0f, 0.7f, 1.25f },	//縦強振幅
 };
 
-
+// =============== グローバル変数宣言 =====================
+const std::list<std::shared_ptr<const CFrameCnt>> CCamera::LIST_SHIFT_CNT
+{
+	std::make_shared<const CFrameCnt>(30, false),	//行き：カウントアップ
+	std::make_shared<const CFrameCnt>(100, true),	//帰り：カウントダウン
+};	//ずらしのカウンタ用リスト
 
 /* ========================================
 	コンストラクタ関数
@@ -106,19 +112,19 @@ const std::vector<float> TABLE_AMPITUDE_STRONG[E_DIRECT_VIBRATE_MAX] = {
 CCamera::CCamera()
 	:m_ucFlag(0x00)												//フラグ
 	, m_fPos(INIT_POS)											//位置
-	, m_fLook(INIT_LOOK)											//注視点
+	, m_fLook(INIT_LOOK)										//注視点
 	, m_fUp(INIT_UP_VECTOR)										//上方ベクトル
 	, m_fAngle(INIT_ANGLE)										//角度
-	, m_fNear(INIT_NEAR)											//画面手前
+	, m_fNear(INIT_NEAR)										//画面手前
 	, m_fFar(INIT_FAR)											//画面奥
-	, m_fRadius(INIT_RADIUS)										//注視点とカメラの距離
+	, m_fRadius(INIT_RADIUS)									//注視点とカメラの距離
 	, m_fOffsetVibrateEye(0.0f)									//カメラ位置振動
-	, m_fOffsetVibrateLook(0.0f)									//注視点振動
+	, m_fOffsetVibrateLook(0.0f)								//注視点振動
 	, m_nFrameWeak(INIT_FRAME_WEAK)								//フレーム数：弱振動	x:横, y:縦
 	, m_nFrameStrong(INIT_FRAME_STRONG)							//フレーム数：強振動	x:横, y:縦
-	, m_fChangeRateAmplitudeWeak(INIT_CHANGE_RATE_AMPLITUDE)		//振幅変動率：弱		x:横, y:縦
+	, m_fChangeRateAmplitudeWeak(INIT_CHANGE_RATE_AMPLITUDE)	//振幅変動率：弱		x:横, y:縦
 	, m_fChangeRateAmplitudeStrong(INIT_CHANGE_RATE_AMPLITUDE)	//振幅変動率：強		x:横, y:縦
-	, m_nCntChangeVibrate(0)										//振動回数カウンタ
+	, m_nCntChangeVibrate(0)									//振動回数カウンタ
 	, m_pZoomCnt(nullptr)										//ズーム機能用カウンタ
 	, m_pfGoalRadius(nullptr)									//ズーム目標距離
 	, m_pfStartRadius(nullptr)									//ズーム開始距離
@@ -298,9 +304,18 @@ DirectX::XMFLOAT4X4 CCamera::GetViewWithoutTranspose() const
 
 	// =============== ビュー行列の計算 ===================
 	DirectX::XMStoreFloat4x4(&View, DirectX::XMMatrixLookAtLH(
-		DirectX::XMVectorSet(m_fPos.x, m_fPos.y, m_fPos.z, 0.0f),		//カメラ位置
-		DirectX::XMVectorSet(m_fLook.x, m_fLook.y, m_fLook.z, 0.0f),	//注視点
-		DirectX::XMVectorSet(m_fUp.x, m_fUp.y, m_fUp.z, 0.0f)		//アップベクトル
+		DirectX::XMVectorSet(m_fPos.x,
+			m_fPos.y,
+			m_fPos.z,
+			0.0f),	//カメラ位置
+		DirectX::XMVectorSet(m_fLook.x,
+			m_fLook.y,
+			m_fLook.z,
+			0.0f),	//注視点
+		DirectX::XMVectorSet(m_fUp.x,
+			m_fUp.y,
+			m_fUp.z,
+			0.0f)	//アップベクトル
 	));//行列初期化
 
 	// =============== 提供 ===================
@@ -429,6 +444,33 @@ void CCamera::SetRadius(const float & fRadius)
 {
 	// =============== 初期化 ===================
 	m_fRadius = fRadius;	//距離初期化
+}
+
+/* ========================================
+	ずらし設定関数
+	-------------------------------------
+	内容：カメラのずらしを開始。ずらし中は無効。
+	-------------------------------------
+	引数1：const float & fAngle：ずらす方向
+	-------------------------------------
+	戻値：なし
+=========================================== */
+void CCamera::StartShift(const float & fAngle)
+{
+	// =============== 検査 ===================
+	if (m_pfShiftAngle)	//ヌルチェック
+	{
+		// =============== 終了 ===================
+		return;	//処理中断
+	}
+
+	// =============== 動的確保 ===================
+	m_pfShiftAngle = std::make_shared<float>(fAngle);	//ずれる方向確保
+
+	// =============== 初期化 ===================
+	m_ShiftFrameCntIterator = LIST_SHIFT_CNT.begin();									//イテレータ初期化
+	m_bShiftIn = true;																	//ずらし用フラグ(trueでイン(行き)、falseでアウト(帰り))
+	m_pShiftFrameCnt = std::make_shared<CFrameCnt>(*m_ShiftFrameCntIterator->get());	//リストから、共有せずに複製した新しいカウンタを作成
 }
 
 /* ========================================
@@ -617,5 +659,46 @@ void CCamera::Zoom()
 	{
 		// =============== 更新 ===================
 		m_fRadius = (*m_pfGoalRadius - *m_pfStartRadius) * (1.0f - m_pZoomCnt->GetRate()) + *m_pfStartRadius;	//進行度を元に0.0f→1.0fの割合演算する
+	}
+}
+
+/* ========================================
+	ずらし関数
+	-------------------------------------
+	内容：ずらし系の処理を実行。
+	-------------------------------------
+	引数1：なし
+	-------------------------------------
+	戻値：なし
+=========================================== */
+void CCamera::Shift()
+{
+	// =============== 検査 ===================
+	if (!m_pfShiftAngle || !m_pShiftFrameCnt)	//ヌルチェック
+	{
+		// =============== 終了 ===================
+		return;	//処理中断
+	}
+
+	// =============== 更新 ===================
+	if (m_pShiftFrameCnt->IsFin())	//カウント終了
+	{
+		m_ShiftFrameCntIterator++;	//イテレータ進行
+
+		// =============== 動的確保 ===================
+		if (m_ShiftFrameCntIterator != LIST_SHIFT_CNT.end())	//イテレータの中身が存在
+		{
+			m_pShiftFrameCnt = std::make_shared<CFrameCnt>(*m_ShiftFrameCntIterator->get());	//リストから、共有せずに複製した新しいカウンタを作成
+			m_bShiftIn ^= 1;																	//フラグ反転
+		}
+		else
+		{
+			m_pShiftFrameCnt.reset();	//カウンタ削除
+			m_pfShiftAngle.reset();		//方向削除
+		}
+	}
+	else
+	{	//カウント続行
+		m_pShiftFrameCnt->Count();	//カウント
 	}
 }
