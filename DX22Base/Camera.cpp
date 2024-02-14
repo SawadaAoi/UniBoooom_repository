@@ -304,19 +304,36 @@ DirectX::XMFLOAT4X4 CCamera::GetViewWithoutTranspose() const
 
 	// =============== ビュー行列の計算 ===================
 	DirectX::XMStoreFloat4x4(&View, DirectX::XMMatrixLookAtLH(
-		DirectX::XMVectorSet(m_fPos.x,
-			m_fPos.y,
-			m_fPos.z,
-			0.0f),	//カメラ位置
-		DirectX::XMVectorSet(m_fLook.x,
+		DirectX::XMVectorSet(m_fPos.x + m_fOffsetVibrateEye.x
+			+ (m_pfShiftAngle && m_pShiftFrameCnt ? SHIFT_POS * cosf(*m_pfShiftAngle) *
+			(m_bShiftIn ? sqrtf(1.0f - powf(m_pShiftFrameCnt->GetRate() - 1.0f, 2.0f))	//イーズイン
+				: (m_pShiftFrameCnt->GetRate() < 0.5f ? 2.0f * m_pShiftFrameCnt->GetRate() * m_pShiftFrameCnt->GetRate()
+					: 1.0f - powf(-2.0f * m_pShiftFrameCnt->GetRate() + 2.0f, 2.0f) / 2.0f))	//イーズアウト
+				: 0.0f),	//ヌル
+			m_fPos.y + m_fRadius * sinf(m_fAngle),
+			m_fPos.z + m_fOffsetVibrateEye.y - m_fRadius * cosf(m_fAngle)
+			+ (m_pfShiftAngle && m_pShiftFrameCnt ? SHIFT_POS * sinf(*m_pfShiftAngle) *
+			(m_bShiftIn ? sqrtf(1.0f - powf(m_pShiftFrameCnt->GetRate() - 1.0f, 2.0f))	//イーズイン
+				: (m_pShiftFrameCnt->GetRate() < 0.5f ? 2.0f * m_pShiftFrameCnt->GetRate() * m_pShiftFrameCnt->GetRate()
+					: 1.0f - powf(-2.0f * m_pShiftFrameCnt->GetRate() + 2.0f, 2.0f) / 2.0f))	//イーズアウト
+				: 0.0f),	//ヌル
+			0.0f),													//カメラ相対位置
+		DirectX::XMVectorSet(m_fLook.x + m_fOffsetVibrateLook.x
+			+ (m_pfShiftAngle && m_pShiftFrameCnt ? SHIFT_LOOK * cosf(*m_pfShiftAngle) *
+			(m_bShiftIn ? sqrtf(1.0f - powf(m_pShiftFrameCnt->GetRate() - 1.0f, 2.0f))	//イーズイン
+				: (m_pShiftFrameCnt->GetRate() < 0.5f ? 2.0f * m_pShiftFrameCnt->GetRate() * m_pShiftFrameCnt->GetRate()
+					: 1.0f - powf(-2.0f * m_pShiftFrameCnt->GetRate() + 2.0f, 2.0f) / 2.0f))	//イーズアウト
+				: 0.0f),	//ヌル
 			m_fLook.y,
-			m_fLook.z,
-			0.0f),	//注視点
-		DirectX::XMVectorSet(m_fUp.x,
-			m_fUp.y,
-			m_fUp.z,
-			0.0f)	//アップベクトル
-	));//行列初期化
+			m_fLook.z + m_fOffsetVibrateLook.y
+			+ (m_pfShiftAngle && m_pShiftFrameCnt ? SHIFT_LOOK * sinf(*m_pfShiftAngle) *
+			(m_bShiftIn ? sqrtf(1.0f - powf(m_pShiftFrameCnt->GetRate() - 1.0f, 2.0f))	//イーズイン
+				: (m_pShiftFrameCnt->GetRate() < 0.5f ? 2.0f * m_pShiftFrameCnt->GetRate() * m_pShiftFrameCnt->GetRate()
+					: 1.0f - powf(-2.0f * m_pShiftFrameCnt->GetRate() + 2.0f, 2.0f) / 2.0f))	//イーズアウト
+				: 0.0f),	//ヌル
+			0.0f),													//注視点
+		DirectX::XMVectorSet(m_fUp.x, m_fUp.y, m_fUp.z, 0.0f))		//アップベクトル
+		);//行列初期化
 
 	// =============== 提供 ===================
 	return View;	//ビュー座標系

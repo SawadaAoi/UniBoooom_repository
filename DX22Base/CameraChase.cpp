@@ -129,7 +129,8 @@ DirectX::XMFLOAT4X4 CCameraChase::GetViewWithoutTranspose() const
 						: 1.0f - powf(-2.0f * m_pShiftFrameCnt->GetRate() + 2.0f, 2.0f) / 2.0f))	//イーズアウト
 					: 0.0f),	//ヌル
 				0.0f),													//注視点
-			DirectX::XMVectorSet(m_fUp.x, m_fUp.y, m_fUp.z, 0.0f)));	//アップベクトル
+			DirectX::XMVectorSet(m_fUp.x, m_fUp.y, m_fUp.z, 0.0f))	//アップベクトル
+		);//行列初期化
 	}
 	else
 	{
