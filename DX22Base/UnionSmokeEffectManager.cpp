@@ -19,8 +19,8 @@
 
 // =============== 定数定義 ===================
 const std::map<int, std::string> MAP_TEX_PATH = {
-	{CUnionSmokeEffectManager::GREEN_SMOKE,		"Assets/Effect/Union/green_v1.png"},		// 結合煙の画像（緑）
-	{CUnionSmokeEffectManager::YELLOW_SMOKE,	"Assets/Effect/Union/yellow_v1.png"},		// 結合煙の画像（黄）
+	{CUnionSmokeEffectManager::GREEN_SMOKE,		"Assets/Effect/Union/greenW_v2.png"},		// 結合煙の画像（緑）
+	{CUnionSmokeEffectManager::YELLOW_SMOKE,	"Assets/Effect/Union/yellowW_v2.png"},		// 結合煙の画像（黄）
 	{CUnionSmokeEffectManager::RED_SMOKE,		"Assets/Effect/Union/RedW_v2.png"},			// 結合煙の画像（赤）
 };
 
