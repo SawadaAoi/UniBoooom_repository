@@ -29,6 +29,9 @@
 #include "CameraChase.h"	//自身のヘッダ
 #include "Input.h"			//入力受付
 
+// =============== 定数定義 =======================
+const float CAMERE_TARGET_ADJUST_Z = 1.5f;
+
 /* ========================================
 	コンストラクタ関数
 	-------------------------------------
@@ -105,7 +108,7 @@ DirectX::XMFLOAT4X4 CCameraChase::GetViewWithoutTranspose() const
 						: 1.0f - powf(-2.0f * m_pShiftFrameCnt->GetRate() + 2.0f, 2.0f) / 2.0f))	//イーズアウト
 					: 0.0f),	//ヌル
 				m_pTarget->y + m_fRadius * sinf(m_fAngle),
-				m_pTarget->z + m_fOffsetVibrateEye.y - m_fRadius * cosf(m_fAngle)
+				m_pTarget->z + m_fOffsetVibrateEye.y - m_fRadius * cosf(m_fAngle) + CAMERE_TARGET_ADJUST_Z
 				+ (m_pfShiftAngle && m_pShiftFrameCnt ? SHIFT_POS * sinf(*m_pfShiftAngle) *
 				(m_bShiftIn ? sqrtf(1.0f - powf(m_pShiftFrameCnt->GetRate() - 1.0f, 2.0f))	//イーズイン
 					: (m_pShiftFrameCnt->GetRate() < 0.5f ? 2.0f * m_pShiftFrameCnt->GetRate() * m_pShiftFrameCnt->GetRate()
@@ -119,7 +122,7 @@ DirectX::XMFLOAT4X4 CCameraChase::GetViewWithoutTranspose() const
 							: 1.0f - powf(-2.0f * m_pShiftFrameCnt->GetRate() + 2.0f, 2.0f) / 2.0f))	//イーズアウト
 					: 0.0f),	//ヌル
 				m_pTarget->y,
-				m_pTarget->z + m_fOffsetVibrateLook.y
+				m_pTarget->z + m_fOffsetVibrateLook.y + CAMERE_TARGET_ADJUST_Z
 				+ (m_pfShiftAngle && m_pShiftFrameCnt ? SHIFT_LOOK * sinf(*m_pfShiftAngle) *
 				(m_bShiftIn ? sqrtf(1.0f - powf(m_pShiftFrameCnt->GetRate() - 1.0f, 2.0f))	//イーズイン
 					: (m_pShiftFrameCnt->GetRate() < 0.5f ? 2.0f * m_pShiftFrameCnt->GetRate() * m_pShiftFrameCnt->GetRate()
