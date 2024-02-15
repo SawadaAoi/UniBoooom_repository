@@ -44,7 +44,7 @@ CModelManager::CModelManager()
 	m_sFileName[MODEL_SLIME_RED]	= "Assets/Model/slime/Red/slime_red_walk_1.0.fbx";		// 赤スライムのモデルのファイル名
 	m_sFileName[MODEL_SLIME_FLAME]	= "Assets/Model/flameSlime/fire_walk.fbx";				// 炎スライムのモデルのファイル名
 	m_sFileName[MODEL_SLIME_HEAL]	= "Assets/Model/healSlime/heal_walk.fbx";				// 回復スライムのモデルのファイル名
-	m_sFileName[MODEL_SLIME_ROCK]	= "Assets/Model/boss_slime_rock/rock_walk_2.0.fbx";		// 岩スライムのモデルのファイル名
+	m_sFileName[MODEL_SLIME_ROCK]	= "Assets/Model/boss_slime_rock/rock_walk_1.1.fbx";		// 岩スライムのモデルのファイル名
 	m_sFileName[MODEL_SLIME_DEVIL]	= "Assets/Model/boss_slime_devil/devil_walk.fbx";		// デビルスライムのモデルのファイル名
 	m_sFileName[MODEL_ITEM_HEART]	= "Assets/Model/heart/heart_1.FBX";						// 回復アイテムのハートのモデルのファイル名
 	

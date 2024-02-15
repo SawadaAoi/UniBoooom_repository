@@ -65,14 +65,15 @@ public:
 	// === 列挙 ===
 	enum SE
 	{
-		SE_SWING,		//ハンマーを振るSE
-		SE_RUN,			//移動のSE
-		SE_DAMAGED,		//被ダメージのSE
-		SE_HIT_HAMMER,	//ハンマーとスライムの接触SE
-		SE_HEAL,		//回復SE
-		SE_WARNING,		//残り体力１
+		SE_SWING,		// ハンマーを振るSE
+		SE_RUN,			// 移動のSE
+		SE_DAMAGED,		// 被ダメージのSE
+		SE_HIT_HAMMER,	// ハンマーとスライムの接触SE
+		SE_HEAL,		// 回復SE
+		SE_WARNING,		// 残り体力１
+		SE_CHARGED,		// チャージ完了時
 
-		SE_MAX			//SEの総数
+		SE_MAX			// SEの総数
 	};
 
 	// ===列挙===
@@ -85,6 +86,14 @@ public:
 		MOTION_PLAYER_DIE,		// 死亡
 
 		MOTION_PLAYER_MAX,		//モーションの総数
+	};
+
+	enum PLAYER_CHARGE_STATE {
+		PLAYER_CHARGE_NONE,
+		PLAYER_CHARGING,
+		PLAYER_CHARGED,
+		
+
 	};
 
 private:
@@ -105,6 +114,8 @@ public:
 	void PlaySE(SE se, float volume = 1.0f);
 	void Healing();
 	void CheckCharge();
+	void EffectStart();
+	void UpdateEffect();
 
 	// ゲット関数
 	tagSphereInfo GetHammerSphere();	//当たり判定を取るためゲッター
@@ -177,8 +188,8 @@ private:
 		"Assets/Sound/SE/PlayerDamage.mp3",		//プレイヤーの被ダメージ時
 		"Assets/Sound/SE/HammerHit.mp3",		//ハンマーとスライムの接触SE
 		"Assets/Sound/SE/HealSE.mp3",			//回復アイテム取得時
-		"Assets/Sound/SE/Warning.mp3"			//残りHPが１の時
-
+		"Assets/Sound/SE/Warning.mp3",			//残りHPが１の時
+		"Assets/Sound/SE/charge.mp3"			//チャージ完了
 	};
 
 	//=====アニメーション関連=====
@@ -188,6 +199,12 @@ private:
 		"Assets/Model/player/pow.FBX",				//スイング
 		"Assets/Model/player/down.fbx",				//死亡
 	};			
+
+	//エフェクト初期化
+	Effekseer::EffectRef m_chargeEfc = LibEffekseer::Create("Assets/Effect/charge/charge.efkefc");
+	Effekseer::Handle m_chgEfcHandle;
+	
+	PLAYER_CHARGE_STATE m_ChargeState;
 };
 
 

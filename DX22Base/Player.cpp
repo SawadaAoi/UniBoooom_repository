@@ -75,7 +75,7 @@ const int	SE_RUN_INTERVAL = static_cast<int>(0.4f * 60);	// プレイヤーの移動によ
 const float	SE_RUN_VOLUME = 0.3f;							// 移動によるSEの音量
 const float PLAYER_MOVE_ANIME_SPEED = 1.2f;					// プレイヤーの移動アニメーション再生速度
 const float PLAYER_SWING_ANIME_SPEED = 5.0f;				// プレイヤーの移動アニメーション再生速度
-const float	ADD_ANIM_FRAME = 1.0f / 60.0f;
+const float	ADD_ANIM_FRAME = 1.0f / 60.0f;					
 const int   PLAYER_WARNING_HP = 1;							//瀕死の警告を行うプレイヤー残りHP
 
 const int	SWING_FAST_INTERVAL = 0.1f * 60;				// ハンマーを振る速度を早くする間隔
@@ -85,7 +85,10 @@ const int	SWEAT_EFFECT_INTERVAL = 0.7f * 60;				// 汗エフェクトの出現間隔
 const float	SWEAT_EFFECT_DISP_SPEED = 0.5f;					// 汗エフェクトの表示するハンマーのスピード(これ以下の場合に表示)
 const int	DIE_AFTER_INTERVAL = int(2.0f * 60);			// 死亡してからGameOverテキストが出るまでの猶予時間
 const int	CHARGE_HAMMER_CNT = 60;							// チャージが完了するまでの時間
-
+const TTriType<float> CHARGING_EFFECT_SIZE = {1.5f,1.5f,1.5f};// エフェクトのサイズ
+const TTriType<float> CHARGED_EFFECT_SIZE = {2.0f,2.0f,2.0f};// エフェクトのサイズ
+const float CHARGE_EFFECT_SPEED = 1.0f;						// チャージエフェクトの再生速度
+const int DISP_CHARGE_EFC_CNT = 15;							// チャージエフェクトの見え始めるカウント
 
 /* ========================================
    関数：コンストラクタ
@@ -120,6 +123,7 @@ CPlayer::CPlayer()
 	, m_nSwingFastCnt(0)
 	, m_fRotate_x(PLAYER_ROTATE_X_NORMAL)
 	, m_fChargeCnt(0.0f)
+	, m_ChargeState(PLAYER_CHARGE_NONE)
 {
 	m_pHammer = new CHammer();			// Hammerクラスをインスタンス
 
@@ -172,6 +176,16 @@ CPlayer::~CPlayer()
 ======================================== */
 void CPlayer::Update()
 {
+	CheckCharge();	// チャージカウントを参照してチャージ状態を判定
+	if (m_pModel->GetPlayNo() == MOTION_PLAYER_SWING && !m_pModel->IsPlay(MOTION_PLAYER_SWING))
+	{
+		m_ChargeState = PLAYER_CHARGE_NONE;
+	}
+	if (!m_ChargeState == PLAYER_CHARGE_NONE && m_pModel->IsPlay(MOTION_PLAYER_SWING))
+	{
+		m_fChargeCnt = 0;
+		m_ChargeState = PLAYER_CHARGING;
+	}
 	// 死亡した場合
 	if (m_bDieInvFlg)
 	{
@@ -223,23 +237,35 @@ void CPlayer::Update()
 			MoveController();
 		}
 
-		// スペースキーもしくはコントローラのBボタンに対しての入力時 && ハンマー間隔時間経過済み
-		if ((IsKeyTrigger(VK_SPACE) || IsKeyTriggerController(BUTTON_B)) && !m_bHumInvFlg)
-		{
+		// スペースキーもしくはコントローラのBボタンに対しての押し続け && ハンマー間隔時間経過済み
+		if ((IsKeyPress(VK_SPACE) || IsKeyTriggerController(BUTTON_B)) && !m_bHumInvFlg
+					&& !m_ChargeState == PLAYER_CHARGING)
+		{	
 			SAFE_DELETE(m_pWaitFrameCnt);	// カウンタ削除
 
-			m_fChargeCnt = 0;
-			m_pModel->Play(MOTION_PLAYER_CHARGE, true, 1.0);		// アニメーションの再生
-			m_pModel->SetAnimationTime(MOTION_PLAYER_CHARGE, 0.0f);	// アニメーションタイムをスタート位置にセット
+			// カウントが0ならアニメーションをリセットして再生
+			if (m_fChargeCnt == 0)
+			{
+				m_pModel->Play(MOTION_PLAYER_CHARGE, true, 1.0);		// アニメーションの再生
+				m_pModel->SetAnimationTime(MOTION_PLAYER_CHARGE, 0.0f);	// アニメーションタイムをスタート位置にセット
+			}
 
-			// エフェクトの再生
 
-		}
-		else if ((IsKeyPress(VK_SPACE) || IsKeyTriggerController(BUTTON_B)) && !m_bHumInvFlg)
-		{	// スペースキーもしくはコントローラのBボタンに対しての押し続け && ハンマー間隔時間経過済み
 			m_fChargeCnt++;	// チャージカウントを増加
+
+			if (m_fChargeCnt == DISP_CHARGE_EFC_CNT)
+			{
+				// エフェクトの再生
+				EffectStart();
+			}
+
+			// カウントがマックスになった時のSE再生
+			if (m_fChargeCnt == CHARGE_HAMMER_CNT)
+			{
+				PlaySE(SE_CHARGED);
+			}
 		}
-		else if ((IsKeyRelease(VK_SPACE) || IsKeyTriggerController(BUTTON_B)) && !m_bHumInvFlg)
+		else if ((IsKeyRelease(VK_SPACE) || IsKeyTriggerController(BUTTON_B)) && !m_bHumInvFlg && !m_pModel->IsPlay(MOTION_PLAYER_SWING))
 		{	// スペースキーもしくはコントローラのBボタンに対しての離した時 && ハンマー間隔時間経過済み
 
 			m_pModel->Play(MOTION_PLAYER_SWING, false, m_pHammer->GetSwingSpeed() * SWING_ANIM_ADJUST);	// アニメーションの再生
@@ -247,6 +273,8 @@ void CPlayer::Update()
 
 			m_pHammer->AttackStart(m_Transform.fPos, m_Transform.fRadian.y);	// ハンマー攻撃開始
 			m_bAttackFlg = true;	// 攻撃フラグを有効にする
+
+			LibEffekseer::GetManager()->StopEffect(m_chgEfcHandle);
 
 			//SEの再生
 			PlaySE(SE_SWING);
@@ -291,11 +319,9 @@ void CPlayer::Update()
 	}
 	
 	DisplaySweatEffect();			// 汗エフェクト作成
-		
-	m_pWalkEffectMng->Update();						// 歩きの土煙エフェクトの更新
-	m_pSweatEffectMng->Update(m_Transform.fPos);	// 汗エフェクトの更新
 
-	CheckCharge();	// チャージカウントを参照してチャージ状態を判定
+	UpdateEffect();	// エふぇくtの更新
+
 }
 
 /* ========================================
@@ -742,7 +768,8 @@ void CPlayer::MoveCheck()
 	{
 		// 待機中のアニメーションを再生してない、なおかつ攻撃中じゃない場合
 		if (m_pModel->GetPlayNo() != MOTION_PLAYER_STOP
-			&& !m_bAttackFlg && !m_pModel->IsPlay(MOTION_PLAYER_SWING))
+			&& !m_bAttackFlg && !m_pModel->IsPlay(MOTION_PLAYER_SWING)
+			&& m_ChargeState == PLAYER_CHARGE_NONE)
 		{
 			// カウントダウン開始前の場合
 			if (!m_pWaitFrameCnt)	// 値がnullptr
@@ -782,7 +809,8 @@ void CPlayer::MoveCheck()
 		}
 
 		// 移動中のアニメーションを再生してない場合、なおかつ攻撃中じゃない場合
-		if (m_pModel->GetPlayNo() != MOTION_PLAYER_MOVE && !m_pModel->IsPlay(MOTION_PLAYER_SWING))
+		if (m_pModel->GetPlayNo() != MOTION_PLAYER_MOVE && !m_pModel->IsPlay(MOTION_PLAYER_SWING)
+			&& !m_pModel->IsPlay(MOTION_PLAYER_CHARGE))
 		{	
 			m_pModel->Play(MOTION_PLAYER_MOVE, true, PLAYER_MOVE_ANIME_SPEED);	// アニメーションを再生
 		}
@@ -866,7 +894,70 @@ void CPlayer::CheckCharge()
 	else
 	{	// チャージが完了している場合
 		m_bCharge = true;
+		m_ChargeState = PLAYER_CHARGED;
 	}
 }
 
+/* ========================================
+	エフェクト表示開始関数
+	-------------------------------------
+	内容：エフェクトの表示を開始する
+	-------------------------------------
+	引数1：無し
+	-------------------------------------
+	戻値：無し
+=========================================== */
+void CPlayer::EffectStart()
+{
+	m_chgEfcHandle = LibEffekseer::GetManager()->Play(m_chargeEfc, 	//エフェクトの開始
+		m_Transform.fPos.x,
+		m_Transform.fPos.y,
+		m_Transform.fPos.z);
+
+	LibEffekseer::GetManager()->SetScale(m_chgEfcHandle, 					//エフェクトのサイズを設定
+		CHARGING_EFFECT_SIZE.x,
+		CHARGING_EFFECT_SIZE.y,
+		CHARGING_EFFECT_SIZE.z);
+
+	LibEffekseer::GetManager()->SetSpeed(m_chgEfcHandle,					//エフェクトの再生速度を設定
+		CHARGE_EFFECT_SPEED);
+}
+
+/* ========================================
+	エフェクト更新関数
+	-------------------------------------
+	内容：エフェクトを更新する
+	-------------------------------------
+	引数1：無し
+	-------------------------------------
+	戻値：無し
+=========================================== */
+void CPlayer::UpdateEffect()
+{
+	// チャージエフェクトの座標をセット
+	LibEffekseer::GetManager()->SetLocation(m_chgEfcHandle,
+		m_Transform.fPos.x,
+		m_Transform.fPos.y,
+		m_Transform.fPos.z);
+
+	if (m_bCharge)
+	{
+		LibEffekseer::GetManager()->SetScale(m_chgEfcHandle, 	//エフェクトのサイズを設定
+			CHARGED_EFFECT_SIZE.x,
+			CHARGED_EFFECT_SIZE.y,
+			CHARGED_EFFECT_SIZE.z);
+	}
+	else
+	{
+		LibEffekseer::GetManager()->SetScale(m_chgEfcHandle, 	//エフェクトのサイズを設定
+			CHARGING_EFFECT_SIZE.x,
+			CHARGING_EFFECT_SIZE.y,
+			CHARGING_EFFECT_SIZE.z);
+	}
+
+
+	m_pWalkEffectMng->Update();						// 歩きの土煙エフェクトの更新
+	m_pSweatEffectMng->Update(m_Transform.fPos);	// 汗エフェクトの更新
+
+}
 
