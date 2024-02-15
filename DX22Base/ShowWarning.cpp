@@ -31,6 +31,7 @@ const TPos2d<float> WARNING_ARRANGEMENT_POS(640.0f, 360.0f);		//è”z‘‚ÌˆÊ’uİ’è
 const TPos2d<float> WARNING_ARRANGEMENT_SIZE(315.0f, -420.0f);		//è”z‘‘å‚«‚³İ’è
 const DirectX::XMFLOAT4 WARNING_BG_COLOR(1.0f, 1.0f, 1.0f, 0.65f);	//ƒoƒbƒNƒOƒ‰ƒ“ƒhFİ’è
 
+const int WARNING_TIME_FLAME = 4.0f * 60;
 
 /* ========================================
 	ƒfƒXƒgƒ‰ƒNƒ^ŠÖ”
@@ -41,19 +42,20 @@ const DirectX::XMFLOAT4 WARNING_BG_COLOR(1.0f, 1.0f, 1.0f, 0.65f);	//ƒoƒbƒNƒOƒ‰ƒ
 	-------------------------------------
 	–ß’lF‚È‚µ
 =========================================== */
-CShowWarning::CShowWarning()
+CShowWarning::CShowWarning(int nStageNum)
 	: m_pWarningBG(nullptr)
 	, m_pWarningTex(nullptr)
 	, m_fBGMove(0.0f)
 	, m_fBotTexMove(0.0f)
 	, m_fTopTexMove(0.0f)
-	, m_pTimer(nullptr)
-	, m_pBoss(nullptr)
 	, m_fBGAlpha(0.7f)
 	, m_pBossS2(nullptr)
 	, m_pBossS3(nullptr)
 	, m_fArrangementSizeAdjust(WARNING_ARRANGEMENT_SIZE.x / 2, WARNING_ARRANGEMENT_SIZE.y / 2)	// •ÏX—Ê‚ÍŒ³‚ÌƒTƒCƒY‚Ì”¼•ªiÅ‰o‚é‚ÍŒ³‚ÌƒTƒCƒY‚Ì1.5”{
 	, m_fArrangementAlpha(0.0f)
+	, m_nStageNum(nStageNum)
+	, m_bDispFlg(false)
+	, m_nDispCnt(0)
 {
 	// ƒeƒNƒXƒ`ƒƒ“Ç‚İ‚Ş
 	m_pWarningBG = new Texture;
@@ -106,25 +108,38 @@ CShowWarning::~CShowWarning()
 =========================================== */
 void CShowWarning::Update()
 {
-	//---ŒxƒoƒbƒNƒOƒ‰ƒ“ƒh‚Æ•¶š‚ÌˆÚ“®---
-	// ‘Ñ‚Ì•”•ª
-	m_fBGMove--;
-	if (m_fBGMove <= -1280.0f)
+	if (m_bDispFlg)
 	{
-		m_fBGMove = 0.0f;
+		//---ŒxƒoƒbƒNƒOƒ‰ƒ“ƒh‚Æ•¶š‚ÌˆÚ“®---
+		// ‘Ñ‚Ì•”•ª
+		m_fBGMove--;
+		if (m_fBGMove <= -1280.0f)
+		{
+			m_fBGMove = 0.0f;
+		}
+
+		// •¶š‚Ì•”•ª
+		m_fTopTexMove -= 1.5f;
+		if (m_fTopTexMove <= -1280.0f)
+		{
+			m_fTopTexMove = 0.0f;
+		}
+		m_fBotTexMove += 1.5f;
+		if (m_fBotTexMove >= 1280.0f)
+		{
+			m_fBotTexMove = 0.0f;
+		}
+
+		m_nDispCnt++;
+
+		// •`‰æŠÔ‚ğ‰ß‚¬‚Ä‚¢‚½‚ç
+		if (WARNING_TIME_FLAME < m_nDispCnt)
+		{
+			m_bDispFlg = false;	// •`‰æI—¹
+		}
+
 	}
 
-	// •¶š‚Ì•”•ª
-	m_fTopTexMove -= 1.5f;
-	if (m_fTopTexMove <= -1280.0f)
-	{
-		m_fTopTexMove = 0.0f;
-	}
-	m_fBotTexMove += 1.5f;
-	if (m_fBotTexMove >= 1280.0f)
-	{
-		m_fBotTexMove = 0.0f;
-	}
 	
 }
 
@@ -139,19 +154,26 @@ void CShowWarning::Update()
 =========================================== */
 void CShowWarning::Draw()
 {
-	//ƒ{ƒXoŒ»Œã‚Ì4•bŠÔŒxo‚é		  (oŒ»‘O‚Ì4•bo‚µ‚½‚¢‚¯‚ÇAŒ»ó‚Íƒ{ƒX‚Ìƒ|ƒCƒ“ƒ^‚Å”»’f‚µ‚Ä‚é«
+	//ƒ{ƒXoŒ»Œã‚Ì4•bŠÔŒxo‚é		 
 	//-è”z‘•”•ª-
-	if ( m_pTimer->GetErapsedTime() >= 45 * 60 && m_pTimer->GetErapsedTime() <= 49 * 60 && m_pBoss->IsBossPtrExist())
+	if (m_bDispFlg)
 	{
-		ArrangementAdjust();	// è”z‘ƒTƒCƒY‚Æƒ¿’l•ÏX									    ª																												
-		if (BOSS_GAUGE_S2)		// ƒXƒe[ƒW‚Q	¨		¨		¨		  ƒXƒe[ƒW‚Å”»’f‚µ‚½‚çAª‚±‚ê‚Í‚¢‚ç‚È‚¢
+		ArrangementAdjust();	// è”z‘ƒTƒCƒY‚Æƒ¿’l•ÏX									    				
+
+		// è”z‘‰æ‘œ(ƒXƒe[ƒW‚²‚Æ‚É•Ï‚¦‚é)
+		switch (m_nStageNum)
 		{
+		case 2:
 			DrawWarningBoss(WARNING_ARRANGEMENT_POS, m_fArrangementSizeAdjust, m_pBossS2);
-		}
-		else if (BOSS_GAUGE_S3)	// ƒXƒe[ƒW‚R
-		{
+
+			break;
+
+		case 3:
 			DrawWarningBoss(WARNING_ARRANGEMENT_POS, m_fArrangementSizeAdjust, m_pBossS3);
+
+			break;
 		}
+
 
 		// ã”¼•”‚ÌŒx•`‰æ
 		DrawWarningBG(WARNING_BACKGROUND_TOPPOS, WARNING_BACKGROUND_SIZE, m_fBGMove);
@@ -164,6 +186,7 @@ void CShowWarning::Draw()
 		DrawWarningBG(WARNING_BACKGROUND_BOTPOS_2, WARNING_BACKGROUND_SIZE, m_fBGMove);
 		DrawWarningTex(WARNING_TEX_BOTPOS, WARNING_TEX_SIZE, m_fBotTexMove);
 		DrawWarningTex(WARNING_TEX_BOTPOS_2, WARNING_TEX_SIZE, m_fBotTexMove);
+
 	}
 
 }
@@ -317,30 +340,32 @@ void CShowWarning::ArrangementAdjust()
 	}
 }
 
+
 /* ========================================
-   ƒ^ƒCƒ}[ƒZƒbƒgŠÖ”
+   ƒ{ƒXŒx•`‰æŠJnŠÖ”
    -------------------------------------
-   “à—eFƒ^ƒCƒ}[ƒ|ƒCƒ“ƒ^ƒZƒbƒgˆ—
+   “à—eFƒ{ƒXŒx•`‰æ‚ğŠJn‚·‚é
    -------------------------------------
-   ˆø”1Fƒ^ƒCƒ}[‚Ìƒ|ƒCƒ“ƒ^
+   ˆø”1F‚È‚µ
    -------------------------------------
    –ß’lF‚È‚µ
 =========================================== */
-void CShowWarning::SetTimer(CTimer* pTimer)
+void CShowWarning::StartShowWarning()
 {
-	m_pTimer = pTimer;
+	if (m_nStageNum == 1) return;
+	m_bDispFlg = true;
 }
 
 /* ========================================
-   ƒXƒ‰ƒCƒ€ƒ}ƒl[ƒWƒƒƒZƒbƒgŠÖ”
+   •\¦’†ƒtƒ‰ƒOæ“¾ŠÖ”
    -------------------------------------
-   “à—eFƒ^ƒCƒ}[ƒ}ƒl[ƒWƒƒƒZƒbƒgˆ—
+   “à—eF•\¦’†‚©‚Ç‚¤‚©‚Ìƒtƒ‰ƒO‚ğæ“¾‚·‚é
    -------------------------------------
-   ˆø”1FƒXƒ‰ƒCƒ€ƒ}ƒl[ƒWƒƒ‚Ìƒ|ƒCƒ“ƒ^
+   ˆø”1F‚È‚µ
    -------------------------------------
-   –ß’lF‚È‚µ
+   –ß’lFtrue=•\¦’†/false=”ñ•\¦
 =========================================== */
-void CShowWarning::SetSlimeMng(CSlimeManager * pBoss)
+bool CShowWarning::GetDispFlg()
 {
-	m_pBoss = pBoss;
+	return m_bDispFlg;
 }

@@ -68,20 +68,15 @@ CUIStageManager::CUIStageManager(CPlayer* pPlayer,CCamera * pCamera, CSlimeManag
 	m_pScoreOHMng = new CScoreOHManager();
 	m_pStageFin = new CStageFinish(pCamera, pPlayer, m_pTimer->GetTimePtr());
 	m_pBossArrow = new CBossArrow();
-	m_pShowWarning = new CShowWarning();
+	m_pShowWarning = new CShowWarning(static_cast<int>(eStage) + 1);
 
 	m_pCombo->SetTotalScore(m_pTotalScore);
 	m_pTimer->TimeStart();
 	m_pBossgauge->SetSlimeManager(pSlimeMng);
+	m_pBossgauge->SetShowWarning(m_pShowWarning);
 	m_pScoreOHMng->SetCamera(pCamera);
 	m_pBossArrow->SetSlimeMng(pSlimeMng);
 	m_pBossArrow->SetPlayer(pPlayer);
-	m_pShowWarning->SetTimer(m_pTimer);
-	m_pShowWarning->SetSlimeMng(pSlimeMng);
-
-	/*
-	m_pBossgauge->AddBossGauge(BOSS_GAUGE_S1[0].startTime, BOSS_GAUGE_S1[0].maxTime);
-	m_pBossgauge->AddBossGauge(BOSS_GAUGE_S1[1].startTime, BOSS_GAUGE_S1[1].maxTime);*/
 
 }
 
@@ -248,7 +243,31 @@ int CUIStageManager::GetTotalScore()
 	}
 }
 
-CBossgauge* CUIStageManager::GetBossGauge()
+/* ========================================
+   ボスゲージポインタゲッタ関数
+   -------------------------------------
+   内容：ボスゲージポインタ取得
+   -------------------------------------
+   引数1：無し
+   -------------------------------------
+   戻値：総スコア
+=========================================== */
+CBossgauge* CUIStageManager::GetBossGaugePtr()
 {
 	return m_pBossgauge;
+}
+
+
+/* ========================================
+   警告UIポインタゲッタ関数
+   -------------------------------------
+   内容：警告UIポインタ取得
+   -------------------------------------
+   引数1：無し
+   -------------------------------------
+   戻値：総スコア
+=========================================== */
+CShowWarning* CUIStageManager::GetShowWarningPtr()
+{
+	return m_pShowWarning;
 }

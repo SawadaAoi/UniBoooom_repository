@@ -69,14 +69,14 @@ public:
 	// =============== プロトタイプ宣言 ===============
 	CStage(CUIStageManager::E_STAGE_NUM eStage);	//コンストラクタ
 	virtual ~CStage();								//デストラクタ
-	//virtual void Update();				//更新
-	//virtual void Draw() const;			//描画	
+	void Update();				//更新
+	void Draw();			//描画	
 	//virtual E_TYPE GetType() const = 0;	//自身の種類ゲッタ
 	void Collision();
 
 
 protected:
-	virtual void RecordData() = 0;	//データ記録
+	void RecordData();	//データ記録
 	void GameFinish();
 	void PlayerSlimeCollision();
 	void PlayerBossCollision();		//追加
@@ -114,7 +114,9 @@ protected:
 	XAUDIO2_BUFFER* m_pSEHitHammer;
 	IXAudio2SourceVoice* m_pSEHitHammerSpeaker;
 
+	int m_nStageNum;		// ステージ番号
 private:
+	
 
 };	//ステージ
 

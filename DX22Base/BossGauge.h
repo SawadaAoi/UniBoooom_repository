@@ -26,6 +26,7 @@
 #include "2dPolygon.h"	//平面ポリゴン
 #include <vector>
 #include "Camera.h"
+#include "ShowWarning.h"
 
 // =============== クラス定義 =====================
 class CBossgauge
@@ -56,6 +57,7 @@ public:
 	void DrawGauge(std::vector<BossGauge>::iterator itr);	// ボスゲージ増加量描画関数
 
 	void SetSlimeManager(CSlimeManager* pSlimeMng);
+	void SetShowWarning(CShowWarning* pShowWarn);
 
 	void AddBossGauge(int BossNum, float fStartTime, float fMaxTime);
 
@@ -66,6 +68,8 @@ private:
 	CTimer* m_pTimer;						// 残り時間のポインタ
 	CSlimeManager* m_pSlimeMng;				// スライム管理(ボス生成で使用する)
 	std::vector<BossGauge> m_BossGauges;	// ボスゲージ管理配列(ステージ毎に生成する数配列に格納する)
+
+	CShowWarning* m_pShowWarn;				// ボス警告
 };
 
 

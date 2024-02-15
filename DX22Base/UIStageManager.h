@@ -55,8 +55,8 @@ public:
 
 	int GetTotalScore();	//総スコアゲッタ
 
-	CBossgauge* GetBossGauge();
-	
+	CBossgauge* GetBossGaugePtr();
+	CShowWarning* GetShowWarningPtr();
 private:
 
 	// ===メンバ変数宣言===
