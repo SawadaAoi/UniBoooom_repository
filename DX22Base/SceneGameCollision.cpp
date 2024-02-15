@@ -62,8 +62,6 @@ void SceneGame::SceneGameCollision()
 	SlimeBossNormalMoveCollision();
 	BossSlimeNormalMoveCollision();
 	SlimeSlimeNormalMoveCollision();
-
-
 }
 
 /* ========================================
@@ -181,7 +179,7 @@ void SceneGame::HammerSlimeCollision()
 			float fAngleSlime
 				= m_pPlayer->GetTransform().Angle(pSlimeNow->GetTransform());	// スライムが飛ぶ角度を取得
 
-			pSlimeNow->HitMoveStart(HAMMER_HIT_MOVE_SPEED,fAngleSlime);	// スライムを飛ばす
+			pSlimeNow->HitMoveStart(HAMMER_HIT_MOVE_SPEED,fAngleSlime, m_pPlayer->GetCharge());	// スライムを飛ばす
 
 			m_pSEHitHammerSpeaker = CSound::PlaySound(m_pSEHitHammer);	//SEの再生
 			m_pSEHitHammerSpeaker->SetVolume(SE_HAMMER_HIT_VOLUME);
@@ -218,7 +216,7 @@ void SceneGame::HammerBossCollision()
 			float fAngleSlime
 				= m_pPlayer->GetTransform().Angle(pBossNow->GetTransform());	// スライムが飛ぶ角度を取得
 
-			pBossNow->HitMoveStart(HAMMER_HIT_MOVE_SPEED, fAngleSlime);	// スライムを飛ばす
+			pBossNow->HitMoveStart(HAMMER_HIT_MOVE_SPEED, fAngleSlime,false);	// スライムを飛ばす
 		}
 	}
 }

@@ -81,6 +81,7 @@ public:
 		MOTION_PLAYER_STOP,		// 待機
 		MOTION_PLAYER_MOVE,		// 移動
 		MOTION_PLAYER_SWING,	// ハンマーを振る
+		MOTION_PLAYER_CHARGE,	// チャージ状態
 		MOTION_PLAYER_DIE,		// 死亡
 
 		MOTION_PLAYER_MAX,		//モーションの総数
@@ -103,19 +104,20 @@ public:
 	void LoadSound();	//サウンド読み込み関数
 	void PlaySE(SE se, float volume = 1.0f);
 	void Healing();
+	void CheckCharge();
 
 	// ゲット関数
 	tagSphereInfo GetHammerSphere();	//当たり判定を取るためゲッター
 	TPos3d<float>* GetPosAddress();
 	CHammer* GetHammerPtr();
-	bool GetSafeTime();							//当たり判定があるかの確認
+	bool GetSafeTime();					//当たり判定があるかの確認
 	int* GetHpPtr();
 	bool GetDieFlg() const;
-	
+	bool GetAttackFlg();
+	bool GetCharge();
 
 	// セット関数
 	void SetCamera(CCamera* pCamera);
-	bool GetAttackFlg();
 	void SetSweatEffectMng(CSweatEffectManager* pSweatefcMng);
 
 private:
@@ -152,13 +154,15 @@ private:
 
 	int m_nWalkSECnt;					// プレイヤーの移動によるSEの間隔
 
-	bool m_bHumInvFlg;						// ハンマー間隔時間フラグ
+	bool m_bHumInvFlg;					// ハンマー間隔時間フラグ
 	float m_fHumInvCnt;					// ハンマー間隔時間カウント
 
 	bool m_bDieInvFlg;					// 死亡猶予時間フラグ
 	float m_fDieInvCnt;					// 死亡猶予時間カウント
 
 	float m_fRotate_x;					// プレイヤーの表示用傾き
+	float m_fChargeCnt;					// プレイヤーのチャージハンマーのカウント
+	bool m_bCharge;						// チャージが完了しているか
 
 	int m_nWalkEffeCnt;					// 歩き煙エフェクトの表示間隔加算値
 	int m_nSweatEffeCnt;				// 汗エフェクトの表示間隔加算値

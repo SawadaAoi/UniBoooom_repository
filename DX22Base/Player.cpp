@@ -84,7 +84,7 @@ const int	WALK_EFFECT_INTERVAL = 0.2f * 60;				// 歩くエフェクトの出現間隔
 const int	SWEAT_EFFECT_INTERVAL = 0.7f * 60;				// 汗エフェクトの出現間隔
 const float	SWEAT_EFFECT_DISP_SPEED = 0.5f;					// 汗エフェクトの表示するハンマーのスピード(これ以下の場合に表示)
 const int	DIE_AFTER_INTERVAL = int(2.0f * 60);			// 死亡してからGameOverテキストが出るまでの猶予時間
-
+const int	CHARGE_HAMMER_CNT = 60;							// チャージが完了するまでの時間
 
 
 /* ========================================
@@ -119,6 +119,7 @@ CPlayer::CPlayer()
 	, m_nSweatEffeCnt(0)
 	, m_nSwingFastCnt(0)
 	, m_fRotate_x(PLAYER_ROTATE_X_NORMAL)
+	, m_fChargeCnt(0.0f)
 {
 	m_pHammer = new CHammer();			// Hammerクラスをインスタンス
 
@@ -184,7 +185,6 @@ void CPlayer::Update()
 		{
 			m_bDieFlg = true;	// 死亡判定をオン
 		}
-
 	}
 	// ハンマー攻撃中
 	else if (m_bAttackFlg)
@@ -197,7 +197,6 @@ void CPlayer::Update()
 			m_bAttackFlg = false;			// 攻撃中フラグをオフにする
 			m_bHumInvFlg = true;			// ハンマー振り間隔フラグオン
 		}
-
 	}
 	// ハンマー攻撃以外
 	else
@@ -224,20 +223,33 @@ void CPlayer::Update()
 			MoveController();
 		}
 
-		// スペースキーを押した時、またはコントローラのBボタンを押した時 && ハンマー間隔時間経過済み
+		// スペースキーもしくはコントローラのBボタンに対しての入力時 && ハンマー間隔時間経過済み
 		if ((IsKeyTrigger(VK_SPACE) || IsKeyTriggerController(BUTTON_B)) && !m_bHumInvFlg)
 		{
-			SAFE_DELETE(m_pWaitFrameCnt);	//カウンタ削除
+			SAFE_DELETE(m_pWaitFrameCnt);	// カウンタ削除
 
- 			m_pModel->Play(MOTION_PLAYER_SWING, false, m_pHammer->GetSwingSpeed() * SWING_ANIM_ADJUST);	//アニメーションの再生
-			m_pModel->SetAnimationTime(MOTION_PLAYER_SWING, 0.0f);		//アニメーションタイムをスタート位置にセット
+			m_fChargeCnt = 0;
+			m_pModel->Play(MOTION_PLAYER_CHARGE, true, 1.0);		// アニメーションの再生
+			m_pModel->SetAnimationTime(MOTION_PLAYER_CHARGE, 0.0f);	// アニメーションタイムをスタート位置にセット
+
+			// エフェクトの再生
+
+		}
+		else if ((IsKeyPress(VK_SPACE) || IsKeyTriggerController(BUTTON_B)) && !m_bHumInvFlg)
+		{	// スペースキーもしくはコントローラのBボタンに対しての押し続け && ハンマー間隔時間経過済み
+			m_fChargeCnt++;	// チャージカウントを増加
+		}
+		else if ((IsKeyRelease(VK_SPACE) || IsKeyTriggerController(BUTTON_B)) && !m_bHumInvFlg)
+		{	// スペースキーもしくはコントローラのBボタンに対しての離した時 && ハンマー間隔時間経過済み
+
+			m_pModel->Play(MOTION_PLAYER_SWING, false, m_pHammer->GetSwingSpeed() * SWING_ANIM_ADJUST);	// アニメーションの再生
+			m_pModel->SetAnimationTime(MOTION_PLAYER_SWING, 0.0f);				// アニメーションタイムをスタート位置にセット
 
 			m_pHammer->AttackStart(m_Transform.fPos, m_Transform.fRadian.y);	// ハンマー攻撃開始
 			m_bAttackFlg = true;	// 攻撃フラグを有効にする
 
 			//SEの再生
 			PlaySE(SE_SWING);
-
 		}
 		else
 		{
@@ -251,11 +263,8 @@ void CPlayer::Update()
 					m_pHammer->GetSwingSpeed() * SWING_ANIM_ADJUST);	// アニメの速さを設定
 				m_nSwingFastCnt = 0;
 			}
-			
 		}
-
 	}
-
 
 	// 無敵状態になっている場合
 	if (m_bSafeTimeFlg)
@@ -267,7 +276,7 @@ void CPlayer::Update()
 		if (m_nSafeTimeCnt >= NO_DAMAGE_TIME)
 		{
 			m_DrawFlg = true;				// 点滅を解除
-			m_bSafeTimeFlg = false;				// 無敵を解除
+			m_bSafeTimeFlg = false;			// 無敵を解除
 		}
 
 	}
@@ -283,10 +292,10 @@ void CPlayer::Update()
 	
 	DisplaySweatEffect();			// 汗エフェクト作成
 		
-	m_pWalkEffectMng->Update();
-	m_pSweatEffectMng->Update(m_Transform.fPos);
+	m_pWalkEffectMng->Update();						// 歩きの土煙エフェクトの更新
+	m_pSweatEffectMng->Update(m_Transform.fPos);	// 汗エフェクトの更新
 
-	
+	CheckCharge();	// チャージカウントを参照してチャージ状態を判定
 }
 
 /* ========================================
@@ -643,6 +652,20 @@ bool CPlayer::GetAttackFlg()
 	return m_bAttackFlg;
 }
 
+/* ========================================
+   チャージハンマー取得関数
+   ----------------------------------------
+   内容：チャージ状態か取得する関数
+   ----------------------------------------
+   引数：無し
+   ----------------------------------------
+   戻値：チャージ状態
+======================================== */
+bool CPlayer::GetCharge()
+{
+	return m_bCharge;
+}
+
 void CPlayer::SetSweatEffectMng(CSweatEffectManager* pSweatefcMng)
 {
 	m_pSweatEffectMng = pSweatefcMng;
@@ -822,6 +845,28 @@ void CPlayer::Healing()
 	m_nHp += HEAL_NUM;
 	if (m_nHp >= PLAYER_HP) { m_nHp = PLAYER_HP; }
 	PlaySE(SE_HEAL);
+}
+
+/* ========================================
+   チャージハンマー判定関数
+   ----------------------------------------
+   内容：チャージカウントを参照して判定する関数
+   ----------------------------------------
+   引数：なし
+   ----------------------------------------
+   戻値：なし
+======================================== */
+void CPlayer::CheckCharge()
+{
+	// チャージ時間が一定以上か否か
+	if (CHARGE_HAMMER_CNT > m_fChargeCnt)
+	{	// チャージ時間が足りていない場合
+		m_bCharge = false;
+	}
+	else
+	{	// チャージが完了している場合
+		m_bCharge = true;
+	}
 }
 
 

@@ -87,7 +87,7 @@ public:
 	void HitBranch(int HitSlimeArrayNum,int standSlimeArrayNum,CExplosionManager* pExpMng);			// スライムの接触が起きた際の分岐処理
 	bool HitFlameBranch(int HitSlimeNum, int StandSlimeNum, CExplosionManager* pExpMng);			// フレイムスライムとの接触が起きた際の分岐処理
 	bool HitHealBranch(int HitSlimeNum, int StandSlimeNum, CExplosionManager* pExpMng);				// フレイムスライムとの接触が起きた際の分岐処理
-	void UnionSlime(E_SLIME_LEVEL level, TPos3d<float> pos, float speed, float angle);				// スライムの結合処理
+	void UnionSlime(E_SLIME_LEVEL level, TPos3d<float> pos, float speed, float angle, bool ChargeHit);				// スライムの結合処理
 	void TouchExplosion(int DelSlime, CExplosionManager* pExpMng, int comboNum);					// スライムの爆発処理
 
 	//-- ボス

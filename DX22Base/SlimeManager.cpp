@@ -499,26 +499,40 @@ void CSlimeManager::HitBranch(int HitSlimeNum, int StandSlimeNum, CExplosionMana
 	}
 	
 	//-- ノーマルスライムヒット処理
-	// 衝突するスライムが小さい場合(小→大)
-	if (hitSlimeLevel < standSlimeLevel)
+	bool ChargeHit = m_pSlime[HitSlimeNum]->GetChargeHit();
+	if (!ChargeHit)	// プレイヤーがチャージ状態ではない場合
 	{
-		m_pSlime[HitSlimeNum]->HitMoveStart(hitSlimeSpeed * COL_SUB_HIT_TO_BIG, reflectionAngle);	// 衝突するスライムに吹き飛び移動処理
-		m_pSlime[StandSlimeNum]->HitMoveStart(hitSlimeSpeed * COL_SUB_STAND_TO_SMALL, travelAngle);	// 衝突されたスライムに吹き飛び移動処理
+		// 衝突するスライムが小さい場合(小→大)
+		if (hitSlimeLevel < standSlimeLevel)
+		{
+			m_pSlime[HitSlimeNum]->HitMoveStart(hitSlimeSpeed * COL_SUB_HIT_TO_BIG
+				, reflectionAngle, ChargeHit);	// 衝突するスライムに吹き飛び移動処理
+			m_pSlime[StandSlimeNum]->HitMoveStart(hitSlimeSpeed * COL_SUB_STAND_TO_SMALL
+				, travelAngle, ChargeHit);	// 衝突されたスライムに吹き飛び移動処理
+			PlaySE(SE_HIT);									// SEの再生
+		}
+		// 衝突するスライムが大きい場合(大→小)
+		else if (hitSlimeLevel > standSlimeLevel)
+		{
+			m_pSlime[HitSlimeNum]->HitMoveStart
+				(hitSlimeSpeed * COL_SUB_HIT_TO_SMALL, travelAngle, ChargeHit);		// 衝突するスライムに吹き飛び移動処理
+			m_pSlime[StandSlimeNum]->HitMoveStart
+				(hitSlimeSpeed * COL_SUB_STAND_TO_BIG, travelAngle,ChargeHit);	// 衝突されたスライムに吹き飛び移動処理
+			PlaySE(SE_HIT);									// SEの再生
+		}
+	}
+	else	// プレイヤーがチャージ状態の場合
+	{
+		m_pSlime[HitSlimeNum]->HitMoveStart(hitSlimeSpeed, travelAngle, ChargeHit);	// 衝突するスライムに吹き飛び移動処理
+		m_pSlime[StandSlimeNum]->HitMoveStart(hitSlimeSpeed	, travelAngle, ChargeHit);	// 衝突されたスライムに吹き飛び移動処理
 		PlaySE(SE_HIT);									// SEの再生
 	}
+
 	
-	// 衝突するスライムが大きい場合(大→小)
-	else if (hitSlimeLevel > standSlimeLevel)
-	{
-		m_pSlime[HitSlimeNum]->HitMoveStart(hitSlimeSpeed * COL_SUB_HIT_TO_SMALL, travelAngle);		// 衝突するスライムに吹き飛び移動処理
-		m_pSlime[StandSlimeNum]->HitMoveStart(hitSlimeSpeed * COL_SUB_STAND_TO_BIG, travelAngle);	// 衝突されたスライムに吹き飛び移動処理
-		PlaySE(SE_HIT);									// SEの再生
-	}
+
 	//スライムのサイズが同じだった場合
-	else
+	if(hitSlimeLevel == standSlimeLevel)
 	{
-
-
 		if (hitSlimeLevel == MAX_LEVEL)	//スライムのサイズが最大の時
 		{
 			//二体分の削除判定
@@ -536,9 +550,9 @@ void CSlimeManager::HitBranch(int HitSlimeNum, int StandSlimeNum, CExplosionMana
 		}
 		else	//最大サイズじゃない場合は1段階大きいスライムを生成する
 		{
+			UnionSlime(hitSlimeLevel,pos, hitSlimeSpeed, travelAngle, m_pSlime[HitSlimeNum]->GetChargeHit());		//スライムの結合処理
 			SAFE_DELETE(m_pSlime[HitSlimeNum]);								// 衝突するスライムを削除
 			SAFE_DELETE(m_pSlime[StandSlimeNum]);							// 衝突されたスライムを削除
-			UnionSlime(hitSlimeLevel,pos, hitSlimeSpeed, travelAngle);		//スライムの結合処理
 		}
 	}
 }
@@ -573,11 +587,14 @@ bool CSlimeManager::HitFlameBranch(int HitSlimeNum, int StandSlimeNum, CExplosio
 
 	//-- フレイムスライムヒット処理
 	// フレイム　→　フレイム
+	bool bChargeHit = m_pSlime[HitSlimeNum]->GetChargeHit();
 	if (hitSlimeLevel == LEVEL_FLAME && standSlimeLevel == LEVEL_FLAME)
 	{
 		// 『衝突するスライムが大きい場合(大→小)』と同じ動きをさせる
-		m_pSlime[HitSlimeNum]->HitMoveStart(hitSlimeSpeed * COL_SUB_HIT_TO_SMALL, travelAngle);		// 衝突するスライムに吹き飛び移動処理
-		m_pSlime[StandSlimeNum]->HitMoveStart(hitSlimeSpeed * COL_SUB_STAND_TO_BIG, travelAngle);	// 衝突されたスライムに吹き飛び移動処理
+		m_pSlime[HitSlimeNum]->HitMoveStart(bChargeHit ? hitSlimeSpeed: hitSlimeSpeed * COL_SUB_HIT_TO_SMALL,	//チャージ状態なら減速せずに吹き飛び
+			travelAngle, bChargeHit);		// 衝突するスライムに吹き飛び移動処理
+		m_pSlime[StandSlimeNum]->HitMoveStart(bChargeHit ? hitSlimeSpeed: hitSlimeSpeed * COL_SUB_STAND_TO_BIG,	//チャージ状態なら減速せずに吹き飛び
+			travelAngle, m_pSlime[HitSlimeNum]->GetChargeHit());	// 衝突されたスライムに吹き飛び移動処理
 		PlaySE(SE_HIT);									//SEの再生
 
 		return true;
@@ -702,18 +719,18 @@ bool CSlimeManager::HitHealBranch(int HitSlimeNum, int StandSlimeNum, CExplosion
 
 	//-- 回復スライムヒット処理
 	// 回復　→　回復
+	bool bChargeHit = m_pPlayer->GetCharge();
 	if (hitSlimeLevel == LEVEL_HEAL && standSlimeLevel == LEVEL_HEAL)
 	{
 		// 『衝突するスライムが大きい場合(大→小)』と同じ動きをさせる
-		m_pSlime[HitSlimeNum]->HitMoveStart(hitSlimeSpeed * COL_SUB_HIT_TO_SMALL, travelAngle);		// 衝突するスライムに吹き飛び移動処理
-		m_pSlime[StandSlimeNum]->HitMoveStart(hitSlimeSpeed * COL_SUB_STAND_TO_BIG, travelAngle);	// 衝突されたスライムに吹き飛び移動処理
+		m_pSlime[HitSlimeNum]->HitMoveStart(bChargeHit ? hitSlimeSpeed: hitSlimeSpeed * COL_SUB_HIT_TO_SMALL	//チャージ状態なら減速せずに吹き飛び
+			, travelAngle, m_pSlime[HitSlimeNum]->GetChargeHit());		// 衝突するスライムに吹き飛び移動処理
+		m_pSlime[StandSlimeNum]->HitMoveStart(bChargeHit ? hitSlimeSpeed : hitSlimeSpeed * COL_SUB_STAND_TO_BIG	//チャージ状態なら減速せずに吹き飛び
+			, travelAngle, m_pSlime[HitSlimeNum]->GetChargeHit());	// 衝突されたスライムに吹き飛び移動処理
 		PlaySE(SE_HIT);	//SEの再生
-
 
 		return true;
 	}
-
-
 	return false;
 }
 
@@ -730,7 +747,7 @@ bool CSlimeManager::HitHealBranch(int HitSlimeNum, int StandSlimeNum, CExplosion
 	----------------------------------------
 	戻値：なし
 ======================================== */
-void CSlimeManager::UnionSlime(E_SLIME_LEVEL level ,TPos3d<float> pos, float speed, float angle)
+void CSlimeManager::UnionSlime(E_SLIME_LEVEL level ,TPos3d<float> pos, float speed, float angle,bool ChargeHit)
 {
 	for (int i = 0; i <MAX_SLIME_NUM; i++)
 	{
@@ -741,17 +758,17 @@ void CSlimeManager::UnionSlime(E_SLIME_LEVEL level ,TPos3d<float> pos, float spe
 		case LEVEL_1:
 			//サイズ2のスライムを生成
 			m_pSlime[i] = new CSlime_2(pos, m_pGreenModel);
-			m_pSlime[i]->HitMoveStart(speed, angle);
+			m_pSlime[i]->HitMoveStart(speed, angle, ChargeHit);
 			break;
 		case LEVEL_2:
 			//サイズ3のスライムを生成
 			m_pSlime[i] = new CSlime_3(pos, m_pYellowModel);
-			m_pSlime[i]->HitMoveStart(speed, angle);
+			m_pSlime[i]->HitMoveStart(speed, angle, ChargeHit);
 			break;
 		case LEVEL_3:
 			//サイズ4のスライムを生成
 			m_pSlime[i] = new CSlime_4(pos, m_pRedModel);
-			m_pSlime[i]->HitMoveStart(speed, angle);
+			m_pSlime[i]->HitMoveStart(speed, angle, ChargeHit);
 			break;
 		}
 
@@ -855,8 +872,8 @@ void CSlimeManager::HitSlimeBossBranch(int HitSlimeNum, int StandBossNum, CExplo
 	// ボスが衝突される場合(小→大)
 	else if (hitSlimeLevel < standBossLevel)
 	{
-		m_pSlime[HitSlimeNum]->HitMoveStart(hitSlimeSpeed * COL_SUB_HIT_TO_BIG, reflectionAngle);			// 衝突するスライムに吹き飛び移動処理
-		m_pBoss[StandBossNum]->HitMoveStart(hitSlimeSpeed * COL_SUB_STAND_TO_SMALL, travelAngle);			// 衝突されたスライムに吹き飛び移動処理
+		m_pSlime[HitSlimeNum]->HitMoveStart(hitSlimeSpeed * COL_SUB_HIT_TO_BIG, reflectionAngle,false);			// 衝突するスライムに吹き飛び移動処理
+		m_pBoss[StandBossNum]->HitMoveStart(hitSlimeSpeed * COL_SUB_STAND_TO_SMALL, travelAngle,false);			// 衝突されたスライムに吹き飛び移動処理
 		PlaySE(SE_HIT);	//SEの再生
 	}
 
@@ -912,9 +929,8 @@ void CSlimeManager::HitBossSlimeBranch(int HitSlimeNum, int StandSlimeNum, CExpl
 	// ボスが衝突する場合(大→小) 
 	else if (hitBossLevel > standSlimeLevel)
 	{
-		m_pBoss[HitSlimeNum]->HitMoveStart(hitBossSpeed * COL_SUB_HIT_TO_SMALL, travelAngle);				// 衝突するスライムに吹き飛び移動処理
-		m_pSlime[StandSlimeNum]->HitMoveStart(hitBossSpeed * COL_SUB_STAND_TO_BIG, travelAngle);			// 衝突されたスライムに吹き飛び移動処理
-
+		m_pBoss[HitSlimeNum]->HitMoveStart(hitBossSpeed * COL_SUB_HIT_TO_SMALL, travelAngle,false);				// 衝突するスライムに吹き飛び移動処理
+		m_pSlime[StandSlimeNum]->HitMoveStart(hitBossSpeed * COL_SUB_STAND_TO_BIG, travelAngle,false);			// 衝突されたスライムに吹き飛び移動処理
 	}
 }
 
@@ -952,9 +968,8 @@ void CSlimeManager::HitBossBossBranch(int HitBossNum, int StandBossNum, CExplosi
 	if (hitBossLevel == LEVEL_BOSS && standBossLevel == LEVEL_BOSS)
 	{
 		//(大→小)と同じ挙動を行う
-		m_pBoss[HitBossNum]->HitMoveStart(hitBossSpeed * COL_SUB_HIT_TO_SMALL, travelAngle);				// 衝突するスライムに吹き飛び移動処理
-		m_pBoss[StandBossNum]->HitMoveStart(hitBossSpeed * COL_SUB_STAND_TO_BIG, travelAngle);			// 衝突されたスライムに吹き飛び移動処理
-
+		m_pBoss[HitBossNum]->HitMoveStart(hitBossSpeed * COL_SUB_HIT_TO_SMALL, travelAngle,false);		// 衝突するスライムに吹き飛び移動処理
+		m_pBoss[StandBossNum]->HitMoveStart(hitBossSpeed * COL_SUB_STAND_TO_BIG, travelAngle,false);	// 衝突されたスライムに吹き飛び移動処理
 	}
 }
 
@@ -1512,7 +1527,7 @@ void CSlimeManager::RigidCheck(CSlime_BossBase* pBossSlime)
 
 		TPos3d<float> bossPos = pBossSlime->GetPos();		//ボスの座標をゲット
 		float slimeBossDistance = slimePos.Distance(bossPos);
-		float fBlowAwayAngle = pBossSlime->GetTransform().Angle(m_pSlime[i]->GetTransform());		// 吹き飛ばされる方向
+		float fBlowAwayAngle = pBossSlime->GetTransform().Angle(m_pSlime[i]->GetTransform());	// 吹き飛ばされる方向
 		// 硬直させる距離だった場合
 		if (RIGID_DISTANCE > slimeBossDistance)
 		{
@@ -1520,7 +1535,7 @@ void CSlimeManager::RigidCheck(CSlime_BossBase* pBossSlime)
 			m_pSlime[i]->SetMoveStopFlg(true);				// 停止させる
 			if (RIGID_BLOW_DISTANCE > slimeBossDistance)
 			{
-				m_pSlime[i]->HitMoveStart(RIGID_BLOW_SPEED, fBlowAwayAngle);	// 衝突されたスライムに吹き飛び移動処理
+				m_pSlime[i]->HitMoveStart(RIGID_BLOW_SPEED, fBlowAwayAngle,false);	// 衝突されたスライムに吹き飛び移動処理
 			}
 		}
 	}

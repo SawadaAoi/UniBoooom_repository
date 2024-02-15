@@ -37,7 +37,7 @@ CModelManager::CModelManager()
 	m_fModelSize[MODEL_SLIME_DEVIL] = 0.23f;	// デビルスライムのモデルサイズの倍率
 	m_fModelSize[MODEL_ITEM_HEART] = 1.0f;		// 回復アイテムのハートのモデルサイズの倍率
 
-	m_sFileName[MODEL_PLAYER]		 = "Assets/Model/player/pow.FBX";						// プレイヤーのモデルのファイル名
+	m_sFileName[MODEL_PLAYER]		= "Assets/Model/player/pow.FBX";						// プレイヤーのモデルのファイル名
 	m_sFileName[MODEL_SLIME_BLUE]	= "Assets/Model/slime/Blue/slime_blue_walk_1.0.fbx";	// 青スライムのモデルのファイル名
 	m_sFileName[MODEL_SLIME_GREEN]	= "Assets/Model/slime/Green/slime_green_walk_1.0.fbx";	// 緑スライムのモデルのファイル名
 	m_sFileName[MODEL_SLIME_YELLOW] = "Assets/Model/slime/Yellow/slime_yellow_walk_1.0.fbx";// 黄色スライムのモデルのファイル名
