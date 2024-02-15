@@ -64,13 +64,14 @@ CSceneManager::CSceneManager()
 	, m_pFade(nullptr)					//フェード
 	, m_pBGMSpeaker(nullptr)				//BGMを聞き取る側
 {
+	GetModelMng;	// モデルマネージャーを作成してシーン遷移を早くする
+
 	// =============== 動的確保 ===================
 	if (!m_pScene)	//ヌルチェック
 	{
 		ChangeScene();	//最初に始めるシーン作成
 	}
 
-	GetModelMng;	// モデルマネージャーを作成してシーン遷移を早くする
 }
 
 /* ========================================

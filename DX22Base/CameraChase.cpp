@@ -21,12 +21,16 @@
 	・2023/12/16 ズーム機能に対応 takagi
 	・2024/01/21 Player内で更新しなくても良い様に変更・リファクタリング takagi
 	・2024/01/25 GetViewWithoutTranspose()関数内で初期化しないパターンを修正 takagi
+	・2024/02/15 カメラ移動 takagi
 
 ========================================== */
 
 // =============== インクルード ===================
 #include "CameraChase.h"	//自身のヘッダ
 #include "Input.h"			//入力受付
+
+// =============== 定数定義 =======================
+const float CAMERE_TARGET_ADJUST_Z = 1.5f;
 
 /* ========================================
 	コンストラクタ関数
@@ -69,6 +73,9 @@ void CCameraChase::Update()
 	// =============== フラグ処理 ===================
 	HandleFlag();	//フラグ内容処理
 
+	// =============== ずらし ===================
+	Shift();	//ずらし
+
 	// =============== 距離更新 ===================
 	Zoom();	//距離更新
 
@@ -94,11 +101,36 @@ DirectX::XMFLOAT4X4 CCameraChase::GetViewWithoutTranspose() const
 	if (m_pTarget)	//ヌルチェック
 	{
 		DirectX::XMStoreFloat4x4(&View, DirectX::XMMatrixLookAtLH(
-			DirectX::XMVectorSet(m_pTarget->x + m_fOffsetVibrateEye.x, m_pTarget->y + m_fRadius * sinf(m_fAngle),
-				m_pTarget->z + m_fOffsetVibrateEye.y - m_fRadius * cosf(m_fAngle), 0.0f),	//カメラ相対位置
-			DirectX::XMVectorSet(m_pTarget->x + m_fOffsetVibrateLook.x, m_pTarget->y,
-				m_pTarget->z + m_fOffsetVibrateLook.y, 0.0f),								//注視点
-			DirectX::XMVectorSet(m_fUp.x, m_fUp.y, m_fUp.z, 0.0f)));						//アップベクトル
+			DirectX::XMVectorSet(m_pTarget->x + m_fOffsetVibrateEye.x
+				+ (m_pfShiftAngle && m_pShiftFrameCnt ? SHIFT_POS * cosf(*m_pfShiftAngle) *
+				(m_bShiftIn ? sqrtf(1.0f - powf(m_pShiftFrameCnt->GetRate() - 1.0f, 2.0f))	//イーズイン
+					: (m_pShiftFrameCnt->GetRate() < 0.5f ? 2.0f * m_pShiftFrameCnt->GetRate() * m_pShiftFrameCnt->GetRate()
+						: 1.0f - powf(-2.0f * m_pShiftFrameCnt->GetRate() + 2.0f, 2.0f) / 2.0f))	//イーズアウト
+					: 0.0f),	//ヌル
+				m_pTarget->y + m_fRadius * sinf(m_fAngle),
+				m_pTarget->z + m_fOffsetVibrateEye.y - m_fRadius * cosf(m_fAngle) + CAMERE_TARGET_ADJUST_Z
+				+ (m_pfShiftAngle && m_pShiftFrameCnt ? SHIFT_POS * sinf(*m_pfShiftAngle) *
+				(m_bShiftIn ? sqrtf(1.0f - powf(m_pShiftFrameCnt->GetRate() - 1.0f, 2.0f))	//イーズイン
+					: (m_pShiftFrameCnt->GetRate() < 0.5f ? 2.0f * m_pShiftFrameCnt->GetRate() * m_pShiftFrameCnt->GetRate()
+						: 1.0f - powf(-2.0f * m_pShiftFrameCnt->GetRate() + 2.0f, 2.0f) / 2.0f))	//イーズアウト
+					: 0.0f),	//ヌル
+				0.0f),													//カメラ相対位置
+			DirectX::XMVectorSet(m_pTarget->x + m_fOffsetVibrateLook.x
+				+ (m_pfShiftAngle && m_pShiftFrameCnt ? SHIFT_LOOK * cosf(*m_pfShiftAngle) * 
+					(m_bShiftIn ? sqrtf(1.0f - powf(m_pShiftFrameCnt->GetRate() - 1.0f, 2.0f))	//イーズイン
+						: (m_pShiftFrameCnt->GetRate() < 0.5f ? 2.0f * m_pShiftFrameCnt->GetRate() * m_pShiftFrameCnt->GetRate()
+							: 1.0f - powf(-2.0f * m_pShiftFrameCnt->GetRate() + 2.0f, 2.0f) / 2.0f))	//イーズアウト
+					: 0.0f),	//ヌル
+				m_pTarget->y,
+				m_pTarget->z + m_fOffsetVibrateLook.y + CAMERE_TARGET_ADJUST_Z
+				+ (m_pfShiftAngle && m_pShiftFrameCnt ? SHIFT_LOOK * sinf(*m_pfShiftAngle) *
+				(m_bShiftIn ? sqrtf(1.0f - powf(m_pShiftFrameCnt->GetRate() - 1.0f, 2.0f))	//イーズイン
+					: (m_pShiftFrameCnt->GetRate() < 0.5f ? 2.0f * m_pShiftFrameCnt->GetRate() * m_pShiftFrameCnt->GetRate()
+						: 1.0f - powf(-2.0f * m_pShiftFrameCnt->GetRate() + 2.0f, 2.0f) / 2.0f))	//イーズアウト
+					: 0.0f),	//ヌル
+				0.0f),													//注視点
+			DirectX::XMVectorSet(m_fUp.x, m_fUp.y, m_fUp.z, 0.0f))	//アップベクトル
+		);//行列初期化
 	}
 	else
 	{

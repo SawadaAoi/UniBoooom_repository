@@ -215,18 +215,6 @@ CSlimeManager::CSlimeManager(CPlayer* pPlayer)
 =========================================== */
 CSlimeManager::~CSlimeManager()
 {
-	SAFE_DELETE(m_pUnionMng);	//UNION削除
-	SAFE_DELETE(m_pUnionEfcMng);
-	SAFE_DELETE(m_pVS);
-	SAFE_DELETE(m_pHealModel);
-	SAFE_DELETE(m_pFlameModel);
-	SAFE_DELETE(m_pRedModel);
-	SAFE_DELETE(m_pYellowModel);
-	SAFE_DELETE(m_pGreenModel);
-	SAFE_DELETE(m_pBlueModel);
-	SAFE_DELETE(m_pBossRockModel);
-	SAFE_DELETE(m_pDevilSlimeModel);
-
 	// スライム削除
 	for (int i = 0; i <MAX_SLIME_NUM; i++)
 	{
@@ -239,6 +227,8 @@ CSlimeManager::~CSlimeManager()
 		SAFE_DELETE(m_pBoss[i]);
 	}
 
+	SAFE_DELETE(m_pUnionEfcMng);
+	SAFE_DELETE(m_pUnionMng);
 }
 
 /* ========================================
@@ -1177,112 +1167,6 @@ void CSlimeManager::PreventBossBossOverlap(CSlime_BossBase* pMoveBoss, CSlime_Bo
 ======================================== */
 void CSlimeManager::LoadModel()
 {
-	//頂点シェーダ読み込み
-	m_pVS = new VertexShader();
-	if (FAILED(m_pVS->Load("Assets/Shader/VS_Model.cso"))) {
-		MessageBox(nullptr, "VS_Model.cso", "Error", MB_OK);
-	}
-	//レベル1スライムのモデル読み込み
-	m_pBlueModel = new AnimeModel;
-	if (!m_pBlueModel->Load("Assets/Model/slime/Blue/slime_blue_walk_1.0.fbx", 0.15f, AnimeModel::XFlip)) {		//倍率と反転は省略可
-		MessageBox(NULL, "slime_blue", "Error", MB_OK);	//ここでエラーメッセージ表示
-	}
-	for (int i = 0; i < CSlimeBase::MOTION_LEVEL1_MAX; i++)
-	{
-		//各アニメーションの読み込み
-		m_pBlueModel->AddAnimation(m_sLevel1_Motion[i].c_str());
-		//読み込みに失敗したらエラーメッセージ
-		if (!m_pBlueModel->GetAnimation(i))
-		{
-			MessageBox(NULL, m_sLevel1_Motion[i].c_str(), "Error", MB_OK);	//ここでエラーメッセージ表示
-		}
-	}
-	m_pBlueModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));		//頂点シェーダーをセット
-
-	//レベル2スライムのモデル読み込み
-	m_pGreenModel = new AnimeModel;
-	if (!m_pGreenModel->Load(m_sLevel2_Motion[0].c_str(), 0.15f, AnimeModel::XFlip)) {		//倍率と反転は省略可
-		MessageBox(NULL, "slime_blue", "Error", MB_OK);	//ここでエラーメッセージ表示
-	}
-	for (int i = 0; i < CSlimeBase::MOTION_LEVEL2_MAX; i++)
-	{
-		//各アニメーションの読み込み
-		m_pGreenModel->AddAnimation(m_sLevel2_Motion[i].c_str());
-		//読み込みに失敗したらエラーメッセージ
-		if (!m_pGreenModel->GetAnimation(i))
-		{
-			MessageBox(NULL, m_sLevel2_Motion[i].c_str(), "Error", MB_OK);	//ここでエラーメッセージ表示
-		}
-	}
-	m_pGreenModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));		//頂点シェーダーをセット
-
-	//レベル3スライムのモデル読み込み
-	m_pYellowModel = new AnimeModel;
-	if (!m_pYellowModel->Load("Assets/Model/slime/Yellow/slime_yellow_walk_1.0.fbx", 0.15f, AnimeModel::XFlip)) {	//倍率と反転は省略可
-		MessageBox(NULL, "slime_yellow", "Error", MB_OK);	//ここでエラーメッセージ表示
-	}
-	for (int i = 0; i < CSlimeBase::MOTION_LEVEL3_MAX; i++)
-	{
-		//各アニメーションの読み込み
-		m_pYellowModel->AddAnimation(m_sLevel3_Motion[i].c_str());
-		//読み込みに失敗したらエラーメッセージ
-		if (!m_pYellowModel->GetAnimation(i))
-		{
-			MessageBox(NULL, m_sLevel3_Motion[i].c_str(), "Error", MB_OK);	//ここでエラーメッセージ表示
-		}
-	}
-	m_pYellowModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));		//頂点シェーダーをセット
-	//レベル4スライムのモデル読み込み
-	m_pRedModel = new AnimeModel;
-	if (!m_pRedModel->Load("Assets/Model/slime/Red/slime_red_walk_1.0.fbx", 0.18f, AnimeModel::XFlip)) {			//倍率と反転は省略可
-		MessageBox(NULL, "slime_red", "Error", MB_OK);		//ここでエラーメッセージ表示
-	}
-	for (int i = 0; i < CSlimeBase::MOTION_LEVEL4_MAX; i++)
-	{
-		//各アニメーションの読み込み
-		m_pRedModel->AddAnimation(m_sLevel4_Motion[i].c_str());
-		//読み込みに失敗したらエラーメッセージ
-		if (!m_pRedModel->GetAnimation(i))
-		{
-			MessageBox(NULL, m_sLevel4_Motion[i].c_str(), "Error", MB_OK);	//ここでエラーメッセージ表示
-		}
-	}
-	m_pRedModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));		//頂点シェーダーをセット
-
-	//炎スライムのモデル読み込み
-	m_pFlameModel = new AnimeModel;
-	if (!m_pFlameModel->Load("Assets/Model/flameSlime/fire_walk.fbx", 0.30f, AnimeModel::XFlip)) {			//倍率と反転は省略可
-		MessageBox(NULL, "flame_slime_model", "Error", MB_OK);		//ここでエラーメッセージ表示
-	}
-	for (int i = 0; i < CSlimeBase::FLAME_SLIME_MAX; i++)
-	{
-		//各アニメーションの読み込み
-		m_pFlameModel->AddAnimation(m_sFlameSlime_Motion[i].c_str());
-		//読み込みに失敗したらエラーメッセージ
-		if (!m_pFlameModel->GetAnimation(i))
-		{
-			MessageBox(NULL, m_sFlameSlime_Motion[i].c_str(), "Error", MB_OK);	//ここでエラーメッセージ表示
-		}
-	}
-	m_pFlameModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));		//頂点シェーダーをセット
-
-	//ヒールスライムのモデル読み込み
-	m_pHealModel = new AnimeModel;
-	if (!m_pHealModel->Load("Assets/Model/healSlime/heal_walk.fbx", 0.45f, AnimeModel::XFlip)) {			//倍率と反転は省略可
-		MessageBox(NULL, "heal_slime_model", "Error", MB_OK);		//ここでエラーメッセージ表示
-	}
-	for (int i = 0; i < CSlimeBase::HEAL_SLIME_MAX; i++)
-	{
-		//各アニメーションの読み込み
-		m_pHealModel->AddAnimation(m_sHealSlime_Motion[i].c_str());
-		//読み込みに失敗したらエラーメッセージ
-		if (!m_pHealModel->GetAnimation(i))
-		{
-			MessageBox(NULL, m_sHealSlime_Motion[i].c_str(), "Error", MB_OK);	//ここでエラーメッセージ表示
-		}
-	}
-	m_pHealModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));		//頂点シェーダーをセット
-
 	m_pBlueModel = GetModelMng.GetModelPtr(MODEL_SLIME_BLUE);
 	m_pGreenModel = GetModelMng.GetModelPtr(MODEL_SLIME_GREEN);
 	m_pYellowModel = GetModelMng.GetModelPtr(MODEL_SLIME_YELLOW);
@@ -1291,7 +1175,6 @@ void CSlimeManager::LoadModel()
 	m_pHealModel = GetModelMng.GetModelPtr(MODEL_SLIME_HEAL);
 	m_pBossRockModel = GetModelMng.GetModelPtr(MODEL_SLIME_ROCK);
 	m_pDevilSlimeModel = GetModelMng.GetModelPtr(MODEL_SLIME_DEVIL);
-
 }
 
 /* ========================================

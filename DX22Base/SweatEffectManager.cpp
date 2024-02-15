@@ -17,7 +17,7 @@
 #include "SweatEffectManager.h"
 
 // =============== 定数定義 =======================
-const float TOTAL_SWEAT_EFFECT_TIME = 1.5f * 60.0f;
+const float TOTAL_SWEAT_EFFECT_TIME = 0.75f * 60.0f;
 
 /* ========================================
 	関数：コンストラクタ

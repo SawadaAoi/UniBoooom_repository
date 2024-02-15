@@ -82,7 +82,7 @@ const int   PLAYER_WARNING_HP = 1;							//瀕死の警告を行うプレイヤー残りHP
 const int	SWING_FAST_INTERVAL = 0.1f * 60;				// ハンマーを振る速度を早くする間隔
 
 const int	WALK_EFFECT_INTERVAL = 0.2f * 60;				// 歩くエフェクトの出現間隔
-const int	SWEAT_EFFECT_INTERVAL = 0.5f * 60;				// 汗エフェクトの出現間隔
+const int	SWEAT_EFFECT_INTERVAL = 0.7f * 60;				// 汗エフェクトの出現間隔
 const float	SWEAT_EFFECT_DISP_SPEED = 0.5f;					// 汗エフェクトの表示するハンマーのスピード(これ以下の場合に表示)
 const int	DIE_AFTER_INTERVAL = int(2.0f * 60);			// 死亡してからGameOverテキストが出るまでの猶予時間
 
