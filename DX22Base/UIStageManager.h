@@ -12,6 +12,7 @@
 	・2023/12/08 シーン遷移用に関数追加 takagi
 	・2023/12/15 ボスゲージの取得処理追加 Sawada
 	・2024/01/01 シーン番号列挙 takagi
+	・2024/02/11 ボス出現警告処理追加 Tei
 
 ========================================== */
 
@@ -26,6 +27,7 @@
 #include "Player.h"
 #include "SlimeManager.h"
 #include "BossArrow.h"
+#include "ShowWarning.h"
 
 
 // =============== クラス定義 =====================
@@ -53,8 +55,8 @@ public:
 
 	int GetTotalScore();	//総スコアゲッタ
 
-	CBossgauge* GetBossGauge();
-	
+	CBossgauge* GetBossGaugePtr();
+	CShowWarning* GetShowWarningPtr();
 private:
 
 	// ===メンバ変数宣言===
@@ -68,6 +70,7 @@ private:
 	CScoreOHManager* m_pScoreOHMng;
 	CStageFinish* m_pStageFin;
 	CBossArrow* m_pBossArrow;
+	CShowWarning* m_pShowWarning;
 
 };
 

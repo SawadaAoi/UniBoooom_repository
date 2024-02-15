@@ -119,6 +119,7 @@ void CBossgauge::Update()
 			// フェードフラグがまだオフの場合
 			if ((*itr).bFadeFlg == false)
 			{
+				m_pShowWarn->StartShowWarning();			// ボス警告開始
 				m_pSlimeMng->CreateBoss((*itr).nBossNum);	// ボススライムを生成
 				(*itr).bFadeFlg = true;		// フェードフラグオン
 			}
@@ -259,6 +260,20 @@ void CBossgauge::DrawGauge(std::vector<BossGauge>::iterator itr)
 void CBossgauge::SetSlimeManager(CSlimeManager* pSlimeMng)
 {
 	m_pSlimeMng = pSlimeMng;
+}
+
+/* ========================================
+	ボス警告ポインタセット関数
+	----------------------------------------
+	内容：ボス警告のポインタをセットする
+	----------------------------------------
+	引数1：ボス警告ポインタ
+	----------------------------------------
+	戻値：なし
+=========================================== */
+void CBossgauge::SetShowWarning(CShowWarning* pShowWarn)
+{
+	m_pShowWarn = pShowWarn;
 }
 
 /* ========================================
