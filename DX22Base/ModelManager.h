@@ -72,6 +72,7 @@ public:
 		"Assets/Model/player/wait_end.FBX",			//待機
 		"Assets/Model/player/Dash.FBX",				//移動
 		"Assets/Model/player/pow.FBX",				//スイング
+		"Assets/Model/player/Dash.FBX",				//チャージ状態
 		"Assets/Model/player/down.fbx",				//死亡
 	};
 
@@ -115,7 +116,7 @@ public:
 
 	// 岩スライム
 	const std::string m_sRockSlime_Motion[CSlime_BossBase::ROCK_SLIME_MAX] = {
-		"Assets/Model/boss_slime_rock/rock_walk_2.0.fbx",		// 岩スライムの移動モーション
+		"Assets/Model/boss_slime_rock/rock_walk_1.1.fbx",		// 岩スライムの移動モーション
 		"Assets/Model/boss_slime_rock/rock_damaged_2.0.fbx",	// 岩スライムの被ダメモーション
 		"Assets/Model/boss_slime_rock/rock_rolling_2.0.fbx",	// 岩スライムの攻撃モーション
 	};

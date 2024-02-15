@@ -57,10 +57,10 @@
 	戻値：なし
 =========================================== */
 CSceneManager::CSceneManager()
-	:m_pScene(nullptr)					//シーン
-	, m_ePastScene(CScene::E_TYPE_NONE)	//前のシーン
+	:m_pScene(nullptr)						//シーン
+	, m_ePastScene(CScene::E_TYPE_NONE)		//前のシーン
 	, m_eNextScene(CScene::E_TYPE_TITLE)	//シーン遷移先
-	, m_pFade(nullptr)					//フェード
+	, m_pFade(nullptr)						//フェード
 	, m_pBGMSpeaker(nullptr)				//BGMを聞き取る側
 {
 	GetModelMng;	// モデルマネージャーを作成してシーン遷移を早くする
