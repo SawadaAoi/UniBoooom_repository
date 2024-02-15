@@ -176,16 +176,6 @@ CPlayer::~CPlayer()
 ======================================== */
 void CPlayer::Update()
 {
-	CheckCharge();	// チャージカウントを参照してチャージ状態を判定
-	if (m_pModel->GetPlayNo() == MOTION_PLAYER_SWING && !m_pModel->IsPlay(MOTION_PLAYER_SWING))
-	{
-		m_ChargeState = PLAYER_CHARGE_NONE;
-	}
-	if (!m_ChargeState == PLAYER_CHARGE_NONE && m_pModel->IsPlay(MOTION_PLAYER_SWING))
-	{
-		m_fChargeCnt = 0;
-		m_ChargeState = PLAYER_CHARGING;
-	}
 	// 死亡した場合
 	if (m_bDieInvFlg)
 	{
@@ -215,6 +205,20 @@ void CPlayer::Update()
 	// ハンマー攻撃以外
 	else
 	{
+		CheckCharge();	// チャージカウントを参照してチャージ状態を判定
+		// ハンマースイングのアニメーションが終了していたらチャージ状態をNONEに変更
+		if (!m_pModel->IsPlay(MOTION_PLAYER_SWING))
+		{
+			m_ChargeState = PLAYER_CHARGE_NONE;
+		}
+
+		// チャージ状態がNONEでスイングアニメーションが終了しているとき
+		if (!m_ChargeState == PLAYER_CHARGE_NONE && m_pModel->IsPlay(MOTION_PLAYER_SWING))
+		{
+			m_fChargeCnt = 0;
+			m_ChargeState = PLAYER_CHARGING;
+		}
+
 		// ハンマー間隔時間フラグがオンの時
 		if (m_bHumInvFlg)
 		{
@@ -267,6 +271,8 @@ void CPlayer::Update()
 		}
 		else if ((IsKeyRelease(VK_SPACE) || IsKeyTriggerController(BUTTON_B)) && !m_bHumInvFlg && !m_pModel->IsPlay(MOTION_PLAYER_SWING))
 		{	// スペースキーもしくはコントローラのBボタンに対しての離した時 && ハンマー間隔時間経過済み
+
+			SAFE_DELETE(m_pWaitFrameCnt);	// カウンタ削除
 
 			m_pModel->Play(MOTION_PLAYER_SWING, false, m_pHammer->GetSwingSpeed() * SWING_ANIM_ADJUST);	// アニメーションの再生
 			m_pModel->SetAnimationTime(MOTION_PLAYER_SWING, 0.0f);				// アニメーションタイムをスタート位置にセット
