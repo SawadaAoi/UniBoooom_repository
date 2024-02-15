@@ -46,7 +46,7 @@ CStage3::CStage3()
 	:CStage(CUIStageManager::E_STAGE_3)	//eŠÖ”ŒÄ‚Ño‚µ
 {
 	m_pFloor = new CFloor(m_pPlayer->GetPosAddress(), CFloor::Stage3);	// °¶¬
-	m_pUIStageManager->GetBossGauge()->AddBossGauge(BOSS_GAUGE_S3[0].BossNum, BOSS_GAUGE_S3[0].startTime, BOSS_GAUGE_S3[0].maxTime);
+	m_pUIStageManager->GetBossGaugePtr()->AddBossGauge(BOSS_GAUGE_S3[0].BossNum, BOSS_GAUGE_S3[0].startTime, BOSS_GAUGE_S3[0].maxTime);
 	m_nStageNum = STAGE_NUM;
 }
 

@@ -48,7 +48,7 @@ CStage2::CStage2()
 {
 	m_pFloor = new CFloor(m_pPlayer->GetPosAddress(), CFloor::Stage2);	// °¶¬
 	//================ƒZƒbƒg================
-	m_pUIStageManager->GetBossGauge()->AddBossGauge(BOSS_GAUGE_S2[0].BossNum, BOSS_GAUGE_S2[0].startTime, BOSS_GAUGE_S2[0].maxTime);
+	m_pUIStageManager->GetBossGaugePtr()->AddBossGauge(BOSS_GAUGE_S2[0].BossNum, BOSS_GAUGE_S2[0].startTime, BOSS_GAUGE_S2[0].maxTime);
 	m_nStageNum = STAGE_NUM;
 }
 

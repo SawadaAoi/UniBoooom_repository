@@ -74,7 +74,6 @@ CUIStageManager::CUIStageManager(CPlayer* pPlayer,CSlimeManager* pSlimeMng, E_ST
 	m_pTimer->TimeStart();
 	m_pBossgauge->SetSlimeManager(pSlimeMng);
 	m_pBossgauge->SetShowWarning(m_pShowWarning);
-	m_pScoreOHMng->SetCamera(pCamera);
 	m_pBossArrow->SetSlimeMng(pSlimeMng);
 	m_pBossArrow->SetPlayer(pPlayer);
 

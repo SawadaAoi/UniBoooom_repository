@@ -183,15 +183,12 @@ void CStage::HammerSlimeCollision()
 			//赤スライムと激突したときだけヒットストップの時間を長くする
 			if (typeid(CSlime_4) == typeid(*pSlimeNow))	CHitStop::UpFlag(CHitStop::E_BIT_FLAG_STOP_NORMAL);	//ヒットストップ
 			else										CHitStop::UpFlag(CHitStop::E_BIT_FLAG_STOP_SOFT);	//ヒットストップ
-		
-			CUsingCamera::GetThis().GetCamera()->UpFlag(HAMMER_HIT_VIB_NORMAL);	// 画面の振動
-			//m_pCamera->UpFlag(HAMMER_HIT_VIB_NORMAL);	// 画面の振動
 
 			float fAngleSlime
 				= m_pPlayer->GetTransform().Angle(pSlimeNow->GetTransform());	// スライムが飛ぶ角度を取得
 
 			pSlimeNow->HitMoveStart(HAMMER_HIT_MOVE_SPEED, fAngleSlime);	// スライムを飛ばす
-			m_pCamera->StartShift(fAngleSlime);	// 画面の振動
+			CUsingCamera::GetThis().GetCamera()->StartShift(fAngleSlime);	// 画面の振動
 			m_pPlayer->PlaySE(CPlayer::SE_HIT_HAMMER, HIT_HAMMER_VOLUME);	// ハンマーとスライムの接触SEを再生
 
 			m_pHitEffectMng->Create(pSlimeNow->GetPos());	//ヒットエフェクト生成
@@ -234,14 +231,11 @@ void CStage::HammerBossCollision()
 
 			CHitStop::UpFlag(CHitStop::E_BIT_FLAG_STOP_NORMAL);	//ヒットストップ
 
-			CUsingCamera::GetThis().GetCamera()->UpFlag(HAMMER_HIT_VIB_BOSS);	// 画面の振動
-			//m_pCamera->UpFlag(HAMMER_HIT_VIB_BOSS);	// 画面の振動
-
 			float fAngleSlime
 				= m_pPlayer->GetTransform().Angle(pBossNow->GetTransform());	// スライムが飛ぶ角度を取得
 
 			pBossNow->HitMoveStart(HAMMER_HIT_MOVE_SPEED, fAngleSlime);	// スライムを飛ばす
-			m_pCamera->StartShift(fAngleSlime);	// 画面の振動
+			CUsingCamera::GetThis().GetCamera()->StartShift(fAngleSlime);	// 画面の振動
 			m_pPlayer->PlaySE(CPlayer::SE_HIT_HAMMER, HIT_HAMMER_VOLUME);	//ハンマーとスライムの接触SEを再生
 		}
 	}

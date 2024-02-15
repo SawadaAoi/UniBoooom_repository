@@ -136,9 +136,6 @@ void CStage::Update()
 	}
 	else
 	{
-		// カメラ更新
-		m_pCamera->Update();
-
 		// ボス警告表示中は停止
 		if (m_pUIStageManager->GetShowWarningPtr()->GetDispFlg())
 		{
@@ -178,17 +175,7 @@ void CStage::Update()
 
 	}
 
-#if SCENE_TRANSITION
-	if (m_pUIStageManager->GetStageFinishPtr()->GetDispFlg())
-	{
-		if (IsKeyTrigger(VK_RETURN) || IsKeyTriggerController(BUTTON_A))
-		{
-			m_bFinish = true;	// タイトルシーン終了フラグON
-		}
-	}
-#else
 	CStage::GameFinish();	// ステージ終了処理
-#endif
 }
 
 
