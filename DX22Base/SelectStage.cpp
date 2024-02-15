@@ -16,6 +16,7 @@
 	・2024/01/26 選択、決定SE追加 suzumura
 	・2024/01/28 落下実装 takagi
 	・2024/02/09 GetType()関数削除 takagi
+	・2024/02/15 戻るSE追加 takagi
 
 ========================================== */
 
@@ -242,6 +243,7 @@ void CSelectStage::StageSelect()
 	{
 		m_eNextType = E_TYPE::E_TYPE_TITLE;
 		m_bFinish = true;
+		PlaySE(SE_BACK);	// SEの再生 
 	}
 }
 
