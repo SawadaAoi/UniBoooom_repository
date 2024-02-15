@@ -17,6 +17,7 @@
 	・2023/12/07 ゲームパラメータから一部定数移動 takagi
 	・2023/12/15 SEの変数を削除 yamashita
 	・2024/01/29 スライム殴打時に画面の振動を追加 sawada
+	・2024/02/15 カメラ移動 takagi
 
 ========================================== */
 
@@ -182,11 +183,12 @@ void CStage::HammerSlimeCollision()
 			if (typeid(CSlime_4) == typeid(*pSlimeNow))	CHitStop::UpFlag(CHitStop::E_BIT_FLAG_STOP_NORMAL);	//ヒットストップ
 			else										CHitStop::UpFlag(CHitStop::E_BIT_FLAG_STOP_SOFT);	//ヒットストップ
 		
-			m_pCamera->UpFlag(HAMMER_HIT_VIB_NORMAL);	// 画面の振動
+			//m_pCamera->UpFlag(HAMMER_HIT_VIB_NORMAL);	// 画面の振動
 
 			float fAngleSlime
 				= m_pPlayer->GetTransform().Angle(pSlimeNow->GetTransform());	// スライムが飛ぶ角度を取得
 
+			m_pCamera->StartShift(fAngleSlime);	// 画面の振動
 			bool bChargeHit = m_pPlayer->GetCharge();
 			pSlimeNow->HitMoveStart(bChargeHit ? HAMMER_HIT_MOVE_SPEED  * MULTIPLE_HIT_SPEED:HAMMER_HIT_MOVE_SPEED, fAngleSlime, bChargeHit);	// スライムを飛ばす
 			m_pPlayer->PlaySE(CPlayer::SE_HIT_HAMMER, HIT_HAMMER_VOLUME);	// ハンマーとスライムの接触SEを再生
@@ -231,11 +233,12 @@ void CStage::HammerBossCollision()
 
 			CHitStop::UpFlag(CHitStop::E_BIT_FLAG_STOP_NORMAL);	//ヒットストップ
 
-			m_pCamera->UpFlag(HAMMER_HIT_VIB_BOSS);	// 画面の振動
+			//m_pCamera->UpFlag(HAMMER_HIT_VIB_BOSS);	// 画面の振動
 
 			float fAngleSlime
 				= m_pPlayer->GetTransform().Angle(pBossNow->GetTransform());	// スライムが飛ぶ角度を取得
 
+			m_pCamera->StartShift(fAngleSlime);	// 画面の振動
 			pBossNow->HitMoveStart(HAMMER_HIT_MOVE_SPEED, fAngleSlime,false);	// スライムを飛ばす
 			m_pPlayer->PlaySE(CPlayer::SE_HIT_HAMMER, HIT_HAMMER_VOLUME);		// ハンマーとスライムの接触SEを再生
 		}

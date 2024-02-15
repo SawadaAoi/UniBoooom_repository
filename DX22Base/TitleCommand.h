@@ -10,6 +10,7 @@
 	変更履歴
 	・2023/12/16 制作 takagi
 	・2024/02/05 リファクタリング takagi
+	・2024/02/15 拡縮変化時間変更 takagi
 
 ========================================== */
 
@@ -50,8 +51,8 @@ private:
 	};	//アニメーション間隔
 	const std::map<E_STATE, unsigned  int> MAP_ANIMATION_FRAME =
 	{
-		{E_STATE_UNSELECTED, 120},	//非選択時のアニメーション時間
-		{E_STATE_SELECTED, 120},	//選択時のアニメーション時間
+		{E_STATE_UNSELECTED, 30},	//非選択時のアニメーション時間
+		{E_STATE_SELECTED, 30},	//選択時のアニメーション時間
 		{E_STATE_DECIDE, 30},		//決定時のアニメーション時間
 	};	//アニメーション時間
 protected:

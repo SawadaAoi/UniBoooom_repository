@@ -11,14 +11,17 @@
 	・2023/12/16 制作 takagi
 	・2023/12/18 サイズ変更*2.0f→*3.5f takagi
 	・2024/02/05 リファクタリング takagi
+	・2024/02/15 透明度変化法変更 takagi
 
 ========================================== */
 
 // =============== インクルード ===================
 #include "TitleCommand.h"	//自身のヘッダ
 
-// =============== 定数定義 ===================
-const unsigned int ALPHA_FRAME = 30;	//透明度変化の片道時間
+// =============== 定数・マクロ定義 ===================
+const unsigned int ALPHA_FRAME = 30;									//透明度変化の片道時間
+const float ALPHA_MIN = 0.2f;											//透明度変化の最低値
+#define RANGE_01_TO_min1_ADAPTER(rate,  min) {rate * (1 - min) + min}	//定義域変換マクロ：0 to 1 -> 0 to (1 - min) -> min to 1
 
 // =============== グローバル変数宣言 ===================
 bool CTitleCommand::m_bCntUpDwn = true;																			//カウントアップ・ダウン切換フラグ
@@ -144,7 +147,7 @@ void CTitleCommand::Update()
 		if (m_pAlphaCnt)	//ヌルチェック
 		{
 			m_pAlphaCnt->Count();				//カウント進行
-			SetAlpha(m_pAlphaCnt->GetRate());	//選択状態のとき明滅する
+			SetAlpha(RANGE_01_TO_min1_ADAPTER(m_pAlphaCnt->GetRate(), ALPHA_MIN));	//選択状態のとき明滅する
 			if (m_pAlphaCnt->IsFin())	//カウント完了
 			{
 				m_bCntUpDwn ^= 1;														//カウントアップダウン逆転

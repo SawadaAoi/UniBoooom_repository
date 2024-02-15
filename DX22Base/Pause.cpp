@@ -19,6 +19,7 @@
 	・2023/12/12 型チェック修正 takagi
 	・2023/12/17 ゲームパラメータ無効化 takagi
 	・2024/01/26 選択.決定.ポーズSE追加 suzumura
+	・2024/02/15 コマンド選択SE修正 takagi
 
 ========================================== */
 
@@ -180,38 +181,47 @@ void CPause::Update()
 			// =============== カーソル移動 ===================
 			if (IsStickLeft().y < 0)		//↑入力時
 			{
-				// =============== 状態遷移 ===================
-				if (m_p2dObj[E_2D_CONTINUE] && typeid(CCommandPause) == typeid(*m_p2dObj[E_2D_CONTINUE]))	//ヌルチェック、型チェック
+				if (!(m_ucFlag & E_FLAG_COMMAND_CONTINUE))	//既に継続コマンドを選択していない
 				{
-					static_cast<CCommandPause*>(m_p2dObj[E_2D_CONTINUE])->Selected();	//選択状態遷移
-				}
-				if (m_p2dObj[E_2D_FINISH] && typeid(CCommandPause) == typeid(*m_p2dObj[E_2D_FINISH]))	//ヌルチェック、型チェック
-				{
-					static_cast<CCommandPause*>(m_p2dObj[E_2D_FINISH])->UnSelected();	//選択状態遷移
+					// =============== 状態遷移 ===================
+					if (m_p2dObj[E_2D_CONTINUE] && typeid(CCommandPause) == typeid(*m_p2dObj[E_2D_CONTINUE]))	//ヌルチェック、型チェック
+					{
+						static_cast<CCommandPause*>(m_p2dObj[E_2D_CONTINUE])->Selected();	//選択状態遷移
+					}
+					if (m_p2dObj[E_2D_FINISH] && typeid(CCommandPause) == typeid(*m_p2dObj[E_2D_FINISH]))	//ヌルチェック、型チェック
+					{
+						static_cast<CCommandPause*>(m_p2dObj[E_2D_FINISH])->UnSelected();	//選択状態遷移
+					}
+
+					// =============== フラグ操作 ===================
+					UpFlag(E_FLAG_COMMAND_CONTINUE);	//上のコマンド採用
+					DownFlag(E_FLAG_COMMAND_FINISH);	//下のコマンド不採用
+
 					//===== SEの再生 =======
 					PlaySE(SE_CHOOSE);
 				}
-
-				// =============== フラグ操作 ===================
-				UpFlag(E_FLAG_COMMAND_CONTINUE);	//上のコマンド採用
-				DownFlag(E_FLAG_COMMAND_FINISH);	//下のコマンド不採用
 			}
 			if (IsStickLeft().y > 0)	//↓入力時
 			{
-				// =============== 状態遷移 ===================
-				if (m_p2dObj[E_2D_FINISH] && typeid(CCommandPause) == typeid(*m_p2dObj[E_2D_FINISH]))	//ヌルチェック、型チェック
+				if (!(m_ucFlag & E_FLAG_COMMAND_FINISH))	//既に終了コマンドを選択していない
 				{
-					static_cast<CCommandPause*>(m_p2dObj[E_2D_FINISH])->Selected();	//選択状態遷移
-				}
-				if (m_p2dObj[E_2D_CONTINUE] && typeid(CCommandPause) == typeid(*m_p2dObj[E_2D_CONTINUE]))	//ヌルチェック、型チェック
-				{
-					static_cast<CCommandPause*>(m_p2dObj[E_2D_CONTINUE])->UnSelected();	//選択状態遷移
+					// =============== 状態遷移 ===================
+					if (m_p2dObj[E_2D_FINISH] && typeid(CCommandPause) == typeid(*m_p2dObj[E_2D_FINISH]))	//ヌルチェック、型チェック
+					{
+						static_cast<CCommandPause*>(m_p2dObj[E_2D_FINISH])->Selected();	//選択状態遷移
+					}
+					if (m_p2dObj[E_2D_CONTINUE] && typeid(CCommandPause) == typeid(*m_p2dObj[E_2D_CONTINUE]))	//ヌルチェック、型チェック
+					{
+						static_cast<CCommandPause*>(m_p2dObj[E_2D_CONTINUE])->UnSelected();	//選択状態遷移
+					}
+
+					// =============== フラグ操作 ===================
+					UpFlag(E_FLAG_COMMAND_FINISH);		//下のコマンド採用
+					DownFlag(E_FLAG_COMMAND_CONTINUE);	//上のコマンド不採用
+
 					//===== SEの再生 =======
 					PlaySE(SE_CHOOSE);
 				}
-				// =============== フラグ操作 ===================
-				UpFlag(E_FLAG_COMMAND_FINISH);		//下のコマンド採用
-				DownFlag(E_FLAG_COMMAND_CONTINUE);	//上のコマンド不採用
 			}
 
 			// =============== 決定 ===================
@@ -250,38 +260,46 @@ void CPause::Update()
 			// =============== カーソル移動 ===================
 			if (IsKeyTrigger(VK_UP) || IsKeyTrigger('W'))		//↑・W入力時
 			{
-				// =============== 状態遷移 ===================
-				if (m_p2dObj[E_2D_CONTINUE] && typeid(CCommandPause) == typeid(*m_p2dObj[E_2D_CONTINUE]))	//ヌルチェック、型チェック
+				if (!(m_ucFlag & E_FLAG_COMMAND_CONTINUE))	//既に継続コマンドを選択していない
 				{
-					static_cast<CCommandPause*>(m_p2dObj[E_2D_CONTINUE])->Selected();	//選択状態遷移
-				}
-				if (m_p2dObj[E_2D_FINISH] && typeid(CCommandPause) == typeid(*m_p2dObj[E_2D_FINISH]))	//ヌルチェック、型チェック
-				{
-					static_cast<CCommandPause*>(m_p2dObj[E_2D_FINISH])->UnSelected();	//選択状態遷移
+					// =============== 状態遷移 ===================
+					if (m_p2dObj[E_2D_CONTINUE] && typeid(CCommandPause) == typeid(*m_p2dObj[E_2D_CONTINUE]))	//ヌルチェック、型チェック
+					{
+						static_cast<CCommandPause*>(m_p2dObj[E_2D_CONTINUE])->Selected();	//選択状態遷移
+					}
+					if (m_p2dObj[E_2D_FINISH] && typeid(CCommandPause) == typeid(*m_p2dObj[E_2D_FINISH]))	//ヌルチェック、型チェック
+					{
+						static_cast<CCommandPause*>(m_p2dObj[E_2D_FINISH])->UnSelected();	//選択状態遷移
+					}
+
+					// =============== フラグ操作 ===================
+					UpFlag(E_FLAG_COMMAND_CONTINUE);	//上のコマンド採用
+					DownFlag(E_FLAG_COMMAND_FINISH);	//下のコマンド不採用
+
 					//===== SEの再生 =======
 					PlaySE(SE_CHOOSE);
 				}
-
-				// =============== フラグ操作 ===================
-				UpFlag(E_FLAG_COMMAND_CONTINUE);	//上のコマンド採用
-				DownFlag(E_FLAG_COMMAND_FINISH);	//下のコマンド不採用
 			}
 			if (IsKeyTrigger(VK_DOWN) || IsKeyTrigger('S'))	//↓・S入力時
 			{
-				// =============== 状態遷移 ===================
-				if (m_p2dObj[E_2D_FINISH])	//ヌルチェック、型チェック
+				if (!(m_ucFlag & E_FLAG_COMMAND_FINISH))	//既に終了コマンドを選択していない
 				{
-					static_cast<CCommandPause*>(m_p2dObj[E_2D_FINISH])->Selected();	//選択状態遷移
-				}
-				if (m_p2dObj[E_2D_CONTINUE])	//ヌルチェック、型チェック
-				{
-					static_cast<CCommandPause*>(m_p2dObj[E_2D_CONTINUE])->UnSelected();	//選択状態遷移
+					// =============== 状態遷移 ===================
+					if (m_p2dObj[E_2D_FINISH])	//ヌルチェック、型チェック
+					{
+						static_cast<CCommandPause*>(m_p2dObj[E_2D_FINISH])->Selected();	//選択状態遷移
+					}
+					if (m_p2dObj[E_2D_CONTINUE])	//ヌルチェック、型チェック
+					{
+						static_cast<CCommandPause*>(m_p2dObj[E_2D_CONTINUE])->UnSelected();	//選択状態遷移
+					}
+					// =============== フラグ操作 ===================
+					UpFlag(E_FLAG_COMMAND_FINISH);		//下のコマンド採用
+					DownFlag(E_FLAG_COMMAND_CONTINUE);	//上のコマンド不採用
+					
 					//===== SEの再生 =======
 					PlaySE(SE_CHOOSE);
 				}
-				// =============== フラグ操作 ===================
-				UpFlag(E_FLAG_COMMAND_FINISH);		//下のコマンド採用
-				DownFlag(E_FLAG_COMMAND_CONTINUE);	//上のコマンド不採用
 			}
 
 			// =============== 決定 ===================

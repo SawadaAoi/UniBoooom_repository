@@ -11,6 +11,7 @@
 	・2023/11/28 cpp作成UI用処理を入れます Tei
 	・2023/12/08 シーン遷移用に関数追加 takagi
 	・2024/01/01 タイマーを変更・ステージ管理 takagi
+	・2024/02/11 ボス出現警告処理追加 Tei
 
 ========================================== */
 #include "UIStageManager.h"
@@ -39,8 +40,12 @@ CUIStageManager::CUIStageManager(CPlayer* pPlayer,CCamera * pCamera, CSlimeManag
 	, m_pTimer(nullptr)
 	, m_pTotalScore(nullptr)
 	, m_pBossArrow(nullptr)
+	, m_pShowWarning(nullptr)
 {
 	m_pCombo = new CCombo();
+
+	LoadSound();	//サウンドファイル読み込み
+
 
 	// =============== 動的確保 =====================
 	switch(eStage)
@@ -66,18 +71,18 @@ CUIStageManager::CUIStageManager(CPlayer* pPlayer,CCamera * pCamera, CSlimeManag
 	m_pScoreOHMng = new CScoreOHManager();
 	m_pStageFin = new CStageFinish(pCamera, pPlayer, m_pTimer->GetTimePtr());
 	m_pBossArrow = new CBossArrow();
+	m_pShowWarning = new CShowWarning(static_cast<int>(eStage) + 1);
 
 	m_pCombo->SetTotalScore(m_pTotalScore);
 	m_pTimer->TimeStart();
 	m_pBossgauge->SetSlimeManager(pSlimeMng);
+	m_pBossgauge->SetShowWarning(m_pShowWarning);
 	m_pScoreOHMng->SetCamera(pCamera);
 	m_pBossArrow->SetSlimeMng(pSlimeMng);
 	m_pBossArrow->SetPlayer(pPlayer);
 
-	/*
-	m_pBossgauge->AddBossGauge(BOSS_GAUGE_S1[0].startTime, BOSS_GAUGE_S1[0].maxTime);
-	m_pBossgauge->AddBossGauge(BOSS_GAUGE_S1[1].startTime, BOSS_GAUGE_S1[1].maxTime);*/
-
+	m_pTotalScore->SetUIStageManagerPtr(this);
+	m_pShowWarning->SetUIStageManagerPtr(this);
 }
 
 /* ========================================
@@ -91,6 +96,7 @@ CUIStageManager::CUIStageManager(CPlayer* pPlayer,CCamera * pCamera, CSlimeManag
 =========================================== */
 CUIStageManager::~CUIStageManager()
 {
+	SAFE_DELETE(m_pShowWarning);
 	SAFE_DELETE(m_pBossArrow);
 	SAFE_DELETE(m_pStageFin);
 	SAFE_DELETE(m_pHpMng);
@@ -120,6 +126,7 @@ void CUIStageManager::Update()
 	m_pTotalScore->Update();
 	m_pScoreOHMng->Update();
 	m_pBossArrow->Update();
+	m_pShowWarning->Update();
 }
 
 /* ========================================
@@ -141,6 +148,8 @@ void CUIStageManager::Draw()
 	m_pTotalScore->Draw();	// トータルスコア描画
 	m_pBossgauge->Draw();	// ボスゲージ描画
 	m_pScoreOHMng->Draw();	// スコアマネージャー描画
+	m_pShowWarning->Draw();	// 警告描画
+	
 }
 
 /* ========================================
@@ -239,7 +248,85 @@ int CUIStageManager::GetTotalScore()
 	}
 }
 
-CBossgauge* CUIStageManager::GetBossGauge()
+/* ========================================
+   ボスゲージポインタゲッタ関数
+   -------------------------------------
+   内容：ボスゲージポインタ取得
+   -------------------------------------
+   引数1：無し
+   -------------------------------------
+   戻値：総スコア
+=========================================== */
+CBossgauge* CUIStageManager::GetBossGaugePtr()
 {
 	return m_pBossgauge;
+}
+
+
+/* ========================================
+   警告UIポインタゲッタ関数
+   -------------------------------------
+   内容：警告UIポインタ取得
+   -------------------------------------
+   引数1：無し
+   -------------------------------------
+   戻値：総スコア
+=========================================== */
+CShowWarning* CUIStageManager::GetShowWarningPtr()
+{
+	return m_pShowWarning;
+}
+
+
+/* ========================================
+	SEの読み込み関数
+	----------------------------------------
+	内容：SEの読み込み
+	----------------------------------------
+	引数1：SEの種類(enum)
+	引数2：音量
+	----------------------------------------
+	戻値：なし
+======================================== */
+void CUIStageManager::PlaySE(SE_Type se, float volume)
+{
+	m_pSESpeaker[se] = CSound::PlaySound(m_pSE[se]);	//SE再生
+	m_pSESpeaker[se]->SetVolume(volume);				//音量の設定
+}
+
+/* ========================================
+	SE停止関数
+	----------------------------------------
+	内容：SEを停止する
+	----------------------------------------
+	引数1：SEの種類(enum)
+	----------------------------------------
+	戻値：なし
+======================================== */
+void CUIStageManager::StopSE(SE_Type se)
+{
+	UNLOAD_SOUND(m_pSESpeaker[se]);
+
+}
+
+/* ========================================
+   SE読み込み関数
+   ----------------------------------------
+   内容：SEのファイルを読み込む
+   ----------------------------------------
+   引数：無し
+   ----------------------------------------
+   戻値：無し
+======================================== */
+void CUIStageManager::LoadSound()
+{
+	//SEの読み込み
+	for (int i = 0; i < SE_MAX; i++)
+	{
+		m_pSE[i] = CSound::LoadSound(m_sSEFile[i].c_str(), true);
+		if (!m_pSE[i])
+		{
+			MessageBox(NULL, m_sSEFile[i].c_str(), "Error", MB_OK);	//ここでエラーメッセージ表示
+		}
+	}
 }

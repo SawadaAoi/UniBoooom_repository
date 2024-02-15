@@ -12,6 +12,7 @@
 	・2023/12/08 シーン遷移用に関数追加 takagi
 	・2023/12/15 ボスゲージの取得処理追加 Sawada
 	・2024/01/01 シーン番号列挙 takagi
+	・2024/02/11 ボス出現警告処理追加 Tei
 
 ========================================== */
 
@@ -26,12 +27,23 @@
 #include "Player.h"
 #include "SlimeManager.h"
 #include "BossArrow.h"
+#include "ShowWarning.h"
 
 
 // =============== クラス定義 =====================
 class CUIStageManager
 {
 public:
+
+	// === 列挙 ===
+	enum SE_Type
+	{
+		SE_ADD_SCORE,			 // トータルスコア加算
+		SE_BOSS_WARNING,		 // ボス警告
+
+		SE_MAX			//SEの総数
+	};
+
 	enum E_STAGE_NUM
 	{
 		E_STAGE_1,
@@ -45,16 +57,23 @@ public:
 	~CUIStageManager();
 	void Update();
 	void Draw();
+
 	CScoreOHManager* GetScoreOHMngPtr();	//スコアマネージャーポインタを取得
 	CCombo* GetComboPtr();	//コンボのポインタを取得
 	CTimer* GetTimerPtr();	//タイマーのポインタを取得
 	CStageFinish* GetStageFinishPtr();
 	CTotalScore* GetTotalScorePtr();
 
+
 	int GetTotalScore();	//総スコアゲッタ
 
-	CBossgauge* GetBossGauge();
-	
+	CBossgauge* GetBossGaugePtr();
+	CShowWarning* GetShowWarningPtr();
+
+	void PlaySE(SE_Type se, float volume = 1.0f);
+	void StopSE(SE_Type se);
+	void LoadSound();
+
 private:
 
 	// ===メンバ変数宣言===
@@ -68,6 +87,17 @@ private:
 	CScoreOHManager* m_pScoreOHMng;
 	CStageFinish* m_pStageFin;
 	CBossArrow* m_pBossArrow;
+	CShowWarning* m_pShowWarning;
+
+	//=====SE関連=====
+	XAUDIO2_BUFFER* m_pSE[SE_MAX];
+	IXAudio2SourceVoice* m_pSESpeaker[SE_MAX];
+
+	const std::string m_sSEFile[SE_MAX] = {
+		"Assets/Sound/SE/AddScore.mp3",			// トータルスコア加算
+		"Assets/Sound/SE/BossWarnig.mp3",		// ボス警告
+
+	};
 
 };
 
