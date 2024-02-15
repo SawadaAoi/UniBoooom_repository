@@ -50,7 +50,7 @@ CShowWarning::CShowWarning(int nStageNum)
 	, m_fBGMove(0.0f)
 	, m_fBotTexMove(0.0f)
 	, m_fTopTexMove(0.0f)
-	, m_fBGAlpha(0.7f)
+	, m_fBGAlpha(0.95f)
 	, m_pBossS2(nullptr)
 	, m_pBossS3(nullptr)
 	, m_fArrangementSizeAdjust(WARNING_ARRANGEMENT_SIZE.x / 2, WARNING_ARRANGEMENT_SIZE.y / 2)	// 変更量は元のサイズの半分（最初出る時は元のサイズの1.5倍
@@ -324,16 +324,16 @@ void CShowWarning::DrawWarningBoss(TPos2d<float> fpos, TPos2d<float> fsize, Text
 void CShowWarning::ArrangementAdjust()
 {
 	// 手配書のα値変更
-	m_fArrangementAlpha += 0.15;
-	if (m_fArrangementAlpha >= 0.9f)
+	m_fArrangementAlpha += 0.1;
+	if (m_fArrangementAlpha >= 0.95f)
 	{
-		m_fArrangementAlpha = 0.9f;		// 0.9に越えたら0.9にする
+		m_fArrangementAlpha = 0.95f;        // 0.9に越えたら0.9にする
 	}
 
 	// 手配書のサイズ変動量調整
-	m_fArrangementSizeAdjust.x -= 15.0f;
-	m_fArrangementSizeAdjust.y += 20.0f;
-	if (m_fArrangementSizeAdjust.x <= 0 )
+	m_fArrangementSizeAdjust.x -= 7.5f;
+	m_fArrangementSizeAdjust.y += 10.0f;
+	if (m_fArrangementSizeAdjust.x <= 0)
 	{
 		m_fArrangementSizeAdjust.x = 0;
 	}

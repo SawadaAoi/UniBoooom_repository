@@ -97,7 +97,7 @@ const Display_Param SVL_TIME_LINE_PARAM = { { 907.0f, 100.0f },{ 729.0f, 5.0f } 
 const float SVL_TIME_NUM_SPACE = 55.0f;		// 時間の間(例 12□:□33)
 
 const Display_Param SCORE_TEXT_PARAM		= { { 655.0f, 130.0f },{ 220.0f, 75.0f } };		// スコア(文字)
-const Display_Param NEW_RECORD_TEXT_PARAM	= { { 820.0f,180.0f },{ 170.0f, 55.0f } };		// 新記録(文字)
+const Display_Param NEW_RECORD_TEXT_PARAM	= { { 800.0f,180.0f },{ 170.0f, 55.0f } };		// 新記録(文字)
 const Display_Param SCORE_NUM_PARAM			= { { 1200.0f, 160.0f },{ 85.0f, 105.0f } };	// スコア(数字)
 const Display_Param HIGH_SCORE_TEXT_PARAM	= { { 645.0f, 240.0f },{ 180.0f, 75.0f } };		// ハイスコア(文字)
 const Display_Param HIGH_SCORE_NUM_PARAM	= { { 1200.0f, 260.0f },{ 55.0f, 55.0f } };		// ハイスコア(数字)
