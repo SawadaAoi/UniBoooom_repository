@@ -27,6 +27,9 @@
 #include "DiType.h"
 #include "Timer.h"
 #include "Player.h"
+
+class CUIStageManager;
+
 // =============== クラス定義 =====================
 class CTotalScore
 {
@@ -80,6 +83,7 @@ public:
 
 	void GameEndAddTotal();
 
+	void SetUIStageManagerPtr(CUIStageManager* pUIMng);
 	int GetTotalScore();
 	std::vector<int> digitsToArray(int score, int digits);	//引数の数字を各桁1ずつ配列に入れる
 private:
@@ -111,7 +115,7 @@ private:
 	int nArraySize;
 	std::vector<int> TotalScoreArray;	//各桁1ずつ入れるための配列
 
-
+	CUIStageManager* m_pUIMng;
 };
 
 

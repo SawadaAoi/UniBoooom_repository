@@ -44,6 +44,9 @@ CUIStageManager::CUIStageManager(CPlayer* pPlayer,CCamera * pCamera, CSlimeManag
 {
 	m_pCombo = new CCombo();
 
+	LoadSound();	//サウンドファイル読み込み
+
+
 	// =============== 動的確保 =====================
 	switch(eStage)
 	{
@@ -78,6 +81,8 @@ CUIStageManager::CUIStageManager(CPlayer* pPlayer,CCamera * pCamera, CSlimeManag
 	m_pBossArrow->SetSlimeMng(pSlimeMng);
 	m_pBossArrow->SetPlayer(pPlayer);
 
+	m_pTotalScore->SetUIStageManagerPtr(this);
+	m_pShowWarning->SetUIStageManagerPtr(this);
 }
 
 /* ========================================
@@ -270,4 +275,58 @@ CBossgauge* CUIStageManager::GetBossGaugePtr()
 CShowWarning* CUIStageManager::GetShowWarningPtr()
 {
 	return m_pShowWarning;
+}
+
+
+/* ========================================
+	SEの読み込み関数
+	----------------------------------------
+	内容：SEの読み込み
+	----------------------------------------
+	引数1：SEの種類(enum)
+	引数2：音量
+	----------------------------------------
+	戻値：なし
+======================================== */
+void CUIStageManager::PlaySE(SE_Type se, float volume)
+{
+	m_pSESpeaker[se] = CSound::PlaySound(m_pSE[se]);	//SE再生
+	m_pSESpeaker[se]->SetVolume(volume);				//音量の設定
+}
+
+/* ========================================
+	SE停止関数
+	----------------------------------------
+	内容：SEを停止する
+	----------------------------------------
+	引数1：SEの種類(enum)
+	----------------------------------------
+	戻値：なし
+======================================== */
+void CUIStageManager::StopSE(SE_Type se)
+{
+	UNLOAD_SOUND(m_pSESpeaker[se]);
+
+}
+
+/* ========================================
+   SE読み込み関数
+   ----------------------------------------
+   内容：SEのファイルを読み込む
+   ----------------------------------------
+   引数：無し
+   ----------------------------------------
+   戻値：無し
+======================================== */
+void CUIStageManager::LoadSound()
+{
+	//SEの読み込み
+	for (int i = 0; i < SE_MAX; i++)
+	{
+		m_pSE[i] = CSound::LoadSound(m_sSEFile[i].c_str(), true);
+		if (!m_pSE[i])
+		{
+			MessageBox(NULL, m_sSEFile[i].c_str(), "Error", MB_OK);	//ここでエラーメッセージ表示
+		}
+	}
 }

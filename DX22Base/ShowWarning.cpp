@@ -15,6 +15,8 @@
 // =============== インクルード ===================
 #include "ShowWarning.h"
 #include "Sprite.h"
+#include "UIStageManager.h"
+
 
 // =============== 定数定義 =======================
 const TPos2d<float> WARNING_BACKGROUND_TOPPOS(640.0f, 100.0f);		//一枚目上のバックグラウンド位置設定
@@ -136,6 +138,7 @@ void CShowWarning::Update()
 		if (WARNING_TIME_FLAME < m_nDispCnt)
 		{
 			m_bDispFlg = false;	// 描画終了
+			m_pUIMng->StopSE(CUIStageManager::SE_BOSS_WARNING);
 		}
 
 	}
@@ -354,6 +357,21 @@ void CShowWarning::StartShowWarning()
 {
 	if (m_nStageNum == 1) return;
 	m_bDispFlg = true;
+	m_pUIMng->PlaySE(CUIStageManager::SE_BOSS_WARNING);
+}
+
+/* ========================================
+	UIマネージャーポインタセッター関数
+	----------------------------------------
+	内容：UIマネージャーポインタをセットする
+	----------------------------------------
+	引数1：UIマネージャーポインタ
+	----------------------------------------
+	戻値：なし
+======================================== */
+void CShowWarning::SetUIStageManagerPtr(CUIStageManager * pUIMng)
+{
+	m_pUIMng = pUIMng;
 }
 
 /* ========================================
