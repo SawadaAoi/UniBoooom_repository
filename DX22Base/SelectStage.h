@@ -17,6 +17,7 @@
 	・2024/01/28 落下実装 takagi
 	・2024/01/29 画像修正 takagi
 	・2024/02/09 GetType()関数削除 takagi
+	・2024/02/15 戻るSE追加 takagi
 
 ========================================== */
 
@@ -139,7 +140,7 @@ public:
 	{
 		SE_DECISION,	//決定音
 		SE_CHOOSE,		//項目選択SE
-
+		SE_BACK,
 		SE_MAX			//SEの総数
 	}; //SE
 public:
@@ -178,7 +179,8 @@ private:
 	IXAudio2SourceVoice* m_pSESpeaker[SE_MAX];
 	const std::string m_sSEFile[SE_MAX] = {
 		"Assets/Sound/SE/Paper_break.mp3",			// 決定音
-		"Assets/Sound/SE/Select_Cursor.mp3" 		// 選択音
+		"Assets/Sound/SE/Select_Cursor.mp3", 		// 選択音
+		"Assets/Sound/SE/Decision.mp3",				// 戻る音
 	};
 };	//ステージセレクト
 
