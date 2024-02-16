@@ -269,6 +269,9 @@ CStage::~CStage()
 	SAFE_DELETE(m_pPause);
 	SAFE_DELETE(m_pUIStageManager);
 	SAFE_DELETE(m_pStartText);
+
+	// エフェクトを全削除
+	LibEffekseer::GetManager()->StopAllEffects();
 }
 
 
