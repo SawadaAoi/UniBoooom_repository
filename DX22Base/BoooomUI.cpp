@@ -70,9 +70,6 @@ CBoooomUI::~CBoooomUI()
 
 void CBoooomUI::Update()
 {
-	// =============== 更新 ===================
-	CDrawAnim::Update();	//親の関数使用
-	
 
 	DisplayTimeAdd();
 	//TODO爆発連鎖するときのスケール ?
