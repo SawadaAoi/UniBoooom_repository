@@ -35,6 +35,7 @@ const float HAMMER_HIT_MOVE_SPEED = 1.0f;		// ハンマーに吹き飛ばされた時のスピー
 const float HIT_HAMMER_VOLUME = 1.0f;
 const CCamera::E_BIT_FLAG HAMMER_HIT_VIB_NORMAL = CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_WEAK;	// スライムとハンマーのヒット振動
 const CCamera::E_BIT_FLAG HAMMER_HIT_VIB_BOSS = CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_WEAK;		// ボススライムとハンマーのヒット振動
+const float MULTIPLE_HIT_SPEED = 1.3f;		// チャージハンマー時のスライムの初速の倍率
 
 /* ========================================
    当たり判定まとめ関数
@@ -187,8 +188,9 @@ void CStage::HammerSlimeCollision()
 			float fAngleSlime
 				= m_pPlayer->GetTransform().Angle(pSlimeNow->GetTransform());	// スライムが飛ぶ角度を取得
 
-			pSlimeNow->HitMoveStart(HAMMER_HIT_MOVE_SPEED, fAngleSlime);	// スライムを飛ばす
 			CUsingCamera::GetThis().GetCamera()->StartShift(fAngleSlime);	// 画面の振動
+			bool bChargeHit = m_pPlayer->GetCharge();
+			pSlimeNow->HitMoveStart(bChargeHit ? HAMMER_HIT_MOVE_SPEED  * MULTIPLE_HIT_SPEED:HAMMER_HIT_MOVE_SPEED, fAngleSlime, bChargeHit);	// スライムを飛ばす
 			m_pPlayer->PlaySE(CPlayer::SE_HIT_HAMMER, HIT_HAMMER_VOLUME);	// ハンマーとスライムの接触SEを再生
 
 			m_pHitEffectMng->Create(pSlimeNow->GetPos());	//ヒットエフェクト生成
@@ -234,9 +236,9 @@ void CStage::HammerBossCollision()
 			float fAngleSlime
 				= m_pPlayer->GetTransform().Angle(pBossNow->GetTransform());	// スライムが飛ぶ角度を取得
 
-			pBossNow->HitMoveStart(HAMMER_HIT_MOVE_SPEED, fAngleSlime);	// スライムを飛ばす
 			CUsingCamera::GetThis().GetCamera()->StartShift(fAngleSlime);	// 画面の振動
-			m_pPlayer->PlaySE(CPlayer::SE_HIT_HAMMER, HIT_HAMMER_VOLUME);	//ハンマーとスライムの接触SEを再生
+			pBossNow->HitMoveStart(HAMMER_HIT_MOVE_SPEED, fAngleSlime,false);	// スライムを飛ばす
+			m_pPlayer->PlaySE(CPlayer::SE_HIT_HAMMER, HIT_HAMMER_VOLUME);		// ハンマーとスライムの接触SEを再生
 		}
 	}
 }

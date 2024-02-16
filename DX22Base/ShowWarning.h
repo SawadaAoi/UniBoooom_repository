@@ -20,6 +20,7 @@
 #include "Timer.h"
 #include "SlimeManager.h"
 
+class CUIStageManager;
 
 // =============== クラス定義 =====================
 class CShowWarning
@@ -35,7 +36,7 @@ public:
 	void ArrangementAdjust();		//手配書調整関数
 
 	void StartShowWarning();
-
+	void SetUIStageManagerPtr(CUIStageManager* pUIMng);
 	
 	// ゲッター関数
 	bool GetDispFlg();
@@ -56,7 +57,7 @@ private:
 	int m_nDispCnt;				// 表示加算値
 
 	TPos2d<float> m_fArrangementSizeAdjust;	// 手配書サイズ調整量
-	
+	CUIStageManager* m_pUIMng;
 };
 
 

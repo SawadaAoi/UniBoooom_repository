@@ -23,6 +23,7 @@
 #include "TotalScore.h"
 #include "Sprite.h"
 #include "Pos2d.h"	//二次元座標
+#include "UIStageManager.h"
 
 // =============== 定数定義 ===================
 const std::string TEXTURE_PATH[CTotalScore::TEXTURE_MAX][2] =
@@ -200,6 +201,7 @@ void CTotalScore::Update()
 			{
 				AddTotalScore(m_AddScore[i].nAddScore);		// トータルスコアに加算
 				m_AddScore[i].bDispAddScoreEndFlg = true;	// 加算スコア描画を辞める
+				m_pUIMng->PlaySE(CUIStageManager::SE_ADD_SCORE);
 			}
 		}
 		// 加算スコア表示終了後の場合
@@ -208,14 +210,6 @@ void CTotalScore::Update()
 			m_AddScore[i] = ResetAddScore();		// 加算スコア配列値リセット
 
 		}
-
-		//// プレイヤーが死亡したか、
-		//if (*m_pTimer->GetTimePtr() <= 0 || m_pPlayer->GetDieFlg())
-		//{
-		//	m_AddScore[i].bDispAddScoreEndFlg = true;		// 加算スコア表示を終了
-
-		//}
-
 
 	}
 }
@@ -658,6 +652,20 @@ void CTotalScore::GameEndAddTotal()
 }
 
 /* ========================================
+	UIマネージャーポインタセッター関数
+	----------------------------------------
+	内容：UIマネージャーポインタをセットする
+	----------------------------------------
+	引数1：UIマネージャーポインタ
+	----------------------------------------
+	戻値：なし
+======================================== */
+void CTotalScore::SetUIStageManagerPtr(CUIStageManager * pUIMng)
+{
+	m_pUIMng = pUIMng;
+}
+
+/* ========================================
 	トータルスコア取得関数
 	----------------------------------------
 	内容：トータルスコアの取得
@@ -721,18 +729,21 @@ void CTotalScore::TotalScoreMove()
 	{
 		m_nToScoreAddCnt++;	// 表示用トータルスコアの数字切り替えカウント加算
 
+
 		// 切り替え時間が過ぎているか
 		if (TOTAL_SCORE_MOVE_FRAME <= m_nToScoreAddCnt)
 		{
 			m_nTotalScoreDisp += TOTAL_SCORE_MOVE_ADD_POINT;	// 表示用スコアを加算する
 
+
 			// 表示用トータルスコアに値を足しすぎた場合
-			if (m_nTotalScore < m_nTotalScoreDisp)
+			if (m_nTotalScore <= m_nTotalScoreDisp)
 			{
 				m_nTotalScoreDisp = m_nTotalScore;	// 値を合わせる
+				m_pUIMng->StopSE(CUIStageManager::SE_ADD_SCORE);
 			}
-
 			m_nToScoreAddCnt = 0;
+			
 		}
 	}
 }

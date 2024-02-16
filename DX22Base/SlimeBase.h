@@ -159,7 +159,7 @@ public:
 	virtual void NormalMove();	// 通常時の移動処理
 	void RandomMove();
 	void HitMove();									//スライムが吹き飛び移動状態の時に毎フレーム呼び出して移動させる
-	void HitMoveStart(float speed, float angle);	//スライムが吹き飛ばされたときに速度と角度を決める
+	void HitMoveStart(float speed, float angle, bool ChargeHit);	//スライムが吹き飛ばされたときに速度と角度を決める
 	void Reflect();									//スライムとぶつかって吹き飛ばした際に自分の移動量を減らす
 	void MoveStop();
 
@@ -170,6 +170,7 @@ public:
 	TPos3d<float> GetPos();
 	bool GetMoveStopFlg();
 	int GetAttack();
+	bool GetChargeHit();
 
 	//セット関数
 	virtual void SetNormalSpeed() = 0;
@@ -182,7 +183,7 @@ protected:
 	TTriType<float> m_move;			// 移動量
 	TPos3d<float> m_fStpDirPos;		// 停止状態時に向く対象のオブジェクトの座標
 	float m_fSpeed;					// スライムの移動速度
-									   
+	bool m_bChargeHit;				// チャージハンマーに打たれたかどうか
 	bool m_bHitMove;				// 吹っ飛び中かどうか
 	float m_fVecAngle;				// 敵の吹き飛ぶ方向
 									   

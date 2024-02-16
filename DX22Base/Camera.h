@@ -69,8 +69,8 @@ public:
 	};	//フラグ
 protected:
 	// ===定数定義===========
-	const float SHIFT_LOOK = 3.0f;	//注視点のずれる距離
-	const float SHIFT_POS = 3.0f;	//カメラ位置のずれる距離
+	const float SHIFT_LOOK = 0.5f;	//注視点のずれる距離
+	const float SHIFT_POS = 0.5f;	//カメラ位置のずれる距離
 private:
 	// ===定数定義===========
 	static const std::list<std::shared_ptr<const CFrameCnt>> LIST_SHIFT_CNT;	//ずらしのカウンタ用リスト

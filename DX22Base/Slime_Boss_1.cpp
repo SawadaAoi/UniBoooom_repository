@@ -111,7 +111,7 @@ CSlime_Boss_1::~CSlime_Boss_1()
 =========================================== */
 void CSlime_Boss_1::Update(tagTransform3d playerTransform)
 {
-	m_fAnimeTime += ADD_ANIME * 0.65f;
+	m_fAnimeTime += ADD_ANIME * 1.4f;
 
 	m_PlayerTran = playerTransform;
 	

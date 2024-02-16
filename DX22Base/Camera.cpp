@@ -96,8 +96,8 @@ const std::vector<float> TABLE_AMPITUDE_STRONG[E_DIRECT_VIBRATE_MAX] = {
 // =============== グローバル変数宣言 =====================
 const std::list<std::shared_ptr<const CFrameCnt>> CCamera::LIST_SHIFT_CNT
 {
-	std::make_shared<const CFrameCnt>(30, false),	//行き：カウントアップ
-	std::make_shared<const CFrameCnt>(100, true),	//帰り：カウントダウン
+	std::make_shared<const CFrameCnt>(5, false),	//行き：カウントアップ
+	std::make_shared<const CFrameCnt>(30, true),	//帰り：カウントダウン
 };	//ずらしのカウンタ用リスト
 
 /* ========================================
