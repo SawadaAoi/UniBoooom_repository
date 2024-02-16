@@ -29,21 +29,24 @@
 	・2023/12/07 ゲームパラメータから一部定数移動 takagi
 	・2024/01/18 炎スライムのエフェクト追加 Tei
 	・2024/1/26  Drawの引数の const CCamera*　を削除 Yamashita
+	・2024/02/09 UsingCamera使用 takagi
+	・2024/02/13 カメラ削除 takagi
 
 ========================================== */
 
 // =============== インクルード ===================
 #include "SlimeBase.h"
 #include "Geometry.h"
-#include "GameParameter.h"		//定数定義用ヘッダー
-
+#include "GameParameter.h"	//定数定義用ヘッダー
+#include "UsingCamera.h"	//カメラ使用
 
 // =============== 定数定義 =======================
 const float SLIME_BASE_RADIUS = 0.5f;			// スライムの基準の大きさ
 const int	RANDOM_MOVE_SWITCH_TIME = 3 * 60;	// ランダム移動の方向切り替え
 const float SPEED_DOWN_RATIO = 0.6f;			// 吹き飛ぶ際にかかる移動速度の変化の割合    RATIO=>割合
-const float REFLECT_RATIO = 0.1f;				//スライムがスライムを吹き飛ばした際に吹き飛ばした側のスライムの移動量を変える割合
+const float REFLECT_RATIO = 0.1f;				// スライムがスライムを吹き飛ばした際に吹き飛ばした側のスライムの移動量を変える割合
 const float MOVE_RESIST = 0.05f;				// 吹き飛び移動中のスライムの移動速度に毎フレームかかる減算数値
+const float MULTIPLE_SPEED = 1.3f;				// チャージハンマーに叩かれたときのスライムの移動速度に書ける倍率
 #if MODE_GAME_PARAMETER
 #else
 const float MOVE_DISTANCE_PLAYER = 15;			// プレイヤー追跡移動に切り替える距離
@@ -73,6 +76,7 @@ CSlimeBase::CSlimeBase()
 	, m_fScaleShadow(0.0f)
 	, m_fAnimeTime(0.0f)
 	, m_eCurAnime(MOTION_LEVEL1_MOVE)
+	, m_bChargeHit(false)
 {
 	m_Transform.fScale = (1.0f, 1.0f, 1.0f);
 	//当たり判定(自分)初期化
@@ -99,7 +103,7 @@ CSlimeBase::~CSlimeBase()
 {
 	// =============== メモリ開放 ===================
 	SAFE_DELETE(m_pShadow);	//影解放
-
+	
 	//--エフェクト停止--
 	LibEffekseer::GetManager()->StopEffect(m_efcFlameHandle);
 }
@@ -160,8 +164,6 @@ void CSlimeBase::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
 =========================================== */
 void CSlimeBase::Draw()
 {
-	if (!m_pCamera) { return; }	//ヌルチェック
-
 	//行列状態を取得してセット
 	DirectX::XMFLOAT4X4 world;
 	DirectX::XMStoreFloat4x4(&world, XMMatrixTranspose(
@@ -171,8 +173,8 @@ void CSlimeBase::Draw()
 
 	DirectX::XMFLOAT4X4 mat[3] = {
 	world,
-	m_pCamera->GetViewMatrix(),
-	m_pCamera->GetProjectionMatrix()
+	CUsingCamera::GetThis().GetCamera()->GetViewMatrix(),
+	CUsingCamera::GetThis().GetCamera()->GetProjectionMatrix()
 	};
 	ShaderList::SetWVP(mat);
 
@@ -211,7 +213,7 @@ void CSlimeBase::Draw()
 	}
 
 	//-- 影の描画
-	m_pShadow->Draw(m_Transform, m_fScaleShadow, m_pCamera);
+	m_pShadow->Draw(m_Transform, m_fScaleShadow);
 }
 
 
@@ -251,7 +253,7 @@ void CSlimeBase::NormalMove()
 		// ベクトルを正規化して方向ベクトルを得る
 		DirectX::XMVECTOR direction = DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&directionVector));
 		// 方向ベクトルから回転行列を計算
-		m_Transform.fRadian.y = atan2(directionVector.x, directionVector.z);
+		m_Transform.fRadian.y = atan2(-directionVector.x, -directionVector.z);
 	}
 	else
 	{
@@ -326,11 +328,12 @@ void CSlimeBase::HitMove()
 	----------------------------------------
 	戻値：なし
 ======================================== */
-void CSlimeBase::HitMoveStart(float speed, float angle)
+void CSlimeBase::HitMoveStart(float speed, float angle,bool ChargeHit)
 {
-	m_fSpeed = speed;		//移動量を入れる
+	m_fSpeed = speed;			//移動量を入れる
 	m_fVecAngle = angle;		//移動方向を入れる
-	m_bHitMove = true;		//吹き飛び状態をONにする
+	m_bHitMove = true;			//吹き飛び状態をONにする
+	m_bChargeHit = ChargeHit;	// チャージハンマーに叩かれたか
 }
 
 /* ========================================
@@ -372,23 +375,6 @@ void CSlimeBase::MoveStop()
 		m_bMvStpFlg = false; 
 		m_nMvStpCnt = 0;
 	}
-}
-
-
-
-
-/* ========================================
-	カメラ情報セット関数
-	----------------------------------------
-	内容：描画処理で使用するカメラ情報セット
-	----------------------------------------
-	引数1：カメラのポインタ
-	----------------------------------------
-	戻値：なし
-======================================== */
-void CSlimeBase::SetCamera(const CCamera * pCamera)
-{
-	m_pCamera = pCamera;
 }
 
 /* ========================================
@@ -490,6 +476,20 @@ bool CSlimeBase::GetMoveStopFlg()
 int CSlimeBase::GetAttack()
 {
 	return m_nAttack;
+}
+
+/* ========================================
+	チャージハンマーによる吹き飛ぶ取得関数
+	----------------------------------------
+	内容：チャージハンマーによる吹き飛びかどうかを取得する
+	----------------------------------------
+	引数1：なし
+	----------------------------------------
+	戻値：チャージハンマーによる吹き飛びかどうか
+======================================== */
+bool CSlimeBase::GetChargeHit()
+{
+	return m_bChargeHit;
 }
 
 /* ========================================

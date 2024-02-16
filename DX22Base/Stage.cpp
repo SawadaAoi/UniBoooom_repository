@@ -25,6 +25,7 @@
 	・2024/01/25 ヒットエフェクト関係の処理追加 Tei
 	・2024/01/30 プレイヤー移動エフェクト関係の処理追加 Tei
 	・2024/02/02 汗エフェクト処理追加 Tei
+	・2024/02/09 UsingCamera使用 takagi
 
 ========================================== */
 
@@ -34,6 +35,10 @@
 #include "Stage1.h"	//ステージ1
 #include "Stage2.h"	//ステージ2
 #include "Stage3.h"	//ステージ3
+#include "HitStop.h"	//ヒットストップ
+#include "Fade.h"
+#include "UsingCamera.h"	//カメラ使用
+
 
 //* ========================================
 //	コンストラクタ
@@ -45,7 +50,7 @@
 //	戻値：なし
 //=========================================== */
 CStage::CStage(CUIStageManager::E_STAGE_NUM eStage)
-	:m_pVs(nullptr)
+	: m_pVs(nullptr)
 	, m_pPlayer(nullptr)
 	, m_pBox(nullptr)
 	, m_pSlimeMng(nullptr)
@@ -59,6 +64,7 @@ CStage::CStage(CUIStageManager::E_STAGE_NUM eStage)
 	, m_pPause(nullptr)	//ポーズ
 	, m_pSEHitHammer(nullptr)
 	, m_pSEHitHammerSpeaker(nullptr)
+	, m_nStageNum(0)
 {
 	// 頂点シェーダの読込
 	m_pVs = new VertexShader();
@@ -70,12 +76,7 @@ CStage::CStage(CUIStageManager::E_STAGE_NUM eStage)
 	RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得
 	DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
 	SetRenderTargets(1, &pRTV, pDSV);		//DSVがnullだと2D表示になる
-
-#if MODE_COORD_AXIS
-	// 軸線の表示
-	CLine::Init();
-#endif
-
+	
 	//================3dObject動的確保================
 	m_pPlayer = new CPlayer();							// プレイヤー生成
 	m_pExplosionMng = new CExplosionManager();			// 爆発マネージャー生成
@@ -83,24 +84,19 @@ CStage::CStage(CUIStageManager::E_STAGE_NUM eStage)
 	m_pHealItemMng = new CHealItemManager();			// 回復アイテムマネージャー生成
 
 	//================System動的確保================
-	m_pCamera = new CCameraChase(m_pPlayer->GetPosAddress());	//カメラ生成
-	m_pCollision = new CCOLLISION();							//衝突判定チェック生成
+	m_pMainCamera = std::make_shared<CCameraChase>();												//カメラ生成
+	std::static_pointer_cast<CCameraChase>(m_pMainCamera)->SetTarget(m_pPlayer->GetPosAddress());	//注視点設定
+	CUsingCamera::GetThis().SetCamera(m_pMainCamera);												//カメラ登録
+	m_pCollision = new CCOLLISION();																//衝突判定チェック生成
 
 	//================2dObject動的確保================
-	m_pUIStageManager = new CUIStageManager(m_pPlayer, m_pCamera, m_pSlimeMng, eStage);	// UIマネージャー生成
-	m_pStartText = new CStartText(m_pCamera);
+	m_pUIStageManager = new CUIStageManager(m_pPlayer, m_pSlimeMng, eStage);	// UIマネージャー生成
+	m_pStartText = new CStartText();
 
 	//================エフェクト動的確保================
 	m_pHitEffectMng = new CHitSlimeEffectManager();
 
-	//================セット================
-	// カメラ
-	m_pHitEffectMng->SetCamera(m_pCamera);
-	m_pPlayer->SetCamera(m_pCamera);
-	m_pExplosionMng->SetCamera(m_pCamera);
-	m_pSlimeMng->SetCamera(m_pCamera);
-	m_pHealItemMng->SetCamera(m_pCamera);
-	m_pPause = new CPause(m_pCamera);
+	m_pPause = new CPause();
 
 	//スライムマネージャー　←　スコアマネージャー
 	m_pSlimeMng->SetScoreOHMng(m_pUIStageManager->GetScoreOHMngPtr());
@@ -120,6 +116,123 @@ CStage::CStage(CUIStageManager::E_STAGE_NUM eStage)
 	// データ受け継ぎ
 	m_Data.Load();	//ファイルに上がっている情報を読み込む
 
+
+}
+
+/* ========================================
+	更新関数
+	----------------------------------------
+	内容：更新処理
+	----------------------------------------
+	引数1：なし
+	----------------------------------------
+	戻値：なし
+=========================================== */
+void CStage::Update()
+{
+	if (m_pStartText->GetAnimFlg())	// シーン遷移後ゲームを開始するか判定
+	{
+		m_pStartText->Update();
+	}
+	else
+	{
+		// ボス警告表示中は停止
+		if (m_pUIStageManager->GetShowWarningPtr()->GetDispFlg())
+		{
+			m_pUIStageManager->GetShowWarningPtr()->Update();	// 警告のみ更新
+
+			return;
+		}
+
+		//ポーズ更新
+		if (m_pPause)	//ヌルチェック
+		{
+			m_pPause->Update();	//ポーズ更新
+			if (m_pPause->IsPause())	//ポーズ中
+			{
+				return;	//処理中断
+			}
+			m_bFinish = m_pPause->IsFin();	//終了判定
+		}
+
+		// =============== ヒットストップ検査 ===================
+		if (!CHitStop::IsStop())	//ヒットストップ時処理しない
+		{
+			// プレイヤー更新
+			m_pPlayer->Update();	//※カメラ更新含
+
+			// スライムマネージャー更新
+			m_pSlimeMng->Update(m_pExplosionMng);
+		}
+
+		m_pFloor->Update();				// 床更新
+		m_pExplosionMng->Update();		// 爆発マネージャー更新
+		m_pHealItemMng->Update();		// 回復アイテム更新
+		m_pUIStageManager->Update();	// UIマネージャー更新
+		PlayerHealItemCollision();		// 回復アイテム取る判定
+		Collision();					// 当たり判定更新
+		m_pHitEffectMng->Update();		// ヒットエフェクトマネージャー更新
+
+	}
+
+	CScene::Update();
+
+	CStage::GameFinish();	// ステージ終了処理
+}
+
+
+/* ========================================
+	描画関数
+	----------------------------------------
+	内容：描画処理
+	----------------------------------------
+	引数1：なし
+	----------------------------------------
+	戻値：なし
+=========================================== */
+void CStage::Draw()
+{
+	RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得
+	DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
+	SetRenderTargets(1, &pRTV, pDSV);		//DSVがnullだと2D表示になる
+
+	//床の描画
+	m_pFloor->Draw();
+
+	// スライムマネージャー描画
+	m_pSlimeMng->Draw();
+
+	// プレイヤー描画
+	m_pPlayer->Draw();
+
+	LibEffekseer::Draw();
+
+	//爆発マネージャー描画
+	m_pExplosionMng->Draw();
+
+	//回復アイテム描画
+	m_pHealItemMng->Draw();
+
+	//2D描画変換
+	SetRenderTargets(1, &pRTV, nullptr);
+
+	//UIマネージャー描画
+	m_pUIStageManager->Draw();
+
+	// スタート合図描画
+	if (m_pStartText->GetAnimFlg())
+	{
+		m_pStartText->Draw();
+	}
+
+	// ポーズ描画
+	if (m_pPause)
+	{
+		m_pPause->Draw();
+	}
+
+	// エフェクト描画
+	m_pHitEffectMng->Draw();
 
 }
 
@@ -150,7 +263,6 @@ CStage::~CStage()
 	SAFE_DELETE(m_pExplosionMng);
 	SAFE_DELETE(m_pHitEffectMng);
 	SAFE_DELETE(m_pCollision);
-	SAFE_DELETE(m_pFade);
 	SAFE_DELETE(m_pTexture);
 	SAFE_DELETE(m_pScoreOHMng);
 	SAFE_DELETE(m_pHealItemMng);
@@ -158,6 +270,8 @@ CStage::~CStage()
 	SAFE_DELETE(m_pUIStageManager);
 	SAFE_DELETE(m_pStartText);
 }
+
+
 
 /* ========================================
 	ゲーム終了処理
@@ -176,4 +290,38 @@ void CStage::GameFinish()
 		// =============== フラグ管理 =====================
 		m_bFinish = true;	// タイトルシーン終了フラグON
 	}
+}
+
+
+/* ========================================
+	データ記録関数
+	----------------------------------------
+	内容：リザルト用にデータ記録
+	----------------------------------------
+	引数1：なし
+	----------------------------------------
+	戻値：なし
+=========================================== */
+void CStage::RecordData()
+{
+	m_pUIStageManager->GetTotalScorePtr()->GameEndAddTotal();	// トータルスコアコンボ途中加算処理
+
+	// =============== 退避 =====================
+	m_Data.nTotalScore = m_pUIStageManager->GetTotalScore();				// スコア退避
+
+	// =============== データ登録 =====================
+	if (m_Data.nHighScore[m_nStageNum - 1] < m_Data.nTotalScore)	// ハイスコアを更新しているか？
+	{
+		m_Data.nHighScore[m_nStageNum - 1] = m_Data.nTotalScore;	// ハイスコア更新
+	}
+	m_Data.nAliveTime = m_pUIStageManager->GetTimerPtr()->GetErapsedTime();	// 経過時間退避
+	m_Data.nMaxCombo = m_pUIStageManager->GetComboPtr()->GetMaxCombo();		// 最大コンボ数退避
+	m_Data.bClearFlg = m_pUIStageManager->GetStageFinishPtr()->GetClearFlg();	// ゲームクリアしたか
+	if (m_pSlimeMng)	//ヌルチェック
+	{
+		m_Data.nTotalKill = m_pSlimeMng->GetTotalKillCnt();					// 総討伐数退避
+		m_pSlimeMng->GetKillCntArray(m_Data.nKill);							// スライム別討伐数退避
+
+	}
+	m_Data.nStageNum = m_nStageNum;	// プレイしたステージ番号
 }

@@ -31,6 +31,7 @@
 	・2024/01/01 ボス落下のスライム硬直てょり追加 Tei
 	・2024/01/18 炎スライムエフェクト追加 Tei
 	・2024/02/06 結合エフェクト処理追加 Tei
+	・2024/02/09 カメラ削除 takagi
 
    ======================================== */
 
@@ -40,7 +41,6 @@
 // =============== インクルード ===================
 #include "TriType.h"
 //#include "SlimeBase.h"
-#include "Camera.h"
 #include "ExplosionManager.h"
 #include "Slime_BossBase.h"
 #include "GameParameter.h"		//定数定義用ヘッダー
@@ -87,7 +87,7 @@ public:
 	void HitBranch(int HitSlimeArrayNum,int standSlimeArrayNum,CExplosionManager* pExpMng);			// スライムの接触が起きた際の分岐処理
 	bool HitFlameBranch(int HitSlimeNum, int StandSlimeNum, CExplosionManager* pExpMng);			// フレイムスライムとの接触が起きた際の分岐処理
 	bool HitHealBranch(int HitSlimeNum, int StandSlimeNum, CExplosionManager* pExpMng);				// フレイムスライムとの接触が起きた際の分岐処理
-	void UnionSlime(E_SLIME_LEVEL level, TPos3d<float> pos, float speed, float angle);				// スライムの結合処理
+	void UnionSlime(E_SLIME_LEVEL level, TPos3d<float> pos, float speed, float angle, bool ChargeHit);				// スライムの結合処理
 	void TouchExplosion(int DelSlime, CExplosionManager* pExpMng, int comboNum);					// スライムの爆発処理
 
 	//-- ボス
@@ -113,7 +113,6 @@ public:
 	CSlime_BossBase* GetBossSlimePtr(int num);
 
 	// セット関数
-	void SetCamera(CCamera* pCamera);		//スライムを移すカメラのポインタをセット
 	void SetScoreOHMng(CScoreOHManager* pScoreMng);
 	void SetHealMng(CHealItemManager* pHealItemMng);
 	void SetExplosionMng(CExplosionManager* pExpMng);
@@ -126,7 +125,6 @@ private:
 
 	CSlimeBase* m_pSlime[MAX_SLIME_NUM];
 	CSlime_BossBase* m_pBoss[MAX_BOSS_SLIME_NUM];
-	CCamera* m_pCamera;
 
 	CPlayer* m_pPlayer;	// プレイヤーの座標
 	VertexShader* m_pVS;

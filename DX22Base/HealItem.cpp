@@ -12,11 +12,13 @@
 	・2023/11/28 上下に動く挙動を追加 yamashita
 	・2023/11/28 回転の挙動を追加 yamashita
 	・2023/12/07 ゲームパラメータに依存していたので修正・ゲームパラメータから定数移動・不要定数除去 takagi
+	・2024/02/09 UsingCamera使用 takagi
 
 ========================================== */
 
 // =============== インクルード ===================
 #include "HealItem.h"
+#include "UsingCamera.h"	//カメラ使用
 
 // =============== 定数定義 ===================
 const float HEAL_ITEM_SCALE_X = 1.5f;		//　アイテムのスケールX
@@ -37,10 +39,9 @@ const float	HEALITEM_HEIGHT = HEALITEM_MOVE_Y;	//  回復アイテムの初期の高さ
    ----------------------------------------
    戻値：なし
 ======================================== */
-CHealItem::CHealItem(TPos3d<float> pos, Model* pModel, VertexShader* pVS)
+CHealItem::CHealItem(TPos3d<float> pos, AnimeModel* pModel)
 	:m_fAnimeCnt(0.0f)
 	,m_pModel(nullptr)
-	,m_pVS(nullptr)
 {
 	m_Transform.fPos = pos;
 	m_Transform.fPos.y = HEALITEM_HEIGHT;		//表示される初期の高さ
@@ -50,8 +51,6 @@ CHealItem::CHealItem(TPos3d<float> pos, Model* pModel, VertexShader* pVS)
 	m_Sphere.fRadius = 1.0f;
 
 	m_pModel = pModel;
-	m_pVS = pVS;
-	m_pModel->SetVertexShader(m_pVS);
 }
 
 /* ========================================
@@ -97,28 +96,46 @@ void CHealItem::Update()
 ======================================== */
 void CHealItem::Draw()
 {
-	if (!m_pCamera) { return; }
-
 	//-- モデル表示
 	if (m_pModel) {
-		DirectX::XMFLOAT4X4 mat[3];
-
-		//拡縮、回転、移動(Y軸回転を先にしたかったのでSRTは使わない)
-		DirectX::XMStoreFloat4x4(&mat[0],DirectX::XMMatrixTranspose(DirectX::XMMatrixScaling(m_Transform.fScale.x, m_Transform.fScale.y, m_Transform.fScale.z)
-			* DirectX::XMMatrixRotationY(m_Transform.fRadian.y)
-			* DirectX::XMMatrixRotationX(m_Transform.fRadian.x) * DirectX::XMMatrixRotationZ(m_Transform.fRadian.z)
-			* DirectX::XMMatrixTranslation(m_Transform.fPos.x, m_Transform.fPos.y, m_Transform.fPos.z)));
-		mat[1] = m_pCamera->GetViewMatrix();
-		mat[2] = m_pCamera->GetProjectionMatrix();
-
-		//-- 行列をシェーダーへ設定
-		m_pVS->WriteBuffer(0, mat);
-
 		// レンダーターゲット、深度バッファの設定
 		RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得
 		DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
 		SetRenderTargets(1, &pRTV, pDSV);		//DSVがnullだと2D表示になる
 
-		m_pModel->Draw();
+		DirectX::XMFLOAT4X4 mat[3];
+
+		//拡縮、回転、移動(Y軸回転を先にしたかったのでSRTは使わない)
+		DirectX::XMStoreFloat4x4(&mat[0], DirectX::XMMatrixTranspose(DirectX::XMMatrixScaling(m_Transform.fScale.x, m_Transform.fScale.y, m_Transform.fScale.z)
+			* DirectX::XMMatrixRotationY(m_Transform.fRadian.y)
+			* DirectX::XMMatrixRotationX(m_Transform.fRadian.x) * DirectX::XMMatrixRotationZ(m_Transform.fRadian.z)
+			* DirectX::XMMatrixTranslation(m_Transform.fPos.x, m_Transform.fPos.y, m_Transform.fPos.z)));
+		mat[1] = CUsingCamera::GetThis().GetCamera()->GetViewMatrix();
+		mat[2] = CUsingCamera::GetThis().GetCamera()->GetProjectionMatrix();
+
+		ShaderList::SetWVP(mat);
+
+		//-- モデル表示(アニメーション対応ver)
+		if (m_pModel) {
+			//アニメーション対応したプレイヤーの描画
+			m_pModel->Draw(nullptr, [this](int index)
+			{
+				const AnimeModel::Mesh* pMesh = m_pModel->GetMesh(index);
+				const AnimeModel::Material* pMaterial = m_pModel->GetMaterial(pMesh->materialID);
+				ShaderList::SetMaterial(*pMaterial);
+
+				DirectX::XMFLOAT4X4 bones[200];
+				for (int i = 0; i < pMesh->bones.size() && i < 200; ++i)
+				{
+					// この計算はゲームつくろー「スキンメッシュの仕組み」が参考になる
+					DirectX::XMStoreFloat4x4(&bones[i], DirectX::XMMatrixTranspose(
+						pMesh->bones[i].invOffset *
+						m_pModel->GetBone(pMesh->bones[i].index)
+					));
+				}
+				ShaderList::SetBones(bones);
+			});
+			//m_pModel->DrawBone();
+		}
 	}
 }

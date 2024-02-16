@@ -10,6 +10,7 @@
 
 	変更履歴
 	・2023/12/17 新規作成 nieda
+	・2024/02/13 カメラ削除 takagi
 
 ========================================== */
 
@@ -31,16 +32,15 @@ const int CLEAR_SWITCH_CNT = 1;					// アニメーション切り替え間隔
 	----------------------------------------
 	内容：生成時に行う処理
 	----------------------------------------
-	引数1：カメラクラスのポインタ
+	引数1：なし
 	----------------------------------------
 	戻値：なし
 =========================================== */
-CClearText::CClearText(CCamera* pCamera)
+CClearText::CClearText()
 	: CDrawAnim(CLEAR_SPLIT_NUM_MAX, CLEAR_SPLIT_NUM, CLEAR_SWITCH_CNT)
 {
 	//ゲームクリアの描画準備
 	SetTexture("Assets/Texture/Game_StartEnd/finish.png");
-	SetCamera(pCamera);
 	SetPos({ CLEAR_POS.x, CLEAR_POS.y, 0.0f });
 	SetSize({ CLEAR_SCALE.x, CLEAR_SCALE.y, 0.0f });
 }

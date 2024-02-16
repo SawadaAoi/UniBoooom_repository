@@ -10,6 +10,8 @@
 	変更履歴
 	・2023/11/20 h,作成 Tei
 	・2023/11/21 表示で必要なメンバ変数、関数作成 Tei
+	・2024/02/09 カメラ削除 takagi
+	・2024/02/13 カメラ削除 takagi
 
 ========================================== */
 #ifndef __BOOOOM_UI_H__
@@ -18,7 +20,6 @@
 // =============== インクルード ===================
 #include "DrawAnimation.h"	//親のヘッダ
 #include "FrameCnt.h"	//メンバのヘッダ
-
 
 // =============== クラス定義 =====================
 class CBoooomUI :public CDrawAnim	//アニメーション
@@ -33,10 +34,6 @@ public:
 
 	void DisplayTimeAdd();		//boooomUI表示カウント加算処理関数
 	bool GetDelFlg();			//削除フラグ取得処理関数
-	//void SetCamera(const CCamera * pCamera);
-
-protected:
-	const CCamera* m_pCamera;
 private:
 	// ===メンバ変数宣言===
 	CFrameCnt* m_pCnt;	//カウンタ

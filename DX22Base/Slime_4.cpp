@@ -19,12 +19,15 @@
 	・2023/11/15 スライムのモデルと頂点シェーダーをmanagerから受け取るように変更 yamashita
 	・2023/11/28 影の大きさを設定する変数追加 nieda
 	・2024/01/31 アニメーションの追加 yamashita
+	・2024/02/09 UsingCamera使用 takagi
+	・2024/02/13 カメラ削除 takagi
 
 ========================================== */
 
 // =============== インクルード ===================
 #include "Slime_4.h"
-#include "GameParameter.h"		//定数定義用ヘッダー
+#include "GameParameter.h"	//定数定義用ヘッダー
+#include "UsingCamera.h"	//カメラ使用
 
 // =============== 定数定義 =======================
 #if MODE_GAME_PARAMETER
@@ -140,8 +143,6 @@ void CSlime_4::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
 =========================================== */
 void CSlime_4::Draw()
 {
-	if (!m_pCamera) { return; }	//ヌルチェック
-
 	//行列状態を取得してセット
 	DirectX::XMFLOAT4X4 world;
 	DirectX::XMStoreFloat4x4(&world, XMMatrixTranspose(
@@ -152,8 +153,8 @@ void CSlime_4::Draw()
 
 	DirectX::XMFLOAT4X4 mat[3] = {
 	world,
-	m_pCamera->GetViewMatrix(),
-	m_pCamera->GetProjectionMatrix()
+	CUsingCamera::GetThis().GetCamera()->GetViewMatrix(),
+	CUsingCamera::GetThis().GetCamera()->GetProjectionMatrix()
 	};
 	ShaderList::SetWVP(mat);
 
@@ -192,7 +193,7 @@ void CSlime_4::Draw()
 	}
 
 	//-- 影の描画
-	m_pShadow->Draw(m_Transform, m_fScaleShadow, m_pCamera);
+	m_pShadow->Draw(m_Transform, m_fScaleShadow);
 }
 
 void CSlime_4::NormalMove()

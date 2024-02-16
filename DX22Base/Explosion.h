@@ -23,6 +23,9 @@
 	・2023/11/21 ボスに一度触ったかを判定用の関数、変数追加 Suzumura
 	・2023/12/04 爆発のエフェクトを実装 yamasita
 	・2023/12/04 爆発の仮表示3Dモデルを削除 yamasita
+	・2024/02/09 カメラ削除 takagi
+	・2024/02/13 カメラ削除 takagi
+
 ======================================== */
 #ifndef __EXPLOSION_H__	//Explosion.hインクルードガード
 #define __EXPLOSION_H__
@@ -31,7 +34,6 @@
 #include "Shader.h"			//シェーダークラス定義ヘッダー
 #include "Sphereinfo.h"		//球体情報用ヘッダー
 #include "Transform3d.h"	//ワールド座標系情報ヘッダー
-#include "CameraChase.h"	//カメラ定義ヘッダー
 #include "Object.h"			//
 #include "BoooomUI.h"
 #include "LibEffekseer.h"
@@ -42,7 +44,7 @@ class CExplosion
 {
 public:
 	// ===メンバ関数宣言===
-	CExplosion(TPos3d<float> fPos, float fSize, float fTime, int comboNum, bool delayFlg, int nDamage, Effekseer::EffectRef explodeEffect,const CCamera* pCamera);	//コンストラクタ
+	CExplosion(TPos3d<float> fPos, float fSize, float fTime, int comboNum, bool delayFlg, int nDamage, Effekseer::EffectRef explodeEffect);	//コンストラクタ
 	~CExplosion();												// デストラクタ
 	void Update();												// 更新関数
 	void Draw();												// 描画関数
@@ -51,7 +53,6 @@ public:
 	void BossTouched();											//ボスに触ったときに呼び出す関数
 
 	// セット関数
-	void SetCamera(const CCamera* m_pCamera);	// 他のオブジェクトと同一のカメラをセット
 	void SetSeFlg(bool flg);
 
 	// ゲット関数
@@ -75,7 +76,6 @@ private:
 	float			m_fDamage;			// ボスに与えるダメージ量
 	bool			m_bBossTouched;		// 既にボスと接触いるかどうか
 
-	const CCamera*	m_pCamera;	//カメラのポインタ
 	int m_dComboNum;			// コンボ配列番号
 
 	bool m_bDelayFlg;		// 爆発遅延フラグ

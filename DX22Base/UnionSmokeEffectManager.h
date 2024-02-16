@@ -10,6 +10,7 @@
 
 	変更履歴
 	・2024/02/06 クラス定義作成 Tei
+	・2024/02/13 カメラ削除 takagi
 
 ========================================== */
 
@@ -42,13 +43,10 @@ public:
 	void Update();
 	void Draw();
 	void DeleteCheck();							// 使ったエフェクトを削除関数
-	void SetCamera(const CCamera* pCamera);
 
 private:
 	CUnionSmokeEffect* m_pUnionSmokeEffect[MAX_UNION_SMOKE_NUM];
 	Texture* m_pTexture[SMOKE_MAX];
-	const CCamera* m_pCamera;
-	
 };
 
 

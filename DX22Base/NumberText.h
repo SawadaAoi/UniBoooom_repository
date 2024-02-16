@@ -9,7 +9,7 @@
 class CNumberText 
 {
 public:
-	CNumberText(CCamera* pCamaer, Texture* pTexture, TDiType<float> pos, TDiType<float> size, int nDispNum, int nDigits);
+	CNumberText(Texture* pTexture, TDiType<float> pos, TDiType<float> size, int nDispNum, int nDigits);
 	~CNumberText();
 	void Update();
 	void Draw();
@@ -20,7 +20,6 @@ private:
 	void NumStorage();
 
 	Texture* m_pTexture;
-	CCamera* m_pCamera;
 	std::vector<C2dPolygon*> m_p2dPoly;
 	std::vector<int> m_DigitArray;
 	int m_nDispNum;

@@ -18,6 +18,7 @@
 	・2023/11/21 コンボ数機能の一部をコンボクラスに移動 Sawada
 	・2023/11/21 BoooomUI用のメンバ変数を追加 Tei
 	・2023/12/07 ゲームパラメータから一部定数移動・Effekseer.hのインクルードをcppに移動 takagi
+	・2024/02/09 カメラ削除 takagi
 
 ========================================== */
 #ifndef __EXPLOSION_MANAGER_H__	//ExplosionManager.hインクルードガード
@@ -33,11 +34,8 @@
 
 // =============== 定数定義 =======================
 const int	MAX_EXPLOSION_NUM = 20;			// 最大爆発数
-const int	MAX_BOOOOM_NUM = 10;					//最大boom数
-const int	LEVEL_1_EXPLODE_DAMAGE = 1;
-const int	LEVEL_2_EXPLODE_DAMAGE = 2;
-const int	LEVEL_3_EXPLODE_DAMAGE = 3;
-const int	LEVEL_4_EXPLODE_DAMAGE = 4;
+const int	MAX_BOOOOM_NUM = 10;			//最大boom数
+
 #if MODE_GAME_PARAMETER
 #else
 const int MAX_BOOOOM_NUM = 10;		//最大boom数
@@ -47,7 +45,17 @@ const float LEVEL_1_EXPLODE_TIME	= 0.5f * 60.0f;	// スライム_1の爆発総時間
 const float LEVEL_2_EXPLODE_TIME	= 1.0f * 60.0f;	// スライム_2の爆発総時間
 const float LEVEL_3_EXPLODE_TIME	= 2.0f * 60.0f;	// スライム_3の爆発総時間
 const float LEVEL_4_EXPLODE_TIME	= 3.0f * 60.0f;	// スライム_4の爆発総時間
+const float LEVEL_4X4_EXPLODE_TIME = 3.5f * 60.0f;	// スライム_4x4の爆発総時間
+
 const float LEVEL_BOSS_EXPLODE_TIME = 4.0f * 60.0f;	// スライム_ボスの爆発総時間
+
+const int	LEVEL_1_EXPLODE_DAMAGE = 1;
+const int	LEVEL_2_EXPLODE_DAMAGE = 2;
+const int	LEVEL_3_EXPLODE_DAMAGE = 3;
+const int	LEVEL_4_EXPLODE_DAMAGE = 4;
+const int	LEVEL_4X4_EXPLODE_DAMAGE = 5;
+
+const float EXPLODE_BOSS_RATIO = 2.3f;				// ボス撃破時の爆発の大きさ倍率
 #endif
 
 // =============== クラス定義 =====================
@@ -74,7 +82,6 @@ public:
 
 	CExplosion* GetExplosionPtr(int num);
 
-	void SetCamera(const CCamera* pCamera);	//他のオブジェクトと同一のカメラをセット
 	void SetCombo(CCombo* pCombo);
 
 
@@ -83,7 +90,6 @@ private:
 	CExplosion* m_pExplosion[MAX_EXPLOSION_NUM];	//爆発の配列
 	CBoooomUI* m_pBoooomUI[MAX_BOOOOM_NUM];			//Boooom表示用の配列
 	CCombo* m_pCombo;								// コンボ処理用
-	const CCamera* m_pCamera;
 private:
 	Texture* m_pTexUI;	//Boooom用テクスチャ
 	XAUDIO2_BUFFER* m_pSEExplode;

@@ -44,6 +44,7 @@
 	・2024/01/30 プレイヤー移動エフェクト用処理追加 Tei
 	・2024/02/02 汗エフェクト処理追加 Tei
 	・2024/02/08 汗エフェクト処理修正&&ハンマーの振る速度もついでに修正 sawada
+	・2024/02/09 カメラ更新除去・UsingCamera使用 takagi
 
 ======================================== */
 
@@ -53,6 +54,8 @@
 #include "Sphere.h"
 #include "GameParameter.h"		//定数定義用ヘッダー
 #include "ShaderList.h"
+#include "ModelManager.h"
+#include "UsingCamera.h"	//カメラ使用
 
 // =============== 定数定義 =======================
 const float KEYBOARD_INPUT_SIZE = 1.0f;						// キーボードの入力値の大きさ
@@ -73,17 +76,20 @@ const int	SE_RUN_INTERVAL = static_cast<int>(0.4f * 60);	// プレイヤーの移動によ
 const float	SE_RUN_VOLUME = 0.3f;							// 移動によるSEの音量
 const float PLAYER_MOVE_ANIME_SPEED = 1.2f;					// プレイヤーの移動アニメーション再生速度
 const float PLAYER_SWING_ANIME_SPEED = 5.0f;				// プレイヤーの移動アニメーション再生速度
-const float	ADD_ANIM_FRAME = 1.0f / 60.0f;
+const float	ADD_ANIM_FRAME = 1.0f / 60.0f;					
 const int   PLAYER_WARNING_HP = 1;							//瀕死の警告を行うプレイヤー残りHP
 
 const int	SWING_FAST_INTERVAL = 0.1f * 60;				// ハンマーを振る速度を早くする間隔
 
 const int	WALK_EFFECT_INTERVAL = 0.2f * 60;				// 歩くエフェクトの出現間隔
-const int	SWEAT_EFFECT_INTERVAL = 0.5f * 60;				// 汗エフェクトの出現間隔
+const int	SWEAT_EFFECT_INTERVAL = 0.7f * 60;				// 汗エフェクトの出現間隔
 const float	SWEAT_EFFECT_DISP_SPEED = 0.5f;					// 汗エフェクトの表示するハンマーのスピード(これ以下の場合に表示)
 const int	DIE_AFTER_INTERVAL = int(2.0f * 60);			// 死亡してからGameOverテキストが出るまでの猶予時間
-
-
+const int	CHARGE_HAMMER_CNT = 60;							// チャージが完了するまでの時間
+const TTriType<float> CHARGING_EFFECT_SIZE = {2.0f,2.0f,2.0f};// エフェクトのサイズ
+const TTriType<float> CHARGED_EFFECT_SIZE = {3.0f,3.0f,3.0f};// エフェクトのサイズ
+const float CHARGE_EFFECT_SPEED = 1.0f;						// チャージエフェクトの再生速度
+const int DISP_CHARGE_EFC_CNT = 15;							// チャージエフェクトの見え始めるカウント
 
 /* ========================================
    関数：コンストラクタ
@@ -99,7 +105,6 @@ CPlayer::CPlayer()
 	, m_bAttackFlg(false)
 	, m_nHp(PLAYER_HP)		// プレイヤーのHPを決定
 	, m_bDieFlg(false)
-	, m_pCamera(nullptr)
 	, m_nSafeTimeCnt(0)
 	, m_bSafeTimeFlg(false)
 	, m_DrawFlg(true)
@@ -117,24 +122,26 @@ CPlayer::CPlayer()
 	, m_nSweatEffeCnt(0)
 	, m_nSwingFastCnt(0)
 	, m_fRotate_x(PLAYER_ROTATE_X_NORMAL)
+	, m_fChargeCnt(0.0f)
+	, m_ChargeState(PLAYER_CHARGE_NONE)
 {
-	m_pHammer = new CHammer();								// Hammerクラスをインスタンス
+	m_pHammer = new CHammer();			// Hammerクラスをインスタンス
 
-	m_Sphere.fRadius = PLAYER_RADIUS;						// 当たり判定用の球体の半径
+	m_Sphere.fRadius = PLAYER_RADIUS;	// 当たり判定用の球体の半径
 	m_Transform.fScale = PLAYER_SIZE;
-	LoadSound();							//サウンドファイル読み込み
+	LoadSound();						//サウンドファイル読み込み
 
 	//プレイヤーのモデル読み込み
-	m_pModel = new AnimeModel();
-	if (!m_pModel->Load("Assets/Model/player/POW.fbx", 1.0f, AnimeModel::Flip::XFlip)) {		//倍率と反転は省略可
-		MessageBox(NULL, "player", "Error", MB_OK);	//ここでエラーメッセージ表示
-	}
-	m_pModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));		//頂点シェーダーをセット
-	//m_pModel->SetPixelShader(ShaderList::GetPS(ShaderList::PS_LAMBERT));	//ピクセルシェーダーをセット
+	m_pModel = GetModelMng.GetModelPtr(MODEL_PLAYER);
+	m_pModel->Play(MOTION_PLAYER_MOVE,true);
+	m_pModel->Step(0.0f);	// Tポーズから立ち状態に移行
+	// プレイヤーが最初に地面に埋まらないように座標を調整
+	m_Transform.fPos = { 0.0f,1.0f,0.0f };
 
-	LoadAnime();	//アニメーションの読み込み
+	//LoadAnime();	//アニメーションの読み込み
 	m_pShadow = new CShadow();
 
+	// エフェクトマネージャーを作成
 	m_pWalkEffectMng = new CWalkEffectManager();
 	m_pSweatEffectMng = new CSweatEffectManager();
 
@@ -150,10 +157,10 @@ CPlayer::CPlayer()
 ======================================== */
 CPlayer::~CPlayer()
 {
+	SAFE_DELETE(m_pWaitFrameCnt);
 	SAFE_DELETE(m_pSweatEffectMng);
 	SAFE_DELETE(m_pWalkEffectMng);
 	SAFE_DELETE(m_pShadow);
-	SAFE_DELETE(m_pModel);
 	SAFE_DELETE(m_pHammer);
 }
 
@@ -181,7 +188,6 @@ void CPlayer::Update()
 		{
 			m_bDieFlg = true;	// 死亡判定をオン
 		}
-
 	}
 	// ハンマー攻撃中
 	else if (m_bAttackFlg)
@@ -190,15 +196,28 @@ void CPlayer::Update()
 		if (m_pHammer->Update() == false)
 		{
 			m_pHammer->SwingSpeedSlow();	// ハンマーのスイングスピードを遅くする
-			m_pModel->SetAnimationSpeed(m_Anime[MOTION_SWING], m_pHammer->GetSwingSpeed() * SWING_ANIM_ADJUST);	// アニメの速さを設定
+			m_pModel->SetAnimationSpeed(MOTION_PLAYER_SWING, m_pHammer->GetSwingSpeed() * SWING_ANIM_ADJUST);	// アニメの速さを設定
 			m_bAttackFlg = false;			// 攻撃中フラグをオフにする
 			m_bHumInvFlg = true;			// ハンマー振り間隔フラグオン
 		}
-
 	}
 	// ハンマー攻撃以外
 	else
 	{
+		CheckCharge();	// チャージカウントを参照してチャージ状態を判定
+		// ハンマースイングのアニメーションが終了していたらチャージ状態をNONEに変更
+		if (!m_pModel->IsPlay(MOTION_PLAYER_SWING))
+		{
+			m_ChargeState = PLAYER_CHARGE_NONE;
+		}
+
+		// チャージ状態がNONEでスイングアニメーションが終了しているとき
+		if (!m_ChargeState == PLAYER_CHARGE_NONE && m_pModel->IsPlay(MOTION_PLAYER_SWING))
+		{
+			m_fChargeCnt = 0;
+			m_ChargeState = PLAYER_CHARGING;
+		}
+
 		// ハンマー間隔時間フラグがオンの時
 		if (m_bHumInvFlg)
 		{
@@ -221,42 +240,66 @@ void CPlayer::Update()
 			MoveController();
 		}
 
-		// カメラ更新
-		m_pCamera->Update();	//位置更新後、それを即座にカメラに反映させる
+		// スペースキーもしくはコントローラのBボタンに対しての押し続け && ハンマー間隔時間経過済み
+		if ((IsKeyPress(VK_SPACE) || IsKeyPressController(BUTTON_B)) && !m_bHumInvFlg
+					&& !m_ChargeState == PLAYER_CHARGING)
+		{	
+			SAFE_DELETE(m_pWaitFrameCnt);	// カウンタ削除
+
+			// カウントが0ならアニメーションをリセットして再生
+			if (m_fChargeCnt == 0)
+			{
+				m_pModel->Play(MOTION_PLAYER_CHARGE, true, 1.0);		// アニメーションの再生
+				m_pModel->SetAnimationTime(MOTION_PLAYER_CHARGE, 0.0f);	// アニメーションタイムをスタート位置にセット
+			}
 
 
-		// スペースキーを押した時、またはコントローラのBボタンを押した時 && ハンマー間隔時間経過済み
-		if ((IsKeyTrigger(VK_SPACE) || IsKeyTriggerController(BUTTON_B)) && !m_bHumInvFlg)
-		{
-			SAFE_DELETE(m_pWaitFrameCnt);	//カウンタ削除
+			m_fChargeCnt++;	// チャージカウントを増加
 
- 			m_pModel->Play(m_Anime[MOTION_SWING], false, m_pHammer->GetSwingSpeed() * SWING_ANIM_ADJUST);	//アニメーションの再生
-			m_pModel->SetAnimationTime(m_Anime[MOTION_SWING], 0.0f);		//アニメーションタイムをスタート位置にセット
+			if (m_fChargeCnt == DISP_CHARGE_EFC_CNT)
+			{
+				// エフェクトの再生
+				EffectStart();
+			}
+
+			// カウントがマックスになった時のSE再生
+			if (m_fChargeCnt == CHARGE_HAMMER_CNT)
+			{
+				PlaySE(SE_CHARGED);
+			}
+		}
+		else if ((IsKeyRelease(VK_SPACE) || IsKeyReleaseController(BUTTON_B)) && !m_bHumInvFlg && !m_pModel->IsPlay(MOTION_PLAYER_SWING))
+		{	// スペースキーもしくはコントローラのBボタンに対しての離した時 && ハンマー間隔時間経過済み
+
+			SAFE_DELETE(m_pWaitFrameCnt);	// カウンタ削除
+
+			m_pModel->Play(MOTION_PLAYER_SWING, false, m_pHammer->GetSwingSpeed() * SWING_ANIM_ADJUST);	// アニメーションの再生
+			m_pModel->SetAnimationTime(MOTION_PLAYER_SWING, 0.0f);				// アニメーションタイムをスタート位置にセット
+
 
 			m_pHammer->AttackStart(m_Transform.fPos, m_Transform.fRadian.y);	// ハンマー攻撃開始
 			m_bAttackFlg = true;	// 攻撃フラグを有効にする
 
+			LibEffekseer::GetManager()->StopEffect(m_chgEfcHandle);
+
 			//SEの再生
 			PlaySE(SE_SWING);
-
 		}
 		else
 		{
+			m_fChargeCnt = 0;
 			m_nSwingFastCnt++;
 			if (SWING_FAST_INTERVAL < m_nSwingFastCnt)
 			{
 				// 攻撃ボタンを押してない時はハンマーのスイングスピードを通常に戻していく
 				m_pHammer->SwingSpeedFast();
 				m_pModel->SetAnimationSpeed(
-					m_Anime[MOTION_SWING],
+					MOTION_PLAYER_SWING,
 					m_pHammer->GetSwingSpeed() * SWING_ANIM_ADJUST);	// アニメの速さを設定
 				m_nSwingFastCnt = 0;
 			}
-			
 		}
-
 	}
-
 
 	// 無敵状態になっている場合
 	if (m_bSafeTimeFlg)
@@ -268,7 +311,7 @@ void CPlayer::Update()
 		if (m_nSafeTimeCnt >= NO_DAMAGE_TIME)
 		{
 			m_DrawFlg = true;				// 点滅を解除
-			m_bSafeTimeFlg = false;				// 無敵を解除
+			m_bSafeTimeFlg = false;			// 無敵を解除
 		}
 
 	}
@@ -283,11 +326,9 @@ void CPlayer::Update()
 	}
 	
 	DisplaySweatEffect();			// 汗エフェクト作成
-		
-	m_pWalkEffectMng->Update();
-	m_pSweatEffectMng->Update(m_Transform.fPos);
 
-	
+	UpdateEffect();	// エふぇくtの更新
+
 }
 
 /* ========================================
@@ -324,8 +365,8 @@ void CPlayer::Draw()
 				* DirectX::XMMatrixRotationX(m_fRotate_x)			// X角度
 				* DirectX::XMMatrixRotationZ(m_Transform.fRadian.z)	// Z角度
 				* DirectX::XMMatrixTranslation(m_Transform.fPos.x, m_Transform.fPos.y, m_Transform.fPos.z)));	// 座標
-		mat[1] = m_pCamera->GetViewMatrix();
-		mat[2] = m_pCamera->GetProjectionMatrix();
+		mat[1] = CUsingCamera::GetThis().GetCamera()->GetViewMatrix();
+		mat[2] = CUsingCamera::GetThis().GetCamera()->GetProjectionMatrix();
 
 
 		ShaderList::SetWVP(mat);
@@ -360,7 +401,7 @@ void CPlayer::Draw()
 		//m_pHammer->Draw();		// ハンマーの描画
 	}
 
-	m_pShadow->Draw(m_Transform, PLAYER_SHADOW_SCALE, m_pCamera);	// 影の描画
+	//m_pShadow->Draw(m_Transform, PLAYER_SHADOW_SCALE);	// 影の描画
 
 	m_nWalkEffeCnt++;
 	m_pWalkEffectMng->Draw();
@@ -393,7 +434,7 @@ void CPlayer::Damage(int DmgNum)
 	{
 		m_bDieInvFlg = true;
 		m_fRotate_x = PLAYER_ROTATE_X_DIE;			// プレイヤーの傾きをセット(地面に埋まらないように)
-		m_pModel->Play(m_Anime[MOTION_DIE],false);	// アニメーションの再生
+		m_pModel->Play(MOTION_PLAYER_DIE,false);	// アニメーションの再生
 
 	}
 }
@@ -611,25 +652,6 @@ bool CPlayer::GetDieFlg() const
 	return m_bDieFlg;
 }
 
-
-/* ========================================
-   カメラのセット関数
-   ----------------------------------------
-   内容：プレイヤー追従カメラをセットする
-   ----------------------------------------
-   引数：カメラ
-   ----------------------------------------
-   戻値：なし
-======================================== */
-void CPlayer::SetCamera(CCamera * pCamera)
-{
-	m_pCamera = pCamera;	//中身は変えられないけどポインタはかえれるのでヨシ！
-	m_pHammer->SetCamera(m_pCamera);
-	m_pWalkEffectMng->SetCamera(m_pCamera);
-	m_pSweatEffectMng->SetCamera(m_pCamera);
-
-}
-
 /* ========================================
    ハンマー攻撃フラグ取得関数
    ----------------------------------------
@@ -642,6 +664,20 @@ void CPlayer::SetCamera(CCamera * pCamera)
 bool CPlayer::GetAttackFlg()
 {
 	return m_bAttackFlg;
+}
+
+/* ========================================
+   チャージハンマー取得関数
+   ----------------------------------------
+   内容：チャージ状態か取得する関数
+   ----------------------------------------
+   引数：無し
+   ----------------------------------------
+   戻値：チャージ状態
+======================================== */
+bool CPlayer::GetCharge()
+{
+	return m_bCharge;
 }
 
 void CPlayer::SetSweatEffectMng(CSweatEffectManager* pSweatefcMng)
@@ -660,16 +696,16 @@ void CPlayer::SetSweatEffectMng(CSweatEffectManager* pSweatefcMng)
 ======================================== */
 void CPlayer::LoadAnime()
 {
-	for (int i = 0; i < MOTION_MAX; i++)
-	{
-		//各アニメーションの読み込み
-		m_Anime[i] = m_pModel->AddAnimation(m_sAnimeFile[i].c_str());
-		//読み込みに失敗したらエラーメッセージ
-		if (!m_pModel->GetAnimation(m_Anime[i]))
-		{
-			MessageBox(NULL, m_sAnimeFile[i].c_str(), "Error", MB_OK);	//ここでエラーメッセージ表示
-		}
-	}
+	//for (int i = 0; i < MOTION_PLAYER_MAX; i++)
+	//{
+	//	//各アニメーションの読み込み
+	//	m_Anime[i] = m_pModel->AddAnimation(m_sAnimeFile[i].c_str());
+	//	//読み込みに失敗したらエラーメッセージ
+	//	if (!m_pModel->GetAnimation(m_Anime[i]))
+	//	{
+	//		MessageBox(NULL, m_sAnimeFile[i].c_str(), "Error", MB_OK);	//ここでエラーメッセージ表示
+	//	}
+	//}
 }
 
 /* ========================================
@@ -719,8 +755,9 @@ void CPlayer::MoveCheck()
 	if (m_fMove.x == 0.0f && m_fMove.z == 0.0f)
 	{
 		// 待機中のアニメーションを再生してない、なおかつ攻撃中じゃない場合
-		if (m_pModel->GetPlayNo() != m_Anime[MOTION_STOP] 
-			&& !m_bAttackFlg && !m_pModel->IsPlay(m_Anime[MOTION_SWING]))	
+		if (m_pModel->GetPlayNo() != MOTION_PLAYER_STOP
+			&& !m_bAttackFlg && !m_pModel->IsPlay(MOTION_PLAYER_SWING)
+			&& m_ChargeState == PLAYER_CHARGE_NONE)
 		{
 			// カウントダウン開始前の場合
 			if (!m_pWaitFrameCnt)	// 値がnullptr
@@ -736,8 +773,8 @@ void CPlayer::MoveCheck()
 			// カウントダウン完了
 			if (m_pWaitFrameCnt->IsFin())
 			{
-				SAFE_DELETE(m_pWaitFrameCnt);					// カウンタ削除
-				m_pModel->Play(m_Anime[MOTION_STOP], false);	// 待機モーション開始
+				SAFE_DELETE(m_pWaitFrameCnt);						// カウンタ削除
+				m_pModel->Play(MOTION_PLAYER_STOP, false);	// 待機モーション開始
 			}
 		}
 	}
@@ -760,10 +797,10 @@ void CPlayer::MoveCheck()
 		}
 
 		// 移動中のアニメーションを再生してない場合、なおかつ攻撃中じゃない場合
-		if (m_pModel->GetPlayNo() != m_Anime[MOTION_MOVE] && !m_pModel->IsPlay(m_Anime[MOTION_SWING]))
+		if (m_pModel->GetPlayNo() != MOTION_PLAYER_MOVE && !m_pModel->IsPlay(MOTION_PLAYER_SWING)
+			&& !m_pModel->IsPlay(MOTION_PLAYER_CHARGE))
 		{	
-			m_pModel->Play(m_Anime[MOTION_MOVE], true, PLAYER_MOVE_ANIME_SPEED);	// アニメーションを再生
-
+			m_pModel->Play(MOTION_PLAYER_MOVE, true, PLAYER_MOVE_ANIME_SPEED);	// アニメーションを再生
 		}
 
 	}
@@ -826,4 +863,89 @@ void CPlayer::Healing()
 	PlaySE(SE_HEAL);
 }
 
+/* ========================================
+   チャージハンマー判定関数
+   ----------------------------------------
+   内容：チャージカウントを参照して判定する関数
+   ----------------------------------------
+   引数：なし
+   ----------------------------------------
+   戻値：なし
+======================================== */
+void CPlayer::CheckCharge()
+{
+	// チャージ時間が一定以上か否か
+	if (CHARGE_HAMMER_CNT > m_fChargeCnt)
+	{	// チャージ時間が足りていない場合
+		m_bCharge = false;
+	}
+	else
+	{	// チャージが完了している場合
+		m_bCharge = true;
+		m_ChargeState = PLAYER_CHARGED;
+	}
+}
+
+/* ========================================
+	エフェクト表示開始関数
+	-------------------------------------
+	内容：エフェクトの表示を開始する
+	-------------------------------------
+	引数1：無し
+	-------------------------------------
+	戻値：無し
+=========================================== */
+void CPlayer::EffectStart()
+{
+	m_chgEfcHandle = LibEffekseer::GetManager()->Play(m_chargeEfc, 	//エフェクトの開始
+		m_Transform.fPos.x,
+		m_Transform.fPos.y,
+		m_Transform.fPos.z);
+
+	LibEffekseer::GetManager()->SetScale(m_chgEfcHandle, 					//エフェクトのサイズを設定
+		CHARGING_EFFECT_SIZE.x,
+		CHARGING_EFFECT_SIZE.y,
+		CHARGING_EFFECT_SIZE.z);
+
+	LibEffekseer::GetManager()->SetSpeed(m_chgEfcHandle,					//エフェクトの再生速度を設定
+		CHARGE_EFFECT_SPEED);
+}
+
+/* ========================================
+	エフェクト更新関数
+	-------------------------------------
+	内容：エフェクトを更新する
+	-------------------------------------
+	引数1：無し
+	-------------------------------------
+	戻値：無し
+=========================================== */
+void CPlayer::UpdateEffect()
+{
+	// チャージエフェクトの座標をセット
+	LibEffekseer::GetManager()->SetLocation(m_chgEfcHandle,
+		m_Transform.fPos.x,
+		m_Transform.fPos.y,
+		m_Transform.fPos.z);
+
+	if (m_bCharge)
+	{
+		LibEffekseer::GetManager()->SetScale(m_chgEfcHandle, 	//エフェクトのサイズを設定
+			CHARGED_EFFECT_SIZE.x,
+			CHARGED_EFFECT_SIZE.y,
+			CHARGED_EFFECT_SIZE.z);
+	}
+	else
+	{
+		LibEffekseer::GetManager()->SetScale(m_chgEfcHandle, 	//エフェクトのサイズを設定
+			CHARGING_EFFECT_SIZE.x,
+			CHARGING_EFFECT_SIZE.y,
+			CHARGING_EFFECT_SIZE.z);
+	}
+
+
+	m_pWalkEffectMng->Update();						// 歩きの土煙エフェクトの更新
+	m_pSweatEffectMng->Update(m_Transform.fPos);	// 汗エフェクトの更新
+
+}
 

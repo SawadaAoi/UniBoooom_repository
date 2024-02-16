@@ -10,6 +10,7 @@
 
 	変更履歴
 	・2024/02/06 結合エフェクト nieda
+	・2024/02/13 カメラ削除 takagi
 
 ========================================== */
 
@@ -32,17 +33,15 @@ const int ANIM_PLAY_SPEED_MULTI = 2;					// アニメの再生スピード倍率
 	引数1：生成座標（x,y,z）
 	引数2：生成サイズ（x,y,z）
 	引数3：読み込むの画像
-	引数4：カメラクラスのポインタ
 	----------------------------------------
 	戻値：なし
 =========================================== */
-CUnionSmokeEffect::CUnionSmokeEffect(TPos3d<float> pos, TPos3d<float> size, Texture* pTex, const CCamera * pCamera)
+CUnionSmokeEffect::CUnionSmokeEffect(TPos3d<float> pos, TPos3d<float> size, Texture* pTex)
 	: CDrawAnim(UNION_SMOKE_SPLIT_NUM_MAX, UNION_SMOKE_SPLIT_NUM, UNION_SMOKE_SWITCH_CNT)
 	, m_bDelFlg(false)
 	, m_nDelFrame(0)
 	, m_fEffectTime(UNION_SMOKE_SPLIT_NUM_MAX)
 {
-	CDrawAnim::SetCamera(pCamera);
 	CDrawAnim::SetTexture(pTex);
 	CDrawAnim::SetPos(pos);
 	CDrawAnim::SetSize(size);
@@ -77,7 +76,7 @@ void CUnionSmokeEffect::Update()
 	for (int i = 0; i < ANIM_PLAY_SPEED_MULTI; i++)
 	{
 		CDrawAnim::Update();
-		CDrawAnim::Update();
+		//CDrawAnim::Update();
 	}
 	DisplayTimeAdd();
 }

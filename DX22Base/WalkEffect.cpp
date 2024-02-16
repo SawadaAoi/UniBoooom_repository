@@ -9,6 +9,7 @@
 
    変更履歴
 	・2024/01/30 WalkEffectクラス作成 Tei
+	・2024/02/13 UsingCamera使用 takagi
 
 ========================================== */
 
@@ -21,6 +22,7 @@ const int	WALK_EFFECT_ALPHA = 3;	// エフェクトの濃さ(元々が薄いので重ねて表示)
 // =============== インクルード ===================
 #include "WalkEffect.h"
 #include <time.h>
+#include "UsingCamera.h"	//カメラ使用
 
 /* ========================================
 	関数：コンストラクタ
@@ -31,14 +33,12 @@ const int	WALK_EFFECT_ALPHA = 3;	// エフェクトの濃さ(元々が薄いので重ねて表示)
 	引数2：エフェクトの総時間
 	引数3：位置調整用乱数
 	引数4：エフェクトのeffekseerファイル
-	引数5：カメラポインタ
 	-------------------------------------
 	戻値：なし
 =========================================== */
-CWalkEffect::CWalkEffect(tagTransform3d tTransForm, int nDelFrame, float fPosRan, Effekseer::EffectRef walkEffect, const CCamera * pCamera)
+CWalkEffect::CWalkEffect(tagTransform3d tTransForm, int nDelFrame, float fPosRan, Effekseer::EffectRef walkEffect)
 	: m_bDelFlg(false)
 	, m_nDelFrame(0)
-	, m_pCamera(pCamera)
 	, m_fDispMaxFlame(nDelFrame)
 {
 	//プレイヤー移動エフェクト初期化
@@ -99,10 +99,10 @@ void CWalkEffect::Update()
 void CWalkEffect::Draw()
 {
 	//エフェクトの描画
-	TPos3d<float> cameraPos = m_pCamera->GetPos();							//カメラ座標を取得
+	TPos3d<float> cameraPos = CUsingCamera::GetThis().GetCamera()->GetPos();							//カメラ座標を取得
 	DirectX::XMFLOAT3 fCameraPos(cameraPos.x, cameraPos.y, cameraPos.z);	//XMFLOAT3に変換
 	LibEffekseer::SetViewPosition(fCameraPos);								//カメラ座標をセット
-	LibEffekseer::SetCameraMatrix(m_pCamera->GetViewWithoutTranspose(), m_pCamera->GetProjectionWithoutTranspose());	//転置前のviewとprojectionをセット
+	LibEffekseer::SetCameraMatrix(CUsingCamera::GetThis().GetCamera()->GetViewWithoutTranspose(), CUsingCamera::GetThis().GetCamera()->GetProjectionWithoutTranspose());	//転置前のviewとprojectionをセット
 }
 
 /* ========================================

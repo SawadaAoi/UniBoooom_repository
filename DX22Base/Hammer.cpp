@@ -23,6 +23,7 @@
 	・2023/12/01 IntervalをSwingSpeedに変更　yamamoto
 	・2023/12/07 ゲームパラメータから一部定数移動 takagi
 	・2024/02/08 振る速度の増減について処理を修正 sawada
+	・2024/02/09 UsingCamera使用 takagi
 
 ========================================== */
 
@@ -31,6 +32,7 @@
 #include "Sphere.h"				// 球体の情報用ヘッダ
 #include "GameParameter.h"		// 定数定義用ヘッダー
 #include "TriType.h"
+#include "UsingCamera.h"		//カメラ使用
 
 // =============== 定数定義 =======================
 const float HALF_PI = 3.141592f / 2;	//ハンマーの開始地点のラジアン角(要修正)
@@ -70,7 +72,6 @@ CHammer::CHammer()
 	: m_tPlayerPos(0.0f,0.0f,0.0f)
 	, m_fAngleNow(0)
 	, m_dAddAngleCnt(0)
-	, m_pCamera(nullptr)
 	, m_nSwingTimeFrame(SWING_TIME_MIN)
 	, m_fSwingSpeed(1.0f)
 {
@@ -144,8 +145,6 @@ bool CHammer::Update()
    ======================================== */
 void CHammer::Draw()
 {
-	if (!m_pCamera) { return; }
-
 	if (m_pSphere)
 	{
 		DirectX::XMFLOAT4X4 mat;
@@ -154,8 +153,8 @@ void CHammer::Draw()
 			DirectX::XMMatrixTranslation(m_Transform.fPos.x, m_Transform.fPos.y, m_Transform.fPos.z)));
 
 		m_pSphere->SetWorld(mat);
-		m_pSphere->SetView(m_pCamera->GetViewMatrix());
-		m_pSphere->SetProjection(m_pCamera->GetProjectionMatrix());
+		m_pSphere->SetView(CUsingCamera::GetThis().GetCamera()->GetViewMatrix());
+		m_pSphere->SetProjection(CUsingCamera::GetThis().GetCamera()->GetProjectionMatrix());
 
 
 		// レンダーターゲット、深度バッファの設定
@@ -262,6 +261,7 @@ void CHammer::SwingSpeedFast()
 	m_fAddAngle = float(SWING_ANGLE / m_nSwingTimeFrame);	// 1フレームの加算角度を計算
 	m_fSwingSpeed = m_fAddAngle / FIRST_ADD_ANGLE;			// 現在のハンマーの一振りの速度計算
 }
+
 /* ========================================
    ハンマー速度取得関数
    ----------------------------------------
@@ -274,19 +274,4 @@ void CHammer::SwingSpeedFast()
 float CHammer::GetSwingSpeed()
 {
 	return m_fSwingSpeed;
-}
-
-
-/* ========================================
-   カメラセット関数
-   ----------------------------------------
-   内容：カメラのポインタをセット
-   ----------------------------------------
-   引数1：カメラポインタ
-   ----------------------------------------
-   戻値：なし
-   ======================================== */
-void CHammer::SetCamera(const CCamera * pCamera)
-{
-	m_pCamera = pCamera;
 }

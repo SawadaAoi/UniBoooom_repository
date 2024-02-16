@@ -20,14 +20,12 @@
 	・2023/12/07 ビュー行列取得にカメラ使用 takagi
 	・2023/12/08 カメラがない時にUIが表示できない問題を修正
 	・2023/12/14 BGMの管理をSceneManagerに移動 yamashita
+	・2024/02/09 カメラ削除 takagi
 
 ========================================== */
 
 // =============== インクルード ===================
 #include "Scene.h"	//自身のヘッダ
-#include "Sprite.h"
-#include "GameParameter.h"
-
 
 /* ========================================
 	コンストラクタ
@@ -40,8 +38,6 @@
 =========================================== */
 CScene::CScene()
 	: m_bFinish(false)	//シーン開始
-	, m_pCamera(nullptr)	//カメラ
-	, m_pFade(nullptr)
 {
 }
 
@@ -56,7 +52,6 @@ CScene::CScene()
 =========================================== */
 CScene::~CScene()
 {
-	SAFE_DELETE(m_pCamera);
 }
 
 /* ========================================
@@ -70,6 +65,11 @@ CScene::~CScene()
 =========================================== */
 void CScene::Update()
 {
+	// =============== 更新 =====================
+	if (m_pMainCamera)	//ヌルチェック
+	{
+		m_pMainCamera->Update();	//カメラ更新
+	}
 }
 
 /* ========================================
@@ -81,7 +81,6 @@ void CScene::Update()
 	----------------------------------------
 	戻値：なし
 =========================================== */
-//!memo(見たら消してー)：constが邪魔になったら外してね(.hの方も)
 void CScene::Draw()
 {
 }
@@ -99,66 +98,4 @@ bool CScene::IsFin() const
 {
 	// =============== 提供 =====================
 	return m_bFinish;	//終了要求フラグ
-}
-
-/* ========================================
-	2D描画関数
-	-------------------------------------
-	内容：テクスチャの描画処理
-	-------------------------------------
-	引数1：表示位置のX座標
-	-------------------------------------
-	引数2：表示位置のY座標
-	-------------------------------------
-	引数3：表示するテクスチャの縦幅
-	-------------------------------------
-	引数4：表示するテクスチャの横幅
-	-------------------------------------
-	引数5：表示するテクスチャのポインタ
-	-------------------------------------
-	戻値：なし
-========================================== = */
-void CScene::Draw2d(float posX, float posY, float h, float w, Texture* pTexture)
-{
-	DirectX::XMFLOAT4X4 mat[3];
-
-	// ワールド行列はXとYのみを考慮して作成
-	DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(posX, posY, 0.0f);	// ワールド行列（必要に応じて変数を増やしたり、複数処理を記述したりする）
-	DirectX::XMStoreFloat4x4(&mat[0], DirectX::XMMatrixTranspose(world));
-
-	// ビュー行列は2Dだとカメラの位置があまり関係ないので、単位行列を設定する
-	DirectX::XMStoreFloat4x4(&mat[1], DirectX::XMMatrixIdentity());
-
-	// スプライトの設定
-	Sprite::SetWorld(mat[0]);
-	Sprite::SetView(mat[1]);
-	if (m_pCamera)	//ヌルチェック
-	{
-		Sprite::SetProjection(m_pCamera->GetProjectionMatrix(CCamera::E_DRAW_TYPE_2D));	// 平行投影行列を設定
-		Sprite::SetSize(DirectX::XMFLOAT2(h, w));
-	}
-	else
-	{
-		DirectX::XMStoreFloat4x4(&mat[2], DirectX::XMMatrixTranspose(DirectX::XMMatrixOrthographicOffCenterLH(0.0f, 1280.0f, 720.0f, 0.0f, 0.1f, 10.0f)));
-		Sprite::SetProjection(mat[2]);	// 平行投影行列を設定
-		Sprite::SetSize(DirectX::XMFLOAT2(h, -w));
-	}
-	Sprite::SetUVScale(DirectX::XMFLOAT2(1.0f, 1.0f));
-	Sprite::SetUVPos(DirectX::XMFLOAT2(0.0f, 0.0f));
-	Sprite::SetTexture(pTexture);
-	Sprite::Draw();
-}
-
-/* ========================================
-   カメラポインタ取得関数
-   -------------------------------------
-   内容：カメラクラスのポインタ取得
-   -------------------------------------
-   引数1：無し
-   -------------------------------------
-   戻値：無し
-=========================================== */
-CCamera* CScene::GetCamera()
-{
-	return m_pCamera;
 }

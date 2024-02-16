@@ -19,6 +19,9 @@
 	・2023/12/12 型チェック修正 takagi
 	・2023/12/17 ゲームパラメータ無効化 takagi
 	・2024/01/26 選択.決定.ポーズSE追加 suzumura
+	・2024/02/09 カメラ削除 takagi
+	・2024/02/13 カメラ削除 takagi
+	・2024/02/15 コマンド選択SE修正 takagi
 
 ========================================== */
 
@@ -26,11 +29,11 @@
 #include "Pause.h"			//自身のヘッダ
 #include <map>				//関係性コンテナ
 #include <array>			//配列
-#include "CameraDef.h"		//疑似カメラ
 #include "Input.h"			//キー入力
 #include "CharPause.h"		//インスタンス候補
 #include "BgPause.h"		//インスタンス候補
 #include "CommandPause.h"	//インスタンス候補
+#include "Defines.h"		//定数定義
 
 // =============== 列挙型定義 ===================
 enum E_2D
@@ -63,20 +66,20 @@ const float CHARA_SPACE = 85.0f;		//ポーズ表記の横の間
 const float CHARA_WIDTH = 100.0f;		//ポーズ表記横幅
 const float CHARA_HEIGHT = 100.0f;		//ポーズ表記縦幅
 const std::map<int, int> MAP_WAIT_START = {	//更新順
-	{E_2D_BACK, 0},		//背景
-	{E_2D_PA, 0},		//ポーズの”ポ”
-	{E_2D_U, 15},		//ポーズの”ー”
-	{E_2D_SE, 30},		//ポーズの”ズ”
+	{E_2D_BACK, 0},			//背景
+	{E_2D_PA, 0},			//ポーズの”ポ”
+	{E_2D_U, 15},			//ポーズの”ー”
+	{E_2D_SE, 30},			//ポーズの”ズ”
 	{E_2D_CONTINUE, 15},	//継続コマンド
-	{E_2D_FINISH, 30},	//終了コマンド
+	{E_2D_FINISH, 30},		//終了コマンド
 };	//ポリゴンと表示開始待機時間の対応表
 const std::map<int, int> MAP_WAIT_FIN = {	//更新順
 	{E_2D_BACK, 30},		//背景
-	{E_2D_PA, 30},		//ポーズの”ポ”
-	{E_2D_U, 15},		//ポーズの”ー”
-	{E_2D_SE, 0},		//ポーズの”ズ”
+	{E_2D_PA, 30},			//ポーズの”ポ”
+	{E_2D_U, 15},			//ポーズの”ー”
+	{E_2D_SE, 0},			//ポーズの”ズ”
 	{E_2D_CONTINUE, 15},	//継続コマンド
-	{E_2D_FINISH, 30},	//終了コマンド
+	{E_2D_FINISH, 30},		//終了コマンド
 };	//ポリゴンと表示終了待機時間の対応表
 const std::map<int, std::string> MAP_TEXTURE = {	//更新順
 	{E_2D_BACK, "Assets/Texture/Pause/PauseBg.png"},			//背景
@@ -100,21 +103,17 @@ const std::map<int, TPos3d<float>> MAP_POS = {	//更新順
 	----------------------------------------
 	内容：生成時に行う処理
 	----------------------------------------
-	引数1：const CCamera* pCamera：カメラのポインタ
+	引数1：なし
 	----------------------------------------
 	戻値：なし
 =========================================== */
-CPause::CPause(const CCamera* pCamera)
+CPause::CPause()
 	:m_ucFlag(0x00)			//フラグ
 	, m_pSE{ nullptr,nullptr,nullptr }
 	, m_pSESpeaker{ nullptr ,nullptr,nullptr }
-{	
-	// =============== 初期化 ===================
-	m_pCamera = pCamera;	//カメラ初期化
-
+{
 	//=== サウンドファイル読み込み =====
 	LoadSound();
-
 }
 
 /* ========================================
@@ -180,38 +179,47 @@ void CPause::Update()
 			// =============== カーソル移動 ===================
 			if (IsStickLeft().y < 0)		//↑入力時
 			{
-				// =============== 状態遷移 ===================
-				if (m_p2dObj[E_2D_CONTINUE] && typeid(CCommandPause) == typeid(*m_p2dObj[E_2D_CONTINUE]))	//ヌルチェック、型チェック
+				if (!(m_ucFlag & E_FLAG_COMMAND_CONTINUE))	//既に継続コマンドを選択していない
 				{
-					static_cast<CCommandPause*>(m_p2dObj[E_2D_CONTINUE])->Selected();	//選択状態遷移
-				}
-				if (m_p2dObj[E_2D_FINISH] && typeid(CCommandPause) == typeid(*m_p2dObj[E_2D_FINISH]))	//ヌルチェック、型チェック
-				{
-					static_cast<CCommandPause*>(m_p2dObj[E_2D_FINISH])->UnSelected();	//選択状態遷移
+					// =============== 状態遷移 ===================
+					if (m_p2dObj[E_2D_CONTINUE] && typeid(CCommandPause) == typeid(*m_p2dObj[E_2D_CONTINUE]))	//ヌルチェック、型チェック
+					{
+						static_cast<CCommandPause*>(m_p2dObj[E_2D_CONTINUE])->Selected();	//選択状態遷移
+					}
+					if (m_p2dObj[E_2D_FINISH] && typeid(CCommandPause) == typeid(*m_p2dObj[E_2D_FINISH]))	//ヌルチェック、型チェック
+					{
+						static_cast<CCommandPause*>(m_p2dObj[E_2D_FINISH])->UnSelected();	//選択状態遷移
+					}
+
+					// =============== フラグ操作 ===================
+					UpFlag(E_FLAG_COMMAND_CONTINUE);	//上のコマンド採用
+					DownFlag(E_FLAG_COMMAND_FINISH);	//下のコマンド不採用
+
 					//===== SEの再生 =======
 					PlaySE(SE_CHOOSE);
 				}
-
-				// =============== フラグ操作 ===================
-				UpFlag(E_FLAG_COMMAND_CONTINUE);	//上のコマンド採用
-				DownFlag(E_FLAG_COMMAND_FINISH);	//下のコマンド不採用
 			}
 			if (IsStickLeft().y > 0)	//↓入力時
 			{
-				// =============== 状態遷移 ===================
-				if (m_p2dObj[E_2D_FINISH] && typeid(CCommandPause) == typeid(*m_p2dObj[E_2D_FINISH]))	//ヌルチェック、型チェック
+				if (!(m_ucFlag & E_FLAG_COMMAND_FINISH))	//既に終了コマンドを選択していない
 				{
-					static_cast<CCommandPause*>(m_p2dObj[E_2D_FINISH])->Selected();	//選択状態遷移
-				}
-				if (m_p2dObj[E_2D_CONTINUE] && typeid(CCommandPause) == typeid(*m_p2dObj[E_2D_CONTINUE]))	//ヌルチェック、型チェック
-				{
-					static_cast<CCommandPause*>(m_p2dObj[E_2D_CONTINUE])->UnSelected();	//選択状態遷移
+					// =============== 状態遷移 ===================
+					if (m_p2dObj[E_2D_FINISH] && typeid(CCommandPause) == typeid(*m_p2dObj[E_2D_FINISH]))	//ヌルチェック、型チェック
+					{
+						static_cast<CCommandPause*>(m_p2dObj[E_2D_FINISH])->Selected();	//選択状態遷移
+					}
+					if (m_p2dObj[E_2D_CONTINUE] && typeid(CCommandPause) == typeid(*m_p2dObj[E_2D_CONTINUE]))	//ヌルチェック、型チェック
+					{
+						static_cast<CCommandPause*>(m_p2dObj[E_2D_CONTINUE])->UnSelected();	//選択状態遷移
+					}
+
+					// =============== フラグ操作 ===================
+					UpFlag(E_FLAG_COMMAND_FINISH);		//下のコマンド採用
+					DownFlag(E_FLAG_COMMAND_CONTINUE);	//上のコマンド不採用
+
 					//===== SEの再生 =======
 					PlaySE(SE_CHOOSE);
 				}
-				// =============== フラグ操作 ===================
-				UpFlag(E_FLAG_COMMAND_FINISH);		//下のコマンド採用
-				DownFlag(E_FLAG_COMMAND_CONTINUE);	//上のコマンド不採用
 			}
 
 			// =============== 決定 ===================
@@ -250,38 +258,46 @@ void CPause::Update()
 			// =============== カーソル移動 ===================
 			if (IsKeyTrigger(VK_UP) || IsKeyTrigger('W'))		//↑・W入力時
 			{
-				// =============== 状態遷移 ===================
-				if (m_p2dObj[E_2D_CONTINUE] && typeid(CCommandPause) == typeid(*m_p2dObj[E_2D_CONTINUE]))	//ヌルチェック、型チェック
+				if (!(m_ucFlag & E_FLAG_COMMAND_CONTINUE))	//既に継続コマンドを選択していない
 				{
-					static_cast<CCommandPause*>(m_p2dObj[E_2D_CONTINUE])->Selected();	//選択状態遷移
-				}
-				if (m_p2dObj[E_2D_FINISH] && typeid(CCommandPause) == typeid(*m_p2dObj[E_2D_FINISH]))	//ヌルチェック、型チェック
-				{
-					static_cast<CCommandPause*>(m_p2dObj[E_2D_FINISH])->UnSelected();	//選択状態遷移
+					// =============== 状態遷移 ===================
+					if (m_p2dObj[E_2D_CONTINUE] && typeid(CCommandPause) == typeid(*m_p2dObj[E_2D_CONTINUE]))	//ヌルチェック、型チェック
+					{
+						static_cast<CCommandPause*>(m_p2dObj[E_2D_CONTINUE])->Selected();	//選択状態遷移
+					}
+					if (m_p2dObj[E_2D_FINISH] && typeid(CCommandPause) == typeid(*m_p2dObj[E_2D_FINISH]))	//ヌルチェック、型チェック
+					{
+						static_cast<CCommandPause*>(m_p2dObj[E_2D_FINISH])->UnSelected();	//選択状態遷移
+					}
+
+					// =============== フラグ操作 ===================
+					UpFlag(E_FLAG_COMMAND_CONTINUE);	//上のコマンド採用
+					DownFlag(E_FLAG_COMMAND_FINISH);	//下のコマンド不採用
+
 					//===== SEの再生 =======
 					PlaySE(SE_CHOOSE);
 				}
-
-				// =============== フラグ操作 ===================
-				UpFlag(E_FLAG_COMMAND_CONTINUE);	//上のコマンド採用
-				DownFlag(E_FLAG_COMMAND_FINISH);	//下のコマンド不採用
 			}
 			if (IsKeyTrigger(VK_DOWN) || IsKeyTrigger('S'))	//↓・S入力時
 			{
-				// =============== 状態遷移 ===================
-				if (m_p2dObj[E_2D_FINISH])	//ヌルチェック、型チェック
+				if (!(m_ucFlag & E_FLAG_COMMAND_FINISH))	//既に終了コマンドを選択していない
 				{
-					static_cast<CCommandPause*>(m_p2dObj[E_2D_FINISH])->Selected();	//選択状態遷移
-				}
-				if (m_p2dObj[E_2D_CONTINUE])	//ヌルチェック、型チェック
-				{
-					static_cast<CCommandPause*>(m_p2dObj[E_2D_CONTINUE])->UnSelected();	//選択状態遷移
+					// =============== 状態遷移 ===================
+					if (m_p2dObj[E_2D_FINISH])	//ヌルチェック、型チェック
+					{
+						static_cast<CCommandPause*>(m_p2dObj[E_2D_FINISH])->Selected();	//選択状態遷移
+					}
+					if (m_p2dObj[E_2D_CONTINUE])	//ヌルチェック、型チェック
+					{
+						static_cast<CCommandPause*>(m_p2dObj[E_2D_CONTINUE])->UnSelected();	//選択状態遷移
+					}
+					// =============== フラグ操作 ===================
+					UpFlag(E_FLAG_COMMAND_FINISH);		//下のコマンド採用
+					DownFlag(E_FLAG_COMMAND_CONTINUE);	//上のコマンド不採用
+					
 					//===== SEの再生 =======
 					PlaySE(SE_CHOOSE);
 				}
-				// =============== フラグ操作 ===================
-				UpFlag(E_FLAG_COMMAND_FINISH);		//下のコマンド採用
-				DownFlag(E_FLAG_COMMAND_CONTINUE);	//上のコマンド不採用
 			}
 
 			// =============== 決定 ===================
@@ -420,20 +436,6 @@ bool CPause::IsFin() const
 }
 
 /* ========================================
-	カメラ登録関数
-	----------------------------------------
-	内容：nullptrでないカメラのアドレスを受け取り使用する。
-	----------------------------------------
-	引数1：const CCamera * pCamera：カメラのポインタ
-	----------------------------------------
-	戻値：なし
-	======================================== */
-void CPause::SetCamera(const CCamera * pCamera)
-{
-	m_pCamera = pCamera;
-}
-
-/* ========================================
 	ポーズ判定関数
 	----------------------------------------
 	内容：ポーズ中かどうかを返す
@@ -499,9 +501,6 @@ void CPause::InitObjects()
 		{
 			(*Iterator)->SetTexture(MAP_TEXTURE.at(nCnt).c_str());	//テクスチャ登録
 		}
-
-		// =============== カメラ登録 ===================
-		(*Iterator)->SetCamera(m_pCamera);	//カメラ登録
 
 		// =============== 状態 ===================
 		if (m_p2dObj[E_2D_CONTINUE] && typeid(CCommandPause) == typeid(*m_p2dObj[E_2D_CONTINUE]))	//ヌルチェック、型チェック

@@ -46,6 +46,8 @@
 	・2024/01/13 ボス落下の画面揺れ処理追加 Tei
 	・2024/01/18 炎スライムエフェクト追加 Tei
 	・2024/02/06 結合エフェクト処理追加 Tei
+	・2024/02/08 レベル３スライムのモデル読み込みサイズを調整(1.6⇒2.1) suzumura
+	・2024/02/09 UsingCamera使用 takagi
 
 =========================================== */
 
@@ -64,8 +66,10 @@
 #include "HitStop.h"
 #include <map>					//連想型コンテナ
 #include <typeinfo>				//型情報
+#include "ModelManager.h"
 
 #include <stdlib.h>
+#include "UsingCamera.h"	//カメラ使用
 
 // =============== 定数定義 =======================
 const float COL_SUB_HIT_TO_BIG = 0.1f;		// スライム衝突(小→大)の衝突側の減算値(反射する移動)				//1.0でそのまま
@@ -158,7 +162,7 @@ CSlimeManager::CSlimeManager(CPlayer* pPlayer)
 {
 	//スライムのモデルと頂点シェーダーの読み込み
 	LoadModel();
-	
+
 	// スライム初期化
 	for (int i = 0; i <MAX_SLIME_NUM; i++)
 	{
@@ -211,18 +215,6 @@ CSlimeManager::CSlimeManager(CPlayer* pPlayer)
 =========================================== */
 CSlimeManager::~CSlimeManager()
 {
-	SAFE_DELETE(m_pUnionMng);	//UNION削除
-	SAFE_DELETE(m_pUnionEfcMng);
-	SAFE_DELETE(m_pVS);
-	SAFE_DELETE(m_pHealModel);
-	SAFE_DELETE(m_pFlameModel);
-	SAFE_DELETE(m_pRedModel);
-	SAFE_DELETE(m_pYellowModel);
-	SAFE_DELETE(m_pGreenModel);
-	SAFE_DELETE(m_pBlueModel);
-	SAFE_DELETE(m_pBossRockModel);
-	SAFE_DELETE(m_pDevilSlimeModel);
-
 	// スライム削除
 	for (int i = 0; i <MAX_SLIME_NUM; i++)
 	{
@@ -235,6 +227,8 @@ CSlimeManager::~CSlimeManager()
 		SAFE_DELETE(m_pBoss[i]);
 	}
 
+	SAFE_DELETE(m_pUnionEfcMng);
+	SAFE_DELETE(m_pUnionMng);
 }
 
 /* ========================================
@@ -408,10 +402,7 @@ void CSlimeManager::Create(E_SLIME_LEVEL level)
 			m_pSlime[i] = new CSlime_Heal(CreatePos, m_pHealModel);	//動的生成
 			break;
 		}
-
-		m_pSlime[i]->SetCamera(m_pCamera);	//カメラをセット
 		break;						// 生成したら終了
-		
 	}
 }
 
@@ -445,7 +436,6 @@ void CSlimeManager::CreateBoss(int BossNum)
 
 			break;
 		}
-		m_pBoss[i]->SetCamera(m_pCamera);
 		m_bBossPtrExist = true;
 		break;
 	}
@@ -507,26 +497,40 @@ void CSlimeManager::HitBranch(int HitSlimeNum, int StandSlimeNum, CExplosionMana
 	}
 	
 	//-- ノーマルスライムヒット処理
-	// 衝突するスライムが小さい場合(小→大)
-	if (hitSlimeLevel < standSlimeLevel)
+	bool ChargeHit = m_pSlime[HitSlimeNum]->GetChargeHit();
+	if (!ChargeHit)	// プレイヤーがチャージ状態ではない場合
 	{
-		m_pSlime[HitSlimeNum]->HitMoveStart(hitSlimeSpeed * COL_SUB_HIT_TO_BIG, reflectionAngle);	// 衝突するスライムに吹き飛び移動処理
-		m_pSlime[StandSlimeNum]->HitMoveStart(hitSlimeSpeed * COL_SUB_STAND_TO_SMALL, travelAngle);	// 衝突されたスライムに吹き飛び移動処理
+		// 衝突するスライムが小さい場合(小→大)
+		if (hitSlimeLevel < standSlimeLevel)
+		{
+			m_pSlime[HitSlimeNum]->HitMoveStart(hitSlimeSpeed * COL_SUB_HIT_TO_BIG
+				, reflectionAngle, ChargeHit);	// 衝突するスライムに吹き飛び移動処理
+			m_pSlime[StandSlimeNum]->HitMoveStart(hitSlimeSpeed * COL_SUB_STAND_TO_SMALL
+				, travelAngle, ChargeHit);	// 衝突されたスライムに吹き飛び移動処理
+			PlaySE(SE_HIT);									// SEの再生
+		}
+		// 衝突するスライムが大きい場合(大→小)
+		else if (hitSlimeLevel > standSlimeLevel)
+		{
+			m_pSlime[HitSlimeNum]->HitMoveStart
+				(hitSlimeSpeed * COL_SUB_HIT_TO_SMALL, travelAngle, ChargeHit);		// 衝突するスライムに吹き飛び移動処理
+			m_pSlime[StandSlimeNum]->HitMoveStart
+				(hitSlimeSpeed * COL_SUB_STAND_TO_BIG, travelAngle,ChargeHit);	// 衝突されたスライムに吹き飛び移動処理
+			PlaySE(SE_HIT);									// SEの再生
+		}
+	}
+	else	// プレイヤーがチャージ状態の場合
+	{
+		m_pSlime[HitSlimeNum]->HitMoveStart(hitSlimeSpeed, travelAngle, ChargeHit);	// 衝突するスライムに吹き飛び移動処理
+		m_pSlime[StandSlimeNum]->HitMoveStart(hitSlimeSpeed	, travelAngle, ChargeHit);	// 衝突されたスライムに吹き飛び移動処理
 		PlaySE(SE_HIT);									// SEの再生
 	}
+
 	
-	// 衝突するスライムが大きい場合(大→小)
-	else if (hitSlimeLevel > standSlimeLevel)
-	{
-		m_pSlime[HitSlimeNum]->HitMoveStart(hitSlimeSpeed * COL_SUB_HIT_TO_SMALL, travelAngle);		// 衝突するスライムに吹き飛び移動処理
-		m_pSlime[StandSlimeNum]->HitMoveStart(hitSlimeSpeed * COL_SUB_STAND_TO_BIG, travelAngle);	// 衝突されたスライムに吹き飛び移動処理
-		PlaySE(SE_HIT);									// SEの再生
-	}
+
 	//スライムのサイズが同じだった場合
-	else
+	if(hitSlimeLevel == standSlimeLevel)
 	{
-
-
 		if (hitSlimeLevel == MAX_LEVEL)	//スライムのサイズが最大の時
 		{
 			//二体分の削除判定
@@ -536,17 +540,17 @@ void CSlimeManager::HitBranch(int HitSlimeNum, int StandSlimeNum, CExplosionMana
 			SAFE_DELETE(m_pSlime[StandSlimeNum]);	//スライム削除
 
 			//スライム爆発処理
-			pExpMng->Create(pos, MAX_SIZE_EXPLODE * EXPLODE_BASE_RATIO, LEVEL_4_EXPLODE_TIME, LEVEL_4_EXPLODE_DAMAGE, E_SLIME_LEVEL::LEVEL_4x4);	//衝突されたスライムの位置でレベル４爆発
+			pExpMng->Create(pos, MAX_SIZE_EXPLODE * EXPLODE_BASE_RATIO, LEVEL_4X4_EXPLODE_TIME, LEVEL_4X4_EXPLODE_DAMAGE, E_SLIME_LEVEL::LEVEL_4x4);	//衝突されたスライムの位置でレベル４爆発
 			m_pScoreOHMng->DisplayOverheadScore(pos, LEVEL_4_SCORE * 2, SLIME_SCORE_HEIGHT);
 			pExpMng->CreateUI(pos, LEVEL_4_EXPLODE_TIME);		//レベル４爆発した位置boooomUI表示
 
-			m_pCamera->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_STRONG | CCamera::E_BIT_FLAG_VIBRATION_SIDE_STRONG);
+			CUsingCamera::GetThis().GetCamera()->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_STRONG | CCamera::E_BIT_FLAG_VIBRATION_SIDE_STRONG);
 		}
 		else	//最大サイズじゃない場合は1段階大きいスライムを生成する
 		{
+			UnionSlime(hitSlimeLevel,pos, hitSlimeSpeed, travelAngle, m_pSlime[HitSlimeNum]->GetChargeHit());		//スライムの結合処理
 			SAFE_DELETE(m_pSlime[HitSlimeNum]);								// 衝突するスライムを削除
 			SAFE_DELETE(m_pSlime[StandSlimeNum]);							// 衝突されたスライムを削除
-			UnionSlime(hitSlimeLevel,pos, hitSlimeSpeed, travelAngle);		//スライムの結合処理
 		}
 	}
 }
@@ -581,11 +585,14 @@ bool CSlimeManager::HitFlameBranch(int HitSlimeNum, int StandSlimeNum, CExplosio
 
 	//-- フレイムスライムヒット処理
 	// フレイム　→　フレイム
+	bool bChargeHit = m_pSlime[HitSlimeNum]->GetChargeHit();
 	if (hitSlimeLevel == LEVEL_FLAME && standSlimeLevel == LEVEL_FLAME)
 	{
 		// 『衝突するスライムが大きい場合(大→小)』と同じ動きをさせる
-		m_pSlime[HitSlimeNum]->HitMoveStart(hitSlimeSpeed * COL_SUB_HIT_TO_SMALL, travelAngle);		// 衝突するスライムに吹き飛び移動処理
-		m_pSlime[StandSlimeNum]->HitMoveStart(hitSlimeSpeed * COL_SUB_STAND_TO_BIG, travelAngle);	// 衝突されたスライムに吹き飛び移動処理
+		m_pSlime[HitSlimeNum]->HitMoveStart(bChargeHit ? hitSlimeSpeed: hitSlimeSpeed * COL_SUB_HIT_TO_SMALL,	//チャージ状態なら減速せずに吹き飛び
+			travelAngle, bChargeHit);		// 衝突するスライムに吹き飛び移動処理
+		m_pSlime[StandSlimeNum]->HitMoveStart(bChargeHit ? hitSlimeSpeed: hitSlimeSpeed * COL_SUB_STAND_TO_BIG,	//チャージ状態なら減速せずに吹き飛び
+			travelAngle, m_pSlime[HitSlimeNum]->GetChargeHit());	// 衝突されたスライムに吹き飛び移動処理
 		PlaySE(SE_HIT);									//SEの再生
 
 		return true;
@@ -598,7 +605,7 @@ bool CSlimeManager::HitFlameBranch(int HitSlimeNum, int StandSlimeNum, CExplosio
 		m_pScoreOHMng->DisplayOverheadScore(standSlimeTransform.fPos, standSlimeLevel);
 
 		// 爆発の振動設定
-		m_pCamera->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_WEAK | CCamera::E_BIT_FLAG_VIBRATION_SIDE_WEAK);
+		CUsingCamera::GetThis().GetCamera()->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_WEAK | CCamera::E_BIT_FLAG_VIBRATION_SIDE_WEAK);
 
 		// 回復アイテムドロップ
 		m_pHealItemMng->Create(standSlimeTransform.fPos);
@@ -618,7 +625,7 @@ bool CSlimeManager::HitFlameBranch(int HitSlimeNum, int StandSlimeNum, CExplosio
 		m_pScoreOHMng->DisplayOverheadScore(standSlimeTransform.fPos, standSlimeLevel);
 
 		// 爆発の振動設定
-		m_pCamera->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_WEAK | CCamera::E_BIT_FLAG_VIBRATION_SIDE_WEAK);
+		CUsingCamera::GetThis().GetCamera()->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_WEAK | CCamera::E_BIT_FLAG_VIBRATION_SIDE_WEAK);
 
 		// 回復アイテムドロップ
 		m_pHealItemMng->Create(hitSlimeTransform.fPos);
@@ -638,11 +645,11 @@ bool CSlimeManager::HitFlameBranch(int HitSlimeNum, int StandSlimeNum, CExplosio
 		//赤スライム(Stand)と激突したときだけ爆発の振動を大きくする
 		if (typeid(CSlime_4) == typeid(*m_pSlime[HitSlimeNum]))
 		{
-			m_pCamera->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_STRONG | CCamera::E_BIT_FLAG_VIBRATION_SIDE_STRONG);
+			CUsingCamera::GetThis().GetCamera()->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_STRONG | CCamera::E_BIT_FLAG_VIBRATION_SIDE_STRONG);
 		}
 		else
 		{
-			m_pCamera->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_WEAK | CCamera::E_BIT_FLAG_VIBRATION_SIDE_WEAK);
+			CUsingCamera::GetThis().GetCamera()->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_WEAK | CCamera::E_BIT_FLAG_VIBRATION_SIDE_WEAK);
 		}
 
 		CntKill(m_pSlime[HitSlimeNum]);			//衝突するスライムが討伐された
@@ -662,11 +669,11 @@ bool CSlimeManager::HitFlameBranch(int HitSlimeNum, int StandSlimeNum, CExplosio
 		//赤スライム(Hit)と激突したときだけ爆発の振動を大きくする
 		if (typeid(CSlime_4) == typeid(*m_pSlime[HitSlimeNum]))
 		{
-			m_pCamera->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_STRONG | CCamera::E_BIT_FLAG_VIBRATION_SIDE_STRONG);
+			CUsingCamera::GetThis().GetCamera()->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_STRONG | CCamera::E_BIT_FLAG_VIBRATION_SIDE_STRONG);
 		}
 		else
 		{
-			m_pCamera->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_WEAK | CCamera::E_BIT_FLAG_VIBRATION_SIDE_WEAK);
+			CUsingCamera::GetThis().GetCamera()->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_WEAK | CCamera::E_BIT_FLAG_VIBRATION_SIDE_WEAK);
 		}
 
 		CntKill(m_pSlime[HitSlimeNum]);			//衝突するスライムが討伐された
@@ -710,18 +717,18 @@ bool CSlimeManager::HitHealBranch(int HitSlimeNum, int StandSlimeNum, CExplosion
 
 	//-- 回復スライムヒット処理
 	// 回復　→　回復
+	bool bChargeHit = m_pPlayer->GetCharge();
 	if (hitSlimeLevel == LEVEL_HEAL && standSlimeLevel == LEVEL_HEAL)
 	{
 		// 『衝突するスライムが大きい場合(大→小)』と同じ動きをさせる
-		m_pSlime[HitSlimeNum]->HitMoveStart(hitSlimeSpeed * COL_SUB_HIT_TO_SMALL, travelAngle);		// 衝突するスライムに吹き飛び移動処理
-		m_pSlime[StandSlimeNum]->HitMoveStart(hitSlimeSpeed * COL_SUB_STAND_TO_BIG, travelAngle);	// 衝突されたスライムに吹き飛び移動処理
+		m_pSlime[HitSlimeNum]->HitMoveStart(bChargeHit ? hitSlimeSpeed: hitSlimeSpeed * COL_SUB_HIT_TO_SMALL	//チャージ状態なら減速せずに吹き飛び
+			, travelAngle, m_pSlime[HitSlimeNum]->GetChargeHit());		// 衝突するスライムに吹き飛び移動処理
+		m_pSlime[StandSlimeNum]->HitMoveStart(bChargeHit ? hitSlimeSpeed : hitSlimeSpeed * COL_SUB_STAND_TO_BIG	//チャージ状態なら減速せずに吹き飛び
+			, travelAngle, m_pSlime[HitSlimeNum]->GetChargeHit());	// 衝突されたスライムに吹き飛び移動処理
 		PlaySE(SE_HIT);	//SEの再生
-
 
 		return true;
 	}
-
-
 	return false;
 }
 
@@ -738,7 +745,7 @@ bool CSlimeManager::HitHealBranch(int HitSlimeNum, int StandSlimeNum, CExplosion
 	----------------------------------------
 	戻値：なし
 ======================================== */
-void CSlimeManager::UnionSlime(E_SLIME_LEVEL level ,TPos3d<float> pos, float speed, float angle)
+void CSlimeManager::UnionSlime(E_SLIME_LEVEL level ,TPos3d<float> pos, float speed, float angle,bool ChargeHit)
 {
 	for (int i = 0; i <MAX_SLIME_NUM; i++)
 	{
@@ -749,17 +756,17 @@ void CSlimeManager::UnionSlime(E_SLIME_LEVEL level ,TPos3d<float> pos, float spe
 		case LEVEL_1:
 			//サイズ2のスライムを生成
 			m_pSlime[i] = new CSlime_2(pos, m_pGreenModel);
-			m_pSlime[i]->HitMoveStart(speed, angle);
+			m_pSlime[i]->HitMoveStart(speed, angle, ChargeHit);
 			break;
 		case LEVEL_2:
 			//サイズ3のスライムを生成
 			m_pSlime[i] = new CSlime_3(pos, m_pYellowModel);
-			m_pSlime[i]->HitMoveStart(speed, angle);
+			m_pSlime[i]->HitMoveStart(speed, angle, ChargeHit);
 			break;
 		case LEVEL_3:
 			//サイズ4のスライムを生成
 			m_pSlime[i] = new CSlime_4(pos, m_pRedModel);
-			m_pSlime[i]->HitMoveStart(speed, angle);
+			m_pSlime[i]->HitMoveStart(speed, angle, ChargeHit);
 			break;
 		}
 
@@ -772,8 +779,6 @@ void CSlimeManager::UnionSlime(E_SLIME_LEVEL level ,TPos3d<float> pos, float spe
 		{
 			m_pUnionMng->MakeUnion(typeid(*m_pSlime[i]).hash_code(), pos);	//UNION生成
 		}
-
-		m_pSlime[i]->SetCamera(m_pCamera);	//カメラをセット
 		PlaySE(SE_UNION);	//SEの再生
 		m_pUnionEfcMng->Create(pos, level);
 
@@ -809,8 +814,8 @@ void CSlimeManager::TouchExplosion(int DelSlime, CExplosionManager * pExpMng, in
 	CntKill(m_pSlime[DelSlime]);		//ぶつかりに来たスライムが討伐された
 	SAFE_DELETE(m_pSlime[DelSlime]);	//スライム削除
 
-	m_pCamera->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_WEAK | CCamera::E_BIT_FLAG_VIBRATION_SIDE_WEAK);
-	m_pCamera->ChangeScaleVibrate(10, 1.5f);
+	CUsingCamera::GetThis().GetCamera()->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_WEAK | CCamera::E_BIT_FLAG_VIBRATION_SIDE_WEAK);
+	CUsingCamera::GetThis().GetCamera()->ChangeScaleVibrate(10, 1.5f);
 }
 
 /* ========================================
@@ -863,8 +868,8 @@ void CSlimeManager::HitSlimeBossBranch(int HitSlimeNum, int StandBossNum, CExplo
 	// ボスが衝突される場合(小→大)
 	else if (hitSlimeLevel < standBossLevel)
 	{
-		m_pSlime[HitSlimeNum]->HitMoveStart(hitSlimeSpeed * COL_SUB_HIT_TO_BIG, reflectionAngle);			// 衝突するスライムに吹き飛び移動処理
-		m_pBoss[StandBossNum]->HitMoveStart(hitSlimeSpeed * COL_SUB_STAND_TO_SMALL, travelAngle);			// 衝突されたスライムに吹き飛び移動処理
+		m_pSlime[HitSlimeNum]->HitMoveStart(hitSlimeSpeed * COL_SUB_HIT_TO_BIG, reflectionAngle,false);			// 衝突するスライムに吹き飛び移動処理
+		m_pBoss[StandBossNum]->HitMoveStart(hitSlimeSpeed * COL_SUB_STAND_TO_SMALL, travelAngle,false);			// 衝突されたスライムに吹き飛び移動処理
 		PlaySE(SE_HIT);	//SEの再生
 	}
 
@@ -920,9 +925,8 @@ void CSlimeManager::HitBossSlimeBranch(int HitSlimeNum, int StandSlimeNum, CExpl
 	// ボスが衝突する場合(大→小) 
 	else if (hitBossLevel > standSlimeLevel)
 	{
-		m_pBoss[HitSlimeNum]->HitMoveStart(hitBossSpeed * COL_SUB_HIT_TO_SMALL, travelAngle);				// 衝突するスライムに吹き飛び移動処理
-		m_pSlime[StandSlimeNum]->HitMoveStart(hitBossSpeed * COL_SUB_STAND_TO_BIG, travelAngle);			// 衝突されたスライムに吹き飛び移動処理
-
+		m_pBoss[HitSlimeNum]->HitMoveStart(hitBossSpeed * COL_SUB_HIT_TO_SMALL, travelAngle,false);				// 衝突するスライムに吹き飛び移動処理
+		m_pSlime[StandSlimeNum]->HitMoveStart(hitBossSpeed * COL_SUB_STAND_TO_BIG, travelAngle,false);			// 衝突されたスライムに吹き飛び移動処理
 	}
 }
 
@@ -960,9 +964,8 @@ void CSlimeManager::HitBossBossBranch(int HitBossNum, int StandBossNum, CExplosi
 	if (hitBossLevel == LEVEL_BOSS && standBossLevel == LEVEL_BOSS)
 	{
 		//(大→小)と同じ挙動を行う
-		m_pBoss[HitBossNum]->HitMoveStart(hitBossSpeed * COL_SUB_HIT_TO_SMALL, travelAngle);				// 衝突するスライムに吹き飛び移動処理
-		m_pBoss[StandBossNum]->HitMoveStart(hitBossSpeed * COL_SUB_STAND_TO_BIG, travelAngle);			// 衝突されたスライムに吹き飛び移動処理
-
+		m_pBoss[HitBossNum]->HitMoveStart(hitBossSpeed * COL_SUB_HIT_TO_SMALL, travelAngle,false);		// 衝突するスライムに吹き飛び移動処理
+		m_pBoss[StandBossNum]->HitMoveStart(hitBossSpeed * COL_SUB_STAND_TO_BIG, travelAngle,false);	// 衝突されたスライムに吹き飛び移動処理
 	}
 }
 
@@ -1006,8 +1009,8 @@ void CSlimeManager::TouchBossExplosion(int BossNum, CExplosionManager* pExpMng, 
 		m_pScoreOHMng->DisplayOverheadScore(pos, LEVEL_Boss_SCORE, SLIME_SCORE_HEIGHT);
 		m_pHealItemMng->Create(pos);
 
-		m_pCamera->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_STRONG | CCamera::E_BIT_FLAG_VIBRATION_SIDE_STRONG);
-		m_pCamera->ChangeScaleVibrate(10, 1.5f);
+		CUsingCamera::GetThis().GetCamera()->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_STRONG | CCamera::E_BIT_FLAG_VIBRATION_SIDE_STRONG);
+		CUsingCamera::GetThis().GetCamera()->ChangeScaleVibrate(10, 1.5f);
 	}
 
 }
@@ -1181,145 +1184,14 @@ void CSlimeManager::PreventBossBossOverlap(CSlime_BossBase* pMoveBoss, CSlime_Bo
 ======================================== */
 void CSlimeManager::LoadModel()
 {
-	//頂点シェーダ読み込み
-	m_pVS = new VertexShader();
-	if (FAILED(m_pVS->Load("Assets/Shader/VS_Model.cso"))) {
-		MessageBox(nullptr, "VS_Model.cso", "Error", MB_OK);
-	}
-	//レベル1スライムのモデル読み込み
-	m_pBlueModel = new AnimeModel;
-	if (!m_pBlueModel->Load("Assets/Model/slime/Blue/slime_blue_walk_1.0.fbx", 0.15f, AnimeModel::XFlip)) {		//倍率と反転は省略可
-		MessageBox(NULL, "slime_blue", "Error", MB_OK);	//ここでエラーメッセージ表示
-	}
-	for (int i = 0; i < CSlimeBase::MOTION_LEVEL1_MAX; i++)
-	{
-		//各アニメーションの読み込み
-		m_pBlueModel->AddAnimation(m_sLevel1_Motion[i].c_str());
-		//読み込みに失敗したらエラーメッセージ
-		if (!m_pBlueModel->GetAnimation(i))
-		{
-			MessageBox(NULL, m_sLevel1_Motion[i].c_str(), "Error", MB_OK);	//ここでエラーメッセージ表示
-		}
-	}
-	m_pBlueModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));		//頂点シェーダーをセット
-
-	//レベル2スライムのモデル読み込み
-	m_pGreenModel = new AnimeModel;
-	if (!m_pGreenModel->Load(m_sLevel2_Motion[0].c_str(), 0.15f, AnimeModel::XFlip)) {		//倍率と反転は省略可
-		MessageBox(NULL, "slime_blue", "Error", MB_OK);	//ここでエラーメッセージ表示
-	}
-	for (int i = 0; i < CSlimeBase::MOTION_LEVEL2_MAX; i++)
-	{
-		//各アニメーションの読み込み
-		m_pGreenModel->AddAnimation(m_sLevel2_Motion[i].c_str());
-		//読み込みに失敗したらエラーメッセージ
-		if (!m_pGreenModel->GetAnimation(i))
-		{
-			MessageBox(NULL, m_sLevel2_Motion[i].c_str(), "Error", MB_OK);	//ここでエラーメッセージ表示
-		}
-	}
-	m_pGreenModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));		//頂点シェーダーをセット
-
-	//レベル3スライムのモデル読み込み
-	m_pYellowModel = new AnimeModel;
-	if (!m_pYellowModel->Load("Assets/Model/slime/Yellow/slime_yellow_walk_1.0.fbx", 0.15f, AnimeModel::XFlip)) {	//倍率と反転は省略可
-		MessageBox(NULL, "slime_yellow", "Error", MB_OK);	//ここでエラーメッセージ表示
-	}
-	for (int i = 0; i < CSlimeBase::MOTION_LEVEL3_MAX; i++)
-	{
-		//各アニメーションの読み込み
-		m_pYellowModel->AddAnimation(m_sLevel3_Motion[i].c_str());
-		//読み込みに失敗したらエラーメッセージ
-		if (!m_pYellowModel->GetAnimation(i))
-		{
-			MessageBox(NULL, m_sLevel3_Motion[i].c_str(), "Error", MB_OK);	//ここでエラーメッセージ表示
-		}
-	}
-	m_pYellowModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));		//頂点シェーダーをセット
-	//レベル4スライムのモデル読み込み
-	m_pRedModel = new AnimeModel;
-	if (!m_pRedModel->Load("Assets/Model/slime/Red/slime_red_walk_1.0.fbx", 0.18f, AnimeModel::XFlip)) {			//倍率と反転は省略可
-		MessageBox(NULL, "slime_red", "Error", MB_OK);		//ここでエラーメッセージ表示
-	}
-	for (int i = 0; i < CSlimeBase::MOTION_LEVEL4_MAX; i++)
-	{
-		//各アニメーションの読み込み
-		m_pRedModel->AddAnimation(m_sLevel4_Motion[i].c_str());
-		//読み込みに失敗したらエラーメッセージ
-		if (!m_pRedModel->GetAnimation(i))
-		{
-			MessageBox(NULL, m_sLevel4_Motion[i].c_str(), "Error", MB_OK);	//ここでエラーメッセージ表示
-		}
-	}
-	m_pRedModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));		//頂点シェーダーをセット
-
-	//炎スライムのモデル読み込み
-	m_pFlameModel = new AnimeModel;
-	if (!m_pFlameModel->Load("Assets/Model/flameSlime/fire_walk.fbx", 0.30f, AnimeModel::XFlip)) {			//倍率と反転は省略可
-		MessageBox(NULL, "flame_slime_model", "Error", MB_OK);		//ここでエラーメッセージ表示
-	}
-	for (int i = 0; i < CSlimeBase::FLAME_SLIME_MAX; i++)
-	{
-		//各アニメーションの読み込み
-		m_pFlameModel->AddAnimation(m_sFlameSlime_Motion[i].c_str());
-		//読み込みに失敗したらエラーメッセージ
-		if (!m_pFlameModel->GetAnimation(i))
-		{
-			MessageBox(NULL, m_sFlameSlime_Motion[i].c_str(), "Error", MB_OK);	//ここでエラーメッセージ表示
-		}
-	}
-	m_pFlameModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));		//頂点シェーダーをセット
-
-	//ヒールスライムのモデル読み込み
-	m_pHealModel = new AnimeModel;
-	if (!m_pHealModel->Load("Assets/Model/healSlime/heal_walk.fbx", 0.45f, AnimeModel::XFlip)) {			//倍率と反転は省略可
-		MessageBox(NULL, "heal_slime_model", "Error", MB_OK);		//ここでエラーメッセージ表示
-	}
-	for (int i = 0; i < CSlimeBase::HEAL_SLIME_MAX; i++)
-	{
-		//各アニメーションの読み込み
-		m_pHealModel->AddAnimation(m_sHealSlime_Motion[i].c_str());
-		//読み込みに失敗したらエラーメッセージ
-		if (!m_pHealModel->GetAnimation(i))
-		{
-			MessageBox(NULL, m_sHealSlime_Motion[i].c_str(), "Error", MB_OK);	//ここでエラーメッセージ表示
-		}
-	}
-	m_pHealModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));		//頂点シェーダーをセット
-
-	//デビルスライムのモデル読み込み
-	m_pDevilSlimeModel = new AnimeModel;
-	if (!m_pDevilSlimeModel->Load("Assets/Model/boss_slime_devil/devil_walk.fbx", 0.23f, AnimeModel::XFlip)) {			//倍率と反転は省略可
-		MessageBox(NULL, "devil_slime_model", "Error", MB_OK);		//ここでエラーメッセージ表示
-	}
-	for (int i = 0; i < CSlime_BossBase::DEVIL_SLIME_MAX; i++)
-	{
-		//各アニメーションの読み込み
-		m_pDevilSlimeModel->AddAnimation(m_sDevilSlime_Motion[i].c_str());
-		//読み込みに失敗したらエラーメッセージ
-		if (!m_pDevilSlimeModel->GetAnimation(i))
-		{
-			MessageBox(NULL, m_sDevilSlime_Motion[i].c_str(), "Error", MB_OK);	//ここでエラーメッセージ表示
-		}
-	}
-	m_pDevilSlimeModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));		//頂点シェーダーをセット
-
-	//岩スライムのモデル読み込み
-	m_pBossRockModel = new AnimeModel;
-	if (!m_pBossRockModel->Load("Assets/Model/boss_slime_rock/rock_walk_2.0.fbx", 0.5f, AnimeModel::XFlip)) {			//倍率と反転は省略可
-		MessageBox(NULL, "rock_slime_model", "Error", MB_OK);		//ここでエラーメッセージ表示
-	}
-	for (int i = 0; i < CSlime_BossBase::ROCK_SLIME_MAX; i++)
-	{
-		//各アニメーションの読み込み
-		m_pBossRockModel->AddAnimation(m_sRockSlime_Motion[i].c_str());
-		//読み込みに失敗したらエラーメッセージ
-		if (!m_pBossRockModel->GetAnimation(i))
-		{
-			MessageBox(NULL, m_sRockSlime_Motion[i].c_str(), "Error", MB_OK);	//ここでエラーメッセージ表示
-		}
-	}
-	m_pBossRockModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));		//頂点シェーダーをセット
+	m_pBlueModel = GetModelMng.GetModelPtr(MODEL_SLIME_BLUE);
+	m_pGreenModel = GetModelMng.GetModelPtr(MODEL_SLIME_GREEN);
+	m_pYellowModel = GetModelMng.GetModelPtr(MODEL_SLIME_YELLOW);
+	m_pRedModel = GetModelMng.GetModelPtr(MODEL_SLIME_RED);
+	m_pFlameModel = GetModelMng.GetModelPtr(MODEL_SLIME_FLAME);
+	m_pHealModel = GetModelMng.GetModelPtr(MODEL_SLIME_HEAL);
+	m_pBossRockModel = GetModelMng.GetModelPtr(MODEL_SLIME_ROCK);
+	m_pDevilSlimeModel = GetModelMng.GetModelPtr(MODEL_SLIME_DEVIL);
 }
 
 /* ========================================
@@ -1420,39 +1292,6 @@ CSlimeBase* CSlimeManager::GetSlimePtr(int num)
 CSlime_BossBase* CSlimeManager::GetBossSlimePtr(int num)
 {
 	return m_pBoss[num];
-}
-
-/* ========================================
-	カメラ情報セット関数
-	----------------------------------------
-	内容：描画処理で使用するカメラ情報セット
-	----------------------------------------
-	引数1：カメラ
-	----------------------------------------
-	戻値：なし
-======================================== */
-void CSlimeManager::SetCamera(CCamera * pCamera)
-{
-	m_pCamera = pCamera;
-
-	// =============== UNION ===================
-	if (m_pUnionMng)	//ヌルチェック
-	{
-		m_pUnionMng->SetCamera(pCamera);	//カメラ登録
-	}
-	if (m_pUnionEfcMng)
-	{
-		m_pUnionEfcMng->SetCamera(pCamera);
-	}
-	// すでに生成されているスライムにもカメラをセット
-	for (int i = 0; i < MAX_SLIME_NUM; i++)
-	{
-		// 生成されているスライムにカメラをセット
-		if (m_pSlime[i])
-		{	
-			m_pSlime[i]->SetCamera(pCamera);
-		}
-	}
 }
 
 /* ========================================
@@ -1653,7 +1492,7 @@ void CSlimeManager::RigidCheck(CSlime_BossBase* pBossSlime)
 
 		TPos3d<float> bossPos = pBossSlime->GetPos();		//ボスの座標をゲット
 		float slimeBossDistance = slimePos.Distance(bossPos);
-		float fBlowAwayAngle = pBossSlime->GetTransform().Angle(m_pSlime[i]->GetTransform());		// 吹き飛ばされる方向
+		float fBlowAwayAngle = pBossSlime->GetTransform().Angle(m_pSlime[i]->GetTransform());	// 吹き飛ばされる方向
 		// 硬直させる距離だった場合
 		if (RIGID_DISTANCE > slimeBossDistance)
 		{
@@ -1661,7 +1500,7 @@ void CSlimeManager::RigidCheck(CSlime_BossBase* pBossSlime)
 			m_pSlime[i]->SetMoveStopFlg(true);				// 停止させる
 			if (RIGID_BLOW_DISTANCE > slimeBossDistance)
 			{
-				m_pSlime[i]->HitMoveStart(RIGID_BLOW_SPEED, fBlowAwayAngle);	// 衝突されたスライムに吹き飛び移動処理
+				m_pSlime[i]->HitMoveStart(RIGID_BLOW_SPEED, fBlowAwayAngle,false);	// 衝突されたスライムに吹き飛び移動処理
 			}
 		}
 	}
@@ -1678,7 +1517,7 @@ void CSlimeManager::RigidCheck(CSlime_BossBase* pBossSlime)
 ======================================== */
 void CSlimeManager::ScreenShake()
 {
-	m_pCamera->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_WEAK);
-	//m_pCamera->ChangeScaleVibrate(12, 1.2f);
+	CUsingCamera::GetThis().GetCamera()->UpFlag(CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_WEAK);
+	//CUsingCamera::GetThis().GetCamera()->ChangeScaleVibrate(12, 1.2f);
 	
 }

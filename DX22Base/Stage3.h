@@ -31,12 +31,9 @@ public:
 	// ===プロトタイプ宣言===
 	CStage3();							//コンストラクタ
 	~CStage3();							//デストラクタ
-	void Update();						//更新
-	void Draw();						//描画
 	E_TYPE GetNext() const override;	//次のシーンゲッタ
 private:
 	// ===プロトタイプ宣言===
-	virtual void RecordData();			//データ記録
 };	//ステージ3
 
 #endif	//!__STAGE3_H__

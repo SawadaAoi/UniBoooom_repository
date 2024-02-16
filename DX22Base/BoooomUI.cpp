@@ -11,11 +11,14 @@
 	・2023/11/20 cpp,作成 Tei
 	・2023/11/20 描画で必要な関数を作成 Tei
 	・2023/12/07 ゲームパラメータから定数移動 takagi
+	・2024/02/09 UsingCamera使用 takagi
+	・2024/02/13 カメラ削除 takagi
 
 ========================================== */
 
 // =============== インクルード ===================
 #include "BoooomUI.h"
+#include "UsingCamera.h"	//カメラ使用
 
 // =============== 定数定義 ===================
 const int MAX_ANIM(1);			//アニメーション数
@@ -40,28 +43,15 @@ const float ANIM_TIME_RATE = 0.7f;	// 爆発総時間の内、BOOOOM表示を行うのは何割か
 	----------------------------------------
 	戻値：なし
 =========================================== */
-CBoooomUI::CBoooomUI(TPos3d<float> pos, Texture* pTex, const CCamera* pCamera, float fTime /*,const int & nFrame*/)
-	://m_pBoooomTex(pTex)
-	//,m_pos(pos)
-	//,m_scale{ BOOOOM_UI_SCALE_X, BOOOOM_UI_SCALE_Y, 0.0f}
-	 m_fExplodeTime(fTime * ANIM_TIME_RATE)	//爆発総時間をセットする
-	, m_nDelFrame(0)
-	, m_bDelFlg(false)
-	, m_nAnimFrame(0)
-	, m_fAnimRate(0.0f)
-	, m_fAddScaleX(0.0f)
-	, m_fAddScaleY(0.0f)
-	, m_fScalingTime(fTime * ANIM_TIME_RATE)
-	, CDrawAnim(MAX_ANIM, MAX_SEAT)	//委譲
-	, m_pCnt(nullptr)				//縮小用カウンタ
+CBoooomUI::CBoooomUI(TPos3d<float> pos, Texture* pTex, float fTime)
+	:m_pBoooomTex(pTex)
+	,m_pos(pos)
+	,m_scale{ BOOOOM_UI_SCALE_X, BOOOOM_UI_SCALE_Y, 0.0f}
+	,m_fExplodeTime(0.0f)
+	,m_nDelFrame(0)
+	,m_bDelFlg(false)
 {
-
-	SetCamera(pCamera);		//カメラセット
-	SetPos(pos);
-	SetSize(TTriType<float>(BOOOOM_UI_SCALE_X, BOOOOM_UI_SCALE_Y, 0.0f));
-	SetTexture(pTex);
-	m_pCnt = new CFrameCnt((int)m_fScalingTime);	//カウント開始
-
+	m_fExplodeTime = fTime;		//爆発総時間をセットする
 }
 /* ========================================
 	デストラクタ
@@ -137,17 +127,43 @@ void CBoooomUI::Update()
 	----------------------------------------
 	戻値：なし
 =========================================== */
-void CBoooomUI::Draw(const E_DRAW_MODE & eMode)
+void CBoooomUI::Draw()
 {
-	if (m_pCnt)	//ヌルチェック
-	{
-		// =============== 描画 ===================
-		CDrawAnim::Draw();	//親の関数使用
-		if (!m_bAnim)	//アニメーション部分の描画が終わっている
-		{
-			C2dPolygon::Draw(E_DRAW_MODE_BILLBOARD);	//最後の場面を描き続ける
-		}
-	}
+
+	RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得
+	DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
+	SetRenderTargets(1, &pRTV, nullptr);		//DSVがnullだと2D表示になる
+
+	DirectX::XMFLOAT4X4 mat[3];
+	mat[1] = CUsingCamera::GetThis().GetCamera()->GetViewMatrix();
+	mat[2] = CUsingCamera::GetThis().GetCamera()->GetProjectionMatrix();
+
+	DirectX::XMFLOAT4X4 inv;	//逆行列(inverse)の格納先
+	inv = CUsingCamera::GetThis().GetCamera()->GetViewMatrix();
+
+	//カメラの行列なGPUに渡す際に転置されているため、逆行列の計算のために一度元に戻す
+	DirectX::XMMATRIX matInv = DirectX::XMLoadFloat4x4(&inv);	//invに格納されたカメラ行列を変換
+	matInv = DirectX::XMMatrixTranspose(matInv);	//matInvを転置する
+
+	////移動成分は逆行列でうち消す必要がないので、0を設定して移動を無視する
+	DirectX::XMStoreFloat4x4(&inv, matInv);
+	inv._41 = inv._42 = inv._43 = 0.0f;
+
+	matInv = DirectX::XMLoadFloat4x4(&inv);
+	matInv = DirectX::XMMatrixInverse(nullptr, matInv);	//逆行列の計算
+
+	DirectX::XMMATRIX UI = matInv * DirectX::XMMatrixTranslation(m_pos.x, m_pos.y, m_pos.z);	//ワールド行列とビルボードの行列をかけ合わせたもの（複数行）
+	DirectX::XMStoreFloat4x4(&mat[0], DirectX::XMMatrixTranspose(UI));
+	Sprite::SetWorld(mat[0]);
+	Sprite::SetView(mat[1]);
+	Sprite::SetProjection(mat[2]);
+	Sprite::SetSize(DirectX::XMFLOAT2(BOOOOM_UI_SIZE_X * m_scale.x, BOOOOM_UI_SIZE_Y * m_scale.y));
+	Sprite::SetUVPos(DirectX::XMFLOAT2(0.0f, 0.0f));
+	Sprite::SetUVScale(DirectX::XMFLOAT2(1.0f, 1.0f));
+	Sprite::SetTexture(m_pBoooomTex);	//ビルボードで表示したいテクスチャ
+	Sprite::Draw();
+
+	SetRenderTargets(1, &pRTV, pDSV);		//爆発モデルと一緒に描画するために3Dに戻る
 }
 
 /* ========================================
@@ -182,28 +198,4 @@ void CBoooomUI::DisplayTimeAdd()
 bool CBoooomUI::GetDelFlg()
 {
 	return m_bDelFlg;
-}
-
-
-/* ========================================
-	終了確認関数
-	-------------------------------------
-	内容：終了確認
-	-------------------------------------
-	引数：なし
-	-------------------------------------
-	戻値：このオブジェクトの役目が終了したか
-=========================================== */
-bool CBoooomUI::IsFin()
-{
-	if (m_pCnt)
-	{
-		// =============== 提供 ===================
-		return false;	//カウンタが存在する
-	}
-	else
-	{
-		// =============== 提供 ===================
-		return true;	//カウンタが存在しない
-	}
 }

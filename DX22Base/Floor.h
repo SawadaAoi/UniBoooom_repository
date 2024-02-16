@@ -12,11 +12,12 @@
 	・2023/11/16 モデル、頂点シェーダー、カメラのポインタをメンバ変数に追加 yamashita
 	・2023/11/16 カメラのセット関数を作成 yamashita
 	・2023/11/22 座標算出関数を作成 yamashita
+	・2024/02/09 カメラ削除 takagi
+
 ========================================== */
 #ifndef __FLOOR_H__
 #define __FLOOR_H__
 
-#include "Camera.h"
 #include "Transform3d.h"
 #include "Pos3d.h"
 #include "Shader.h"
@@ -44,20 +45,15 @@ public:
 	void Draw();
 
 	void calculationPosition();				//座標算出関数
-	void SetCamera(const CCamera* pCamera);	//カメラセット関数
 	void SetFloorModel();
 private:
 	// ===メンバ変数宣言=====
 	tagTransform3d m_Transform[FLOOR_NUM];		//ワールド座標系情報
 	Model* m_pModel;				//3Dモデル
 	VertexShader* m_pVS;			//バーテックスシェーダーのポインタ
-	const CCamera* m_pCamera;		//カメラのポインタ
 	TPos3d<float>* m_pPlayePos;		//プレイヤーのポジションのポインタ
 	TPos3d<int> m_pPlayerFloor;		//プレイヤーが現在いる座標にある床が何枚目の床なのか
 	StageKinds m_stage;
 };
-
-
-
 
 #endif // !__FLOOR_H__

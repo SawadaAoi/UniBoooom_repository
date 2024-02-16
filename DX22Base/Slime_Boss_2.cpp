@@ -12,6 +12,8 @@
 	・2023/12/14 攻撃動作を追加 Sawada
 	・2024/01/23 着地時の高速移動バグを修正 Sawada
 	・2023/02/02 アニメーションの追加 yamashita
+	・2024/02/09 UsingCamera使用 takagi
+	・2024/02/13 カメラ削除 takagi
 
 ========================================== */
 
@@ -19,6 +21,7 @@
 // =============== インクルード ===================
 #include "Slime_Boss_2.h"
 #include "Sprite.h"
+#include "UsingCamera.h"	//カメラ使用
 
 // =============== 定数定義 =======================
 const float BOSS_2_SCALE = 6.0f;					// ボス2の大きさ
@@ -85,7 +88,7 @@ CSlime_Boss_2::CSlime_Boss_2(TPos3d<float> pos, AnimeModel * pModel)
 	m_Transform.fPos = pos;			// 初期座標を指定
 
 	m_pModel = pModel;
-	m_pShadow->SetPos(m_Transform.fPos);
+	m_pShadow->SetPos(TPos3d<float>(m_Transform.fPos.x, 0.0f, m_Transform.fPos.z));	// 影の座標を移動
 
 	m_eCurAnime = DEVIL_SLIME_MOVE;
 	m_pModel->Play(m_eCurAnime,true);
@@ -128,13 +131,6 @@ void CSlime_Boss_2::Update(tagTransform3d playerTransform)
 	if (!m_bHitMove)	
 	{
 		MoveSwitch();	// 通常移動切り替え
-
-		// アニメーションを移動に変更
-		if (m_eCurAnime != DEVIL_SLIME_MOVE)
-		{
-			m_eCurAnime = DEVIL_SLIME_MOVE;	// アニメーションを被ダメに変更
-			m_fAnimeTime = 0.0f;			// アニメーションタイムをリセット
-		}
 	}
 	// ハンマーで殴られた時
 	else
@@ -147,7 +143,8 @@ void CSlime_Boss_2::Update(tagTransform3d playerTransform)
 		else
 		{
 			HitMove();							// 敵の吹き飛び移動
-			m_pShadow->SetPos(m_Transform.fPos);// 吹き飛び移動中の影の座標の更新
+			m_pShadow->SetPos(TPos3d<float>(m_Transform.fPos.x, 0.0f, m_Transform.fPos.z));	// 影の座標を移動	
+
 
 			// アニメーションを被ダメに変更
 			if (m_eCurAnime != DEVIL_SLIME_HIT)
@@ -218,8 +215,8 @@ void CSlime_Boss_2::Draw()
 
 	DirectX::XMFLOAT4X4 mat[3] = {
 	worldMat,
-	m_pCamera->GetViewMatrix(),
-	m_pCamera->GetProjectionMatrix()
+	CUsingCamera::GetThis().GetCamera()->GetViewMatrix(),
+	CUsingCamera::GetThis().GetCamera()->GetProjectionMatrix()
 	};
 
 	//-- モデル表示
@@ -228,8 +225,8 @@ void CSlime_Boss_2::Draw()
 		ShaderList::SetWVP(mat);
 
 		// 複数体を共通のモデルで扱っているため描画のタイミングでモーションの種類と時間をセットする
-		m_pModel->Play(DEVIL_SLIME_HIT, true);
-		m_pModel->SetAnimationTime(DEVIL_SLIME_HIT, m_fAnimeTime);	// アニメーションタイムをセット
+		m_pModel->Play(m_eCurAnime, true);
+		m_pModel->SetAnimationTime(m_eCurAnime, m_fAnimeTime);	// アニメーションタイムをセット
 		// アニメーションタイムをセットしてから動かさないと反映されないため少しだけ進める
 		m_pModel->Step(0.0f);
 
@@ -263,17 +260,17 @@ void CSlime_Boss_2::Draw()
 	}
 
 	//-- 影の描画
-	m_pShadow->Draw(m_pCamera);
+	m_pShadow->Draw();
 
 	//HP表示
 	RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得
 	DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
 	SetRenderTargets(1, &pRTV, nullptr);		//DSVがnullだと2D表示になる
 
-	mat[1] = m_pCamera->GetViewMatrix();
-	mat[2] = m_pCamera->GetProjectionMatrix();
+	mat[1] = CUsingCamera::GetThis().GetCamera()->GetViewMatrix();
+	mat[2] = CUsingCamera::GetThis().GetCamera()->GetProjectionMatrix();
 	DirectX::XMFLOAT4X4 inv;//逆行列の格納先
-	inv = m_pCamera->GetViewMatrix();
+	inv = CUsingCamera::GetThis().GetCamera()->GetViewMatrix();
 
 	//カメラの行列はGPUに渡す際に転置されているため、逆行列のために一度元に戻す
 	DirectX::XMMATRIX matInv = DirectX::XMLoadFloat4x4(&inv);
@@ -339,6 +336,13 @@ void CSlime_Boss_2::MoveSwitch()
 	case MOVE_STATE::NORMAL:
 		SetNormalSpeed();	// 移動スピードをリセット(直前の吹き飛び速度を無くす為)
 		MoveNormal();
+
+		// アニメーションを移動に変更
+		if (m_eCurAnime != DEVIL_SLIME_MOVE)
+		{
+			m_eCurAnime = DEVIL_SLIME_MOVE;	// アニメーションを被ダメに変更
+			m_fAnimeTime = 0.0f;			// アニメーションタイムをリセット
+		}
 
 		break;
 	// ジャンプ予備動作処理
@@ -426,7 +430,7 @@ void CSlime_Boss_2::MoveNormal()
 		m_nMoveCnt[MOVE_STATE::NORMAL] = 0;	
 	}
 
-	m_pShadow->SetPos(m_Transform.fPos);	// 影の座標を移動	
+	m_pShadow->SetPos(TPos3d<float>(m_Transform.fPos.x,0.0f, m_Transform.fPos.z));	// 影の座標を移動	
 
 }
 
@@ -461,7 +465,7 @@ void CSlime_Boss_2::MoveJumpCharge()
 		this->SetScale({ BOSS_2_SCALE, BOSS_2_SCALE, BOSS_2_SCALE });	// 大きさを戻しておく
 	}
 
-	m_pShadow->SetPos(m_Transform.fPos);	// 影の座標を移動	
+	m_pShadow->SetPos(TPos3d<float>(m_Transform.fPos.x, 0.0f, m_Transform.fPos.z));	// 影の座標を移動	
 
 }
 

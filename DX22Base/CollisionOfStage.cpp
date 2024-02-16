@@ -17,6 +17,8 @@
 	・2023/12/07 ゲームパラメータから一部定数移動 takagi
 	・2023/12/15 SEの変数を削除 yamashita
 	・2024/01/29 スライム殴打時に画面の振動を追加 sawada
+	・2024/02/13 UsingCamera使用 takagi
+	・2024/02/15 カメラ移動 takagi
 
 ========================================== */
 
@@ -26,12 +28,14 @@
 #include "HitStop.h"	//ヒットストップ
 #include "Slime_4.h"	//赤スライム種分けよう
 #include <typeinfo.h>	//typeid使用
+#include "UsingCamera.h"	//カメラ使用
 
 // =============== 定数定義 =======================
 const float HAMMER_HIT_MOVE_SPEED = 1.0f;		// ハンマーに吹き飛ばされた時のスピード
 const float HIT_HAMMER_VOLUME = 1.0f;
 const CCamera::E_BIT_FLAG HAMMER_HIT_VIB_NORMAL = CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_WEAK;	// スライムとハンマーのヒット振動
 const CCamera::E_BIT_FLAG HAMMER_HIT_VIB_BOSS = CCamera::E_BIT_FLAG_VIBRATION_UP_DOWN_WEAK;		// ボススライムとハンマーのヒット振動
+const float MULTIPLE_HIT_SPEED = 1.3f;		// チャージハンマー時のスライムの初速の倍率
 
 /* ========================================
    当たり判定まとめ関数
@@ -180,13 +184,13 @@ void CStage::HammerSlimeCollision()
 			//赤スライムと激突したときだけヒットストップの時間を長くする
 			if (typeid(CSlime_4) == typeid(*pSlimeNow))	CHitStop::UpFlag(CHitStop::E_BIT_FLAG_STOP_NORMAL);	//ヒットストップ
 			else										CHitStop::UpFlag(CHitStop::E_BIT_FLAG_STOP_SOFT);	//ヒットストップ
-		
-			m_pCamera->UpFlag(HAMMER_HIT_VIB_NORMAL);	// 画面の振動
 
 			float fAngleSlime
 				= m_pPlayer->GetTransform().Angle(pSlimeNow->GetTransform());	// スライムが飛ぶ角度を取得
 
-			pSlimeNow->HitMoveStart(HAMMER_HIT_MOVE_SPEED, fAngleSlime);	// スライムを飛ばす
+			CUsingCamera::GetThis().GetCamera()->StartShift(fAngleSlime);	// 画面の振動
+			bool bChargeHit = m_pPlayer->GetCharge();
+			pSlimeNow->HitMoveStart(bChargeHit ? HAMMER_HIT_MOVE_SPEED  * MULTIPLE_HIT_SPEED:HAMMER_HIT_MOVE_SPEED, fAngleSlime, bChargeHit);	// スライムを飛ばす
 			m_pPlayer->PlaySE(CPlayer::SE_HIT_HAMMER, HIT_HAMMER_VOLUME);	// ハンマーとスライムの接触SEを再生
 
 			m_pHitEffectMng->Create(pSlimeNow->GetPos());	//ヒットエフェクト生成
@@ -229,13 +233,12 @@ void CStage::HammerBossCollision()
 
 			CHitStop::UpFlag(CHitStop::E_BIT_FLAG_STOP_NORMAL);	//ヒットストップ
 
-			m_pCamera->UpFlag(HAMMER_HIT_VIB_BOSS);	// 画面の振動
-
 			float fAngleSlime
 				= m_pPlayer->GetTransform().Angle(pBossNow->GetTransform());	// スライムが飛ぶ角度を取得
 
-			pBossNow->HitMoveStart(HAMMER_HIT_MOVE_SPEED, fAngleSlime);	// スライムを飛ばす
-			m_pPlayer->PlaySE(CPlayer::SE_HIT_HAMMER, HIT_HAMMER_VOLUME);	//ハンマーとスライムの接触SEを再生
+			CUsingCamera::GetThis().GetCamera()->StartShift(fAngleSlime);	// 画面の振動
+			pBossNow->HitMoveStart(HAMMER_HIT_MOVE_SPEED, fAngleSlime,false);	// スライムを飛ばす
+			m_pPlayer->PlaySE(CPlayer::SE_HIT_HAMMER, HIT_HAMMER_VOLUME);		// ハンマーとスライムの接触SEを再生
 		}
 	}
 }

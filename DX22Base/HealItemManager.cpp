@@ -11,11 +11,13 @@
 	・2023/11/27 cpp作成 yamashita
 	・2023/11/28 生成関数を作成 yamashita
 	・2023/11/28 リストのポインタ取得関数を作成 yamashita
+	・2024/02/09 カメラ削除 takagi
 
 ========================================== */
 
 // =============== インクルード ===================
 #include "HealItemManager.h"
+#include "ModelManager.h"
 
 /* ========================================
    コンストラクタ
@@ -28,19 +30,9 @@
 ======================================== */
 CHealItemManager::CHealItemManager()
 	:m_pModel(nullptr)
-	,m_pVS(nullptr)
 {
-	//頂点シェーダ読み込み
-	m_pVS = new VertexShader();
-	if (FAILED(m_pVS->Load("Assets/Shader/VS_Model.cso"))) {
-		MessageBox(nullptr, "VS_Model.cso", "Error", MB_OK);
-	}
 	//回復アイテムのモデル読み込み
-	m_pModel = new Model;
-	if (!m_pModel->Load("Assets/Model/heart/heart_1.FBX", 1.0f, Model::None)) {		//倍率と反転は省略可
-		MessageBox(NULL, "HealItem:Model", "Error", MB_OK);	//ここでエラーメッセージ表示
-	}
-	m_pModel->SetVertexShader(m_pVS);
+	m_pModel = GetModelMng.GetModelPtr(MODEL_KIND::MODEL_ITEM_HEART);
 }
 
 /* ========================================
@@ -54,9 +46,6 @@ CHealItemManager::CHealItemManager()
 ======================================== */
 CHealItemManager::~CHealItemManager()
 {
-	SAFE_DELETE(m_pVS);
-	SAFE_DELETE(m_pModel);
-
 	for (auto i = m_pHealItemList.begin(); i != m_pHealItemList.end();)
 	{
 		delete (*i);
@@ -111,8 +100,7 @@ void CHealItemManager::Draw()
 ======================================== */
 void CHealItemManager::Create(TPos3d<float> pos)
 {
-	m_pHealItemList.push_back(new CHealItem(pos, m_pModel, m_pVS));	//生成
-	m_pHealItemList.back()->SetCamera(m_pCamera);					//生成したアイテムにカメラをセット
+	m_pHealItemList.push_back(new CHealItem(pos, m_pModel));	//生成
 }
 
 /* ========================================
@@ -127,18 +115,4 @@ void CHealItemManager::Create(TPos3d<float> pos)
 std::vector<CHealItem*>* CHealItemManager::GetHealItemConPtr()
 {
 	return &m_pHealItemList;
-}
-
-/* ========================================
-   カメラ取得関数
-   ----------------------------------------
-   内容：カメラのポインタを取得する
-   ----------------------------------------
-   引数：カメラのポインタ
-   ----------------------------------------
-   戻値：なし
-======================================== */
-void CHealItemManager::SetCamera(const CCamera * pCamera)
-{
-	m_pCamera = pCamera;
 }

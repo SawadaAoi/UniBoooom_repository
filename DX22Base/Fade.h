@@ -16,6 +16,7 @@
 	・2023/12/01 フェードの仕様変更 takagi 
 	・2023/12/17 ブラックアウト用の列挙追加 takagi
 	・2024/01/16 統一のため、インクルードガードの___を__に変更	takagi
+	・2024/02/09 カメラ削除 takagi
 
 ========================================== */
 
@@ -25,7 +26,6 @@
 // =============== インクルード ===================
 #include "Shader.h"			//メンバのヘッダ
 #include "Texture.h"		//メンバのヘッダ
-#include "Camera.h"			//メンバのヘッダ
 #include "Transform3d.h"	//メンバのヘッダ
 #include "DiType.h"			//メンバのヘッダ
 #include "TriType.h"		//メンバのヘッダ
@@ -62,16 +62,16 @@ private:
 	const unsigned char FLAG_FADE_ALL = E_BIT_FLAG_FADE_OUT | E_BIT_FLAG_FADE_STOP | E_BIT_FLAG_FADE_IN;	//フェード系フラグ全て
 public:
 	// ===プロトタイプ宣言===
-	CFade(const CCamera* pCamera);	//コンストラクタ
-	CFade(const CFade& Obj);		//コピーコンストラクタ
-	~CFade();						//デストラクタ
-	void Update();					//更新
-	void Draw();					//描画
-	void Start();					//フェード開始
-	bool IsFade();					//フェード中かどうかを返す
-	bool IsFadeOut();				//フェードアウト中か
-	bool IsFadeIn();				//フェードイン中か
-	float GetFrameRate();			//フェードインの進行度ゲッタ
+	CFade();					//コンストラクタ
+	CFade(const CFade& Obj);	//コピーコンストラクタ
+	~CFade();					//デストラクタ
+	void Update();				//更新
+	void Draw();				//描画
+	void Start();				//フェード開始
+	bool IsFade();				//フェード中かどうかを返す
+	bool IsFadeOut();			//フェードアウト中か
+	bool IsFadeIn();			//フェードイン中か
+	float GetFrameRate();		//フェードインの進行度ゲッタ
 private:
 	// ===メンバ変数宣言=====
 	unsigned char m_ucFlag;				//フラグ
@@ -91,8 +91,6 @@ private:
 	static unsigned int ms_unIdxCount;	//インデックス数
 	static ID3D11Buffer* ms_pVtxBuffer;	//頂点バッファ
 	static ID3D11Buffer* ms_pIdxBuffer;	//インデックスバッファ
-	static CCamera* ms_pDefCamera;		//専用予備カメラ
-	const CCamera* m_pCamera;			//カメラ追跡
 	// ===プロトタイプ宣言===
 	static void Make();								//形作成
 	static void SetTexture();						//テクスチャ登録

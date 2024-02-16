@@ -26,6 +26,7 @@
 	・2024/01/20 音関係リファクタリング takagi
 	・2024/01/21 コメント改修・bgmバグ修正・MessageBox改善 takagi
 	・2024/01/25 オブジェクトチェック追加
+	・2024/02/09 カメラ削除 takagi
 
 ========================================== */
 
@@ -37,6 +38,8 @@
 // =============== インクルード ===================
 #include "SceneManager.h"	//自身のヘッダ
 #include "HitStop.h"		//ヒットストップ
+#include "ModelManager.h"	// モデルの一括管理クラスの最初のインスタンス用
+
 #if _DEBUG
 #include <Windows.h>		//メッセージボックス用
 #endif
@@ -55,17 +58,20 @@
 	戻値：なし
 =========================================== */
 CSceneManager::CSceneManager()
-	:m_pScene(nullptr)					//シーン
-	, m_ePastScene(CScene::E_TYPE_NONE)	//前のシーン
+	:m_pScene(nullptr)						//シーン
+	, m_ePastScene(CScene::E_TYPE_NONE)		//前のシーン
 	, m_eNextScene(CScene::E_TYPE_TITLE)	//シーン遷移先
-	, m_pFade(nullptr)					//フェード
+	, m_pFade(nullptr)						//フェード
 	, m_pBGMSpeaker(nullptr)				//BGMを聞き取る側
 {
+	GetModelMng;	// モデルマネージャーを作成してシーン遷移を早くする
+
 	// =============== 動的確保 ===================
 	if (!m_pScene)	//ヌルチェック
 	{
 		ChangeScene();	//最初に始めるシーン作成
 	}
+
 }
 
 /* ========================================
@@ -248,7 +254,7 @@ void CSceneManager::ChangeScene()
 	}
 	if (m_pScene)	//新規シーンが作られている
 	{
-		m_pFade = new CFade(m_pScene->GetCamera());	//動的確保
+		m_pFade = new CFade();	//動的確保
 	}
 }
 

@@ -82,6 +82,40 @@ public:
 		SE_MAX			//SEの総数
 	}; //SE
 
+	enum E_2D_OBJ_ID
+	{
+		OBJ_BG_SCREEN,				// 背景
+		OBJ_BG_PANEL,				// 項目背景
+		OBJ_WARNING_STAGE,			// 手配書画像
+		OBJ_CLEAR_STAMP,			// スタンプ画像
+		OBJ_RESULT_TEXT,			// リザルト(文字)
+		OBJ_SVL_TIME_TEXT,			// 生存時間(文字)
+		OBJ_SVL_TIME_SECOND_NUM,	// 生存時間(秒)
+		OBJ_SVL_TIME_COLON,			// 生存時間(コロン)	
+		OBJ_SVL_TIME_MINUTE_NUM,	// 生存時間(分)		
+		OBJ_SVL_TIME_LINE,			// 区切り線
+		OBJ_SCORE_TEXT,				// スコア(文字)
+		OBJ_NEW_RECORD_TEXT,		// 新記録(文字)
+		OBJ_SCORE_NUM,				// スコア(数字)
+		OBJ_HIGH_SCORE_TEXT,		// ハイスコア(文字)
+		OBJ_HIGH_SCORE_NUM,			// ハイスコア(数字)
+		OBJ_SCORE_LINE,				// 区切り線
+		OBJ_HUNT_TEXT,				// 討伐数(文字)
+		OBJ_SLIME_HUNT_BG,			// 討伐数背景スライム画像
+		OBJ_SLIME_HUNT_NUM,			// スライム別討伐数
+		OBJ_PARENTHESIS,			// ()
+		OBJ_MULTI,					// ×
+		OBJ_MULTI_BLUE_SLIME,		// 青スライム画像の位置
+		OBJ_MULTI_NUM,				// 青スライムの倍数
+		OBJ_TOTAL_HUNT_TEXT,		// 総討伐数(文字)
+		OBJ_TOTAL_HUNT_NUM,			// 総討伐数(数字)
+		OBJ_HUNT_LINE,				// 区切り線
+		OBJ_MAX_COMBO_TEXT,			// 最大コンボ数(文字)
+		OBJ_MAX_COMBO_NUM,			// 最大コンボ数(数字)
+		OBJ_SELECT_BUTTON,			// 決定 
+
+		OBJ_2D_MAX,
+	};
 
 public:
 	// =============== プロトタイプ宣言 ===============
@@ -99,7 +133,7 @@ private:
 	void DrawMaxCombo();
 
 	void DispTime();
-	void DispNum(int dispNum, int nDigits, TDiType<float> pos, TDiType<float> size, float NumSpace);
+	void DispNum(int dispNum, int nDigits, E_2D_OBJ_ID objId, TTriType<float> fPos, float NumSpace);
 	void NumStorage(std::vector<int>* digitArray,int nNumber, int nDigits);
 
 	void LoadSound();								//サウンドをロード
@@ -109,8 +143,13 @@ private:
 	Texture* m_pTexture[TEXTURE_MAX];
 	BattleData m_Data;					// 戦闘結果
 	CDrawAnim* m_pTextureResultText;	// リザルトの文字
-	C2dPolygon* m_pSelectButton;	// 決定ボタン
 	int m_nButtonAlphaCnt;			// 点滅用
+	int m_nNewRecoAlphaCnt;			// 点滅用
+
+	C2dPolygon* m_p2dObj[OBJ_2D_MAX];
+
+	int m_nStAnimCnt;
+	bool m_nStartAnimEnd;
 
 	//=====SE関連=====
 	XAUDIO2_BUFFER* m_pSE[SE_MAX];

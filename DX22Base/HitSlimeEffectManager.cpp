@@ -9,6 +9,7 @@
 
 	変更履歴
 	・2024/01/25 HitSlimeEffectManagerクラス作成 Tei
+	・2024/02/13 カメラ削除 takagi
 
 ========================================== */
 
@@ -134,26 +135,11 @@ void CHitSlimeEffectManager::Create(TTriType<float> pos)
 		if (m_phitEffect[i] != nullptr) continue;
 
 		// 座標、エフェクト時間、Effekseerファイル、カメラを指定して生成
-		m_phitEffect[i] = new CHitSlimeEffect(pos, TOTAL_HIT_EFFECT_TIME, m_hitEffect, m_pCamera);	
+		m_phitEffect[i] = new CHitSlimeEffect(pos, TOTAL_HIT_EFFECT_TIME, m_hitEffect);	
 
 		return;	
 	}
 }
-
-/* ========================================
-	カメラ情報セット関数
-	----------------------------------------
-	内容：描画処理で使用するカメラ情報セット
-	----------------------------------------
-	引数1：なし
-	----------------------------------------
-	戻値：なし
-======================================== */
-void CHitSlimeEffectManager::SetCamera(const CCamera * pCamera)
-{
-	m_pCamera = pCamera;
-}
-
 
 /* ========================================
 	ヒットエフェクト削除関数
