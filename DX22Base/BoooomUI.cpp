@@ -29,6 +29,8 @@ const float BOOOOM_UI_SCALE_Y = 6.0f;		//BoooomUIサイズのスケール
 const float BOOOOM_UI_MAX_SCALE_X = BOOOOM_UI_SCALE_X * 2.5f;
 const float BOOOOM_UI_MAX_SCALE_Y = BOOOOM_UI_SCALE_Y * 2.5f;
 
+const float ANIM_TIME_RATE = 0.7f;	// 爆発総時間の内、BOOOOM表示を行うのは何割か(0.0f~1.0f)
+
 /* ========================================
 	コンストラクタ
 	----------------------------------------
@@ -42,14 +44,14 @@ CBoooomUI::CBoooomUI(TPos3d<float> pos, Texture* pTex, const CCamera* pCamera, f
 	://m_pBoooomTex(pTex)
 	//,m_pos(pos)
 	//,m_scale{ BOOOOM_UI_SCALE_X, BOOOOM_UI_SCALE_Y, 0.0f}
-	 m_fExplodeTime(fTime)	//爆発総時間をセットする
+	 m_fExplodeTime(fTime * ANIM_TIME_RATE)	//爆発総時間をセットする
 	, m_nDelFrame(0)
 	, m_bDelFlg(false)
 	, m_nAnimFrame(0)
 	, m_fAnimRate(0.0f)
 	, m_fAddScaleX(0.0f)
 	, m_fAddScaleY(0.0f)
-	, m_fScalingTime(fTime)
+	, m_fScalingTime(fTime * ANIM_TIME_RATE)
 	, CDrawAnim(MAX_ANIM, MAX_SEAT)	//委譲
 	, m_pCnt(nullptr)				//縮小用カウンタ
 {
@@ -58,7 +60,7 @@ CBoooomUI::CBoooomUI(TPos3d<float> pos, Texture* pTex, const CCamera* pCamera, f
 	SetPos(pos);
 	SetSize(TTriType<float>(BOOOOM_UI_SCALE_X, BOOOOM_UI_SCALE_Y, 0.0f));
 	SetTexture(pTex);
-	m_pCnt = new CFrameCnt((int)fTime);	//カウント開始
+	m_pCnt = new CFrameCnt((int)m_fScalingTime);	//カウント開始
 
 }
 /* ========================================
@@ -87,7 +89,7 @@ void CBoooomUI::Update()
 
 	m_nAnimFrame++;
 
-	float fExpandTime = m_fScalingTime / 3.0f;
+	float fExpandTime = m_fScalingTime / 2.0f;
 	if (m_nAnimFrame < (int)fExpandTime)
 	{
 		m_fAnimRate += 1.0f / fExpandTime ;	//フレーム加算
@@ -112,15 +114,16 @@ void CBoooomUI::Update()
 			}
 		}
 	}
+	// 0を下回らないように
 	if (m_fAnimRate < 0) m_fAnimRate = 0;
+
 	// 補間値を使用してスケールを計算
 	float scalingFactor = (sqrt(1 - pow(m_fAnimRate - 1, 2)));
-
 	// スケールの設定
 	SetSize(TTriType<float>(BOOOOM_UI_SCALE_X + ((BOOOOM_UI_MAX_SCALE_X - BOOOOM_UI_SCALE_X) * scalingFactor),
 		BOOOOM_UI_SCALE_Y + ((BOOOOM_UI_MAX_SCALE_Y - BOOOOM_UI_SCALE_Y) * scalingFactor),0.0f));
-
-
+	// uvのズレを調整
+	SetUvScale(TDiType<float>(1.0f, 1.565f));
 
 
 }
