@@ -70,10 +70,11 @@ public:
 	// プレイヤー
 	const std::string m_sPlayerMotion[CPlayer::MOTION_PLAYER_MAX] = {	//アニメーションのファイル
 		"Assets/Model/player/wait_end.FBX",			//待機
-		"Assets/Model/player/Dash.FBX",				//移動
-		"Assets/Model/player/pow.FBX",				//スイング
-		"Assets/Model/player/Dash.FBX",				//チャージ状態
+		"Assets/Model/player/dash_v2.FBX",				//移動
+		"Assets/Model/player/POW.FBX",				//スイング
+		"Assets/Model/player/ChargeDash_v1.FBX",				//チャージ状態
 		"Assets/Model/player/down.fbx",				//死亡
+
 	};
 
 	// 青スライム

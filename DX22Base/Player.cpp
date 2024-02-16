@@ -86,8 +86,8 @@ const int	SWEAT_EFFECT_INTERVAL = 0.7f * 60;				// 汗エフェクトの出現間隔
 const float	SWEAT_EFFECT_DISP_SPEED = 0.5f;					// 汗エフェクトの表示するハンマーのスピード(これ以下の場合に表示)
 const int	DIE_AFTER_INTERVAL = int(2.0f * 60);			// 死亡してからGameOverテキストが出るまでの猶予時間
 const int	CHARGE_HAMMER_CNT = 60;							// チャージが完了するまでの時間
-const TTriType<float> CHARGING_EFFECT_SIZE = {1.5f,1.5f,1.5f};// エフェクトのサイズ
-const TTriType<float> CHARGED_EFFECT_SIZE = {2.0f,2.0f,2.0f};// エフェクトのサイズ
+const TTriType<float> CHARGING_EFFECT_SIZE = {2.0f,2.0f,2.0f};// エフェクトのサイズ
+const TTriType<float> CHARGED_EFFECT_SIZE = {3.0f,3.0f,3.0f};// エフェクトのサイズ
 const float CHARGE_EFFECT_SPEED = 1.0f;						// チャージエフェクトの再生速度
 const int DISP_CHARGE_EFC_CNT = 15;							// チャージエフェクトの見え始めるカウント
 
