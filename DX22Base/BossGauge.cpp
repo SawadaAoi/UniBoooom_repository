@@ -13,6 +13,7 @@
 	・2023/11/22 ボスゲージ表示のフェードアウト追加、パラメータ調整
 	・2023/11/27 ボス出現処理追加	Sawada
 	・2023/12/07 ゲームパラメータから一部定数移動・インクルード追加 takagi
+	・2024/02/16 ボスゲージスケールモーション追加 Tei
 
 ========================================== */
 
@@ -29,6 +30,11 @@ const TPos2d<float> BOSS_GAUGE_FULL_SIZE = {					// ボスゲージ（中身）の大きさ
 	(6.0f / 7.0f) * BOSS_GAUGE_FRAME_SIZE.y };			
 const float BOSS_GAUGE_FULL_POS_Y_ADJUST = BOSS_GAUGE_FULL_SIZE.x / 2;		//ボスゲージ（中身）増加時、位置表示するための調整量
 const float BOSS_GAUGE_FULL_SIZE_Y_ADJUST = BOSS_GAUGE_FULL_SIZE.y;			//ボスゲージ（中身）増加時、サイズ計算用（計算して表示したい比率かける元々のサイズ(100.0f)）
+const float BOSS_GAUGE_WARNING_PER = 0.7f;			// ボスゲージ7割
+const float BOSS_GAUGE_SCALE_NORMAL = 0.0025f;		// 普段拡大縮小の比率
+const float BOSS_GAUGE_SCALE_WARNING = 0.02f;		// ボス出現前拡大縮小の比率(少し大きく)
+const int GAUGE_SCALE_SPEED_NORMAL = 120;			// 拡大縮小一回のフレーム数(120flame一回遅い)
+const int GAUGE_SCALE_SPEED_WARNING = 30;			// 拡大縮小一回のフレーム数(30flame一回速い)
 #if MODE_GAME_PARAMETER
 #else
 typedef struct
@@ -56,6 +62,8 @@ CBossgauge::CBossgauge(CTimer* pTimer)
 	: m_pTexFrame(nullptr)
 	, m_pTexGauge(nullptr)
 	, m_pTimer(pTimer)
+	, m_fBossgaugeScale(1.0f)	// ボスゲージスケール倍率、普段は1.0f
+	, m_nBossgaugeScaleCnt(0)
 {
 
 	//ボスゲージのテクスチャ読む込み
@@ -112,6 +120,18 @@ void CBossgauge::Update()
 		{
 			(*itr).nGaugeCnt++;
 			(*itr).fGaugeDispPer = (float)((*itr).nGaugeCnt) / (float)(*itr).nMaxGaugeFrame;
+			
+			// ---ボスゲージ拡大縮小処理---
+			// ゲージ7割になったら緊張感がある拡大縮小モーションする
+			if ((*itr).fGaugeDispPer >= BOSS_GAUGE_WARNING_PER)		
+			{
+				BossGaugeScaleMotion(BOSS_GAUGE_SCALE_WARNING, GAUGE_SCALE_SPEED_WARNING);
+			}
+			// 普段の拡大縮小モーション
+			else
+			{
+				BossGaugeScaleMotion(BOSS_GAUGE_SCALE_NORMAL, GAUGE_SCALE_SPEED_NORMAL);
+			}
 		}
 		//　ゲージが最大までたまった場合
 		else
@@ -133,6 +153,7 @@ void CBossgauge::Update()
 				}
 			}
 		}
+		
 
 
 
@@ -196,7 +217,7 @@ void CBossgauge::DrawFrame(std::vector<BossGauge>::iterator itr)
 	Sprite::SetWorld(bossempty[0]);
 	Sprite::SetView(bossempty[1]);
 	Sprite::SetProjection(bossempty[2]);
-	Sprite::SetSize(DirectX::XMFLOAT2(BOSS_GAUGE_FRAME_SIZE.x, BOSS_GAUGE_FRAME_SIZE.y));
+	Sprite::SetSize(DirectX::XMFLOAT2(BOSS_GAUGE_FRAME_SIZE.x * m_fBossgaugeScale, BOSS_GAUGE_FRAME_SIZE.y * m_fBossgaugeScale));
 	Sprite::SetUVPos(DirectX::XMFLOAT2(0.0f, 0.0f));
 	Sprite::SetUVScale(DirectX::XMFLOAT2(1.0f, 1.0f));
 	Sprite::SetColor(DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f - ((float)(*itr).nFadeCnt / (float)FADE_TIME)));
@@ -222,7 +243,7 @@ void CBossgauge::DrawGauge(std::vector<BossGauge>::iterator itr)
 	//ワールド行列はXとYのみを考慮して作成(Zは10ぐらいに配置
 	DirectX::XMMATRIX worldBossfull = DirectX::XMMatrixTranslation(
 		BOSS_GAUGE_FULL_POS.x, 
-		BOSS_GAUGE_FULL_POS.y + (BOSS_GAUGE_FULL_POS_Y_ADJUST - (BOSS_GAUGE_FULL_POS_Y_ADJUST * (*itr).fGaugeDispPer))
+		(BOSS_GAUGE_FULL_POS.y + (BOSS_GAUGE_FULL_POS_Y_ADJUST - (BOSS_GAUGE_FULL_POS_Y_ADJUST * (*itr).fGaugeDispPer)) * m_fBossgaugeScale)
 		, 0.0f);
 	DirectX::XMStoreFloat4x4(&bossfull[0], DirectX::XMMatrixTranspose(worldBossfull));
 
@@ -238,7 +259,7 @@ void CBossgauge::DrawGauge(std::vector<BossGauge>::iterator itr)
 	Sprite::SetWorld(bossfull[0]);
 	Sprite::SetView(bossfull[1]);
 	Sprite::SetProjection(bossfull[2]);
-	Sprite::SetSize(DirectX::XMFLOAT2(BOSS_GAUGE_FULL_SIZE.x, ((*itr).fGaugeDispPer * BOSS_GAUGE_FULL_SIZE_Y_ADJUST)));		//描画大きさ設定
+	Sprite::SetSize(DirectX::XMFLOAT2(BOSS_GAUGE_FULL_SIZE.x * m_fBossgaugeScale, ((*itr).fGaugeDispPer * BOSS_GAUGE_FULL_SIZE_Y_ADJUST) * m_fBossgaugeScale));		//描画大きさ設定
 	Sprite::SetUVPos(DirectX::XMFLOAT2(0.0f, (1.0f - (*itr).fGaugeDispPer)));		//描画のtextureの範囲設定
 	Sprite::SetUVScale(DirectX::XMFLOAT2(1.0f, (*itr).fGaugeDispPer));				//表示するtextureの大きさ設定
 	Sprite::SetTexture(m_pTexGauge);
@@ -301,5 +322,28 @@ void CBossgauge::AddBossGauge(int BossNum, float fStartTime, float fMaxTime)
 
 	m_BossGauges.push_back(addPram);	// 配列に追加
 
+}
+
+/* ========================================
+	ボスゲージ拡大縮小関数
+	----------------------------------------
+	内容：ボスゲージ拡大縮小する
+	----------------------------------------
+	引数1：拡大縮小のサイズ
+	引数2：一回の拡大縮小のフレーム数
+	----------------------------------------
+	戻値：なし
+=========================================== */
+void CBossgauge::BossGaugeScaleMotion(float fSize, int nFlame)
+{
+	m_nBossgaugeScaleCnt++;										// タイマーフレームカウント加算
+	if (m_nBossgaugeScaleCnt % nFlame <= (nFlame / 2) - 1)		//設定したフレーム数の前半加算(拡大)、後半減算(縮小)
+	{
+		m_fBossgaugeScale += fSize;
+	}
+	else
+	{
+		m_fBossgaugeScale -= fSize;
+	}
 }
 

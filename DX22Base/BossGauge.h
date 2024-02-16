@@ -12,6 +12,7 @@
 	・2023/11/19 ボスゲージ増加する変数、関数を作成 Tei
 	・2023/11/22 ボスゲージフェード用変数追加 Tei
 	・2023/11/26 スライム管理メンバ変数追加	Sawada
+	・2024/02/16 ボスゲージスケールモーション追加 Tei
 
 ========================================== */
 #ifndef __BOSS_GAUGE_H__
@@ -60,6 +61,7 @@ public:
 	void SetShowWarning(CShowWarning* pShowWarn);
 
 	void AddBossGauge(int BossNum, float fStartTime, float fMaxTime);
+	void BossGaugeScaleMotion(float fSize, int nFlame);	//ボスゲージスケール関数
 
 private:
 	// ===メンバ変数宣言===
@@ -70,6 +72,9 @@ private:
 	std::vector<BossGauge> m_BossGauges;	// ボスゲージ管理配列(ステージ毎に生成する数配列に格納する)
 
 	CShowWarning* m_pShowWarn;				// ボス警告
+
+	float m_fBossgaugeScale;				// ボスゲージスケール倍率
+	int m_nBossgaugeScaleCnt;				// ボスゲージスケールのフレームカウント
 };
 
 
