@@ -127,7 +127,6 @@ public:
 	bool GetCharge();
 
 	// ƒZƒbƒgŠÖ”
-	void SetCamera(CCamera* pCamera);
 	void SetSweatEffectMng(CSweatEffectManager* pSweatefcMng);
 
 private:

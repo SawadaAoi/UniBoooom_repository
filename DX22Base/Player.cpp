@@ -241,7 +241,7 @@ void CPlayer::Update()
 		}
 
 		// スペースキーもしくはコントローラのBボタンに対しての押し続け && ハンマー間隔時間経過済み
-		if ((IsKeyPress(VK_SPACE) || IsKeyTriggerController(BUTTON_B)) && !m_bHumInvFlg
+		if ((IsKeyPress(VK_SPACE) || IsKeyPressController(BUTTON_B)) && !m_bHumInvFlg
 					&& !m_ChargeState == PLAYER_CHARGING)
 		{	
 			SAFE_DELETE(m_pWaitFrameCnt);	// カウンタ削除
@@ -268,13 +268,14 @@ void CPlayer::Update()
 				PlaySE(SE_CHARGED);
 			}
 		}
-		else if ((IsKeyRelease(VK_SPACE) || IsKeyTriggerController(BUTTON_B)) && !m_bHumInvFlg && !m_pModel->IsPlay(MOTION_PLAYER_SWING))
+		else if ((IsKeyRelease(VK_SPACE) || IsKeyReleaseController(BUTTON_B)) && !m_bHumInvFlg && !m_pModel->IsPlay(MOTION_PLAYER_SWING))
 		{	// スペースキーもしくはコントローラのBボタンに対しての離した時 && ハンマー間隔時間経過済み
 
 			SAFE_DELETE(m_pWaitFrameCnt);	// カウンタ削除
 
 			m_pModel->Play(MOTION_PLAYER_SWING, false, m_pHammer->GetSwingSpeed() * SWING_ANIM_ADJUST);	// アニメーションの再生
 			m_pModel->SetAnimationTime(MOTION_PLAYER_SWING, 0.0f);				// アニメーションタイムをスタート位置にセット
+
 
 			m_pHammer->AttackStart(m_Transform.fPos, m_Transform.fRadian.y);	// ハンマー攻撃開始
 			m_bAttackFlg = true;	// 攻撃フラグを有効にする
@@ -286,6 +287,7 @@ void CPlayer::Update()
 		}
 		else
 		{
+			m_fChargeCnt = 0;
 			m_nSwingFastCnt++;
 			if (SWING_FAST_INTERVAL < m_nSwingFastCnt)
 			{
