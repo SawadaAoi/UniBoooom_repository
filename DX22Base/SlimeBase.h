@@ -38,6 +38,7 @@
 	・2023/12/04 列挙にヒールスライムを追加 Tei
 	・2023/12/07 ゲームパラメータから一部定数移動 takagi
 	・2024/01/18 炎スライムエフェクト追加 Tei
+	・2024/02/09 カメラ削除 takagi
 
 ========================================== */
 #ifndef __SLIME_BASE_H__
@@ -173,7 +174,6 @@ public:
 
 	//セット関数
 	virtual void SetNormalSpeed() = 0;
-	void SetCamera(const CCamera* pCamera);
 	void SetStopDirectionObjPos(TPos3d<float> expPos);
 	void SetMoveStopFlg(bool bEscape);
 
@@ -193,7 +193,6 @@ protected:
 
 
 	E_SLIME_LEVEL m_eSlimeSize;		//スライムの大きさの列挙
-	const CCamera* m_pCamera;		//カメラのポインタ
 
 	CShadow* m_pShadow;				//影のポインタ
 	float m_fScaleShadow;			//影の大きさ

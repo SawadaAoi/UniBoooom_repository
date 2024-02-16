@@ -66,65 +66,89 @@ const std::map<int, std::string> MAP_TEX_PATH = {
 	{CResult::SELECT,			"Assets/Texture/Result/Result_Button.png"},		// 決定ボタン
 };	
 
-// 画像表示用パラメータまとめ
-typedef struct
-{
-	TDiType<float> fPos;
-	TDiType<float> fSize;
-}Display_Param;
+const std::map<CResult::E_2D_OBJ_ID, TTriType<float>> MAP_TEX_POS = {
+	{CResult::OBJ_BG_SCREEN,			{ SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 , 1.0f} },	// 背景
+	{CResult::OBJ_BG_PANEL,				{ 905.0f, SCREEN_HEIGHT / 2, 1.0f } },				// 項目背景
+	{CResult::OBJ_WARNING_STAGE,		{ 260.0f, 340.0f, 1.0f } },							// 手配書画像
+	{CResult::OBJ_CLEAR_STAMP,			{ 260.0f, 340.0f, 1.0f } },							// スタンプ画像
+	{CResult::OBJ_RESULT_TEXT,			{ 275.0f, 660.0f, 1.0f } },							// リザルト(文字)
+	{CResult::OBJ_SVL_TIME_TEXT,		{ 650.0f, 690.0f, 1.0f } },							// 生存時間(文字)
+	{CResult::OBJ_SVL_TIME_SECOND_NUM,	{ 1200.0f,670.0f, 1.0f } },							// 生存時間(秒)
+	{CResult::OBJ_SVL_TIME_COLON,		{ 1083.0f,670.0f, 1.0f } },							// 生存時間(コロン)	
+	{CResult::OBJ_SVL_TIME_MINUTE_NUM,	{ 1035.0f,670.0f, 1.0f } },							// 生存時間(分)		
+	{CResult::OBJ_SVL_TIME_LINE,		{ 907.0f, 620.0f, 1.0f } },							// 区切り線
+	{CResult::OBJ_SCORE_TEXT,			{ 655.0f, 590.0f, 1.0f } },							// スコア(文字)
+	{CResult::OBJ_NEW_RECORD_TEXT,		{ 800.0f, 540.0f, 1.0f } },							// 新記録(文字)
+	{CResult::OBJ_SCORE_NUM,			{ 1200.0f,560.0f, 1.0f } },							// スコア(数字)
+	{CResult::OBJ_HIGH_SCORE_TEXT,		{ 645.0f, 480.0f, 1.0f } },							// ハイスコア(文字)
+	{CResult::OBJ_HIGH_SCORE_NUM,		{ 1200.0f,460.0f, 1.0f } },							// ハイスコア(数字)
+	{CResult::OBJ_SCORE_LINE,			{ 907.0f, 420.0f, 1.0f } },							// 区切り線
+	{CResult::OBJ_HUNT_TEXT,			{ 710.0f, 380.0f, 1.0f } },							// 討伐数(文字)
+	{CResult::OBJ_SLIME_HUNT_BG,		{ 650.0f, 290.0f, 1.0f } },							// 討伐数背景スライム画像
+	{CResult::OBJ_SLIME_HUNT_NUM,		{ 650.0f, 290.0f, 1.0f } },							// スライム別討伐数
+	{CResult::OBJ_PARENTHESIS,			{ 600.0f, 210.0f, 1.0f } },							// ()
+	{CResult::OBJ_MULTI,				{ 650.0f, 210.0f, 1.0f } },							// ×
+	{CResult::OBJ_MULTI_BLUE_SLIME,		{ 615.0f, 210.0f, 1.0f } },							// 青スライム画像の位置
+	{CResult::OBJ_MULTI_NUM,			{ 685.0f, 210.0f, 1.0f } },							// 青スライムの倍数
+	{CResult::OBJ_TOTAL_HUNT_TEXT,		{ 670.0f, 160.0f, 1.0f } },							// 総討伐数(文字)
+	{CResult::OBJ_TOTAL_HUNT_NUM,		{ 1200.0f,140.0f, 1.0f } },							// 総討伐数(数字)
+	{CResult::OBJ_HUNT_LINE,			{ 907.0f, 100.0f, 1.0f } },							// 区切り線
+	{CResult::OBJ_MAX_COMBO_TEXT,		{ 695.0f,  65.0f, 1.0f } },							// 最大コンボ数(文字)
+	{CResult::OBJ_MAX_COMBO_NUM,		{ 1200.0f, 50.0f, 1.0f } },							// 最大コンボ数(数字)
+	{CResult::OBJ_SELECT_BUTTON,		{ 65.0f,   40.0f, 1.0f } },							// 決定 
+};
 
-typedef struct
-{
-	TTriType<float> fPos;
-	TTriType<float> fSize;
-}Display_Param_3;
+const std::map<CResult::E_2D_OBJ_ID, TTriType<float>> MAP_TEX_SIZE = {
+	{CResult::OBJ_BG_SCREEN,			{ SCREEN_WIDTH, SCREEN_HEIGHT, 1.0f} },	// 背景
+	{CResult::OBJ_BG_PANEL,				{ 750.0f, SCREEN_HEIGHT, 1.0f } },		// 項目背景
+	{CResult::OBJ_WARNING_STAGE,		{ 460.0f, 580.0f, 1.0f } },				// 手配書画像
+	{CResult::OBJ_CLEAR_STAMP,			{ 460.0f, 580.0f, 1.0f } },				// スタンプ画像
+	{CResult::OBJ_RESULT_TEXT,			{ 640.0f, 280.0f, 1.0f } },				// リザルト(文字)
+	{CResult::OBJ_SVL_TIME_TEXT,		{ 200.0f, 80.0f,  1.0f } },				// 生存時間(文字)
+	{CResult::OBJ_SVL_TIME_SECOND_NUM,	{ 85.0f,  95.0f , 1.0f } },				// 生存時間(秒数)
+	{CResult::OBJ_SVL_TIME_COLON,		{ 85.0f,  95.0f,  1.0f } },				// 生存時間(コロン)	
+	{CResult::OBJ_SVL_TIME_MINUTE_NUM,	{ 85.0f,  95.0f,  1.0f } },				// 生存時間(分)		
+	{CResult::OBJ_SVL_TIME_LINE,		{ 729.0f, 5.0f ,  1.0f } },				// 区切り線
+	{CResult::OBJ_SCORE_TEXT,			{ 220.0f, 75.0f,  1.0f } },				// スコア(文字)
+	{CResult::OBJ_NEW_RECORD_TEXT,		{ 170.0f, 55.0f,  1.0f } },				// 新記録(文字)
+	{CResult::OBJ_SCORE_NUM,			{ 85.0f, 105.0f,  1.0f } },				// スコア(数字)
+	{CResult::OBJ_HIGH_SCORE_TEXT,		{ 180.0f, 75.0f,  1.0f } },				// ハイスコア(文字)
+	{CResult::OBJ_HIGH_SCORE_NUM,		{ 55.0f, 55.0f,   1.0f } },				// ハイスコア(数字)
+	{CResult::OBJ_SCORE_LINE,			{ 729.0f, 5.0f,   1.0f } },				// 区切り線
+	{CResult::OBJ_HUNT_TEXT,			{ 330.0f, 110.0f, 1.0f } },				// 討伐数(文字)
+	{CResult::OBJ_SLIME_HUNT_BG,		{ 160.0f, 160.0f, 1.0f } },				// 討伐数背景スライム画像
+	{CResult::OBJ_SLIME_HUNT_NUM,		{ 60.0f, 60.0f,   1.0f } },				// スライム別討伐数
+	{CResult::OBJ_PARENTHESIS,			{ 40.0f, 40.0f,   1.0f } },				// ()
+	{CResult::OBJ_MULTI,				{ 40.0f, 40.0f,   1.0f } },				// ×
+	{CResult::OBJ_MULTI_BLUE_SLIME,		{ 30.0f, 30.0f,   1.0f } },				// 青スライム画像の位置
+	{CResult::OBJ_MULTI_NUM,			{ 40.0f, 40.0f,   1.0f } },				// 青スライムの倍数
+	{CResult::OBJ_TOTAL_HUNT_TEXT,		{ 250.0f, 80.0f,  1.0f } },				// 総討伐数(文字)
+	{CResult::OBJ_TOTAL_HUNT_NUM,		{ 85.0f, 105.0f,  1.0f } },				// 総討伐数(数字)
+	{CResult::OBJ_HUNT_LINE,			{ 729.0f, 5.0f,   1.0f } },				// 区切り線
+	{CResult::OBJ_MAX_COMBO_TEXT,		{ 300.0f, 90.0f,  1.0f } },				// 最大コンボ数(文字)
+	{CResult::OBJ_MAX_COMBO_NUM,		{ 85.0f, 105.0f,  1.0f } },				// 最大コンボ数(数字)
+	{CResult::OBJ_SELECT_BUTTON,		{ 130.0f, 65.0f,  1.0f } },				// 決定 
+};
 
-const Display_Param WARNING_TEXTURE_PARAM	= { {260.0f, 380.0f} ,{460.0f, 580.0f} };	// 手配書
-const Display_Param CLEAR_STAMP_PARAM		= { {260.0f, 380.0f} ,{460.0f, 580.0f} };	// スタンプ
-const Display_Param_3 RESULT_TEXT_PARAM = { { 275.0f, 660.0f, 1.0f},{ 640.0f,  280.0f, 1.0f} };	// リザルト
-const int			RESULT_TEXT_FLASH = 0.04 * 60;
+const int	RESULT_TEXT_FLASH = 0.04 * 60;
 
-const float DEF_NUM_SPACE = 68.0f;
-const TDiType<int> NUM_SPLIT = { 5, 2 };
-const TDiType<float> NUM_UVSCALE = { (1.0f / 5) ,(1.0f / 2) };
+const TDiType<int>		NUM_SPLIT = { 5, 2 };			// 数字画像分割値
+const TDiType<float>	NUM_UVSCALE = {					// 数字画像UV値
+						(1.0f / NUM_SPLIT.x) ,(1.0f / NUM_SPLIT.y) };
 
-const Display_Param BG_SCREEN_PARAM		= { { SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 },{ SCREEN_WIDTH, SCREEN_HEIGHT } };	// 背景
-const Display_Param BG_PANEL_PARAM		= { { 905.0f, SCREEN_HEIGHT / 2 } ,{ 750.0f, SCREEN_HEIGHT } };					// 項目背景
+const TDiType<float>		PARENTHESIS_SPLIT = { 2, 1 };	// カッコ画像分割値
+const TDiType<float>	PARENTHESIS_UVSCALE = {			// カッコ画像UV値
+						(1.0f / PARENTHESIS_SPLIT.x) ,(1.0f / PARENTHESIS_SPLIT.y) };
 
-const Display_Param SVL_TIME_TEXT_PARAM = { { 650.0f, 30.0f },{ 200.0f, 80.0f } };	// 生存時間(文字)
-const Display_Param SVL_TIME_NUM__PARAM = { { 1200.0f, 50.0f },{ 85.0f, 95.0f } };	// 生存時間(数字)
-const Display_Param SVL_TIME_LINE_PARAM = { { 907.0f, 100.0f },{ 729.0f, 5.0f } };	// 線
-const float SVL_TIME_NUM_SPACE = 55.0f;		// 時間の間(例 12□:□33)
+const float DEF_NUM_SPACE			= 68.0f;			// 数時間の距離(デフォルト)
+const float SVL_TIME_NUM_SPACE		= 55.0f;			// 時間の間(例 12□:□33)
+const float SCORE_NUM_SPACE			= 70.0f;			// 数字間の距離(スコア)
+const float HIGH_SCORE_NUM_SPACE	= 45.0f;			// 数字間の距離(ハイスコア)
+const float HUNT_NUM_SPACE			= 45.0f;			// 数字間の距離(討伐数)
 
-const Display_Param SCORE_TEXT_PARAM		= { { 655.0f, 130.0f },{ 220.0f, 75.0f } };		// スコア(文字)
-const Display_Param NEW_RECORD_TEXT_PARAM	= { { 800.0f,180.0f },{ 170.0f, 55.0f } };		// 新記録(文字)
-const Display_Param SCORE_NUM_PARAM			= { { 1200.0f, 160.0f },{ 85.0f, 105.0f } };	// スコア(数字)
-const Display_Param HIGH_SCORE_TEXT_PARAM	= { { 645.0f, 240.0f },{ 180.0f, 75.0f } };		// ハイスコア(文字)
-const Display_Param HIGH_SCORE_NUM_PARAM	= { { 1200.0f, 260.0f },{ 55.0f, 55.0f } };		// ハイスコア(数字)
-const Display_Param SCORE_LINE_PARAM		= { { 907.0f, 300.0f },{ 729.0f, 5.0f } };		// 線
-const float SCORE_NUM_SPACE = 70.0f;
-const float HIGH_SCORE_NUM_SPACE = 45.0f;
-
-
-const Display_Param HUNT_TEXT_PARAM			= { { 710.0f, 340.0f },{ 330.0f, 110.0f } };	// 討伐数(文字)
-const Display_Param SLIME_TEXTURE_PARAM		= { { 650.0f, 430.0f },{ 160.0f, 160.0f } };	// スライム画像
-const float SLIME_SPACE_Y = 130.0f;	// スライム画像の間
-const Display_Param SLIME_HUNT_NUM_PARAM	= { { 650.0f, 430.0f },{ 60.0f, 60.0f } };		// スライム別討伐数
-const Display_Param PARENTHESIS_PARAM		= { { 650.0f, 530.0f },{ 0.0f, 0.0f } };		// ()
-const Display_Param MULTI_PARAM				= { { 650.0f, 510.0f },{ 40.0f, 40.0f } };		// ×
-const Display_Param MULTI_SLIME_PARAM		= { { 615.0f, 510.0f },{ 30.0f, 30.0f } };		// 青スライム画像の位置
-const Display_Param MULTI_NUM_PARAM			= { { 685.0f, 510.0f },{ 40.0f, 40.0f } };		// 青スライムの倍数
-const Display_Param TOTAL_HUNT_TEXT_PARAM	= { { 670.0f, 560.0f },{ 250.0f, 80.0f } };		// 総討伐数(文字)
-const Display_Param TOTAL_HUNT_NUM_PARAM	= { { 1200.0f, 580.0f },{ 85.0f, 105.0f } };	// 総討伐数(数字)
-const Display_Param HUNT_LINE_PARAM			= { { 907.0f, 620.0f } , { 729.0f, 5.0f } };	// 線
-const float HUNT_NUM_SPACE = 45.0f;															// 数字間の距離
-
-
-const Display_Param MAX_COMBO_TEXT_PARAM	= { { 695.0f, 655.0f } , {  300.0f, 90.0f } };	// 最大コンボ数(文字)
-const Display_Param MAX_COMBO_NUM_PARAM		= { { 1200.0f, 670.0f } ,{ 85.0f, 105.0f } };	// 最大コンボ数(数字)
-
-const Display_Param_3 SELECT_PARAM			= { { 65.0f, 40.0f, 1.0f } , { 130.0f, 65.0f, 1.0f } };		// 決定ボタン
-const float FLASH_BUTTON_TEXT_ADJUST		= 0.02f;										//「決定」テキストの点滅間隔調整
+const float SLIME_SPACE_Y = 130.0f;						// スライム画像の間
+const float FLASH_BUTTON_TEXT_ADJUST		= 0.02f;	//「決定」テキストの点滅間隔調整
+const float FLASH_NEW_RECORD_TEXT_ADJUST	= 0.04f;	//「ハイスコア」テキストの点滅間隔調整
 
 /* ========================================
 	コンストラクタ
@@ -139,6 +163,9 @@ CResult::CResult()
 	: m_pSE{ nullptr }
 	, m_pSESpeaker{ nullptr }
 	, m_nButtonAlphaCnt(0)
+	, m_nNewRecoAlphaCnt(0)
+	, m_nStAnimCnt(0)
+	, m_nStartAnimEnd(false)
 
 {
 	for (int i = 0; i < E_TEXTURE::TEXTURE_MAX; i++)
@@ -150,20 +177,21 @@ CResult::CResult()
 			MessageBox(NULL, "Result Texture", "Error", MB_OK);
 		}
 	}
+
+	for (int i = 0; i < E_2D_OBJ_ID::OBJ_2D_MAX; i++)
+	{
+		m_p2dObj[i] = new C2dPolygon();
+		m_p2dObj[i]->SetPos(MAP_TEX_POS.at(static_cast<E_2D_OBJ_ID>(i)));
+		m_p2dObj[i]->SetSize(MAP_TEX_SIZE.at(static_cast<E_2D_OBJ_ID>(i)));
+	}
 	
 	// リザルト文字のアニメーションの初期化
 	m_pTextureResultText = new CDrawAnim(60, TDiType<int>(5, 12), RESULT_TEXT_FLASH);
 	m_pTextureResultText->SetTexture(m_pTexture[E_TEXTURE::RESULT_TEXT]);
-	m_pTextureResultText->SetPos(RESULT_TEXT_PARAM.fPos);
-	m_pTextureResultText->SetSize(RESULT_TEXT_PARAM.fSize);
+	m_pTextureResultText->SetPos(MAP_TEX_POS.at(E_2D_OBJ_ID::OBJ_RESULT_TEXT));
+	m_pTextureResultText->SetSize(MAP_TEX_SIZE.at(E_2D_OBJ_ID::OBJ_RESULT_TEXT));
 	m_pTextureResultText->SetLoopFlg(true);
-
-	// 決定ボタン初期化
-	m_pSelectButton = new C2dPolygon();
-	m_pSelectButton->SetTexture(m_pTexture[E_TEXTURE::SELECT]);
-	m_pSelectButton->SetPos(SELECT_PARAM.fPos);
-	m_pSelectButton->SetSize(SELECT_PARAM.fSize);
-
+	
 	// データ受け継ぎ
 	m_Data.Load();	//ファイルに上がっている情報を読み込む
 
@@ -192,7 +220,6 @@ CResult::~CResult()
 		SAFE_DELETE(m_pTexture[i]);
 	}
 	SAFE_DELETE(m_pTextureResultText);
-	SAFE_DELETE(m_pSelectButton);
 }
 
 /* ========================================
@@ -216,9 +243,10 @@ void CResult::Update()
 
 	// リザルトの文字のアニメーション
 	m_pTextureResultText->Update();
-	// 決定ボタン
-	m_pSelectButton->Update();
+
+	// 決定ボタン点滅加算値
 	m_nButtonAlphaCnt++;
+	m_nNewRecoAlphaCnt++;
 }
 
 /* ========================================
@@ -253,16 +281,11 @@ void CResult::Draw()
 void CResult::DrawBgScreen()
 {
 	// 全体の背景
-	Draw2d(
-		BG_SCREEN_PARAM.fPos.x, BG_SCREEN_PARAM.fPos.y,
-		BG_SCREEN_PARAM.fSize.x, BG_SCREEN_PARAM.fSize.y,
-		m_pTexture[E_TEXTURE::BG_SCREEN]);
-
+	m_p2dObj[OBJ_BG_SCREEN]->SetTexture(m_pTexture[E_TEXTURE::BG_SCREEN]);
+	m_p2dObj[OBJ_BG_SCREEN]->Draw();
 	// 右半分の各項目の背景
-	Draw2d(
-		BG_PANEL_PARAM.fPos.x,BG_PANEL_PARAM.fPos.y,
-		BG_PANEL_PARAM.fSize.x,BG_PANEL_PARAM.fSize.y,
-		m_pTexture[E_TEXTURE::BG_PANEL]);
+	m_p2dObj[OBJ_BG_PANEL]->SetTexture(m_pTexture[E_TEXTURE::BG_PANEL]);
+	m_p2dObj[OBJ_BG_PANEL]->Draw();
 }
 
 /* ========================================
@@ -289,29 +312,23 @@ void CResult::DrawWarningTexture()
 	case 3: pWarningTex = m_pTexture[E_TEXTURE::WARNING_STAGE_3]; break;
 	}
 	
-	// 手配書表示
-	Draw2d(
-		WARNING_TEXTURE_PARAM.fPos.x,
-		WARNING_TEXTURE_PARAM.fPos.y,
-		WARNING_TEXTURE_PARAM.fSize.x,
-		WARNING_TEXTURE_PARAM.fSize.y,
-		pWarningTex);
+
+	m_p2dObj[OBJ_WARNING_STAGE]->SetTexture(pWarningTex);
+	m_p2dObj[OBJ_WARNING_STAGE]->Draw();
 
 	// クリアした場合
 	if (m_Data.bClearFlg)
 	{
 		// スタンプを表示する
-		Draw2d(
-			CLEAR_STAMP_PARAM.fPos.x,
-			CLEAR_STAMP_PARAM.fPos.y,
-			CLEAR_STAMP_PARAM.fSize.x,
-			CLEAR_STAMP_PARAM.fSize.y,
-			m_pTexture[E_TEXTURE::CLEAR_STAMP]);
+		m_p2dObj[OBJ_CLEAR_STAMP]->SetTexture(m_pTexture[E_TEXTURE::CLEAR_STAMP]);
+		m_p2dObj[OBJ_CLEAR_STAMP]->Draw();
 	}
 
 	// 決定ボタン
-	m_pSelectButton->SetAlpha(fabs(cosf(m_nButtonAlphaCnt * FLASH_BUTTON_TEXT_ADJUST)));	// 点滅の為、透明度変更
-	m_pSelectButton->Draw();
+	m_p2dObj[OBJ_SELECT_BUTTON]->SetTexture(m_pTexture[E_TEXTURE::SELECT]);
+
+	m_p2dObj[OBJ_SELECT_BUTTON]->SetAlpha(fabs(cosf(m_nButtonAlphaCnt * FLASH_BUTTON_TEXT_ADJUST)));	// 点滅の為、透明度変更
+	m_p2dObj[OBJ_SELECT_BUTTON]->Draw();
 
 }
 
@@ -328,23 +345,15 @@ void CResult::DrawWarningTexture()
 void CResult::DrawSurvivalTime()
 {
 	// 生存時間(文字)
-	Draw2d(
-		SVL_TIME_TEXT_PARAM.fPos.x,
-		SVL_TIME_TEXT_PARAM.fPos.y,
-		SVL_TIME_TEXT_PARAM.fSize.x,
-		SVL_TIME_TEXT_PARAM.fSize.y,
-		m_pTexture[E_TEXTURE::SVL_TIME_TEXT]);
+	m_p2dObj[OBJ_SVL_TIME_TEXT]->SetTexture(m_pTexture[E_TEXTURE::SVL_TIME_TEXT]);
+	m_p2dObj[OBJ_SVL_TIME_TEXT]->Draw();
 
 	// 生存時間(数字)
 	DispTime();
 
 	// 線
-	Draw2d(
-		SVL_TIME_LINE_PARAM.fPos.x,
-		SVL_TIME_LINE_PARAM.fPos.y,
-		SVL_TIME_LINE_PARAM.fSize.x,
-		SVL_TIME_LINE_PARAM.fSize.y,
-		m_pTexture[E_TEXTURE::LINE]);
+	m_p2dObj[OBJ_SVL_TIME_LINE]->SetTexture(m_pTexture[E_TEXTURE::LINE]);
+	m_p2dObj[OBJ_SVL_TIME_LINE]->Draw();
 }
 
 
@@ -360,49 +369,35 @@ void CResult::DrawSurvivalTime()
 void CResult::DrawScore()
 {
 	// スコア(文字)
-	Draw2d(
-		SCORE_TEXT_PARAM.fPos.x,
-		SCORE_TEXT_PARAM.fPos.y,
-		SCORE_TEXT_PARAM.fSize.x,
-		SCORE_TEXT_PARAM.fSize.y,
-		m_pTexture[E_TEXTURE::SCORE_TEXT]);
+	m_p2dObj[OBJ_SCORE_TEXT]->SetTexture(m_pTexture[E_TEXTURE::SCORE_TEXT]);
+	m_p2dObj[OBJ_SCORE_TEXT]->Draw();
 
 
 	// 総スコア(数字)
-	DispNum(m_Data.nTotalScore, 5, SCORE_NUM_PARAM.fPos, SCORE_NUM_PARAM.fSize, SCORE_NUM_SPACE);
+	DispNum(m_Data.nTotalScore, 5, OBJ_SCORE_NUM, MAP_TEX_POS.at(OBJ_SCORE_NUM), SCORE_NUM_SPACE);
 
 	// ハイスコア(文字)
-	Draw2d(
-		HIGH_SCORE_TEXT_PARAM.fPos.x,
-		HIGH_SCORE_TEXT_PARAM.fPos.y,
-		HIGH_SCORE_TEXT_PARAM.fSize.x,
-		HIGH_SCORE_TEXT_PARAM.fSize.y,
-		m_pTexture[E_TEXTURE::HIGH_SCORE_TEXT]);
+	m_p2dObj[OBJ_HIGH_SCORE_TEXT]->SetTexture(m_pTexture[E_TEXTURE::HIGH_SCORE_TEXT]);
+	m_p2dObj[OBJ_HIGH_SCORE_TEXT]->Draw();
 
 	// ハイスコアを更新していたら(ゲーム終了時にハイスコアを更新する為)
 	if (m_Data.nHighScore[m_Data.nStageNum-1] == m_Data.nTotalScore)
 	{
 		// ニューレコード(文字)
-		Draw2d(
-			NEW_RECORD_TEXT_PARAM.fPos.x,
-			NEW_RECORD_TEXT_PARAM.fPos.y,
-			NEW_RECORD_TEXT_PARAM.fSize.x,
-			NEW_RECORD_TEXT_PARAM.fSize.y,
-			m_pTexture[E_TEXTURE::NEW_RECORD_TEXT]);
+		m_p2dObj[OBJ_NEW_RECORD_TEXT]->SetTexture(m_pTexture[E_TEXTURE::NEW_RECORD_TEXT]);
+		m_p2dObj[OBJ_NEW_RECORD_TEXT]->SetAlpha(fabs(cosf(m_nNewRecoAlphaCnt * FLASH_NEW_RECORD_TEXT_ADJUST)));	// 点滅の為、透明度変更
+
+		m_p2dObj[OBJ_NEW_RECORD_TEXT]->Draw();
 
 	}
 
 	// ハイスコア(数字)
-	DispNum(m_Data.nHighScore[m_Data.nStageNum - 1], 5, HIGH_SCORE_NUM_PARAM.fPos, HIGH_SCORE_NUM_PARAM.fSize, HIGH_SCORE_NUM_SPACE);
+	DispNum(m_Data.nHighScore[m_Data.nStageNum - 1], 5, OBJ_HIGH_SCORE_NUM, MAP_TEX_POS.at(OBJ_HIGH_SCORE_NUM), HIGH_SCORE_NUM_SPACE);
 	
 
 	// 線
-	Draw2d(
-		SCORE_LINE_PARAM.fPos.x,
-		SCORE_LINE_PARAM.fPos.y,
-		SCORE_LINE_PARAM.fSize.x,
-		SCORE_LINE_PARAM.fSize.y,
-		m_pTexture[E_TEXTURE::LINE]);
+	m_p2dObj[OBJ_SCORE_LINE]->SetTexture(m_pTexture[E_TEXTURE::LINE]);
+	m_p2dObj[OBJ_SCORE_LINE]->Draw();
 }
 
 
@@ -418,12 +413,8 @@ void CResult::DrawScore()
 void CResult::DrawHunt()
 {
 	// 討伐数(文字)
-	Draw2d(
-		HUNT_TEXT_PARAM.fPos.x,
-		HUNT_TEXT_PARAM.fPos.y,
-		HUNT_TEXT_PARAM.fSize.x,
-		HUNT_TEXT_PARAM.fSize.y,
-		m_pTexture[E_TEXTURE::HUNT_TEXT]);
+	m_p2dObj[OBJ_HUNT_TEXT]->SetTexture(m_pTexture[E_TEXTURE::HUNT_TEXT]);
+	m_p2dObj[OBJ_HUNT_TEXT]->Draw();
 
 	// ステージ１ならボス討伐数を表示しない
 	int nDispHuntNum = 5;	// 青＋緑＋黄＋赤＋ボス＝５
@@ -433,84 +424,80 @@ void CResult::DrawHunt()
 	for (int i = 0; i < nDispHuntNum; i++)
 	{
 		// スライムの画像
-		Draw2d(
-			SLIME_TEXTURE_PARAM.fPos.x + (i * SLIME_SPACE_Y),
-			SLIME_TEXTURE_PARAM.fPos.y,
-			SLIME_TEXTURE_PARAM.fSize.x,
-			SLIME_TEXTURE_PARAM.fSize.y,
-			m_pTexture[E_TEXTURE::SLIME_BLUE + i]);
+		m_p2dObj[OBJ_SLIME_HUNT_BG]->SetPos({
+			MAP_TEX_POS.at(OBJ_SLIME_HUNT_BG).x + (i * SLIME_SPACE_Y),
+			MAP_TEX_POS.at(OBJ_SLIME_HUNT_BG).y,
+			MAP_TEX_POS.at(OBJ_SLIME_HUNT_BG).z,
+			});
+		m_p2dObj[OBJ_SLIME_HUNT_BG]->SetTexture(m_pTexture[E_TEXTURE::SLIME_BLUE + i]);
+		m_p2dObj[OBJ_SLIME_HUNT_BG]->Draw();
 
-		// スライム緑～赤の下に青の倍数を表示する
+		
+		// スライム緑～赤の下に青の倍数を表示する(i = 1～3)
 		if (1 <= i && i <= 3)
 		{
 			// ()
-			Draw2d(
-				PARENTHESIS_PARAM.fPos.x + (i*SLIME_SPACE_Y),
-				PARENTHESIS_PARAM.fPos.y,
-				PARENTHESIS_PARAM.fSize.x,
-				PARENTHESIS_PARAM.fSize.y,
-				m_pTexture[E_TEXTURE::PARENTHESIS]);
+			for (int j = 0; j < 2; j++)
+			{
+				m_p2dObj[OBJ_PARENTHESIS]->SetPos({
+								MAP_TEX_POS.at(OBJ_PARENTHESIS).x + (i * SLIME_SPACE_Y) + (j * 100),
+								MAP_TEX_POS.at(OBJ_PARENTHESIS).y,
+								MAP_TEX_POS.at(OBJ_PARENTHESIS).z,
+					});
+				m_p2dObj[OBJ_PARENTHESIS]->SetUvOffset({ PARENTHESIS_UVSCALE.x * j, PARENTHESIS_UVSCALE.y });
+				m_p2dObj[OBJ_PARENTHESIS]->SetUvScale(PARENTHESIS_UVSCALE);
+				m_p2dObj[OBJ_PARENTHESIS]->SetTexture(m_pTexture[E_TEXTURE::PARENTHESIS]);
+				m_p2dObj[OBJ_PARENTHESIS]->Draw();
+			}
+			
 
 			// 青スライム画像
-			Draw2d(
-				MULTI_SLIME_PARAM.fPos.x + (i*SLIME_SPACE_Y),
-				MULTI_SLIME_PARAM.fPos.y,
-				MULTI_SLIME_PARAM.fSize.x,
-				MULTI_SLIME_PARAM.fSize.y,
-				m_pTexture[E_TEXTURE::SLIME_BLUE]);
+			m_p2dObj[OBJ_MULTI_BLUE_SLIME]->SetPos({
+				MAP_TEX_POS.at(OBJ_MULTI_BLUE_SLIME).x + (i * SLIME_SPACE_Y),
+				MAP_TEX_POS.at(OBJ_MULTI_BLUE_SLIME).y,
+				MAP_TEX_POS.at(OBJ_MULTI_BLUE_SLIME).z,
+				});
+			m_p2dObj[OBJ_MULTI_BLUE_SLIME]->SetTexture(m_pTexture[E_TEXTURE::SLIME_BLUE]);
+			m_p2dObj[OBJ_MULTI_BLUE_SLIME]->Draw();
 
 			// ×
-			Draw2d(
-				MULTI_PARAM.fPos.x + (i*SLIME_SPACE_Y),
-				MULTI_PARAM.fPos.y,
-				MULTI_PARAM.fSize.x,
-				MULTI_PARAM.fSize.y,
-				m_pTexture[E_TEXTURE::MULTI]);
+			m_p2dObj[OBJ_MULTI]->SetPos({
+				MAP_TEX_POS.at(OBJ_MULTI).x + (i * SLIME_SPACE_Y),
+				MAP_TEX_POS.at(OBJ_MULTI).y,
+				MAP_TEX_POS.at(OBJ_MULTI).z,
+				});
+			m_p2dObj[OBJ_MULTI]->SetTexture(m_pTexture[E_TEXTURE::MULTI]);
+			m_p2dObj[OBJ_MULTI]->Draw();
 
+			// 倍数
+			DispNum(pow(2,i), 1, OBJ_MULTI_NUM, {
+			MAP_TEX_POS.at(OBJ_MULTI_NUM).x + (i * SLIME_SPACE_Y),
+			MAP_TEX_POS.at(OBJ_MULTI_NUM).y,
+			MAP_TEX_POS.at(OBJ_MULTI_NUM).z },
+			DEF_NUM_SPACE);
 		}
-		// 倍数
-		DispNum(2, 1, { MULTI_NUM_PARAM.fPos.x + (1 * SLIME_SPACE_Y), MULTI_NUM_PARAM.fPos.y }, MULTI_NUM_PARAM.fSize, DEF_NUM_SPACE);
-		DispNum(4, 1, { MULTI_NUM_PARAM.fPos.x + (2 * SLIME_SPACE_Y), MULTI_NUM_PARAM.fPos.y }, MULTI_NUM_PARAM.fSize, DEF_NUM_SPACE);
-		DispNum(8, 1, { MULTI_NUM_PARAM.fPos.x + (3 * SLIME_SPACE_Y), MULTI_NUM_PARAM.fPos.y }, MULTI_NUM_PARAM.fSize, DEF_NUM_SPACE);
 
 		// スライム別討伐数
-		//２桁以上の場合
-		if (m_Data.nKill[i] >= 10)
-		{
-			DispNum(m_Data.nKill[i], 1, {
-			SLIME_HUNT_NUM_PARAM.fPos.x + (i*SLIME_SPACE_Y) + (SLIME_HUNT_NUM_PARAM.fSize.x / 3),
-			SLIME_HUNT_NUM_PARAM.fPos.y },
-			SLIME_HUNT_NUM_PARAM.fSize, HUNT_NUM_SPACE);
-		}
-		//１桁の場合
-		else
-		{
-			DispNum(m_Data.nKill[i], 1, {
-				SLIME_HUNT_NUM_PARAM.fPos.x + (i*SLIME_SPACE_Y),
-				SLIME_HUNT_NUM_PARAM.fPos.y },
-				SLIME_HUNT_NUM_PARAM.fSize, HUNT_NUM_SPACE);
-		}
+		std::vector<int> digitArray;
+		NumStorage(&digitArray, m_Data.nKill[i], 1);
+		DispNum(m_Data.nKill[i], 1, OBJ_SLIME_HUNT_NUM, {
+			MAP_TEX_POS.at(OBJ_SLIME_HUNT_NUM).x + (i * SLIME_SPACE_Y) + (20.0f * (digitArray.size() - 1)),
+			MAP_TEX_POS.at(OBJ_SLIME_HUNT_NUM).y,
+			MAP_TEX_POS.at(OBJ_SLIME_HUNT_NUM).z },
+			HUNT_NUM_SPACE);
 
 	}
 
 	// 総討伐数(文字)
-	Draw2d(
-		TOTAL_HUNT_TEXT_PARAM.fPos.x,
-		TOTAL_HUNT_TEXT_PARAM.fPos.y,
-		TOTAL_HUNT_TEXT_PARAM.fSize.x,
-		TOTAL_HUNT_TEXT_PARAM.fSize.y,
-		m_pTexture[E_TEXTURE::TOTAL_HUNT_TEXT]);
+	m_p2dObj[OBJ_TOTAL_HUNT_TEXT]->SetTexture(m_pTexture[E_TEXTURE::TOTAL_HUNT_TEXT]);
+	m_p2dObj[OBJ_TOTAL_HUNT_TEXT]->Draw();
 
 	// 総討伐数(数字)
-	DispNum(m_Data.nTotalKill, 1, TOTAL_HUNT_NUM_PARAM.fPos, TOTAL_HUNT_NUM_PARAM.fSize, DEF_NUM_SPACE);
+	DispNum(m_Data.nTotalKill, 1, OBJ_TOTAL_HUNT_NUM, MAP_TEX_POS.at(OBJ_TOTAL_HUNT_NUM), DEF_NUM_SPACE);
 
 	// 線
-	Draw2d(
-		HUNT_LINE_PARAM.fPos.x,
-		HUNT_LINE_PARAM.fPos.y,
-		HUNT_LINE_PARAM.fSize.x,
-		HUNT_LINE_PARAM.fSize.y,
-		m_pTexture[E_TEXTURE::LINE]);
+	m_p2dObj[OBJ_HUNT_LINE]->SetTexture(m_pTexture[E_TEXTURE::LINE]);
+	m_p2dObj[OBJ_HUNT_LINE]->Draw();
 }
 
 
@@ -526,15 +513,11 @@ void CResult::DrawHunt()
 void CResult::DrawMaxCombo()
 {
 	// 最大コンボ数(文字)
-	Draw2d(
-		MAX_COMBO_TEXT_PARAM.fPos.x,
-		MAX_COMBO_TEXT_PARAM.fPos.y,
-		MAX_COMBO_TEXT_PARAM.fSize.x,
-		MAX_COMBO_TEXT_PARAM.fSize.y,
-		m_pTexture[E_TEXTURE::MAX_COMBO_TEXT]);
+	m_p2dObj[OBJ_MAX_COMBO_TEXT]->SetTexture(m_pTexture[E_TEXTURE::MAX_COMBO_TEXT]);
+	m_p2dObj[OBJ_MAX_COMBO_TEXT]->Draw();
 
 	// 最大コンボ数(数字)
-	DispNum(m_Data.nMaxCombo, 1, MAX_COMBO_NUM_PARAM.fPos, MAX_COMBO_NUM_PARAM.fSize, DEF_NUM_SPACE);
+	DispNum(m_Data.nMaxCombo, 1, OBJ_MAX_COMBO_NUM, MAP_TEX_POS.at(OBJ_MAX_COMBO_NUM), DEF_NUM_SPACE);
 }
 
 
@@ -550,22 +533,14 @@ void CResult::DrawMaxCombo()
 void CResult::DispTime()
 {
 	// 秒数
-	DispNum(m_Data.GetSecond(), 2, SVL_TIME_NUM__PARAM.fPos, SVL_TIME_NUM__PARAM.fSize, DEF_NUM_SPACE);
+	DispNum(m_Data.GetSecond(), 2, OBJ_SVL_TIME_SECOND_NUM, MAP_TEX_POS.at(OBJ_SVL_TIME_SECOND_NUM), DEF_NUM_SPACE);
 
 	// コロン
-	Draw2d(
-		SVL_TIME_NUM__PARAM.fPos.x - (SVL_TIME_NUM_SPACE * 2) -7.0f,	// -7.0fはコロンの位置の微調整
-		SVL_TIME_NUM__PARAM.fPos.y,
-		SVL_TIME_NUM__PARAM.fSize.x,
-		SVL_TIME_NUM__PARAM.fSize.y,
-		m_pTexture[E_TEXTURE::COLON]);
-
-	TDiType<float> pos = { 
-		SVL_TIME_NUM__PARAM.fPos.x - (SVL_TIME_NUM_SPACE * 3) ,
-		SVL_TIME_NUM__PARAM.fPos.y };
+	m_p2dObj[OBJ_SVL_TIME_COLON]->SetTexture(m_pTexture[E_TEXTURE::COLON]);
+	m_p2dObj[OBJ_SVL_TIME_COLON]->Draw();
 
 	// 分数
-	DispNum(m_Data.GetMinute(), 2, pos, SVL_TIME_NUM__PARAM.fSize, DEF_NUM_SPACE);
+	DispNum(m_Data.GetMinute(), 2, OBJ_SVL_TIME_MINUTE_NUM, MAP_TEX_POS.at(OBJ_SVL_TIME_MINUTE_NUM), DEF_NUM_SPACE);
 }
 
 /* ========================================
@@ -581,38 +556,33 @@ void CResult::DispTime()
 	----------------------------------------
 	戻値：なし
 =========================================== */
-void CResult::DispNum(int dispNum, int nDigits, TDiType<float> pos, TDiType<float> size, float NumSpace)
+void CResult::DispNum(int dispNum, int nDigits, E_2D_OBJ_ID objId, TTriType<float> fPos, float NumSpace)
 {
 
 	std::vector<int> digitArray;
-	DirectX::XMFLOAT4X4 mat;
 	int Num = dispNum;
 
-
 	NumStorage(&digitArray, dispNum, nDigits);
-
-
-	
 
 	for (int i = 0; i < digitArray.size(); i++)
 	{
 
 		int width = int(NumSpace * i);
-		//ワールド行列はXとYのみを考慮して作成(Zは10ぐらいに配置
-		DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(pos.x - width, pos.y, 0.0f);
-		DirectX::XMStoreFloat4x4(&mat, DirectX::XMMatrixTranspose(world));
 
-		//スプライトの設定
-		Sprite::SetWorld(mat);
+		TTriType<float> pos ={ 
+			fPos.x - width,
+			fPos.y,
+			fPos.z };
 
-		int x = digitArray[i] % NUM_SPLIT.x;	//ここ名前募集します
-		int y = digitArray[i] / NUM_SPLIT.x;	//配列に入ってる数字の場所を計算してます
+		int x = digitArray[i] % NUM_SPLIT.x;	
+		int y = digitArray[i] / NUM_SPLIT.x;	
 
-		Sprite::SetSize(DirectX::XMFLOAT2(size.x, -size.y));
-		Sprite::SetUVPos(DirectX::XMFLOAT2(NUM_UVSCALE.x * x, NUM_UVSCALE.y * y));
-		Sprite::SetUVScale(DirectX::XMFLOAT2(NUM_UVSCALE.x, NUM_UVSCALE.y));
-		Sprite::SetTexture(m_pTexture[E_TEXTURE::NUM]);
-		Sprite::Draw();
+		m_p2dObj[objId]->SetPos(pos);
+		m_p2dObj[objId]->SetUvOffset({ NUM_UVSCALE.x * x, NUM_UVSCALE.y * y });
+		m_p2dObj[objId]->SetUvScale({ NUM_UVSCALE.x, NUM_UVSCALE.y });
+
+		m_p2dObj[objId]->SetTexture(m_pTexture[E_TEXTURE::NUM]);
+		m_p2dObj[objId]->Draw();
 	}
 }
 

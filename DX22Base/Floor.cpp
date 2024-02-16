@@ -15,10 +15,13 @@
 	・2023/12/07 ゲームパラメータから一部定数移動 takagi
 	・2023/12/15 ステージ別に床のモデルを設定できるように修正 Sawada
 	・2023/12/15 コンストラクタの引数にステージ番号を追加 yamashita
+	・2024/02/09 UsingCamera使用 takagi
 
 ========================================== */
 #include "Floor.h"
 #include "DirectWrite.h"
+#include "UsingCamera.h"	//カメラ使用
+
 // =============== 定数定義 =====================
 const TDiType<float> FLOOR_OFFSET[3] = {	//下の配列番号の｢-2｣は調整用
 	{47.842f * FLOOR_SCALE[CFloor::Stage1].x,47.842f * FLOOR_SCALE[CFloor::Stage1].x},
@@ -43,7 +46,6 @@ const float STAGE1_FLOOR_SCALE_Z = 1.1f;
 CFloor::CFloor(TPos3d<float>* pPlayerPos, StageKinds stageKind)
 	:m_pModel(nullptr)
 	,m_pVS(nullptr)
-	,m_pCamera(nullptr)
 	,m_pPlayerFloor{0,0,0}
 	,m_pPlayePos(pPlayerPos)
 	,m_stage(stageKind)
@@ -132,8 +134,8 @@ void CFloor::Draw()
 	for (int i = 0; i < FLOOR_NUM; i++)
 	{
 		mat[0] = m_Transform[i].GetWorldMatrixSRT();
-		mat[1] = m_pCamera->GetViewMatrix();
-		mat[2] = m_pCamera->GetProjectionMatrix();
+		mat[1] = CUsingCamera::GetThis().GetCamera()->GetViewMatrix();
+		mat[2] = CUsingCamera::GetThis().GetCamera()->GetProjectionMatrix();
 
 		//-- 行列をシェーダーへ設定
 		m_pVS->WriteBuffer(0, mat);
@@ -198,20 +200,6 @@ void CFloor::calculationPosition()
 
 		m_Transform[i].fPos = { pos.x, -0.6f, pos.z };	//座標を確定
 	}
-}
-
-/* ========================================
-   カメラセット関数
-   ----------------------------------------
-   内容：他のオブジェクトと同じカメラをセットする
-   ----------------------------------------
-   引数：カメラのポインタ
-   ----------------------------------------
-   戻値：なし
-======================================== */
-void CFloor::SetCamera(const CCamera * pCamera)
-{
-	m_pCamera = pCamera;
 }
 
 /* ========================================

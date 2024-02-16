@@ -9,6 +9,7 @@
 
 	変更履歴
 	・2024/02/02 SweatEffectManagerクラス作成 Tei
+	・2024/02/13 カメラ削除 takagi
 
 ========================================== */
 
@@ -117,24 +118,10 @@ void CSweatEffectManager::Create(TTriType<float> pos,  TTriType<float> radian)
 		// 使用済みの汗エフェクトはスルー
 		if (m_pSweatEffect[i] != nullptr) continue;
 		// 座標、角度、エフェクト時間、Effekseerファイル、カメラを指定して生成
-		m_pSweatEffect[i] = new CSweatEffect(pos, radian, TOTAL_SWEAT_EFFECT_TIME, m_SweatEffect, m_pCamera);
+		m_pSweatEffect[i] = new CSweatEffect(pos, radian, TOTAL_SWEAT_EFFECT_TIME, m_SweatEffect);
 	}
 		
 
-}
-
-/* ========================================
-	カメラ情報セット関数
-	----------------------------------------
-	内容：描画処理で使用するカメラ情報セット
-	----------------------------------------
-	引数1：なし
-	----------------------------------------
-	戻値：なし
-======================================== */
-void CSweatEffectManager::SetCamera(const CCamera * pCamera)
-{
-	m_pCamera = pCamera;
 }
 
 /* ========================================

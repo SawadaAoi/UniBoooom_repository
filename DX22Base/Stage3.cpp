@@ -21,7 +21,7 @@
 	・2024/01/30 プレイヤー移動エフェクト関係の処理追加 Tei
 	・2024/02/02 汗エフェクト処理追加 Tei
 	・2024/02/05 ゲーム終了間際の加算スコアがトータルスコアに反映されるように(改) sawada
-	・2024/02/09 GetType()関数削除 takagi
+	・2024/02/09 GetType()関数削除・カメラ削除 takagi
 
 ========================================== */
 
@@ -47,9 +47,6 @@ CStage3::CStage3()
 {
 	m_pFloor = new CFloor(m_pPlayer->GetPosAddress(), CFloor::Stage3);	// 床生成
 	m_pUIStageManager->GetBossGaugePtr()->AddBossGauge(BOSS_GAUGE_S3[0].BossNum, BOSS_GAUGE_S3[0].startTime, BOSS_GAUGE_S3[0].maxTime);
-	//================セット================
-	m_pFloor->SetCamera(m_pCamera);
-
 	m_nStageNum = STAGE_NUM;
 }
 

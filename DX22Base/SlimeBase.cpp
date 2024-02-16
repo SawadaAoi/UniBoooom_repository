@@ -29,14 +29,16 @@
 	・2023/12/07 ゲームパラメータから一部定数移動 takagi
 	・2024/01/18 炎スライムのエフェクト追加 Tei
 	・2024/1/26  Drawの引数の const CCamera*　を削除 Yamashita
+	・2024/02/09 UsingCamera使用 takagi
+	・2024/02/13 カメラ削除 takagi
 
 ========================================== */
 
 // =============== インクルード ===================
 #include "SlimeBase.h"
 #include "Geometry.h"
-#include "GameParameter.h"		//定数定義用ヘッダー
-
+#include "GameParameter.h"	//定数定義用ヘッダー
+#include "UsingCamera.h"	//カメラ使用
 
 // =============== 定数定義 =======================
 const float SLIME_BASE_RADIUS = 0.5f;			// スライムの基準の大きさ
@@ -162,8 +164,6 @@ void CSlimeBase::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
 =========================================== */
 void CSlimeBase::Draw()
 {
-	if (!m_pCamera) { return; }	//ヌルチェック
-
 	//行列状態を取得してセット
 	DirectX::XMFLOAT4X4 world;
 	DirectX::XMStoreFloat4x4(&world, XMMatrixTranspose(
@@ -173,8 +173,8 @@ void CSlimeBase::Draw()
 
 	DirectX::XMFLOAT4X4 mat[3] = {
 	world,
-	m_pCamera->GetViewMatrix(),
-	m_pCamera->GetProjectionMatrix()
+	CUsingCamera::GetThis().GetCamera()->GetViewMatrix(),
+	CUsingCamera::GetThis().GetCamera()->GetProjectionMatrix()
 	};
 	ShaderList::SetWVP(mat);
 
@@ -213,7 +213,7 @@ void CSlimeBase::Draw()
 	}
 
 	//-- 影の描画
-	m_pShadow->Draw(m_Transform, m_fScaleShadow, m_pCamera);
+	m_pShadow->Draw(m_Transform, m_fScaleShadow);
 }
 
 
@@ -375,23 +375,6 @@ void CSlimeBase::MoveStop()
 		m_bMvStpFlg = false; 
 		m_nMvStpCnt = 0;
 	}
-}
-
-
-
-
-/* ========================================
-	カメラ情報セット関数
-	----------------------------------------
-	内容：描画処理で使用するカメラ情報セット
-	----------------------------------------
-	引数1：カメラのポインタ
-	----------------------------------------
-	戻値：なし
-======================================== */
-void CSlimeBase::SetCamera(const CCamera * pCamera)
-{
-	m_pCamera = pCamera;
 }
 
 /* ========================================

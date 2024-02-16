@@ -7,7 +7,7 @@ const float DEF_NUM_SPACE = 55.0f;
 const TDiType<int> NUM_SPLIT = { 5, 2 };
 const TDiType<float> NUM_UVSCALE = { (1.0f / 5) ,(1.0f / 2) };
 
-CNumberText::CNumberText(CCamera* pCamaer, Texture* pTexture, TDiType<float> pos, TDiType<float> size, int nDispNum, int nDigits)
+CNumberText::CNumberText(Texture* pTexture, TDiType<float> pos, TDiType<float> size, int nDispNum, int nDigits)
 	:m_pTexture(pTexture)
 	, m_fRightPos(pos)
 	, m_fSize(size)
@@ -21,7 +21,6 @@ CNumberText::CNumberText(CCamera* pCamaer, Texture* pTexture, TDiType<float> pos
 
 CNumberText::~CNumberText()
 {
-	SAFE_DELETE(m_pCamera);
 }
 
 void CNumberText::Update()
@@ -35,7 +34,6 @@ void CNumberText::Draw()
 	{
 		int width = m_fSpace * i;
 
-		m_p2dPoly[i]->SetCamera(m_pCamera);
 		m_p2dPoly[i]->SetTexture(m_pTexture);
 		m_p2dPoly[i]->SetSize({ m_fSize.x - width, m_fSize.y, 0.0f });
 		m_p2dPoly[i]->SetPos({ m_fRightPos.x, m_fRightPos.y, 0.0f });

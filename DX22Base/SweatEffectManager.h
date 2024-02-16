@@ -9,7 +9,7 @@
 
    変更履歴
 	・2024/02/02 汗エフェクトマネージャークラス作成 Tei
-
+	・2024/02/13 カメラ削除 takagi
 
 =========================================== */
 #ifndef __SWEAT_EFFECT_MANAGER_H__
@@ -30,13 +30,10 @@ public:
 	void Update(TTriType<float> pos);
 	void Draw();
 	void Create(TTriType<float> pos,  TTriType<float> radian);		// エフェクト生成
-
-	void SetCamera(const CCamera* pCamera);		// 他のオブジェクトと同一のカメラをセット
 	void DeleteCheck();							// 使ったエフェクトを削除関数
 
 private:
 	CSweatEffect* m_pSweatEffect[MAX_SWEAT_EFFECT_NUM];
-	const CCamera* m_pCamera;					// カメラ
 	//=======Effekseer=======
 	Effekseer::EffectRef m_SweatEffect;
 };

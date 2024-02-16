@@ -13,6 +13,7 @@
 	・2023/12/15 ボスゲージの取得処理追加 Sawada
 	・2024/01/01 シーン番号列挙 takagi
 	・2024/02/11 ボス出現警告処理追加 Tei
+	・2024/02/13 カメラ削除 takagi
 
 ========================================== */
 
@@ -53,7 +54,7 @@ public:
 	};
 public:
 	// ===メンバ関数宣言===
-	CUIStageManager(CPlayer* pPlayer,CCamera* pCamera, CSlimeManager* pSlimeMng, E_STAGE_NUM eStage);
+	CUIStageManager(CPlayer* pPlayer, CSlimeManager* pSlimeMng, E_STAGE_NUM eStage);
 	~CUIStageManager();
 	void Update();
 	void Draw();

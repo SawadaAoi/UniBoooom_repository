@@ -44,7 +44,7 @@
 	・2024/01/30 プレイヤー移動エフェクト用処理追加 Tei
 	・2024/02/02 汗エフェクト処理追加 Tei
 	・2024/02/08 汗エフェクト処理修正&&ハンマーの振る速度もついでに修正 sawada
-	・2024/02/09 カメラ更新除去 takagi
+	・2024/02/09 カメラ更新除去・UsingCamera使用 takagi
 
 ======================================== */
 
@@ -55,6 +55,7 @@
 #include "GameParameter.h"		//定数定義用ヘッダー
 #include "ShaderList.h"
 #include "ModelManager.h"
+#include "UsingCamera.h"	//カメラ使用
 
 // =============== 定数定義 =======================
 const float KEYBOARD_INPUT_SIZE = 1.0f;						// キーボードの入力値の大きさ
@@ -104,7 +105,6 @@ CPlayer::CPlayer()
 	, m_bAttackFlg(false)
 	, m_nHp(PLAYER_HP)		// プレイヤーのHPを決定
 	, m_bDieFlg(false)
-	, m_pCamera(nullptr)
 	, m_nSafeTimeCnt(0)
 	, m_bSafeTimeFlg(false)
 	, m_DrawFlg(true)
@@ -144,7 +144,6 @@ CPlayer::CPlayer()
 	// エフェクトマネージャーを作成
 	m_pWalkEffectMng = new CWalkEffectManager();
 	m_pSweatEffectMng = new CSweatEffectManager();
-
 
 }
 /* ========================================
@@ -242,7 +241,7 @@ void CPlayer::Update()
 		}
 
 		// スペースキーもしくはコントローラのBボタンに対しての押し続け && ハンマー間隔時間経過済み
-		if ((IsKeyPress(VK_SPACE) || IsKeyTriggerController(BUTTON_B)) && !m_bHumInvFlg
+		if ((IsKeyPress(VK_SPACE) || IsKeyPressController(BUTTON_B)) && !m_bHumInvFlg
 					&& !m_ChargeState == PLAYER_CHARGING)
 		{	
 			SAFE_DELETE(m_pWaitFrameCnt);	// カウンタ削除
@@ -269,13 +268,14 @@ void CPlayer::Update()
 				PlaySE(SE_CHARGED);
 			}
 		}
-		else if ((IsKeyRelease(VK_SPACE) || IsKeyTriggerController(BUTTON_B)) && !m_bHumInvFlg && !m_pModel->IsPlay(MOTION_PLAYER_SWING))
+		else if ((IsKeyRelease(VK_SPACE) || IsKeyReleaseController(BUTTON_B)) && !m_bHumInvFlg && !m_pModel->IsPlay(MOTION_PLAYER_SWING))
 		{	// スペースキーもしくはコントローラのBボタンに対しての離した時 && ハンマー間隔時間経過済み
 
 			SAFE_DELETE(m_pWaitFrameCnt);	// カウンタ削除
 
 			m_pModel->Play(MOTION_PLAYER_SWING, false, m_pHammer->GetSwingSpeed() * SWING_ANIM_ADJUST);	// アニメーションの再生
 			m_pModel->SetAnimationTime(MOTION_PLAYER_SWING, 0.0f);				// アニメーションタイムをスタート位置にセット
+
 
 			m_pHammer->AttackStart(m_Transform.fPos, m_Transform.fRadian.y);	// ハンマー攻撃開始
 			m_bAttackFlg = true;	// 攻撃フラグを有効にする
@@ -287,6 +287,7 @@ void CPlayer::Update()
 		}
 		else
 		{
+			m_fChargeCnt = 0;
 			m_nSwingFastCnt++;
 			if (SWING_FAST_INTERVAL < m_nSwingFastCnt)
 			{
@@ -364,8 +365,8 @@ void CPlayer::Draw()
 				* DirectX::XMMatrixRotationX(m_fRotate_x)			// X角度
 				* DirectX::XMMatrixRotationZ(m_Transform.fRadian.z)	// Z角度
 				* DirectX::XMMatrixTranslation(m_Transform.fPos.x, m_Transform.fPos.y, m_Transform.fPos.z)));	// 座標
-		mat[1] = m_pCamera->GetViewMatrix();
-		mat[2] = m_pCamera->GetProjectionMatrix();
+		mat[1] = CUsingCamera::GetThis().GetCamera()->GetViewMatrix();
+		mat[2] = CUsingCamera::GetThis().GetCamera()->GetProjectionMatrix();
 
 
 		ShaderList::SetWVP(mat);
@@ -400,7 +401,7 @@ void CPlayer::Draw()
 		//m_pHammer->Draw();		// ハンマーの描画
 	}
 
-	m_pShadow->Draw(m_Transform, PLAYER_SHADOW_SCALE, m_pCamera);	// 影の描画
+	//m_pShadow->Draw(m_Transform, PLAYER_SHADOW_SCALE);	// 影の描画
 
 	m_nWalkEffeCnt++;
 	m_pWalkEffectMng->Draw();
@@ -649,25 +650,6 @@ int* CPlayer::GetHpPtr()
 bool CPlayer::GetDieFlg() const
 {
 	return m_bDieFlg;
-}
-
-
-/* ========================================
-   カメラのセット関数
-   ----------------------------------------
-   内容：プレイヤー追従カメラをセットする
-   ----------------------------------------
-   引数：カメラ
-   ----------------------------------------
-   戻値：なし
-======================================== */
-void CPlayer::SetCamera(CCamera * pCamera)
-{
-	m_pCamera = pCamera;	//中身は変えられないけどポインタはかえれるのでヨシ！
-	m_pHammer->SetCamera(m_pCamera);
-	m_pWalkEffectMng->SetCamera(m_pCamera);
-	m_pSweatEffectMng->SetCamera(m_pCamera);
-
 }
 
 /* ========================================

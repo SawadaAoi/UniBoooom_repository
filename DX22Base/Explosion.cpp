@@ -27,6 +27,8 @@
 	・2023/12/04 爆発の仮表示3Dモデルを削除 yamasita
 	・2023/12/07 ゲームパラメータから一部定数移動・暗黙の型キャスト除去 takagi
 	・2024/02/07 爆発のエフェクトが回転するように修正 sawada
+	・2024/02/09 UsingCamera使用 takagi
+	・2024/02/13 カメラ削除 takagi
 
 ======================================== */
 
@@ -36,6 +38,7 @@
 #include "Sphere.h"				//球定義のヘッダー
 #include "GameParameter.h"		//定数定義用ヘッダー
 #include "DirectWrite.h"
+#include "UsingCamera.h"		//カメラ使用
 
 // =============== 定数定義 =======================
 #if MODE_GAME_PARAMETER
@@ -64,7 +67,7 @@ const float EXPLODE_ROTATE_SPEED = 2.0f;			// 1フレームの回転角度数
 	-------------------------------------
 	戻値：無し
 =========================================== */
-CExplosion::CExplosion(TPos3d<float> fPos, float fSize, float fTime, int comboNum, bool delayFlg, int nDamage, Effekseer::EffectRef explodeEffect, const CCamera* pCamera)
+CExplosion::CExplosion(TPos3d<float> fPos, float fSize, float fTime, int comboNum, bool delayFlg, int nDamage, Effekseer::EffectRef explodeEffect)
 	: m_fSizeAdd(0.0f)
 	, m_nDelFrame(0)
 	, m_bDelFlg(false)
@@ -76,7 +79,6 @@ CExplosion::CExplosion(TPos3d<float> fPos, float fSize, float fTime, int comboNu
 	, m_bSeFlg(false)
 	, m_nSeCnt(0)
 	, m_fDamage(0)
-	, m_pCamera(nullptr)
 	, m_bBossTouched(false)
 {
 	//爆発オブジェクト初期化
@@ -85,7 +87,6 @@ CExplosion::CExplosion(TPos3d<float> fPos, float fSize, float fTime, int comboNu
 	m_fExplodeTime = fTime;		// 爆発総時間をセットする
 	m_fMaxSize = fSize;			// 最大サイズをセットする
 	m_fDamage = (float)nDamage;		// 与えるダメージ量をセットする
-	m_pCamera = pCamera;		//カメラをセット
 	m_explodeEffect = explodeEffect;	//エフェクトをセット
 	// 遅延処理が無い場合
 	if(delayFlg==false)
@@ -157,10 +158,11 @@ void CExplosion::Draw()
 	if (m_bDelayFlg == false)
 	{
 		//エフェクトの描画
-		TPos3d<float> cameraPos = m_pCamera->GetPos();							//カメラ座標を取得
-		DirectX::XMFLOAT3 fCameraPos(cameraPos.x, cameraPos.y, cameraPos.z);	//XMFLOAT3に変換
-		LibEffekseer::SetViewPosition(fCameraPos);								//カメラ座標をセット
-		LibEffekseer::SetCameraMatrix(m_pCamera->GetViewWithoutTranspose(), m_pCamera->GetProjectionWithoutTranspose());	//転置前のviewとprojectionをセット
+		TPos3d<float> cameraPos = CUsingCamera::GetThis().GetCamera()->GetPos();	//カメラ座標を取得
+		DirectX::XMFLOAT3 fCameraPos(cameraPos.x, cameraPos.y, cameraPos.z);		//XMFLOAT3に変換
+		LibEffekseer::SetViewPosition(fCameraPos);									//カメラ座標をセット
+		LibEffekseer::SetCameraMatrix(CUsingCamera::GetThis().GetCamera()->GetViewWithoutTranspose(),
+			CUsingCamera::GetThis().GetCamera()->GetProjectionWithoutTranspose());	//転置前のviewとprojectionをセット
 
 	}
 }
@@ -347,21 +349,6 @@ bool CExplosion::GetBossTouched()
 }
 
 /* ========================================
-	カメラ情報セット関数
-	----------------------------------------
-	内容：描画処理で使用するカメラ情報セット
-	----------------------------------------
-	引数1：カメラポインタ
-	----------------------------------------
-	戻値：なし
-======================================== */
-void CExplosion::SetCamera(const CCamera * pCamera)
-{
-	m_pCamera = pCamera;
-}
-
-
-/* ========================================
 	SEフラグセット関数
 	-------------------------------------
 	内容：SEフラグをセット
@@ -374,6 +361,3 @@ void CExplosion::SetSeFlg(bool flg)
 {
 	m_bSeFlg = flg;
 }
-
-
-

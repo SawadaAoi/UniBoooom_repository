@@ -19,6 +19,7 @@
 	・2023/12/20 継承先がやりにくかったのでワールド変数をprotected化 takagi
 	・2024/01/16 統一のため、インクルードガードの___を__に変更	takagi
 	・2024/01/30 オフセットを変更できるように修正 sawada
+	・2024/02/09 カメラ削除 takagi
 
 ========================================== */
 
@@ -28,7 +29,6 @@
 // =============== インクルード ===================
 #include "Shader.h"			//メンバのヘッダ
 #include "Texture.h"		//メンバのヘッダ
-#include "Camera.h"			//メンバのヘッダ
 #include "Transform3d.h"	//メンバのヘッダ
 #include "DiType.h"			//メンバのヘッダ
 #include "TriType.h"		//メンバのヘッダ
@@ -42,7 +42,7 @@ public:
 	{
 		E_DRAW_MODE_NORMAL,		//通常の描画
 		E_DRAW_MODE_BILLBOARD,	//ビルボードとして描画
-	};
+	};	//描画状態
 private:
 	// ===構造体定義=========
 	typedef struct
@@ -65,7 +65,6 @@ public:
 	virtual ~C2dPolygon();														// デストラクタ
 	virtual void Update();														// 更新
 	virtual void Draw(const E_DRAW_MODE& eMode = E_DRAW_MODE_NORMAL);			// 描画
-	virtual void SetCamera(const CCamera* pCamera);								// カメラセッタ
 	virtual void SetPos(const TPos3d<float>& fPos);								// 位置セッタ
 	virtual void SetSize(const TTriType<float>& fScale);						// 大きさセッタ
 	virtual void SetRotate(const TTriType<float>& fRotate);						// 回転セッタ
@@ -103,8 +102,6 @@ private:
 	static unsigned int ms_unIdxCount;		//インデックス数
 	static ID3D11Buffer* ms_pVtxBuffer;		//頂点バッファ
 	static ID3D11Buffer* ms_pIdxBuffer;		//インデックスバッファ
-	const CCamera* m_pCamera;				//カメラ追跡
-	static const CCamera* ms_pCameraDef;	//疑似カメラ
 	// ===プロトタイプ宣言===
 	void MakeVertexShader();		//頂点シェーダ作成
 	void MakePixelShader();			//ピクセルシェーダー

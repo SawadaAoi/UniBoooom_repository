@@ -10,6 +10,7 @@
 	変更履歴
 	・2023/12/19 制作 takagi
 	・2023/12/24 サイズ・フレーム変更 takagi
+	・2024/02/13 カメラ削除 takagi
 
 ========================================== */
 
@@ -69,7 +70,6 @@ std::map<size_t, Texture*> CUnionManager::ms_pTexture;	//テクスチャ情報
 =========================================== */
 CUnionManager::CUnionManager()
 	:m_ucFlag(0x00)		//フラグ
-	,m_pCamera(nullptr)	//カメラ
 {
 	// =============== 静的作成 ===================
 	if (0 == ms_nCntUnionManager)	//現在、他にこのクラスが作成されていない時
@@ -220,21 +220,6 @@ void CUnionManager::Draw()
 }
 
 /* ========================================
-	カメラセット関数
-	-------------------------------------
-	内容：カメラの登録
-	-------------------------------------
-	引数1：CCamera * pCamera：カメラ
-	-------------------------------------
-	戻値：なし
-=========================================== */
-void CUnionManager::SetCamera(CCamera * pCamera)
-{
-	// =============== 初期化 ===================
-	m_pCamera = pCamera;	//カメラ初期化
-}
-
-/* ========================================
 	UNION生成関数
 	-------------------------------------
 	内容：引数のクラスにあわせてUNIONを生成
@@ -260,7 +245,6 @@ void CUnionManager::MakeUnion(const size_t & HashTypeId, const TPos3d<float> & f
 	Temp->SetTexture(ms_pTexture.at(HashTypeId));	//テクスチャ登録
 	Temp->SetPos(fPos);								//位置登録
 	Temp->SetSize(MAP_SCALE.at(HashTypeId));		//大きさ登録
-	Temp->SetCamera(m_pCamera);						//カメラセッタ
 
 	// =============== コンテナ登録 ===================
 	m_pUnion.push_back(Temp);	//UNION追加

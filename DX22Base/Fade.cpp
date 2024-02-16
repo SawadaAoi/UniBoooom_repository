@@ -19,16 +19,16 @@
 	・2023/12/04 カメラのファイル改名適用 takagi
 	・2023/12/17 フェード完了判定がずれ、最小・最大状態にならないことがある問題を修正・ブラックアウト対応 takagi
 	・2024/01/16 フェードアウト・インにイージング適用 takagi
+	・2024/02/09 UsingCamera使用 takagi
 
 ========================================== */
 
 // =============== インクルード ===================
-#include "Fade.h"		//自身のヘッダ
-#include "CameraDef.h"	//疑似カメラ
-#include <math.h>		//pow使用
-
+#include "Fade.h"			//自身のヘッダ
+#include <math.h>			//pow使用
+#include "UsingCamera.h"	//カメラ使用
 #if _DEBUG
-#include <Windows.h>	//メッセージボックス用
+#include <Windows.h>		//メッセージボックス用
 #endif
 
 // =============== 定数・マクロ定義 =====================
@@ -65,7 +65,6 @@ unsigned int CFade::ms_unIdxSize;				//インデックスサイズ
 unsigned int CFade::ms_unIdxCount;				//インデックス数
 ID3D11Buffer* CFade::ms_pVtxBuffer = nullptr;	//頂点バッファ
 ID3D11Buffer* CFade::ms_pIdxBuffer = nullptr;	//インデックスバッファ 
-CCamera* CFade::ms_pDefCamera = nullptr;		//専用予備カメラ
 
 /* ========================================
 	コンストラクタ関数
@@ -76,19 +75,15 @@ CCamera* CFade::ms_pDefCamera = nullptr;		//専用予備カメラ
 	-------------------------------------
 	戻値：なし
 =========================================== */
-CFade::CFade(const CCamera* pCamera)
+CFade::CFade()
 	:m_ucFlag(0x00)									//フラグ
-	,m_pCamera(pCamera)								//カメラ
 	,m_Transform(INIT_POS, INIT_SCALE, INIT_RADIAN)	//ワールド座標
-	,m_UvParam{ {SCALE_OUT_MIN}, {0.0f } }					//シェーダー用UV座標
+	,m_UvParam{ {SCALE_OUT_MIN}, {0.0f } }			//シェーダー用UV座標
 	,m_nFrame(0)								
 {
 	// =============== 静的作成 ===================
 	if (0 == ms_nCntFade)	//現在、他にこのクラスが作成されていない時
 	{
-		// =============== カメラ作成 ===================
-		ms_pDefCamera = new CCameraDef();	//予備カメラ
-
 		// =============== シェーダー作成 ===================
 		ms_pVs = new VertexShader();	//頂点シェーダ作成
 		ms_pVs->Load(VS_PASS.c_str());	//頂点シェーダ読み込み
@@ -102,20 +97,10 @@ CFade::CFade(const CCamera* pCamera)
 		Make();	//平面ポリゴン作成
 	}
 
-	// =============== 初期化 ===================
-	if (pCamera)	//ヌルチェック
-	{
-		m_pCamera = pCamera;	//カメラ初期化
-	}
-	else
-	{
-		m_pCamera = ms_pDefCamera;	//疑似カメラ
-	}
-
 	// =============== 行列作成 ===================
-	m_aMatrix[0] = m_Transform.GetWorldMatrixSRT();							//ワールド行列
-	DirectX::XMStoreFloat4x4(&m_aMatrix[1], DirectX::XMMatrixIdentity());	//ビュー行列：単位行列
-	m_aMatrix[2] = m_pCamera->GetProjectionMatrix(CCamera::E_DRAW_TYPE_2D);	//プロジェクション行列
+	m_aMatrix[0] = m_Transform.GetWorldMatrixSRT();														//ワールド行列
+	DirectX::XMStoreFloat4x4(&m_aMatrix[1], DirectX::XMMatrixIdentity());								//ビュー行列：単位行列
+	m_aMatrix[2] = CUsingCamera::GetThis().GetCamera()->GetProjectionMatrix(CCamera::E_DRAW_TYPE_2D);	//プロジェクション行列
 
 	// =============== カウンタ ===================
 	ms_nCntFade++;	//自身の数カウント
@@ -158,7 +143,6 @@ CFade::~CFade()
 		SAFE_DELETE(ms_pVs);		//頂点シェーダー解放
 		SAFE_DELETE(ms_pPs);		//ピクセルシェーダー解放
 		SAFE_DELETE(ms_pTexture);	//テクスチャ解放
-		SAFE_DELETE(ms_pDefCamera);	//予備カメラ解放
 		//SAFE_DELETE(ms_pVtx);		//頂点情報解放
 		//SAFE_DELETE(ms_pIdx);		//頂点インデックス解放
 		//SAFE_DELETE(ms_pVtxBuffer);	//頂点バッファ解放
@@ -224,8 +208,8 @@ void CFade::Update()
 	}
 
 	// =============== 行列更新 ===================
-	m_aMatrix[0] = m_Transform.GetWorldMatrixSRT();							//ワールド行列更新
-	m_aMatrix[2] = m_pCamera->GetProjectionMatrix(CCamera::E_DRAW_TYPE_2D);	//プロジェクション行列更新
+	m_aMatrix[0] = m_Transform.GetWorldMatrixSRT();														//ワールド行列更新
+	m_aMatrix[2] = CUsingCamera::GetThis().GetCamera()->GetProjectionMatrix(CCamera::E_DRAW_TYPE_2D);	//プロジェクション行列更新
 }
 
 /* ========================================

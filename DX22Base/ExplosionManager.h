@@ -18,6 +18,7 @@
 	・2023/11/21 コンボ数機能の一部をコンボクラスに移動 Sawada
 	・2023/11/21 BoooomUI用のメンバ変数を追加 Tei
 	・2023/12/07 ゲームパラメータから一部定数移動・Effekseer.hのインクルードをcppに移動 takagi
+	・2024/02/09 カメラ削除 takagi
 
 ========================================== */
 #ifndef __EXPLOSION_MANAGER_H__	//ExplosionManager.hインクルードガード
@@ -81,7 +82,6 @@ public:
 
 	CExplosion* GetExplosionPtr(int num);
 
-	void SetCamera(const CCamera* pCamera);	//他のオブジェクトと同一のカメラをセット
 	void SetCombo(CCombo* pCombo);
 
 
@@ -90,7 +90,6 @@ private:
 	CExplosion* m_pExplosion[MAX_EXPLOSION_NUM];	//爆発の配列
 	CBoooomUI* m_pBoooomUI[MAX_BOOOOM_NUM];			//Boooom表示用の配列
 	CCombo* m_pCombo;								// コンボ処理用
-	const CCamera* m_pCamera;
 private:
 	Texture* m_pTexUI;	//Boooom用テクスチャ
 	XAUDIO2_BUFFER* m_pSEExplode;

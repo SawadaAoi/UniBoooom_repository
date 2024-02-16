@@ -35,6 +35,7 @@
 	・2024/01/28 死亡モーション追加 Sawada
 	・2024/01/30 プレイヤー移動エフェクト用変数、関数追加
 	・2024/02/02 汗エフェクト処理追加 Tei
+	・2024/02/09 カメラ削除 takagi
 
 ========================================== */
 #ifndef __PLAYER_H__
@@ -47,7 +48,6 @@
 #include "SphereInfo.h"
 #include "Transform3d.h"
 #include "Pos3d.h"
-#include "Camera.h"
 #include "Object.h"
 #include "Sound.h"
 #include "Model.h"
@@ -58,8 +58,7 @@
 #include "SweatEffectManager.h"
 
 // =============== クラス定義 =====================
-class CPlayer
-	: public CObject
+class CPlayer: public CObject
 {
 public:
 	// === 列挙 ===
@@ -128,7 +127,6 @@ public:
 	bool GetCharge();
 
 	// セット関数
-	void SetCamera(CCamera* pCamera);
 	void SetSweatEffectMng(CSweatEffectManager* pSweatefcMng);
 
 private:
@@ -145,7 +143,6 @@ private:
 	AnimeModel* m_pModel;				// プレイヤーのモデル
 
 	CHammer* m_pHammer;					// ハンマークラスのポインタ(プレイヤーが管理する)
-	CCamera* m_pCamera;					// プレイヤーを追従するカメラ
 
 	CShadow* m_pShadow;
 	CFrameCnt* m_pWaitFrameCnt;				// 待機モーション用フレームカウントダウン
@@ -207,8 +204,4 @@ private:
 	PLAYER_CHARGE_STATE m_ChargeState;
 };
 
-
 #endif // !__PLAYER_H__
-
-
-

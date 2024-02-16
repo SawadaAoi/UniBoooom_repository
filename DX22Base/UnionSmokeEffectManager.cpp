@@ -11,6 +11,7 @@
 	変更履歴
 	・2024/02/06 クラス作成 Tei
 	・2024/02/08 エフェクトサイズを定数に修正 sawada
+	・2024/02/13 カメラ削除 takagi
 
 ========================================== */
 
@@ -102,8 +103,8 @@ void CUnionSmokeEffectManager::Create(TPos3d<float> fpos, int slimelevel)
 		// 使用済みの結合エフェクトはスルー
 		if (m_pUnionSmokeEffect[i] != nullptr) continue;
 
-		// 座標、大きさ、使用のテクスチャ、カメラを指定して生成
-		m_pUnionSmokeEffect[i] = new CUnionSmokeEffect(fpos, UNION_SMOKE_EFFECT_SIZE[slimelevel - 1], m_pTexture[slimelevel - 1], m_pCamera);
+		// 座標、大きさ、使用のテクスチャを指定して生成
+		m_pUnionSmokeEffect[i] = new CUnionSmokeEffect(fpos, UNION_SMOKE_EFFECT_SIZE[slimelevel - 1], m_pTexture[slimelevel - 1]);
 
 		return;
 	}
@@ -174,18 +175,4 @@ void CUnionSmokeEffectManager::DeleteCheck()
 		SAFE_DELETE(m_pUnionSmokeEffect[i]);	// 結合エフェクトを削除する
 
 	}
-}
-
-/* ========================================
-	カメラ情報セット関数
-	----------------------------------------
-	内容：描画処理で使用するカメラ情報セット
-	----------------------------------------
-	引数1：なし
-	----------------------------------------
-	戻値：なし
-======================================== */
-void CUnionSmokeEffectManager::SetCamera(const CCamera * pCamera)
-{
-	m_pCamera = pCamera;
 }

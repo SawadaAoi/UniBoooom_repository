@@ -9,6 +9,7 @@
 
 	変更履歴
 	・2023/11/27 h作成 yamashita
+	・2024/02/09 カメラ削除 takagi
 
 ========================================== */
 
@@ -17,7 +18,6 @@
 
 // =============== インクルード ===================
 #include "Object.h"
-#include "Camera.h"
 
 class CItem
 	:public CObject
@@ -25,12 +25,6 @@ class CItem
 public:
 	CItem();
 	virtual ~CItem();
-
-	void SetCamera(const CCamera* pCamera);
-protected:
-	const CCamera*	m_pCamera;
 };
-
-
 
 #endif // !__ITEM_H__

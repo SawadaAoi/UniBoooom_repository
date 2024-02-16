@@ -10,6 +10,7 @@
 	変更履歴
 	・2023/11/18　作成 yamamoto
 	・2023/11/24　コメント追加 yamamoto
+	・2024/02/13 UsingCamera使用 takagi
 
 ========================================== */
 
@@ -17,6 +18,7 @@
 #include "ScoreOverHead.h"
 #include "Sprite.h"
 #include "GameParameter.h"		//定数定義用ヘッダー
+#include "UsingCamera.h"	//カメラ使用
 
 /* ========================================
 	関数：コンストラクタ
@@ -109,10 +111,10 @@ void CScoreOverHead::Draw()
 	SetRenderTargets(1, &pRTV, nullptr);		//DSVがnullだと2D表示になる
 
 	DirectX::XMFLOAT4X4 mat[3];
-	mat[1] = m_pCamera->GetViewMatrix();
-	mat[2] = m_pCamera->GetProjectionMatrix();
+	mat[1] = CUsingCamera::GetThis().GetCamera()->GetViewMatrix();
+	mat[2] = CUsingCamera::GetThis().GetCamera()->GetProjectionMatrix();
 	DirectX::XMFLOAT4X4 inv;//逆行列の格納先
-	inv = m_pCamera->GetViewMatrix();
+	inv = CUsingCamera::GetThis().GetCamera()->GetViewMatrix();
 
 	//カメラの行列はGPUに渡す際に転置されているため、逆行列のために一度元に戻す
 	DirectX::XMMATRIX matInv = DirectX::XMLoadFloat4x4(&inv);
@@ -219,17 +221,4 @@ std::vector<int> CScoreOverHead::digitsToArray(int score)
 bool CScoreOverHead::GetDelFlg()
 {
 	return m_bDelFlg;
-}
-/* ========================================
-   カメラのセット関数
-   ----------------------------------------
-   内容：プレイヤー追従カメラをセットする
-   ----------------------------------------
-   引数：カメラ
-   ----------------------------------------
-   戻値：なし
-======================================== */
-void CScoreOverHead::SetCamera(const CCamera * pCamera)
-{
-	m_pCamera = pCamera;
 }

@@ -20,6 +20,7 @@
 	・2023/12/17 引数参照化 takagi
 	・2023/12/20 ビルボードの処理修正 takagi
 	・2024/01/30 オフセットを変更できるように修正 sawada
+	・2024/02/09 UsingCamera使用 takagi
 
 ========================================== */
 
@@ -29,12 +30,12 @@
 #endif
 
 // =============== インクルード ===================
-#include "2dPolygon.h"	//自身のヘッダ
-#include "CameraDef.h"	//疑似カメラ
-
+#include "2dPolygon.h"		//自身のヘッダ
+#include "CameraDef.h"		//疑似カメラ
 #if _DEBUG
-#include <Windows.h>	//メッセージボックス用
+#include <Windows.h>		//メッセージボックス用
 #endif
+#include "UsingCamera.h"	//カメラ使用
 
 // =============== 定数定義 =====================
 const TPos3d<float> INIT_POS(640.0f, 360.0f, 0.0f);	//位置初期化
@@ -108,7 +109,6 @@ ID3D11Buffer* C2dPolygon::ms_pVtxBuffer = nullptr;				//頂点バッファ
 ID3D11Buffer* C2dPolygon::ms_pIdxBuffer = nullptr;				//インデックスバッファ 
 VertexShader* C2dPolygon::ms_pDefVs;							//頂点シェーダー
 PixelShader* C2dPolygon::ms_pDefPs;								//ピクセルシェーダー
-const CCamera* C2dPolygon::ms_pCameraDef;						//疑似カメラ
 
 /* ========================================
 	コンストラクタ関数
@@ -126,7 +126,6 @@ C2dPolygon::C2dPolygon()
 	, m_pPs(nullptr)													// ピクセルシェーダー
 	, m_pTexture(nullptr)												// テクスチャ
 	, m_pTextureLoad(nullptr)											// テクスチャアドレス格納専用
-	, m_pCamera(nullptr)												// カメラ
 {
 	// =============== 静的作成 ===================
 	if (0 == ms_nCnt2dPolygon)	//現在、他にこのクラスが作成されていない時
@@ -135,9 +134,6 @@ C2dPolygon::C2dPolygon()
 		MakeVertexShader();	//頂点シェーダー作成
 		MakePixelShader();	//ピクセルシェーダー作成
 
-		// =============== 疑似カメラ作成 ===================
-		ms_pCameraDef = new CCameraDef();	//デフォルトのカメラ
-
 	// =============== 形状作成 ===================
 		Make();	//平面ポリゴン作成
 	}
@@ -145,7 +141,6 @@ C2dPolygon::C2dPolygon()
 	// =============== 初期化 ===================
 	m_pVs = ms_pDefVs;	//頂点シェーダー初期化
 	m_pPs = ms_pDefPs;	//ピクセルシェーダー初期化
-	SetCamera(nullptr);	//カメラ初期化
 
 	// =============== 行列作成 ===================
 	m_aMatrix[0] = m_Transform.GetWorldMatrixSRT();							//ワールド行列
@@ -191,7 +186,6 @@ C2dPolygon::~C2dPolygon()
 	//SAFE_DELETE(ms_pIdxBuffer);	//インデックスバッファ解放
 	if (0 == ms_nCnt2dPolygon)	//静的確保物を解放するか
 	{
-		SAFE_DELETE(ms_pCameraDef);		//疑似カメラ削除
 		SAFE_DELETE(ms_pDefVs);			//頂点シェーダー削除
 		SAFE_DELETE(ms_pDefPs);			//ピクセルシェーダー削除
 	}
@@ -230,14 +224,6 @@ void C2dPolygon::Draw(const E_DRAW_MODE & eMode)
 #endif
 		return;	//処理中断
 	}
-	if (!m_pCamera)	//ヌルチェック
-	{
-#if _DEBUG
-		std::string ErrorSpot = typeid(*this).name(); ErrorSpot += "->Error";				//エラー箇所
-		MessageBox(nullptr, "カメラが登録されていません", ErrorSpot.c_str(), MB_OK);	//エラー通知
-#endif
-		return;	//処理中断
-	}
 
 	// =============== 行列更新 ===================
 	switch (eMode)
@@ -246,14 +232,14 @@ void C2dPolygon::Draw(const E_DRAW_MODE & eMode)
 	case E_DRAW_MODE_NORMAL:	//通常時
 		m_aMatrix[0] = m_Transform.GetWorldMatrixSRT();	//ワールド行列更新
 		DirectX::XMStoreFloat4x4(&m_aMatrix[1], DirectX::XMMatrixIdentity());	//ビュー行列：単位行列
-		m_aMatrix[2] = m_pCamera->GetProjectionMatrix(CCamera::E_DRAW_TYPE_2D);	//プロジェクション行列更新
+		m_aMatrix[2] = CUsingCamera::GetThis().GetCamera()->GetProjectionMatrix(CCamera::E_DRAW_TYPE_2D);	//プロジェクション行列更新
 		break;											//分岐処理終了
 		
 		// =============== ビルボード描画 ===================
 	case E_DRAW_MODE_BILLBOARD:	//ビルボード仕様
-		m_aMatrix[0] = m_Transform.GetWorldMatrixSRT(m_pCamera->GetInverseViewMatrix());	//ビルボードの行列変換
-		m_aMatrix[1] = m_pCamera->GetViewMatrix();
-		m_aMatrix[2] = m_pCamera->GetProjectionMatrix(CCamera::E_DRAW_TYPE_3D);	//プロジェクション行列更新
+		m_aMatrix[0] = m_Transform.GetWorldMatrixSRT(CUsingCamera::GetThis().GetCamera()->GetInverseViewMatrix());	//ビルボードの行列変換
+		m_aMatrix[1] = CUsingCamera::GetThis().GetCamera()->GetViewMatrix();
+		m_aMatrix[2] = CUsingCamera::GetThis().GetCamera()->GetProjectionMatrix(CCamera::E_DRAW_TYPE_3D);	//プロジェクション行列更新
 		break;																				//分岐処理終了
 	}
 
@@ -300,35 +286,6 @@ void C2dPolygon::Draw(const E_DRAW_MODE & eMode)
 		// =============== 描画 ===================
 		pContext->Draw(ms_unVtxCount, 0);	// 頂点バッファのみで描画
 	}
-}
-
-/* ========================================
-	カメラセッタ関数
-	-------------------------------------
-	内容：カメラ登録
-	-------------------------------------
-	引数1：const CCamera* pCamera：自身を映すカメラ
-	-------------------------------------
-	戻値：なし
-=========================================== */
-void C2dPolygon::SetCamera(const CCamera* pCamera)
-{
-	// =============== 変数宣言 ===================
-	int nCnt = 0;				//ループカウント用
-	const CCamera* pCameraUse;	//カメラアドレス退避用
-
-	// =============== 初期化 ===================
-	if (pCamera)	//ヌルチェック
-	{
-		pCameraUse = pCamera;		//新規カメラ登録
-	}
-	else
-	{
-		pCameraUse = ms_pCameraDef;	//カメラ代用
-	}
-
-	// =============== カメラ登録 ===================
-	m_pCamera = pCameraUse;	//カメラ登録
 }
 
 /* ========================================

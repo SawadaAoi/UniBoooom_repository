@@ -13,12 +13,16 @@
 	・2023/11/27 HP表示追加 yamamoto
 	・2023/11/28 影の描画を追加 nieda
 	・2023/11/30 メモリリーク除去 takagi
+	・2024/02/09 UsingCamera使用 takagi
+	・2024/02/13 カメラ削除 takagi
 
 ========================================== */
 
 // =============== インクルード ===================
 #include "Slime_BossBase.h"
 #include "Sprite.h"
+#include "UsingCamera.h"	//カメラ使用
+
 // =============== 定数定義 =======================
 #if MODE_GAME_PARAMETER
 #else
@@ -157,8 +161,8 @@ void CSlime_BossBase::Draw()
 	DirectX::XMFLOAT4X4 mat[3];
 
 	mat[0] = m_Transform.GetWorldMatrixSRT();
-	mat[1] = m_pCamera->GetViewMatrix();
-	mat[2] = m_pCamera->GetProjectionMatrix();
+	mat[1] = CUsingCamera::GetThis().GetCamera()->GetViewMatrix();
+	mat[2] = CUsingCamera::GetThis().GetCamera()->GetProjectionMatrix();
 
 	//-- モデル表示
 	if (m_pModel) {
@@ -170,17 +174,17 @@ void CSlime_BossBase::Draw()
 	}
 	
 	//-- 影の描画
-	m_pShadow->Draw(m_pCamera);
+	m_pShadow->Draw();
 
 	//HP表示
 	RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得
 	DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
 	SetRenderTargets(1, &pRTV, nullptr);		//DSVがnullだと2D表示になる
 
-	mat[1] = m_pCamera->GetViewMatrix();
-	mat[2] = m_pCamera->GetProjectionMatrix();
+	mat[1] = CUsingCamera::GetThis().GetCamera()->GetViewMatrix();
+	mat[2] = CUsingCamera::GetThis().GetCamera()->GetProjectionMatrix();
 	DirectX::XMFLOAT4X4 inv;//逆行列の格納先
-	inv = m_pCamera->GetViewMatrix();
+	inv = CUsingCamera::GetThis().GetCamera()->GetViewMatrix();
 
 	//カメラの行列はGPUに渡す際に転置されているため、逆行列のために一度元に戻す
 	DirectX::XMMATRIX matInv = DirectX::XMLoadFloat4x4(&inv);

@@ -24,6 +24,7 @@
 	・2024/01/01 ステージ分岐 Takagi
 	・2024/01/15 GameFinish()関数の引数修正・RecordData()関数追加 Takagi
 	・2024/01/25 ヒットエフェクト関係の変数、ヘッダー追加 Tei
+	・2024/02/09 MODE_COORD_AXIS削除 takagi
 
 ========================================== */
 
@@ -58,7 +59,6 @@
 
 // =============== デバッグモード ===================
 #if _DEBUG
-#define MODE_COORD_AXIS (true)	//座標軸映すかどうか
 #define SCENE_TRANSITION(false)	// シーン遷移をボタン押下か自動化を切り替え（trueは自動)
 #endif
 
@@ -73,8 +73,6 @@ public:
 	void Draw();			//描画	
 	//virtual E_TYPE GetType() const = 0;	//自身の種類ゲッタ
 	void Collision();
-
-
 protected:
 	void RecordData();	//データ記録
 	void GameFinish();

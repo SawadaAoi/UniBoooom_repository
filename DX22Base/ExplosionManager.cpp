@@ -20,6 +20,8 @@
 	・2023/11/21 コンボ数機能の一部をコンボクラスに移動 Sawada
 	・2023/11/21 爆発時にBoooomUIの表示を追加 Tei
 	・2023/12/07 Effekseer.hのインクルード追加 Takagi
+	・2024/02/09 カメラ削除 takagi
+	・2024/02/13 カメラ削除 takagi
 
 ========================================== */
 
@@ -189,8 +191,7 @@ void CExplosionManager::Create(TTriType<float> pos,float size, float time, int d
 		// 使用済みの爆発はスルー
 		if (m_pExplosion[i] != nullptr) continue;
 
-		m_pExplosion[i] = new CExplosion(pos, size, time, comboNum, false, damage,m_explodeEffect,m_pCamera);	// 座標を指定して生成
-		m_pExplosion[i]->SetCamera(m_pCamera);
+		m_pExplosion[i] = new CExplosion(pos, size, time, comboNum, false, damage,m_explodeEffect);	// 座標を指定して生成
 
 		break;
 
@@ -221,8 +222,7 @@ void CExplosionManager::Create(TTriType<float> pos, float size, float time, int 
 		// 使用済みの爆発はスルー
 		if (m_pExplosion[i] != nullptr) continue;
 
-		m_pExplosion[i] = new CExplosion(pos, size, time, comboNum, true, damage, m_explodeEffect, m_pCamera);	// 座標を指定して生成
-		m_pExplosion[i]->SetCamera(m_pCamera);
+		m_pExplosion[i] = new CExplosion(pos, size, time, comboNum, true, damage, m_explodeEffect);	// 座標を指定して生成
 
 		return;
 	}
@@ -281,8 +281,7 @@ void CExplosionManager::CreateUI(TPos3d<float> pos, float fTime)
 		// 使用済みのBoooomUiはスルー
 		if (m_pBoooomUI[i] != nullptr) continue;
 
-		m_pBoooomUI[i] = new CBoooomUI(pos, m_pTexUI, m_pCamera, fTime);	// 座標を指定して生成
-		m_pBoooomUI[i]->SetCamera(m_pCamera);
+		m_pBoooomUI[i] = new CBoooomUI(pos, m_pTexUI, fTime);	// 座標を指定して生成
 
 		return;
 	}
@@ -329,19 +328,6 @@ void CExplosionManager::ComboEndCheck()
 		}
 	}
 
-}
-/* ========================================
-	カメラ情報セット関数
-	----------------------------------------
-	内容：描画処理で使用するカメラ情報セット
-	----------------------------------------
-	引数1：なし
-	----------------------------------------
-	戻値：なし
-======================================== */
-void CExplosionManager::SetCamera(const CCamera * pCamera)
-{
-	m_pCamera = pCamera;
 }
 
 /* ========================================

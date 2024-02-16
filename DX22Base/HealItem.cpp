@@ -12,11 +12,13 @@
 	・2023/11/28 上下に動く挙動を追加 yamashita
 	・2023/11/28 回転の挙動を追加 yamashita
 	・2023/12/07 ゲームパラメータに依存していたので修正・ゲームパラメータから定数移動・不要定数除去 takagi
+	・2024/02/09 UsingCamera使用 takagi
 
 ========================================== */
 
 // =============== インクルード ===================
 #include "HealItem.h"
+#include "UsingCamera.h"	//カメラ使用
 
 // =============== 定数定義 ===================
 const float HEAL_ITEM_SCALE_X = 1.5f;		//　アイテムのスケールX
@@ -94,8 +96,6 @@ void CHealItem::Update()
 ======================================== */
 void CHealItem::Draw()
 {
-	if (!m_pCamera) { return; }
-
 	//-- モデル表示
 	if (m_pModel) {
 		// レンダーターゲット、深度バッファの設定
@@ -104,14 +104,14 @@ void CHealItem::Draw()
 		SetRenderTargets(1, &pRTV, pDSV);		//DSVがnullだと2D表示になる
 
 		DirectX::XMFLOAT4X4 mat[3];
-		mat[1] = m_pCamera->GetViewMatrix();
-		mat[2] = m_pCamera->GetProjectionMatrix();
 
 		//拡縮、回転、移動(Y軸回転を先にしたかったのでSRTは使わない)
 		DirectX::XMStoreFloat4x4(&mat[0], DirectX::XMMatrixTranspose(DirectX::XMMatrixScaling(m_Transform.fScale.x, m_Transform.fScale.y, m_Transform.fScale.z)
 			* DirectX::XMMatrixRotationY(m_Transform.fRadian.y)
 			* DirectX::XMMatrixRotationX(m_Transform.fRadian.x) * DirectX::XMMatrixRotationZ(m_Transform.fRadian.z)
 			* DirectX::XMMatrixTranslation(m_Transform.fPos.x, m_Transform.fPos.y, m_Transform.fPos.z)));
+		mat[1] = CUsingCamera::GetThis().GetCamera()->GetViewMatrix();
+		mat[2] = CUsingCamera::GetThis().GetCamera()->GetProjectionMatrix();
 
 		ShaderList::SetWVP(mat);
 

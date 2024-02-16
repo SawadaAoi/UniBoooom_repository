@@ -34,7 +34,7 @@
 	・2024/01/30 プレイヤー移動エフェクト関係の処理追加 Tei
 	・2024/02/02 汗エフェクト処理追加 Tei
 	・2024/02/05 ゲーム終了間際の加算スコアがトータルスコアに反映されるように(改) sawada
-	・2024/02/09 GetType()関数削除 takagi
+	・2024/02/09 GetType()関数削除・カメラ削除 takagi
 
 ========================================== */
 
@@ -61,8 +61,6 @@ CStage1::CStage1()
 	:CStage(CUIStageManager::E_STAGE_1)	//親関数呼び出し
 {
 	m_pFloor = new CFloor(m_pPlayer->GetPosAddress(), CFloor::Stage1);	// 床生成
-	//================セット================
-	m_pFloor->SetCamera(m_pCamera);
 
 	m_nStageNum = STAGE_NUM;
 }
