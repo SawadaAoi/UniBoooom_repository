@@ -59,6 +59,12 @@ CUnionSmokeEffectManager::CUnionSmokeEffectManager()
 	{
 		m_pUnionSmokeEffect[i] = nullptr;
 	}
+
+
+	// çdíºÇñ≥Ç≠Ç∑à◊Ç…ç≈èâÇ…âÊñ äOÇ…çÏê¨Ç∑ÇÈ
+	m_pUnionSmokeEffect[0] = new CUnionSmokeEffect({ 100.0f,100.0f,100.0f }, UNION_SMOKE_EFFECT_SIZE[0], m_pTexture[0]);
+	m_pUnionSmokeEffect[1] = new CUnionSmokeEffect({ 100.0f,100.0f,100.0f }, UNION_SMOKE_EFFECT_SIZE[1], m_pTexture[1]);
+	m_pUnionSmokeEffect[2] = new CUnionSmokeEffect({ 100.0f,100.0f,100.0f }, UNION_SMOKE_EFFECT_SIZE[2], m_pTexture[2]);
 }
 
 /* ========================================

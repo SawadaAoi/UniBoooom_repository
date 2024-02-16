@@ -401,7 +401,7 @@ void CPlayer::Draw()
 		//m_pHammer->Draw();		// ƒnƒ“ƒ}[‚Ì•`‰æ
 	}
 
-	//m_pShadow->Draw(m_Transform, PLAYER_SHADOW_SCALE);	// ‰e‚Ì•`‰æ
+	m_pShadow->Draw(m_Transform, PLAYER_SHADOW_SCALE);	// ‰e‚Ì•`‰æ
 
 	m_nWalkEffeCnt++;
 	m_pWalkEffectMng->Draw();
