@@ -175,6 +175,8 @@ void CStage::Update()
 
 	}
 
+	CScene::Update();
+
 	CStage::GameFinish();	// ステージ終了処理
 }
 
