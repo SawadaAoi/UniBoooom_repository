@@ -315,6 +315,7 @@ void CSlimeBase::HitMove()
 		m_bHitMove = false;				//吹き飛び状態のフラグをOFFにする
 		SetNormalSpeed();	// 継承した関数を使用して大きさごとのスピードをセットする
 		m_RanMoveCnt = RANDOM_MOVE_SWITCH_TIME;
+		m_bChargeHit = false;
 	}
 }
 
@@ -490,6 +491,20 @@ int CSlimeBase::GetAttack()
 bool CSlimeBase::GetChargeHit()
 {
 	return m_bChargeHit;
+}
+
+/* ========================================
+	吹き飛び角度取得関数
+	----------------------------------------
+	内容：吹き飛び角度を取得する
+	----------------------------------------
+	引数1：なし
+	----------------------------------------
+	戻値：吹き飛び角度
+======================================== */
+float CSlimeBase::GetVecAngle()
+{
+	return m_fVecAngle;
 }
 
 /* ========================================

@@ -498,6 +498,7 @@ void CSlimeManager::HitBranch(int HitSlimeNum, int StandSlimeNum, CExplosionMana
 	
 	//-- ノーマルスライムヒット処理
 	bool ChargeHit = m_pSlime[HitSlimeNum]->GetChargeHit();
+
 	if (!ChargeHit)	// プレイヤーがチャージ状態ではない場合
 	{
 		// 衝突するスライムが小さい場合(小→大)
@@ -521,13 +522,12 @@ void CSlimeManager::HitBranch(int HitSlimeNum, int StandSlimeNum, CExplosionMana
 	}
 	else	// プレイヤーがチャージ状態の場合
 	{
-		m_pSlime[HitSlimeNum]->HitMoveStart(hitSlimeSpeed, travelAngle, ChargeHit);	// 衝突するスライムに吹き飛び移動処理
-		m_pSlime[StandSlimeNum]->HitMoveStart(hitSlimeSpeed	, travelAngle, ChargeHit);	// 衝突されたスライムに吹き飛び移動処理
+		m_pSlime[HitSlimeNum]->HitMoveStart(hitSlimeSpeed, m_pSlime[HitSlimeNum]->GetVecAngle(), ChargeHit);	// 衝突するスライムに吹き飛び移動処理
+		m_pSlime[StandSlimeNum]->HitMoveStart(hitSlimeSpeed, travelAngle, ChargeHit);	// 衝突されたスライムに吹き飛び移動処理
 		PlaySE(SE_HIT);									// SEの再生
 	}
 
 	
-
 	//スライムのサイズが同じだった場合
 	if(hitSlimeLevel == standSlimeLevel)
 	{
@@ -548,7 +548,7 @@ void CSlimeManager::HitBranch(int HitSlimeNum, int StandSlimeNum, CExplosionMana
 		}
 		else	//最大サイズじゃない場合は1段階大きいスライムを生成する
 		{
-			UnionSlime(hitSlimeLevel,pos, hitSlimeSpeed, travelAngle, m_pSlime[HitSlimeNum]->GetChargeHit());		//スライムの結合処理
+			UnionSlime(hitSlimeLevel,pos, hitSlimeSpeed, m_pSlime[HitSlimeNum]->GetVecAngle(), m_pSlime[HitSlimeNum]->GetChargeHit());		//スライムの結合処理
 			SAFE_DELETE(m_pSlime[HitSlimeNum]);								// 衝突するスライムを削除
 			SAFE_DELETE(m_pSlime[StandSlimeNum]);							// 衝突されたスライムを削除
 		}
