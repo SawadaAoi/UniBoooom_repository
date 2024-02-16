@@ -30,6 +30,7 @@
 	・2024/02/09 GetType()関数削除 takagi
 	・2024/02/12 テクスチャ管理法変更に伴う修正 takagi
 	・2024/02/13 コマンド選択時のバグ修正 takagi
+	・2024/02/16 先行入力防止 takagi
 	
 ========================================== */
 
@@ -118,143 +119,146 @@ void CTitle::Update()
 	}
 
 	// =============== 入力受付 ===================
-	if (GetUseVController())	// コントローラが接続されている場合
+	if (!pCounter || pCounter->IsFin())	//ヌル・時間チェック
 	{
-		// =============== カーソル移動 ===================
-		if (IsStickLeft().y < 0)		//↑入力時
+		if (GetUseVController())	// コントローラが接続されている場合
 		{
-			if (!(m_ucFlag & E_FLAG_COMMAND_START))	//既に開始コマンドを選択していない
+			// =============== カーソル移動 ===================
+			if (IsStickLeft().y < 0)		//↑入力時
 			{
-				// =============== 状態遷移 ===================
-				if (m_pCommandStart)	//ヌルチェック
+				if (!(m_ucFlag & E_FLAG_COMMAND_START))	//既に開始コマンドを選択していない
 				{
-					m_pCommandStart->ChangeState(CTitleCommand::E_STATE_SELECTED);	//選択状態遷移
-					UpFlag(E_FLAG_COMMAND_START);									//上のコマンド採用
+					// =============== 状態遷移 ===================
+					if (m_pCommandStart)	//ヌルチェック
+					{
+						m_pCommandStart->ChangeState(CTitleCommand::E_STATE_SELECTED);	//選択状態遷移
+						UpFlag(E_FLAG_COMMAND_START);									//上のコマンド採用
+					}
+					if (m_pCommandFinish)	//ヌルチェック
+					{
+						m_pCommandFinish->ChangeState(CTitleCommand::E_STATE_UNSELECTED);	//選択状態遷移
+						DownFlag(E_FLAG_COMMAND_FINISH);									//下のコマンド不採用
+					}
+					//===== SEの再生 =======
+					PlaySE(SE_CHOOSE);
 				}
-				if (m_pCommandFinish)	//ヌルチェック
+			}
+			if (IsStickLeft().y > 0)	//↓入力時
+			{
+				if (!(m_ucFlag & E_FLAG_COMMAND_FINISH))	//既に終了コマンドを選択していない
 				{
-					m_pCommandFinish->ChangeState(CTitleCommand::E_STATE_UNSELECTED);	//選択状態遷移
-					DownFlag(E_FLAG_COMMAND_FINISH);									//下のコマンド不採用
+					// =============== 状態遷移 ===================
+					if (m_pCommandFinish)	//ヌルチェック
+					{
+						m_pCommandFinish->ChangeState(CTitleCommand::E_STATE_SELECTED);	//選択状態遷移
+						UpFlag(E_FLAG_COMMAND_FINISH);									//下のコマンド採用
+					}
+					if (m_pCommandStart)	//ヌルチェック
+					{
+						m_pCommandStart->ChangeState(CTitleCommand::E_STATE_UNSELECTED);	//選択状態遷移
+						DownFlag(E_FLAG_COMMAND_START);										//上のコマンド不採用
+					}
+					//===== SEの再生 =======
+					PlaySE(SE_CHOOSE);
 				}
-				//===== SEの再生 =======
-				PlaySE(SE_CHOOSE);
+			}
+
+			// =============== 決定 ===================
+			if (IsKeyTriggerController(BUTTON_B) && !(m_ucFlag & E_FLAG_DECIDE_COMMAND))	//Bボタン入力かつ非決定時
+			{
+				// =============== 選択状態判定 ===================
+				if (m_ucFlag & E_FLAG_COMMAND_START && m_pCommandStart)	//開始コマンド・ヌルチェック
+				{
+					// =============== 状態遷移 ===================
+					m_pCommandStart->ChangeState(CTitleCommand::E_STATE_DECIDE);	//決定状態遷移
+
+					// =============== フラグ操作 ===================
+					UpFlag(E_FLAG_DECIDE_COMMAND);	//決定
+
+					//===== SEの再生 =======
+					PlaySE(SE_DECISION);
+				}
+				if (m_ucFlag & E_FLAG_COMMAND_FINISH && m_pCommandFinish)	//終了コマンド・ヌルチェック
+				{
+					// =============== 状態遷移 ===================
+					m_pCommandFinish->ChangeState(CTitleCommand::E_STATE_DECIDE);	//決定状態遷移
+
+					// =============== フラグ操作 ===================
+					UpFlag(E_FLAG_DECIDE_COMMAND);	//決定
+
+					//===== SEの再生 =======
+					PlaySE(SE_DECISION);
+				}
 			}
 		}
-		if (IsStickLeft().y > 0)	//↓入力時
-		{
-			if (!(m_ucFlag & E_FLAG_COMMAND_FINISH))	//既に終了コマンドを選択していない
+		else
+		{//キーボード操作
+			// =============== カーソル移動 ===================
+			if (IsKeyTrigger(VK_UP) || IsKeyTrigger('W'))	//↑・W入力時
 			{
-				// =============== 状態遷移 ===================
-				if (m_pCommandFinish)	//ヌルチェック
+				if (!(m_ucFlag & E_FLAG_COMMAND_START))	//既に開始コマンドを選択していない
 				{
-					m_pCommandFinish->ChangeState(CTitleCommand::E_STATE_SELECTED);	//選択状態遷移
-					UpFlag(E_FLAG_COMMAND_FINISH);									//下のコマンド採用
+					// =============== 状態遷移 ===================
+					if (m_pCommandStart)	//ヌルチェック
+					{
+						m_pCommandStart->ChangeState(CTitleCommand::E_STATE_SELECTED);	//選択状態遷移
+						UpFlag(E_FLAG_COMMAND_START);									//上のコマンド採用
+					}
+					if (m_pCommandFinish)	//ヌルチェック
+					{
+						m_pCommandFinish->ChangeState(CTitleCommand::E_STATE_UNSELECTED);	//選択状態遷移
+						DownFlag(E_FLAG_COMMAND_FINISH);									//下のコマンド不採用
+					}
+					//===== SEの再生 =======
+					PlaySE(SE_CHOOSE);
 				}
-				if (m_pCommandStart)	//ヌルチェック
+			}
+			if (IsKeyTrigger(VK_DOWN) || IsKeyTrigger('S'))	//↓・S入力時
+			{
+				if (!(m_ucFlag & E_FLAG_COMMAND_FINISH))	//既に終了コマンドを選択していない
 				{
-					m_pCommandStart->ChangeState(CTitleCommand::E_STATE_UNSELECTED);	//選択状態遷移
-					DownFlag(E_FLAG_COMMAND_START);										//上のコマンド不採用
+					// =============== 状態遷移 ===================
+					if (m_pCommandFinish)	//ヌルチェック
+					{
+						m_pCommandFinish->ChangeState(CTitleCommand::E_STATE_SELECTED);	//選択状態遷移
+						UpFlag(E_FLAG_COMMAND_FINISH);									//下のコマンド採用
+					}
+					if (m_pCommandStart)	//ヌルチェック
+					{
+						m_pCommandStart->ChangeState(CTitleCommand::E_STATE_UNSELECTED);	//選択状態遷移
+						DownFlag(E_FLAG_COMMAND_START);										//上のコマンド不採用
+					}
+					//===== SEの再生 =======
+					PlaySE(SE_CHOOSE);
 				}
-				//===== SEの再生 =======
-				PlaySE(SE_CHOOSE);
 			}
-		}
 
-		// =============== 決定 ===================
-		if (IsKeyTriggerController(BUTTON_B) && !(m_ucFlag & E_FLAG_DECIDE_COMMAND))	//Bボタン入力かつ非決定時
-		{
-			// =============== 選択状態判定 ===================
-			if (m_ucFlag & E_FLAG_COMMAND_START && m_pCommandStart)	//開始コマンド・ヌルチェック
+			// =============== 決定 ===================
+			if ((IsKeyTrigger(VK_RETURN) || IsKeyTrigger(VK_SPACE)) && !(m_ucFlag & E_FLAG_DECIDE_COMMAND))	//Enter・Space入力かつ非決定時
 			{
-				// =============== 状態遷移 ===================
-				m_pCommandStart->ChangeState(CTitleCommand::E_STATE_DECIDE);	//決定状態遷移
-
-				// =============== フラグ操作 ===================
-				UpFlag(E_FLAG_DECIDE_COMMAND);	//決定
-
-				//===== SEの再生 =======
-				PlaySE(SE_DECISION);
-			}
-			if (m_ucFlag & E_FLAG_COMMAND_FINISH && m_pCommandFinish)	//終了コマンド・ヌルチェック
-			{
-				// =============== 状態遷移 ===================
-				m_pCommandFinish->ChangeState(CTitleCommand::E_STATE_DECIDE);	//決定状態遷移
-
-				// =============== フラグ操作 ===================
-				UpFlag(E_FLAG_DECIDE_COMMAND);	//決定
-
-				//===== SEの再生 =======
-				PlaySE(SE_DECISION);
-			}
-		}
-	}
-	else
-	{//キーボード操作
-		// =============== カーソル移動 ===================
-		if (IsKeyTrigger(VK_UP) || IsKeyTrigger('W'))	//↑・W入力時
-		{
-			if (!(m_ucFlag & E_FLAG_COMMAND_START))	//既に開始コマンドを選択していない
-			{
-				// =============== 状態遷移 ===================
-				if (m_pCommandStart)	//ヌルチェック
+				// =============== 選択状態判定 ===================
+				if (m_ucFlag & E_FLAG_COMMAND_START && m_pCommandStart)	//開始コマンド・ヌルチェック
 				{
-					m_pCommandStart->ChangeState(CTitleCommand::E_STATE_SELECTED);	//選択状態遷移
-					UpFlag(E_FLAG_COMMAND_START);									//上のコマンド採用
+					// =============== 状態遷移 ===================
+					m_pCommandStart->ChangeState(CTitleCommand::E_STATE_DECIDE);	//決定状態遷移
+
+					// =============== フラグ操作 ===================
+					UpFlag(E_FLAG_DECIDE_COMMAND);	//決定
+
+					//===== SEの再生 =======
+					PlaySE(SE_DECISION);
 				}
-				if (m_pCommandFinish)	//ヌルチェック
+				if (m_ucFlag & E_FLAG_COMMAND_FINISH && m_pCommandFinish)	//終了コマンド・ヌルチェック
 				{
-					m_pCommandFinish->ChangeState(CTitleCommand::E_STATE_UNSELECTED);	//選択状態遷移
-					DownFlag(E_FLAG_COMMAND_FINISH);									//下のコマンド不採用
+					// =============== 状態遷移 ===================
+					m_pCommandFinish->ChangeState(CTitleCommand::E_STATE_DECIDE);	//決定状態遷移
+
+					// =============== フラグ操作 ===================
+					UpFlag(E_FLAG_DECIDE_COMMAND);	//決定
+
+					//===== SEの再生 =======
+					PlaySE(SE_DECISION);
 				}
-				//===== SEの再生 =======
-				PlaySE(SE_CHOOSE);
-			}
-		}
-		if (IsKeyTrigger(VK_DOWN) || IsKeyTrigger('S'))	//↓・S入力時
-		{
-			if (!(m_ucFlag & E_FLAG_COMMAND_FINISH))	//既に終了コマンドを選択していない
-			{
-			// =============== 状態遷移 ===================
-			if (m_pCommandFinish)	//ヌルチェック
-			{
-				m_pCommandFinish->ChangeState(CTitleCommand::E_STATE_SELECTED);	//選択状態遷移
-				UpFlag(E_FLAG_COMMAND_FINISH);									//下のコマンド採用
-			}
-			if (m_pCommandStart)	//ヌルチェック
-			{
-				m_pCommandStart->ChangeState(CTitleCommand::E_STATE_UNSELECTED);	//選択状態遷移
-				DownFlag(E_FLAG_COMMAND_START);										//上のコマンド不採用
-			}
-			//===== SEの再生 =======
-			PlaySE(SE_CHOOSE);
-			}
-		}
-
-		// =============== 決定 ===================
-		if ((IsKeyTrigger(VK_RETURN) || IsKeyTrigger(VK_SPACE)) && !(m_ucFlag & E_FLAG_DECIDE_COMMAND))	//Enter・Space入力かつ非決定時
-		{
-			// =============== 選択状態判定 ===================
-			if (m_ucFlag & E_FLAG_COMMAND_START && m_pCommandStart)	//開始コマンド・ヌルチェック
-			{
-				// =============== 状態遷移 ===================
-				m_pCommandStart->ChangeState(CTitleCommand::E_STATE_DECIDE);	//決定状態遷移
-
-				// =============== フラグ操作 ===================
-				UpFlag(E_FLAG_DECIDE_COMMAND);	//決定
-
-				//===== SEの再生 =======
-				PlaySE(SE_DECISION);
-			}
-			if (m_ucFlag & E_FLAG_COMMAND_FINISH && m_pCommandFinish)	//終了コマンド・ヌルチェック
-			{
-				// =============== 状態遷移 ===================
-				m_pCommandFinish->ChangeState(CTitleCommand::E_STATE_DECIDE);	//決定状態遷移
-
-				// =============== フラグ操作 ===================
-				UpFlag(E_FLAG_DECIDE_COMMAND);	//決定
-
-				//===== SEの再生 =======
-				PlaySE(SE_DECISION);
 			}
 		}
 	}
