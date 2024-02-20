@@ -186,23 +186,6 @@ void CShowWarning::Draw()
 			ArrangementScaleMotion(ARRANGEMENT_SCALE_ADD, TIME_OF_ARRANGEMENT_PER_CHANGE, ARRANGEMENT_ALPHA);
 		}
 
-		// 手配書画像(ステージごとに変える)
-		switch (m_nStageNum)
-		{
-		case 2:
-			DrawWarningBoss(WARNING_ARRANGEMENT_POS, m_fArrangementSizeAdjust, 
-				m_fArrangementScaleAdjust, m_pBossS2);
-
-			break;
-
-		case 3:
-			DrawWarningBoss(WARNING_ARRANGEMENT_POS, m_fArrangementSizeAdjust,	
-				m_fArrangementScaleAdjust, m_pBossS3);
-
-			break;
-		}
-
-
 		// 上半部の警告描画
 		DrawWarningBG(WARNING_BACKGROUND_TOPPOS, WARNING_BACKGROUND_SIZE, m_fBGMove);
 		DrawWarningBG(WARNING_BACKGROUND_TOPPOS_2, WARNING_BACKGROUND_SIZE, m_fBGMove);
@@ -214,6 +197,22 @@ void CShowWarning::Draw()
 		DrawWarningBG(WARNING_BACKGROUND_BOTPOS_2, WARNING_BACKGROUND_SIZE, m_fBGMove);
 		DrawWarningTex(WARNING_TEX_BOTPOS, WARNING_TEX_SIZE, m_fBotTexMove);
 		DrawWarningTex(WARNING_TEX_BOTPOS_2, WARNING_TEX_SIZE, m_fBotTexMove);
+
+		// 手配書画像(ステージごとに変える)(一番前に描画するため移動)
+		switch (m_nStageNum)
+		{
+		case 2:
+			DrawWarningBoss(WARNING_ARRANGEMENT_POS, m_fArrangementSizeAdjust,
+				m_fArrangementScaleAdjust, m_pBossS2);
+
+			break;
+
+		case 3:
+			DrawWarningBoss(WARNING_ARRANGEMENT_POS, m_fArrangementSizeAdjust,
+				m_fArrangementScaleAdjust, m_pBossS3);
+
+			break;
+		}
 
 	}
 
