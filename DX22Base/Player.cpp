@@ -135,8 +135,6 @@ CPlayer::CPlayer()
 	m_pModel = GetModelMng.GetModelPtr(MODEL_PLAYER);
 	m_pModel->Play(MOTION_PLAYER_MOVE,true);
 	m_pModel->Step(0.0f);	// Tポーズから立ち状態に移行
-	// プレイヤーが最初に地面に埋まらないように座標を調整
-	m_Transform.fPos = { 0.0f,1.0f,0.0f };
 
 	//LoadAnime();	//アニメーションの読み込み
 	m_pShadow = new CShadow();
@@ -401,7 +399,7 @@ void CPlayer::Draw()
 		//m_pHammer->Draw();		// ハンマーの描画
 	}
 
-	//m_pShadow->Draw(m_Transform, PLAYER_SHADOW_SCALE);	// 影の描画
+	m_pShadow->Draw(m_Transform, PLAYER_SHADOW_SCALE);	// 影の描画
 
 	m_nWalkEffeCnt++;
 	m_pWalkEffectMng->Draw();

@@ -171,6 +171,7 @@ public:
 	bool GetMoveStopFlg();
 	int GetAttack();
 	bool GetChargeHit();
+	float GetVecAngle();
 
 	//ÉZÉbÉgä÷êî
 	virtual void SetNormalSpeed() = 0;

@@ -16,6 +16,7 @@
 	E2023/12/07 ƒQ[ƒ€ƒpƒ‰ƒ[ƒ^‚©‚çˆê•”’è”ˆÚ“®EˆÃ–Ù‚ÌŒ^ƒLƒƒƒXƒgœ‹ takagi
 	E2023/12/08 GetErapsedTime()ŠÖ”’Ç‰Á takagi
 	E2024/01/01 Œp³—p‘‚«Š·‚¦ Takagi
+	E2024/02/16 ƒ^ƒCƒ}[ƒXƒP[ƒ‹ƒ‚[ƒVƒ‡ƒ“’Ç‰Á Tei
 
 ========================================== */
 
@@ -34,7 +35,12 @@ const float TIME_BACK_GROUND_SIZE_X = 200.0f;								//ƒ^ƒCƒ}[‚ÌƒoƒbƒNƒOƒ‰ƒ“ƒh‚
 const float TIME_BACK_GROUND_SIZE_Y = -75.0f;								//ƒ^ƒCƒ}[‚ÌƒoƒbƒNƒOƒ‰ƒ“ƒh‚ÌY‚Ì’·‚³İ’è
 const float TIME_COLON_SIZE_X = 35.0f;										//ƒ^ƒCƒ}[‚ÌƒRƒƒ“‚ÌX‚Ì’·‚³İ’è
 const float TIME_COLON_SIZE_Y = -35.0f;										//ƒ^ƒCƒ}[‚ÌƒRƒƒ“‚ÌY‚Ì’·‚³İ’è
-
+const int TIME_LEFT_TIRTHY_SEC = 30 * 60;									//ŠÔc‚è30•b
+const int TIME_LEFT_TEN_SEC = 10 * 60;										//ŠÔc‚è10•b
+const float TIME_LEFT_SCALE_TIRTHY = 0.005;		// c‚è30•bŠg‘åk¬‚Ì”ä—¦
+const float TIME_LEFT_SCALE_TEN = 0.02f;		// c‚è10•bŠg‘åk¬‚Ì”ä—¦(­‚µ‘å‚«‚­)
+const int TIME_SCALE_SPEED_TIRTHY = 100;			// Šg‘åk¬ˆê‰ñ‚ÌƒtƒŒ[ƒ€”(100flameˆê‰ñ’x‚¢)
+const int  TIME_SCALE_SPEED_TEN = 30;		// Šg‘åk¬ˆê‰ñ‚ÌƒtƒŒ[ƒ€”(30flameˆê‰ñ‘¬‚¢)
 //const float SLM_PARAM_CHANGE_TIME[STATE_MAX] = { 60.0f, 120.0f, 180.0f };	// Œo‰ßŠÔ‚Ì•b”
 //const int	SLM_CREATE_NUM[STATE_MAX] = { 20, 25, MAX_SLIME_NUM };			// Å‘å¶¬”
 //const float SLM_CREATE_INTERVAL_TIME[STATE_MAX] = { 1.0f, 1.5f, 1.5f };		// ¶¬ŠÔŠu
@@ -66,6 +72,8 @@ CTimer::CTimer()
 	, m_afSlimeCreateInterval{ {0.0f} }		// ’iŠK•ÊƒXƒ‰ƒCƒ€¶¬ŠÔŠu
 	, m_afSlimeMoveSpeed{ {0.0f} }			// ’iŠK•ÊƒXƒ‰ƒCƒ€ƒXƒs[ƒh
 	, m_afSlimeParamChangeTime{ {0.0f} }	// ’iŠK•ÊƒXƒ‰ƒCƒ€Œ`‘Ô•Ï‰»ŠÔ
+	, m_fTimerScale(1.0f)		// ŠÔ•’i‚ÌƒXƒP[ƒ‹”{—¦
+	, m_nTimerScaleCnt(0)
 {
 	//”š‚ÌƒeƒNƒXƒ`ƒƒ“Ç‚Ş‚İ
 
@@ -132,6 +140,19 @@ void CTimer::Update()
 	}
 	// ƒ^ƒCƒ}[Œ¸Z
 	m_nTimeCnt--;
+
+	// ŠÔc‚è30•b‚Ì‚Æ‚«A”š‚ªŠg‘åk¬‚·‚é
+	if (m_nTimeCnt <= TIME_LEFT_TIRTHY_SEC && m_nTimeCnt >= TIME_LEFT_TEN_SEC)
+	{
+		TimerScaleMotion(TIME_LEFT_SCALE_TIRTHY, TIME_SCALE_SPEED_TIRTHY);
+	}
+	// ŠÔc‚è10•b‚Ì‚Æ‚«A‚à‚Á‚Æ‘¬‚ß‚ÉŠg‘åk¬‚·‚é
+	else if (m_nTimeCnt <= TIME_LEFT_TEN_SEC)
+	{
+		TimerScaleMotion(TIME_LEFT_SCALE_TEN, TIME_SCALE_SPEED_TEN);
+	}
+	else
+	{ }
 	//ŠÔ‚ª0‚É‚È‚Á‚½‚çI—¹ˆ—‚É
 	if (m_nTimeCnt <= 0)
 	{
@@ -335,7 +356,7 @@ void CTimer::DrawNumber(TPos2d<float> pos, int number)
 	Sprite::SetWorld(time[0]);
 	Sprite::SetView(time[1]);
 	Sprite::SetProjection(time[2]);
-	Sprite::SetSize(DirectX::XMFLOAT2(50.0f, -50.0f));
+	Sprite::SetSize(DirectX::XMFLOAT2(50.0f * m_fTimerScale, -50.0f * m_fTimerScale));
 
 	//spriteƒV[ƒg‚Ìã•”•ª•\¦i0~4j
 	if ((number % 10) < 5)
@@ -350,6 +371,29 @@ void CTimer::DrawNumber(TPos2d<float> pos, int number)
 	Sprite::SetUVScale(DirectX::XMFLOAT2(0.2f, 0.5f));
 	Sprite::SetTexture(m_pTextureNum);
 	Sprite::Draw();
+}
+
+/* ========================================
+	ƒ^ƒCƒ}[Šg‘åk¬ŠÖ”
+	----------------------------------------
+	“à—eFƒ^ƒCƒ}[Šg‘åk¬‚·‚é
+	----------------------------------------
+	ˆø”1FŠg‘åk¬‚ÌƒTƒCƒY
+	ˆø”2Fˆê‰ñ‚ÌŠg‘åk¬‚ÌƒtƒŒ[ƒ€”
+	----------------------------------------
+	–ß’lF‚È‚µ
+=========================================== */
+void CTimer::TimerScaleMotion(float fSize, int nFlame)
+{
+	m_nTimerScaleCnt++;									// ƒ^ƒCƒ}[ƒtƒŒ[ƒ€ƒJƒEƒ“ƒg‰ÁZ
+	if (m_nTimerScaleCnt % nFlame <= (nFlame / 2) - 1)	//İ’è‚µ‚½ƒtƒŒ[ƒ€”‚Ì‘O”¼‰ÁZ(Šg‘å)AŒã”¼Œ¸Z(k¬)
+	{
+		m_fTimerScale += fSize;
+	}
+	else
+	{
+		m_fTimerScale -= fSize;
+	}
 }
 
 /* ========================================

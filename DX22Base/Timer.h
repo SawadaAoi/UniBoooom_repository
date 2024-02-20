@@ -13,6 +13,7 @@
 	・2023/12/07 ゲームパラメータに依存していたので修正・不足インクルード解消・ゲームパラメータから一部定数移動 takagi
 	・2023/12/08 GetErapsedTime()関数追加 takagi
 	・2024/01/01 継承用書き換え Takagi
+	・2024/02/16 タイマースケールモーション追加 Tei
 
 ========================================== */
 #ifndef __TIMER_H__
@@ -53,6 +54,7 @@ public:
 	void TimeStop();
 	void TimeRestart();
 	void DrawNumber(TPos2d<float> pos, int number);	//数字描画関数
+	void TimerScaleMotion(float fSize, int nFlame);	//時間の数字スケール関数
 
 	int* GetTimePtr();
 	int GetMaxSlimeNum();							// スライム最大生成数を取得
@@ -79,6 +81,8 @@ private:
 	int m_nMaxSlimeNum;			// スライムの最大生成数
 	int m_nSlimeCreateInterval;	// スライム生成間隔
 	float m_fSlimeMoveSpeed;	// スライムスピード
+	float m_fTimerScale;		// タイマー数字スケール倍率
+	int m_nTimerScaleCnt;		// タイマー数字スケールのフレームカウント
 
 	Texture* m_pTextureNum;	//タイマー表示用テクスチャポインタ
 	Texture* m_pTextureBG;
