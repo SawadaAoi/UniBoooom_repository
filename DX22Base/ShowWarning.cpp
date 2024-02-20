@@ -9,6 +9,7 @@
 		鄭宇恩
 	変更履歴
 	・2024/02/11 クラス作成 Tei
+	・2024/02/20 手配書描画調整 Tei
 
 ========================================== */
 
@@ -32,8 +33,16 @@ const TPos2d<float> WARNING_TEX_SIZE(1280.0f, -100.0f);				//文字大きさ設定
 const TPos2d<float> WARNING_ARRANGEMENT_POS(640.0f, 360.0f);		//手配書の位置設定
 const TPos2d<float> WARNING_ARRANGEMENT_SIZE(315.0f, -420.0f);		//手配書大きさ設定
 const DirectX::XMFLOAT4 WARNING_BG_COLOR(1.0f, 1.0f, 1.0f, 0.65f);	//バックグランド色設定
-
-const int WARNING_TIME_FLAME = 4.0f * 60;
+const float DRAWING_MAX_LEFT_POS = -1280.0f;						//描画の左端
+const float DRAWING_MAX_RIGHT_POS = 1280.0f;						//描画の右端
+const float TEX_MOVE_SPEED = 1.5f;									//警告文字移動スピード
+const float ARRANGEMENT_ALPHA = 0.95f;								//手配書描画のα値
+const float ALPHA_ADD = 0.1f;										//α置加算値
+const TPos2d<float> ARRANGEMENT_SIZE_ADD(7.5f, 10.0f);				//手配書サイズ加算値
+const int TIME_OF_ARRANGEMENT_PER_CHANGE = 120;						//手配書一回拡縮、色改変のフレーム数
+const TPos2d<float> ARRANGEMENT_SCALE_ADD(1.5f, 2.0f);				//手配書拡縮加算値
+const float COLOR_CHANGE_ADD = 0.02f;								//手配書色改変の加算値
+const int WARNING_TIME_FLAME = 4.0f * 60;							//警告の表示時間
 
 /* ========================================
 	デストラクタ関数
@@ -50,7 +59,7 @@ CShowWarning::CShowWarning(int nStageNum)
 	, m_fBGMove(0.0f)
 	, m_fBotTexMove(0.0f)
 	, m_fTopTexMove(0.0f)
-	, m_fBGAlpha(0.95f)
+	, m_fBGAlpha(ARRANGEMENT_ALPHA)
 	, m_pBossS2(nullptr)
 	, m_pBossS3(nullptr)
 	, m_fArrangementSizeAdjust(WARNING_ARRANGEMENT_SIZE.x / 2, WARNING_ARRANGEMENT_SIZE.y / 2)	// 変更量は元のサイズの半分（最初出る時は元のサイズの1.5倍
@@ -58,6 +67,10 @@ CShowWarning::CShowWarning(int nStageNum)
 	, m_nStageNum(nStageNum)
 	, m_bDispFlg(false)
 	, m_nDispCnt(0)
+	, m_fArrangementColorAdjust(0.0f)
+	, m_fArrangementScaleAdjust(0.0f, 0.0f)
+	, m_nArrangementCnt(0)
+	, m_bArrangementShow(false)
 {
 	// テクスチャ読み込む
 	m_pWarningBG = new Texture;
@@ -80,7 +93,7 @@ CShowWarning::CShowWarning(int nStageNum)
 	{
 		MessageBox(NULL, "WarningBoss3.png", "Error", MB_OK);
 	}
-	
+
 }
 
 /* ========================================
@@ -115,19 +128,19 @@ void CShowWarning::Update()
 		//---警告バックグランドと文字の移動---
 		// 帯の部分
 		m_fBGMove--;
-		if (m_fBGMove <= -1280.0f)
+		if (m_fBGMove <= DRAWING_MAX_LEFT_POS)
 		{
 			m_fBGMove = 0.0f;
 		}
 
 		// 文字の部分
-		m_fTopTexMove -= 1.5f;
-		if (m_fTopTexMove <= -1280.0f)
+		m_fTopTexMove -= TEX_MOVE_SPEED;
+		if (m_fTopTexMove <= DRAWING_MAX_LEFT_POS)
 		{
 			m_fTopTexMove = 0.0f;
 		}
-		m_fBotTexMove += 1.5f;
-		if (m_fBotTexMove >= 1280.0f)
+		m_fBotTexMove += TEX_MOVE_SPEED;
+		if (m_fBotTexMove >= DRAWING_MAX_RIGHT_POS)
 		{
 			m_fBotTexMove = 0.0f;
 		}
@@ -143,7 +156,7 @@ void CShowWarning::Update()
 
 	}
 
-	
+
 }
 
 /* ========================================
@@ -161,18 +174,30 @@ void CShowWarning::Draw()
 	//-手配書部分-
 	if (m_bDispFlg)
 	{
-		ArrangementAdjust();	// 手配書サイズとα値変更									    				
+		// 表示する前と後の拡縮を別々にする
+		if (!m_bArrangementShow)
+		{
+			ShowArrangement();	// 手配書サイズとα値変更	
+		}
+		else
+		{
+			//色、サイズ改変
+			ArrangementColorMotion(COLOR_CHANGE_ADD, TIME_OF_ARRANGEMENT_PER_CHANGE, ARRANGEMENT_ALPHA);
+			ArrangementScaleMotion(ARRANGEMENT_SCALE_ADD, TIME_OF_ARRANGEMENT_PER_CHANGE, ARRANGEMENT_ALPHA);
+		}
 
 		// 手配書画像(ステージごとに変える)
 		switch (m_nStageNum)
 		{
 		case 2:
-			DrawWarningBoss(WARNING_ARRANGEMENT_POS, m_fArrangementSizeAdjust, m_pBossS2);
+			DrawWarningBoss(WARNING_ARRANGEMENT_POS, m_fArrangementSizeAdjust, 
+				m_fArrangementScaleAdjust, m_pBossS2);
 
 			break;
 
 		case 3:
-			DrawWarningBoss(WARNING_ARRANGEMENT_POS, m_fArrangementSizeAdjust, m_pBossS3);
+			DrawWarningBoss(WARNING_ARRANGEMENT_POS, m_fArrangementSizeAdjust,	
+				m_fArrangementScaleAdjust, m_pBossS3);
 
 			break;
 		}
@@ -280,11 +305,12 @@ void CShowWarning::DrawWarningTex(TPos2d<float> fpos, TPos2d<float> fsize, float
    -------------------------------------
    引数1：描画座標(x,y)
    引数2：描画サイズ(x,y)
-   引数3：使うテクスチャ(Texture*)
+   引数3：拡縮サイズ(x,y)
+   引数4：使うテクスチャ(Texture*)
    -------------------------------------
    戻値：なし
 =========================================== */
-void CShowWarning::DrawWarningBoss(TPos2d<float> fpos, TPos2d<float> fsize, Texture* pBoss)
+void CShowWarning::DrawWarningBoss(TPos2d<float> fpos, TPos2d<float> fsize, TPos2d<float> fScale, Texture* pBoss)
 {
 	//--警告の手配書部分--
 	DirectX::XMFLOAT4X4 warningArrangement[3];
@@ -304,10 +330,10 @@ void CShowWarning::DrawWarningBoss(TPos2d<float> fpos, TPos2d<float> fsize, Text
 	Sprite::SetWorld(warningArrangement[0]);
 	Sprite::SetView(warningArrangement[1]);
 	Sprite::SetProjection(warningArrangement[2]);
-	Sprite::SetSize(DirectX::XMFLOAT2(WARNING_ARRANGEMENT_SIZE.x + fsize.x, WARNING_ARRANGEMENT_SIZE.y + fsize.y));	// 元のサイズ＋変動量
+	Sprite::SetSize(DirectX::XMFLOAT2(WARNING_ARRANGEMENT_SIZE.x + fsize.x + fScale.x, WARNING_ARRANGEMENT_SIZE.y + fsize.y + fScale.y));	// 元のサイズ＋変動量
 	Sprite::SetUVPos(DirectX::XMFLOAT2(0.0f, 0.0f));
 	Sprite::SetUVScale(DirectX::XMFLOAT2(1.0f, 1.0f));
-	Sprite::SetColor(DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, m_fArrangementAlpha));
+	Sprite::SetColor(DirectX::XMFLOAT4(1.0f, 1.0f - m_fArrangementColorAdjust, 1.0f - m_fArrangementColorAdjust, m_fArrangementAlpha));
 	Sprite::SetTexture(pBoss);
 	Sprite::Draw();
 }
@@ -321,18 +347,18 @@ void CShowWarning::DrawWarningBoss(TPos2d<float> fpos, TPos2d<float> fsize, Text
    -------------------------------------
    戻値：なし
 =========================================== */
-void CShowWarning::ArrangementAdjust()
+void CShowWarning::ShowArrangement()
 {
 	// 手配書のα値変更
-	m_fArrangementAlpha += 0.1;
-	if (m_fArrangementAlpha >= 0.95f)
+	m_fArrangementAlpha += ALPHA_ADD;
+	if (m_fArrangementAlpha >= ARRANGEMENT_ALPHA)
 	{
-		m_fArrangementAlpha = 0.95f;        // 0.9に越えたら0.9にする
+		m_fArrangementAlpha = ARRANGEMENT_ALPHA;        // 0.95に越えたら0.95にする
 	}
 
 	// 手配書のサイズ変動量調整
-	m_fArrangementSizeAdjust.x -= 7.5f;
-	m_fArrangementSizeAdjust.y += 10.0f;
+	m_fArrangementSizeAdjust.x -= ARRANGEMENT_SIZE_ADD.x;
+	m_fArrangementSizeAdjust.y += ARRANGEMENT_SIZE_ADD.y;
 	if (m_fArrangementSizeAdjust.x <= 0)
 	{
 		m_fArrangementSizeAdjust.x = 0;
@@ -340,6 +366,63 @@ void CShowWarning::ArrangementAdjust()
 	if (m_fArrangementSizeAdjust.y >= 0)
 	{
 		m_fArrangementSizeAdjust.y = 0;
+	}
+
+	// 表示したら、表示フラグtrueに
+	m_bArrangementShow = true;
+}
+
+/* ========================================
+   手配書色変換関数
+   -------------------------------------
+   内容：手配書の色の変更処理
+   -------------------------------------
+   引数1：色の調整値(float)
+   引数2：一回の色変換のフレーム数(int)
+   引数3：描画のα値(float)
+   -------------------------------------
+   戻値：なし
+=========================================== */
+void CShowWarning::ArrangementColorMotion(float fColor, int nFlame, float fAlpha)
+{
+	m_nArrangementCnt++;								// 手配書描画カウント加算
+	m_fArrangementAlpha = fAlpha;						
+	if (m_nArrangementCnt % nFlame <= (nFlame / 2) - 1)	// 設定したフレーム数の前半加算(色赤くなる)、後半減算(色元に戻す)
+	{
+		m_fArrangementColorAdjust += fColor;
+	}
+	else
+	{
+		m_fArrangementColorAdjust -= fColor;
+	}
+}
+
+/* ========================================
+   手配書拡縮関数
+   -------------------------------------
+   内容：手配書の拡縮処理
+   -------------------------------------
+   引数1：色の調整値(float)
+   引数2：一回の色変換のフレーム数(int)
+   引数3：描画のα値(float)
+   -------------------------------------
+   戻値：なし
+=========================================== */
+void CShowWarning::ArrangementScaleMotion(TPos2d<float> fSize, int nFlame, float fAlpha)
+{
+	m_fArrangementAlpha = fAlpha;
+	m_fArrangementSizeAdjust.x = 0.0f;						// 描画した後のサイズ調整値0にする
+	m_fArrangementSizeAdjust.y = 0.0f;					
+	m_nArrangementCnt++;									// 手配書描画カウント加算
+	if (m_nArrangementCnt % nFlame <= (nFlame / 2) - 1)		// 設定したフレーム数の前半加算(拡大)、後半減算(縮小)
+	{
+		m_fArrangementScaleAdjust.x += fSize.x;
+		m_fArrangementScaleAdjust.y -= fSize.y;
+	}
+	else
+	{
+		m_fArrangementScaleAdjust.x -= fSize.x;
+		m_fArrangementScaleAdjust.y += fSize.y;
 	}
 }
 
@@ -387,3 +470,4 @@ bool CShowWarning::GetDispFlg()
 {
 	return m_bDispFlg;
 }
+
