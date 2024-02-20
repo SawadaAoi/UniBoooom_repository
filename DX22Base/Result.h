@@ -43,33 +43,35 @@ public:
 	// ===列挙定義===========
 	enum E_TEXTURE	// 表示画像
 	{
-		BG_SCREEN,			// 画面全体の背景
-		BG_PANEL,			// 各項目の背景(黒い背景)
-		RESULT_TEXT,		// 文字(Result)
-		SVL_TIME_TEXT,		// 文字(生存時間)
-		SCORE_TEXT,			// 文字(SCORE)	
-		HIGH_SCORE_TEXT,	// 文字(HISCORE)
-		NEW_RECORD_TEXT,	// 文字(NEW RECORD)
-		HUNT_TEXT,			// 文字(スライム討伐数)
-		TOTAL_HUNT_TEXT,	// 文字(総討伐数)
-		SLIME_BLUE,			// スライム画像(青)
-		SLIME_GREEN,		// スライム画像(緑)
-		SLIME_YELLOW,		// スライム画像(黄)
-		SLIME_RED,			// スライム画像(赤)
-		SLIME_BOSS,			// スライム画像(ボス)
-		MAX_COMBO_TEXT,		// 文字(最大コンボ数)
+		BG_SCREEN_CLEAR,		// 画面全体の背景 赤：ゲームクリア
+		BG_SCREEN_GAMEOVER,		// 画面全体の背景 青：ゲームオーバー
+		BG_PANEL_CLEAR,			// 各項目の背景(黒い背景) 赤枠：ゲームクリア
+		BG_PANEL_GAMEOVER,		// 各項目の背景(黒い背景) 青枠：ゲームオーバー
+		RESULT_TEXT,			// 文字(Result)
+		SVL_TIME_TEXT,			// 文字(生存時間)
+		SCORE_TEXT,				// 文字(SCORE)	
+		HIGH_SCORE_TEXT,		// 文字(HISCORE)
+		NEW_RECORD_TEXT,		// 文字(NEW RECORD)
+		HUNT_TEXT,				// 文字(スライム討伐数)
+		TOTAL_HUNT_TEXT,		// 文字(総討伐数)
+		SLIME_BLUE,				// スライム画像(青)
+		SLIME_GREEN,			// スライム画像(緑)
+		SLIME_YELLOW,			// スライム画像(黄)
+		SLIME_RED,				// スライム画像(赤)
+		SLIME_BOSS,				// スライム画像(ボス)
+		MAX_COMBO_TEXT,			// 文字(最大コンボ数)
 
-		NUM,				// 数字
-		COLON,				// コロン
-		LINE,				// 線
-		MULTI,				// ×
-		PARENTHESIS,		// ()
+		NUM,					// 数字
+		COLON,					// コロン
+		LINE,					// 線
+		MULTI,					// ×
+		PARENTHESIS,			// ()
 
-		WARNING_STAGE_1,	// ステージ1の手配書
-		WARNING_STAGE_2,	// ステージ2の手配書
-		WARNING_STAGE_3,	// ステージ3の手配書
-		CLEAR_STAMP,		// CLEARスタンプ
-		SELECT,				// 決定ボタン
+		WARNING_STAGE_1,		// ステージ1の手配書
+		WARNING_STAGE_2,		// ステージ2の手配書
+		WARNING_STAGE_3,		// ステージ3の手配書
+		CLEAR_STAMP,			// CLEARスタンプ
+		SELECT,					// 決定ボタン
 
 		TEXTURE_MAX,
 
@@ -119,11 +121,12 @@ public:
 
 public:
 	// =============== プロトタイプ宣言 ===============
-	CResult();							//コンストラクタ
-	~CResult();							//デストラクタ
-	void Update();						//更新
-	void Draw();						//描画
-	E_TYPE GetNext() const override;	//次のシーンゲッタ
+	CResult();													//コンストラクタ
+	~CResult();													//デストラクタ
+	void Update();												//更新
+	void Draw();												//描画
+	E_TYPE GetNext() const override;							//次のシーンゲッタ
+
 private:
 	void DrawBgScreen();
 	void DrawWarningTexture();
