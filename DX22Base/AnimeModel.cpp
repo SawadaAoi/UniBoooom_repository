@@ -196,7 +196,9 @@ bool AnimeModel::Load(const char* file, float scale, Flip flip)
 	// assimpÇ≈ì«Ç›çûÇ›
 	const aiScene* pScene = importer.ReadFile(file, flag);
 	if (!pScene) {
+#ifdef _DEBUG
 		m_errorStr = importer.GetErrorString();
+#endif
 		return false;
 	}
 
@@ -1211,7 +1213,9 @@ void AnimeModel::MakeMaterial(const void* ptr, std::string directory)
 			if (FAILED(hr)) {
 				delete m_materials[i].pTexture;
 				m_materials[i].pTexture = nullptr;
+#ifdef _DEBUG
 				m_errorStr += path.C_Str();
+#endif
 			}
 		}
 		else {

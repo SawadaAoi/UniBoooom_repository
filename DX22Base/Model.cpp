@@ -142,7 +142,9 @@ bool Model::Load(const char* file, float scale, Flip flip)
 	// assimpÇ≈ì«Ç›çûÇ›
 	const aiScene* pScene = importer.ReadFile(file, flag);
 	if (!pScene) {
+#ifdef _DEBUG
 		m_errorStr = importer.GetErrorString();
+#endif
 		return false;
 	}
 
