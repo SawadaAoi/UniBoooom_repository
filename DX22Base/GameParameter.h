@@ -117,12 +117,12 @@ const float	LEVEL2_TACKLE_SPEED = 0.2f;					// 突進の速度
 
 // サイズ4
 const float LEVEL4_SCALE = 7.0f;					// スライム＿レベル４の大きさ(当たり判定含む)
-const float LEVEL4_SPEED = ENEMY_MOVE_SPEED * 0.5f;	// 移動速度
+const float LEVEL4_SPEED = ENEMY_MOVE_SPEED * 0.2f;	// 移動速度
 const int	LEVEL4_ATTACK = 2;						// 攻撃力
 
 // フレイムスライム
 const float LEVEL_FLAME_SCALE = 1.5f;						// スライム＿フレイムの大きさ(当たり判定含む)
-const float LEVEL_FLAME_SPEED = ENEMY_MOVE_SPEED * 0.2f;	// 移動速度
+const float LEVEL_FLAME_SPEED = ENEMY_MOVE_SPEED * 0.3f;	// 移動速度
 const int	LEVEL_FLAME_ATTACK = 1;							// 攻撃力
 
 // ヒールスライム
