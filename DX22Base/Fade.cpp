@@ -20,6 +20,7 @@
 	・2023/12/17 フェード完了判定がずれ、最小・最大状態にならないことがある問題を修正・ブラックアウト対応 takagi
 	・2024/01/16 フェードアウト・インにイージング適用 takagi
 	・2024/02/09 UsingCamera使用 takagi
+	・2024/02/27 警告除去 takagi
 
 ========================================== */
 
@@ -49,8 +50,8 @@ const float SCALE_OUT_MAX(0.0f);							//フェード最大サイズ	uvの都合上、値が小さ
 const float SCALE_IN_MAX(0.0f);								//フェード最大サイズ	uvの都合上、値が小さい程サイズが大きくなる
 const float ROTATE_ACCEL_RATE(0.00025f);					//角速度増加割合
 const double PI(3.14159265358979323846);					//円周率M_PIのコピー
-#define ROTATE_EASE_IN_OUT(frame) (ROTATE_ACCEL_RATE * (0.5 ? 4 * pow((frame), 3.0)	\
-	: 1 - pow(-2 * (frame) + 2, 3.0) / 2))					//フェードイン・アウト回転用のイーズ計算
+#define ROTATE_EASE_IN_OUT(frame) (ROTATE_ACCEL_RATE * (0.5f ? 4.0f * powf((frame), 3.0f)	\
+	: 1 - pow(-2.0f * (frame) + 2.0f, 3.0f) / 2.0f))					//フェードイン・アウト回転用のイーズ計算
 
 // =============== グローバル変数宣言 =====================
 int CFade::ms_nCntFade;							//自身の生成数
@@ -708,7 +709,7 @@ void CFade::FadeOut()
 			m_UvParam.fUvScale.y = m_UvParam.fUvScale.x;	//x値の変更をy値に反映する
 
 			// =============== 回転角更新 ===================
-			m_Transform.fRadian.z = DirectX::XMConvertToRadians(ROTATE_EASE_IN_OUT(nFrameTemp));	//フレーム数で角更新
+			m_Transform.fRadian.z = DirectX::XMConvertToRadians(ROTATE_EASE_IN_OUT(static_cast<float>(nFrameTemp)));	//フレーム数で角更新
 		}
 
 		// =============== カウンタ ===================
@@ -793,7 +794,7 @@ void CFade::FadeIn()
 	m_UvParam.fUvScale.y = m_UvParam.fUvScale.x;	//x値の変更をy値に反映する
 
 	// =============== 回転角更新 ===================
-	m_Transform.fRadian.z = DirectX::XMConvertToRadians(ROTATE_EASE_IN_OUT(FRAME_FADE_MAX.x - m_nFrame));	//フレーム数で角更新
+	m_Transform.fRadian.z = DirectX::XMConvertToRadians(ROTATE_EASE_IN_OUT(static_cast<float>(FRAME_FADE_MAX.x - m_nFrame)));	//フレーム数で角更新
 	//m_Transform.fRadian.z = DirectX::XMConvertToRadians(ROTATE_ACCEL_RATE * -cosf(3.14159265358979323846264338327950188419f * (float)(m_nFrame - FRAME_MIN) / (float)(FRAME_FADE_MAX.z) - 1) / 2);
 
 	// =============== カウンタ ===================
