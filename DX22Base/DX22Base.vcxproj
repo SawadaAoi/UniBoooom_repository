@@ -300,6 +300,7 @@
     <ClInclude Include="BattleData.h" />
     <ClInclude Include="BgPause.h" />
     <ClInclude Include="ModelManager.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="ShowWarning.h" />
     <ClInclude Include="TitleBgAnimeScaling.h" />
     <ClInclude Include="TitleInitCounter.h" />
@@ -456,6 +457,13 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="DX22Base.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="icon.ico" />
+    <Image Include="iconmini.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
