@@ -139,7 +139,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		break;
 	case WM_CREATE:
 		ShowCursor(FALSE);
+#ifdef _DEBUG
+		ShowCursor(TRUE);
+#endif
 		break;
+
 	}
 	return DefWindowProc(hWnd, message, wParam, lParam);
 }
