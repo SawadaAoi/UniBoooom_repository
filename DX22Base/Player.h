@@ -70,7 +70,8 @@ public:
 		SE_HIT_HAMMER,	// ハンマーとスライムの接触SE
 		SE_HEAL,		// 回復SE
 		SE_WARNING,		// 残り体力１
-		SE_CHARGED,		// チャージ完了時
+		SE_CHARGED,		// チャージ中
+		SE_MAXCHARGED,	// チャージ完了時	
 
 		SE_MAX			// SEの総数
 	};
@@ -186,7 +187,8 @@ private:
 		"Assets/Sound/SE/HammerHit.mp3",		//ハンマーとスライムの接触SE
 		"Assets/Sound/SE/HealSE.mp3",			//回復アイテム取得時
 		"Assets/Sound/SE/Warning.mp3",			//残りHPが１の時
-		"Assets/Sound/SE/charge.mp3"			//チャージ完了
+		"Assets/Sound/SE/Charge.mp3",			//チャージ中
+		"Assets/Sound/SE/MAXCharge.mp3"			//チャージ完了
 	};
 
 	//=====アニメーション関連=====

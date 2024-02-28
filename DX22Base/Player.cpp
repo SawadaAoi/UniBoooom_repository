@@ -260,10 +260,15 @@ void CPlayer::Update()
 				EffectStart();
 			}
 
+			// チャージ中のSE再生
+			if (m_fChargeCnt == 20)
+			{
+				PlaySE(SE_CHARGED);
+			}
 			// カウントがマックスになった時のSE再生
 			if (m_fChargeCnt == CHARGE_HAMMER_CNT)
 			{
-				PlaySE(SE_CHARGED);
+				PlaySE(SE_MAXCHARGED);
 			}
 		}
 		else if ((IsKeyRelease(VK_SPACE) || IsKeyReleaseController(BUTTON_B)) && !m_bHumInvFlg && !m_pModel->IsPlay(MOTION_PLAYER_SWING))

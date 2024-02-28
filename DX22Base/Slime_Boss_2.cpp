@@ -29,7 +29,7 @@ const float BOSS_2_SPEED = ENEMY_MOVE_SPEED * 1.5f;	// ボス2のスピード
 const int	BOSS_2_MAX_HP = 10;						// ボス2の最大HP
 const float BOSS_2_SHADOW_SCALE = 12.0f;			// ボス2の影の大きさ
 
-const float STATE_CHANGE_ATTACK_INTERVAL	= 5.0f;		// 通常→攻撃の切り替え間隔
+const float STATE_CHANGE_ATTACK_INTERVAL	= 10.0f;	// 通常→攻撃の切り替え間隔
 const float JUMP_CHAEGE_TIME				= 1.0f;		// ジャンプ前溜めの時間
 const float JUMP_CHAEGE_SCALE_TIME			= 0.2f;		// ジャンプ前溜めの大きさ変更時間
 const float JUMP_CHAEGE_SCALE_ADJUST		= 0.02f;	// ジャンプ前溜めの大きさ変更値
@@ -38,7 +38,7 @@ const float JUMP_SPEED						= 1.0f;		// ジャンプスピード
 const float JUMP_SHADOW_SIZE_MUL			= 0.9f;		// ジャンプ中の影の変更量
 const float TARGET_SHADOW_TIME				= 2.5f;		// 影落とし中の時間
 const float TARGET_SHADOW_PLYR_MOVE_TIME	= 3.0f;		// 影落とし中のプレイヤー追従時間
-const float DROP_SPEED						= 5.0f;	// 落下処理スピード
+const float DROP_SPEED						= 5.0f;		// 落下処理スピード
 const float DROP_RIGID_TIME					= 3.0f;		// 落下後硬直時間
 const float DROP_RIGID_SCALE_TIME			= 0.2f;		// 落下後硬直の大きさ変更時間
 const float DROP_RIGID_SCALE_ADJUST			= 0.01f;	// 落下後硬直の大きさ変更値
