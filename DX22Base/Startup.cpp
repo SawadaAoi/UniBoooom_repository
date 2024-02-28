@@ -137,6 +137,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		break;
+	case WM_CREATE:
+		ShowCursor(FALSE);
+		break;
 	}
 	return DefWindowProc(hWnd, message, wParam, lParam);
 }
