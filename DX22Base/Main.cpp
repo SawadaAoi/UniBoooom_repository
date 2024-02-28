@@ -13,6 +13,7 @@
 	・2023/11/17 シーン管理を実装 takagi
 	・2023/11/18 sound.hをインクルードしてsoundの初期化と終了を追加 yamashita
 	・2023/11/21 3dアニメーション用配布物適用
+	・2024/02/27 デバッグモード除去 takagi
 
 ========================================== */
 
@@ -23,11 +24,7 @@
 #include "Geometry.h"
 #include "Sprite.h"
 #include "Input.h"
-#if USE_SCENE_MANAGER
 #include "SceneManager.h"
-#else
-#include "SceneGame.h"
-#endif
 #include "Defines.h"
 #include <time.h>
 #include "Sound.h"
@@ -35,11 +32,7 @@
 #include "LibEffekseer.h"
 
 // =============== グローバル変数定義 =============
-#if USE_SCENE_MANAGER
 CSceneManager* g_pSceneMng;
-#else
-SceneGame* g_pGame;
-#endif
 
 /* ========================================
 	初期化処理関数
@@ -73,11 +66,7 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
 	ShaderList::Init();
 
 	// シーン作成
-#if USE_SCENE_MANAGER
 	g_pSceneMng = new CSceneManager();
-#else
-	g_pGame = new SceneGame();
-#endif
 
 	return hr;
 }
@@ -93,15 +82,11 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
 =========================================== */
 void Uninit()
 {
-#if USE_SCENE_MANAGER
 	if (g_pSceneMng)	//ヌルチェック
 	{
 		delete g_pSceneMng;
 		g_pSceneMng = nullptr;
 	}
-#else
-	delete g_pGame;
-#endif
 	ShaderList::Uninit();
 	CGeometry::Uninit();
 	UninitInput();
@@ -123,14 +108,10 @@ void Uninit()
 void Update(float tick)
 {
 	UpdateInput();
-#if USE_SCENE_MANAGER
 	if (g_pSceneMng)	//ヌルチェック
 	{
 		g_pSceneMng->Update();
 	}
-#else
-	g_pGame->Update(tick);
-#endif
 }
 
 /* ========================================
@@ -145,18 +126,13 @@ void Update(float tick)
 void Draw()
 {
 	BeginDrawDirectX();
-#if USE_SCENE_MANAGER
 	if (g_pSceneMng)	//ヌルチェック
 	{
 		g_pSceneMng->Draw();
 	}
-#else
-	g_pGame->Draw();
-#endif
 	EndDrawDirectX();
 }
 
-#if USE_SCENE_MANAGER
 /* ========================================
 	終了検査関数
 	-------------------------------------
@@ -177,6 +153,5 @@ bool IsFin()
 		return false;	//継続
 	}
 }
-#endif
 
 // EOF
