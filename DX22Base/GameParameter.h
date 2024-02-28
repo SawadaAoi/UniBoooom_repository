@@ -28,7 +28,7 @@
 	・2023/12/16 パラメーター削除(// ゲームスタート描画) nieda
 	・2023/12/17 パラメーター削除(// ポーズ) Takagi
 	・2024/01/01 パラメーター削除(// タイマー) Takagi
-
+	・2024/02/20 パラメーター追加(// BoooomUI) suzumura
 =========================================== */
 #ifndef __GAME_PARAMETER_H__
 #define __GAME_PARAMETER_H__
@@ -172,7 +172,12 @@ const float MAX_SIZE_EXPLODE = 9.0f;						// スライム4x4の爆発の大きさ
 const int	DELAY_TIME = int(0.2f * 60);			// 遅延秒数
 const float EXPAND_QUICK_RATE = 0.2f;				// 膨張加速割合 (当たり判定のみ)
 
-
+// BoooomUI =======================================================
+const float BOOOOM_UI_SCALE_X = 6.0f;							//BoooomUIサイズのスケール_X
+const float BOOOOM_UI_SCALE_Y = 6.0f;							//BoooomUIサイズのスケール_Y
+const float BOOOOM_UI_MAX_SCALE_X = BOOOOM_UI_SCALE_X * 2.2f;	//アニメーション用拡縮最大サイズ_X
+const float BOOOOM_UI_MAX_SCALE_Y = BOOOOM_UI_SCALE_Y * 2.2f;	//アニメーション用拡縮最大サイズ_Y
+const float ANIM_TIME_RATE = 0.7f;								// 爆発総時間の内、BOOOOM表示を行うのは何割か(0.0f~1.0f)
 
 // ボスゲージ =====================================================
 typedef struct
@@ -220,6 +225,8 @@ const int STATE_SCALE_X = SCREEN_WIDTH_;		// UIの横幅
 const int STATE_SCALE_Y = SCREEN_HEIGHT_;		// UIの縦幅
 const float STATE_POS_X = SCREEN_WIDTH_ / 2;	// 表示位置のX座標
 const float STATE_POS_Y = SCREEN_HEIGHT_ / 2;	// 表示位置のY座標
+
+
 
 #endif // !MODE_GAME_PARAMETER
 #endif // !__GAME_PARAMETER_H__

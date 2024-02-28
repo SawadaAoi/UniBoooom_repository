@@ -1004,6 +1004,8 @@ void CSlimeManager::TouchBossExplosion(int BossNum, CExplosionManager* pExpMng, 
 		SAFE_DELETE(m_pBoss[BossNum]);	//スライム削除
 		
 		pExpMng->SwitchExplode(level, pos, size, pExpMng->GetExplosionPtr(ExpNum)->GetComboNum());	// 爆発生成
+		pExpMng->CreateUI(pos, LEVEL_BOSS_EXPLODE_TIME);											//爆発した位置boooomUI表示
+
 		m_pScoreOHMng->DisplayOverheadScore(pos, LEVEL_Boss_SCORE, SLIME_SCORE_HEIGHT);
 		m_pHealItemMng->Create(pos);
 

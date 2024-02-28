@@ -39,8 +39,10 @@
 
 // =============== ’è”’è‹` ===================
 const std::map<int, std::string> MAP_TEX_PATH = {
-	{CResult::BG_SCREEN,		"Assets/Texture/Result/ResultBG.png"},			// ‰æ–Ê‘S‘Ì‚Ì”wŒi
-	{CResult::BG_PANEL,			"Assets/Texture/Result/result_waku.png"},		// Še€–Ú‚Ì”wŒi(•‚¢”wŒi)
+	{CResult::BG_SCREEN_CLEAR,		"Assets/Texture/Result/ResultBG.png"},			// ‰æ–Ê‘S‘Ì‚Ì”wŒi
+	{CResult::BG_SCREEN_GAMEOVER,	"Assets/Texture/Result/ResultBG_blue.png"},		// ‰æ–Ê‘S‘Ì‚Ì”wŒi
+	{CResult::BG_PANEL_CLEAR,		"Assets/Texture/Result/result_waku.png"},		// Še€–Ú‚Ì”wŒi(•‚¢”wŒi)
+	{CResult::BG_PANEL_GAMEOVER,	"Assets/Texture/Result/result_waku_blue.png"},	// Še€–Ú‚Ì”wŒi(•‚¢”wŒi)
 	{CResult::RESULT_TEXT,		"Assets/Texture/Result/result.png"},			// •¶š(Result)
 	{CResult::SVL_TIME_TEXT,	"Assets/Texture/Result/SurvivalTime.png"},		// •¶š(¶‘¶ŠÔ)
 	{CResult::SCORE_TEXT,		"Assets/Texture/Result/SCORE.png"},				// •¶š(SCORE)	
@@ -280,12 +282,27 @@ void CResult::Draw()
 =========================================== */
 void CResult::DrawBgScreen()
 {
-	// ‘S‘Ì‚Ì”wŒi
-	m_p2dObj[OBJ_BG_SCREEN]->SetTexture(m_pTexture[E_TEXTURE::BG_SCREEN]);
+	// ƒQ[ƒ€ƒNƒŠƒA
+	if (m_Data.bClearFlg)
+	{
+		// ‘S‘Ì‚Ì”wŒi
+		m_p2dObj[OBJ_BG_SCREEN]->SetTexture(m_pTexture[E_TEXTURE::BG_SCREEN_CLEAR]);
+		// ‰E”¼•ª‚ÌŠe€–Ú‚Ì”wŒi
+		m_p2dObj[OBJ_BG_PANEL]->SetTexture(m_pTexture[E_TEXTURE::BG_PANEL_CLEAR]);
+	}
+	// ƒQ[ƒ€ƒI[ƒo[
+	else
+	{
+		// ‘S‘Ì‚Ì”wŒi
+		m_p2dObj[OBJ_BG_SCREEN]->SetTexture(m_pTexture[E_TEXTURE::BG_SCREEN_GAMEOVER]);
+		// ‰E”¼•ª‚ÌŠe€–Ú‚Ì”wŒi
+		m_p2dObj[OBJ_BG_PANEL]->SetTexture(m_pTexture[E_TEXTURE::BG_PANEL_GAMEOVER]);
+	}
+
+	// •`‰æ
 	m_p2dObj[OBJ_BG_SCREEN]->Draw();
-	// ‰E”¼•ª‚ÌŠe€–Ú‚Ì”wŒi
-	m_p2dObj[OBJ_BG_PANEL]->SetTexture(m_pTexture[E_TEXTURE::BG_PANEL]);
 	m_p2dObj[OBJ_BG_PANEL]->Draw();
+
 }
 
 /* ========================================
