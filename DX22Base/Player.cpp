@@ -257,7 +257,7 @@ void CPlayer::Update()
 			if (m_fChargeCnt == DISP_CHARGE_EFC_CNT)
 			{
 				// エフェクトの再生
-				EffectStart();
+				ChargeEffectStart();
 			}
 
 			// チャージ中のSE再生
@@ -898,11 +898,11 @@ void CPlayer::CheckCharge()
 	-------------------------------------
 	戻値：無し
 =========================================== */
-void CPlayer::EffectStart()
+void CPlayer::ChargeEffectStart()
 {
 	m_chgEfcHandle = LibEffekseer::GetManager()->Play(m_chargeEfc, 	//エフェクトの開始
 		m_Transform.fPos.x,
-		m_Transform.fPos.y,
+		m_Transform.fPos.y + 1.0f,
 		m_Transform.fPos.z);
 
 	LibEffekseer::GetManager()->SetScale(m_chgEfcHandle, 					//エフェクトのサイズを設定
@@ -928,7 +928,7 @@ void CPlayer::UpdateEffect()
 	// チャージエフェクトの座標をセット
 	LibEffekseer::GetManager()->SetLocation(m_chgEfcHandle,
 		m_Transform.fPos.x,
-		m_Transform.fPos.y,
+		m_Transform.fPos.y + 1.0f,
 		m_Transform.fPos.z);
 
 	if (m_bCharge)

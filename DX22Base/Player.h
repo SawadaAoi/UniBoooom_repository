@@ -114,7 +114,7 @@ public:
 	void PlaySE(SE se, float volume = 1.0f);
 	void Healing();
 	void CheckCharge();
-	void EffectStart();
+	void ChargeEffectStart();
 	void UpdateEffect();
 
 	// ÉQÉbÉgä÷êî
