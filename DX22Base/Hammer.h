@@ -55,6 +55,7 @@ public:
 	void Swing();											// 移動による回転移動
 	void AttackStart(TPos3d<float>pPos, float angle);		// 攻撃開始処理
 	void SwingSpeedSlow();
+	void SwingSpeedSlow_Charge();	// チャージハンマー用
 	void SwingSpeedFast();
 	float GetSwingSpeed();
 private:

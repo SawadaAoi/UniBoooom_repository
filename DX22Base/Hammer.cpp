@@ -216,7 +216,7 @@ void CHammer::AttackStart(TPos3d<float>pPos, float angle)
 
 }
 /* ========================================
-   ハンマーのスイングスピードを遅くする関数
+   ハンマースイングスピード遅延関数
    ----------------------------------------
    内容：ハンマーのスイングスピードを遅くする
    ----------------------------------------
@@ -238,8 +238,32 @@ void CHammer::SwingSpeedSlow()
 	m_fAddAngle = float(SWING_ANGLE / m_nSwingTimeFrame);	// 1フレームの加算角度を計算
 	m_fSwingSpeed = m_fAddAngle / FIRST_ADD_ANGLE;			// 現在のハンマーの一振りの速度計算
 }
+
 /* ========================================
-   ハンマーのスイングスピードを速くする関数
+   チャージハンマースイングスピード遅延関数
+   ----------------------------------------
+   内容：チャージハンマー時のスイングスピードを遅くする
+   ----------------------------------------
+   引数1：なし
+   ----------------------------------------
+   戻値：なし
+   ======================================== */
+void CHammer::SwingSpeedSlow_Charge()
+{
+
+	m_nSwingTimeFrame = m_nSwingTimeFrame * SWING_TIME_ADD_MULT_CHARGE;	// 一振りに掛かる時間を増やす
+
+	// 振る時間が最大値を超えた場合
+	if (SWING_TIME_MAX <= m_nSwingTimeFrame)
+	{
+		m_nSwingTimeFrame = SWING_TIME_MAX;
+	}
+
+	m_fAddAngle = float(SWING_ANGLE / m_nSwingTimeFrame);	// 1フレームの加算角度を計算
+	m_fSwingSpeed = m_fAddAngle / FIRST_ADD_ANGLE;			// 現在のハンマーの一振りの速度計算
+}
+/* ========================================
+   ハンマーのスイングスピード加速関数
    ----------------------------------------
    内容：ハンマーのスイングスピードを速くする
    ----------------------------------------

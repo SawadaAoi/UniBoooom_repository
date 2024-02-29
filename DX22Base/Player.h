@@ -88,12 +88,12 @@ public:
 		MOTION_PLAYER_MAX,		//モーションの総数
 	};
 
-	enum PLAYER_CHARGE_STATE {
+	enum PLAYER_CHARGE_STATE 
+	{
 		PLAYER_CHARGE_NONE,
 		PLAYER_CHARGING,
 		PLAYER_CHARGED,
-		
-
+	
 	};
 
 private:
@@ -116,6 +116,7 @@ public:
 	void CheckCharge();
 	void ChargeEffectStart();
 	void UpdateEffect();
+	void SwingStart();
 
 	// ゲット関数
 	tagSphereInfo GetHammerSphere();	//当たり判定を取るためゲッター
@@ -139,8 +140,6 @@ private:
 	void MoveSizeInputSet(TPos3d<float> fInput);
 	void DisplaySweatEffect();
 
-	// ===プロトタイプ宣言===
-	void LoadAnime();	//アニメーション読み込み関数
 
 	// ===メンバ変数宣言=====
 	TPos3d<float> m_fMove;				// 移動量
@@ -179,6 +178,8 @@ private:
 	int m_nWalkEffeCnt;					// 歩き煙エフェクトの表示間隔加算値
 	int m_nSweatEffeCnt;				// 汗エフェクトの表示間隔加算値
 	int m_nSwingFastCnt;				// ハンマーを振る時間の加算間隔
+	bool m_bHammerSwingWait;			// 実際にハンマーを振り始めているか
+	int m_nSwingWait;					// ハンマーの当たり判定を振り始める待機時間
 
 	//=====SE関連=====
 	XAUDIO2_BUFFER* m_pSE[SE_MAX];
