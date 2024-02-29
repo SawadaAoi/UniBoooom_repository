@@ -196,6 +196,9 @@ void CSlime_Boss_1::Draw()
 	// DrawFlgがtrueなら描画処理を行う
 	if (m_bDrawFlg == false) return;
 
+	//-- 影の描画
+	//m_pShadow->Draw();
+
 	//行列状態を取得してセット
 	DirectX::XMFLOAT4X4 worldMat;
 	DirectX::XMStoreFloat4x4(&worldMat, XMMatrixTranspose(
@@ -249,8 +252,7 @@ void CSlime_Boss_1::Draw()
 		}
 	}
 
-	//-- 影の描画
-	m_pShadow->Draw();
+
 
 	//HP表示
 	RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得

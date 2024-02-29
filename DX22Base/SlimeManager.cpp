@@ -301,20 +301,31 @@ void CSlimeManager::Update(CExplosionManager* pExpMng)
 =========================================== */
 void CSlimeManager::Draw()
 {
+	// ボススライム影描画
+	for (int i = 0; i < MAX_BOSS_SLIME_NUM; i++)
+	{
+		if (m_pBoss[i] == nullptr) continue;
+		m_pBoss[i]->GetShadowPtr()->Draw();
+
+	}
+
 	//"スライム"描画
-	for (int i = 0; i <MAX_SLIME_NUM; i++)
+	for (int i = 0; i < MAX_SLIME_NUM; i++)
 	{
 		if (m_pSlime[i] == nullptr) continue;
 		m_pSlime[i]->Draw();
 	}
-				
-	// ボススライム更新
+
+	// ボススライム描画
 	for (int i = 0; i < MAX_BOSS_SLIME_NUM; i++)
 	{
 		if (m_pBoss[i] == nullptr) continue;
 		m_pBoss[i]->Draw();
 
 	}
+
+
+
 
 	// =============== UNION描画 ===================
 	if (m_pUnionMng)	//ヌルチェック

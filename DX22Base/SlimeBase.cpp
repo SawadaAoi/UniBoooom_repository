@@ -164,6 +164,10 @@ void CSlimeBase::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
 =========================================== */
 void CSlimeBase::Draw()
 {
+
+	//-- ‰e‚Ì•`‰æ
+	m_pShadow->Draw(m_Transform, m_fScaleShadow);
+
 	//s—ñó‘Ô‚ðŽæ“¾‚µ‚ÄƒZƒbƒg
 	DirectX::XMFLOAT4X4 world;
 	DirectX::XMStoreFloat4x4(&world, XMMatrixTranspose(
@@ -212,8 +216,6 @@ void CSlimeBase::Draw()
 		//m_pModel->DrawBone();
 	}
 
-	//-- ‰e‚Ì•`‰æ
-	m_pShadow->Draw(m_Transform, m_fScaleShadow);
 }
 
 
@@ -505,6 +507,11 @@ bool CSlimeBase::GetChargeHit()
 float CSlimeBase::GetVecAngle()
 {
 	return m_fVecAngle;
+}
+
+CShadow* CSlimeBase::GetShadowPtr()
+{
+	return m_pShadow;
 }
 
 /* ========================================

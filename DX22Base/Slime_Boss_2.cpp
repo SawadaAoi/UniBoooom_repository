@@ -143,8 +143,7 @@ void CSlime_Boss_2::Update(tagTransform3d playerTransform)
 		else
 		{
 			HitMove();							// 敵の吹き飛び移動
-			m_pShadow->SetPos(TPos3d<float>(m_Transform.fPos.x, 0.0f, m_Transform.fPos.z));	// 影の座標を移動	
-
+			m_pShadow->SetPos(TPos3d<float>(m_Transform.fPos.x, 1.0f, m_Transform.fPos.z));	// 影の座標を移動	
 
 			// アニメーションを被ダメに変更
 			if (m_eCurAnime != DEVIL_SLIME_HIT)
@@ -206,6 +205,9 @@ void CSlime_Boss_2::Draw()
 	// DrawFlgがtrueなら描画処理を行う
 	if (m_bDrawFlg == false) return;
 
+	//-- 影の描画
+	//m_pShadow->Draw();
+
 	//行列状態を取得してセット
 	DirectX::XMFLOAT4X4 worldMat;
 	DirectX::XMStoreFloat4x4(&worldMat, XMMatrixTranspose(
@@ -259,8 +261,7 @@ void CSlime_Boss_2::Draw()
 		}
 	}
 
-	//-- 影の描画
-	m_pShadow->Draw();
+
 
 	//HP表示
 	RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得

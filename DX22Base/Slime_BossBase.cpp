@@ -155,6 +155,11 @@ void CSlime_BossBase::Update(tagTransform3d playerTransform)
 =========================================== */
 void CSlime_BossBase::Draw()
 {
+
+	//-- 影の描画
+	m_pShadow->Draw();
+
+
 	// DrawFlgがtrueなら描画処理を行う
 	if (m_bDrawFlg == false) return;
 
@@ -172,9 +177,6 @@ void CSlime_BossBase::Draw()
 		SetRenderTargets(1, &pRTV, pDSV);		//DSVがnullだと2D表示になる
 		m_pModel->Draw();
 	}
-	
-	//-- 影の描画
-	m_pShadow->Draw();
 
 	//HP表示
 	RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得

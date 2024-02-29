@@ -126,6 +126,9 @@ public:
 	bool GetDieFlg() const;
 	bool GetAttackFlg();
 	bool GetCharge();
+	CShadow* GetShadowPtr();
+
+
 
 	// ÉZÉbÉgä÷êî
 	void SetSweatEffectMng(CSweatEffectManager* pSweatefcMng);

@@ -37,7 +37,7 @@ const int	LEVEL1_ATTACK = 1;						// 攻撃力
 const float LEVEL1_SCALE = 1.0f;
 const float LEVEL1_SPEED = ENEMY_MOVE_SPEED;
 #endif
-const float LEVEL_1_SHADOW_SCALE = 1.0f;	// スライム＿レベル１の影の大きさ
+const float LEVEL_1_SHADOW_SCALE = 2.0f;	// スライム＿レベル１の影の大きさ
 
 /* ========================================
 	コンストラクタ関数
@@ -73,6 +73,7 @@ CSlime_1::CSlime_1(TPos3d<float> pos, AnimeModel* pModel)
 	: CSlime_1()
 {
 	m_Transform.fPos = pos;			// 初期座標を指定
+
 	m_pModel = pModel;
 	// アニメーションのセット
 	m_eCurAnime = (int)MOTION_LEVEL1_MOVE;	// 現在のアニメーションをセット
@@ -165,6 +166,10 @@ void CSlime_1::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
 =========================================== */
 void CSlime_1::Draw()
 {
+
+	//-- 影の描画
+	m_pShadow->Draw(m_Transform, m_fScaleShadow);
+
 	//行列状態を取得してセット
 	DirectX::XMFLOAT4X4 world;
 	DirectX::XMStoreFloat4x4(&world, XMMatrixTranspose(
@@ -215,8 +220,6 @@ void CSlime_1::Draw()
 		//m_pModel->DrawBone();
 	}
 
-	//-- 影の描画
-	m_pShadow->Draw(m_Transform, m_fScaleShadow);
 }
 
 /* ========================================
