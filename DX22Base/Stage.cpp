@@ -199,6 +199,8 @@ void CStage::Draw()
 	//床の描画
 	m_pFloor->Draw();
 
+	m_pPlayer->GetShadowPtr()->Draw();
+
 	// スライムマネージャー描画
 	m_pSlimeMng->Draw();
 

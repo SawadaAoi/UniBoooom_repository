@@ -172,6 +172,7 @@ public:
 	int GetAttack();
 	bool GetChargeHit();
 	float GetVecAngle();
+	CShadow* GetShadowPtr();
 
 	//ÉZÉbÉgä÷êî
 	virtual void SetNormalSpeed() = 0;

@@ -102,8 +102,12 @@ void CShadow::Update()
 ======================================== */
 void CShadow::Draw(tagTransform3d m_Pos, float fScale)
 {
+
 	if (m_bDisp)	// 表示フラグがONの場合
 	{		
+		RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得
+		DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
+		SetRenderTargets(1, &pRTV, NULL);		//DSVがnullだと2D表示になる
 		DirectX::XMMATRIX mat_shadow = DirectX::XMMatrixTranslation(m_Pos.fPos.x, m_Pos.fPos.z, m_Pos.fPos.y) * DirectX::XMMatrixRotationX(PI / 2);	// 移動行列を求める
 		DirectX::XMFLOAT4X4 world;	// 読み取り用の行列の宣言
 		DirectX::XMStoreFloat4x4(&world, DirectX::XMMatrixTranspose(mat_shadow));	// 格納する
@@ -117,6 +121,8 @@ void CShadow::Draw(tagTransform3d m_Pos, float fScale)
 		Sprite::SetColor(DirectX::XMFLOAT4(1.0f,1.0f,1.0f,0.6f));// 透明度を下げる
 		Sprite::Draw();											// スプライトを描画
 		Sprite::SetColor(DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f));// 透明度を戻す(他に影響を出さないため)
+
+		SetRenderTargets(1, &pRTV, pDSV);		//DSVがnullだと2D表示になる
 	}
 }
 
@@ -133,6 +139,9 @@ void CShadow::Draw()
 {
 	if (m_bDisp)	// 表示フラグがONの場合
 	{
+		RenderTarget* pRTV = GetDefaultRTV();	//デフォルトで使用しているRenderTargetViewの取得
+		DepthStencil* pDSV = GetDefaultDSV();	//デフォルトで使用しているDepthStencilViewの取得
+		SetRenderTargets(1, &pRTV, NULL);		//DSVがnullだと2D表示になる
 		DirectX::XMMATRIX mat_shadow = DirectX::XMMatrixTranslation(m_Transform.fPos.x, m_Transform.fPos.z, m_Transform.fPos.y) * DirectX::XMMatrixRotationX(PI / 2);	// 移動行列を求める
 		DirectX::XMFLOAT4X4 world;	// 読み取り用の行列の宣言
 		DirectX::XMStoreFloat4x4(&world, DirectX::XMMatrixTranspose(mat_shadow));	// 格納する
@@ -144,5 +153,8 @@ void CShadow::Draw()
 		Sprite::SetUVScale(DirectX::XMFLOAT2(1.0f, 1.0f));		// UVの分割数
 		Sprite::SetTexture(m_pTextureShadow);					// テクスチャを設定
 		Sprite::Draw();											// スプライトを描画
+
+
+		SetRenderTargets(1, &pRTV, pDSV);		//DSVがnullだと2D表示になる
 	}
 }

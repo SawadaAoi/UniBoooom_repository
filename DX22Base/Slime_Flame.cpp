@@ -30,7 +30,7 @@ const float LEVEL_FLAME_SCALE = 1.0f;
 const float LEVEL_FLAME_SPEED = ENEMY_MOVE_SPEED * 0.2f;
 const int	LEVEL_FLAME_ATTACK = 1;	// 攻撃力
 #endif
-const float LEVEL_FLAME_SHADOW_SCALE = 2.0f; // スライム＿フレイムの影の大きさ
+const float LEVEL_FLAME_SHADOW_SCALE = 4.0f; // スライム＿フレイムの影の大きさ
 const float FLAME_EFFECT_SCALE = 0.7f;		 // スライム＿フレイムの炎エフェクトの大きさ
 
 /* ========================================

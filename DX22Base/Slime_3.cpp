@@ -41,7 +41,7 @@ const float LEVEL3_SCALE = 3.0f;
 const float LEVEL3_SPEED = ENEMY_MOVE_SPEED * 0.90;
 const float LEVEL3_STOP_RANGE = DirectX::XMConvertToRadians(20.0f);	// ƒXƒ‰ƒCƒ€‚ªŽ~‚Ü‚éŠp“x‚Ì”ÍˆÍ
 #endif
-const float LEVEL_3_SHADOW_SCALE = 3.5f;	// ƒXƒ‰ƒCƒ€QƒŒƒxƒ‹‚R‚Ì‰e‚Ì‘å‚«‚³
+const float LEVEL_3_SHADOW_SCALE = 7.0f;	// ƒXƒ‰ƒCƒ€QƒŒƒxƒ‹‚R‚Ì‰e‚Ì‘å‚«‚³
 
 /* ========================================
 	ƒRƒ“ƒXƒgƒ‰ƒNƒ^ŠÖ”
@@ -150,6 +150,10 @@ void CSlime_3::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
 =========================================== */
 void CSlime_3::Draw()
 {
+
+	//-- ‰e‚Ì•`‰æ
+	m_pShadow->Draw(m_Transform, m_fScaleShadow);
+
 	//s—ñó‘Ô‚ðŽæ“¾‚µ‚ÄƒZƒbƒg
 	DirectX::XMFLOAT4X4 world;
 	DirectX::XMStoreFloat4x4(&world, XMMatrixTranspose(
@@ -199,8 +203,6 @@ void CSlime_3::Draw()
 		//m_pModel->DrawBone();
 	}
 
-	//-- ‰e‚Ì•`‰æ
-	m_pShadow->Draw(m_Transform, m_fScaleShadow);
 }
 
 /* ========================================

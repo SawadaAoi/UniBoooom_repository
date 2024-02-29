@@ -142,7 +142,7 @@ CPlayer::CPlayer()
 
 	//LoadAnime();	//アニメーションの読み込み
 	m_pShadow = new CShadow();
-
+	m_pShadow->SetScale(PLAYER_SHADOW_SCALE);	// 影の大きさを設定
 	// エフェクトマネージャーを作成
 	m_pWalkEffectMng = new CWalkEffectManager();
 	m_pSweatEffectMng = new CSweatEffectManager();
@@ -365,7 +365,7 @@ void CPlayer::Update()
 	DisplaySweatEffect();			// 汗エフェクト作成
 
 	UpdateEffect();	// エフェクトの更新
-
+	m_pShadow->SetPos(m_Transform.fPos);
 }
 
 /* ========================================
@@ -379,6 +379,8 @@ void CPlayer::Update()
 ======================================== */
 void CPlayer::Draw()
 {
+	//m_pShadow->Draw(m_Transform, PLAYER_SHADOW_SCALE);	// 影の描画
+
 	// 描画しない(点滅処理中)
 	if (m_DrawFlg == true)
 	{
@@ -438,7 +440,6 @@ void CPlayer::Draw()
 		// m_pHammer->Draw();		// ハンマーの描画
 	}
 
-	m_pShadow->Draw(m_Transform, PLAYER_SHADOW_SCALE);	// 影の描画
 
 	m_nWalkEffeCnt++;
 	m_pWalkEffectMng->Draw();
@@ -715,6 +716,11 @@ bool CPlayer::GetAttackFlg()
 bool CPlayer::GetCharge()
 {
 	return m_bCharge;
+}
+
+CShadow* CPlayer::GetShadowPtr()
+{
+	return m_pShadow;
 }
 
 

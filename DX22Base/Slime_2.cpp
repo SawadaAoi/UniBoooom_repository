@@ -40,7 +40,7 @@ const int	LEVEL2_ATTACK = 1;						// UŒ‚—Í
 const float LEVEL2_SCALE = 2.0f;
 const float LEVEL2_SPEED = ENEMY_MOVE_SPEED * 0.95;
 #endif
-const float LEVEL_2_SHADOW_SCALE = 2.5f;	// ƒXƒ‰ƒCƒ€QƒŒƒxƒ‹‚Q‚Ì‰e‚Ì‘å‚«‚³
+const float LEVEL_2_SHADOW_SCALE = 4.0f;	// ƒXƒ‰ƒCƒ€QƒŒƒxƒ‹‚Q‚Ì‰e‚Ì‘å‚«‚³
 
 /* ========================================
 	ƒRƒ“ƒXƒgƒ‰ƒNƒ^ŠÖ”
@@ -158,6 +158,10 @@ void CSlime_2::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
 =========================================== */
 void CSlime_2::Draw()
 {
+
+	//-- ‰e‚Ì•`‰æ
+	m_pShadow->Draw(m_Transform, m_fScaleShadow);
+
 	//s—ñó‘Ô‚ðŽæ“¾‚µ‚ÄƒZƒbƒg
 	DirectX::XMFLOAT4X4 world;
 	DirectX::XMStoreFloat4x4(&world, XMMatrixTranspose(
@@ -208,8 +212,6 @@ void CSlime_2::Draw()
 		//m_pModel->DrawBone();
 	}
 
-	//-- ‰e‚Ì•`‰æ
-	m_pShadow->Draw(m_Transform, m_fScaleShadow);
 }
 
 /* ========================================
