@@ -39,6 +39,7 @@
 #include "SceneManager.h"	//自身のヘッダ
 #include "HitStop.h"		//ヒットストップ
 #include "ModelManager.h"	// モデルの一括管理クラスの最初のインスタンス用
+#include "BattleData.h"		//データ
 
 #if _DEBUG
 #include <Windows.h>		//メッセージボックス用
@@ -397,8 +398,26 @@ void CSceneManager::PlayBGM()
 	if (m_pScene && MAP_BGM.find(typeid(*m_pScene).hash_code()) != MAP_BGM.end() && MAP_BGM.at(typeid(*m_pScene).hash_code()))	//アクセスチェック・ヌルチェック
 	{
 		UNLOAD_SOUND(m_pBGMSpeaker);													//BGMの再生を停止し、その音データの紐づけを破棄	※ここ以外で削除するとヌルチェックできない中身のポインターがヌルとなりデストラクタで停止する
-		m_pBGMSpeaker = CSound::PlaySound(MAP_BGM.at(typeid(*m_pScene).hash_code()));	//BGM登録・再生
-		m_pBGMSpeaker->SetVolume(0.0f);													//再生音量設定
+		if (typeid(CResult).hash_code() == typeid(*m_pScene).hash_code())
+		{
+			BattleData Data;
+			Data.Load();
+			if (Data.bClearFlg)
+			{
+				m_pBGMSpeaker = CSound::PlaySound(MAP_BGM.at(typeid(*m_pScene).hash_code()));	//BGM登録・再生
+				m_pBGMSpeaker->SetVolume(0.0f);													//再生音量設定
+			}
+			else
+			{
+				m_pBGMSpeaker = CSound::PlaySound(CSound::LoadSound("Assets/Sound/BGM/Result_GameOver.mp3", true));	//BGM登録・再生
+				m_pBGMSpeaker->SetVolume(0.0f);													//再生音量設定
+			}
+		}
+		else
+		{
+			m_pBGMSpeaker = CSound::PlaySound(MAP_BGM.at(typeid(*m_pScene).hash_code()));	//BGM登録・再生
+			m_pBGMSpeaker->SetVolume(0.0f);													//再生音量設定
+		}
 	}
 #if _DEBUG
 	else
