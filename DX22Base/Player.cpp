@@ -232,6 +232,8 @@ void CPlayer::Update()
 					m_pHammer->AttackStart(m_Transform.fPos, m_Transform.fRadian.y);
 					m_bHammerSwingWait = false;
 					m_bAttackFlg = true;	// 攻撃フラグを有効にする
+					//SEの再生
+					PlaySE(SE_SWING);
 				}
 			}
 			else
@@ -992,9 +994,7 @@ void CPlayer::SwingStart()
 
 	m_bHammerSwingWait = true;		// ハンマーのスイングの開始待機状態をON
 	m_nSwingWait = ADJUST_SWING_WAIT / m_pHammer->GetSwingSpeed();
-	// エフェクトの再生
+	// エフェクトの停止
 	LibEffekseer::GetManager()->StopEffect(m_chgEfcHandle);
-	//SEの再生
-	PlaySE(SE_SWING);
 }
 

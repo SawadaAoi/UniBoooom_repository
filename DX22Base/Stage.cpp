@@ -38,6 +38,7 @@
 #include "HitStop.h"	//ヒットストップ
 #include "Fade.h"
 #include "UsingCamera.h"	//カメラ使用
+#include "Effect.h"
 
 
 //* ========================================
@@ -140,13 +141,14 @@ void CStage::Update()
 		if (m_pUIStageManager->GetShowWarningPtr()->GetDispFlg())
 		{
 			m_pUIStageManager->GetShowWarningPtr()->Update();	// 警告のみ更新
-
+			LibEffekseer::GetManager()->SetPausedToAllEffects(true);	// すべてのエフェクトを停止
 			return;
 		}
 
 		//ポーズ更新
 		if (m_pPause)	//ヌルチェック
 		{
+			LibEffekseer::GetManager()->SetPausedToAllEffects(true);	// すべてのエフェクトを停止
 			m_pPause->Update();	//ポーズ更新
 			if (m_pPause->IsPause())	//ポーズ中
 			{
@@ -173,6 +175,7 @@ void CStage::Update()
 		Collision();					// 当たり判定更新
 		m_pHitEffectMng->Update();		// ヒットエフェクトマネージャー更新
 
+		LibEffekseer::GetManager()->SetPausedToAllEffects(false);	// すべてのエフェクトを通常再生
 	}
 
 	CScene::Update();
