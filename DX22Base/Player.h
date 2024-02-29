@@ -88,12 +88,12 @@ public:
 		MOTION_PLAYER_MAX,		//モーションの総数
 	};
 
-	enum PLAYER_CHARGE_STATE {
+	enum PLAYER_CHARGE_STATE 
+	{
 		PLAYER_CHARGE_NONE,
 		PLAYER_CHARGING,
 		PLAYER_CHARGED,
-		
-
+	
 	};
 
 private:
@@ -136,8 +136,6 @@ private:
 	void MoveSizeInputSet(TPos3d<float> fInput);
 	void DisplaySweatEffect();
 
-	// ===プロトタイプ宣言===
-	void LoadAnime();	//アニメーション読み込み関数
 
 	// ===メンバ変数宣言=====
 	TPos3d<float> m_fMove;				// 移動量
