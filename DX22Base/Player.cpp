@@ -90,6 +90,8 @@ const TTriType<float> CHARGING_EFFECT_SIZE = { 2.0f,2.0f,2.0f };// ƒGƒtƒFƒNƒg‚Ìƒ
 const TTriType<float> CHARGED_EFFECT_SIZE = { 3.0f,3.0f,3.0f };// ƒGƒtƒFƒNƒg‚ÌƒTƒCƒY
 const float CHARGE_EFFECT_SPEED = 1.0f;						// ƒ`ƒƒ[ƒWƒGƒtƒFƒNƒg‚ÌÄ¶‘¬“x
 const int DISP_CHARGE_EFC_CNT = 15;							// ƒ`ƒƒ[ƒWƒGƒtƒFƒNƒg‚ÌŒ©‚¦n‚ß‚éƒJƒEƒ“ƒg
+const float PLAY_SE_CNT = 20;								// ƒ`ƒƒ[ƒW’†‚ÌSE‚ªÄ¶‚³‚ê‚é‚Ü‚Å‚ÌƒJƒEƒ“ƒg
+const int ADJUST_SWING_WAIT = 13;							// ƒnƒ“ƒ}[‚ÌƒAƒjƒ[ƒVƒ‡ƒ“‚ÆÀÛ‚Ì“–‚½‚è”»’è‚Æ‚Ì‚¸‚ê‚ğC³‚·‚é‚½‚ß‚ÌŠÔ‚ÌŠ„‡
 
 /* ========================================
    ŠÖ”FƒRƒ“ƒXƒgƒ‰ƒNƒ^
@@ -124,6 +126,8 @@ CPlayer::CPlayer()
 	, m_fRotate_x(PLAYER_ROTATE_X_NORMAL)
 	, m_fChargeCnt(0.0f)
 	, m_ChargeState(PLAYER_CHARGE_NONE)
+	, m_bHammerSwingWait(false)
+	, m_nSwingWait(0.0f)
 {
 	m_pHammer = new CHammer();			// HammerƒNƒ‰ƒX‚ğƒCƒ“ƒXƒ^ƒ“ƒX
 
@@ -209,115 +213,125 @@ void CPlayer::Update()
 				}
 
 				m_pModel->SetAnimationSpeed(MOTION_PLAYER_SWING, m_pHammer->GetSwingSpeed() * SWING_ANIM_ADJUST);	// ƒAƒjƒ‚Ì‘¬‚³‚ğİ’è
-				m_bAttackFlg = false;			// UŒ‚’†ƒtƒ‰ƒO‚ğƒIƒt‚É‚·‚é
-				m_bHumInvFlg = true;			// ƒnƒ“ƒ}[U‚èŠÔŠuƒtƒ‰ƒOƒIƒ“
+				m_bAttackFlg = false;	// UŒ‚’†ƒtƒ‰ƒO‚ğƒIƒt‚É‚·‚é
+				m_bHumInvFlg = true;	// ƒnƒ“ƒ}[U‚èŠÔŠuƒtƒ‰ƒOƒIƒ“
 			}
 		}
 		// ƒnƒ“ƒ}[UŒ‚’†‚Å‚Í‚È‚¢
 		else
 		{
-
-			// ƒRƒ“ƒgƒ[ƒ‰‚ªÚ‘±‚³‚ê‚Ä‚È‚¢ê‡
-			if (GetUseVController() == false)
+			// ƒnƒ“ƒ}[‚ÌU‚è‚©‚Ô‚éƒ‚[ƒVƒ‡ƒ“‚ÌŠÔ‚¾‚¯“–‚½‚è”»’è‚ğ‘Ò‹@
+			if (m_bHammerSwingWait)
 			{
-				MoveKeyboard();
-			}
-			// ƒRƒ“ƒgƒ[ƒ‰‚ªÚ‘±‚³‚ê‚Ä‚¢‚éê‡
-			else
-			{
-				MoveController();
-			}
-
-			CheckCharge();	// ƒ`ƒƒ[ƒWƒJƒEƒ“ƒg‚ğQÆ‚µ‚Äƒ`ƒƒ[ƒWó‘Ô‚ğ”»’è
-
-			// ƒnƒ“ƒ}[ƒXƒCƒ“ƒO‚ÌƒAƒjƒ[ƒVƒ‡ƒ“‚ªI—¹‚µ‚Ä‚¢‚½‚çƒ`ƒƒ[ƒWó‘Ô‚ğNONE‚É•ÏX
-			if (!m_pModel->IsPlay(MOTION_PLAYER_SWING))
-			{
-				m_ChargeState = PLAYER_CHARGE_NONE;
-			}
-
-			// ƒ`ƒƒ[ƒWó‘Ô‚ªNONE‚ÅƒXƒCƒ“ƒOƒAƒjƒ[ƒVƒ‡ƒ“‚ªI—¹‚µ‚Ä‚¢‚é‚Æ‚«
-			if (!m_ChargeState == PLAYER_CHARGE_NONE && m_pModel->IsPlay(MOTION_PLAYER_SWING))
-			{
-				m_fChargeCnt = 0;
-				m_ChargeState = PLAYER_CHARGING;
-			}
-
-			// ƒnƒ“ƒ}[ŠÔŠuŠÔƒtƒ‰ƒO‚ªƒIƒ“‚Ì
-			if (m_bHumInvFlg)
-			{
-				m_fHumInvCnt++;				// ƒnƒ“ƒ}[ŠÔŠuŠÔƒJƒEƒ“ƒg‰ÁZ
-				if (m_fHumInvCnt >= HAMMER_INTERVAL_TIME)
+				// ƒJƒEƒ“ƒg‚ğŒ¸‚ç‚µ‚Ä‚¢‚­
+				m_nSwingWait--;
+				// ƒJƒEƒ“ƒg‚ª0ˆÈ‰º‚É‚È‚Á‚½‚ç
+				if (m_nSwingWait <= 0)
 				{
-					m_bHumInvFlg = false;		// ƒnƒ“ƒ}[ŠÔŠuŠÔƒtƒ‰ƒOƒIƒ“
-					m_fHumInvCnt = 0.0f;		// ƒnƒ“ƒ}[ŠÔŠuŠÔƒŠƒZƒbƒg
+					// ƒnƒ“ƒ}[‚Ì“–‚½‚è”»’è‚ğÀÛ‚É“®‚©‚·
+					m_pHammer->AttackStart(m_Transform.fPos, m_Transform.fRadian.y);
+					m_bHammerSwingWait = false;
+					m_bAttackFlg = true;	// UŒ‚ƒtƒ‰ƒO‚ğ—LŒø‚É‚·‚é
 				}
-			}
-
-			// ƒXƒy[ƒXƒL[‚à‚µ‚­‚ÍƒRƒ“ƒgƒ[ƒ‰‚ÌBƒ{ƒ^ƒ“‚É‘Î‚µ‚Ä‚Ì‰Ÿ‚µ‘±‚¯ && ƒnƒ“ƒ}[ŠÔŠuŠÔŒo‰ßÏ‚İ
-			if ((IsKeyPress(VK_SPACE) || IsKeyPressController(BUTTON_B)) && !m_bHumInvFlg
-				&& !m_ChargeState == PLAYER_CHARGING)
-			{
-				SAFE_DELETE(m_pWaitFrameCnt);	// ƒJƒEƒ“ƒ^íœ
-
-				// ƒJƒEƒ“ƒg‚ª0‚È‚çƒAƒjƒ[ƒVƒ‡ƒ“‚ğƒŠƒZƒbƒg‚µ‚ÄÄ¶
-				if (m_fChargeCnt == 0)
-				{
-					m_pModel->Play(MOTION_PLAYER_CHARGE, true, 1.0);		// ƒAƒjƒ[ƒVƒ‡ƒ“‚ÌÄ¶
-					m_pModel->SetAnimationTime(MOTION_PLAYER_CHARGE, 0.0f);	// ƒAƒjƒ[ƒVƒ‡ƒ“ƒ^ƒCƒ€‚ğƒXƒ^[ƒgˆÊ’u‚ÉƒZƒbƒg
-				}
-
-
-				m_fChargeCnt++;	// ƒ`ƒƒ[ƒWƒJƒEƒ“ƒg‚ğ‘‰Á
-
-				if (m_fChargeCnt == DISP_CHARGE_EFC_CNT)
-				{
-					// ƒGƒtƒFƒNƒg‚ÌÄ¶
-					ChargeEffectStart();
-				}
-
-				// ƒ`ƒƒ[ƒW’†‚ÌSEÄ¶
-				if (m_fChargeCnt == 20)
-				{
-					PlaySE(SE_CHARGED);
-				}
-				// ƒJƒEƒ“ƒg‚ªƒ}ƒbƒNƒX‚É‚È‚Á‚½‚ÌSEÄ¶
-				if (m_fChargeCnt == CHARGE_HAMMER_CNT)
-				{
-					PlaySE(SE_MAXCHARGED);
-				}
-			}
-			else if ((IsKeyRelease(VK_SPACE) || IsKeyReleaseController(BUTTON_B)) &&
-				!m_bHumInvFlg && !m_pModel->IsPlay(MOTION_PLAYER_SWING))
-			{	// ƒXƒy[ƒXƒL[‚à‚µ‚­‚ÍƒRƒ“ƒgƒ[ƒ‰‚ÌBƒ{ƒ^ƒ“‚É‘Î‚µ‚Ä‚Ì—£‚µ‚½ && ƒnƒ“ƒ}[ŠÔŠuŠÔŒo‰ßÏ‚İ
-
-				SAFE_DELETE(m_pWaitFrameCnt);	// ƒJƒEƒ“ƒ^íœ
-
-				m_pModel->Play(MOTION_PLAYER_SWING, false, m_pHammer->GetSwingSpeed() * SWING_ANIM_ADJUST);	// ƒAƒjƒ[ƒVƒ‡ƒ“‚ÌÄ¶
-				m_pModel->SetAnimationTime(MOTION_PLAYER_SWING, 0.0f);				// ƒAƒjƒ[ƒVƒ‡ƒ“ƒ^ƒCƒ€‚ğƒXƒ^[ƒgˆÊ’u‚ÉƒZƒbƒg
-
-
-				m_pHammer->AttackStart(m_Transform.fPos, m_Transform.fRadian.y);	// ƒnƒ“ƒ}[UŒ‚ŠJn
-				m_bAttackFlg = true;	// UŒ‚ƒtƒ‰ƒO‚ğ—LŒø‚É‚·‚é
-
-				LibEffekseer::GetManager()->StopEffect(m_chgEfcHandle);
-
-				//SE‚ÌÄ¶
-				PlaySE(SE_SWING);
 			}
 			else
 			{
-				m_fChargeCnt = 0;
-
-				m_nSwingFastCnt++;
-				if (SWING_FAST_INTERVAL < m_nSwingFastCnt)
+				if (!m_pModel->IsPlay(MOTION_PLAYER_SWING))
 				{
-					// UŒ‚ƒ{ƒ^ƒ“‚ğ‰Ÿ‚µ‚Ä‚È‚¢‚Íƒnƒ“ƒ}[‚ÌƒXƒCƒ“ƒOƒXƒs[ƒh‚ğ’Êí‚É–ß‚µ‚Ä‚¢‚­
-					m_pHammer->SwingSpeedFast();
-					m_pModel->SetAnimationSpeed(
-						MOTION_PLAYER_SWING,
-						m_pHammer->GetSwingSpeed() * SWING_ANIM_ADJUST);	// ƒAƒjƒ‚Ì‘¬‚³‚ğİ’è
-					m_nSwingFastCnt = 0;
+					// ƒRƒ“ƒgƒ[ƒ‰‚ªÚ‘±‚³‚ê‚Ä‚È‚¢ê‡
+					if (GetUseVController() == false)
+					{
+						MoveKeyboard();
+					}
+					// ƒRƒ“ƒgƒ[ƒ‰‚ªÚ‘±‚³‚ê‚Ä‚¢‚éê‡
+					else
+					{
+						MoveController();
+					}
+				}
+
+				CheckCharge();	// ƒ`ƒƒ[ƒWƒJƒEƒ“ƒg‚ğQÆ‚µ‚Äƒ`ƒƒ[ƒWó‘Ô‚ğ”»’è
+
+				// ƒnƒ“ƒ}[ƒXƒCƒ“ƒO‚ÌƒAƒjƒ[ƒVƒ‡ƒ“‚ªI—¹‚µ‚Ä‚¢‚½‚çƒ`ƒƒ[ƒWó‘Ô‚ğNONE‚É•ÏX
+				if (!m_pModel->IsPlay(MOTION_PLAYER_SWING))
+				{
+					m_ChargeState = PLAYER_CHARGE_NONE;
+				}
+
+				// ƒ`ƒƒ[ƒWó‘Ô‚ªNONE‚ÅƒXƒCƒ“ƒOƒAƒjƒ[ƒVƒ‡ƒ“‚ªI—¹‚µ‚Ä‚¢‚é‚Æ‚«
+				if (!m_ChargeState == PLAYER_CHARGE_NONE && m_pModel->IsPlay(MOTION_PLAYER_SWING))
+				{
+					// ƒ`ƒƒ[ƒW‚ÌƒJƒEƒ“ƒg‚ğƒŠƒZƒbƒg‚µ‚ÄƒvƒŒƒCƒ„[‚Ìó‘Ô‚ğƒ`ƒƒ[ƒWó‘Ô‚ÉˆÚs
+					m_fChargeCnt = 0;
+					m_ChargeState = PLAYER_CHARGING;
+				}
+
+				// ƒnƒ“ƒ}[ŠÔŠuŠÔƒtƒ‰ƒO‚ªƒIƒ“‚Ì
+				if (m_bHumInvFlg)
+				{
+					m_fHumInvCnt++;				// ƒnƒ“ƒ}[ŠÔŠuŠÔƒJƒEƒ“ƒg‰ÁZ
+					if (m_fHumInvCnt >= HAMMER_INTERVAL_TIME)
+					{
+						m_bHumInvFlg = false;		// ƒnƒ“ƒ}[ŠÔŠuŠÔƒtƒ‰ƒOƒIƒ“
+						m_fHumInvCnt = 0.0f;		// ƒnƒ“ƒ}[ŠÔŠuŠÔƒŠƒZƒbƒg
+					}
+				}
+
+				// ƒXƒy[ƒXƒL[‚à‚µ‚­‚ÍƒRƒ“ƒgƒ[ƒ‰‚ÌBƒ{ƒ^ƒ“‚É‘Î‚µ‚Ä‚Ì‰Ÿ‚µ‘±‚¯ && ƒnƒ“ƒ}[ŠÔŠuŠÔŒo‰ßÏ‚İ
+				if ((IsKeyPress(VK_SPACE) || IsKeyPressController(BUTTON_B)) && !m_bHumInvFlg
+					&& !m_ChargeState == PLAYER_CHARGING)
+				{
+					SAFE_DELETE(m_pWaitFrameCnt);	// ƒJƒEƒ“ƒ^íœ
+
+					// ƒJƒEƒ“ƒg‚ª0‚È‚çƒAƒjƒ[ƒVƒ‡ƒ“‚ğƒŠƒZƒbƒg‚µ‚ÄÄ¶
+					if (m_fChargeCnt == 0)
+					{
+						m_pModel->Play(MOTION_PLAYER_CHARGE, true, 1.0);		// ƒAƒjƒ[ƒVƒ‡ƒ“‚ÌÄ¶
+						m_pModel->SetAnimationTime(MOTION_PLAYER_CHARGE, 0.0f);	// ƒAƒjƒ[ƒVƒ‡ƒ“ƒ^ƒCƒ€‚ğƒXƒ^[ƒgˆÊ’u‚ÉƒZƒbƒg
+					}
+
+
+					m_fChargeCnt++;	// ƒ`ƒƒ[ƒWƒJƒEƒ“ƒg‚ğ‘‰Á
+
+					if (m_fChargeCnt == DISP_CHARGE_EFC_CNT)
+					{
+						// ƒGƒtƒFƒNƒg‚ÌÄ¶
+						ChargeEffectStart();
+					}
+
+					// ƒ`ƒƒ[ƒW’†‚ÌSEÄ¶
+					if (m_fChargeCnt == PLAY_SE_CNT)
+					{
+						PlaySE(SE_CHARGED);
+					}
+					// ƒJƒEƒ“ƒg‚ªƒ}ƒbƒNƒX‚É‚È‚Á‚½‚ÌSEÄ¶
+					if (m_fChargeCnt == CHARGE_HAMMER_CNT)
+					{
+						PlaySE(SE_MAXCHARGED);
+					}
+				}
+				// ƒXƒy[ƒXƒL[‚à‚µ‚­‚ÍƒRƒ“ƒgƒ[ƒ‰‚ÌBƒ{ƒ^ƒ“‚ğ—£‚µ‚½ && ƒnƒ“ƒ}[ŠÔŠuŠÔŒo‰ßÏ‚İ
+				else if ((IsKeyRelease(VK_SPACE) || IsKeyReleaseController(BUTTON_B)) &&
+					!m_bHumInvFlg && !m_pModel->IsPlay(MOTION_PLAYER_SWING))
+				{
+					SAFE_DELETE(m_pWaitFrameCnt);	// ƒJƒEƒ“ƒ^íœ
+					SwingStart();
+				}
+				else
+				{
+					// ƒ`ƒƒ[ƒWƒJƒEƒ“ƒg‚ğƒŠƒZƒbƒg
+					m_fChargeCnt = 0;
+
+					m_nSwingFastCnt++;
+					if (SWING_FAST_INTERVAL < m_nSwingFastCnt)
+					{
+						// UŒ‚ƒ{ƒ^ƒ“‚ğ‰Ÿ‚µ‚Ä‚È‚¢‚Íƒnƒ“ƒ}[‚ÌƒXƒCƒ“ƒOƒXƒs[ƒh‚ğ’Êí‚É–ß‚µ‚Ä‚¢‚­
+						m_pHammer->SwingSpeedFast();
+						m_pModel->SetAnimationSpeed(
+							MOTION_PLAYER_SWING,
+							m_pHammer->GetSwingSpeed() * SWING_ANIM_ADJUST);	// ƒAƒjƒ‚Ì‘¬‚³‚ğİ’è
+						m_nSwingFastCnt = 0;
+					}
 				}
 			}
 		}
@@ -350,7 +364,7 @@ void CPlayer::Update()
 
 	DisplaySweatEffect();			// Š¾ƒGƒtƒFƒNƒgì¬
 
-	UpdateEffect();	// ƒG‚Ó‚¥‚­t‚ÌXV
+	UpdateEffect();	// ƒGƒtƒFƒNƒg‚ÌXV
 
 }
 
@@ -421,7 +435,7 @@ void CPlayer::Draw()
 	//=====ƒAƒjƒ[ƒVƒ‡ƒ“‚Ì’²®—p‚Éˆê‰c‚µ‚Ä‚¨‚­=====
 	if (m_bAttackFlg)
 	{
-		//m_pHammer->Draw();		// ƒnƒ“ƒ}[‚Ì•`‰æ
+		// m_pHammer->Draw();		// ƒnƒ“ƒ}[‚Ì•`‰æ
 	}
 
 	m_pShadow->Draw(m_Transform, PLAYER_SHADOW_SCALE);	// ‰e‚Ì•`‰æ
@@ -954,5 +968,27 @@ void CPlayer::UpdateEffect()
 	m_pWalkEffectMng->Update();						// •à‚«‚Ì“y‰ŒƒGƒtƒFƒNƒg‚ÌXV
 	m_pSweatEffectMng->Update(m_Transform.fPos);	// Š¾ƒGƒtƒFƒNƒg‚ÌXV
 
+}
+
+/* ========================================
+	ƒXƒCƒ“ƒOƒXƒ^[ƒgŠÖ”
+	-------------------------------------
+	“à—eFƒnƒ“ƒ}[‚ğU‚èn‚ß‚é
+	-------------------------------------
+	ˆø”1F–³‚µ
+	-------------------------------------
+	–ß’lF–³‚µ
+=========================================== */
+void CPlayer::SwingStart()
+{
+	m_pModel->Play(MOTION_PLAYER_SWING, false, m_pHammer->GetSwingSpeed() * SWING_ANIM_ADJUST);	// ƒAƒjƒ[ƒVƒ‡ƒ“‚ÌÄ¶
+	m_pModel->SetAnimationTime(MOTION_PLAYER_SWING, 0.0f);				// ƒAƒjƒ[ƒVƒ‡ƒ“ƒ^ƒCƒ€‚ğƒXƒ^[ƒgˆÊ’u‚ÉƒZƒbƒg
+
+	m_bHammerSwingWait = true;		// ƒnƒ“ƒ}[‚ÌƒXƒCƒ“ƒO‚ÌŠJn‘Ò‹@ó‘Ô‚ğON
+	m_nSwingWait = ADJUST_SWING_WAIT / m_pHammer->GetSwingSpeed();
+	// ƒGƒtƒFƒNƒg‚ÌÄ¶
+	LibEffekseer::GetManager()->StopEffect(m_chgEfcHandle);
+	//SE‚ÌÄ¶
+	PlaySE(SE_SWING);
 }
 
