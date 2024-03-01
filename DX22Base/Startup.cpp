@@ -112,10 +112,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				Draw();
 				preExecTime = nowTime;
 
-#if USE_SCENE_MANAGER
 				if (IsFin())
 					break;
-#endif
 			}
 		}
 	}
