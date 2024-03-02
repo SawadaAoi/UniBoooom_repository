@@ -10,6 +10,7 @@
 	変更履歴
    ・↓まで 学校の配布物(授業に沿い変形)・Geometryに合わせた改造
 	・2023/11/17 終了条件でゲームループを抜けるように変更 takagi
+	・2024/03/02 終了のバグ修正、アイコン変更 takagi
 
 ========================================== */
 
@@ -22,6 +23,10 @@
 
 // timeGetTime周りの使用
 #pragma comment(lib, "winmm.lib")
+
+//＞定数・マクロ定義
+const int CLIENT_X = 100;
+const int CLIENT_Y = 100;
 
 //--- プロトタイプ宣言
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
@@ -45,7 +50,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	wcex.style = CS_CLASSDC | CS_DBLCLKS;
 	wcex.cbSize = sizeof(WNDCLASSEX);
 	wcex.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON1));;
-	wcex.hIconSm = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON2));;
+	wcex.hIconSm = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON1));;
 	wcex.hCursor = LoadCursor(NULL, IDC_ARROW);
 	wcex.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
 

@@ -48,6 +48,7 @@ void SetRenderTargets(UINT num, RenderTarget** ppViews, DepthStencil* pView);
 void SetCullingMode(D3D11_CULL_MODE cull);
 void SetDepthTest(bool enable);
 void SetBlendMode(BlendMode blend);
+void SetScreenMode(bool bFullScreen);	//フルスクリーン設定
 void SetSamplerState(SamplerState state);
 
 #endif
