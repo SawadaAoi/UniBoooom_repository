@@ -336,6 +336,24 @@ void CPlayer::Update()
 					}
 				}
 			}
+			// Bボタンかスペースキーを押していない場合はエフェクトを停止する
+			// ※ポーズ画面やボス登場演出後にチャージエフェクトが残らないようにするため
+			if (GetUseVController() == false)
+			{// コントローラが接続されてない場合
+				if (!IsKeyPress(VK_SPACE))
+				{
+					// チャージエフェクトを停止
+					LibEffekseer::GetManager()->StopEffect(m_chgEfcHandle);
+				}
+			}
+			else
+			{// コントローラが接続されている場合
+				if (!IsKeyPress(BUTTON_B))
+				{
+					// チャージエフェクトを停止
+					LibEffekseer::GetManager()->StopEffect(m_chgEfcHandle);
+				}
+			}
 		}
 
 		// 無敵状態になっている場合
