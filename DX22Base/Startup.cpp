@@ -24,10 +24,6 @@
 // timeGetTime周りの使用
 #pragma comment(lib, "winmm.lib")
 
-//＞定数・マクロ定義
-const int CLIENT_X = 100;
-const int CLIENT_Y = 100;
-
 //--- プロトタイプ宣言
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
