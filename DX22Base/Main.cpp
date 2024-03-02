@@ -124,7 +124,7 @@ void Update(float tick)
 	{
 		g_pSceneMng->Update();
 	}
-	if (IsKeyTrigger('M')/* || IsKeyTriggerController(BUTTON_LB)*/)
+	if (IsKeyTrigger(VK_F11)/* || IsKeyTriggerController(BUTTON_LB)*/)
 	{
 		g_bScrren ^= 1;	//フラグ切換
 		SetScreenMode(g_bScrren);	//スクリーン情報更新
