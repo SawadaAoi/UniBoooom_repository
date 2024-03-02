@@ -267,6 +267,22 @@ void SetBlendMode(BlendMode blend)
 	FLOAT blendFactor[4] = { D3D11_BLEND_ZERO, D3D11_BLEND_ZERO, D3D11_BLEND_ZERO, D3D11_BLEND_ZERO };
 	g_pContext->OMSetBlendState(g_pBlendState[blend], blendFactor, 0xffffffff);
 }
+
+/* ========================================
+	フルスクリーン設定関数
+	----------------------------------------
+	内容：フルスクリーンか否かを設定する
+	----------------------------------------
+	引数1：bool bFullScreen：フルスクリーンにするか(true:する)
+	----------------------------------------
+	戻値：なし
+=========================================== */
+void SetScreenMode(bool bFullScreen)
+{
+	// =============== 設定 ===============
+	g_pSwapChain->SetFullscreenState(bFullScreen, NULL);	//フルスクリーン設定
+}
+
 void SetSamplerState(SamplerState state)
 {
 	if (state < 0 || state >= SAMPLER_MAX) return;

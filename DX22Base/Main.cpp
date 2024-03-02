@@ -14,6 +14,7 @@
 	・2023/11/18 sound.hをインクルードしてsoundの初期化と終了を追加 yamashita
 	・2023/11/21 3dアニメーション用配布物適用
 	・2024/02/27 デバッグモード除去 takagi
+	・最初の読み込み時間に待機画面追加 takagi
 
 ========================================== */
 
@@ -30,9 +31,11 @@
 #include "Sound.h"
 #include "ShaderList.h"	//モデルアニメーション用
 #include "LibEffekseer.h"
+#include "2dPolygon.h"
 
 // =============== グローバル変数定義 =============
 CSceneManager* g_pSceneMng;
+bool g_bScrren = false;	//フルスクリーンか否かを決める(trueでフルスクリーン)
 
 /* ========================================
 	初期化処理関数
@@ -51,7 +54,7 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
 {
 	HRESULT hr;
 	// DirectX初期化
-	hr = InitDirectX(hWnd, width, height, false);
+	hr = InitDirectX(hWnd, width, height, g_bScrren);
 	if (FAILED(hr)) { return hr; }
 
 	CSound::InitSound();
@@ -64,6 +67,15 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
 	InitInput();
 
 	ShaderList::Init();
+
+	//読み込み待ち画面
+	C2dPolygon Tex;
+	Tex.SetTexture("Assets/Texture/Start/Wait.png");
+	Tex.SetPos({ static_cast<float>(SCREEN_WIDTH / 2.0f), static_cast<float>(SCREEN_HEIGHT / 2.0f), 0.0f });
+	Tex.SetSize({ static_cast<float>(SCREEN_WIDTH), static_cast<float>(SCREEN_HEIGHT), 0.0f });
+	BeginDrawDirectX();	//書き出し開始
+	Tex.Draw();			//描画
+	EndDrawDirectX();	//書き出し完了
 
 	// シーン作成
 	g_pSceneMng = new CSceneManager();
@@ -111,6 +123,11 @@ void Update(float tick)
 	if (g_pSceneMng)	//ヌルチェック
 	{
 		g_pSceneMng->Update();
+	}
+	if (IsKeyTrigger('M')/* || IsKeyTriggerController(BUTTON_LB)*/)
+	{
+		g_bScrren ^= 1;	//フラグ切換
+		SetScreenMode(g_bScrren);	//スクリーン情報更新
 	}
 }
 

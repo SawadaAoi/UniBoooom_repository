@@ -10,6 +10,7 @@
 	変更履歴
    ・↓まで 学校の配布物(授業に沿い変形)・Geometryに合わせた改造
 	・2023/11/17 終了条件でゲームループを抜けるように変更 takagi
+	・2024/03/02 終了のバグ修正、アイコン変更 takagi
 
 ========================================== */
 
@@ -45,7 +46,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	wcex.style = CS_CLASSDC | CS_DBLCLKS;
 	wcex.cbSize = sizeof(WNDCLASSEX);
 	wcex.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON1));;
-	wcex.hIconSm = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON2));;
+	wcex.hIconSm = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON1));;
 	wcex.hCursor = LoadCursor(NULL, IDC_ARROW);
 	wcex.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
 
@@ -112,10 +113,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				Draw();
 				preExecTime = nowTime;
 
-#if USE_SCENE_MANAGER
 				if (IsFin())
 					break;
-#endif
 			}
 		}
 	}
