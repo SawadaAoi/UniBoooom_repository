@@ -145,12 +145,15 @@ void CSlime_Flame::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
 	m_Transform.fPos.x += m_move.x * fSlimeMoveSpeed;
 	m_Transform.fPos.z += m_move.z * fSlimeMoveSpeed;
 
+	m_pShadow->SetPos(m_Transform.fPos);
+	m_pShadow->SetScale(m_fScaleShadow);
+
+
 	// エフェクトの描画
 	TPos3d<float> cameraPos = CUsingCamera::GetThis().GetCamera()->GetPos();							//カメラ座標を取得
 	DirectX::XMFLOAT3 fCameraPos(cameraPos.x, cameraPos.y, cameraPos.z);	//XMFLOAT3に変換
 	LibEffekseer::SetViewPosition(fCameraPos);								//カメラ座標をセット
 	LibEffekseer::SetCameraMatrix(CUsingCamera::GetThis().GetCamera()->GetViewWithoutTranspose(), CUsingCamera::GetThis().GetCamera()->GetProjectionWithoutTranspose());	//転置前のviewとprojectionをセット
-
 }
 
 

@@ -128,6 +128,9 @@ void CSlime_Heal::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
 	// -- À•WXV
 	m_Transform.fPos.x += m_move.x * fSlimeMoveSpeed;
 	m_Transform.fPos.z += m_move.z * fSlimeMoveSpeed;
+
+	m_pShadow->SetScale(m_fScaleShadow);
+	m_pShadow->SetPos(m_Transform.fPos);
 }
 
 /* ========================================

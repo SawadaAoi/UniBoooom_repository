@@ -145,6 +145,8 @@ void CSlime_2::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
 	// -- 座標更新
 	m_Transform.fPos.x += m_move.x * fSlimeMoveSpeed;
 	m_Transform.fPos.z += m_move.z * fSlimeMoveSpeed;
+	m_pShadow->SetScale(m_fScaleShadow);
+	m_pShadow->SetPos(m_Transform.fPos);
 }
 
 /* ========================================
@@ -158,10 +160,6 @@ void CSlime_2::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
 =========================================== */
 void CSlime_2::Draw()
 {
-
-	//-- 影の描画
-	m_pShadow->Draw(m_Transform, m_fScaleShadow);
-
 	//行列状態を取得してセット
 	DirectX::XMFLOAT4X4 world;
 	DirectX::XMStoreFloat4x4(&world, XMMatrixTranspose(

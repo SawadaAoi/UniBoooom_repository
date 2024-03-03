@@ -55,6 +55,7 @@ CSlime_4::CSlime_4()
 	SetNormalSpeed();
 	m_nAttack = LEVEL4_ATTACK;
 	m_fScaleShadow = LEVEL_4_SHADOW_SCALE;	// 影の大きさを設定
+	
 }
 
 /* ========================================
@@ -130,6 +131,8 @@ void CSlime_4::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
 	// -- 座標更新
 	m_Transform.fPos.x += m_move.x * fSlimeMoveSpeed;
 	m_Transform.fPos.z += m_move.z * fSlimeMoveSpeed;
+	m_pShadow->SetScale(m_fScaleShadow);
+	m_pShadow->SetPos(m_Transform.fPos);
 }
 
 /* ========================================
@@ -143,9 +146,6 @@ void CSlime_4::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
 =========================================== */
 void CSlime_4::Draw()
 {
-
-	//-- 影の描画
-	m_pShadow->Draw(m_Transform, m_fScaleShadow);
 
 	//行列状態を取得してセット
 	DirectX::XMFLOAT4X4 world;

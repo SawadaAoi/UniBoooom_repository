@@ -165,9 +165,6 @@ void CSlimeBase::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
 void CSlimeBase::Draw()
 {
 
-	//-- 影の描画
-	m_pShadow->Draw(m_Transform, m_fScaleShadow);
-
 	//行列状態を取得してセット
 	DirectX::XMFLOAT4X4 world;
 	DirectX::XMStoreFloat4x4(&world, XMMatrixTranspose(

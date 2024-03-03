@@ -309,6 +309,14 @@ void CSlimeManager::Draw()
 
 	}
 
+	// "スライム"影描画
+	for (int i = 0; i < MAX_SLIME_NUM; i++)
+	{
+		if (m_pSlime[i] == nullptr) continue;
+		m_pSlime[i]->GetShadowPtr()->Draw();
+
+	}
+
 	//"スライム"描画
 	for (int i = 0; i < MAX_SLIME_NUM; i++)
 	{

@@ -348,7 +348,7 @@ void CPlayer::Update()
 			}
 			else
 			{// コントローラが接続されている場合
-				if (!IsKeyPress(BUTTON_B))
+				if (!IsKeyPressController(BUTTON_B))
 				{
 					// チャージエフェクトを停止
 					LibEffekseer::GetManager()->StopEffect(m_chgEfcHandle);
