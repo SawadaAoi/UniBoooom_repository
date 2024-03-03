@@ -45,6 +45,7 @@
 
 //ゲームシーン================================================
 const float BGM_VOLUME = 0.07f;				//シーンゲームの音量
+const float BGM_RESULT_VOLUME = 0.7f;		// リザルトBGMの音量
 const float SE_HAMMER_HIT_VOLUME = 0.9f;	// スライムを打った時のSEの音量
 // 画面サイズ
 const int SCREEN_WIDTH_ = 1280;

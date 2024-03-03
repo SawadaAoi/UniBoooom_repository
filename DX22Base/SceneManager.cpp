@@ -376,6 +376,17 @@ void CSceneManager::SoundFade()
 	if (m_pFade->IsFadeIn())	//フェードイン中
 	{
 		m_pBGMSpeaker->SetVolume((1.0f - m_pFade->GetFrameRate()) * BGM_VOLUME);	//フェードイン中、音量をだんだん大きくする
+		
+		// ゲームオーバー時だけ音量を大きくする
+		if (typeid(CResult).hash_code() == typeid(*m_pScene).hash_code())
+		{
+			BattleData Data;
+			Data.Load();
+			if (!Data.bClearFlg)
+			{
+				m_pBGMSpeaker->SetVolume((1.0f - m_pFade->GetFrameRate()) * BGM_RESULT_VOLUME);	//フェードイン中、音量をだんだん大きくする
+			}
+		}
 	}
 	else if (m_pFade->IsFadeOut())	//フェードアウト中
 	{
