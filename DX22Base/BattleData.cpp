@@ -39,6 +39,15 @@ const std::string DATAFILE("BattleData.bin");	//データ読み書き用のファイル名
 tagBattleData::tagBattleData()
 	:tagBattleData(0, 0, 0, 0, 0)
 {
+	for (int nIdx = 0; nIdx < 5; nIdx++)
+	{
+		nKill[nIdx] = 0;	// スライム別討伐数
+	}
+	for (int nIdx = 0; nIdx < 3; nIdx++)
+	{
+		nHighScore[nIdx] = 0;	// スライム別討伐数
+	}
+	bClearFlg = false;		// ステージクリアフラグ
 }
 
 /* ========================================
@@ -134,6 +143,7 @@ void tagBattleData::Load()
 		MessageBox(nullptr, "ファイルが読み込めませんした", "BattleData.cpp->Error", MB_OK);	//エラー通知
 	}
 #endif
+
 }
 
 /* ========================================
