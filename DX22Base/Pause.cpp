@@ -155,7 +155,7 @@ void CPause::Update()
 		if (GetUseVController())	// コントローラが接続されている場合
 		{
 			// =============== 起動・終了 ===================
-			if (IsKeyTriggerController(BUTTON_START) || IsKeyTriggerController(BUTTON_SELECT))
+			if (IsKeyTriggerController(BUTTON_START) || IsKeyTriggerController(BUTTON_SELECT)|| IsKeyTriggerController(BUTTON_RT))
 			{
 				if (IsPause())	//すでにポーズ中
 				{
