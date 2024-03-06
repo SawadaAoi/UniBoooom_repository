@@ -241,6 +241,12 @@
     <Filter Include="ヘッダー ファイル\System\Manager">
       <UniqueIdentifier>{b208ac54-6d55-4e50-a1e7-68ee542c4172}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\System\Indicator">
+      <UniqueIdentifier>{ac912e11-55d0-42c3-b1a1-45b0a53545e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\System\Indicator">
+      <UniqueIdentifier>{0017d77f-1087-4c95-b688-55483430932b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -614,6 +620,9 @@
     </ClCompile>
     <ClCompile Include="ShowWarning.cpp">
       <Filter>ソース ファイル\2dObject</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadIndicator.cpp">
+      <Filter>ソース ファイル\System\Indicator</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1006,6 +1015,9 @@
     </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadIndicator.h">
+      <Filter>ヘッダー ファイル\System\Indicator</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
