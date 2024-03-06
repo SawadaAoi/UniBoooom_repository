@@ -9,8 +9,26 @@
 
 	変更履歴
 	・2023/11/11 ヘッダ作成 Suzumura
-	・2023/11/13 Paramerter追加(LEVEL_〇_EXPLODE_TIME) Suzumura
-
+	・2023/11/13 パラメーター追加(LEVEL_〇_EXPLODE_TIME) Suzumura
+	・2023/11/14 パラメーター追加(// フレイムスライム) Suzumura
+	・2023/11/15 パラメーター追加(// フレイムスライム) Suzumura
+	・2023/11/18 パラメーター追加(// スコア) yamamoto
+	・2023/11/21 パラメーター追加(// コンボ数) Sawada
+	・2023/11/23 パラメーター追加(// ボス１スライム) Suzumura
+	・2023/11/23 パラメーター追加(// 2D描画) nieda
+	・2023/11/24 パラメーター削除(// カメラ) Takagi
+	・2023/11/25 パラメーター追加(// スコア) yamamoto
+	・2023/11/24 パラメーター追加(// カメラ) Takagi
+	・2023/11/27 パラメーター追加(// 影) nieda
+	・2023/11/30 パラメーター編集(// カメラ) Takagi
+	・2023/12/01 パラメーター追加(// HP、コンボのアニメーション関連) nieda
+	・2023/12/05 パラメーター追加(// ポーズ) Takagi
+	・2023/12/06 パラメーター編集(// ポーズ) Takagi
+	・2023/12/07 パラメーター削除(// 不必要) Takagi
+	・2023/12/16 パラメーター削除(// ゲームスタート描画) nieda
+	・2023/12/17 パラメーター削除(// ポーズ) Takagi
+	・2024/01/01 パラメーター削除(// タイマー) Takagi
+	・2024/02/20 パラメーター追加(// BoooomUI) suzumura
 =========================================== */
 #ifndef __GAME_PARAMETER_H__
 #define __GAME_PARAMETER_H__
@@ -19,96 +37,198 @@
 #define MODE_GAME_PARAMETER	(true)
 
 #if MODE_GAME_PARAMETER
+// =============== インクルード ===================
+#include "Pos2d.h"
+#include "Pos3d.h"
+#include <DirectXMath.h>
+
+
+//ゲームシーン================================================
+const float BGM_VOLUME = 0.07f;				//シーンゲームの音量
+const float BGM_RESULT_VOLUME = 0.7f;		// リザルトBGMの音量
+const float SE_HAMMER_HIT_VOLUME = 0.9f;	// スライムを打った時のSEの音量
+// 画面サイズ
+const int SCREEN_WIDTH_ = 1280;
+const int SCREEN_HEIGHT_ = 720;
+
 
 // プレイヤー ================================================
-const float PLAYER_MOVE_SPEED	= 0.1f;		// プレイヤーの移動速度
-const int	PLAYER_HP			= 5;		// プレイヤーのHP
-const float PLAYER_RADIUS		= 0.1f;		// プレイヤーの当たり判定の大きさ
-const float PLAYER_SIZE			= 1.0f;		// プレイヤーの大きさ
-const int	NO_DAMAGE_TIME		= 3 * 60;	// プレイヤーの無敵時間
-const int	DAMAGE_FLASH_FRAME	= 0.1 * 60;	// プレイヤーのダメージ点滅の切り替え間隔
+const float PLAYER_MOVE_SPEED	= 0.1333f;				// プレイヤーの移動速度
+const int	PLAYER_HP			= 10;					// プレイヤーのHP
+const float PLAYER_RADIUS		= 0.12f;				// プレイヤーの当たり判定の大きさ
+const float PLAYER_SIZE			= PLAYER_RADIUS * 2.0f;	// プレイヤーの大きさ
+const int	NO_DAMAGE_TIME		= 3 * 60;				// プレイヤーの無敵時間
+const int	DAMAGE_FLASH_FRAME	= int(0.1f * 60);		// プレイヤーのダメージ点滅の切り替え間隔
+const float PLAYER_ROTATE_X_NORMAL = DirectX::XMConvertToRadians(35.0f);	// プレイヤーの傾き(通常)
+const float PLAYER_ROTATE_X_DIE = DirectX::XMConvertToRadians(0.0f);	// プレイヤーの傾き
+
 
 // ハンマー
-const float ANGULAR_ANGLE	= 0.15f;        // 毎フレーム移動する角度量
-const float ROTATE_RADIUS	= 1.0f;        // ハンマーが回転するプレイヤーからの距離
-const float HAMMER_COL_SIZE = 0.75f;		//ハンマーの当たり判定の大きさ
-const float HAMMER_SIZE		= 1.5f;			//ハンマーの大きさ
+const float ROTATE_RADIUS					= 3.0f;							// ハンマーが回転するプレイヤーからの距離
+const float HAMMER_COL_SIZE					= 2.0f;							// ハンマーの当たり判定の大きさ
+const float HAMMER_SIZE						= HAMMER_COL_SIZE * 0.26666f;	// ハンマーの大きさ
+const float	SWING_TIME_ADD_MULT				= 1.4f;							// ハンマーを一回振る度に長くなるハンマーの一振りの時間(この値を乗算する)
+const float	SWING_TIME_ADD_MULT_CHARGE		= 5.0f;							// ハンマーを一回振る度に長くなるハンマーの一振りの時間(この値を乗算する)
+const float	SWING_TIME_MINUS_MULT			= 0.99f;						// ハンマーを一回振る度に短くなるハンマーの一振りの時間(この値を乗算する)
+const int	SWING_TIME_MAX					= int(0.5f * 60);				// ハンマーの一振りに掛かる時間の最大値
+const float SWING_ANIM_ADJUST				= 4.2f;							// ハンマーの当たり判定とアニメのズレ調整
+
 
 // 敵キャラ ==================================================
 
 // 共通
-const int	MAX_SLIME_NUM			= 50;		// スライムの最大生成数
-const int	START_ENEMY_NUM			= 6;		// ゲーム開始時の敵キャラの数
-const float ENEMY_MOVE_SPEED		= 0.035f;	// 敵の通常移動速度
-const float HAMMER_HIT_MOVE_SPEED	= 1.0f;		// ハンマーに吹き飛ばされた時のスピード
-const int	RANDOM_MOVE_SWITCH_TIME = 3 * 60;	// ランダム移動の方向切り替え
+const int	MAX_SLIME_NUM = 35;					// スライムの最大生成数
+const int	MAX_BOSS_SLIME_NUM = 1;				// ボススライムの最大生成数
+const int	START_ENEMY_NUM = 6;				// ゲーム開始時の敵キャラの数
+const float ENEMY_MOVE_SPEED = 0.035f;			// 敵の通常移動速度
+const float MOVE_DISTANCE_PLAYER = 20.0f;		// プレイヤー追跡移動に切り替える距離
+const int ENEMY_CREATE_INTERVAL		= int(1.0f * 60);			// 生成間隔
+const int RANDOM_POS = 15;										// 生成座標範囲
+const int CREATE_DISTANCE = 19;									// プレイヤーからどれくらい離れた距離に生成するか
+const int SLIME_LEVEL1_PER = 65;								// スライム_1の生成確立
+const int SLIME_LEVEL2_PER = 20;								// スライム_2の生成確立
+const int SLIME_LEVEL3_PER = 5;									// スライム_3の生成確立
+const int SLIME_LEVEL_FLAME_PER = 5;							// スライム_フレイムの生成確率
+const int SLIME_LEVEL_HEAL_PER = 5;								// スライム_ヒールの生成確率
+const float EXPLODE_BASE_RATIO		= 1.8f;						// スライムの爆発接触での爆発の大きさのベース
+const float ESCAPE_DISTANCE			= 15.0f;					// 爆発がこの距離より近かったら逃げる範囲
+const int ESCAPE_TIME				= int(60 * 0.8f);			// この間隔で逃げる処理が終了する
+const int MOVE_STOP_TIME			= int(60 * 0.8f);			// 爆発移動停止時間
 
-const float SPEED_DOWN_RATIO		= 0.6f;		// 吹き飛ぶ際にかかる移動速度の変化の割合    RATIO=>割合
-const float MOVE_RESIST				= 0.05f;	// 吹き飛び移動中のスライムの移動速度に毎フレームかかる減算数値
-const float MOVE_DISTANCE_PLAYER	= 13.0f;	// プレイヤー追跡移動に切り替える距離
-const float SLIME_BASE_RADIUS		= 0.5f;		// スライムの基準の大きさ
-
-
-const int ENEMY_CREATE_INTERVAL		= 2 * 60;									// 生成間隔
-const int RANDOM_POS				= 15;										// 生成座標範囲
-const int CREATE_DISTANCE			= 10;										// プレイヤーからどれくらい離れた距離に生成するか
-const int SLIME_LEVEL1_PER			= 50;										// スライム_1の生成確立
-const int SLIME_LEVEL2_PER			= 30;										// スライム_2の生成確立
-const int SLIME_LEVEL3_PER			= 100 - SLIME_LEVEL1_PER - SLIME_LEVEL2_PER;// スライム_3の生成確立
-const float MAX_SIZE_EXPLODE		= 5.0f;										// スライム4同士の爆発の大きさ
-const float EXPLODE_BASE_RATIO		= 1.5f;										// スライムの爆発接触での爆発の大きさのベース
-
-const float LEVEL_1_EXPLODE_TIME = 0.5f * 60.0f;								// スライム_1の爆発総時間
-const float LEVEL_2_EXPLODE_TIME = 1.0f * 60.0f;								// スライム_2の爆発総時間
-const float LEVEL_3_EXPLODE_TIME = 2.0f * 60.0f;								// スライム_3の爆発総時間
-const float LEVEL_4_EXPLODE_TIME = 3.0f * 60.0f;								// スライム_4の爆発総時間
-
-
+const float UINION_TEXT_POS_Y_ADJUST = 0.4f;					// 表示高さ(各スライムのSCALE)に掛ける調整用割合
 
 // スライム同士の反射の減算値
-// ↓1.0fでそのまま
-const float COL_SUB_HIT_TO_BIG		= 0.1f;			// スライム衝突(小→大)の衝突側の減算値(反射する移動)
-const float COL_SUB_STAND_TO_SMALL	= 0.8f;			// スライム衝突(小→大)の衝突される側の減算値(衝突された方向)
-const float COL_SUB_HIT_TO_SMALL	= 0.3f;			// スライム衝突(大→小)の衝突側の減算値(移動方向)
-const float COL_SUB_STAND_TO_BIG	= 1.2f;			// スライム衝突(大→小)の衝突される側の減算値(衝突された方向)
+const float LEAVE_DISTANCE = 29.0f;					// これ以上離れたら対角線上に移動する
 
 // サイズ1
-const float LEVEL1_SCALE = 1.0f;					// スライム＿レベル１の大きさ(当たり判定含む)
+const float LEVEL1_SCALE = 1.7f;					// スライム＿レベル１の大きさ(当たり判定含む)
 const float LEVEL1_SPEED = ENEMY_MOVE_SPEED;		// 移動速度
 
 // サイズ2
-const float LEVEL2_SCALE = 2.0f;					// スライム＿レベル２の大きさ(当たり判定含む)
-const float LEVEL2_SPEED = ENEMY_MOVE_SPEED * 0.9;	// 移動速度
+const float LEVEL2_SCALE = 3.5f;					// スライム＿レベル２の大きさ(当たり判定含む)
+const float LEVEL2_SPEED = ENEMY_MOVE_SPEED * 0.9f;	// 移動速度
 
 // サイズ3
-const float LEVEL3_SCALE = 3.0f;					// スライム＿レベル３の大きさ(当たり判定含む)
-const float LEVEL3_SPEED = ENEMY_MOVE_SPEED * 0.7;	// 移動速度
+const float LEVEL3_SCALE = 5.5f;					// スライム＿レベル３の大きさ(当たり判定含む)
+const float LEVEL3_SPEED = ENEMY_MOVE_SPEED * 0.7f;	// 移動速度
+const float LEVEL3_STOP_RANGE = DirectX::XMConvertToRadians(20.0f);	// スライムが止まる角度の範囲
+const int	LEVEL2_ATTACK_INTERVAL = int(60 * 4.0f);		// 攻撃終了から次の攻撃までの間隔
+const int	LEVEL2_ATTACK_CHARGE_CNT = int(60 * 1.0f);	// 突進するまでのため時間
+const int	LEVEL2_ATTACK_TACKLE_CNT = int(60 * 0.45f);	// 突進している時間
+const float	LEVEL2_TACKLE_SPEED = 0.2f;					// 突進の速度
 
 // サイズ4
-const float LEVEL4_SCALE = 5.0f;					// スライム＿レベル４の大きさ(当たり判定含む)
-const float LEVEL4_SPEED = ENEMY_MOVE_SPEED * 0.5;	// 移動速度
+const float LEVEL4_SCALE = 7.0f;					// スライム＿レベル４の大きさ(当たり判定含む)
+const float LEVEL4_SPEED = ENEMY_MOVE_SPEED * 0.2f;	// 移動速度
+const int	LEVEL4_ATTACK = 2;						// 攻撃力
+
+// フレイムスライム
+const float LEVEL_FLAME_SCALE = 1.5f;						// スライム＿フレイムの大きさ(当たり判定含む)
+const float LEVEL_FLAME_SPEED = ENEMY_MOVE_SPEED * 0.3f;	// 移動速度
+const int	LEVEL_FLAME_ATTACK = 1;							// 攻撃力
+
+// ヒールスライム
+const float LEVEL_HEAL_SCALE = 1.5f;						// スライム＿ヒールの大きさ(当たり判定含む)
+const float LEVEL_HEAL_SPEED = ENEMY_MOVE_SPEED * 0.3f;		// 移動速度
+const int	LEVEL_HEAL_ATTACK = 1;							// 攻撃力 （いる？
+
+// ボススライム
+const float LEVEL_BOSS_1_SCALE = 7.5f;								// ボス１の大きさ
+const float LEVEL_BOSS_1_SPEED = ENEMY_MOVE_SPEED * 0.4f;			// ボス１のスピード
+const int	BOSS_1_MAX_HP = 10;								// ボス１の最大HP
+const int	BOSS_1_ATTACK = 2;								// ボス１の攻撃力
+const float SLIME_HP_HEIGHT = 5.0f;							//ボスの体力表示位置（Y）
+const float ASSAULT_DISTANCE = 0.2f;								// 突撃反応距離
+const int	ASSAULT_COOL_TIME = 10 * 60;							// 突撃クルータイム
+const int	ASSAULT_CHARGE_TIME = int(2 * 60);						// 突撃チャージ時間
+const int	ASSAULT_TIME = int(1.0f * 60);						// 突撃総時間
+const float ASSAULT_SPEED = LEVEL_BOSS_1_SPEED * 20.0f;		// 突撃時のスピード
+//const float BOSS_HP_SIZEX = 0.15f;		// 体力１分の大きさ（X）
+const float BOSS_HP_SIZEY = 0.5f;		// 体力１分の大きさ（Y）
+const float BOSS_HPFRAME_SIZEX = 0.2f;	// 体力ゲージよりどれだけ大きいか（X）
+const float BOSS_HPFRAME_SIZEY = 0.2f;	// 体力ゲージよりどれだけ大きいか（Y）
+const float BOSS_HP_POSX = 17.0f;		// 体力バー（減る方）の位置
+const int BOSS_DAMAGE_FLASH_FRAME = int(0.1f * 60);					// ダメージ受けた際の点滅フレーム(無敵ではない)
+const int BOSS_DAMAGE_FLASH_TOTAL_FRAME = int(0.5f * 60);			// ダメージを受けた際の点滅を何フレーム行うか
+const float ADD_CREATE_BOSS_POS_Z = 20.0f;							// ボスの生成位置(プレイヤーの生成位置に対してどれだけ奥に出すか)
+
+const float EXPLODE_BOSS_RATIO = 2.3f;						// ボス撃破時の爆発の大きさ倍率
 
 
 // 爆発 =====================================================
-const int	MAX_EXPLOSION_NUM		= 20;		// 最大爆発数
-const float EXPAND_QUICK_RATE		= 0.2f;		// 膨張加速割合 
+const float LEVEL_1_EXPLODE_TIME = 0.5f * 60.0f;	// スライム_1の爆発総時間
+const float LEVEL_2_EXPLODE_TIME = 1.0f * 60.0f;	// スライム_2の爆発総時間
+const float LEVEL_3_EXPLODE_TIME = 2.0f * 60.0f;	// スライム_3の爆発総時間
+const float LEVEL_4_EXPLODE_TIME = 3.0f * 60.0f;	// スライム_4の爆発総時間
+const float LEVEL_4X4_EXPLODE_TIME = 3.5f * 60.0f;	// スライム_4x4の爆発総時間
+const float LEVEL_BOSS_EXPLODE_TIME = 4.0f * 60.0f;	// スライム_ボスの爆発総時間
 
-// カメラ =====================================================
-const TPos3d<float> INIT_POS(0.0f, 2.6f, -3.0f);					// 初期位置
+const int	LEVEL_1_EXPLODE_DAMAGE = 1;		// スライム_1の爆発ダメージ
+const int	LEVEL_2_EXPLODE_DAMAGE = 2;		// スライム_2の爆発ダメージ
+const int	LEVEL_3_EXPLODE_DAMAGE = 3;		// スライム_3の爆発ダメージ
+const int	LEVEL_4_EXPLODE_DAMAGE = 4;		// スライム_4の爆発ダメージ
+const int	LEVEL_4X4_EXPLODE_DAMAGE = 5;	// スライム_4x4の爆発ダメージ
 
-const float INIT_ANGLE	= DirectX::XMConvertToRadians(73.0f);       // カメラの角度
-const float INIT_NEAR	= 1.0f;										// 画面手前初期z値
-const float INIT_FAR	= 150.0f;									// 画面奥初期z値
-const float INIT_RADIUS = 15.0f;									// カメラと注視点との距離(初期値)
+const float MAX_SIZE_EXPLODE = 9.0f;						// スライム4x4の爆発の大きさ
+
+const int	DELAY_TIME = int(0.2f * 60);			// 遅延秒数
+const float EXPAND_QUICK_RATE = 0.2f;				// 膨張加速割合 (当たり判定のみ)
+
+// BoooomUI =======================================================
+const float BOOOOM_UI_SCALE_X = 6.0f;							//BoooomUIサイズのスケール_X
+const float BOOOOM_UI_SCALE_Y = 6.0f;							//BoooomUIサイズのスケール_Y
+const float BOOOOM_UI_MAX_SCALE_X = BOOOOM_UI_SCALE_X * 2.2f;	//アニメーション用拡縮最大サイズ_X
+const float BOOOOM_UI_MAX_SCALE_Y = BOOOOM_UI_SCALE_Y * 2.2f;	//アニメーション用拡縮最大サイズ_Y
+const float ANIM_TIME_RATE = 0.7f;								// 爆発総時間の内、BOOOOM表示を行うのは何割か(0.0f~1.0f)
+
+// ボスゲージ =====================================================
+typedef struct
+{
+	int	  BossNum;		// ボスの種類
+	float startTime;	// 開始時間(秒)
+	float maxTime;		// ゲージ経過最大時間(秒)
+
+}BossGaugeSetParam;
+
+const BossGaugeSetParam BOSS_GAUGE_S1[2] = {};	// ステージ1のボスゲージ設定
+const BossGaugeSetParam BOSS_GAUGE_S2[1] = { {1, 0, 45}};	// ステージ2のボスゲージ設定
+const BossGaugeSetParam BOSS_GAUGE_S3[1] = { {2, 0, 45}};	// ステージ3のボスゲージ設定
+
+const int FADE_TIME = 5 * 60;										// ボスゲージが溜まってから消える時間
+ 
+
+// 床 ====================================
+const TDiType<float> FLOOR_SCALE[3] = {	//ステージ毎の床の大きさ
+	{1.0f ,1.0f},		//ステージ1
+	{1.0f ,1.0f},		//ステージ2
+	{3.1f ,3.1f} };		//ステージ3
+
+
+// タイトル画面 =========================================================
+const float TEXTURE_TITLE_TITLE_POSX = SCREEN_WIDTH_ / 2;	// タイトル画像表示位置のX座標
+const float TEXTURE_TITLE_TITLE_POSY = 400.0f;				// タイトル画像表示位置のY座標
+const float TEXTURE_TITLE_TITLE_WIDTH = 300.0f;				// タイトル画像の横幅
+const float TEXTURE_TITLE_TITLE_HEIGHT = 50.0f;				// タイトル画像の縦幅
+const float TEXTURE_TITLE_BUTTON_POSX = SCREEN_WIDTH_ / 2;	// タイトル画像表示位置のX座標
+const float TEXTURE_TITLE_BUTTON_POSY = 100.0f;				// タイトル画面ボタン押下指示画像表示位置のY座標
+const float TEXTURE_TITLE_BUTTON_WIDTH = 300.0f;			// タイトル画面ボタン押下指示画像の横幅
+const float TEXTURE_TITLE_BUTTON_HEIGHT = 100.0f;			// タイトル画面ボタン押下指示画像の縦幅
+
+
+// ヒットストップ =========================================================
+const int FRAME_STOP_SOFT = 2;		//ストップ：軽　のフレーム数	// 現在使用している物
+const int FRAME_STOP_NORMAL = 4;	//ストップ：中　のフレーム数
+
+
+// ゲームクリア、ゲームオーバー表示 ==================================================
+const int SWITCH_ANIM_CLEAR = 1;				// 成功アニメーション切り替え時間
+const int SWITCH_ANIM_OVER = 1;					// 失敗アニメーション切り替え時間
+const int STATE_SCALE_X = SCREEN_WIDTH_;		// UIの横幅
+const int STATE_SCALE_Y = SCREEN_HEIGHT_;		// UIの縦幅
+const float STATE_POS_X = SCREEN_WIDTH_ / 2;	// 表示位置のX座標
+const float STATE_POS_Y = SCREEN_HEIGHT_ / 2;	// 表示位置のY座標
 
 
 
-
-
-#endif
-
+#endif // !MODE_GAME_PARAMETER
 #endif // !__GAME_PARAMETER_H__
-
-
-
-

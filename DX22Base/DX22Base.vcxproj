@@ -169,21 +169,68 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="2dPolygon.cpp" />
+    <ClCompile Include="AnimeModel.cpp" />
+    <ClCompile Include="BattleData.cpp" />
+    <ClCompile Include="BgPause.cpp" />
+    <ClCompile Include="ModelManager.cpp" />
+    <ClCompile Include="ShowWarning.cpp" />
+    <ClCompile Include="TitleBgAnimeScaling.cpp" />
+    <ClCompile Include="TitleBgBase.cpp" />
+    <ClCompile Include="BoooomUI.cpp" />
+    <ClCompile Include="BossArrow.cpp" />
+    <ClCompile Include="BossGauge.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CameraChase.cpp" />
     <ClCompile Include="CameraDebug.cpp" />
+    <ClCompile Include="CharPause.cpp" />
     <ClCompile Include="Collision.cpp" />
+    <ClCompile Include="CollisionOfStage.cpp" />
+    <ClCompile Include="Combo.cpp" />
+    <ClCompile Include="CommandPause.cpp" />
     <ClCompile Include="Controller.cpp" />
     <ClCompile Include="Cylinder.cpp" />
     <ClCompile Include="DirectX.cpp" />
+    <ClCompile Include="DirectWrite.cpp" />
+    <ClCompile Include="DrawAnimation.cpp" />
+    <ClCompile Include="GameClearText.cpp" />
+    <ClCompile Include="GameOverText.cpp" />
+    <ClCompile Include="GameStartText.cpp" />
     <ClCompile Include="Effect.cpp" />
     <ClCompile Include="Emitter.cpp" />
     <ClCompile Include="EmitterManager.cpp" />
     <ClCompile Include="Explosion.cpp" />
     <ClCompile Include="ExplosionManager.cpp" />
+    <ClCompile Include="Fade.cpp" />
+    <ClCompile Include="FixedCamera.cpp" />
+    <ClCompile Include="Floor.cpp" />
+    <ClCompile Include="FrameCnt.cpp" />
+    <ClCompile Include="HealItem.cpp" />
+    <ClCompile Include="HealItemManager.cpp" />
+    <ClCompile Include="HitSlimeEffect.cpp" />
+    <ClCompile Include="HitSlimeEffectManager.cpp" />
+    <ClCompile Include="HitStop.cpp" />
+    <ClCompile Include="HP_UI.cpp" />
+    <ClCompile Include="Item.cpp" />
+    <ClCompile Include="LibEffekseer.cpp" />
     <ClCompile Include="ModelParticle.cpp" />
+    <ClCompile Include="NumberText.cpp" />
+    <ClCompile Include="Object.cpp" />
     <ClCompile Include="Particle.cpp" />
-    <ClCompile Include="Prot.cpp" />
+    <ClCompile Include="Pause.cpp" />
+    <ClCompile Include="PauseObj.cpp" />
+    <ClCompile Include="Random.cpp" />
+    <ClCompile Include="ScoreOverHead.cpp" />
+    <ClCompile Include="ScoreOHManager.cpp" />
+    <ClCompile Include="SelectStage.cpp" />
+    <ClCompile Include="ShaderList.cpp" />
+    <ClCompile Include="Shadow.cpp" />
+    <ClCompile Include="Slime_Boss_2.cpp" />
+    <ClCompile Include="Slime_Heal.cpp" />
+    <ClCompile Include="Sound.cpp" />
+    <ClCompile Include="Slime_BossBase.cpp" />
+    <ClCompile Include="Slime_Boss_1.cpp" />
+    <ClCompile Include="Stage1.cpp" />
     <ClCompile Include="Hammer.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="Box.cpp" />
@@ -194,8 +241,8 @@
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="QuadParticle.cpp" />
+    <ClCompile Include="Result.cpp" />
     <ClCompile Include="Scene.cpp" />
-    <ClCompile Include="SceneGameCollision.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="SlimeBase.cpp" />
@@ -204,26 +251,85 @@
     <ClCompile Include="Slime_1.cpp" />
     <ClCompile Include="Slime_2.cpp" />
     <ClCompile Include="Slime_4.cpp" />
+    <ClCompile Include="Slime_Flame.cpp" />
     <ClCompile Include="Sphere.cpp" />
     <ClCompile Include="SphereInfo.cpp" />
     <ClCompile Include="Sprite.cpp" />
+    <ClCompile Include="Stage.cpp" />
+    <ClCompile Include="Stage2.cpp" />
+    <ClCompile Include="Stage3.cpp" />
+    <ClCompile Include="StageFinishUI.cpp" />
     <ClCompile Include="Startup.cpp" />
     <ClCompile Include="StripeParticle.cpp" />
+    <ClCompile Include="SweatEffect.cpp" />
+    <ClCompile Include="SweatEffectManager.cpp" />
     <ClCompile Include="Texture.cpp" />
-    <ClCompile Include="SceneGame.cpp" />
+    <ClCompile Include="Timer.cpp" />
+    <ClCompile Include="TimerStage1.cpp" />
+    <ClCompile Include="TimerStage2.cpp" />
+    <ClCompile Include="TimerStage3.cpp" />
     <ClCompile Include="Title.cpp" />
+    <ClCompile Include="TitleCommand.cpp" />
+    <ClCompile Include="TitleBgGrass.cpp" />
+    <ClCompile Include="TitleBgPlayer.cpp" />
+    <ClCompile Include="TitleBgCloud.cpp" />
+    <ClCompile Include="TitleBgReaf.cpp" />
+    <ClCompile Include="TitleCommandStart.cpp" />
+    <ClCompile Include="TitleCommandFinish.cpp" />
+    <ClCompile Include="TitleInitCounter.cpp" />
+    <ClCompile Include="TitleInitZoomOut.cpp" />
+    <ClCompile Include="TitleLogo.cpp" />
+    <ClCompile Include="TitleObj.cpp" />
+    <ClCompile Include="TotalScore.cpp" />
     <ClCompile Include="Transform2d.cpp" />
     <ClCompile Include="Transform3d.cpp" />
+    <ClCompile Include="UcFlag.cpp" />
+    <ClCompile Include="UIStageManager.cpp" />
+    <ClCompile Include="Union.cpp" />
+    <ClCompile Include="UnionSmokeEffect.cpp" />
+    <ClCompile Include="UnionManager.cpp" />
+    <ClCompile Include="WalkEffect.cpp" />
+    <ClCompile Include="WalkEffectManager.cpp" />
+    <ClCompile Include="UsingCamera.cpp" />
+    <ClCompile Include="UnionSmokeEffectManager.cpp" />
     <ClCompile Include="_model.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="2dPolygon.h" />
+    <ClInclude Include="AnimeModel.h" />
+    <ClInclude Include="BattleData.h" />
+    <ClInclude Include="BgPause.h" />
+    <ClInclude Include="ModelManager.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="ShowWarning.h" />
+    <ClInclude Include="TitleBgAnimeScaling.h" />
+    <ClInclude Include="TitleInitCounter.h" />
+    <ClInclude Include="TitleBgBase.h" />
+    <ClInclude Include="BoooomUI.h" />
+    <ClInclude Include="BossArrow.h" />
+    <ClInclude Include="BossGauge.h" />
     <ClInclude Include="Box.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CameraChase.h" />
     <ClInclude Include="CameraDebug.h" />
+    <ClInclude Include="CameraDef.h" />
+    <ClInclude Include="CharPause.h" />
     <ClInclude Include="Collision.h" />
+    <ClInclude Include="Combo.h" />
+    <ClInclude Include="CommandPause.h" />
     <ClInclude Include="Controller.h" />
     <ClInclude Include="Cylinder.h" />
+    <ClInclude Include="Delete.h" />
+    <ClInclude Include="DirectWrite.h" />
+    <ClInclude Include="DrawAnimation.h" />
+    <ClInclude Include="GameClearText.h" />
+    <ClInclude Include="GameOverText.h" />
+    <ClInclude Include="GameStartText.h" />
+    <ClInclude Include="Fade.h" />
+    <ClInclude Include="DiType.h" />
+    <ClInclude Include="FixedCamera.h" />
+    <ClInclude Include="Floor.h" />
+    <ClInclude Include="FrameCnt.h" />
     <ClInclude Include="GameParameter.h" />
     <ClInclude Include="Defines.h" />
     <ClInclude Include="DirectX.h" />
@@ -232,11 +338,34 @@
     <ClInclude Include="EmitterManager.h" />
     <ClInclude Include="Explosion.h" />
     <ClInclude Include="ExplosionManager.h" />
+    <ClInclude Include="HealItem.h" />
+    <ClInclude Include="HealItemManager.h" />
+    <ClInclude Include="HitSlimeEffect.h" />
+    <ClInclude Include="HitSlimeEffectManager.h" />
+    <ClInclude Include="HitStop.h" />
+    <ClInclude Include="Item.h" />
+    <ClInclude Include="LibEffekseer.h" />
+    <ClInclude Include="NumberText.h" />
+    <ClInclude Include="Object.h" />
+    <ClInclude Include="HP_UI.h" />
+    <ClInclude Include="PauseObj.h" />
     <ClInclude Include="Pos2d.h" />
     <ClInclude Include="Pos3d.h" />
     <ClInclude Include="ModelParticle.h" />
     <ClInclude Include="Particle.h" />
-    <ClInclude Include="Prot.h" />
+    <ClInclude Include="Pause.h" />
+    <ClInclude Include="Random.h" />
+    <ClInclude Include="ScoreOverHead.h" />
+    <ClInclude Include="ScoreOHManager.h" />
+    <ClInclude Include="SelectStage.h" />
+    <ClInclude Include="ShaderList.h" />
+    <ClInclude Include="Shadow.h" />
+    <ClInclude Include="Slime_Boss_2.h" />
+    <ClInclude Include="Slime_Heal.h" />
+    <ClInclude Include="Sound.h" />
+    <ClInclude Include="Slime_BossBase.h" />
+    <ClInclude Include="Slime_Boss_1.h" />
+    <ClInclude Include="Stage1.h" />
     <ClInclude Include="Hammer.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="Line.h" />
@@ -246,34 +375,95 @@
     <ClInclude Include="Model.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="QuadParticle.h" />
+    <ClInclude Include="Result.h" />
     <ClInclude Include="Scene.h" />
-    <ClInclude Include="SceneGame.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Slime_2.h" />
     <ClInclude Include="Slime_3.h" />
     <ClInclude Include="Slime_4.h" />
+    <ClInclude Include="Slime_Flame.h" />
     <ClInclude Include="Sphere.h" />
     <ClInclude Include="SphereInfo.h" />
     <ClInclude Include="SlimeBase.h" />
     <ClInclude Include="SlimeManager.h" />
     <ClInclude Include="Slime_1.h" />
     <ClInclude Include="Sprite.h" />
+    <ClInclude Include="Stage.h" />
+    <ClInclude Include="Stage2.h" />
+    <ClInclude Include="Stage3.h" />
+    <ClInclude Include="StageFinishUI.h" />
     <ClInclude Include="StripeParticle.h" />
+    <ClInclude Include="SweatEffect.h" />
+    <ClInclude Include="SweatEffectManager.h" />
     <ClInclude Include="Texture.h" />
+    <ClInclude Include="Timer.h" />
+    <ClInclude Include="TimerStage1.h" />
+    <ClInclude Include="TimerStage2.h" />
+    <ClInclude Include="TimerStage3.h" />
     <ClInclude Include="Title.h" />
-    <ClInclude Include="Transform.h" />
+    <ClInclude Include="TitleCommand.h" />
+    <ClInclude Include="TitleBgPlayer.h" />
+    <ClInclude Include="TitleBgCloud.h" />
+    <ClInclude Include="TitleBgGrass.h" />
+    <ClInclude Include="TitleBgReaf.h" />
+    <ClInclude Include="TitleCommandStart.h" />
+    <ClInclude Include="TitleCommandFinish.h" />
+    <ClInclude Include="TitleInitZoomOut.h" />
+    <ClInclude Include="TitleLogo.h" />
+    <ClInclude Include="TitleObj.h" />
+    <ClInclude Include="TotalScore.h" />
     <ClInclude Include="Transform2d.h" />
     <ClInclude Include="Transform3d.h" />
     <ClInclude Include="TriType.h" />
+    <ClInclude Include="UcFlag.h" />
+    <ClInclude Include="UIStageManager.h" />
+    <ClInclude Include="Union.h" />
+    <ClInclude Include="UnionSmokeEffect.h" />
+    <ClInclude Include="UnionManager.h" />
+    <ClInclude Include="WalkEffect.h" />
+    <ClInclude Include="WalkEffectManager.h" />
+    <ClInclude Include="UsingCamera.h" />
+    <ClInclude Include="UnionSmokeEffectManager.h" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="PsFade.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="PsPause.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="VsFade.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
+    <FxCompile Include="VsPause.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
     <FxCompile Include="VS_Model.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="DX22Base.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="icon.ico" />
+    <Image Include="iconmini.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -17,6 +17,9 @@
 	・2023/11/07 コーディング規約適用 takagi
 	・2023/11/08 行列変換関数追加 takagi
 	・2023/11/09 一部微修正 takagi
+	・2023/11/14 角度演算 takagi
+	・2023/12/05 ビルボードに対応 takagi
+	・2023/12/17 引数参照化 takagi
 
 ========================================== */
 
@@ -33,9 +36,9 @@ struct tagTransform3d	//ワールド行列に関わる情報
 {
 public:
 	// ===メンバ変数宣言===
-	TPos3d<float> fPos;		//位置
-	TTriType<float> fScale;	//拡縮率
-	TTriType<float> fRadian;	//回転角
+	TPos3d<float> fPos;			// 位置
+	TTriType<float> fScale;		// 拡縮率
+	TTriType<float> fRadian;	// 回転角
 
 	// ===メンバ関数宣言===
 	tagTransform3d();										//コンストラクタ
@@ -43,8 +46,11 @@ public:
 		const TTriType<float>& fRadian);					//引数付きコンストラクタ
 	tagTransform3d(const tagTransform3d& Obj);				//コピーコンストラクタ
 	~tagTransform3d();										//デストラクタ
-	DirectX::XMFLOAT4X4 GetWorldMatrixTRS();				//ワールド行列(TRS変換)
-	DirectX::XMFLOAT4X4 GetWorldMatrixSRT();				//ワールド行列(SRT変換)
+	DirectX::XMFLOAT4X4 GetWorldMatrixTRS(const DirectX::XMMATRIX& Inverse
+		= DirectX::XMMatrixIdentity());						//ワールド行列(TRS変換)
+	DirectX::XMFLOAT4X4 GetWorldMatrixSRT(const DirectX::XMMATRIX& Inverse
+		= DirectX::XMMatrixIdentity());						//ワールド行列(SRT変換)
+	float Angle(const tagTransform3d& Obj);					//角度演算
 	tagTransform3d& operator=(const tagTransform3d& Obj);	//"="演算子のオーバーロード
 	tagTransform3d operator+(const tagTransform3d& Obj);	//"+"演算子のオーバーロード
 	tagTransform3d& operator+=(const tagTransform3d& Obj);	//"+="演算子のオーバーロード

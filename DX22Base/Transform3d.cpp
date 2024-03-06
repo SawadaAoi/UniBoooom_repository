@@ -10,6 +10,9 @@
 	変更履歴
 	・2023/11/08 制作 takagi
 	・2023/11/09 一部微修正 takagi
+	・2023/11/14 角度演算 takagi
+	・2023/12/05 ビルボードに対応 takagi
+	・2023/12/17 引数参照化 takagi
 
 ========================================== */
 
@@ -88,11 +91,11 @@ tagTransform3d::~tagTransform3d()
 	-------------------------------------
 	内容：TRS変換したワールド行列を提供
 	-------------------------------------
-	引数1：なし
+	引数1：const DirectX::XMMATRIX  & Inverse：ビルボード時の逆行列	デフォルト引数は掛けても値が変わらない単位行列(=ビルボードを使用しない)
 	-------------------------------------
 	戻値：作成した行列
 =========================================== */
-DirectX::XMFLOAT4X4 tagTransform3d::GetWorldMatrixTRS()
+DirectX::XMFLOAT4X4 tagTransform3d::GetWorldMatrixTRS(const DirectX::XMMATRIX & Inverse)
 {
 	// =============== 変数宣言 ===================
 	DirectX::XMFLOAT4X4 mat;	//行列格納用
@@ -101,8 +104,9 @@ DirectX::XMFLOAT4X4 tagTransform3d::GetWorldMatrixTRS()
 	DirectX::XMStoreFloat4x4(&mat, DirectX::XMMatrixTranspose(
 		DirectX::XMMatrixTranslation(fPos.x, fPos.y, fPos.z)		//T:移動
 		* DirectX::XMMatrixRotationX(fRadian.x) * DirectX::XMMatrixRotationY(fRadian.y) 
-			* DirectX::XMMatrixRotationZ(fRadian.z)					//R:回転
+		* DirectX::XMMatrixRotationZ(fRadian.z)						//R:回転
 		* DirectX::XMMatrixScaling(fScale.x, fScale.y, fScale.z)	//S:拡縮
+		* Inverse													//逆行列
 	));	//TRS変換
 
 	// =============== 提供 ===================
@@ -114,11 +118,11 @@ DirectX::XMFLOAT4X4 tagTransform3d::GetWorldMatrixTRS()
 	-------------------------------------
 	内容：SRT変換したワールド行列を提供
 	-------------------------------------
-	引数1：なし
+	引数1：const DirectX::XMMATRIX & Inverse：ビルボード時の逆行列	デフォルト引数は掛けても値が変わらない単位行列(=ビルボードを使用しない)
 	-------------------------------------
 	戻値：作成した行列
 =========================================== */
-DirectX::XMFLOAT4X4 tagTransform3d::GetWorldMatrixSRT()
+DirectX::XMFLOAT4X4 tagTransform3d::GetWorldMatrixSRT(const DirectX::XMMATRIX & Inverse)
 {
 	// =============== 変数宣言 ===================
 	DirectX::XMFLOAT4X4 mat;	//行列格納用
@@ -127,12 +131,28 @@ DirectX::XMFLOAT4X4 tagTransform3d::GetWorldMatrixSRT()
 	DirectX::XMStoreFloat4x4(&mat, DirectX::XMMatrixTranspose(
 		DirectX::XMMatrixScaling(fScale.x, fScale.y, fScale.z)	//S:拡縮
 		* DirectX::XMMatrixRotationX(fRadian.x) * DirectX::XMMatrixRotationY(fRadian.y)
-			* DirectX::XMMatrixRotationZ(fRadian.z)				//R:回転
+		* DirectX::XMMatrixRotationZ(fRadian.z)					//R:回転
+		* Inverse												//逆行列
 		* DirectX::XMMatrixTranslation(fPos.x, fPos.y, fPos.z)	//T:移動
 	));	//SRT変換
 
 	// =============== 提供 ===================
 	return mat;	//行列提供
+}
+
+/* ========================================
+	角度演算関数
+	----------------------------------------
+	内容：引数との角度を取得
+	----------------------------------------
+	引数1：測りたい相手のSphere構造体
+	----------------------------------------
+	戻値：角度
+======================================== */
+float tagTransform3d::Angle(const tagTransform3d& Obj)
+{
+	// =============== 提供 =============
+	return static_cast<float>(atan2((Obj.fPos.z - this->fPos.z) , (Obj.fPos.x - this->fPos.x)));	//求めた角度
 }
 
 /* ========================================

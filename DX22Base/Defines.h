@@ -8,6 +8,7 @@
 	作成者　佐々木先生
 		
 	変更履歴
+	・2024/02/27 Release適合 takagi
 	
 ========================================== */
 #ifndef __DEFINES_H__	//Defines.hインクルードガード
@@ -22,11 +23,7 @@
 #define ASSET(path)	"Assets/"path
 
 // タイトル
-#ifdef _DEBUG
 #define APP_TITLE "UniBoooom!!"
-#else
-#define APP_TITLE "Define.hでタイトルが変更できるので、ゲームのタイトルに変えておくこと"
-#endif
 
 // 画面サイズ
 #define SCREEN_WIDTH (1280)

@@ -17,6 +17,18 @@
 	・2023/11/10 爆発の大きさを徐々に大きくなるように変更 Sawada
 	・2023/11/11 parameter用ヘッダ追加 Suzumura
 	・2023/11/13 スライムレベルによって爆破の膨らみの速度の調整ができるように変更 Suzumura
+	・2023/11/14 SphereInfoの変更に対応 Takagi
+	・2023/11/15 Objectクラスを継承したので修正　yamamoto
+	・2023/11/20 コンボ数配列添え字の追加 Sawada
+	・2023/11/21 初期値の設定と、遅延処理の追加 Sawada
+	・2023/11/21 ボスに一度触ったかを判定用の関数実装 Suzumura
+	・2023/11/21 DisplayAddTimeの中にBoooomUIの表示時間処理追加 Tei
+	・2023/12/04 爆発のエフェクトを実装 yamasita
+	・2023/12/04 爆発の仮表示3Dモデルを削除 yamasita
+	・2023/12/07 ゲームパラメータから一部定数移動・暗黙の型キャスト除去 takagi
+	・2024/02/07 爆発のエフェクトが回転するように修正 sawada
+	・2024/02/09 UsingCamera使用 takagi
+	・2024/02/13 カメラ削除 takagi
 
 ======================================== */
 
@@ -25,15 +37,22 @@
 #include "Geometry.h"			//空間における形状の抽象クラス定義のヘッダー
 #include "Sphere.h"				//球定義のヘッダー
 #include "GameParameter.h"		//定数定義用ヘッダー
+#include "DirectWrite.h"
+#include "UsingCamera.h"		//カメラ使用
 
 // =============== 定数定義 =======================
 #if MODE_GAME_PARAMETER
 #else
 //const float MAX_DISPLAY_TIME = 3.0f * 60;	// 爆発持続秒数
-const float EXPAND_QUICK_RATE = 0.2f;   // 膨張加速割合 
-
+const int DELAY_TIME = 0.5f * 60;
+const float EXPAND_QUICK_RATE = 0.2f;			// 膨張加速割合 
 
 #endif
+const float EXPLODE_STANDARD_SIZE = 0.15f;
+const float EXPLODE_STANDARD_ONE_FRAME = 1.38f * 60.0f;
+
+const int	SE_DELAY_TIME = int(0.1f * 60);			// 遅延秒数
+const float EXPLODE_ROTATE_SPEED = 2.0f;			// 1フレームの回転角度数
 
 /* ========================================
 	コンストラクタ関数
@@ -41,28 +60,42 @@ const float EXPAND_QUICK_RATE = 0.2f;   // 膨張加速割合
 	内容：コンストラクタ
 	-------------------------------------
 	引数1：生成座標(x,y,z)
+	引数2：生成サイズ(x,y,z)
+	引数3：発生時間
+	引数4：コンボ配列の位置(添え字)
+	引数5：遅延フラグ
 	-------------------------------------
 	戻値：無し
 =========================================== */
-CExplosion::CExplosion(TTriType<float> pos, float size,float time)
-	: m_fSize(0.0f)
-	, m_fSizeAdd(0.0f)
-	, m_fDelFrame(0.0f)
+CExplosion::CExplosion(TPos3d<float> fPos, float fSize, float fTime, int comboNum, bool delayFlg, int nDamage, Effekseer::EffectRef explodeEffect)
+	: m_fSizeAdd(0.0f)
+	, m_nDelFrame(0)
 	, m_bDelFlg(false)
-	, m_fExplodeTime(0.0f)
-	, m_fMaxSize(0.0f)
+	, m_fExplodeTime(fTime)	// 爆発総時間をセットする
+	, m_fMaxSize(fSize)		// 最大サイズをセットする
+	, m_dComboNum(comboNum)
+	, m_bDelayFlg(delayFlg)
+	, m_nDelayCnt(0)
+	, m_bSeFlg(false)
+	, m_nSeCnt(0)
+	, m_fDamage(0)
+	, m_bBossTouched(false)
 {
-
 	//爆発オブジェクト初期化
-	m_Sphere.pos = pos;
-	m_Sphere.radius = size / 2;	// 当たり判定をセットする
-	//m_fSizeAdd = size / ONE_SECOND_FRAME;
-	m_3dModel = new CSphere();
+	m_Sphere.fRadius = fSize / 2;	// 当たり判定をセットする
+	m_Transform.fPos = fPos;		// スライムがいた場所に生成する
+	m_fExplodeTime = fTime;		// 爆発総時間をセットする
+	m_fMaxSize = fSize;			// 最大サイズをセットする
+	m_fDamage = (float)nDamage;		// 与えるダメージ量をセットする
+	m_explodeEffect = explodeEffect;	//エフェクトをセット
+	// 遅延処理が無い場合
+	if(delayFlg==false)
+	{
+		EffectStart();			// エフェクト表示を開始する
+	}
 
-	m_fExplodeTime = time;		//爆発総時間をセットする
-	m_fMaxSize = size;	//最大サイズをセットする
-	
 }
+	
 
 /* ========================================
 	デストラクタ関数
@@ -76,7 +109,6 @@ CExplosion::CExplosion(TTriType<float> pos, float size,float time)
 CExplosion::~CExplosion()
 {
 
-	SAFE_DELETE(m_3dModel);	// メモリ解放
 }
 
 
@@ -91,7 +123,21 @@ CExplosion::~CExplosion()
 =========================================== */
 void CExplosion::Update()
 {
+	// 爆発遅延処理が有効な場合
+	if (m_bDelayFlg)
+	{
+		Delay();	// 遅延処理
+		return;
+	}
 
+	if (m_nSeCnt < SE_DELAY_TIME)
+	{
+		m_nSeCnt++;
+		if(SE_DELAY_TIME <= m_nSeCnt)
+		{
+			m_bSeFlg = true;
+		}
+	}
 
 	DisplayTimeAdd();
 }
@@ -103,24 +149,22 @@ void CExplosion::Update()
 	-------------------------------------
 	内容：爆発の描画処理
 	-------------------------------------
-	引数1：
+	引数1：無し
 	-------------------------------------
-	戻値：
+	戻値：無し
 =========================================== */
 void CExplosion::Draw()
 {
-	DirectX::XMMATRIX mat = DirectX::XMMatrixTranslation(m_Sphere.pos.x, m_Sphere.pos.y, m_Sphere.pos.z);
-	DirectX::XMMATRIX Scale = DirectX::XMMatrixScaling(m_fSize, m_fSize, m_fSize);
-	mat = Scale * mat;
-	mat = DirectX::XMMatrixTranspose(mat);
-	DirectX::XMFLOAT4X4 fMat;	//行列の格納先
-	DirectX::XMStoreFloat4x4(&fMat, mat);
-	m_3dModel->SetWorld(fMat);
+	if (m_bDelayFlg == false)
+	{
+		//エフェクトの描画
+		TPos3d<float> cameraPos = CUsingCamera::GetThis().GetCamera()->GetPos();	//カメラ座標を取得
+		DirectX::XMFLOAT3 fCameraPos(cameraPos.x, cameraPos.y, cameraPos.z);		//XMFLOAT3に変換
+		LibEffekseer::SetViewPosition(fCameraPos);									//カメラ座標をセット
+		LibEffekseer::SetCameraMatrix(CUsingCamera::GetThis().GetCamera()->GetViewWithoutTranspose(),
+			CUsingCamera::GetThis().GetCamera()->GetProjectionWithoutTranspose());	//転置前のviewとprojectionをセット
 
-	m_3dModel->SetView(m_pCamera->GetViewMatrix());
-	m_3dModel->SetProjection(m_pCamera->GetProjectionMatrix());
-
-	m_3dModel->Draw();	// 爆発仮3Dモデルの描画
+	}
 }
 
 
@@ -135,73 +179,69 @@ void CExplosion::Draw()
 =========================================== */
 void CExplosion::DisplayTimeAdd()
 {
-	m_fDelFrame++;	// フレーム加算
+	m_nDelFrame++;	// フレーム加算
 
 	// 一定秒数まで大きくする
-	if (m_fDelFrame <= m_fExplodeTime )
+	if (m_nDelFrame <= m_fExplodeTime )
 	{
 		// m_fTimeに基づいてm_fSizeAddを決定
 		m_fSizeAdd = m_fMaxSize / m_fExplodeTime / EXPAND_QUICK_RATE;
 
 		// 最大サイズになるまでSizeを加算
-		if (m_fSize < m_fMaxSize)
+		if (m_Transform.fScale.y < m_fMaxSize)
 		{
-			m_fSize += m_fSizeAdd;
+			m_Transform.fScale += m_fSizeAdd;
 		}
 
 	}
 	// 一定秒数時間が経ったら
-	if (m_fExplodeTime <= m_fDelFrame)
+	if (m_fExplodeTime <= m_nDelFrame)
 	{
 		m_bDelFlg = true;	// 削除フラグを立てる
 	}
 
-	
-	m_Sphere.radius = m_fSize / 2;	// 当たり判定をセットする
+	m_Sphere.fRadius = m_Transform.fScale.y / 2;	// 当たり判定をセットする
 
+	// エフェクトの回転(m_nDelFrameは毎フレーム加算されるので回転角度に使用)
+	LibEffekseer::GetManager()->SetRotation(m_efcHandle,	
+		Effekseer::Vector3D(0.0f, 1.0f, 0.0f),
+		DirectX::XMConvertToRadians(m_nDelFrame * EXPLODE_ROTATE_SPEED));
+}
+
+
+/* ========================================
+	ボスにふれたことを知らせる関数
+	-------------------------------------
+	内容：ボスと接触時フラグをon
+	-------------------------------------
+	引数1：無し
+	-------------------------------------
+	戻値：無し
+=========================================== */
+void CExplosion::BossTouched()
+{
+	m_bBossTouched = true;
 }
 
 /* ========================================
 	座標設定処理関数
 	-------------------------------------
-	内容：座標に値をセットする
-	-------------------------------------
-	引数1：座標情報(x,y,z)
-	-------------------------------------
-	戻値：無し
-=========================================== */
-void CExplosion::SetPos(TTriType<float> pos)
-{
-	m_Sphere.pos = pos;
-}
-
-
-/* ========================================
-	Sphere情報設定処理関数
-	-------------------------------------
-	内容：Sphereに値をセットする
-	-------------------------------------
-	引数1：Sphere情報
-	-------------------------------------
-	戻値：無し
-=========================================== */
-void CExplosion::SetSphere(CSphereInfo::Sphere sphere)
-{
-	m_Sphere = sphere;
-}
-
-/* ========================================
-	Sphere情報取得処理関数
-	-------------------------------------
-	内容：Sphere情報を取得する
+	内容：爆発の発生を遅らせる
 	-------------------------------------
 	引数1：無し
 	-------------------------------------
-	戻値：Sphere情報
+	戻値：無し
 =========================================== */
-CSphereInfo::Sphere CExplosion::GetSphere()
+void CExplosion::Delay()
 {
-	return m_Sphere;
+	m_nDelayCnt++;
+
+	// 遅延秒数が経ったら
+	if (m_nDelayCnt >= DELAY_TIME)
+	{
+		m_bDelayFlg = false;	// 遅延フラグをオフにする
+		EffectStart();			// エフェクト表示を開始する
+	}
 }
 
 /* ========================================
@@ -218,19 +258,106 @@ bool CExplosion::GetDelFlg()
 	return m_bDelFlg;
 }
 
-/* ========================================
-	カメラ情報セット関数
-	----------------------------------------
-	内容：描画処理で使用するカメラ情報セット
-	----------------------------------------
-	引数1：なし
-	----------------------------------------
-	戻値：なし
-======================================== */
-void CExplosion::SetCamera(const CCamera * pCamera)
+bool CExplosion::GetDelayFlg()
 {
-	m_pCamera = pCamera;
+	return m_bDelayFlg;
+}
+
+/* ========================================
+	コンボ配列番号取得処理関数
+	-------------------------------------
+	内容：コンボ配列番号を取得する
+	-------------------------------------
+	引数1：無し
+	-------------------------------------
+	戻値：コンボ配列番号(int)
+=========================================== */
+int CExplosion::GetComboNum()
+{
+	return m_dComboNum;
 }
 
 
+/* ========================================
+	SEフラグ取得処理関数
+	-------------------------------------
+	内容：SEフラグを取得する
+	-------------------------------------
+	引数1：無し
+	-------------------------------------
+	戻値：SEフラグ(bool)
+=========================================== */
+bool CExplosion::GetSeFlg()
+{
+	return m_bSeFlg;
+}
 
+
+/* ========================================
+	エフェクト表示開始関数
+	-------------------------------------
+	内容：エフェクトの表示を開始する
+	-------------------------------------
+	引数1：無し
+	-------------------------------------
+	戻値：無し
+=========================================== */
+void CExplosion::EffectStart()
+{
+	m_efcHandle = LibEffekseer::GetManager()->Play(m_explodeEffect, 	//エフェクトの開始
+		m_Transform.fPos.x, 
+		m_Transform.fPos.y, 
+		m_Transform.fPos.z);
+
+	LibEffekseer::GetManager()->SetScale(m_efcHandle, 					//エフェクトのサイズを設定
+		EXPLODE_STANDARD_SIZE * m_fMaxSize, 
+		EXPLODE_STANDARD_SIZE * m_fMaxSize, 
+		EXPLODE_STANDARD_SIZE * m_fMaxSize);	
+
+	LibEffekseer::GetManager()->SetSpeed(m_efcHandle,					//エフェクトの再生速度を設定
+		EXPLODE_STANDARD_ONE_FRAME / m_fExplodeTime);		
+
+
+}
+
+/* ========================================
+	ダメージ量取得処理関数
+	-------------------------------------
+	内容：与えるダメージを取得する
+	-------------------------------------
+	引数1：無し
+	-------------------------------------
+	戻値：ダメージ量(int)
+=========================================== */
+int CExplosion::GetDamage()
+{
+	return (int)m_fDamage;
+}
+
+/* ========================================
+	既に当たっているか取得処理関数
+	-------------------------------------
+	内容：既にボスとあたっているかどうかを取得する
+	-------------------------------------
+	引数1：無し
+	-------------------------------------
+	戻値：接触フラグ(bool)
+=========================================== */
+bool CExplosion::GetBossTouched()
+{
+	return m_bBossTouched;
+}
+
+/* ========================================
+	SEフラグセット関数
+	-------------------------------------
+	内容：SEフラグをセット
+	-------------------------------------
+	引数1：SEフラグ(bool)
+	-------------------------------------
+	戻値：無し
+=========================================== */
+void CExplosion::SetSeFlg(bool flg)
+{
+	m_bSeFlg = flg;
+}

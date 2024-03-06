@@ -1,383 +1,421 @@
 /* ========================================
 	HEW/UniBoooom!!
 	---------------------------------------
-	ã‚¹ãƒ©ã‚¤ãƒ ãƒ™ãƒ¼ã‚¹ ã‚¯ãƒ©ã‚¹å®Ÿè£…
+	ƒXƒ‰ƒCƒ€ƒx[ƒX ƒNƒ‰ƒXŽÀ‘•
 	---------------------------------------
 	SlimeBase.cpp
 	
-	ä½œæˆè€…ï¼šéˆ´æ‘ æœ‹ä¹Ÿ
+	ì¬ŽÒF—é‘º •ü–ç
 	
-	å¤‰æ›´å±¥æ­´
-	ãƒ»2023/11/04 ã‚¹ãƒ©ã‚¤ãƒ ãƒ™ãƒ¼ã‚¹ã‚¯ãƒ©ã‚¹ä½œæˆ Suzumura
-	ãƒ»2023/11/06 ãƒãƒ³ãƒžãƒ¼ã‚‚ã—ãã¯æ•µã«ã‚ˆã‚Šå¹ã£é£›ã°ã•ã‚Œã‚‹é–¢æ•°ã‚’è¿½åŠ  Yamashita
-	ãƒ»2023/11/06 ã‚¤ãƒ³ã‚¯ãƒ«ãƒ¼ãƒ‰èª¤å­—ã®ä¿®æ­£ Tei
-	ãƒ»2023/11/08 GetPosâ†’GetSphereã«åå‰ã‚’å¤‰æ›´ Yamashita
-	ãƒ»2023/11/08 å®šæ•°å®šç¾©ãŒãƒ˜ãƒƒãƒ€ãƒ¼ã«ã‚ã£ãŸã®ã§cppã«ç§»å‹• Yamashita
-	ãƒ»2023/11/08 ã‚³ãƒ¡ãƒ³ãƒˆã‚’è¿½åŠ  Sawada
-	ãƒ»2023/11/09 ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼è¿½è·¡ç§»å‹•å¤‰æ›´ Sawada
-	ãƒ»2023/11/09 Update,NormalMoveã®å¼•æ•°å¤‰æ›´ Sawada
-	ãƒ»2023/11/11 parameterç”¨ãƒ˜ãƒƒãƒ€è¿½åŠ  Suzumura
-	ãƒ»2023/11/12 ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®æ–¹å‘ã‚’å‘ããªãŒã‚‰é€²ã‚€ã‚ˆã†ã«å¤‰æ›´  Yamamoto
-	ãƒ»2023/11/12 ãƒ©ãƒ³ãƒ€ãƒ ç§»å‹•ã‚’è¿½åŠ   Sawada
-	ãƒ»2023/11/13 GetScaleé–¢æ•°ã‚’è¿½åŠ  Suzumura
-	
+	•ÏX—š—ð
+	E2023/11/04 ƒXƒ‰ƒCƒ€ƒx[ƒXƒNƒ‰ƒXì¬ Suzumura
+	E2023/11/06 ƒnƒ“ƒ}[‚à‚µ‚­‚Í“G‚É‚æ‚è‚Á”ò‚Î‚³‚ê‚éŠÖ”‚ð’Ç‰Á Yamashita
+	E2023/11/06 ƒCƒ“ƒNƒ‹[ƒhŒëŽš‚ÌC³ Tei
+	E2023/11/08 GetPos¨GetSphere‚É–¼‘O‚ð•ÏX Yamashita
+	E2023/11/08 ’è”’è‹`‚ªƒwƒbƒ_[‚É‚ ‚Á‚½‚Ì‚Åcpp‚ÉˆÚ“® Yamashita
+	E2023/11/08 ƒRƒƒ“ƒg‚ð’Ç‰Á Sawada
+	E2023/11/09 ƒvƒŒƒCƒ„[’ÇÕˆÚ“®•ÏX Sawada
+	E2023/11/09 Update,NormalMove‚Ìˆø”•ÏX Sawada
+	E2023/11/11 parameter—pƒwƒbƒ_’Ç‰Á Suzumura
+	E2023/11/12 ƒvƒŒƒCƒ„[‚Ì•ûŒü‚ðŒü‚«‚È‚ª‚çi‚Þ‚æ‚¤‚É•ÏX  Yamamoto
+	E2023/11/12 ƒ‰ƒ“ƒ_ƒ€ˆÚ“®‚ð’Ç‰Á  Sawada
+	E2023/11/13 GetScaleŠÖ”‚ð’Ç‰Á Suzumura
+	E2023/11/14 SphereInfo‚Ì•ÏX‚É‘Î‰ž Takagi
+	E2023/11/15 ObjectƒNƒ‰ƒX‚ðŒp³‚µ‚½‚Ì‚ÅC³@yamamoto
+	E2023/11/26 ƒXƒ‰ƒCƒ€‚ª”š”­‚©‚ç“¦‚°‚éˆ—‚ðì¬@yamashita
+	E2023/11/28 UŒ‚—Í‚ð’Ç‰Á Sawada
+	E2023/11/29 ‰eƒƒ‚ƒŠƒŠ[ƒNœ‹Ž takagi
+	E2023/11/30 ƒ‚ƒfƒ‹‚Ì“Ç‚Ýž‚Ý‚ª”½“]‚µ‚½‚Ì‚Åradian.y‚ª”½‘Î‚É‚È‚é‚æ‚¤‚É•ÏX yamashita
+	E2023/12/07 ƒQ[ƒ€ƒpƒ‰ƒ[ƒ^‚©‚çˆê•”’è”ˆÚ“® takagi
+	E2024/01/18 ‰ŠƒXƒ‰ƒCƒ€‚ÌƒGƒtƒFƒNƒg’Ç‰Á Tei
+	E2024/1/26  Draw‚Ìˆø”‚Ì const CCamera*@‚ðíœ Yamashita
+	E2024/02/09 UsingCameraŽg—p takagi
+	E2024/02/13 ƒJƒƒ‰íœ takagi
+
 ========================================== */
 
-// =============== ã‚¤ãƒ³ã‚¯ãƒ«ãƒ¼ãƒ‰ ===================
+// =============== ƒCƒ“ƒNƒ‹[ƒh ===================
 #include "SlimeBase.h"
 #include "Geometry.h"
-#include "GameParameter.h"		//å®šæ•°å®šç¾©ç”¨ãƒ˜ãƒƒãƒ€ãƒ¼
+#include "GameParameter.h"	//’è”’è‹`—pƒwƒbƒ_[
+#include "UsingCamera.h"	//ƒJƒƒ‰Žg—p
 
-
-// =============== å®šæ•°å®šç¾© =======================
-const float REFLECT_RATIO = 0.1f;				//ã‚¹ãƒ©ã‚¤ãƒ ãŒã‚¹ãƒ©ã‚¤ãƒ ã‚’å¹ãé£›ã°ã—ãŸéš›ã«å¹ãé£›ã°ã—ãŸå´ã®ã‚¹ãƒ©ã‚¤ãƒ ã®ç§»å‹•é‡ã‚’å¤‰ãˆã‚‹å‰²åˆ
-
+// =============== ’è”’è‹` =======================
+const float SLIME_BASE_RADIUS = 0.5f;			// ƒXƒ‰ƒCƒ€‚ÌŠî€‚Ì‘å‚«‚³
+const int	RANDOM_MOVE_SWITCH_TIME = 3 * 60;	// ƒ‰ƒ“ƒ_ƒ€ˆÚ“®‚Ì•ûŒüØ‚è‘Ö‚¦
+const float SPEED_DOWN_RATIO = 0.6f;			// ‚«”ò‚ÔÛ‚É‚©‚©‚éˆÚ“®‘¬“x‚Ì•Ï‰»‚ÌŠ„‡    RATIO=>Š„‡
+const float REFLECT_RATIO = 0.1f;				// ƒXƒ‰ƒCƒ€‚ªƒXƒ‰ƒCƒ€‚ð‚«”ò‚Î‚µ‚½Û‚É‚«”ò‚Î‚µ‚½‘¤‚ÌƒXƒ‰ƒCƒ€‚ÌˆÚ“®—Ê‚ð•Ï‚¦‚éŠ„‡
+const float MOVE_RESIST = 0.05f;				// ‚«”ò‚ÑˆÚ“®’†‚ÌƒXƒ‰ƒCƒ€‚ÌˆÚ“®‘¬“x‚É–ˆƒtƒŒ[ƒ€‚©‚©‚éŒ¸ŽZ”’l
+const float MULTIPLE_SPEED = 1.3f;				// ƒ`ƒƒ[ƒWƒnƒ“ƒ}[‚É’@‚©‚ê‚½‚Æ‚«‚ÌƒXƒ‰ƒCƒ€‚ÌˆÚ“®‘¬“x‚É‘‚¯‚é”{—¦
 #if MODE_GAME_PARAMETER
 #else
-const float SPEED_DOWN_RATIO = 0.7f;			// ã‚¹ãƒ©ã‚¤ãƒ ãŒæŽ¥è§¦ã—ã¦å¹ãé£›ã¶éš›ã«ã‹ã‹ã‚‹ç§»å‹•é€Ÿåº¦ã®å¤‰åŒ–ã®å‰²åˆ	RATIO=>å‰²åˆ
-const float MOVE_RESIST = 0.05f;				// å¹ãé£›ã³ç§»å‹•ä¸­ã®ã‚¹ãƒ©ã‚¤ãƒ ã®ç§»å‹•é€Ÿåº¦ã«æ¯Žãƒ•ãƒ¬ãƒ¼ãƒ ã‹ã‹ã‚‹æ¸›ç®—æ•°å€¤
-const float MOVE_DISTANCE_PLAYER = 15;			// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼è¿½è·¡ç§»å‹•ã«åˆ‡ã‚Šæ›¿ãˆã‚‹è·é›¢
-const float SLIME_BASE_RADIUS = 0.5f;			// ã‚¹ãƒ©ã‚¤ãƒ ã®åŸºæº–ã®å¤§ãã•
-const int	RANDOM_MOVE_SWITCH_TIME = 5 * 60;	// ãƒ©ãƒ³ãƒ€ãƒ ç§»å‹•ã®æ–¹å‘åˆ‡ã‚Šæ›¿ãˆ
+const float MOVE_DISTANCE_PLAYER = 15;			// ƒvƒŒƒCƒ„[’ÇÕˆÚ“®‚ÉØ‚è‘Ö‚¦‚é‹——£
 #endif
 
 /* ========================================
-	ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿é–¢æ•°
+	ƒRƒ“ƒXƒgƒ‰ƒNƒ^ŠÖ”
 	-------------------------------------
-	å†…å®¹ï¼šã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	“à—eFƒRƒ“ƒXƒgƒ‰ƒNƒ^
 	-------------------------------------
-	å¼•æ•°1ï¼šç„¡ã—
+	ˆø”1F–³‚µ
 	-------------------------------------
-	æˆ»å€¤ï¼šç„¡ã—
+	–ß’lF–³‚µ
 =========================================== */
 CSlimeBase::CSlimeBase()
 	: m_pModel(nullptr)
-	, m_pVS(nullptr)
+	//, m_pVS(nullptr)
 	, m_move(0.0f, 0.0f, 0.0f)
 	, m_fSpeed(ENEMY_MOVE_SPEED)
-	, m_scale(1.0f,1.0f,1.0f)
-	, m_pos(0.0f,0.0f,0.0f)
 	, m_fVecAngle(0.0f)
 	, m_bHitMove(false)
-	, m_eSlimeSize(LEVEL_1)	//å¾Œã§SLIME_NONEã«ã™ã‚‹ <=TODO
-	, m_RanMoveCnt(RANDOM_MOVE_SWITCH_TIME)	// åˆæœŸ
-
+	, m_eSlimeSize(LEVEL_1)	//Œã‚ÅSLIME_NONE‚É‚·‚é <=TODO
+	, m_RanMoveCnt(RANDOM_MOVE_SWITCH_TIME)	// ‰Šú
+	, m_fStpDirPos{ 0.0f,0.0f,0.0f }
+	, m_bMvStpFlg(false)
+	, m_nMvStpCnt(0)
+	, m_fScaleShadow(0.0f)
+	, m_fAnimeTime(0.0f)
+	, m_eCurAnime(MOTION_LEVEL1_MOVE)
+	, m_bChargeHit(false)
 {
-	RenderTarget* pRTV = GetDefaultRTV();	//ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã§ä½¿ç”¨ã—ã¦ã„ã‚‹RenderTargetViewã®å–å¾—
-	DepthStencil* pDSV = GetDefaultDSV();	//ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã§ä½¿ç”¨ã—ã¦ã„ã‚‹DepthStencilViewã®å–å¾—
-	SetRenderTargets(1, &pRTV, pDSV);		//DSVãŒnullã ã¨2Dè¡¨ç¤ºã«ãªã‚‹
-	m_pModel = new Model;
-	if (!m_pModel->Load("Assets/Model/eyeBat/eyeBat.FBX", 0.1f, Model::XFlip)) {		//å€çŽ‡ã¨åè»¢ã¯çœç•¥å¯
-		MessageBox(NULL, "eyeBat", "Error", MB_OK);	//ã“ã“ã§ã‚¨ãƒ©ãƒ¼ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸è¡¨ç¤º
-	}
+	m_Transform.fScale = (1.0f, 1.0f, 1.0f);
+	//“–‚½‚è”»’è(Ž©•ª)‰Šú‰»
+	m_Sphere.fRadius = SLIME_BASE_RADIUS;
 
-	//é ‚ç‚¹ã‚·ã‚§ãƒ¼ãƒ€èª­ã¿è¾¼ã¿
-	m_pVS = new VertexShader();
-	if (FAILED(m_pVS->Load("Assets/Shader/VS_Model.cso"))) {
-		MessageBox(nullptr, "VS_Model.cso", "Error", MB_OK);
-	}
-	m_pModel->SetVertexShader(m_pVS);
+	int random = abs(rand() % 360);	//ƒ‰ƒ“ƒ_ƒ€‚É0`359‚Ì”Žš‚ðì¬
+	m_Ry = DirectX::XMMatrixRotationY((float)random);
 
-	//å½“ãŸã‚Šåˆ¤å®š(è‡ªåˆ†)åˆæœŸåŒ–
-	m_sphere.pos = { 0.0f, 0.0f, 0.0f };
-	m_sphere.radius = SLIME_BASE_RADIUS;
+	m_pShadow = new CShadow();	// ‰e¶¬
 
-	int random = abs(rand() % 360);	//ãƒ©ãƒ³ãƒ€ãƒ ã«0ï½ž359ã®æ•°å­—ã‚’ä½œæˆ
-	m_Ry = DirectX::XMMatrixRotationY(random);
-	
+
 }
 
 /* ========================================
-	ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿é–¢æ•°
+	ƒfƒXƒgƒ‰ƒNƒ^ŠÖ”
 	-------------------------------------
-	å†…å®¹ï¼šãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	“à—eFƒfƒXƒgƒ‰ƒNƒ^
 	-------------------------------------
-	å¼•æ•°1ï¼šç„¡ã—
+	ˆø”1F–³‚µ
 	-------------------------------------
-	æˆ»å€¤ï¼šç„¡ã—
+	–ß’lF–³‚µ
 =========================================== */
 CSlimeBase::~CSlimeBase()
 {
-
-	SAFE_DELETE(m_pModel);
-	SAFE_DELETE(m_pVS);
-
+	// =============== ƒƒ‚ƒŠŠJ•ú ===================
+	SAFE_DELETE(m_pShadow);	//‰e‰ð•ú
+	
+	//--ƒGƒtƒFƒNƒg’âŽ~--
+	LibEffekseer::GetManager()->StopEffect(m_efcFlameHandle);
 }
 
 /* ========================================
-	æ›´æ–°å‡¦ç†é–¢æ•°
+	XVˆ—ŠÖ”
 	-------------------------------------
-	å†…å®¹ï¼šæ›´æ–°å‡¦ç†
+	“à—eFXVˆ—
 	-------------------------------------
-	å¼•æ•°1ï¼šãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼å½“ãŸã‚Šåˆ¤å®š(Sphere)
+	ˆø”1FƒvƒŒƒCƒ„[À•W(TPos3d)
 	-------------------------------------
-	æˆ»å€¤ï¼šç„¡ã—
+	–ß’lF–³‚µ
 =========================================== */
-void CSlimeBase::Update(TPos3d<float> playerSphere)
+void CSlimeBase::Update(tagTransform3d playerTransform, float fSlimeMoveSpeed)
 {
+	m_PlayerTran = playerTransform;	// ƒvƒŒƒCƒ„[‚ÌÅVƒpƒ‰ƒ[ƒ^‚ðŽæ“¾
 
-	if (!m_bHitMove)	//æ•µãŒé€šå¸¸ã®ç§»å‹•çŠ¶æ…‹ã®æ™‚
+	if (!m_bHitMove)	//“G‚ª’Êí‚ÌˆÚ“®ó‘Ô‚ÌŽž
 	{
-		NormalMove(playerSphere);
+		if (!m_bMvStpFlg  && m_nMvStpCnt == 0)	//’âŽ~ƒtƒ‰ƒO‚ªoff‚È‚ç
+		{
+			NormalMove();	//’ÊíˆÚ“®
+		}
+		else
+		{
+			MoveStop();	//”š”­‚©‚ç“¦‚°‚é
+		}
 	}
 	else
 	{
-		//æ•µã®å¹ãé£›ã³ç§»å‹•
+		//“G‚Ì‚«”ò‚ÑˆÚ“®
 		HitMove();
 	}
 
-	// -- åº§æ¨™æ›´æ–°
-	m_pos.x += m_move.x;
-	m_pos.z += m_move.z;
+	// -- À•WXV
+	m_Transform.fPos.x += m_move.x * fSlimeMoveSpeed;
+	m_Transform.fPos.z += m_move.z * fSlimeMoveSpeed;
 
-	m_sphere.pos = m_pos;	// å½“ãŸã‚Šåˆ¤å®šã®ä½ç½®ã‚’åº§æ¨™ã«åˆã‚ã›ã‚‹
+	if (GetSlimeLevel() == LEVEL_FLAME)
+	{
+		//ƒGƒtƒFƒNƒgˆÊ’uA‰ñ“]Šp“xXV
+		LibEffekseer::GetManager()->SetLocation(m_efcFlameHandle, m_Transform.fPos.x, m_Transform.fPos.y, m_Transform.fPos.z + 0.5f);
+		LibEffekseer::GetManager()->SetRotation(m_efcFlameHandle, m_Transform.fRadian.x, m_Transform.fRadian.y, m_Transform.fRadian.z);
+	}
+
 }
 
-/* ========================================
-	æç”»å‡¦ç†é–¢æ•°
-	-------------------------------------
-	å†…å®¹ï¼šæç”»å‡¦ç†
-	-------------------------------------
-	å¼•æ•°1ï¼šã‚«ãƒ¡ãƒ©
-	-------------------------------------
-	æˆ»å€¤ï¼šç„¡ã—
-=========================================== */
-void CSlimeBase::Draw(const CCamera* pCamera)
-{
-
-	DirectX::XMFLOAT4X4 mat[3];
-
-	//-- ãƒ¯ãƒ¼ãƒ«ãƒ‰è¡Œåˆ—ã®è¨ˆç®—
-	DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(m_pos.x, m_pos.y, m_pos.z);			//ç§»å‹•è¡Œåˆ—
-	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(m_scale.x, m_scale.y, m_scale.z);		//æ‹¡å¤§ç¸®å°è¡Œåˆ—
-
-	DirectX::XMMATRIX world = m_Ry * S * T ;					//ãƒ¯ãƒ¼ãƒ«ãƒ‰è¡Œåˆ—ã®è¨­å®š
-	world = DirectX::XMMatrixTranspose(world);					//è»¢ç½®è¡Œåˆ—ã«å¤‰æ›
-	DirectX::XMStoreFloat4x4(&mat[0], world);					//XMMATRIXåž‹(world)ã‹ã‚‰XMFLOAT4X4åž‹(mat[0])ã¸å¤‰æ›ã—ã¦æ ¼ç´
-
-
-	mat[1] = pCamera->GetViewMatrix();
-	mat[2] = pCamera->GetProjectionMatrix();
 	
 
-	//-- è¡Œåˆ—ã‚’ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼ã¸è¨­å®š
-	m_pVS->WriteBuffer(0, mat);
+/* ========================================
+	•`‰æˆ—ŠÖ”
+	-------------------------------------
+	“à—eF•`‰æˆ—
+	-------------------------------------
+	ˆø”1F‚È‚µ
+	-------------------------------------
+	–ß’lF–³‚µ
+=========================================== */
+void CSlimeBase::Draw()
+{
 
-	//-- ãƒ¢ãƒ‡ãƒ«è¡¨ç¤º
+	//s—ñó‘Ô‚ðŽæ“¾‚µ‚ÄƒZƒbƒg
+	DirectX::XMFLOAT4X4 world;
+	DirectX::XMStoreFloat4x4(&world, XMMatrixTranspose(
+		DirectX::XMMatrixScaling(m_Transform.fScale.x, m_Transform.fScale.y, m_Transform.fScale.z) *
+		DirectX::XMMatrixRotationY(m_Transform.fRadian.y + DirectX::g_XMPi[0]) *
+		DirectX::XMMatrixTranslation(m_Transform.fPos.x, m_Transform.fPos.y, m_Transform.fPos.z)));
+
+	DirectX::XMFLOAT4X4 mat[3] = {
+	world,
+	CUsingCamera::GetThis().GetCamera()->GetViewMatrix(),
+	CUsingCamera::GetThis().GetCamera()->GetProjectionMatrix()
+	};
+	ShaderList::SetWVP(mat);
+
+	// •¡”‘Ì‚ð‹¤’Ê‚Ìƒ‚ƒfƒ‹‚Åˆµ‚Á‚Ä‚¢‚é‚½‚ß•`‰æ‚Ìƒ^ƒCƒ~ƒ“ƒO‚Åƒ‚[ƒVƒ‡ƒ“‚ÌŽí—Þ‚ÆŽžŠÔ‚ðƒZƒbƒg‚·‚é
+	m_pModel->Play(m_eCurAnime, true);
+	m_pModel->SetAnimationTime(m_eCurAnime, m_fAnimeTime);	// ƒAƒjƒ[ƒVƒ‡ƒ“ƒ^ƒCƒ€‚ðƒZƒbƒg
+	// ƒAƒjƒ[ƒVƒ‡ƒ“ƒ^ƒCƒ€‚ðƒZƒbƒg‚µ‚Ä‚©‚ç“®‚©‚³‚È‚¢‚Æ”½‰f‚³‚ê‚È‚¢‚½‚ß­‚µ‚¾‚¯i‚ß‚é
+	m_pModel->Step(0.0f);
+
+	// ƒŒƒ“ƒ_[ƒ^[ƒQƒbƒgA[“xƒoƒbƒtƒ@‚ÌÝ’è
+	RenderTarget* pRTV = GetDefaultRTV();	//ƒfƒtƒHƒ‹ƒg‚ÅŽg—p‚µ‚Ä‚¢‚éRenderTargetView‚ÌŽæ“¾
+	DepthStencil* pDSV = GetDefaultDSV();	//ƒfƒtƒHƒ‹ƒg‚ÅŽg—p‚µ‚Ä‚¢‚éDepthStencilView‚ÌŽæ“¾
+	SetRenderTargets(1, &pRTV, pDSV);		//DSV‚ªnull‚¾‚Æ2D•\Ž¦‚É‚È‚é
+
+	//-- ƒ‚ƒfƒ‹•\Ž¦(ƒAƒjƒ[ƒVƒ‡ƒ“‘Î‰žver)
 	if (m_pModel) {
-		m_pModel->Draw();
+		//ƒAƒjƒ[ƒVƒ‡ƒ“‘Î‰ž‚µ‚½ƒvƒŒƒCƒ„[‚Ì•`‰æ
+		m_pModel->Draw(nullptr, [this](int index)
+		{
+			const AnimeModel::Mesh* pMesh = m_pModel->GetMesh(index);
+			const AnimeModel::Material* pMaterial = m_pModel->GetMaterial(pMesh->materialID);
+			ShaderList::SetMaterial(*pMaterial);
+
+			DirectX::XMFLOAT4X4 bones[200];
+			for (int i = 0; i < pMesh->bones.size() && i < 200; ++i)
+			{
+				// ‚±‚ÌŒvŽZ‚ÍƒQ[ƒ€‚Â‚­‚ë[uƒXƒLƒ“ƒƒbƒVƒ…‚ÌŽd‘g‚Ýv‚ªŽQl‚É‚È‚é
+				DirectX::XMStoreFloat4x4(&bones[i], DirectX::XMMatrixTranspose(
+					pMesh->bones[i].invOffset *
+					m_pModel->GetBone(pMesh->bones[i].index)
+				));
+			}
+			ShaderList::SetBones(bones);
+		});
+		//m_pModel->DrawBone();
 	}
+
 }
 
 
 /* ========================================
-	é€šå¸¸ç§»å‹•é–¢æ•°
+	’ÊíˆÚ“®ŠÖ”
 	----------------------------------------
-	å†…å®¹ï¼šãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚’è¿½è·¡ã™ã‚‹ç§»å‹•ã‚’è¡Œã†
+	“à—eFƒvƒŒƒCƒ„[‚ð’ÇÕ‚·‚éˆÚ“®‚ðs‚¤
 	----------------------------------------
-	å¼•æ•°1ï¼šãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼å½“ãŸã‚Šåˆ¤å®š(Sphere)
+	ˆø”1FƒvƒŒƒCƒ„[“–‚½‚è”»’è(Sphere)
 	----------------------------------------
-	æˆ»å€¤ï¼šãªã—
+	–ß’lF‚È‚µ
 ======================================== */
-void CSlimeBase::NormalMove(TPos3d<float> playerPos)
+void CSlimeBase::NormalMove()
 {
-	// æ•µã‹ã‚‰ã‚¨ãƒãƒŸãƒ¼ã®è·é›¢ã€è§’åº¦ã‚’è¨ˆç®—
-	float distancePlayer	= m_pos.Distance(playerPos);
+	TPos3d<float> playerPos = m_PlayerTran.fPos;
 
-	// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã¨è·é›¢ãŒä¸€å®šä»¥å†…ã ã£ãŸã‚‰
+	// “G‚©‚çƒGƒlƒ~[‚Ì‹——£AŠp“x‚ðŒvŽZ
+	float distancePlayer	= m_Transform.fPos.Distance(playerPos);
+
+	// ƒvƒŒƒCƒ„[‚Æ‹——£‚ªˆê’èˆÈ“à‚¾‚Á‚½‚ç
 	if (distancePlayer < MOVE_DISTANCE_PLAYER) 
 	{
+	
 		TPos3d<float> movePos;
-		movePos = playerPos - m_pos;	// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã¸ã®ãƒ™ã‚¯ãƒˆãƒ«ã‚’è¨ˆç®—
-		if (distancePlayer != 0)	//0é™¤ç®—å›žé¿
+		movePos = playerPos - m_Transform.fPos;	// ƒvƒŒƒCƒ„[‚Ö‚ÌƒxƒNƒgƒ‹‚ðŒvŽZ
+		if (distancePlayer != 0)	//0œŽZ‰ñ”ð
 		{
 			m_move.x = movePos.x / distancePlayer * m_fSpeed;
 			m_move.z = movePos.z / distancePlayer * m_fSpeed;
 		}
-		// æ•µã‹ã‚‰ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã¸ã®ãƒ™ã‚¯ãƒˆãƒ«
+		// “G‚©‚çƒvƒŒƒCƒ„[‚Ö‚ÌƒxƒNƒgƒ‹
 		DirectX::XMFLOAT3 directionVector;
-		directionVector.x = m_pos.x-playerPos.x;
-		directionVector.y = m_pos.y-playerPos.y;
-		directionVector.z = m_pos.z-playerPos.z;
+		directionVector.x = m_Transform.fPos.x-playerPos.x;
+		directionVector.y = m_Transform.fPos.y-playerPos.y;
+		directionVector.z = m_Transform.fPos.z-playerPos.z;
 
-		// ãƒ™ã‚¯ãƒˆãƒ«ã‚’æ­£è¦åŒ–ã—ã¦æ–¹å‘ãƒ™ã‚¯ãƒˆãƒ«ã‚’å¾—ã‚‹
+		// ƒxƒNƒgƒ‹‚ð³‹K‰»‚µ‚Ä•ûŒüƒxƒNƒgƒ‹‚ð“¾‚é
 		DirectX::XMVECTOR direction = DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&directionVector));
-		// æ–¹å‘ãƒ™ã‚¯ãƒˆãƒ«ã‹ã‚‰å›žè»¢è¡Œåˆ—ã‚’è¨ˆç®—
-		m_Ry = DirectX::XMMatrixRotationY(std::atan2(directionVector.x, directionVector.z));
+		// •ûŒüƒxƒNƒgƒ‹‚©‚ç‰ñ“]s—ñ‚ðŒvŽZ
+		m_Transform.fRadian.y = atan2(-directionVector.x, -directionVector.z);
 	}
 	else
 	{
-		RandomMove();	// ãƒ©ãƒ³ãƒ€ãƒ ç§»å‹•
+		RandomMove();	// ƒ‰ƒ“ƒ_ƒ€ˆÚ“®
 
 	}
 
 }
 
 /* ========================================
-	ãƒ©ãƒ³ãƒ€ãƒ ç§»å‹•é–¢æ•°
+	ƒ‰ƒ“ƒ_ƒ€ˆÚ“®ŠÖ”
 	----------------------------------------
-	å†…å®¹ï¼š360åº¦ã«ãƒ©ãƒ³ãƒ€ãƒ ç§»å‹•ã‚’è¡Œã†
+	“à—eF360“x‚Éƒ‰ƒ“ƒ_ƒ€ˆÚ“®‚ðs‚¤
 	----------------------------------------
-	å¼•æ•°1ï¼šç„¡ã—
+	ˆø”1F–³‚µ
 	----------------------------------------
-	æˆ»å€¤ï¼šç„¡ã—
+	–ß’lF–³‚µ
 ======================================== */
 void CSlimeBase::RandomMove()
 {
-	m_RanMoveCnt++;		// ç§»å‹•æ–¹å‘åˆ‡ã‚Šæ›¿ãˆé–“éš”æ™‚é–“åŠ ç®—
+	m_RanMoveCnt++;		// ˆÚ“®•ûŒüØ‚è‘Ö‚¦ŠÔŠuŽžŠÔ‰ÁŽZ
 
-	// ç§»å‹•æ–¹å‘åˆ‡ã‚Šæ›¿ãˆæ™‚é–“ãŒçµŒã£ãŸã‚‰
+	// ˆÚ“®•ûŒüØ‚è‘Ö‚¦ŽžŠÔ‚ªŒo‚Á‚½‚ç
 	if (m_RanMoveCnt >= RANDOM_MOVE_SWITCH_TIME)
 	{
-		int ranAngle = rand() % 360;	// ç§»å‹•æ–¹å‘æ±ºå®š
+		int ranAngle = rand() % 360;	// ˆÚ“®•ûŒüŒˆ’è
 
-		// è§’åº¦æ–¹å‘ã«ç§»å‹•ã™ã‚‹
-		m_move.x = -cosf(DirectX::XMConvertToRadians(ranAngle)) * m_fSpeed;
-		m_move.z = sinf(DirectX::XMConvertToRadians(ranAngle)) * m_fSpeed;
+		// Šp“x•ûŒü‚ÉˆÚ“®‚·‚é
+		m_move.x = -cosf(DirectX::XMConvertToRadians((float)ranAngle)) * m_fSpeed;
+		m_move.z = sinf(DirectX::XMConvertToRadians((float)ranAngle)) * m_fSpeed;
 
-		// å‘ãã‚’å¤‰ãˆã‚‹
-		m_Ry = DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(ranAngle + 90));
+		// Œü‚«‚ð•Ï‚¦‚é
+		m_Transform.fRadian.y = DirectX::XMConvertToRadians((float)ranAngle - 90.0f);
 
-		m_RanMoveCnt = 0;	// åŠ ç®—å€¤ã‚’ãƒªã‚»ãƒƒãƒˆ
+		m_RanMoveCnt = 0;	// ‰ÁŽZ’l‚ðƒŠƒZƒbƒg
 	}
 
 
 }
 
 /* ========================================
-	ãƒãƒ³ãƒžãƒ¼ã‹æ•µã«å¹ã£é£›ã°ã•ã‚Œã¦å®Ÿéš›ã«ç§»å‹•é‡ã‚’ç¢ºå®šã™ã‚‹é–¢æ•°
+	ƒnƒ“ƒ}[‚©“G‚É‚Á”ò‚Î‚³‚ê‚ÄŽÀÛ‚ÉˆÚ“®—Ê‚ðŠm’è‚·‚éŠÖ”
 	----------------------------------------
-	å†…å®¹ï¼šXæ–¹å‘ã¨Zæ–¹å‘ã®ç§»å‹•é‡ã‚’ç¢ºå®šã™ã‚‹å‡¦ç†
+	“à—eFX•ûŒü‚ÆZ•ûŒü‚ÌˆÚ“®—Ê‚ðŠm’è‚·‚éˆ—
 	----------------------------------------
-	å¼•æ•°1ï¼šãªã—
+	ˆø”1F‚È‚µ
 	----------------------------------------
-	æˆ»å€¤ï¼šãªã—
+	–ß’lF‚È‚µ
 ======================================== */
 void CSlimeBase::HitMove()
 {
-	//æ•µã‚­ãƒ£ãƒ©ã®ç§»å‹•é€Ÿåº¦ã¨ç§»å‹•è§’åº¦ã«å¿œã˜ã¦Xæ–¹å‘ã¨Zæ–¹å‘ã®ç§»å‹•é‡ã‚’æ±ºã‚ã‚‹
+	//“GƒLƒƒƒ‰‚ÌˆÚ“®‘¬“x‚ÆˆÚ“®Šp“x‚É‰ž‚¶‚ÄX•ûŒü‚ÆZ•ûŒü‚ÌˆÚ“®—Ê‚ðŒˆ‚ß‚é
 	m_move.x = cos(m_fVecAngle) * (m_fSpeed * SPEED_DOWN_RATIO);
 	m_move.z = sin(m_fVecAngle) * (m_fSpeed * SPEED_DOWN_RATIO);
 
-	m_fSpeed -= MOVE_RESIST;	//æ¯Žãƒ•ãƒ¬ãƒ¼ãƒ ã®é€Ÿåº¦ã®æ¸›ç®—å‡¦ç†
-	if (m_fSpeed <= 0)	//é€Ÿåº¦ãŒ0ä»¥ä¸‹ã«ãªã£ãŸã‚‰
+	m_fSpeed -= MOVE_RESIST;	//–ˆƒtƒŒ[ƒ€‚Ì‘¬“x‚ÌŒ¸ŽZˆ—
+	if (m_fSpeed <= 0)	//‘¬“x‚ª0ˆÈ‰º‚É‚È‚Á‚½‚ç
 	{
-		m_bHitMove = false;				//å¹ãé£›ã³çŠ¶æ…‹ã®ãƒ•ãƒ©ã‚°ã‚’OFFã«ã™ã‚‹
-		SetNormalSpeed();	// ç¶™æ‰¿ã—ãŸé–¢æ•°ã‚’ä½¿ç”¨ã—ã¦å¤§ãã•ã”ã¨ã®ã‚¹ãƒ”ãƒ¼ãƒ‰ã‚’ã‚»ãƒƒãƒˆã™ã‚‹
+		m_bHitMove = false;				//‚«”ò‚Ñó‘Ô‚Ìƒtƒ‰ƒO‚ðOFF‚É‚·‚é
+		SetNormalSpeed();	// Œp³‚µ‚½ŠÖ”‚ðŽg—p‚µ‚Ä‘å‚«‚³‚²‚Æ‚ÌƒXƒs[ƒh‚ðƒZƒbƒg‚·‚é
+		m_RanMoveCnt = RANDOM_MOVE_SWITCH_TIME;
+		m_bChargeHit = false;
 	}
 }
 
 /* ========================================
-	ãƒãƒ³ãƒžãƒ¼ã‹æ•µã«å¹ã£é£›ã°ã•ã‚Œã‚‹é–¢æ•°
+	ƒnƒ“ƒ}[‚©“G‚É‚Á”ò‚Î‚³‚ê‚éŠÖ”
 	----------------------------------------
-	å†…å®¹ï¼šå¼•æ•°ã«å¿œã˜ã¦é£›ã¶æ–¹å‘ã¨ç§»å‹•é€Ÿåº¦ã‚’æ±ºã‚ã‚‹å‡¦ç†
+	“à—eFˆø”‚É‰ž‚¶‚Ä”ò‚Ô•ûŒü‚ÆˆÚ“®‘¬“x‚ðŒˆ‚ß‚éˆ—
 	----------------------------------------
-	å¼•æ•°1ï¼šé€Ÿåº¦
-	å¼•æ•°2ï¼šè§’åº¦
+	ˆø”1F‘¬“x
+	ˆø”2FŠp“x
 	----------------------------------------
-	æˆ»å€¤ï¼šãªã—
+	–ß’lF‚È‚µ
 ======================================== */
-void CSlimeBase::HitMoveStart(float speed, float angle)
+void CSlimeBase::HitMoveStart(float speed, float angle,bool ChargeHit)
 {
-	m_fSpeed = speed;		//ç§»å‹•é‡ã‚’å…¥ã‚Œã‚‹
-	m_fVecAngle = angle;		//ç§»å‹•æ–¹å‘ã‚’å…¥ã‚Œã‚‹
-	m_bHitMove = true;		//å¹ãé£›ã³çŠ¶æ…‹ã‚’ONã«ã™ã‚‹
+	m_fSpeed = speed;			//ˆÚ“®—Ê‚ð“ü‚ê‚é
+	m_fVecAngle = angle;		//ˆÚ“®•ûŒü‚ð“ü‚ê‚é
+	m_bHitMove = true;			//‚«”ò‚Ñó‘Ô‚ðON‚É‚·‚é
+	m_bChargeHit = ChargeHit;	// ƒ`ƒƒ[ƒWƒnƒ“ƒ}[‚É’@‚©‚ê‚½‚©
 }
 
 /* ========================================
-	åç™ºé–¢æ•°
+	”½”­ŠÖ”
 	----------------------------------------
-	å†…å®¹ï¼šã‚¹ãƒ©ã‚¤ãƒ ã«åç™ºã®å‰²åˆã‚’ä¹—ç®—ã™ã‚‹å‡¦ç†
+	“à—eFƒXƒ‰ƒCƒ€‚É”½”­‚ÌŠ„‡‚ðæŽZ‚·‚éˆ—
 	----------------------------------------
-	å¼•æ•°1ï¼šãªã—
+	ˆø”1F‚È‚µ
 	----------------------------------------
-	æˆ»å€¤ï¼šãªã—
+	–ß’lF‚È‚µ
 ======================================== */
 void CSlimeBase::Reflect()
 {
 	m_fSpeed *= REFLECT_RATIO;
 }
 
-/* ========================================
-	å½“ãŸã‚Šåˆ¤å®šå–å¾—é–¢æ•°
-	-------------------------------------
-	å†…å®¹ï¼šã‚¹ãƒ©ã‚¤ãƒ ã®å½“ãŸã‚Šåˆ¤å®šè¿”ã™
-	-------------------------------------
-	å¼•æ•°1ï¼šç„¡ã—
-	-------------------------------------
-	æˆ»å€¤ï¼šå½“ãŸã‚Šåˆ¤å®š(Sphere)
-=========================================== */
-CSphereInfo::Sphere CSlimeBase::GetSphere()
-{
-	return m_sphere;
-}
 
 /* ========================================
-	å½“ãŸã‚Šåˆ¤å®šã‚»ãƒƒãƒˆé–¢æ•°
-	-------------------------------------
-	å†…å®¹ï¼šå½“ãŸã‚Šåˆ¤å®šã‚’ã‚»ãƒƒãƒˆã™ã‚‹(è¿½è·¡å‡¦ç†ã«ä½¿ç”¨ã™ã‚‹)
-	-------------------------------------
-	å¼•æ•°1ï¼šå½“ãŸã‚Šåˆ¤å®š(Sphere)
-	-------------------------------------
-	æˆ»å€¤ï¼šãªã—
-=========================================== */
-void CSlimeBase::SetSphere(CSphereInfo::Sphere Sphere)
-{
-	m_sphere = Sphere;
-}
-
-/* ========================================
-	åº§æ¨™ã‚»ãƒƒãƒˆé–¢æ•°
-	-------------------------------------
-	å†…å®¹ï¼šã‚¹ãƒ©ã‚¤ãƒ ã®åº§æ¨™ã‚’ã‚»ãƒƒãƒˆã™ã‚‹
-	-------------------------------------
-	å¼•æ•°1ï¼šåº§æ¨™(x,y,z)
-	-------------------------------------
-	æˆ»å€¤ï¼šç„¡ã—
-=========================================== */
-void CSlimeBase::SetPos(TPos3d<float> pos)
-{
-	m_pos = pos;
-	m_sphere.pos = pos;
-}
-
-/* ========================================
-	ã‚«ãƒ¡ãƒ©æƒ…å ±ã‚»ãƒƒãƒˆé–¢æ•°
+	’âŽ~“®ìŠÖ”
 	----------------------------------------
-	å†…å®¹ï¼šæç”»å‡¦ç†ã§ä½¿ç”¨ã™ã‚‹ã‚«ãƒ¡ãƒ©æƒ…å ±ã‚»ãƒƒãƒˆ
+	“à—eFƒXƒ‰ƒCƒ€‚ðŽb‚­d’¼‚³‚¹‚é
 	----------------------------------------
-	å¼•æ•°1ï¼šãªã—
+	ˆø”1F‚È‚µ
 	----------------------------------------
-	æˆ»å€¤ï¼šãªã—
+	–ß’lF‚È‚µ
 ======================================== */
-void CSlimeBase::SetCamera(const CCamera * pCamera)
+void CSlimeBase::MoveStop()
 {
-	m_pCamera = pCamera;
+	//”š”­‚Ö‚ÌŠp“x‚ðŽæ“¾
+	float rad = atan2f(m_fStpDirPos.x - m_Transform.fPos.x, m_fStpDirPos.z - m_Transform.fPos.z);
+	//”š”­‚Æ”½‘Î•ûŒü‚ÉˆÚ“®
+	m_move.x = 0.0f;//-(cosf(rad)) * ENEMY_MOVE_SPEED;
+	m_move.z = 0.0f;//-(sinf(rad)) * ENEMY_MOVE_SPEED;
+	m_Transform.fRadian.y = rad;
+
+	m_nMvStpCnt++;	//ƒJƒEƒ“ƒg‚ð‘‰Á
+	if (m_nMvStpCnt > ESCAPE_TIME) 
+	{ 
+		m_bMvStpFlg = false; 
+		m_nMvStpCnt = 0;
+	}
 }
 
 /* ========================================
-	åº§æ¨™å–å¾—é–¢æ•°
-	-------------------------------------
-	å†…å®¹ï¼šã‚¹ãƒ©ã‚¤ãƒ ã®åº§æ¨™ã‚’è¿”ã™
-	-------------------------------------
-	å¼•æ•°1ï¼šç„¡ã—
-	-------------------------------------
-	æˆ»å€¤ï¼šåº§æ¨™(x,y,z)
-=========================================== */
-TPos3d<float> CSlimeBase::GetPos()
+	’âŽ~Žž•ûŒü‘ÎÛƒIƒuƒWƒFƒNƒgÀ•WƒZƒbƒgŠÖ”
+	----------------------------------------
+	“à—eF’âŽ~Žž•ûŒü‘ÎÛ‚ÌÀ•W‚ðƒZƒbƒg‚·‚é
+	----------------------------------------
+	ˆø”1F’âŽ~Žž•ûŒü‘ÎÛ‚ÌÀ•W
+	----------------------------------------
+	–ß’lF‚È‚µ
+======================================== */
+void CSlimeBase::SetStopDirectionObjPos(TPos3d<float> stpDirPos)
 {
-	return m_pos;
+	m_fStpDirPos = stpDirPos;
 }
 
 
 /* ========================================
-	ã‚¹ãƒ©ã‚¤ãƒ ãƒ¬ãƒ™ãƒ«å–å¾—é–¢æ•°
+	’âŽ~ó‘ÔƒZƒbƒgŠÖ”
 	----------------------------------------
-	å†…å®¹ï¼šã‚¹ãƒ©ã‚¤ãƒ ã®ãƒ¬ãƒ™ãƒ«ã‚’è¿”ã™
+	“à—eFˆÚ“®’âŽ~ó‘Ô‚ðƒZƒbƒg‚·‚é
 	----------------------------------------
-	å¼•æ•°1ï¼šãªã—
+	ˆø”1FtrueF’âŽ~’† / falseFˆÚ“®’†
 	----------------------------------------
-	æˆ»å€¤ï¼šã‚¹ãƒ©ã‚¤ãƒ ã®ãƒ¬ãƒ™ãƒ«
+	–ß’lF‚È‚µ
+======================================== */
+void CSlimeBase::SetMoveStopFlg(bool bEscape)
+{
+	m_bMvStpFlg = bEscape;
+}
+
+
+
+/* ========================================
+	ƒXƒ‰ƒCƒ€ƒŒƒxƒ‹Žæ“¾ŠÖ”
+	----------------------------------------
+	“à—eFƒXƒ‰ƒCƒ€‚ÌƒŒƒxƒ‹‚ð•Ô‚·
+	----------------------------------------
+	ˆø”1F‚È‚µ
+	----------------------------------------
+	–ß’lFƒXƒ‰ƒCƒ€‚ÌƒŒƒxƒ‹
 ======================================== */
 E_SLIME_LEVEL CSlimeBase::GetSlimeLevel()
 {
@@ -385,28 +423,13 @@ E_SLIME_LEVEL CSlimeBase::GetSlimeLevel()
 }
 
 /* ========================================
-	ã‚¹ãƒ©ã‚¤ãƒ ã‚µã‚¤ã‚ºå–å¾—é–¢æ•°
+	”òó‘Ôƒtƒ‰ƒOŽæ“¾ŠÖ”
 	----------------------------------------
-	å†…å®¹ï¼šã‚¹ãƒ©ã‚¤ãƒ ã®ã‚µã‚¤ã‚ºã‚’è¿”ã™
+	“à—eF”òó‘Ôƒtƒ‰ƒO‚ð•Ô‚·
 	----------------------------------------
-	å¼•æ•°1ï¼šãªã—
+	ˆø”1F‚È‚µ
 	----------------------------------------
-	æˆ»å€¤ï¼šã‚¹ãƒ©ã‚¤ãƒ ã®ã‚µã‚¤ã‚º
-======================================== */
-TTriType<float> CSlimeBase::GetScale()
-{
-	return m_scale;
-}
-
-
-/* ========================================
-	å¹é£›çŠ¶æ…‹ãƒ•ãƒ©ã‚°å–å¾—é–¢æ•°
-	----------------------------------------
-	å†…å®¹ï¼šå¹é£›çŠ¶æ…‹ãƒ•ãƒ©ã‚°ã‚’è¿”ã™
-	----------------------------------------
-	å¼•æ•°1ï¼šãªã—
-	----------------------------------------
-	æˆ»å€¤ï¼šå¹é£›çŠ¶æ…‹ãƒ•ãƒ©ã‚°
+	–ß’lF”òó‘Ôƒtƒ‰ƒO
 ======================================== */
 bool CSlimeBase::GetHitMoveFlg()
 {
@@ -414,13 +437,88 @@ bool CSlimeBase::GetHitMoveFlg()
 }
 
 /* ========================================
-	ç§»å‹•é€Ÿåº¦å–å¾—é–¢æ•°
+	À•WŽæ“¾ŠÖ”
 	----------------------------------------
-	å†…å®¹ï¼šã‚¹ãƒ©ã‚¤ãƒ ã®ç§»å‹•é€Ÿåº¦ã‚’è¿”ã™
+	“à—eFƒXƒ‰ƒCƒ€‚ÌÀ•W‚ðŽæ“¾
 	----------------------------------------
-	å¼•æ•°1ï¼šãªã—
+	ˆø”1F‚È‚µ
 	----------------------------------------
-	æˆ»å€¤ï¼šã‚¹ãƒ©ã‚¤ãƒ ã®ç§»å‹•é€Ÿåº¦
+	–ß’lFƒXƒ‰ƒCƒ€‚ÌÀ•W
+======================================== */
+TPos3d<float> CSlimeBase::GetPos()
+{
+	return m_Transform.fPos;
+}
+
+/* ========================================
+	’âŽ~ó‘ÔŽæ“¾ŠÖ”
+	----------------------------------------
+	“à—eF’âŽ~ó‘Ô‚©‚ÌŠm”F
+	----------------------------------------
+	ˆø”1F‚È‚µ
+	----------------------------------------
+	–ß’lFbool
+======================================== */
+bool CSlimeBase::GetMoveStopFlg()
+{
+	return m_bMvStpFlg;
+}
+
+/* ========================================
+	UŒ‚—ÍŽæ“¾ŠÖ”
+	----------------------------------------
+	“à—eFUŒ‚—Í‚ðŽæ“¾‚·‚é
+	----------------------------------------
+	ˆø”1F‚È‚µ
+	----------------------------------------
+	–ß’lFUŒ‚—Í
+======================================== */
+int CSlimeBase::GetAttack()
+{
+	return m_nAttack;
+}
+
+/* ========================================
+	ƒ`ƒƒ[ƒWƒnƒ“ƒ}[‚É‚æ‚é‚«”ò‚ÔŽæ“¾ŠÖ”
+	----------------------------------------
+	“à—eFƒ`ƒƒ[ƒWƒnƒ“ƒ}[‚É‚æ‚é‚«”ò‚Ñ‚©‚Ç‚¤‚©‚ðŽæ“¾‚·‚é
+	----------------------------------------
+	ˆø”1F‚È‚µ
+	----------------------------------------
+	–ß’lFƒ`ƒƒ[ƒWƒnƒ“ƒ}[‚É‚æ‚é‚«”ò‚Ñ‚©‚Ç‚¤‚©
+======================================== */
+bool CSlimeBase::GetChargeHit()
+{
+	return m_bChargeHit;
+}
+
+/* ========================================
+	‚«”ò‚ÑŠp“xŽæ“¾ŠÖ”
+	----------------------------------------
+	“à—eF‚«”ò‚ÑŠp“x‚ðŽæ“¾‚·‚é
+	----------------------------------------
+	ˆø”1F‚È‚µ
+	----------------------------------------
+	–ß’lF‚«”ò‚ÑŠp“x
+======================================== */
+float CSlimeBase::GetVecAngle()
+{
+	return m_fVecAngle;
+}
+
+CShadow* CSlimeBase::GetShadowPtr()
+{
+	return m_pShadow;
+}
+
+/* ========================================
+	ˆÚ“®‘¬“xŽæ“¾ŠÖ”
+	----------------------------------------
+	“à—eFƒXƒ‰ƒCƒ€‚ÌˆÚ“®‘¬“x‚ð•Ô‚·
+	----------------------------------------
+	ˆø”1F‚È‚µ
+	----------------------------------------
+	–ß’lFƒXƒ‰ƒCƒ€‚ÌˆÚ“®‘¬“x
 ======================================== */
 float CSlimeBase::GetSpeed()
 {

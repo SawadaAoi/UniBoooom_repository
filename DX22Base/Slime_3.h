@@ -12,21 +12,26 @@
 	変更履歴
 	・2023/11/08 作成 山下凌佑
 	・2023/11/08 スライムの移動速度を設定する関数を継承 山下凌佑
+	・2023/11/30 UpdateとNormalMoveをoverride yamashita
 
 ========================================== */
 
 // =============== インクルード ===================
 #include "SlimeBase.h"
-
+#include "AnimeModel.h"
 // =============== クラス定義 =====================
 class CSlime_3 :
 	public CSlimeBase
 {
 public:
-	// ===プロトタイプ宣言===
+	// === プロトタイプ宣言 ===
 	CSlime_3();
-	CSlime_3(TPos3d<float> pos);
+	CSlime_3(TPos3d<float> pos, AnimeModel* pModel);
 	~CSlime_3();
+
+	void Update(tagTransform3d playerTransform, float fSlimeMoveSpeed);
+	void Draw() override;
+	void NormalMove() final;	// 通常時の移動処理
 
 	void SetNormalSpeed() override;
 private:

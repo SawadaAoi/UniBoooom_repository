@@ -1,9 +1,25 @@
+/* ========================================
+	HEW/UniBoooom!!
+	------------------------------------
+	ウィンドウまわりの設定、四大処理呼び出し
+	------------------------------------
+	Main.cpp
+	------------------------------------
+	作成者
+
+	変更履歴
+   ・↓まで 学校の配布物(授業に沿い変形)・Geometryに合わせた改造
+	・2023/11/17 終了条件でゲームループを抜けるように変更 takagi
+	・2024/03/02 終了のバグ修正、アイコン変更 takagi
+
+========================================== */
+
 #include <windows.h>
 #include "Defines.h"
 #include "Main.h"
 #include <stdio.h>
 #include <crtdbg.h>
-
+#include "resource.h"
 
 // timeGetTime周りの使用
 #pragma comment(lib, "winmm.lib")
@@ -29,8 +45,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	wcex.lpfnWndProc = WndProc;
 	wcex.style = CS_CLASSDC | CS_DBLCLKS;
 	wcex.cbSize = sizeof(WNDCLASSEX);
-	wcex.hIcon = LoadIcon(NULL, IDI_APPLICATION);
-	wcex.hIconSm = wcex.hIcon;
+	wcex.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON1));;
+	wcex.hIconSm = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON1));;
 	wcex.hCursor = LoadCursor(NULL, IDC_ARROW);
 	wcex.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
 
@@ -96,6 +112,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				Update(diff * 0.001f);
 				Draw();
 				preExecTime = nowTime;
+
+				if (IsFin())
+					break;
 			}
 		}
 	}
@@ -117,6 +136,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		break;
+	case WM_CREATE:
+		ShowCursor(FALSE);
+#ifdef _DEBUG
+		ShowCursor(TRUE);
+#endif
+		break;
+
 	}
 	return DefWindowProc(hWnd, message, wParam, lParam);
 }

@@ -8,11 +8,18 @@
 	作成者
 		山本凱翔
 	変更履歴
-	・2023/11/08 プレイヤー座標を入れる変数をTTriTypeからTPosに変更 /山下凌佑
-	・2023/11/08 めちゃくちゃコメント追加した /山下凌佑
-	・2023/11/08 回転による移動のSwing関数追加 /山下凌佑
-	・当たり判定用のSphere変数を追加 /山下凌佑
-	・当たり判定用のSphereのゲット関数を追加 /山下凌佑
+	・2023/11/08 プレイヤー座標を入れる変数をTTriTypeからTPosに変更 Yamashita
+	・2023/11/08 めちゃくちゃコメント追加した Yamashita
+	・2023/11/08 回転による移動のSwing関数追加 Yamashita
+	・2023/11/10 当たり判定用のSphere変数を追加 Yamashita
+	・2023/11/10 当たり判定用のSphereのゲット関数を追加 Yamashita
+	・2023/11/14 全体的に処理の流れが分かりづらかったので修正 Sawada
+	・2023/11/14 SphereInfoの変更に対応 Takagi
+	・2023/11/15 Objectクラスを継承したので修正　yamamoto
+	・2023/11/23 ジオメトリーからモデルに差し替え　yamashita
+	・2023/11/29 Intervalの変数、関数追加　yamamoto
+	・2023/12/01 IntervalをSwingSpeedに変更　yamamoto
+	・2024/02/09 カメラ削除 takagi
 
 ========================================== */
 
@@ -21,14 +28,21 @@
 
 // =============== インクルード ===================
 #include "Shader.h"
-#include "Pos3d.h"
 #include "SphereInfo.h"
+#include "Transform3d.h"
 #include "Geometry.h"
 #include <DirectXMath.h>
-#include "Camera.h"
+#include "Object.h"
+#include "Model.h"
+#include "Sphere.h"
+
+// =============== 定数定義 =======================
+const int SWING_TIME_MIN = int(0.15f * 60);		// ハンマーの振りの最速値
+
 
 // =============== クラス定義 =====================
 class CHammer
+	: public CObject
 {
 public:
 	// ===プロトタイプ宣言===
@@ -36,21 +50,25 @@ public:
 	CHammer();	//コンストラクタ
 	~CHammer();	//デストラクタ
 
-	void Update(TPos3d<float> pPos, float angle);	//更新関数
-	void Draw(const CCamera* pCamera);								//描画関数
-	bool Gethammer();							//ハンマーを使用中かどうかのフラグを取得
-	void Swing(TPos3d<float>pPos,float angle);	//移動による回転移動
-	CSphereInfo::Sphere GetSphere();			//ハンマーのプレイヤー
+	bool Update();			// 更新関数
+	void Draw();			// 描画関数
+	void Swing();											// 移動による回転移動
+	void AttackStart(TPos3d<float>pPos, float angle);		// 攻撃開始処理
+	void SwingSpeedSlow();
+	void SwingSpeedSlow_Charge();	// チャージハンマー用
+	void SwingSpeedFast();
+	float GetSwingSpeed();
 private:
 	// ===メンバ変数宣言=====
-	TPos3d<float> m_pos;	//ハンマーの位置座標
-	CSphereInfo::Sphere m_sphere;	//ハンマーの当たり判定用の球体
-	TTriType<float> m_scale;		//サイズ
+	VertexShader* m_pVS;			// 頂点シェーダーのポインタ
+	TPos3d<float> m_tPlayerPos;		// 現在のプレイヤー座標
+	float m_fAngleNow;				// 今の角度
+	int m_dAddAngleCnt;				// 角度加算フレーム値
+	int m_nSwingTimeFrame;			// ハンマーの一振りに掛かる時間
+	float m_fAddAngle;				// 1フレームで移動する角度量
+	float m_fSwingSpeed;			// ハンマーの振る速度の割合(通常時が1.0)
 
-	float m_nowangle;				//今の角度
-	float m_stateangle;				//
-	bool m_bHammer;					//ハンマーを使用中のフラグ
-	CGeometry* m_pHammerGeo;		//ハンマーを仮表示する図形
+	CSphere* m_pSphere;
 };
 
 #endif // !__HAMMER_H__

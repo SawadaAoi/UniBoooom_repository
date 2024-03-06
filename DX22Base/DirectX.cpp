@@ -1,5 +1,6 @@
 #include "DirectX.h"
 #include "Texture.h"
+#include "DirectWrite.h"
 
 //--- グローバル変数
 ID3D11Device *g_pDevice;
@@ -11,6 +12,7 @@ ID3D11RasterizerState* g_pRasterizerState[3];
 ID3D11BlendState* g_pBlendState[BLEND_MAX];
 ID3D11SamplerState* g_pSamplerState[SAMPLER_MAX];
 
+DirectWrite* g_pDirectWrite;
 
 ID3D11Device* GetDevice()
 {
@@ -61,7 +63,7 @@ HRESULT InitDirectX(HWND hWnd, UINT width, UINT height, bool fullscreen)
 	UINT numDriverTypes = ARRAYSIZE(driverTypes);
 
 	UINT createDeviceFlags = 0;
-	createDeviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
+	createDeviceFlags |= D3D11_CREATE_DEVICE_BGRA_SUPPORT;
 
 	// 機能レベル
 	D3D_FEATURE_LEVEL featureLevels[] =
@@ -166,6 +168,7 @@ HRESULT InitDirectX(HWND hWnd, UINT width, UINT height, bool fullscreen)
 	D3D11_FILTER filter[] = {
 		D3D11_FILTER_MIN_MAG_MIP_LINEAR,
 		D3D11_FILTER_MIN_MAG_MIP_POINT,
+		D3D11_FILTER_MIN_MAG_MIP_LINEAR,
 	};
 	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
 	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
@@ -177,12 +180,27 @@ HRESULT InitDirectX(HWND hWnd, UINT width, UINT height, bool fullscreen)
 		if (FAILED(hr)) { return hr; }
 	}
 	SetSamplerState(SAMPLER_LINEAR);
+	//フェード用
+	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
+	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
+	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
+	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	hr = g_pDevice->CreateSamplerState(&samplerDesc, &g_pSamplerState[SAMPLER_FADE]);
+	if (FAILED(hr)) { return hr; }
+	SetSamplerState(SAMPLER_FADE);
+
+	//画面内にテキストを表示するクラスの初期化
+	g_pDirectWrite = new DirectWrite();
+	g_pDirectWrite->Init();
 
 	return S_OK;
 }
 
 void UninitDirectX()
 {
+	g_pDirectWrite->Release();	//画面内にテキストを表示するクラスの終了処理
+	delete g_pDirectWrite;
+
 	SAFE_DELETE(g_pDSV);
 	SAFE_DELETE(g_pRTV);
 
@@ -249,8 +267,25 @@ void SetBlendMode(BlendMode blend)
 	FLOAT blendFactor[4] = { D3D11_BLEND_ZERO, D3D11_BLEND_ZERO, D3D11_BLEND_ZERO, D3D11_BLEND_ZERO };
 	g_pContext->OMSetBlendState(g_pBlendState[blend], blendFactor, 0xffffffff);
 }
+
+/* ========================================
+	フルスクリーン設定関数
+	----------------------------------------
+	内容：フルスクリーンか否かを設定する
+	----------------------------------------
+	引数1：bool bFullScreen：フルスクリーンにするか(true:する)
+	----------------------------------------
+	戻値：なし
+=========================================== */
+void SetScreenMode(bool bFullScreen)
+{
+	// =============== 設定 ===============
+	g_pSwapChain->SetFullscreenState(bFullScreen, NULL);	//フルスクリーン設定
+}
+
 void SetSamplerState(SamplerState state)
 {
 	if (state < 0 || state >= SAMPLER_MAX) return;
-	g_pContext->PSSetSamplers(0, 1, &g_pSamplerState[state]);
+	//g_pContext->PSSetSamplers(0, 1, &g_pSamplerState[state]);
+	g_pContext->PSSetSamplers(state, 1, &g_pSamplerState[state]);
 }

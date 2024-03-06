@@ -1,117 +1,218 @@
 /* ========================================
 	HEW/UniBoooom!!
 	---------------------------------------
-	ã‚¹ãƒ©ã‚¤ãƒ ãƒ™ãƒ¼ã‚¹ ã‚¯ãƒ©ã‚¹å®šç¾©
+	ƒXƒ‰ƒCƒ€ƒx[ƒX ƒNƒ‰ƒX’è‹`
 	---------------------------------------
 	SlimeBase.h
 	
-	ä½œæˆè€… éˆ´æ‘ æœ‹ä¹Ÿ
+	ì¬ŽÒ —é‘º •ü–ç
 	
-	å¤‰æ›´å±¥æ­´
-	ãƒ»2023/11/04 ã‚¹ãƒ©ã‚¤ãƒ ãƒ™ãƒ¼ã‚¹ã‚¯ãƒ©ã‚¹ä½œæˆ Suzumura
-	ãƒ»2023/11/06 å¹ãé£›ã³ç§»å‹•ã¨å¹ãé£›ã³ç§»å‹•é–¢æ•°ã‚’ä½œæˆ Yamashita
-	ãƒ»2023/11/06 m_fSpped(æ•µã®ç§»å‹•é€Ÿåº¦)ã¨m_fVecAngle(æ•µã®å¹ãé£›ã¶æ–¹å‘)ã®ãƒ¡ãƒ³ãƒå¤‰æ•°ã‚’è¿½åŠ  Yamashita
-	ãƒ»2023/11/06 å®šæ•°SPEED_DOWN_RATIO(ã¶ã¤ã‹ã£ãŸå…ˆã®ã‚¹ãƒ©ã‚¤ãƒ ã«é€Ÿåº¦ã‚’æ¸¡ã™éš›ã«æ¸›å°‘ã™ã‚‹å‰²åˆ)ã‚’è¿½åŠ  Yamashita
-	ãƒ»2023/11/06 å®šæ•°MOVE_RESIST(å¹ãé£›ã³ç§»å‹•ä¸­ã®ã‚¹ãƒ©ã‚¤ãƒ ã®ç§»å‹•é€Ÿåº¦ã«æ¯Žãƒ•ãƒ¬ãƒ¼ãƒ ã‹ã‹ã‚‹æ¸›ç®—æ•°å€¤)ã‚’è¿½åŠ  Yamashita
-	ãƒ»2023/11/07 HitBranché–¢æ•°(ã‚¹ãƒ©ã‚¤ãƒ ã¨ã®æŽ¥è§¦åˆ†å²å‡¦ç†)ã‚’SlimeManagerã«ç§»å‹•ã™ã‚‹ãŸã‚ã«å‰Šé™¤ Yamashita
-	ãƒ»2023/11/08 ã‚¹ãƒ©ã‚¤ãƒ ã®ã‚µã‚¤ã‚ºã‚’è¡¨ã™åˆ—æŒ™ã‚’å®šç¾© Yamashita
-	ãƒ»2023/11/08 ã‚¹ãƒ©ã‚¤ãƒ ã®ã‚µã‚¤ã‚ºã‚’è¿”ã™é–¢æ•°ã‚’ä½œæˆ Yamashita
-	ãƒ»2023/11/08 GetPosâ†’GetSphereã«åå‰ã‚’å¤‰æ›´ Yamashita
-	ãƒ»2023/11/08 ã‚¹ãƒ©ã‚¤ãƒ ã®ç§»å‹•é€Ÿåº¦ã‚’å–å¾—ã™ã‚‹é–¢æ•°ã‚’ä½œæˆ Yamashita
-	ãƒ»2023/11/08 å®šæ•°å®šç¾©ãŒãƒ˜ãƒƒãƒ€ãƒ¼ã«ã‚ã£ãŸã®ã§cppã«ç§»å‹• Yamashita
-	ãƒ»2023/11/08 Unionã¨Explosionã‚’å‰Šé™¤(ãƒžãƒãƒ¼ã‚¸ãƒ£ãƒ¼ã«ç§»å‹•ã•ã›ãŸã®ã§) Yamashita
-	ãƒ»2023/11/08 m_bUseã€n_playerDistanceã€m_playerAngleã‚’å‰Šé™¤(ä¸€ã‹æ‰€ã§ã—ã‹ä½¿ç”¨ã—ã¦ã„ãªã„ç‚º) Yamashita
-	ãƒ»2023/11/08 m_Playerã‚’è¿½åŠ  Yamashita
-	ãƒ»2023/11/08 åº§æ¨™ã‚’TPos<Pos>ã«å¤‰æ›´ Yamashita
-	ãƒ»2023/11/09 Update,NormalMoveã®å¼•æ•°å¤‰æ›´ Yamashita
-	ãƒ»2023/11/08 ã‚¹ãƒ©ã‚¤ãƒ ã®ç§»å‹•é€Ÿåº¦ã®å®šæ•°ã‚’cppã‹ã‚‰hã«ç§»å‹• Yamashita
-	ãƒ»2023/11/10 ã‚«ãƒ¡ãƒ©ãƒã‚¤ãƒ³ã‚¿ã‚’è¿½åŠ  Yamashita
-	ãƒ»2023/11/10 ä»–ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã¨åŒä¸€ã®ã‚«ãƒ¡ãƒ©ã‚’ã‚»ãƒƒãƒˆã™ã‚‹ã‚ˆã†ã«ã—ãŸ Yamashita
-	ãƒ»2023/11/12 m_Ryã‚’è¿½åŠ ï¼ˆã‚¹ãƒ©ã‚¤ãƒ ã®å‘ãã‚’å¤‰ãˆã‚‹æ™‚ã«ä½¿ç”¨ï¼‰ Yamamoto
-	ãƒ»2023/11/13 GetScaleé–¢æ•°ã®è¿½åŠ  Suzumura
+	•ÏX—š—ð
+	E2023/11/04 ƒXƒ‰ƒCƒ€ƒx[ƒXƒNƒ‰ƒXì¬ Suzumura
+	E2023/11/06 ‚«”ò‚ÑˆÚ“®‚Æ‚«”ò‚ÑˆÚ“®ŠÖ”‚ðì¬ Yamashita
+	E2023/11/06 m_fSpped(“G‚ÌˆÚ“®‘¬“x)‚Æm_fVecAngle(“G‚Ì‚«”ò‚Ô•ûŒü)‚Ìƒƒ“ƒo•Ï”‚ð’Ç‰Á Yamashita
+	E2023/11/06 ’è”SPEED_DOWN_RATIO(‚Ô‚Â‚©‚Á‚½æ‚ÌƒXƒ‰ƒCƒ€‚É‘¬“x‚ð“n‚·Û‚ÉŒ¸­‚·‚éŠ„‡)‚ð’Ç‰Á Yamashita
+	E2023/11/06 ’è”MOVE_RESIST(‚«”ò‚ÑˆÚ“®’†‚ÌƒXƒ‰ƒCƒ€‚ÌˆÚ“®‘¬“x‚É–ˆƒtƒŒ[ƒ€‚©‚©‚éŒ¸ŽZ”’l)‚ð’Ç‰Á Yamashita
+	E2023/11/07 HitBranchŠÖ”(ƒXƒ‰ƒCƒ€‚Æ‚ÌÚG•ªŠòˆ—)‚ðSlimeManager‚ÉˆÚ“®‚·‚é‚½‚ß‚Éíœ Yamashita
+	E2023/11/08 ƒXƒ‰ƒCƒ€‚ÌƒTƒCƒY‚ð•\‚·—ñ‹“‚ð’è‹` Yamashita
+	E2023/11/08 ƒXƒ‰ƒCƒ€‚ÌƒTƒCƒY‚ð•Ô‚·ŠÖ”‚ðì¬ Yamashita
+	E2023/11/08 GetPos¨GetSphere‚É–¼‘O‚ð•ÏX Yamashita
+	E2023/11/08 ƒXƒ‰ƒCƒ€‚ÌˆÚ“®‘¬“x‚ðŽæ“¾‚·‚éŠÖ”‚ðì¬ Yamashita
+	E2023/11/08 ’è”’è‹`‚ªƒwƒbƒ_[‚É‚ ‚Á‚½‚Ì‚Åcpp‚ÉˆÚ“® Yamashita
+	E2023/11/08 Union‚ÆExplosion‚ðíœ(ƒ}ƒl[ƒWƒƒ[‚ÉˆÚ“®‚³‚¹‚½‚Ì‚Å) Yamashita
+	E2023/11/08 m_bUseAn_playerDistanceAm_playerAngle‚ðíœ(ˆê‚©Š‚Å‚µ‚©Žg—p‚µ‚Ä‚¢‚È‚¢ˆ×) Yamashita
+	E2023/11/08 m_Player‚ð’Ç‰Á Yamashita
+	E2023/11/08 À•W‚ðTPos<Pos>‚É•ÏX Yamashita
+	E2023/11/09 Update,NormalMove‚Ìˆø”•ÏX Yamashita
+	E2023/11/08 ƒXƒ‰ƒCƒ€‚ÌˆÚ“®‘¬“x‚Ì’è”‚ðcpp‚©‚çh‚ÉˆÚ“® Yamashita
+	E2023/11/10 ƒJƒƒ‰ƒ|ƒCƒ“ƒ^‚ð’Ç‰Á Yamashita
+	E2023/11/10 ‘¼‚ÌƒIƒuƒWƒFƒNƒg‚Æ“¯ˆê‚ÌƒJƒƒ‰‚ðƒZƒbƒg‚·‚é‚æ‚¤‚É‚µ‚½ Yamashita
+	E2023/11/12 m_Ry‚ð’Ç‰ÁiƒXƒ‰ƒCƒ€‚ÌŒü‚«‚ð•Ï‚¦‚éŽž‚ÉŽg—pj Yamamoto
+	E2023/11/13 GetScaleŠÖ”‚Ì’Ç‰Á Suzumura
+	E2023/11/14 —ñ‹“‚ÉFLAME‚ð’Ç‰ÁANormalMove‚ð‰¼‘zŠÖ”‚É Suzumura
+	E2023/11/14 SphereInfo‚Ì•ÏX‚É‘Î‰ž Takagi
+	E2023/11/15 ObjectƒNƒ‰ƒX‚ðŒp³‚µ‚½‚Ì‚ÅC³@yamamoto
+	E2023/11/26 ”š”­‚©‚ç“¦‚°‚éƒtƒ‰ƒOAÅ‚à‹ß‚¢”š”­‚ð“ü‚ê‚é•Ï”‚ðì¬@yamashita
+	E2023/11/26 ƒXƒ‰ƒCƒ€‚ª”š”­‚©‚ç“¦‚°‚éˆ—‚ðì¬@yamashita
+	E2023/11/28 ‰e‚Ì•`‰æ’Ç‰Á nieda
+	E2023/12/04 —ñ‹“‚Éƒq[ƒ‹ƒXƒ‰ƒCƒ€‚ð’Ç‰Á Tei
+	E2023/12/07 ƒQ[ƒ€ƒpƒ‰ƒ[ƒ^‚©‚çˆê•”’è”ˆÚ“® takagi
+	E2024/01/18 ‰ŠƒXƒ‰ƒCƒ€ƒGƒtƒFƒNƒg’Ç‰Á Tei
+	E2024/02/09 ƒJƒƒ‰íœ takagi
 
 ========================================== */
 #ifndef __SLIME_BASE_H__
 #define __SLIME_BASE_H__
 
-// =============== ã‚¤ãƒ³ã‚¯ãƒ«ãƒ¼ãƒ‰ ===================
+// =============== ƒCƒ“ƒNƒ‹[ƒh ===================
 #include "Model.h"
 #include "Shader.h"
 #include "SphereInfo.h"
+#include "Transform3d.h"
 #include "Pos3d.h"
 #include "Camera.h"
-#include "GameParameter.h"		//å®šæ•°å®šç¾©ç”¨ãƒ˜ãƒƒãƒ€ãƒ¼
+#include "GameParameter.h"		//’è”’è‹`—pƒwƒbƒ_[
+#include "Object.h"
+#include "Shadow.h"		// ‰e•\Ž¦—pƒwƒbƒ_
+#include "Timer.h"
+#include "LibEffekseer.h"
+#include "AnimeModel.h"
+#include "ShaderList.h"
 
-// =============== åˆ—æŒ™å®šç¾© =======================
+using namespace std;
+
+// =============== —ñ‹“’è‹` =======================
 enum E_SLIME_LEVEL
 {
-	LEVEL_NONE,	//SlimeBaseã§ç”Ÿæˆã—ã¦ã¾ã ãƒãƒªãƒ¢ãƒ¼ãƒ•ã‚£ã‚ºãƒ ã—ã¦ã„ãªã„çŠ¶æ…‹
+	LEVEL_NONE,	//SlimeBase‚Å¶¬‚µ‚Ä‚Ü‚¾ƒ|ƒŠƒ‚[ƒtƒBƒYƒ€‚µ‚Ä‚¢‚È‚¢ó‘Ô
 
-	LEVEL_1,	//1æ®µéšŽç›®
-	LEVEL_2,	//2æ®µéšŽç›®
-	LEVEL_3,	//3æ®µéšŽç›®
-	LEVEL_4,	//4æ®µéšŽç›®
+	LEVEL_1,		//1’iŠK–Ú
+	LEVEL_2,		//2’iŠK–Ú
+	LEVEL_3,		//3’iŠK–Ú
+	LEVEL_4,		//4’iŠK–Ú
+	LEVEL_4x4,		//ÔƒA‚©
+	LEVEL_FLAME,			// ƒtƒŒƒCƒ€ƒXƒ‰ƒCƒ€
+	LEVEL_HEAL,				// ƒq[ƒ‹ƒXƒ‰ƒCƒ€
 
-	MAX_LEVEL = LEVEL_4	//æœ€å¤§ãƒ¬ãƒ™ãƒ«ã‚’è¨­å®š	(ã‚¹ãƒ©ã‚¤ãƒ ã®æ®µéšŽãŒå¢—ãˆãŸã‚‰å¤‰æ›´)
+	LEVEL_BOSS = 999,		// ƒ{ƒXƒXƒ‰ƒCƒ€	(Å‹­)
+
+	MAX_LEVEL = LEVEL_4	//Å‘åƒŒƒxƒ‹‚ðÝ’è	(ƒXƒ‰ƒCƒ€‚Ì’iŠK‚ª‘‚¦‚½‚ç•ÏX)
 };
 
-// =============== å®šæ•°å®šç¾© =======================
+// =============== ’è”’è‹` =======================
+const int LEVEL_1_SCORE = 10;				// ƒXƒ‰ƒCƒ€_1‚ÌƒXƒRƒA
+const int LEVEL_2_SCORE = 30;				// ƒXƒ‰ƒCƒ€_2‚ÌƒXƒRƒA
+const int LEVEL_3_SCORE = 100;				// ƒXƒ‰ƒCƒ€_3‚ÌƒXƒRƒA
+const int LEVEL_4_SCORE = 500;				// ƒXƒ‰ƒCƒ€_4‚ÌƒXƒRƒA
+const int LEVEL_4x4_SCORE = 1000;			// ÔX‚Ì”š”­‚ÌƒXƒRƒA
+const int LEVEL_Boss_SCORE = 3000;			// ÔX‚Ì”š”­‚ÌƒXƒRƒA
+const float ADD_ANIME = 1.0f / 60.0f;		// 1ƒtƒŒ[ƒ€‚²‚Æ‚ÌƒAƒjƒ[ƒVƒ‡ƒ“‚Ìi‚Þ—Ê
 #if MODE_GAME_PARAMETER
 #else
-const float ENEMY_MOVE_SPEED = 0.01f;	//æ•µã®ç§»å‹•é€Ÿåº¦
+const float ENEMY_MOVE_SPEED = 0.01f;	//“G‚ÌˆÚ“®‘¬“x
+const int FIRST_EXPLOSION_SCORE = 1000;		//Ô“¯Žm‚ÌÅ‰‚Ì”š”­‚ÌƒXƒRƒA
 #endif
-// =============== ã‚¯ãƒ©ã‚¹å®šç¾© =====================
+
+// =============== ƒNƒ‰ƒX’è‹` =====================
 
 class CSlimeBase
+	: public CObject 
 {
 public:
-	// ===ãƒ—ãƒ­ãƒˆã‚¿ã‚¤ãƒ—å®£è¨€===
+	// === —ñ‹“ ===
+	// ÂƒXƒ‰ƒCƒ€
+	enum LEVEL1_MOTION {
+		MOTION_LEVEL1_MOVE,	// ƒŒƒxƒ‹1‚ÌˆÚ“®
+		MOTION_LEVEL1_HIT,	// ƒŒƒxƒ‹1‚ªƒnƒ“ƒ}[‚É‰£‚ç‚ê‚é‹““®
+
+		MOTION_LEVEL1_MAX,
+	};
+
+	// —ÎƒXƒ‰ƒCƒ€
+	enum LEVEL2_MOTION {
+		MOTION_LEVEL2_MOVE,		// ƒŒƒxƒ‹2‚ÌˆÚ“®
+		MOTION_LEVEL2_HIT,		// ƒŒƒxƒ‹2‚ªƒnƒ“ƒ}[‚É‰£‚ç‚ê‚é‹““®
+		MOTION_LEVEL2_ATTACK,	// ƒŒƒxƒ‹2‚ÌUŒ‚
+
+		MOTION_LEVEL2_MAX,
+	};
+
+	// ‰©FƒXƒ‰ƒCƒ€
+	enum LEVEL3_MOTION {
+		MOTION_LEVEL3_MOVE,		// ƒŒƒxƒ‹3‚ÌˆÚ“®
+		MOTION_LEVEL3_HIT,		// ƒŒƒxƒ‹3‚ªƒnƒ“ƒ}[‚É‰£‚ç‚ê‚é‹““®
+		MOTION_LEVEL3_STOP,		// ƒŒƒxƒ‹3‚ÌÃŽ~‹““®
+
+		MOTION_LEVEL3_MAX,
+	};
+
+	// ÔƒXƒ‰ƒCƒ€
+	enum LEVEL4_MOTION {
+		MOTION_LEVEL4_MOVE,		// ƒŒƒxƒ‹4‚ÌˆÚ“®
+		MOTION_LEVEL4_HIT,		// ƒŒƒxƒ‹4‚ªƒnƒ“ƒ}[‚É‰£‚ç‚ê‚é‹““®
+
+		MOTION_LEVEL4_MAX,
+	};
+
+	// ‰ŠƒXƒ‰ƒCƒ€
+	enum FLAME_SLIME_MOTION {
+		FLAME_SLIME_MOVE,		// ‰ŠƒXƒ‰ƒCƒ€‚ÌˆÚ“®
+		FLAME_SLIME_HIT,		// ‰ŠƒXƒ‰ƒCƒ€‚ªƒnƒ“ƒ}[‚É‰£‚ç‚ê‚é‹““®
+
+		FLAME_SLIME_MAX,
+	};
+
+	// ƒq[ƒ‹ƒXƒ‰ƒCƒ€
+	enum HEAL_SLIME_MOTION {
+		HEAL_SLIME_MOVE,	// ‰ñ•œƒXƒ‰ƒCƒ€‚ÌˆÚ“®
+		HEAL_SLIME_HIT,		// ‰ñ•œƒXƒ‰ƒCƒ€‚ªƒnƒ“ƒ}[‚É‰£‚ç‚ê‚é‹““®
+
+		HEAL_SLIME_MAX,
+	};	
+
+	// ===ƒvƒƒgƒ^ƒCƒvéŒ¾===
 	CSlimeBase();
 	~CSlimeBase();
-	void Update(TPos3d<float> playerPos);
-	void Draw(const CCamera* pCamera);
+	virtual void Update(tagTransform3d playerTransform, float fSlimeMoveSpeed); 
+	virtual void Draw();
 
-	void NormalMove(TPos3d<float> playerSphere);	// é€šå¸¸æ™‚ã®ç§»å‹•å‡¦ç†
+	virtual void NormalMove();	// ’ÊíŽž‚ÌˆÚ“®ˆ—
 	void RandomMove();
-	void HitMove();									//ã‚¹ãƒ©ã‚¤ãƒ ãŒå¹ãé£›ã³ç§»å‹•çŠ¶æ…‹ã®æ™‚ã«æ¯Žãƒ•ãƒ¬ãƒ¼ãƒ å‘¼ã³å‡ºã—ã¦ç§»å‹•ã•ã›ã‚‹
-	void HitMoveStart(float speed, float angle);	//ã‚¹ãƒ©ã‚¤ãƒ ãŒå¹ãé£›ã°ã•ã‚ŒãŸã¨ãã«é€Ÿåº¦ã¨è§’åº¦ã‚’æ±ºã‚ã‚‹
-	void Reflect();									//ã‚¹ãƒ©ã‚¤ãƒ ã¨ã¶ã¤ã‹ã£ã¦å¹ãé£›ã°ã—ãŸéš›ã«è‡ªåˆ†ã®ç§»å‹•é‡ã‚’æ¸›ã‚‰ã™
+	void HitMove();									//ƒXƒ‰ƒCƒ€‚ª‚«”ò‚ÑˆÚ“®ó‘Ô‚ÌŽž‚É–ˆƒtƒŒ[ƒ€ŒÄ‚Ño‚µ‚ÄˆÚ“®‚³‚¹‚é
+	void HitMoveStart(float speed, float angle, bool ChargeHit);	//ƒXƒ‰ƒCƒ€‚ª‚«”ò‚Î‚³‚ê‚½‚Æ‚«‚É‘¬“x‚ÆŠp“x‚ðŒˆ‚ß‚é
+	void Reflect();									//ƒXƒ‰ƒCƒ€‚Æ‚Ô‚Â‚©‚Á‚Ä‚«”ò‚Î‚µ‚½Û‚ÉŽ©•ª‚ÌˆÚ“®—Ê‚ðŒ¸‚ç‚·
+	void MoveStop();
 
-	// ã‚²ãƒƒãƒˆé–¢æ•°
-	TPos3d<float> GetPos();
-	CSphereInfo::Sphere GetSphere();	// ã‚¹ãƒ©ã‚¤ãƒ ã®åº§æ¨™ã¨åŠå¾„ã‚’å–å¾—
-	float GetSpeed();					// ã‚¹ãƒ©ã‚¤ãƒ ã®ç§»å‹•é€Ÿåº¦ã‚’å–å¾—
-	E_SLIME_LEVEL GetSlimeLevel();		// ã‚¹ãƒ©ã‚¤ãƒ ã®ãƒ¬ãƒ™ãƒ«ã‚’å–å¾—
-	TTriType<float> GetScale();			// ã‚¹ãƒ©ã‚¤ãƒ ã®ã‚µã‚¤ã‚ºã‚’å–å¾—
-
-	//ã‚»ãƒƒãƒˆé–¢æ•°
-	void SetSphere(CSphereInfo::Sphere Sphere);
-	void SetPos(TPos3d<float> pos);
-	virtual void SetNormalSpeed() = 0;
-	void SetCamera(const CCamera* pCamera);
+	// ƒQƒbƒgŠÖ”
+	float GetSpeed();					// ƒXƒ‰ƒCƒ€‚ÌˆÚ“®‘¬“x‚ðŽæ“¾
+	E_SLIME_LEVEL GetSlimeLevel();		// ƒXƒ‰ƒCƒ€‚ÌƒŒƒxƒ‹‚ðŽæ“¾
 	bool GetHitMoveFlg();
+	TPos3d<float> GetPos();
+	bool GetMoveStopFlg();
+	int GetAttack();
+	bool GetChargeHit();
+	float GetVecAngle();
+	CShadow* GetShadowPtr();
+
+	//ƒZƒbƒgŠÖ”
+	virtual void SetNormalSpeed() = 0;
+	void SetStopDirectionObjPos(TPos3d<float> expPos);
+	void SetMoveStopFlg(bool bEscape);
+
 protected:
-	Model* m_pModel;				//3Dãƒ¢ãƒ‡ãƒ«
-	VertexShader* m_pVS;			//ãƒãƒ¼ãƒ†ãƒƒã‚¯ã‚¹ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼ã®ãƒã‚¤ãƒ³ã‚¿
-	TPos3d<float> m_pos;			//ä½ç½®åº§æ¨™
-	TTriType<float> m_move;			//ç§»å‹•é‡
-	TTriType<float> m_scale;		//ã‚µã‚¤ã‚º
+	AnimeModel* m_pModel;			//3Dƒ‚ƒfƒ‹
+	//VertexShader* m_pVS;			// ƒo[ƒeƒbƒNƒXƒVƒF[ƒ_[‚Ìƒ|ƒCƒ“ƒ^
+	TTriType<float> m_move;			// ˆÚ“®—Ê
+	TPos3d<float> m_fStpDirPos;		// ’âŽ~ó‘ÔŽž‚ÉŒü‚­‘ÎÛ‚ÌƒIƒuƒWƒFƒNƒg‚ÌÀ•W
+	float m_fSpeed;					// ƒXƒ‰ƒCƒ€‚ÌˆÚ“®‘¬“x
+	bool m_bChargeHit;				// ƒ`ƒƒ[ƒWƒnƒ“ƒ}[‚É‘Å‚½‚ê‚½‚©‚Ç‚¤‚©
+	bool m_bHitMove;				// ‚Á”ò‚Ñ’†‚©‚Ç‚¤‚©
+	float m_fVecAngle;				// “G‚Ì‚«”ò‚Ô•ûŒü
+									   
+	bool m_bMvStpFlg;				// ƒXƒ‰ƒCƒ€‚ª“¦‚°‚éó‘Ô‚©‚Ç‚¤‚©
+	int m_nMvStpCnt;				// “¦‚°‚éó‘Ô‚É‚È‚Á‚½Žž
+	TPos3d<float> m_ExpPos;			//Å‚à‹ß‚¢”š”­‚ÌÀ•W
 
-	float m_fVecAngle;				//æ•µã®å¹ãé£›ã¶æ–¹å‘
-	float m_fSpeed;					//ã‚¹ãƒ©ã‚¤ãƒ ã®ç§»å‹•é€Ÿåº¦
-	bool m_bHitMove;				//å¹ã£é£›ã³ä¸­ã‹ã©ã†ã‹
 
-	CSphereInfo::Sphere m_sphere;	// å½“ãŸã‚Šåˆ¤å®šã®åº§æ¨™ãŠã‚ˆã³åŠå¾„ã‚’ä¿å­˜ã™ã‚‹
+	E_SLIME_LEVEL m_eSlimeSize;		//ƒXƒ‰ƒCƒ€‚Ì‘å‚«‚³‚Ì—ñ‹“
 
-	E_SLIME_LEVEL m_eSlimeSize;		//ã‚¹ãƒ©ã‚¤ãƒ ã®å¤§ãã•ã®åˆ—æŒ™
-	const CCamera* m_pCamera;		//ã‚«ãƒ¡ãƒ©ã®ãƒã‚¤ãƒ³ã‚¿
+	CShadow* m_pShadow;				//‰e‚Ìƒ|ƒCƒ“ƒ^
+	float m_fScaleShadow;			//‰e‚Ì‘å‚«‚³
 	
-	DirectX::XMMATRIX m_Ry;				//å›žè»¢
+	DirectX::XMMATRIX m_Ry;			//‰ñ“]
 
-	int m_RanMoveCnt;			// ãƒ©ãƒ³ãƒ€ãƒ ç§»å‹•ã®åŠ ç®—å€¤
-private:
+	int m_RanMoveCnt;				// ƒ‰ƒ“ƒ_ƒ€ˆÚ“®‚Ì‰ÁŽZ’l
+	int m_nAttack;					// UŒ‚—Í
+
+	tagTransform3d m_PlayerTran;	// ƒvƒŒƒCƒ„[‚Ì•ÏŒ`î•ñ
+
+	//=======Effekseer=======
+	Effekseer::EffectRef m_flameSlimeEffect;
+	Effekseer::Handle m_efcFlameHandle;
+
+	float m_fAnimeTime;		// ƒAƒjƒ[ƒVƒ‡ƒ“‚ÌŒ»Ý‚ÌŽžŠÔ
+	int m_eCurAnime;		// Œ»Ý‚ÌƒAƒjƒ[ƒVƒ‡ƒ“
+
 
 };
-
-
 #endif // __SLIME_BASE_H__

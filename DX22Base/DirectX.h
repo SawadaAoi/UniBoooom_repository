@@ -5,12 +5,14 @@
 
 #pragma comment(lib, "d3d11.lib")
 
+
 #define SAFE_DELETE(p) do{if(p){delete p; p = nullptr;}}while(0)
 #define SAFE_DELETE_ARRAY(p) do{if(p){delete[] p; p = nullptr;}}while(0)
 #define SAFE_RELEASE(p) do{if(p){p->Release(); p = nullptr;}}while(0)
 
 class RenderTarget;
 class DepthStencil;
+class DirectWrite;
 
 enum BlendMode
 {
@@ -27,6 +29,7 @@ enum SamplerState
 {
 	SAMPLER_LINEAR,
 	SAMPLER_POINT,
+	SAMPLER_FADE,	//フェード用
 	SAMPLER_MAX
 };
 
@@ -45,6 +48,7 @@ void SetRenderTargets(UINT num, RenderTarget** ppViews, DepthStencil* pView);
 void SetCullingMode(D3D11_CULL_MODE cull);
 void SetDepthTest(bool enable);
 void SetBlendMode(BlendMode blend);
+void SetScreenMode(bool bFullScreen);	//フルスクリーン設定
 void SetSamplerState(SamplerState state);
 
 #endif

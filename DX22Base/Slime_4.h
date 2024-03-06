@@ -12,12 +12,13 @@
 	変更履歴
 	・2023/11/08 作成 山下凌佑
 	・2023/11/08 スライムの移動速度を設定する関数を継承 山下凌佑
+	・2023/11/16 引数付きコンストラクタの引数に頂点シェーダーとモデルのポインタを追加 山下凌佑
 
 ========================================== */
 
 // =============== インクルード ===================
 #include "SlimeBase.h"
-
+#include "AnimeModel.h"
 // =============== クラス定義 =====================
 class CSlime_4 :
 	public CSlimeBase
@@ -25,11 +26,16 @@ class CSlime_4 :
 public:
 	// ===プロトタイプ宣言===
 	CSlime_4();
-	CSlime_4(TPos3d<float> pos);
+	CSlime_4(TPos3d<float> pos, AnimeModel* pModel);
 	~CSlime_4();
+	void Update(tagTransform3d playerTransform, float fSlimeMoveSpeed) override;
+	void Draw()override;
+
+	void NormalMove() override;
 
 	void SetNormalSpeed() override;
 private:
+	
 
 };
 

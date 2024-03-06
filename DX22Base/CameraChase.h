@@ -13,11 +13,16 @@
 	・2023/11/07 GetViewMatrix()関数にconst修飾子付与・コメント修正 takagi
 	・2023/11/08 TPos修正 takagi
 	・2023/11/10 パラメタ修正 takagi
+	・2023/12/03 位置ゲッタ用調整 takagi
+	・2023/12/04 GetViewWithoutTransposeの戻り値を変更 yamashita
+	・2024/01/16 統一のため、インクルードガードの___を__に変更	takagi
+	・2024/01/20 コメント改修 takagi
+	・2024/01/21 コメント改修・Player内で更新しなくても良い様に変更・リファクタリング takagi
 
 ========================================== */
 
-#ifndef ___CAMERA_CHASE_H___
-#define ___CAMERA_CHASE_H___
+#ifndef __CAMERA_CHASE_H__	//CameraChase.hインクルードガード
+#define __CAMERA_CHASE_H__
 
 // =============== インクルード ===================
 #include "Camera.h"	//親のヘッダ
@@ -27,13 +32,15 @@ class CCameraChase :public CCamera	//カメラ
 {
 public:
 	// ===プロトタイプ宣言===
-	CCameraChase(const TPos3d<float>* pPos);			//コンストラクタ
-	~CCameraChase();								//デストラクタ
-	void Update();									//更新
-	DirectX::XMFLOAT4X4 GetViewMatrix() const override;	//ビュー行列変換
+	CCameraChase();													//コンストラクタ
+	~CCameraChase();												//デストラクタ
+	void Update() override;											//更新
+	DirectX::XMFLOAT4X4 GetViewWithoutTranspose() const override;	//転置無しビュー行列取得
+	virtual TPos3d<float> GetPos() const override;					//カメラ位置提供
+	void SetTarget(const TPos3d<float>* pPos);						//追跡対象登録
 private:
 	// ===メンバ変数宣言===
 	const TPos3d<float>* m_pTarget;	//追跡目標
 };	//追跡カメラ
 
-#endif // !___CAMERA_CHASE_H___
+#endif	//!__CAMERA_CHASE_H__

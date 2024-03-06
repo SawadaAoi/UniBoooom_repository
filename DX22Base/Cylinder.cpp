@@ -10,6 +10,7 @@
    変更履歴
    ・2023/11/05 制作 takagi
    ・2023/11/06 コンストラクタ改修 takagi
+   ・2023/12/07 暗黙の型キャスト除去 takagi
 
    ======================================== */
 
@@ -57,7 +58,7 @@ CCylinder::CCylinder()
 	// 天面の頂点データ作成
 	for (int i = 0; i < VTX_TOP_SURFACE; i++)
 	{
-		angle = i * (360 / CORNER_NUM);					// 中心角
+		angle = i * (360.0f / CORNER_NUM);					// 中心角
 		radian = DirectX::XMConvertToRadians(angle);	// 円の半径
 		posX = sin(radian) * CYLINDER_RADIUS;			// X座標
 		posY = CYLINDER_HEIGHT / 2;						// Y座標
@@ -71,7 +72,7 @@ CCylinder::CCylinder()
 	// 底面の頂点データ作成
 	for (int i = 0; i < VTX_BOTTOM_SURFACE; i++)
 	{
-		angle = i * (360 / CORNER_NUM);
+		angle = i * (360.0f / CORNER_NUM);
 		radian = DirectX::XMConvertToRadians(angle);
 		posX = sin(radian) * CYLINDER_RADIUS;
 		posY = -CYLINDER_HEIGHT / 2;
@@ -90,7 +91,7 @@ CCylinder::CCylinder()
 	{
 		if (i < VTX_SIDE_SURFACE / 2)
 		{
-			angle = (i % (VTX_SIDE_SURFACE / 2)) * (360 / CORNER_NUM);
+			angle = static_cast<float>(i % (VTX_SIDE_SURFACE / 2)) * (360.0f / CORNER_NUM);
 			radian = DirectX::XMConvertToRadians(angle);
 			posX = sin(radian) * CYLINDER_RADIUS;
 			posY = CYLINDER_HEIGHT / 2;
@@ -102,7 +103,7 @@ CCylinder::CCylinder()
 		}
 		else
 		{
-			angle = (i % (VTX_SIDE_SURFACE / 2)) * (360 / CORNER_NUM);
+			angle = static_cast<float>(i % (VTX_SIDE_SURFACE / 2)) * (360.0f / CORNER_NUM);
 			radian = DirectX::XMConvertToRadians(angle);
 			posX = sin(radian) * CYLINDER_RADIUS;
 			posY = -CYLINDER_HEIGHT / 2;

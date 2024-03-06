@@ -1,433 +1,784 @@
 /* ========================================
    HEW/UniBoooom!!
    ---------------------------------------
-   Playerç”¨cpp
+   Player—pcpp
    ---------------------------------------
    Player.cpp
 
-   ä½œæˆè€…
-	å±±æœ¬å‡±ç¿”
-   å¤‰æ›´å±¥æ­´
-	ãƒ»2023/11/03 ç§»å‹•ä½œæˆ yamamoto
-	ãƒ»2023/11/06 æ–¹å‘è¿½åŠ ã€ãƒ€ãƒ¡ãƒ¼ã‚¸åˆ¤å®šã€æ”»æ’ƒé–‹å§‹ä½œæˆ yamamoto
-	ãƒ»2023/11/08 ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®å½“ãŸã‚Šåˆ¤å®šã®å¤§ãã•ã®å®šæ•°ã‚’è¿½åŠ  yamashita
-	ãƒ»2023/11/08 æ”»æ’ƒä¸­ã¯ç§»å‹•ã§ããªã„ã‚ˆã†ã«å¤‰æ›´ yamashita
-	ãƒ»2023/11/09 ã‚«ãƒ¡ãƒ©å¯¾å¿œ takagi
-	ãƒ»2023/11/09 GameOverã®è¡¨ç¤º yamashita
-	ãƒ»2023/11/09 ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ç§»å‹•ã®è¿½åŠ  sawada
-	ãƒ»2023/11/11 parameterç”¨ãƒ˜ãƒƒãƒ€è¿½åŠ  suzumura
-  ãƒ»2023/11/11 ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ç‚¹æ»…å‡¦ç†è¿½åŠ  Tei
+   ì¬Ò
+	R–{ŠMãÄ
+   •ÏX—š—ğ
+	E2023/11/03 ˆÚ“®ì¬ yamamoto
+	E2023/11/06 •ûŒü’Ç‰ÁAƒ_ƒ[ƒW”»’èAUŒ‚ŠJnì¬ yamamoto
+	E2023/11/08 ƒvƒŒƒCƒ„[‚Ì“–‚½‚è”»’è‚Ì‘å‚«‚³‚Ì’è”‚ğ’Ç‰Á yamashita
+	E2023/11/08 UŒ‚’†‚ÍˆÚ“®‚Å‚«‚È‚¢‚æ‚¤‚É•ÏX yamashita
+	E2023/11/09 ƒJƒƒ‰‘Î‰ takagi
+	E2023/11/09 GameOver‚Ì•\¦ yamashita
+	E2023/11/09 ƒRƒ“ƒgƒ[ƒ‰ˆÚ“®‚Ì’Ç‰Á sawada
+	E2023/11/11 parameter—pƒwƒbƒ_’Ç‰Á suzumura
+	E2023/11/11 ƒvƒŒƒCƒ„[‚Ì“_–Åˆ—’Ç‰Á Tei
+	E2023/11/14 SphereInfo‚Ì•ÏX‚É‘Î‰ Takagi
+	E2023/11/14 ƒL[ƒ{[ƒh‚Ì“ü—ÍˆÚ“®ˆ—“à—e‚ğ“KØ‚ÈŒ`‚É•ÏX Sawada
+	E2023/11/15 ObjectƒNƒ‰ƒX‚ğŒp³‚µ‚½‚Ì‚ÅC³@yamamoto
+	E2023/11/19 ˆÚ“®‚ÌSE‚ğÄ¶ yamashita
+	E2023/11/19 ”íƒ_ƒ[ƒW‚Æƒnƒ“ƒ}[‚ğU‚éSE‚ğÄ¶ yamashita
+	E2023/11/19 ƒTƒEƒhƒtƒ@ƒCƒ‹“Ç‚İ‚İŠÖ”‚ğì¬ yamashita
+	E2023/11/23 ƒWƒIƒƒgƒŠ[‚©‚çƒ‚ƒfƒ‹‚É·‚µ‘Ö‚¦ yamashita
+	E2023/11/27 ‰e‚Ì•`‰æ‚ğ’Ç‰Á nieda
+	E2023/11/27 Update“àƒnƒ“ƒ}[U‚èŠÔŠuˆ—’Ç‰Á Tei
+	E2023/11/27 Update“àƒnƒ“ƒ}[U‚èŠÔŠuˆ—’Ç‰Á Tei
+	E2023/11/28 ƒ_ƒ[ƒWˆ—‚Éó‚¯‚éƒ_ƒ[ƒW—Ê‚ğ’Ç‰Á Sawada
+	E2023/11/28 ‰ñ•œˆ—‚ğ’Ç‰Á yamashita
+	E2023/11/28 ƒ_ƒ[ƒWˆ—‚Éó‚¯‚éƒ_ƒ[ƒW—Ê‚ğ’Ç‰Á Sawada
+	E2023/11/28 ‰ñ•œˆ—‚ğ’Ç‰Á yamashita
+	E2023/11/29 ƒnƒ“ƒ}[‚ÌƒCƒ“ƒ^[ƒoƒ‹’Ç‰Á yamamoto
+	E2023/12/03 ƒJƒƒ‰‚ÌXV‚ğ’S‚¤‚½‚ßAƒ|ƒCƒ“ƒ^‚Ìconst‚ğd•û‚È‚­œ‹ takagi
+	E2023/12/07 ƒQ[ƒ€ƒpƒ‰ƒ[ƒ^‚©‚çˆê•”’è”ˆÚ“® takagi
+	E2023/12/14 ƒvƒŒƒCƒ„[‚ÌƒAƒjƒ[ƒVƒ‡ƒ“À‘• yamashita
+	E2023/12/14 SE‚Ì•Ï”‚ğ®— yamashita
+	E2023/12/15 SE‚ğŠO‚©‚çÄ¶‚Å‚«‚é‚æ‚¤‚É•ÏX yamashita
+	E2023/01/25 ‘Ò‹@ƒ‚[ƒVƒ‡ƒ“‚ğ•ÏX takagi
+	E2024/01/26 ŒxSE’Ç‰Á suzumura
+	E2024/01/28 €–Sƒ‚[ƒVƒ‡ƒ“’Ç‰Á Sawada
+	E2024/01/28 ƒvƒŒƒCƒ„[‚ğŒX‚¯‚ÄƒJƒƒ‰‚©‚ç‚æ‚­Œ©‚¦‚é‚æ‚¤‚É•ÏX Yamashita
+	E2024/01/30 ƒvƒŒƒCƒ„[ˆÚ“®ƒGƒtƒFƒNƒg—pˆ—’Ç‰Á Tei
+	E2024/02/02 Š¾ƒGƒtƒFƒNƒgˆ—’Ç‰Á Tei
+	E2024/02/08 Š¾ƒGƒtƒFƒNƒgˆ—C³&&ƒnƒ“ƒ}[‚ÌU‚é‘¬“x‚à‚Â‚¢‚Å‚ÉC³ sawada
+	E2024/02/09 ƒJƒƒ‰XVœ‹EUsingCamerag—p takagi
 
 ======================================== */
 
-// =============== ã‚¤ãƒ³ã‚¯ãƒ«ãƒ¼ãƒ‰ ===================
+// =============== ƒCƒ“ƒNƒ‹[ƒh ===================
 #include "Player.h"
 #include "Input.h"
 #include "Sphere.h"
-#include "GameParameter.h"		//å®šæ•°å®šç¾©ç”¨ãƒ˜ãƒƒãƒ€ãƒ¼
+#include "GameParameter.h"		//’è”’è‹`—pƒwƒbƒ_[
+#include "ShaderList.h"
+#include "ModelManager.h"
+#include "UsingCamera.h"	//ƒJƒƒ‰g—p
 
-// =============== å®šæ•°å®šç¾© =======================
-const float FORWARD_YES(1.0f);	//ãã®æ–¹å‘ã‚’å‘ã„ã‚‹
-const float FORWARD_NO(0.0f);	//ãã®æ–¹å‘ã‚’å‘ã„ã¦ã„ãªã„
-const float XM_PI(3.141593f);	//å††å‘¨ç‡
-
+// =============== ’è”’è‹` =======================
+const float KEYBOARD_INPUT_SIZE = 1.0f;						// ƒL[ƒ{[ƒh‚Ì“ü—Í’l‚Ì‘å‚«‚³
 #if MODE_GAME_PARAMETER
 #else
-const float PLAYER_MOVE_SPEED	= 0.1f;		//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ç§»å‹•é‡
-const int	PLAYER_HP			= 5;
-const float PLAYER_RADIUS = 0.3f;		// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®å½“ãŸã‚Šåˆ¤å®šã®å¤§ãã•
-const float PLAYER_SIZE			= 1.0f;		// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®å¤§ãã•
-const int	NO_DAMAGE_TIME		= 3 * 60;	//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ç„¡æ•µæ™‚é–“
-const int	DAMAGE_FLASH_FRAME	= 0.1 * 60;	// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ãƒ€ãƒ¡ãƒ¼ã‚¸ç‚¹æ»…ã®åˆ‡ã‚Šæ›¿ãˆé–“éš”
-
+const float PLAYER_MOVE_SPEED = 0.1f;			//ƒvƒŒƒCƒ„[‚ÌˆÚ“®—Ê
+const int	PLAYER_HP = 5;
+const float PLAYER_RADIUS = 0.3f;			// ƒvƒŒƒCƒ„[‚Ì“–‚½‚è”»’è‚Ì‘å‚«‚³
+const float PLAYER_SIZE = 1.0f;			// ƒvƒŒƒCƒ„[‚Ì‘å‚«‚³
+const int	NO_DAMAGE_TIME = 3 * 60;		//ƒvƒŒƒCƒ„[‚Ì–³“GŠÔ
+const int	DAMAGE_FLASH_FRAME = 0.1f * 60;	// ƒvƒŒƒCƒ„[‚Ìƒ_ƒ[ƒW“_–Å‚ÌØ‚è‘Ö‚¦ŠÔŠu
+const float PLAYER_ROTATE_X_NORMAL = DirectX::XMConvertToRadians(30.0f);	// ƒvƒŒƒCƒ„[‚ÌŒX‚«
 #endif
+const int	HEAL_NUM = 2;									// ƒvƒŒƒCƒ„[‚Ì‰ñ•œ—Ê
+const float HAMMER_INTERVAL_TIME = 0.0f * 60;				// ƒnƒ“ƒ}[U‚èŠÔŠu
+const float PLAYER_SHADOW_SCALE = 2.5f;						// ƒvƒŒƒCƒ„[‚Ì‰e‚Ì‘å‚«‚³
+const int	SE_RUN_INTERVAL = static_cast<int>(0.4f * 60);	// ƒvƒŒƒCƒ„[‚ÌˆÚ“®‚É‚æ‚éSE”­¶‚ÌŠÔŠu
+const float	SE_RUN_VOLUME = 0.3f;							// ˆÚ“®‚É‚æ‚éSE‚Ì‰¹—Ê
+const float PLAYER_MOVE_ANIME_SPEED = 1.2f;					// ƒvƒŒƒCƒ„[‚ÌˆÚ“®ƒAƒjƒ[ƒVƒ‡ƒ“Ä¶‘¬“x
+const float PLAYER_SWING_ANIME_SPEED = 5.0f;				// ƒvƒŒƒCƒ„[‚ÌˆÚ“®ƒAƒjƒ[ƒVƒ‡ƒ“Ä¶‘¬“x
+const float	ADD_ANIM_FRAME = 1.0f / 60.0f;
+const int   PLAYER_WARNING_HP = 1;							//•m€‚ÌŒx‚ğs‚¤ƒvƒŒƒCƒ„[c‚èHP
 
-// =============== ã‚°ãƒ­ãƒ¼ãƒãƒ«å¤‰æ•°å®šç¾© =============
+const int	SWING_FAST_INTERVAL = 0.1f * 60;				// ƒnƒ“ƒ}[‚ğU‚é‘¬“x‚ğ‘‚­‚·‚éŠÔŠu
 
+const int	WALK_EFFECT_INTERVAL = 0.2f * 60;				// •à‚­ƒGƒtƒFƒNƒg‚ÌoŒ»ŠÔŠu
+const int	SWEAT_EFFECT_INTERVAL = 0.7f * 60;				// Š¾ƒGƒtƒFƒNƒg‚ÌoŒ»ŠÔŠu
+const float	SWEAT_EFFECT_DISP_SPEED = 0.5f;					// Š¾ƒGƒtƒFƒNƒg‚Ì•\¦‚·‚éƒnƒ“ƒ}[‚ÌƒXƒs[ƒh(‚±‚êˆÈ‰º‚Ìê‡‚É•\¦)
+const int	DIE_AFTER_INTERVAL = int(2.0f * 60);			// €–S‚µ‚Ä‚©‚çGameOverƒeƒLƒXƒg‚ªo‚é‚Ü‚Å‚Ì—P—\ŠÔ
+const int	CHARGE_HAMMER_CNT = 60;							// ƒ`ƒƒ[ƒW‚ªŠ®—¹‚·‚é‚Ü‚Å‚ÌŠÔ
+const TTriType<float> CHARGING_EFFECT_SIZE = { 2.0f,2.0f,2.0f };// ƒGƒtƒFƒNƒg‚ÌƒTƒCƒY
+const TTriType<float> CHARGED_EFFECT_SIZE = { 3.0f,3.0f,3.0f };// ƒGƒtƒFƒNƒg‚ÌƒTƒCƒY
+const float CHARGE_EFFECT_SPEED = 1.0f;						// ƒ`ƒƒ[ƒWƒGƒtƒFƒNƒg‚ÌÄ¶‘¬“x
+const int DISP_CHARGE_EFC_CNT = 15;							// ƒ`ƒƒ[ƒWƒGƒtƒFƒNƒg‚ÌŒ©‚¦n‚ß‚éƒJƒEƒ“ƒg
+const float PLAY_SE_CNT = 20;								// ƒ`ƒƒ[ƒW’†‚ÌSE‚ªÄ¶‚³‚ê‚é‚Ü‚Å‚ÌƒJƒEƒ“ƒg
+const int ADJUST_SWING_WAIT = 13;							// ƒnƒ“ƒ}[‚ÌƒAƒjƒ[ƒVƒ‡ƒ“‚ÆÀÛ‚Ì“–‚½‚è”»’è‚Æ‚Ì‚¸‚ê‚ğC³‚·‚é‚½‚ß‚ÌŠÔ‚ÌŠ„‡
 
 /* ========================================
-   é–¢æ•°ï¼šã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+   ŠÖ”FƒRƒ“ƒXƒgƒ‰ƒNƒ^
    ----------------------------------------
-   å†…å®¹ï¼šç”Ÿæˆæ™‚ã«è¡Œã†å‡¦ç†
+   “à—eF¶¬‚És‚¤ˆ—
    ----------------------------------------
-   å¼•æ•°ï¼šãªã—
+   ˆø”F‚È‚µ
    ----------------------------------------
-   æˆ»å€¤ï¼šãªã—
+   –ß’lF‚È‚µ
 ======================================== */
 CPlayer::CPlayer()
-	: m_pos{ 0.0f,0.0f,0.0f }
-	, m_scale{ PLAYER_SIZE,PLAYER_SIZE,PLAYER_SIZE }
-	, m_playerForward{ 0.0f,0.0f,0.0f }
-	, m_playerRotation(0.0f)
-	, m_pHammer(nullptr)
-	, m_pPlayerGeo(nullptr)
-	, m_pGameOver(nullptr)
-	, m_bHammer(false)
-	, m_nHp(0)
-	, m_pCamera(nullptr)
-	, m_nNoDamageCnt(0)
-	, m_bCollide(false)
+	: m_pHammer(nullptr)
+	, m_bAttackFlg(false)
+	, m_nHp(PLAYER_HP)		// ƒvƒŒƒCƒ„[‚ÌHP‚ğŒˆ’è
+	, m_bDieFlg(false)
+	, m_nSafeTimeCnt(0)
+	, m_bSafeTimeFlg(false)
 	, m_DrawFlg(true)
 	, m_FlashCnt(0)
+	, m_pSE{ nullptr,nullptr ,nullptr }
+	, m_pSESpeaker{ nullptr ,nullptr, nullptr }
+	, m_nWalkSECnt(0)
+	, m_bHumInvFlg(false)
+	, m_fHumInvCnt(0.0f)
+	, m_pWaitFrameCnt(nullptr)
+	, m_bDieInvFlg(false)
+	, m_fDieInvCnt(0.0f)
+	, m_pWalkEffectMng(nullptr)
+	, m_nWalkEffeCnt(0)
+	, m_nSweatEffeCnt(0)
+	, m_nSwingFastCnt(0)
+	, m_fRotate_x(PLAYER_ROTATE_X_NORMAL)
+	, m_fChargeCnt(0.0f)
+	, m_ChargeState(PLAYER_CHARGE_NONE)
+	, m_bHammerSwingWait(false)
+	, m_nSwingWait(0.0f)
 {
-	m_pHammer = new CHammer();								// Hammerã‚¯ãƒ©ã‚¹ã‚’ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹
-	m_pPlayerGeo = new CSphere();							// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã¨ã—ã¦ä»®è¡¨ç¤ºã™ã‚‹çƒä½“ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹
-	m_pGameOver = new CSphere();
-	m_nHp = PLAYER_HP;										// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®HPã‚’æ±ºå®š
-	m_sphere.pos = { 0.0f,0.0f,0.0f };				// å½“ãŸã‚Šåˆ¤å®šç”¨ã®çƒä½“ã®åº§æ¨™ã‚’åˆæœŸåŒ–
-	m_sphere.radius = PLAYER_RADIUS;				// å½“ãŸã‚Šåˆ¤å®šç”¨ã®çƒä½“ã®åŠå¾„
+	m_pHammer = new CHammer();			// HammerƒNƒ‰ƒX‚ğƒCƒ“ƒXƒ^ƒ“ƒX
+
+	m_Sphere.fRadius = PLAYER_RADIUS;	// “–‚½‚è”»’è—p‚Ì‹…‘Ì‚Ì”¼Œa
+	m_Transform.fScale = PLAYER_SIZE;
+	LoadSound();						//ƒTƒEƒ“ƒhƒtƒ@ƒCƒ‹“Ç‚İ‚İ
+
+	//ƒvƒŒƒCƒ„[‚Ìƒ‚ƒfƒ‹“Ç‚İ‚İ
+	m_pModel = GetModelMng.GetModelPtr(MODEL_PLAYER);
+	m_pModel->Play(MOTION_PLAYER_MOVE, true);
+	m_pModel->Step(0.0f);	// Tƒ|[ƒY‚©‚ç—§‚¿ó‘Ô‚ÉˆÚs
+
+	//LoadAnime();	//ƒAƒjƒ[ƒVƒ‡ƒ“‚Ì“Ç‚İ‚İ
+	m_pShadow = new CShadow();
+	m_pShadow->SetScale(PLAYER_SHADOW_SCALE);	// ‰e‚Ì‘å‚«‚³‚ğİ’è
+	// ƒGƒtƒFƒNƒgƒ}ƒl[ƒWƒƒ[‚ğì¬
+	m_pWalkEffectMng = new CWalkEffectManager();
+	m_pSweatEffectMng = new CSweatEffectManager();
+
 }
 /* ========================================
-   é–¢æ•°ï¼šãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+   ŠÖ”FƒfƒXƒgƒ‰ƒNƒ^
    ----------------------------------------
-   å†…å®¹ï¼šç ´æ£„æ™‚ã«è¡Œã†å‡¦ç†
+   “à—eF”jŠü‚És‚¤ˆ—
    ----------------------------------------
-   å¼•æ•°ï¼šãªã—
+   ˆø”F‚È‚µ
    ----------------------------------------
-   æˆ»å€¤ï¼šãªã—
+   –ß’lF‚È‚µ
 ======================================== */
 CPlayer::~CPlayer()
 {
-	SAFE_DELETE(m_pGameOver);
-	SAFE_DELETE(m_pPlayerGeo);
+	SAFE_DELETE(m_pWaitFrameCnt);
+	SAFE_DELETE(m_pSweatEffectMng);
+	SAFE_DELETE(m_pWalkEffectMng);
+	SAFE_DELETE(m_pShadow);
 	SAFE_DELETE(m_pHammer);
 }
 
 /* ========================================
-   æ›´æ–°å‡¦ç†é–¢æ•°é–¢æ•°
+   XVˆ—ŠÖ”ŠÖ”
    ----------------------------------------
-   å†…å®¹ï¼šæ›´æ–°å‡¦ç†
+   “à—eFXVˆ—
    ----------------------------------------
-   å¼•æ•°ï¼šãªã—
+   ˆø”F‚È‚µ
    ----------------------------------------
-   æˆ»å€¤ï¼šãªã—
+   –ß’lF‚È‚µ
 ======================================== */
 void CPlayer::Update()
 {
-	if (!m_bHammer)	//æ”»æ’ƒä¸­ã¯ç§»å‹•ã—ãªã„
+	// €–S‚µ‚½ê‡
+	if (m_bDieInvFlg)
 	{
-		if (GetUseVController() == false)
+		m_bAttackFlg = false;				// UŒ‚’†ƒtƒ‰ƒO‚ğƒIƒt‚É‚·‚é
+		m_DrawFlg = true;					// “_–Å‚ğ‰ğœ
+		m_bSafeTimeFlg = false;				// –³“G‚ğ‰ğœ
+
+		m_fDieInvCnt++;
+		// €–S—P—\ŠÔ‚ªŒo‰ß‚µ‚Ä‚¢‚é‚©
+		if (DIE_AFTER_INTERVAL <= m_fDieInvCnt)
 		{
-			Move();
+			m_bDieFlg = true;	// €–S”»’è‚ğƒIƒ“
 		}
+	}
+	else
+	{
+		// ƒnƒ“ƒ}[UŒ‚’†
+		if (m_bAttackFlg)
+		{
+			// ƒnƒ“ƒ}[‚ÌUŒ‚‚ªI—¹‚µ‚½‚ç
+			if (m_pHammer->Update() == false)
+			{
+				// ƒ`ƒƒ[ƒWƒnƒ“ƒ}[
+				if (m_bCharge)
+				{
+					m_pHammer->SwingSpeedSlow_Charge();	// ƒnƒ“ƒ}[‚ÌƒXƒCƒ“ƒOƒXƒs[ƒh‚ğ’x‚­‚·‚é
+
+				}
+				// ’Êí
+				else
+				{
+					m_pHammer->SwingSpeedSlow();	// ƒnƒ“ƒ}[‚ÌƒXƒCƒ“ƒOƒXƒs[ƒh‚ğ’x‚­‚·‚é
+
+				}
+
+				m_pModel->SetAnimationSpeed(MOTION_PLAYER_SWING, m_pHammer->GetSwingSpeed() * SWING_ANIM_ADJUST);	// ƒAƒjƒ‚Ì‘¬‚³‚ğİ’è
+				m_bAttackFlg = false;	// UŒ‚’†ƒtƒ‰ƒO‚ğƒIƒt‚É‚·‚é
+				m_bHumInvFlg = true;	// ƒnƒ“ƒ}[U‚èŠÔŠuƒtƒ‰ƒOƒIƒ“
+			}
+		}
+		// ƒnƒ“ƒ}[UŒ‚’†‚Å‚Í‚È‚¢
 		else
 		{
-			ControllerMove();
+			// ƒnƒ“ƒ}[‚ÌU‚è‚©‚Ô‚éƒ‚[ƒVƒ‡ƒ“‚ÌŠÔ‚¾‚¯“–‚½‚è”»’è‚ğ‘Ò‹@
+			if (m_bHammerSwingWait)
+			{
+				// ƒJƒEƒ“ƒg‚ğŒ¸‚ç‚µ‚Ä‚¢‚­
+				m_nSwingWait--;
+				// ƒJƒEƒ“ƒg‚ª0ˆÈ‰º‚É‚È‚Á‚½‚ç
+				if (m_nSwingWait <= 0)
+				{
+					// ƒnƒ“ƒ}[‚Ì“–‚½‚è”»’è‚ğÀÛ‚É“®‚©‚·
+					m_pHammer->AttackStart(m_Transform.fPos, m_Transform.fRadian.y);
+					m_bHammerSwingWait = false;
+					m_bAttackFlg = true;	// UŒ‚ƒtƒ‰ƒO‚ğ—LŒø‚É‚·‚é
+					//SE‚ÌÄ¶
+					PlaySE(SE_SWING);
+				}
+			}
+			else
+			{
+				if (!m_pModel->IsPlay(MOTION_PLAYER_SWING))
+				{
+					// ƒRƒ“ƒgƒ[ƒ‰‚ªÚ‘±‚³‚ê‚Ä‚È‚¢ê‡
+					if (GetUseVController() == false)
+					{
+						MoveKeyboard();
+					}
+					// ƒRƒ“ƒgƒ[ƒ‰‚ªÚ‘±‚³‚ê‚Ä‚¢‚éê‡
+					else
+					{
+						MoveController();
+					}
+				}
+
+				CheckCharge();	// ƒ`ƒƒ[ƒWƒJƒEƒ“ƒg‚ğQÆ‚µ‚Äƒ`ƒƒ[ƒWó‘Ô‚ğ”»’è
+
+				// ƒnƒ“ƒ}[ƒXƒCƒ“ƒO‚ÌƒAƒjƒ[ƒVƒ‡ƒ“‚ªI—¹‚µ‚Ä‚¢‚½‚çƒ`ƒƒ[ƒWó‘Ô‚ğNONE‚É•ÏX
+				if (!m_pModel->IsPlay(MOTION_PLAYER_SWING))
+				{
+					m_ChargeState = PLAYER_CHARGE_NONE;
+				}
+
+				// ƒ`ƒƒ[ƒWó‘Ô‚ªNONE‚ÅƒXƒCƒ“ƒOƒAƒjƒ[ƒVƒ‡ƒ“‚ªI—¹‚µ‚Ä‚¢‚é‚Æ‚«
+				if (!m_ChargeState == PLAYER_CHARGE_NONE && m_pModel->IsPlay(MOTION_PLAYER_SWING))
+				{
+					// ƒ`ƒƒ[ƒW‚ÌƒJƒEƒ“ƒg‚ğƒŠƒZƒbƒg‚µ‚ÄƒvƒŒƒCƒ„[‚Ìó‘Ô‚ğƒ`ƒƒ[ƒWó‘Ô‚ÉˆÚs
+					m_fChargeCnt = 0;
+					m_ChargeState = PLAYER_CHARGING;
+				}
+
+				// ƒnƒ“ƒ}[ŠÔŠuŠÔƒtƒ‰ƒO‚ªƒIƒ“‚Ì
+				if (m_bHumInvFlg)
+				{
+					m_fHumInvCnt++;				// ƒnƒ“ƒ}[ŠÔŠuŠÔƒJƒEƒ“ƒg‰ÁZ
+					if (m_fHumInvCnt >= HAMMER_INTERVAL_TIME)
+					{
+						m_bHumInvFlg = false;		// ƒnƒ“ƒ}[ŠÔŠuŠÔƒtƒ‰ƒOƒIƒ“
+						m_fHumInvCnt = 0.0f;		// ƒnƒ“ƒ}[ŠÔŠuŠÔƒŠƒZƒbƒg
+					}
+				}
+
+				// ƒXƒy[ƒXƒL[‚à‚µ‚­‚ÍƒRƒ“ƒgƒ[ƒ‰‚ÌBƒ{ƒ^ƒ“‚É‘Î‚µ‚Ä‚Ì‰Ÿ‚µ‘±‚¯ && ƒnƒ“ƒ}[ŠÔŠuŠÔŒo‰ßÏ‚İ
+				if ((IsKeyPress(VK_SPACE) || IsKeyPressController(BUTTON_B) || IsKeyPressController(BUTTON_Y)) && !m_bHumInvFlg
+					&& !m_ChargeState == PLAYER_CHARGING)
+				{
+					SAFE_DELETE(m_pWaitFrameCnt);	// ƒJƒEƒ“ƒ^íœ
+
+					// ƒJƒEƒ“ƒg‚ª0‚È‚çƒAƒjƒ[ƒVƒ‡ƒ“‚ğƒŠƒZƒbƒg‚µ‚ÄÄ¶
+					if (m_fChargeCnt == 0)
+					{
+						m_pModel->Play(MOTION_PLAYER_CHARGE, true, 1.0);		// ƒAƒjƒ[ƒVƒ‡ƒ“‚ÌÄ¶
+						m_pModel->SetAnimationTime(MOTION_PLAYER_CHARGE, 0.0f);	// ƒAƒjƒ[ƒVƒ‡ƒ“ƒ^ƒCƒ€‚ğƒXƒ^[ƒgˆÊ’u‚ÉƒZƒbƒg
+					}
+
+
+					m_fChargeCnt++;	// ƒ`ƒƒ[ƒWƒJƒEƒ“ƒg‚ğ‘‰Á
+
+					if (m_fChargeCnt == DISP_CHARGE_EFC_CNT)
+					{
+						// ƒGƒtƒFƒNƒg‚ÌÄ¶
+						ChargeEffectStart();
+					}
+
+					// ƒ`ƒƒ[ƒW’†‚ÌSEÄ¶
+					if (m_fChargeCnt == PLAY_SE_CNT)
+					{
+						PlaySE(SE_CHARGED);
+					}
+					// ƒJƒEƒ“ƒg‚ªƒ}ƒbƒNƒX‚É‚È‚Á‚½‚ÌSEÄ¶
+					if (m_fChargeCnt == CHARGE_HAMMER_CNT)
+					{
+						PlaySE(SE_MAXCHARGED);
+					}
+				}
+				// ƒXƒy[ƒXƒL[‚à‚µ‚­‚ÍƒRƒ“ƒgƒ[ƒ‰‚ÌBƒ{ƒ^ƒ“‚ğ—£‚µ‚½ && ƒnƒ“ƒ}[ŠÔŠuŠÔŒo‰ßÏ‚İ
+				else if ((IsKeyRelease(VK_SPACE) || IsKeyReleaseController(BUTTON_B) || IsKeyReleaseController(BUTTON_Y)) &&
+					!m_bHumInvFlg && !m_pModel->IsPlay(MOTION_PLAYER_SWING))
+				{
+					SAFE_DELETE(m_pWaitFrameCnt);	// ƒJƒEƒ“ƒ^íœ
+					SwingStart();
+				}
+				else
+				{
+					// ƒ`ƒƒ[ƒWƒJƒEƒ“ƒg‚ğƒŠƒZƒbƒg
+					m_fChargeCnt = 0;
+
+					m_nSwingFastCnt++;
+					if (SWING_FAST_INTERVAL < m_nSwingFastCnt)
+					{
+						// UŒ‚ƒ{ƒ^ƒ“‚ğ‰Ÿ‚µ‚Ä‚È‚¢‚Íƒnƒ“ƒ}[‚ÌƒXƒCƒ“ƒOƒXƒs[ƒh‚ğ’Êí‚É–ß‚µ‚Ä‚¢‚­
+						m_pHammer->SwingSpeedFast();
+						m_pModel->SetAnimationSpeed(
+							MOTION_PLAYER_SWING,
+							m_pHammer->GetSwingSpeed() * SWING_ANIM_ADJUST);	// ƒAƒjƒ‚Ì‘¬‚³‚ğİ’è
+						m_nSwingFastCnt = 0;
+					}
+				}
+			}
+			// Bƒ{ƒ^ƒ“‚©ƒXƒy[ƒXƒL[‚ğ‰Ÿ‚µ‚Ä‚¢‚È‚¢ê‡‚ÍƒGƒtƒFƒNƒg‚ğ’â~‚·‚é
+			// ¦ƒ|[ƒY‰æ–Ê‚âƒ{ƒX“oê‰‰oŒã‚Éƒ`ƒƒ[ƒWƒGƒtƒFƒNƒg‚ªc‚ç‚È‚¢‚æ‚¤‚É‚·‚é‚½‚ß
+			if (GetUseVController() == false)
+			{// ƒRƒ“ƒgƒ[ƒ‰‚ªÚ‘±‚³‚ê‚Ä‚È‚¢ê‡
+				if (!IsKeyPress(VK_SPACE))
+				{
+					// ƒ`ƒƒ[ƒWƒGƒtƒFƒNƒg‚ğ’â~
+					LibEffekseer::GetManager()->StopEffect(m_chgEfcHandle);
+				}
+			}
+			else
+			{// ƒRƒ“ƒgƒ[ƒ‰‚ªÚ‘±‚³‚ê‚Ä‚¢‚éê‡
+				if (!IsKeyPressController(BUTTON_B) && !IsKeyPressController(BUTTON_Y))
+				{
+					// ƒ`ƒƒ[ƒWƒGƒtƒFƒNƒg‚ğ’â~
+					LibEffekseer::GetManager()->StopEffect(m_chgEfcHandle);
+				}
+			}
 		}
-	}
 
-
-	if ((IsKeyTrigger(VK_SPACE)|| IsKeyTriggerController(BUTTON_B)) || m_pHammer->Gethammer())	//ã‚¹ãƒšãƒ¼ã‚¹ã‚­ãƒ¼ã‚’æŠ¼ã—ãŸæ™‚ã‚‚ã—ãã¯ãƒãƒ³ãƒãƒ¼ã‚’æŒ¯ã‚‹ãƒ•ãƒ©ã‚°ãŒONã®æ™‚
-	{
-		m_pHammer->Update(m_pos, m_playerRotation);			//ãƒãƒ³ãƒãƒ¼ã‚’æŒ¯ã‚‹Updateå‡¦ç†ã‚’è¡Œã†
-	}
-	
-	m_bHammer = m_pHammer->Gethammer();	//ãƒãƒ³ãƒãƒ¼ã‚’ä½¿ç”¨ä¸­ã‹ç¢ºèª
-	if (m_bCollide)							//ç„¡æ•µçŠ¶æ…‹ã«ãªã£ã¦ã„ã‚‹å ´åˆ
-	{
-		m_nNoDamageCnt++;					//æ¯ãƒ•ãƒ¬ãƒ¼ãƒ ã§ã‚«ã‚¦ãƒ³ãƒˆã‚’è¿½åŠ 
-		DamageAnimation();					//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ç‚¹æ»…é–¢æ•°å‘¼ã³å‡ºã™
-		if (m_nNoDamageCnt >= NO_DAMAGE_TIME)	//ã‚«ã‚¦ãƒ³ãƒˆãŒä¸€å®šæ™‚é–“ã‚’è¶…ãˆãŸã‚‰
+		// –³“Gó‘Ô‚É‚È‚Á‚Ä‚¢‚éê‡
+		if (m_bSafeTimeFlg)
 		{
-			m_DrawFlg = true;				//ç‚¹æ»…ã‚’è§£é™¤
-			m_bCollide = false;				//ç„¡æ•µã‚’è§£é™¤
+			m_nSafeTimeCnt++;					// –ˆƒtƒŒ[ƒ€‚ÅƒJƒEƒ“ƒg‚ğ’Ç‰Á
+			DamageAnimation();					// ƒvƒŒƒCƒ„[“_–ÅŠÖ”ŒÄ‚Ño‚·
+
+			// ƒJƒEƒ“ƒg‚ªˆê’èŠÔ‚ğ’´‚¦‚½‚ç
+			if (m_nSafeTimeCnt >= NO_DAMAGE_TIME)
+			{
+				m_DrawFlg = true;				// “_–Å‚ğ‰ğœ
+				m_bSafeTimeFlg = false;			// –³“G‚ğ‰ğœ
+			}
+
 		}
-		
 	}
-	
+
+
+	//ˆÚ“®‚É‚æ‚éSE‚ÆƒAƒjƒ[ƒVƒ‡ƒ“‚Ìˆ—
+	MoveCheck();
+
+	//ƒAƒjƒ[ƒVƒ‡ƒ“‚ÌXV
+	if (!m_pWaitFrameCnt)	//‘Ò‹@ŠÔ’†‚Í~‚ß‚é
+	{
+		m_pModel->Step(ADD_ANIM_FRAME);
+	}
+
+	DisplaySweatEffect();			// Š¾ƒGƒtƒFƒNƒgì¬
+
+	UpdateEffect();	// ƒGƒtƒFƒNƒg‚ÌXV
+	m_pShadow->SetPos(m_Transform.fPos);
 }
 
 /* ========================================
-   æç”»å‡¦ç†é–¢æ•°
+   •`‰æˆ—ŠÖ”
    ----------------------------------------
-   å†…å®¹ï¼šæç”»å‡¦ç†
+   “à—eF•`‰æˆ—
    ----------------------------------------
-   å¼•æ•°ï¼šãªã—
+   ˆø”F‚È‚µ
    ----------------------------------------
-   æˆ»å€¤ï¼šãªã—
+   –ß’lF‚È‚µ
 ======================================== */
 void CPlayer::Draw()
 {
-	if (!m_pCamera)
+	//m_pShadow->Draw(m_Transform, PLAYER_SHADOW_SCALE);	// ‰e‚Ì•`‰æ
+
+	// •`‰æ‚µ‚È‚¢(“_–Åˆ—’†)
+	if (m_DrawFlg == true)
 	{
-		return;
+		//-- ƒ‚ƒfƒ‹•\¦
+		if (m_pModel) {
+			// ƒŒƒ“ƒ_[ƒ^[ƒQƒbƒgA[“xƒoƒbƒtƒ@‚Ìİ’è
+			RenderTarget* pRTV = GetDefaultRTV();	//ƒfƒtƒHƒ‹ƒg‚Åg—p‚µ‚Ä‚¢‚éRenderTargetView‚Ìæ“¾
+			DepthStencil* pDSV = GetDefaultDSV();	//ƒfƒtƒHƒ‹ƒg‚Åg—p‚µ‚Ä‚¢‚éDepthStencilView‚Ìæ“¾
+			SetRenderTargets(1, &pRTV, pDSV);		//DSV‚ªnull‚¾‚Æ2D•\¦‚É‚È‚é
+
+			//m_pModel->Draw();
+		}
+
+		DirectX::XMFLOAT4X4 mat[3];
+
+		//ŠgkA‰ñ“]AˆÚ“®(Y²‰ñ“]‚ğæ‚É‚µ‚½‚©‚Á‚½‚Ì‚ÅSRT‚Íg‚í‚È‚¢)
+		DirectX::XMStoreFloat4x4(&mat[0],
+			DirectX::XMMatrixTranspose(
+				DirectX::XMMatrixScaling(m_Transform.fScale.x, m_Transform.fScale.y, m_Transform.fScale.z)		// ‘å‚«‚³
+				* DirectX::XMMatrixRotationY(m_Transform.fRadian.y)	// YŠp“x
+				* DirectX::XMMatrixRotationX(m_fRotate_x)			// XŠp“x
+				* DirectX::XMMatrixRotationZ(m_Transform.fRadian.z)	// ZŠp“x
+				* DirectX::XMMatrixTranslation(m_Transform.fPos.x, m_Transform.fPos.y, m_Transform.fPos.z)));	// À•W
+		mat[1] = CUsingCamera::GetThis().GetCamera()->GetViewMatrix();
+		mat[2] = CUsingCamera::GetThis().GetCamera()->GetProjectionMatrix();
+
+
+		ShaderList::SetWVP(mat);
+
+		//ƒAƒjƒ[ƒVƒ‡ƒ“‘Î‰‚µ‚½ƒvƒŒƒCƒ„[‚Ì•`‰æ
+		m_pModel->Draw(nullptr, [this](int index)
+		{
+			const AnimeModel::Mesh* pMesh = m_pModel->GetMesh(index);
+			const AnimeModel::Material* pMaterial = m_pModel->GetMaterial(pMesh->materialID);
+			ShaderList::SetMaterial(*pMaterial);
+
+			DirectX::XMFLOAT4X4 bones[200];
+			for (int i = 0; i < pMesh->bones.size() && i < 200; ++i)
+			{
+				// ‚±‚ÌŒvZ‚ÍƒQ[ƒ€‚Â‚­‚ë[uƒXƒLƒ“ƒƒbƒVƒ…‚Ìd‘g‚İv‚ªQl‚É‚È‚é
+				DirectX::XMStoreFloat4x4(&bones[i], DirectX::XMMatrixTranspose(
+					pMesh->bones[i].invOffset *
+					m_pModel->GetBone(pMesh->bones[i].index)
+				));
+			}
+			ShaderList::SetBones(bones);
+		});
+#ifdef _DEBUG
+		//ƒAƒjƒ[ƒVƒ‡ƒ“‚Ì“®‚«‚ªŠm”F‚Å‚«‚éƒ{[ƒ“‚Ì•`‰æ(’†S‚©‚ç“®‚©‚È‚¢)
+		//m_pModel->DrawBone();	
+#endif
 	}
 
-	// æç”»ã—ãªã„(ç‚¹æ»…å‡¦ç†ä¸­)
-	if (m_DrawFlg == false)
+	//=====ƒAƒjƒ[ƒVƒ‡ƒ“‚Ì’²®—p‚Éˆê‰c‚µ‚Ä‚¨‚­=====
+	if (m_bAttackFlg)
 	{
-		return;
+		// m_pHammer->Draw();		// ƒnƒ“ƒ}[‚Ì•`‰æ
 	}
 
-	DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(m_pos.x, m_pos.y, m_pos.z);			//ç§»å‹•è¡Œåˆ—
-	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(m_scale.x, m_scale.y, m_scale.z);		//æ‹¡å¤§ç¸®å°è¡Œåˆ—
-	DirectX::XMMATRIX Ry = DirectX::XMMatrixRotationY(m_playerRotation);//Yè»¸ã®å›è»¢è¡Œåˆ—
 
-	DirectX::XMMATRIX mat = Ry * S * T;									//å¤‰æ›è¡Œåˆ—ã‚’çµåˆ
-	mat = DirectX::XMMatrixTranspose(mat);								//å¤‰æ›è¡Œåˆ—ã‚’è»¢ç½®
-	DirectX::XMFLOAT4X4 fMat;											//è¡Œåˆ—ã®æ ¼ç´å…ˆ
-	DirectX::XMStoreFloat4x4(&fMat, mat);								//XMFLOAT4X4ã«å¤‰æ›ã—ã¦æ ¼ç´
-	m_pPlayerGeo->SetWorld(fMat);										//ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ã«ã‚»ãƒƒãƒˆ
-
-	m_pPlayerGeo->SetView(m_pCamera->GetViewMatrix());
-	m_pPlayerGeo->SetProjection(m_pCamera->GetProjectionMatrix());
-
-	
-	m_pPlayerGeo->Draw();		//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚’æç”»
-	
-	if (m_pHammer->Gethammer())	//ãƒãƒ³ãƒãƒ¼ã‚’æŒ¯ã‚‹ãƒ•ãƒ©ã‚°ãŒONã®æ™‚
-	{
-		m_pHammer->Draw(m_pCamera);		//ãƒãƒ³ãƒãƒ¼ã®æç”»
-	}
-
-	if (m_nHp <= 0)	//ã‚²ãƒ¼ãƒ ã‚ªãƒ¼ãƒãƒ¼ã‚’è¡¨ã™ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®æç”»	<=TODO å¾Œã€…æ¶ˆã—ã¾ã™
-	{
-		m_pGameOver->SetView(m_pCamera->GetViewMatrix());										//ãƒ“ãƒ¥ãƒ¼ã®ã‚»ãƒƒãƒˆ
-		m_pGameOver->SetProjection(m_pCamera->GetProjectionMatrix());							//ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ã‚·ãƒ§ãƒ³ã®ã‚»ãƒƒãƒˆ
-		DirectX::XMMATRIX mat = DirectX::XMMatrixTranslation(0.0f, 2.0f, 0.0f);					//ç§»å‹•ã®å¤‰æ›è¡Œåˆ—
-		mat = DirectX::XMMatrixTranspose(mat);													//è»¢ç½®
-		DirectX::XMFLOAT4X4 fmat;																//ã‚»ãƒƒãƒˆãƒ¯ãƒ¼ãƒ«ãƒ‰ç”¨ã®å¤‰æ•°
-		DirectX::XMStoreFloat4x4(&fmat, mat);													//MATRIXå‹ã‹ã‚‰å¤‰æ›
-		m_pGameOver->SetWorld(fmat);															//ãƒ¯ãƒ¼ãƒ«ãƒ‰ã®ã‚»ãƒƒãƒˆ
-		m_pGameOver->Draw();																	//GameOverã®æç”»
-	}
+	m_nWalkEffeCnt++;
+	m_pWalkEffectMng->Draw();
+	m_pSweatEffectMng->Draw();
 }
 
 /* ========================================
-   ãƒ€ãƒ¡ãƒ¼ã‚¸é–¢æ•°
+   ƒ_ƒ[ƒWŠÖ”
    ----------------------------------------
-   å†…å®¹ï¼šãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒãƒ€ãƒ¡ãƒ¼ã‚¸ã‚’å—ã‘ã‚‹
+   “à—eFƒvƒŒƒCƒ„[‚ªƒ_ƒ[ƒW‚ğó‚¯‚é
    ----------------------------------------
-   å¼•æ•°ï¼šãªã—
+   ˆø”FUŒ‚—Í
    ----------------------------------------
-   æˆ»å€¤ï¼šãªã—
+   –ß’lF‚È‚µ
 ======================================== */
-void CPlayer::Damage()
+void CPlayer::Damage(int DmgNum)
 {
-	m_nHp -= 1;
-	m_bCollide = true;	//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚’ä¸€å®šæ™‚é–“ã€ç„¡æ•µã«ã™ã‚‹
-	m_nNoDamageCnt = 0;	//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ç„¡æ•µæ™‚é–“ã®ã‚«ã‚¦ãƒ³ãƒˆã‚’0ã«æˆ»ã™
+	if (m_bDieInvFlg) return;	// €–S‚µ‚½‚ ‚Æ‚Íˆ—‚µ‚È‚¢
+
+	m_nHp -= DmgNum;
+	m_bSafeTimeFlg = true;	//ƒvƒŒƒCƒ„[‚ğˆê’èŠÔA–³“G‚É‚·‚é
+	m_nSafeTimeCnt = 0;	//ƒvƒŒƒCƒ„[–³“GŠÔ‚ÌƒJƒEƒ“ƒg‚ğ0‚É–ß‚·
+	//=== SE‚ÌÄ¶ =====
+	PlaySE(SE_DAMAGED);
+
+	// ƒvƒŒƒCƒ„[‚ª•m€‚É‚È‚Á‚½‚çŒx‰¹‚ğ—¬‚·
+	if (m_nHp == PLAYER_WARNING_HP) PlaySE(SE_WARNING);
 
 	if (m_nHp <= 0)
 	{
-		//ã‚²ãƒ¼ãƒ ã‚ªãƒ¼ãƒãƒ¼å‡¦ç† <= TODO
+		m_bDieInvFlg = true;
+		m_fRotate_x = PLAYER_ROTATE_X_DIE;			// ƒvƒŒƒCƒ„[‚ÌŒX‚«‚ğƒZƒbƒg(’n–Ê‚É–„‚Ü‚ç‚È‚¢‚æ‚¤‚É)
+		m_pModel->Play(MOTION_PLAYER_DIE, false);	// ƒAƒjƒ[ƒVƒ‡ƒ“‚ÌÄ¶
+
 	}
 }
 
 /* ========================================
-   ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ç§»å‹•é–¢æ•°
+   ƒL[ƒ{[ƒh—p“ü—ÍˆÚ“®ŠÖ”
    ----------------------------------------
-   å†…å®¹ï¼šãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒç§»å‹•ã™ã‚‹é–¢æ•°
+   “à—eFƒL[ƒ{[ƒh“ü—Í‚ÌˆÚ“®ˆ—
    ----------------------------------------
-   å¼•æ•°ï¼šãªã—
+   ˆø”F‚È‚µ
    ----------------------------------------
-   æˆ»å€¤ï¼šãªã—
+   –ß’lF‚È‚µ
 ======================================== */
-void CPlayer::Move()
-{//ï¼ï¼ï¼playerã®ä½ç½®ã¨é€²è¡Œæ–¹å‘ã‚’æ›´æ–°ï¼ï¼ï¼
-	if (IsKeyPress('W'))
-	{	//å‰ã«ç§»å‹•
-		m_pos.z += PLAYER_MOVE_SPEED;					//playerã‚’+Zæ–¹å‘ã«ç§»å‹•
-		m_playerForward.z = FORWARD_YES;		//å‘ã„ã¦ã„ã‚‹æ–¹å‘
-		m_playerForward.x = FORWARD_NO;
-		if (IsKeyPress('A'))
-		{//å·¦å‰ã«ç§»å‹•
-			m_pos.x -= PLAYER_MOVE_SPEED;
-			m_playerForward.x = -FORWARD_YES;
-		}
-		else if (IsKeyPress('D'))
-		{//å³å‰ã«ç§»å‹•
-			m_pos.x += PLAYER_MOVE_SPEED;
-			m_playerForward.x = FORWARD_YES;
-		}
-	}
-	else if (IsKeyPress('S'))
-	{//å¾Œã‚ã«ç§»å‹•
-		m_pos.z -= PLAYER_MOVE_SPEED;
-		m_playerForward.z = -FORWARD_YES;
-		m_playerForward.x = FORWARD_NO;
-		if (IsKeyPress('A'))
-		{//å·¦å¾Œã‚ã«ç§»å‹•
-			m_pos.x -= PLAYER_MOVE_SPEED;
-			m_playerForward.x = -FORWARD_YES;
-		}
-		else if (IsKeyPress('D'))
-		{//å³å¾Œã‚ã«ç§»å‹•
-			m_pos.x += PLAYER_MOVE_SPEED;
-			m_playerForward.x = FORWARD_YES;
-		}
-	}
-	else if (IsKeyPress('D'))
-	{//å³ã«ç§»å‹•
-		m_pos.x += PLAYER_MOVE_SPEED;
-		m_playerForward.x = FORWARD_YES;
-		m_playerForward.z = FORWARD_NO;
-	}
-	else if (IsKeyPress('A'))
-	{//å·¦ã«ç§»å‹•
-		m_pos.x -= PLAYER_MOVE_SPEED;
-		m_playerForward.x = -FORWARD_YES;
-		m_playerForward.z = FORWARD_NO;
-	}
-
-	m_sphere.pos = m_pos;	//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®åº§æ¨™ã‚’å½“ãŸã‚Šåˆ¤å®šç”¨ã®çƒä½“ã«ã‚³ãƒ”ãƒ¼
-
-	//é€²è¡Œæ–¹å‘ã‹ã‚‰playerã®å‘ãã‚’æ±ºã‚ã‚‹
-	if (m_playerForward.x == FORWARD_NO)	//xæ–¹å‘ã‚’å‘ã„ã¦ãªã‹ã£ãŸã‚‰Zè»¸ï¼ˆå‰å¾Œï¼‰ã«å‹•ãã ã‘
-	{
-		if (m_playerForward.z > 0.0f) {//+Zå‰æ–¹å‘ã«ã™ã‚‹
-			m_playerRotation = 0.0f; // å‰æ–¹å‘
-		}
-		else {
-			m_playerRotation = XM_PI; // å¾Œæ–¹å‘
-		}
-	}
-	else {//Zã®æ–¹å‘ã«ã‚‚å‘ã„ã¦ã‚‹ãªã‚‰æ–œã‚ã€å‘ã„ã¦ãªã„ãªã‚‰æ¨ªã®æ–¹å‘ã‚’å‘ã
-		m_playerRotation = atan(m_playerForward.x / m_playerForward.z);	//ã“ã“ã§æ–œã‚ã‹åˆ¤æ–­
-		if (m_playerForward.z < 0.0f) {
-			m_playerRotation += XM_PI; // ï½šãŒ-ãªã‚‰å¾Œã‚ãªã®ã§è¶³ã—ã¦å¾Œã‚å´ã«
-		}
-	}
-}
-
-/* ========================================
-   ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©å…¥åŠ›é–¢æ•°
-   ----------------------------------------
-   å†…å®¹ï¼šã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©å…¥åŠ›ã®ç§»å‹•å‡¦ç†
-   ----------------------------------------
-   å¼•æ•°ï¼šãªã—
-   ----------------------------------------
-   æˆ»å€¤ï¼šãªã—
-======================================== */
-void CPlayer::ControllerMove()
+void CPlayer::MoveKeyboard()
 {
-	// ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼ã®å·¦ã‚¹ãƒ†ã‚£ãƒƒã‚¯ã®å‚¾ãã‚’å–å¾—
-	float stick_x = IsStickLeft().x;
-	float stick_y = IsStickLeft().y;	
+	TPos3d<float> fMoveInput;	// ƒL[ƒ{[ƒh‚Ì“ü—Í’l‚ğ“ü‚ê‚é•Ï”
 
-	// ã‚¹ãƒ†ã‚£ãƒƒã‚¯ãŒçœŸã‚“ä¸­ã®å ´åˆç§»å‹•ã—ãªã„
-	if (stick_x != 0 || stick_y != 0)
-	{
-		float moveRad = atan2(stick_y * -1, stick_x);	// ã‚¹ãƒ†ã‚£ãƒƒã‚¯ã‚’å€’ã—ãŸæ–¹å‘ã®è§’åº¦ã‚’æ±‚ã‚ã‚‹(yè»¸ãŒé€†ãªã®ã§ï¼1ã‚’æ›ã‘ã‚‹)
+	// ƒL[“ü—Í
+	// ã‰º
+	if (IsKeyPress('W')) { fMoveInput.z = KEYBOARD_INPUT_SIZE; }		// ª	
+	else if (IsKeyPress('S')) { fMoveInput.z = -KEYBOARD_INPUT_SIZE; }	// «
+	else { fMoveInput.z = 0.0f; }										// “ü—Í–³‚µ
 
-		// è§’åº¦æ–¹å‘ã«ç§»å‹•ã™ã‚‹å‡¦ç†
-		m_pos.x += cosf(moveRad) * PLAYER_MOVE_SPEED;
-		m_pos.z += sinf(moveRad) * PLAYER_MOVE_SPEED;
+	// ¶‰E
+	if (IsKeyPress('D')) { fMoveInput.x = KEYBOARD_INPUT_SIZE; }		// ¨	
+	else if (IsKeyPress('A')) { fMoveInput.x = -KEYBOARD_INPUT_SIZE; }	// ©
+	else { fMoveInput.x = 0.0f; }										// “ü—Í–³‚µ
 
-		m_playerRotation = atan2(stick_y, stick_x) + (XM_PI/2);	// XMMatrixTranslationãŒæ™‚è¨ˆå›ã‚Šã§è§’åº¦ãŒ90åº¦ãšã‚Œã¦ã„ã‚‹(â†‘ãŒ0)ã®ã§èª¿æ•´
-	}
+	MoveSizeInputSet(fMoveInput);	// “ü—Í’l‚©‚çˆÚ“®—Ê‚ÆŒü‚«‚ğƒZƒbƒg
 
-	m_sphere.pos = m_pos;	//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®åº§æ¨™ã‚’å½“ãŸã‚Šåˆ¤å®šç”¨ã®çƒä½“ã«ã‚³ãƒ”ãƒ¼
-
+	// À•W‚ğˆÚ“®
+	m_Transform.fPos.x += m_fMove.x;
+	m_Transform.fPos.z += m_fMove.z;
 
 }
 
-
-
 /* ========================================
-   ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼å½“ãŸã‚Šåˆ¤å®šå–å¾—é–¢æ•°
+   ƒRƒ“ƒgƒ[ƒ‰—p“ü—ÍˆÚ“®ŠÖ”
    ----------------------------------------
-   å†…å®¹ï¼šãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®å½“ãŸã‚Šåˆ¤å®šç”¨ã®çƒä½“ã‚’å–å¾—ã™ã‚‹é–¢æ•°
+   “à—eFƒRƒ“ƒgƒ[ƒ‰“ü—Í‚ÌˆÚ“®ˆ—
    ----------------------------------------
-   å¼•æ•°ï¼šãªã—
+   ˆø”F‚È‚µ
    ----------------------------------------
-   æˆ»å€¤ï¼šå½“ãŸã‚Šåˆ¤å®š(Sphere)
+   –ß’lF‚È‚µ
 ======================================== */
-CSphereInfo::Sphere CPlayer::GetPlayerSphere()
+void CPlayer::MoveController()
 {
-	return m_sphere;
+
+	TPos3d<float> fMoveInput;	// ƒXƒeƒBƒbƒN‚Ì“ü—Í’l‚ğ“ü‚ê‚é•Ï”
+
+	// ƒRƒ“ƒgƒ[ƒ‰[‚Ì¶ƒXƒeƒBƒbƒN‚ÌŒX‚«‚ğæ“¾
+	fMoveInput.x = IsStickLeft().x;
+	fMoveInput.z = IsStickLeft().y * -1;	// ã‰º‹t(ª‚ª|1)
+
+	MoveSizeInputSet(fMoveInput);	// “ü—Í’l‚©‚çˆÚ“®—Ê‚ÆŒü‚«‚ğƒZƒbƒg
+
+	// À•W‚ğˆÚ“®
+	m_Transform.fPos.x += m_fMove.x;
+	m_Transform.fPos.z += m_fMove.z;
+
 }
 
 /* ========================================
-   ãƒãƒ³ãƒãƒ¼å½“ãŸã‚Šåˆ¤å®šå–å¾—é–¢æ•°
+   ˆÚ“®—ÊƒCƒ“ƒvƒbƒgƒZƒbƒgŠÖ”
    ----------------------------------------
-   å†…å®¹ï¼šãƒãƒ³ãƒãƒ¼ã®å½“ãŸã‚Šåˆ¤å®šç”¨ã®çƒä½“ã‚’å–å¾—ã™ã‚‹é–¢æ•°
+   “à—eF“ü—Í’l‚©‚çˆÚ“®—Ê‚ÆŒü‚«‚ğƒZƒbƒg‚·‚é
    ----------------------------------------
-   å¼•æ•°ï¼šãªã—
+   ˆø”1F“ü—Í’l(x‚Æz‚ğg—p‚·‚é)
    ----------------------------------------
-   æˆ»å€¤ï¼šå½“ãŸã‚Šåˆ¤å®š(Sphere)
+   –ß’lF‚È‚µ
 ======================================== */
-CSphereInfo::Sphere CPlayer::GetHammerSphere()
+void CPlayer::MoveSizeInputSet(TPos3d<float> fInput)
+{
+	// ƒL[“ü—Í‚ª‚ ‚éê‡
+	if (fInput.z != 0 || fInput.x != 0)
+	{
+		float moveRad = atan2(fInput.z, fInput.x);	// ˆÚ“®“ü—Í‚µ‚½•ûŒü‚ÌŠp“x‚ğ‹‚ß‚é
+
+		// Šp“x•ûŒü‚ÉˆÚ“®‚·‚éˆÚ“®—Ê‚ğƒZƒbƒg
+		m_fMove.x = cosf(moveRad) * PLAYER_MOVE_SPEED;
+		m_fMove.z = sinf(moveRad) * PLAYER_MOVE_SPEED;
+
+		// •ûŒüƒZƒbƒg
+		m_Transform.fRadian.y =
+			(atan2(fInput.z * -1, fInput.x)			// DirectX‚ÆOŠpŠÖ”‚Å‰ñ“]•ûŒü‚ª‹t‚È‚Ì‚Å’²®
+				- DirectX::XMConvertToRadians(90.0f));	// DirectX‚ÆOŠpŠÖ”‚Å0“x‚ÌˆÊ’u‚ª90“x‚¸‚ê‚Ä‚¢‚é(ª‚ª0)‚Ì‚Å’²®
+
+		// ƒvƒŒƒCƒ„[ˆÚ“®‰ŒƒGƒtƒFƒNƒg•\¦
+		if (WALK_EFFECT_INTERVAL <= m_nWalkEffeCnt)
+		{
+			m_pWalkEffectMng->Create(m_Transform);	// ƒvƒŒƒCƒ„[ˆÚ“®ƒGƒtƒFƒNƒgì¬
+			m_nWalkEffeCnt = 0;
+		}
+	}
+	// ƒL[“ü—Í‚ª‚È‚¢ê‡
+	else
+	{
+		// ˆÚ“®‚µ‚È‚¢
+		m_fMove.z = 0.0f;
+		m_fMove.x = 0.0f;
+	}
+}
+
+/* ========================================
+   Š¾ƒGƒtƒFƒNƒgoŒ»ŠÖ”
+   ----------------------------------------
+   “à—eFƒnƒ“ƒ}[‚Ì‘¬“x‚É‚æ‚Á‚ÄŠ¾ƒGƒtƒFƒNƒg‚ğ•\¦‚³‚¹‚é
+   ----------------------------------------
+   ˆø”1F‚È‚µ
+   ----------------------------------------
+   –ß’lF‚È‚µ
+======================================== */
+void CPlayer::DisplaySweatEffect()
+{
+	// U‚é‘¬“x‚ªˆê’èˆÈ‰º‚É‚È‚Á‚½‚ç
+	if (m_pHammer->GetSwingSpeed() < SWEAT_EFFECT_DISP_SPEED)
+	{
+		m_nSweatEffeCnt++;
+
+		// •\¦ŠÔŠu‚ªŒo‰ß‚µ‚½‚©(GetSwingSpeed‚ğŠ|‚¯‚é‚±‚Æ‚ÅŠÔŠu‚ª™X‚É’Z‚­‚È‚é‚æ‚¤‚É)
+		if (SWEAT_EFFECT_INTERVAL * m_pHammer->GetSwingSpeed() <= m_nSweatEffeCnt)
+		{
+			m_pSweatEffectMng->Create(m_Transform.fPos, m_Transform.fRadian);	// Š¾ƒGƒtƒFƒNƒgì¬
+			m_nSweatEffeCnt = 0;
+		}
+	}
+	else
+	{
+		m_nSweatEffeCnt = 0;	// U‚é‘¬“x‚ª‰ñ•œ‚µ‚½‚çƒŠƒZƒbƒg
+	}
+}
+
+
+/* ========================================
+   ƒnƒ“ƒ}[“–‚½‚è”»’èæ“¾ŠÖ”
+   ----------------------------------------
+   “à—eFƒnƒ“ƒ}[‚Ì“–‚½‚è”»’è—p‚Ì‹…‘Ì‚ğæ“¾‚·‚éŠÖ”
+   ----------------------------------------
+   ˆø”F‚È‚µ
+   ----------------------------------------
+   –ß’lF“–‚½‚è”»’è(Sphere)
+======================================== */
+tagSphereInfo CPlayer::GetHammerSphere()
 {
 	return m_pHammer->GetSphere();
 }
 
 /* ========================================
-   ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼åº§æ¨™ã®å–å¾—é–¢æ•°
+   ƒvƒŒƒCƒ„[À•Wƒ|ƒCƒ“ƒ^æ“¾ŠÖ”
    ----------------------------------------
-   å†…å®¹ï¼šãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®åº§æ¨™ã‚’å–å¾—ã™ã‚‹é–¢æ•°
+   “à—eFƒvƒŒƒCƒ„[‚ÌÀ•W‚Ìƒ|ƒCƒ“ƒ^‚Ìæ“¾‚·‚éŠÖ”(ƒJƒƒ‰‚Ég—p‚·‚é)
    ----------------------------------------
-   å¼•æ•°ï¼šãªã—
+   ˆø”F‚È‚µ
    ----------------------------------------
-   æˆ»å€¤ï¼šåº§æ¨™(x,y,z)
+   –ß’lFÀ•Wƒ|ƒCƒ“ƒ^ƒAƒhƒŒƒX
 ======================================== */
-TPos3d<float> CPlayer::GetPos()
+TPos3d<float>* CPlayer::GetPosAddress()
 {
-	return m_pos;
+	return &m_Transform.fPos;
 }
 
 /* ========================================
-   Collisionç¢ºèªé–¢æ•°
+   ƒnƒ“ƒ}[ƒ|ƒCƒ“ƒ^æ“¾ŠÖ”
    ----------------------------------------
-   å†…å®¹ï¼šãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒç„¡æ•µçŠ¶æ…‹ã‹ã®ç¢ºèª
+   “à—eFƒvƒŒƒCƒ„[‚Ìƒnƒ“ƒ}[ƒ|ƒCƒ“ƒ^‚ğæ“¾‚·‚éŠÖ”
    ----------------------------------------
-   å¼•æ•°ï¼šãªã—
+   ˆø”F‚È‚µ
    ----------------------------------------
-   æˆ»å€¤ï¼šbool
+   –ß’lFƒnƒ“ƒ}[ƒ|ƒCƒ“ƒ^
 ======================================== */
-bool CPlayer::GetCollide()
+CHammer* CPlayer::GetHammerPtr()
 {
-	return m_bCollide;
+	return m_pHammer;
 }
 
 /* ========================================
-   ã‚«ãƒ¡ãƒ©ã®ã‚»ãƒƒãƒˆé–¢æ•°
+   –³“GŠÔƒtƒ‰ƒOæ“¾ŠÖ”
    ----------------------------------------
-   å†…å®¹ï¼šãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼è¿½å¾“ã‚«ãƒ¡ãƒ©ã‚’ã‚»ãƒƒãƒˆã™ã‚‹
+   “à—eFƒvƒŒƒCƒ„[‚ª–³“Gó‘Ô‚©‚ÌŠm”F
    ----------------------------------------
-   å¼•æ•°ï¼šã‚«ãƒ¡ãƒ©
+   ˆø”F‚È‚µ
    ----------------------------------------
-   æˆ»å€¤ï¼šãªã—
+   –ß’lFbool(true=–³“Gó‘Ô)
 ======================================== */
-void CPlayer::SetCamera(const CCamera * pCamera)
+bool CPlayer::GetSafeTime()
 {
-	m_pCamera = pCamera;	//ä¸­èº«ã¯å¤‰ãˆã‚‰ã‚Œãªã„ã‘ã©ãƒã‚¤ãƒ³ã‚¿ã¯ã‹ãˆã‚Œã‚‹ã®ã§ãƒ¨ã‚·ï¼
+	return m_bSafeTimeFlg;
 }
 
 /* ========================================
-   ãƒãƒ³ãƒãƒ¼æ”»æ’ƒãƒ•ãƒ©ã‚°å–å¾—é–¢æ•°
+   ƒvƒŒƒCƒ„[HPæ“¾ŠÖ”
    ----------------------------------------
-   å†…å®¹ï¼šãƒãƒ³ãƒãƒ¼æ”»æ’ƒãƒ•ãƒ©ã‚°å–å¾—ã™ã‚‹
+   “à—eFƒvƒŒƒCƒ„[‚ÌHP‚ğæ“¾
    ----------------------------------------
-   å¼•æ•°ï¼šç„¡ã—
+   ˆø”F–³‚µ
    ----------------------------------------
-   æˆ»å€¤ï¼šãƒãƒ³ãƒãƒ¼æ”»æ’ƒãƒ•ãƒ©ã‚°
+   –ß’lF–³‚µ
 ======================================== */
-bool CPlayer::GetHammerFlg()
+int* CPlayer::GetHpPtr()
 {
-	return m_bHammer;
+	return &m_nHp;
 }
 
 /* ========================================
-   ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ç‚¹æ»…é–¢æ•°
+   ƒvƒŒƒCƒ„[€–Sƒtƒ‰ƒOæ“¾ŠÖ”
    ----------------------------------------
-   å†…å®¹ï¼šãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒãƒ€ãƒ¡ãƒ¼ã‚¸ã‚’å—ã‘ãŸã‚‰ç‚¹æ»…ã™ã‚‹
+   “à—eFƒvƒŒƒCƒ„[€–Sƒtƒ‰ƒO‚ğæ“¾
    ----------------------------------------
-   å¼•æ•°ï¼šç„¡ã—
+   ˆø”F–³‚µ
    ----------------------------------------
-   æˆ»å€¤ï¼šç„¡ã—
+   –ß’lFtrue = €–S / false = ¶‘¶
+======================================== */
+bool CPlayer::GetDieFlg() const
+{
+	return m_bDieFlg;
+}
+
+/* ========================================
+   ƒnƒ“ƒ}[UŒ‚ƒtƒ‰ƒOæ“¾ŠÖ”
+   ----------------------------------------
+   “à—eFƒnƒ“ƒ}[UŒ‚ƒtƒ‰ƒOæ“¾‚·‚é
+   ----------------------------------------
+   ˆø”F–³‚µ
+   ----------------------------------------
+   –ß’lFƒnƒ“ƒ}[UŒ‚ƒtƒ‰ƒO
+======================================== */
+bool CPlayer::GetAttackFlg()
+{
+	return m_bAttackFlg;
+}
+
+/* ========================================
+   ƒ`ƒƒ[ƒWƒnƒ“ƒ}[æ“¾ŠÖ”
+   ----------------------------------------
+   “à—eFƒ`ƒƒ[ƒWó‘Ô‚©æ“¾‚·‚éŠÖ”
+   ----------------------------------------
+   ˆø”F–³‚µ
+   ----------------------------------------
+   –ß’lFƒ`ƒƒ[ƒWó‘Ô
+======================================== */
+bool CPlayer::GetCharge()
+{
+	return m_bCharge;
+}
+
+CShadow* CPlayer::GetShadowPtr()
+{
+	return m_pShadow;
+}
+
+
+/* ========================================
+   Š¾ƒGƒtƒFƒNƒgŠÇ—ƒZƒbƒ^[ŠÖ”
+   ----------------------------------------
+   “à—eFŠ¾ƒGƒtƒFƒNƒgŠÇ—ƒIƒuƒWƒFƒNƒg‚ğƒZƒbƒg‚·‚é
+   ----------------------------------------
+   ˆø”FŠ¾ƒGƒtƒFƒNƒgŠÇ—
+   ----------------------------------------
+   –ß’lF–³‚µ
+======================================== */
+void CPlayer::SetSweatEffectMng(CSweatEffectManager* pSweatefcMng)
+{
+	m_pSweatEffectMng = pSweatefcMng;
+}
+
+
+/* ========================================
+   ƒvƒŒƒCƒ„[“_–ÅŠÖ”
+   ----------------------------------------
+   “à—eFƒvƒŒƒCƒ„[‚ªƒ_ƒ[ƒW‚ğó‚¯‚½‚ç“_–Å‚·‚é
+   ----------------------------------------
+   ˆø”F–³‚µ
+   ----------------------------------------
+   –ß’lF–³‚µ
 ======================================== */
 void CPlayer::DamageAnimation()
 {
-					
-	m_FlashCnt++;						//æ¯ãƒ•ãƒ¬ãƒ¼ãƒ ã§ã‚«ã‚¦ãƒ³ãƒˆã‚’è¿½åŠ 
+
+	m_FlashCnt++;						//–ˆƒtƒŒ[ƒ€‚ÅƒJƒEƒ“ƒg‚ğ’Ç‰Á
 	if (m_FlashCnt >= DAMAGE_FLASH_FRAME)
 	{
-		// æç”»ã™ã‚‹ã‹ã—ãªã„åˆ‡ã‚Šæ›¿ãˆ
+		// •`‰æ‚·‚é‚©‚µ‚È‚¢Ø‚è‘Ö‚¦
 		if (m_DrawFlg)
 		{
 			m_DrawFlg = false;
-		}	
+		}
 		else
 		{
 			m_DrawFlg = true;
@@ -437,3 +788,231 @@ void CPlayer::DamageAnimation()
 	}
 
 }
+
+/* ========================================
+   ƒvƒŒƒCƒ„[‚ªˆÚ“®Šm”FŠÖ”
+   ----------------------------------------
+   “à—eFƒvƒŒƒCƒ„[‚ªˆÚ“®‚µ‚Ä‚¢‚é‚©Šm”F‚µ‚ÄA‚»‚ê‚É‰‚¶‚½ˆ—‚ğs‚¤
+   ----------------------------------------
+   ˆø”F–³‚µ
+   ----------------------------------------
+   –ß’lF–³‚µ
+======================================== */
+void CPlayer::MoveCheck()
+{
+	if (m_bDieInvFlg) return;	// €–S‚µ‚½‚ ‚Æ‚Íˆ—‚µ‚È‚¢
+
+	//ˆÚ“®—Ê‚ªc‰¡‚Ç‚¿‚ç‚à0‚Ì‚ÍƒJƒEƒ“ƒg‚ğƒŠƒZƒbƒg(ˆÚ“®‚µ‚Ä‚¢‚È‚¢)
+	if (m_fMove.x == 0.0f && m_fMove.z == 0.0f)
+	{
+		// ‘Ò‹@’†‚ÌƒAƒjƒ[ƒVƒ‡ƒ“‚ğÄ¶‚µ‚Ä‚È‚¢A‚È‚¨‚©‚ÂUŒ‚’†‚¶‚á‚È‚¢ê‡
+		if (m_pModel->GetPlayNo() != MOTION_PLAYER_STOP
+			&& !m_bAttackFlg && !m_pModel->IsPlay(MOTION_PLAYER_SWING)
+			&& m_ChargeState == PLAYER_CHARGE_NONE)
+		{
+			// ƒJƒEƒ“ƒgƒ_ƒEƒ“ŠJn‘O‚Ìê‡
+			if (!m_pWaitFrameCnt)	// ’l‚ªnullptr
+			{
+				m_pWaitFrameCnt = new CFrameCnt(CNT_START_WAIT);	//ƒJƒEƒ“ƒgƒ_ƒEƒ“ŠJn
+			}
+			// ƒJƒEƒ“ƒgƒ_ƒEƒ“ŠJnÏ‚İ‚Ìê‡
+			else
+			{
+				m_pWaitFrameCnt->Count();	//ƒJƒEƒ“ƒgƒ_ƒEƒ“’†
+
+			}
+			// ƒJƒEƒ“ƒgƒ_ƒEƒ“Š®—¹
+			if (m_pWaitFrameCnt->IsFin())
+			{
+				SAFE_DELETE(m_pWaitFrameCnt);						// ƒJƒEƒ“ƒ^íœ
+				m_pModel->Play(MOTION_PLAYER_STOP, false);	// ‘Ò‹@ƒ‚[ƒVƒ‡ƒ“ŠJn
+			}
+		}
+	}
+	// ˆÚ“®’†‚Ìê‡(‘Ò‹@ƒ‚[ƒVƒ‡ƒ“‘JˆÚ‘O‚ÉˆÚ“®‚ğn‚ß‚½)
+	else
+	{
+		if (m_pWaitFrameCnt)
+		{
+			SAFE_DELETE(m_pWaitFrameCnt);	//ƒJƒEƒ“ƒ^íœ
+		}
+
+		m_nWalkSECnt++;	//ƒJƒEƒ“ƒg‚ğ‘‚â‚·
+
+		//@ƒJƒEƒ“ƒg‚ªˆê’èˆÈã‚É‚È‚ê‚ÎSE‚ğ”­¶‚µ‚ÄƒJƒEƒ“ƒg‚ğƒŠƒZƒbƒg
+		if (SE_RUN_INTERVAL <= m_nWalkSECnt)
+		{
+			//SE‚ÌÄ¶
+			PlaySE(SE_RUN, SE_RUN_VOLUME);
+			m_nWalkSECnt = 0;	//ƒJƒEƒ“ƒg‚ğƒŠƒZƒbƒg
+		}
+
+		// ˆÚ“®’†‚ÌƒAƒjƒ[ƒVƒ‡ƒ“‚ğÄ¶‚µ‚Ä‚È‚¢ê‡A‚È‚¨‚©‚ÂUŒ‚’†‚¶‚á‚È‚¢ê‡
+		if (m_pModel->GetPlayNo() != MOTION_PLAYER_MOVE && !m_pModel->IsPlay(MOTION_PLAYER_SWING)
+			&& !m_pModel->IsPlay(MOTION_PLAYER_CHARGE))
+		{
+			m_pModel->Play(MOTION_PLAYER_MOVE, true, PLAYER_MOVE_ANIME_SPEED);	// ƒAƒjƒ[ƒVƒ‡ƒ“‚ğÄ¶
+		}
+
+	}
+
+}
+
+/* ========================================
+   ƒvƒŒƒCƒ„[—pSE“Ç‚İ‚İŠÖ”
+   ----------------------------------------
+   “à—eFƒvƒŒƒCƒ„[—p‚ÌSE‚Ìƒtƒ@ƒCƒ‹‚ğ“Ç‚İ‚Ş
+   ----------------------------------------
+   ˆø”F–³‚µ
+   ----------------------------------------
+   –ß’lF–³‚µ
+======================================== */
+void CPlayer::LoadSound()
+{
+	//SE‚Ì“Ç‚İ‚İ
+	for (int i = 0; i < SE_MAX; i++)
+	{
+		m_pSE[i] = CSound::LoadSound(m_sSEFile[i].c_str());
+		if (!m_pSE[i])
+		{
+			MessageBox(NULL, m_sSEFile[i].c_str(), "Error", MB_OK);	//‚±‚±‚ÅƒGƒ‰[ƒƒbƒZ[ƒW•\¦
+		}
+	}
+}
+
+/* ========================================
+	SE‚Ì“Ç‚İ‚İŠÖ”
+	----------------------------------------
+	“à—eFSE‚Ì“Ç‚İ‚İ
+	----------------------------------------
+	ˆø”1FSE‚Ìí—Ş(enum)
+	ˆø”2F‰¹—Ê
+	----------------------------------------
+	–ß’lF‚È‚µ
+======================================== */
+void CPlayer::PlaySE(SE se, float volume)
+{
+	m_pSESpeaker[se] = CSound::PlaySound(m_pSE[se]);	//SEÄ¶
+	m_pSESpeaker[se]->SetVolume(volume);				//‰¹—Ê‚Ìİ’è
+}
+
+
+
+/* ========================================
+   ƒvƒŒƒCƒ„[‰ñ•œŠÖ”
+   ----------------------------------------
+   “à—eFƒvƒŒƒCƒ„[‚ÌHP‚ğ‰ñ•œ‚·‚é
+   ----------------------------------------
+   ˆø”F–³‚µ
+   ----------------------------------------
+   –ß’lF–³‚µ
+======================================== */
+void CPlayer::Healing()
+{
+	m_nHp += HEAL_NUM;
+	if (m_nHp >= PLAYER_HP) { m_nHp = PLAYER_HP; }
+	PlaySE(SE_HEAL);
+}
+
+/* ========================================
+   ƒ`ƒƒ[ƒWƒnƒ“ƒ}[”»’èŠÖ”
+   ----------------------------------------
+   “à—eFƒ`ƒƒ[ƒWƒJƒEƒ“ƒg‚ğQÆ‚µ‚Ä”»’è‚·‚éŠÖ”
+   ----------------------------------------
+   ˆø”F‚È‚µ
+   ----------------------------------------
+   –ß’lF‚È‚µ
+======================================== */
+void CPlayer::CheckCharge()
+{
+	// ƒ`ƒƒ[ƒW‚ªŠ®—¹‚µ‚Ä‚¢‚éê‡
+	if (CHARGE_HAMMER_CNT < m_fChargeCnt)
+	{
+
+		m_bCharge = true;
+		m_ChargeState = PLAYER_CHARGED;
+	}
+	else
+	{
+		m_bCharge = false;
+	}
+
+}
+
+/* ========================================
+	ƒGƒtƒFƒNƒg•\¦ŠJnŠÖ”
+	-------------------------------------
+	“à—eFƒGƒtƒFƒNƒg‚Ì•\¦‚ğŠJn‚·‚é
+	-------------------------------------
+	ˆø”1F–³‚µ
+	-------------------------------------
+	–ß’lF–³‚µ
+=========================================== */
+void CPlayer::ChargeEffectStart()
+{
+	m_chgEfcHandle = LibEffekseer::GetManager()->Play(m_chargeEfc, 	//ƒGƒtƒFƒNƒg‚ÌŠJn
+		m_Transform.fPos.x,
+		m_Transform.fPos.y + 1.0f,
+		m_Transform.fPos.z);
+
+	LibEffekseer::GetManager()->SetScale(m_chgEfcHandle, 					//ƒGƒtƒFƒNƒg‚ÌƒTƒCƒY‚ğİ’è
+		CHARGING_EFFECT_SIZE.x,
+		CHARGING_EFFECT_SIZE.y,
+		CHARGING_EFFECT_SIZE.z);
+
+	LibEffekseer::GetManager()->SetSpeed(m_chgEfcHandle,					//ƒGƒtƒFƒNƒg‚ÌÄ¶‘¬“x‚ğİ’è
+		CHARGE_EFFECT_SPEED);
+}
+
+/* ========================================
+	ƒGƒtƒFƒNƒgXVŠÖ”
+	-------------------------------------
+	“à—eFƒGƒtƒFƒNƒg‚ğXV‚·‚é
+	-------------------------------------
+	ˆø”1F–³‚µ
+	-------------------------------------
+	–ß’lF–³‚µ
+=========================================== */
+void CPlayer::UpdateEffect()
+{
+
+	// ƒ`ƒƒ[ƒWƒGƒtƒFƒNƒg‚ÌÀ•W‚ğƒZƒbƒg
+	LibEffekseer::GetManager()->SetLocation(m_chgEfcHandle,
+		m_Transform.fPos.x,
+		m_Transform.fPos.y + 1.0f,
+		m_Transform.fPos.z);
+
+	// ƒ`ƒƒ[ƒWŠ®—¹
+	if (m_bCharge)
+	{
+		LibEffekseer::GetManager()->SetScale(m_chgEfcHandle, 	//ƒGƒtƒFƒNƒg‚ÌƒTƒCƒY‚ğİ’è
+			CHARGED_EFFECT_SIZE.x,
+			CHARGED_EFFECT_SIZE.y,
+			CHARGED_EFFECT_SIZE.z);
+	}
+
+	m_pWalkEffectMng->Update();						// •à‚«‚Ì“y‰ŒƒGƒtƒFƒNƒg‚ÌXV
+	m_pSweatEffectMng->Update(m_Transform.fPos);	// Š¾ƒGƒtƒFƒNƒg‚ÌXV
+
+}
+
+/* ========================================
+	ƒXƒCƒ“ƒOƒXƒ^[ƒgŠÖ”
+	-------------------------------------
+	“à—eFƒnƒ“ƒ}[‚ğU‚èn‚ß‚é
+	-------------------------------------
+	ˆø”1F–³‚µ
+	-------------------------------------
+	–ß’lF–³‚µ
+=========================================== */
+void CPlayer::SwingStart()
+{
+	m_pModel->Play(MOTION_PLAYER_SWING, false, m_pHammer->GetSwingSpeed() * SWING_ANIM_ADJUST);	// ƒAƒjƒ[ƒVƒ‡ƒ“‚ÌÄ¶
+	m_pModel->SetAnimationTime(MOTION_PLAYER_SWING, 0.0f);				// ƒAƒjƒ[ƒVƒ‡ƒ“ƒ^ƒCƒ€‚ğƒXƒ^[ƒgˆÊ’u‚ÉƒZƒbƒg
+
+	m_bHammerSwingWait = true;		// ƒnƒ“ƒ}[‚ÌƒXƒCƒ“ƒO‚ÌŠJn‘Ò‹@ó‘Ô‚ğON
+	m_nSwingWait = ADJUST_SWING_WAIT / m_pHammer->GetSwingSpeed();
+	// ƒGƒtƒFƒNƒg‚Ì’â~
+	LibEffekseer::GetManager()->StopEffect(m_chgEfcHandle);
+}
+

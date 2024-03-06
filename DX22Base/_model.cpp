@@ -123,7 +123,9 @@ void Model::MakeMaterial(const void* ptr, std::string directory)
 			if (FAILED(hr)) {
 				delete m_materials[i].pTexture;
 				m_materials[i].pTexture = nullptr;
+#ifdef _DEBUG
 				m_errorStr += path.C_Str();
+#endif
 			}
 		}
 		else {

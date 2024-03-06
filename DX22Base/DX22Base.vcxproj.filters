@@ -112,6 +112,135 @@
     <Filter Include="ソース ファイル\Info">
       <UniqueIdentifier>{8a28753d-f510-42e4-9844-46833e398878}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Scene\Stage">
+      <UniqueIdentifier>{6734b53d-3b98-4faa-a3f3-8960ddc3c3f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Scene\Stage">
+      <UniqueIdentifier>{2039f944-9e68-40cd-a6b6-c0497db649c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\2dObject\Score">
+      <UniqueIdentifier>{b494978e-34ae-4e90-89fa-26c0e26f02ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\2dObject\Score">
+      <UniqueIdentifier>{eae8711d-a654-42a1-ae55-453fd38bb610}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\3dObject\Enemy">
+      <UniqueIdentifier>{cb90cae3-d157-4f53-9c62-653a208774e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\3dObject\Enemy">
+      <UniqueIdentifier>{83da4e47-e125-4627-9e43-ff6868ca6e77}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\3dObject\Item">
+      <UniqueIdentifier>{0bb8e1c9-598a-4c56-b27a-cda84d126e8c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\3dObject\Item">
+      <UniqueIdentifier>{0ea1b806-d542-4336-9c38-b1aa9e85136a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\System\Random">
+      <UniqueIdentifier>{a484bd95-6afd-45ea-aa60-b408994f2e19}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\System\Random">
+      <UniqueIdentifier>{8beaba9d-03e4-49e1-ac24-b541952526d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\2dObject\PauseObj">
+      <UniqueIdentifier>{301982ce-1a32-46cf-9480-a1d42a76860e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\2dObject\PauseObj">
+      <UniqueIdentifier>{29c1bb85-2c64-4540-a5c5-435f2ba90f1c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\2dObject\TitleObj">
+      <UniqueIdentifier>{dcef6da3-8b1f-4085-b25f-f4fc4461d3d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\2dObject\TitleObj">
+      <UniqueIdentifier>{228e780c-784e-48a4-932c-24c6226d2742}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\2dObject\Union">
+      <UniqueIdentifier>{ffebea4f-a2e3-4636-9822-1cac3c09d57b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\2dObject\Union">
+      <UniqueIdentifier>{4a70b38c-3cba-4672-941f-61058e8777ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\2dObject\Text">
+      <UniqueIdentifier>{5e8ff715-515a-4683-9c67-58d15b32d27d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\2dObject\Text">
+      <UniqueIdentifier>{84971194-0cb9-4bd2-80a3-31c79e07f89b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\2dObject\Timer">
+      <UniqueIdentifier>{68548d60-f9a6-4f63-a5fd-87f054be6d1d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\2dObject\Timer">
+      <UniqueIdentifier>{87981910-2080-4eb9-98a8-b2c6f9dc57ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Info\ObjectDrawer">
+      <UniqueIdentifier>{01a48e43-b5ca-4e0b-bc58-59925d007bab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\2dObject\TitleObj\Anime">
+      <UniqueIdentifier>{3556d641-6391-4274-8832-782f464f2b39}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\2dObject\TitleObj\Anime\Background">
+      <UniqueIdentifier>{8be0ab61-bb86-4f4e-95bf-557516538199}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\2dObject\TitleObj\InitializeZoomOut">
+      <UniqueIdentifier>{3b5439a7-582c-44a2-a7a6-821730d223ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\2dObject\TitleObj\InitializeZoomOut">
+      <UniqueIdentifier>{b7073d2e-1ded-4d1a-abb7-5a11fc37dc07}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\2dObject\TitleObj\InitializeZoomOut\Conter">
+      <UniqueIdentifier>{ba725131-e9fc-4f58-b068-83b89de36547}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\2dObject\TitleObj\InitializeZoomOut\Logo">
+      <UniqueIdentifier>{0aa04e1e-c2b6-4507-9374-6b28bb9644bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\2dObject\TitleObj\InitializeZoomOut\Counter">
+      <UniqueIdentifier>{7ceadca8-1ce0-451a-bbee-e31a5740405c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\2dObject\TitleObj\InitializeZoomOut\Logo">
+      <UniqueIdentifier>{b8cf51ed-30b9-4206-961c-56425f33b142}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\2dObject\TitleObj\Anime">
+      <UniqueIdentifier>{cc408150-3ef6-4a8b-be89-def16511cd28}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\2dObject\TitleObj\Anime\Background">
+      <UniqueIdentifier>{1624b3d3-6be6-4c39-ab35-66a8e5a8e2be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\2dObject\TitleObj\TitleCommand">
+      <UniqueIdentifier>{ec6f0ea4-3694-4265-8a2a-a5c164caa0a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\2dObject\TitleObj\InitializeZoomOut\Background">
+      <UniqueIdentifier>{b971aa91-4f37-4cff-b11c-0c05c2ea7871}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\2dObject\TitleObj\Command">
+      <UniqueIdentifier>{ee1470bc-c4e1-4d9f-96b2-c5257397835d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\2dObject\TitleObj\InitializeZoomOut\Background">
+      <UniqueIdentifier>{6098d58b-d787-4f5e-96ee-77bbe1f8e9e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\System\Camera\Using">
+      <UniqueIdentifier>{31c48bec-2319-41d1-9b2c-d88db2cb8dc9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\System\Camera\Using">
+      <UniqueIdentifier>{01e3b99c-dd78-4930-ac26-251b2dbb3a3e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\2dObject\TitleObj\Anime\Background\Scaling">
+      <UniqueIdentifier>{790625a7-8d9a-4d35-bc55-0c1a7ff76d9b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\2dObject\TitleObj\Anime\Background\Scaling">
+      <UniqueIdentifier>{1e141588-474a-4886-ba13-bd6be87918b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Info\Flag">
+      <UniqueIdentifier>{a65f3470-a9e5-496f-971e-befb88a737ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Info\Flag">
+      <UniqueIdentifier>{0a65a912-79f9-44bc-bcb1-3c8d4b0cd0b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\System\Manager">
+      <UniqueIdentifier>{c85efb6f-4645-434d-9031-0d1c9ce3cda1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\System\Manager">
+      <UniqueIdentifier>{b208ac54-6d55-4e50-a1e7-68ee542c4172}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -134,9 +263,6 @@
     </ClCompile>
     <ClCompile Include="Sprite.cpp">
       <Filter>ソース ファイル\System</Filter>
-    </ClCompile>
-    <ClCompile Include="SceneGame.cpp">
-      <Filter>ソース ファイル\App</Filter>
     </ClCompile>
     <ClCompile Include="Startup.cpp">
       <Filter>ソース ファイル\System</Filter>
@@ -177,19 +303,7 @@
     <ClCompile Include="Title.cpp">
       <Filter>ソース ファイル\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="Prot.cpp">
-      <Filter>ソース ファイル\Scene</Filter>
-    </ClCompile>
     <ClCompile Include="Explosion.cpp">
-      <Filter>ソース ファイル\3dObject</Filter>
-    </ClCompile>
-    <ClCompile Include="Slime_1.cpp">
-      <Filter>ソース ファイル\3dObject</Filter>
-    </ClCompile>
-    <ClCompile Include="SlimeBase.cpp">
-      <Filter>ソース ファイル\3dObject</Filter>
-    </ClCompile>
-    <ClCompile Include="SlimeManager.cpp">
       <Filter>ソース ファイル\3dObject</Filter>
     </ClCompile>
     <ClCompile Include="Camera.cpp">
@@ -202,9 +316,6 @@
       <Filter>ソース ファイル\System\Camera</Filter>
     </ClCompile>
     <ClCompile Include="ExplosionManager.cpp">
-      <Filter>ソース ファイル\3dObject</Filter>
-    </ClCompile>
-    <ClCompile Include="SphereInfo.cpp">
       <Filter>ソース ファイル\3dObject</Filter>
     </ClCompile>
     <ClCompile Include="Collision.cpp">
@@ -240,17 +351,269 @@
     <ClCompile Include="Transform2d.cpp">
       <Filter>ソース ファイル\Info</Filter>
     </ClCompile>
-    <ClCompile Include="SceneGameCollision.cpp">
-      <Filter>ソース ファイル\App</Filter>
-    </ClCompile>
-    <ClCompile Include="Slime_4.cpp">
+    <ClCompile Include="Object.cpp">
       <Filter>ソース ファイル\3dObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Floor.cpp">
+      <Filter>ソース ファイル\3dObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Result.cpp">
+      <Filter>ソース ファイル\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Stage.cpp">
+      <Filter>ソース ファイル\Scene\Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionOfStage.cpp">
+      <Filter>ソース ファイル\Scene\Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="Stage1.cpp">
+      <Filter>ソース ファイル\Scene\Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="Stage2.cpp">
+      <Filter>ソース ファイル\Scene\Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="Stage3.cpp">
+      <Filter>ソース ファイル\Scene\Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="SelectStage.cpp">
+      <Filter>ソース ファイル\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectWrite.cpp">
+      <Filter>ソース ファイル\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Fade.cpp">
+      <Filter>ソース ファイル\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="BossGauge.cpp">
+      <Filter>ソース ファイル\2dObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Sound.cpp">
+      <Filter>ソース ファイル\System</Filter>
+    </ClCompile>
+    <ClCompile Include="StageFinishUI.cpp">
+      <Filter>ソース ファイル\2dObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Combo.cpp">
+      <Filter>ソース ファイル\2dObject</Filter>
+    </ClCompile>
+    <ClCompile Include="HitStop.cpp">
+      <Filter>ソース ファイル\System</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimeModel.cpp">
+      <Filter>ソース ファイル\System</Filter>
+    </ClCompile>
+    <ClCompile Include="ScoreOHManager.cpp">
+      <Filter>ソース ファイル\2dObject\Score</Filter>
+    </ClCompile>
+    <ClCompile Include="ScoreOverHead.cpp">
+      <Filter>ソース ファイル\2dObject\Score</Filter>
+    </ClCompile>
+    <ClCompile Include="TotalScore.cpp">
+      <Filter>ソース ファイル\2dObject\Score</Filter>
+    </ClCompile>
+    <ClCompile Include="HP_UI.cpp">
+      <Filter>ソース ファイル\2dObject</Filter>
+    </ClCompile>
+    <ClCompile Include="BoooomUI.cpp">
+      <Filter>ソース ファイル\2dObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Slime_1.cpp">
+      <Filter>ソース ファイル\3dObject\Enemy</Filter>
     </ClCompile>
     <ClCompile Include="Slime_2.cpp">
-      <Filter>ソース ファイル\3dObject</Filter>
+      <Filter>ソース ファイル\3dObject\Enemy</Filter>
     </ClCompile>
     <ClCompile Include="Slime_3.cpp">
-      <Filter>ソース ファイル\3dObject</Filter>
+      <Filter>ソース ファイル\3dObject\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Slime_4.cpp">
+      <Filter>ソース ファイル\3dObject\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Slime_Boss_1.cpp">
+      <Filter>ソース ファイル\3dObject\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Slime_BossBase.cpp">
+      <Filter>ソース ファイル\3dObject\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Slime_Flame.cpp">
+      <Filter>ソース ファイル\3dObject\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="SlimeBase.cpp">
+      <Filter>ソース ファイル\3dObject\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="SphereInfo.cpp">
+      <Filter>ソース ファイル\Info</Filter>
+    </ClCompile>
+    <ClCompile Include="HealItemManager.cpp">
+      <Filter>ソース ファイル\3dObject\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="HealItem.cpp">
+      <Filter>ソース ファイル\3dObject\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="Item.cpp">
+      <Filter>ソース ファイル\3dObject\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="Random.cpp">
+      <Filter>ソース ファイル\System\Random</Filter>
+    </ClCompile>
+    <ClCompile Include="UIStageManager.cpp">
+      <Filter>ソース ファイル\2dObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Slime_Heal.cpp">
+      <Filter>ソース ファイル\3dObject\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="LibEffekseer.cpp">
+      <Filter>ソース ファイル\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Pause.cpp">
+      <Filter>ソース ファイル\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="BattleData.cpp">
+      <Filter>ソース ファイル\Info</Filter>
+    </ClCompile>
+    <ClCompile Include="CharPause.cpp">
+      <Filter>ソース ファイル\2dObject\PauseObj</Filter>
+    </ClCompile>
+    <ClCompile Include="PauseObj.cpp">
+      <Filter>ソース ファイル\2dObject\PauseObj</Filter>
+    </ClCompile>
+    <ClCompile Include="BgPause.cpp">
+      <Filter>ソース ファイル\2dObject\PauseObj</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderList.cpp">
+      <Filter>ソース ファイル\System</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandPause.cpp">
+      <Filter>ソース ファイル\2dObject\PauseObj</Filter>
+    </ClCompile>
+    <ClCompile Include="BossArrow.cpp">
+      <Filter>ソース ファイル\2dObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Slime_Boss_2.cpp">
+      <Filter>ソース ファイル\3dObject\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Shadow.cpp">
+      <Filter>ソース ファイル\2dObject</Filter>
+    </ClCompile>
+    <ClCompile Include="DrawAnimation.cpp">
+      <Filter>ソース ファイル\2dObject</Filter>
+    </ClCompile>
+    <ClCompile Include="2dPolygon.cpp">
+      <Filter>ソース ファイル\2dObject</Filter>
+    </ClCompile>
+    <ClCompile Include="FrameCnt.cpp">
+      <Filter>ソース ファイル\System</Filter>
+    </ClCompile>
+    <ClCompile Include="FixedCamera.cpp">
+      <Filter>ソース ファイル\System\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="UnionManager.cpp">
+      <Filter>ソース ファイル\2dObject\Union</Filter>
+    </ClCompile>
+    <ClCompile Include="Union.cpp">
+      <Filter>ソース ファイル\2dObject\Union</Filter>
+    </ClCompile>
+    <ClCompile Include="GameClearText.cpp">
+      <Filter>ソース ファイル\2dObject\Text</Filter>
+    </ClCompile>
+    <ClCompile Include="GameOverText.cpp">
+      <Filter>ソース ファイル\2dObject\Text</Filter>
+    </ClCompile>
+    <ClCompile Include="GameStartText.cpp">
+      <Filter>ソース ファイル\2dObject\Text</Filter>
+    </ClCompile>
+    <ClCompile Include="NumberText.cpp">
+      <Filter>ソース ファイル\2dObject\Text</Filter>
+    </ClCompile>
+    <ClCompile Include="Timer.cpp">
+      <Filter>ソース ファイル\2dObject\Timer</Filter>
+    </ClCompile>
+    <ClCompile Include="TimerStage1.cpp">
+      <Filter>ソース ファイル\2dObject\Timer</Filter>
+    </ClCompile>
+    <ClCompile Include="TimerStage2.cpp">
+      <Filter>ソース ファイル\2dObject\Timer</Filter>
+    </ClCompile>
+    <ClCompile Include="TimerStage3.cpp">
+      <Filter>ソース ファイル\2dObject\Timer</Filter>
+    </ClCompile>
+    <ClCompile Include="SlimeManager.cpp">
+      <Filter>ソース ファイル\3dObject\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="TitleBgPlayer.cpp">
+      <Filter>ソース ファイル\2dObject\TitleObj\Anime\Background</Filter>
+    </ClCompile>
+    <ClCompile Include="TitleBgCloud.cpp">
+      <Filter>ソース ファイル\2dObject\TitleObj\Anime\Background</Filter>
+    </ClCompile>
+    <ClCompile Include="TitleBgReaf.cpp">
+      <Filter>ソース ファイル\2dObject\TitleObj\Anime\Background</Filter>
+    </ClCompile>
+    <ClCompile Include="TitleObj.cpp">
+      <Filter>ソース ファイル\2dObject\TitleObj</Filter>
+    </ClCompile>
+    <ClCompile Include="TitleInitZoomOut.cpp">
+      <Filter>ソース ファイル\2dObject\TitleObj\InitializeZoomOut</Filter>
+    </ClCompile>
+    <ClCompile Include="TitleInitCounter.cpp">
+      <Filter>ソース ファイル\2dObject\TitleObj\InitializeZoomOut\Counter</Filter>
+    </ClCompile>
+    <ClCompile Include="TitleLogo.cpp">
+      <Filter>ソース ファイル\2dObject\TitleObj\InitializeZoomOut\Logo</Filter>
+    </ClCompile>
+    <ClCompile Include="TitleBgBase.cpp">
+      <Filter>ソース ファイル\2dObject\TitleObj\InitializeZoomOut\Background</Filter>
+    </ClCompile>
+    <ClCompile Include="TitleCommand.cpp">
+      <Filter>ソース ファイル\2dObject\TitleObj\TitleCommand</Filter>
+    </ClCompile>
+    <ClCompile Include="TitleCommandFinish.cpp">
+      <Filter>ソース ファイル\2dObject\TitleObj\TitleCommand</Filter>
+    </ClCompile>
+    <ClCompile Include="TitleCommandStart.cpp">
+      <Filter>ソース ファイル\2dObject\TitleObj\TitleCommand</Filter>
+    </ClCompile>
+    <ClCompile Include="UsingCamera.cpp">
+      <Filter>ソース ファイル\System\Camera\Using</Filter>
+    </ClCompile>
+    <ClCompile Include="TitleBgGrass.cpp">
+      <Filter>ソース ファイル\2dObject\TitleObj\Anime\Background</Filter>
+    </ClCompile>
+    <ClCompile Include="TitleBgAnimeScaling.cpp">
+      <Filter>ソース ファイル\2dObject\TitleObj\Anime\Background\Scaling</Filter>
+    </ClCompile>
+    <ClCompile Include="WalkEffectManager.cpp">
+      <Filter>ソース ファイル\2dObject\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="WalkEffect.cpp">
+      <Filter>ソース ファイル\2dObject\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="SweatEffect.cpp">
+      <Filter>ソース ファイル\2dObject\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="SweatEffectManager.cpp">
+      <Filter>ソース ファイル\2dObject\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="HitSlimeEffectManager.cpp">
+      <Filter>ソース ファイル\2dObject\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="HitSlimeEffect.cpp">
+      <Filter>ソース ファイル\2dObject\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="UnionSmokeEffect.cpp">
+      <Filter>ソース ファイル\2dObject\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="UnionSmokeEffectManager.cpp">
+      <Filter>ソース ファイル\2dObject\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="UcFlag.cpp">
+      <Filter>ソース ファイル\Info\Flag</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelManager.cpp">
+      <Filter>ソース ファイル\System\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="ShowWarning.cpp">
+      <Filter>ソース ファイル\2dObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -277,9 +640,6 @@
     </ClInclude>
     <ClInclude Include="Sprite.h">
       <Filter>ヘッダー ファイル\System</Filter>
-    </ClInclude>
-    <ClInclude Include="SceneGame.h">
-      <Filter>ヘッダー ファイル\App</Filter>
     </ClInclude>
     <ClInclude Include="Model.h">
       <Filter>ヘッダー ファイル\System</Filter>
@@ -314,22 +674,10 @@
     <ClInclude Include="Title.h">
       <Filter>ヘッダー ファイル\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Prot.h">
-      <Filter>ヘッダー ファイル\Scene</Filter>
-    </ClInclude>
     <ClInclude Include="SphereInfo.h">
       <Filter>ヘッダー ファイル\Info</Filter>
     </ClInclude>
-    <ClInclude Include="SlimeBase.h">
-      <Filter>ヘッダー ファイル\3DObject</Filter>
-    </ClInclude>
-    <ClInclude Include="Slime_1.h">
-      <Filter>ヘッダー ファイル\3DObject</Filter>
-    </ClInclude>
     <ClInclude Include="Explosion.h">
-      <Filter>ヘッダー ファイル\3dObject</Filter>
-    </ClInclude>
-    <ClInclude Include="SlimeManager.h">
       <Filter>ヘッダー ファイル\3dObject</Filter>
     </ClInclude>
     <ClInclude Include="CameraDebug.h">
@@ -346,9 +694,6 @@
     </ClInclude>
     <ClInclude Include="ExplosionManager.h">
       <Filter>ヘッダー ファイル\3dObject</Filter>
-    </ClInclude>
-    <ClInclude Include="Transform.h">
-      <Filter>ヘッダー ファイル\Info\Transform</Filter>
     </ClInclude>
     <ClInclude Include="Transform3d.h">
       <Filter>ヘッダー ファイル\Info\Transform</Filter>
@@ -389,22 +734,308 @@
     <ClInclude Include="StripeParticle.h">
       <Filter>ヘッダー ファイル\2dObject\Effect\Particle\StripeParticle</Filter>
     </ClInclude>
-    <ClInclude Include="Slime_4.h">
-      <Filter>ヘッダー ファイル\3dObject</Filter>
-    </ClInclude>
-    <ClInclude Include="Slime_2.h">
-      <Filter>ヘッダー ファイル\3dObject</Filter>
-    </ClInclude>
-    <ClInclude Include="Slime_3.h">
-      <Filter>ヘッダー ファイル\3dObject</Filter>
-    </ClInclude>
     <ClInclude Include="GameParameter.h">
       <Filter>ヘッダー ファイル\Info</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectWrite.h">
+      <Filter>ヘッダー ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Object.h">
+      <Filter>ヘッダー ファイル\3dObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Floor.h">
+      <Filter>ヘッダー ファイル\3dObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Stage.h">
+      <Filter>ヘッダー ファイル\Scene\Stage</Filter>
+    </ClInclude>
+    <ClInclude Include="Result.h">
+      <Filter>ヘッダー ファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Stage1.h">
+      <Filter>ヘッダー ファイル\Scene\Stage</Filter>
+    </ClInclude>
+    <ClInclude Include="Stage2.h">
+      <Filter>ヘッダー ファイル\Scene\Stage</Filter>
+    </ClInclude>
+    <ClInclude Include="Stage3.h">
+      <Filter>ヘッダー ファイル\Scene\Stage</Filter>
+    </ClInclude>
+    <ClInclude Include="SelectStage.h">
+      <Filter>ヘッダー ファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Fade.h">
+      <Filter>ヘッダー ファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="BossGauge.h">
+      <Filter>ヘッダー ファイル\2dObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Sound.h">
+      <Filter>ヘッダー ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="DiType.h">
+      <Filter>ヘッダー ファイル\Info</Filter>
+    </ClInclude>
+    <ClInclude Include="StageFinishUI.h">
+      <Filter>ヘッダー ファイル\2dObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Combo.h">
+      <Filter>ヘッダー ファイル\2dObject</Filter>
+    </ClInclude>
+    <ClInclude Include="HitStop.h">
+      <Filter>ヘッダー ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimeModel.h">
+      <Filter>ヘッダー ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="ScoreOHManager.h">
+      <Filter>ヘッダー ファイル\2dObject\Score</Filter>
+    </ClInclude>
+    <ClInclude Include="ScoreOverHead.h">
+      <Filter>ヘッダー ファイル\2dObject\Score</Filter>
+    </ClInclude>
+    <ClInclude Include="TotalScore.h">
+      <Filter>ヘッダー ファイル\2dObject\Score</Filter>
+    </ClInclude>
+    <ClInclude Include="HP_UI.h">
+      <Filter>ヘッダー ファイル\2dObject</Filter>
+    </ClInclude>
+    <ClInclude Include="BoooomUI.h">
+      <Filter>ヘッダー ファイル\2dObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Slime_1.h">
+      <Filter>ヘッダー ファイル\3dObject\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Slime_2.h">
+      <Filter>ヘッダー ファイル\3dObject\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Slime_3.h">
+      <Filter>ヘッダー ファイル\3dObject\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Slime_4.h">
+      <Filter>ヘッダー ファイル\3dObject\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Slime_Boss_1.h">
+      <Filter>ヘッダー ファイル\3dObject\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Slime_BossBase.h">
+      <Filter>ヘッダー ファイル\3dObject\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Slime_Flame.h">
+      <Filter>ヘッダー ファイル\3dObject\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="SlimeBase.h">
+      <Filter>ヘッダー ファイル\3dObject\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="SlimeManager.h">
+      <Filter>ヘッダー ファイル\3dObject\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="HealItem.h">
+      <Filter>ヘッダー ファイル\3dObject\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="HealItemManager.h">
+      <Filter>ヘッダー ファイル\3dObject\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="Item.h">
+      <Filter>ヘッダー ファイル\3dObject\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="Random.h">
+      <Filter>ヘッダー ファイル\System\Random</Filter>
+    </ClInclude>
+    <ClInclude Include="UIStageManager.h">
+      <Filter>ヘッダー ファイル\2dObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Slime_Heal.h">
+      <Filter>ヘッダー ファイル\3dObject\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="LibEffekseer.h">
+      <Filter>ヘッダー ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraDef.h">
+      <Filter>ヘッダー ファイル\System\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Pause.h">
+      <Filter>ヘッダー ファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="BattleData.h">
+      <Filter>ヘッダー ファイル\Info</Filter>
+    </ClInclude>
+    <ClInclude Include="CharPause.h">
+      <Filter>ヘッダー ファイル\2dObject\PauseObj</Filter>
+    </ClInclude>
+    <ClInclude Include="PauseObj.h">
+      <Filter>ヘッダー ファイル\2dObject\PauseObj</Filter>
+    </ClInclude>
+    <ClInclude Include="BgPause.h">
+      <Filter>ヘッダー ファイル\2dObject\PauseObj</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderList.h">
+      <Filter>ヘッダー ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="CommandPause.h">
+      <Filter>ヘッダー ファイル\2dObject\PauseObj</Filter>
+    </ClInclude>
+    <ClInclude Include="BossArrow.h">
+      <Filter>ヘッダー ファイル\2dObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Slime_Boss_2.h">
+      <Filter>ヘッダー ファイル\3dObject\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Shadow.h">
+      <Filter>ヘッダー ファイル\2dObject</Filter>
+    </ClInclude>
+    <ClInclude Include="DrawAnimation.h">
+      <Filter>ヘッダー ファイル\2dObject</Filter>
+    </ClInclude>
+    <ClInclude Include="2dPolygon.h">
+      <Filter>ヘッダー ファイル\2dObject</Filter>
+    </ClInclude>
+    <ClInclude Include="FrameCnt.h">
+      <Filter>ヘッダー ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="FixedCamera.h">
+      <Filter>ヘッダー ファイル\System\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="UnionManager.h">
+      <Filter>ヘッダー ファイル\2dObject\Union</Filter>
+    </ClInclude>
+    <ClInclude Include="Union.h">
+      <Filter>ヘッダー ファイル\2dObject\Union</Filter>
+    </ClInclude>
+    <ClInclude Include="GameClearText.h">
+      <Filter>ヘッダー ファイル\2dObject\Text</Filter>
+    </ClInclude>
+    <ClInclude Include="GameOverText.h">
+      <Filter>ヘッダー ファイル\2dObject\Text</Filter>
+    </ClInclude>
+    <ClInclude Include="GameStartText.h">
+      <Filter>ヘッダー ファイル\2dObject\Text</Filter>
+    </ClInclude>
+    <ClInclude Include="NumberText.h">
+      <Filter>ヘッダー ファイル\2dObject\Text</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer.h">
+      <Filter>ヘッダー ファイル\2dObject\Timer</Filter>
+    </ClInclude>
+    <ClInclude Include="TimerStage1.h">
+      <Filter>ヘッダー ファイル\2dObject\Timer</Filter>
+    </ClInclude>
+    <ClInclude Include="TimerStage2.h">
+      <Filter>ヘッダー ファイル\2dObject\Timer</Filter>
+    </ClInclude>
+    <ClInclude Include="TimerStage3.h">
+      <Filter>ヘッダー ファイル\2dObject\Timer</Filter>
+    </ClInclude>
+    <ClInclude Include="Delete.h">
+      <Filter>ヘッダー ファイル\Info</Filter>
+    </ClInclude>
+    <ClInclude Include="TitleBgCloud.h">
+      <Filter>ヘッダー ファイル\2dObject\TitleObj\Anime\Background</Filter>
+    </ClInclude>
+    <ClInclude Include="TitleBgPlayer.h">
+      <Filter>ヘッダー ファイル\2dObject\TitleObj\Anime\Background</Filter>
+    </ClInclude>
+    <ClInclude Include="TitleBgReaf.h">
+      <Filter>ヘッダー ファイル\2dObject\TitleObj\Anime\Background</Filter>
+    </ClInclude>
+    <ClInclude Include="TitleCommand.h">
+      <Filter>ヘッダー ファイル\2dObject\TitleObj\Command</Filter>
+    </ClInclude>
+    <ClInclude Include="TitleCommandFinish.h">
+      <Filter>ヘッダー ファイル\2dObject\TitleObj\Command</Filter>
+    </ClInclude>
+    <ClInclude Include="TitleInitZoomOut.h">
+      <Filter>ヘッダー ファイル\2dObject\TitleObj\InitializeZoomOut</Filter>
+    </ClInclude>
+    <ClInclude Include="TitleInitCounter.h">
+      <Filter>ヘッダー ファイル\2dObject\TitleObj\InitializeZoomOut\Conter</Filter>
+    </ClInclude>
+    <ClInclude Include="TitleLogo.h">
+      <Filter>ヘッダー ファイル\2dObject\TitleObj\InitializeZoomOut\Logo</Filter>
+    </ClInclude>
+    <ClInclude Include="TitleObj.h">
+      <Filter>ヘッダー ファイル\2dObject\TitleObj</Filter>
+    </ClInclude>
+    <ClInclude Include="TitleBgBase.h">
+      <Filter>ヘッダー ファイル\2dObject\TitleObj\InitializeZoomOut\Background</Filter>
+    </ClInclude>
+    <ClInclude Include="TitleCommandStart.h">
+      <Filter>ヘッダー ファイル\2dObject\TitleObj\Command</Filter>
+    </ClInclude>
+    <ClInclude Include="UsingCamera.h">
+      <Filter>ヘッダー ファイル\System\Camera\Using</Filter>
+    </ClInclude>
+    <ClInclude Include="TitleBgGrass.h">
+      <Filter>ヘッダー ファイル\2dObject\TitleObj\Anime\Background</Filter>
+    </ClInclude>
+    <ClInclude Include="TitleBgAnimeScaling.h">
+      <Filter>ヘッダー ファイル\2dObject\TitleObj\Anime\Background\Scaling</Filter>
+    </ClInclude>
+    <ClInclude Include="WalkEffectManager.h">
+      <Filter>ヘッダー ファイル\2dObject\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="WalkEffect.h">
+      <Filter>ヘッダー ファイル\2dObject\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="SweatEffect.h">
+      <Filter>ヘッダー ファイル\2dObject\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="HitSlimeEffect.h">
+      <Filter>ヘッダー ファイル\2dObject\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="HitSlimeEffectManager.h">
+      <Filter>ヘッダー ファイル\2dObject\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="SweatEffectManager.h">
+      <Filter>ヘッダー ファイル\2dObject\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="UnionSmokeEffect.h">
+      <Filter>ヘッダー ファイル\2dObject\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="UnionSmokeEffectManager.h">
+      <Filter>ヘッダー ファイル\2dObject\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="UcFlag.h">
+      <Filter>ヘッダー ファイル\Info\Flag</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelManager.h">
+      <Filter>ヘッダー ファイル\System\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="ShowWarning.h">
+      <Filter>ヘッダー ファイル\2dObject</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="VS_Model.hlsl">
       <Filter>リソース ファイル\VertexShader</Filter>
     </FxCompile>
+    <FxCompile Include="PsFade.hlsl">
+      <Filter>リソース ファイル\PixelShader</Filter>
+    </FxCompile>
+    <FxCompile Include="VsFade.hlsl">
+      <Filter>リソース ファイル\VertexShader</Filter>
+    </FxCompile>
+    <FxCompile Include="PsPause.hlsl">
+      <Filter>リソース ファイル\PixelShader</Filter>
+    </FxCompile>
+    <FxCompile Include="VsPause.hlsl">
+      <Filter>リソース ファイル\VertexShader</Filter>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="DX22Base.rc">
+      <Filter>リソース ファイル</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="icon.ico">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="iconmini.ico">
+      <Filter>リソース ファイル</Filter>
+    </Image>
   </ItemGroup>
 </Project>

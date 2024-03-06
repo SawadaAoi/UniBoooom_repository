@@ -13,11 +13,13 @@
 	・2023/11/10 Distance()関数のエラー修正
 					・変換コンストラクタ内で使用していた演算子が変換コンストラクタを呼び、
 					再帰的に無限増殖した結果オーバーフローに到達する問題を修正 takagi
+	・2023/12/07 	再帰的に無限に変換コンストラクタが稼働する問題を修正 takagi
+	・2024/01/16 統一のため、インクルードガードの___を__に変更	takagi
 
 ========================================== */
 
-#ifndef ___POS_2D_H___
-#define ___POS_2D_H___
+#ifndef __POS_2D_H__
+#define __POS_2D_H__
 
 // =============== インクルード ===================
 #include "DiType.h"	//３つの同じ型を持つ型
@@ -77,10 +79,11 @@ TPos2d<Pos2d>::TPos2d(const Pos2d & x, const Pos2d & y)
 	戻値：なし
 =========================================== */
 template<class Pos2d>
-inline TPos2d<Pos2d>::TPos2d(const TDiType<Pos2d>& Di)
+TPos2d<Pos2d>::TPos2d(const TDiType<Pos2d>& Di)
 {
 	// =============== 格納 ===================
-	*this = Di;	//型変換
+	this->x = Di.x;	//型変換
+	this->y = Di.y;	//型変換
 }
 
 /* ========================================
@@ -131,4 +134,4 @@ Pos2d TPos2d<Pos2d>::Distance(const TPos2d & Obj)
 	return (Pos2d)(pow((double)Temp.Total(), 0.5));	//計算結果
 }
 
-#endif // !___POS_2D_H___
+#endif // !__POS_2D_H__
