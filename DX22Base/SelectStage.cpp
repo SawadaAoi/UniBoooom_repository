@@ -198,14 +198,14 @@ void CSelectStage::StageSelect()
 		if (m_bStickFlg)
 		{
 			// スティック右
-			if ( 0.0f < fMoveInput.x )
+			if ( 0.3f < fMoveInput.x )
 			{
 				SelectStageChange(SELECT_MOVE_RIGHT);	// 遷移ステージ値を変更
 				m_bStickFlg = false;					// スティック傾倒フラグオン
 
 			}
 			// スティック左
-			else if (fMoveInput.x < 0.0f)
+			else if (fMoveInput.x < -0.3f)
 			{
 				SelectStageChange(SELECT_MOVE_LEFT);	// 遷移ステージ値を変更
 				m_bStickFlg = false;					// スティック傾倒フラグオン
@@ -215,7 +215,7 @@ void CSelectStage::StageSelect()
 		else
 		{
 			// スティックの傾きが一定値以下の場合
-			if (fabs(fMoveInput.x) <= 0.5f )	
+			if (fabs(fMoveInput.x) <= 0.3f )	
 			{
 				m_bStickFlg = true;	// スティックをニュートラルに戻したら移動可能にする
 			}
@@ -231,7 +231,7 @@ void CSelectStage::StageSelect()
 	}
 
 	// 決定
-	if ( (IsKeyTrigger(VK_SPACE) || IsKeyTrigger(VK_RETURN) || IsKeyTriggerController(BUTTON_B)) && !m_pFrameCntFall)
+	if ( (IsKeyTrigger(VK_SPACE) || IsKeyTrigger(VK_RETURN) || IsKeyTriggerController(BUTTON_B) || IsKeyTriggerController(BUTTON_Y)) && !m_pFrameCntFall)
 	{
 		m_pFrameCntFall = new CFrameCnt(FALL_TIME_ARR_LET);	//カウンタ作成
 		PlaySE(SE_DECISION);	// SEの再生 
@@ -239,7 +239,7 @@ void CSelectStage::StageSelect()
 	}
 
 	// タイトル画面に戻る
-	if ((IsKeyTrigger('B') || IsKeyTriggerController(BUTTON_A) )&& !m_pFrameCntFall)
+	if ((IsKeyTrigger('B') || IsKeyTriggerController(BUTTON_A) || IsKeyTriggerController(BUTTON_X))&& !m_pFrameCntFall)
 	{
 		m_eNextType = E_TYPE::E_TYPE_TITLE;
 		m_bFinish = true;

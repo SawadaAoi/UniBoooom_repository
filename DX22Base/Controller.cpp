@@ -115,6 +115,13 @@ TTriType<float> Controller::GetStickLeft()
 	TTriType<float> stick;
 	stick.x = LeftStickX();
 	stick.y = LeftStickY();
+
+	if (stick.x <= 0.1f && stick.x >= -0.1f)
+		stick.x = 0.0f;
+
+	if (stick.y <= 0.1f && stick.y >= -0.1f)
+		stick.y = 0.0f;
+
 	return stick;
 }
 

@@ -280,7 +280,7 @@ void CPlayer::Update()
 				}
 
 				// スペースキーもしくはコントローラのBボタンに対しての押し続け && ハンマー間隔時間経過済み
-				if ((IsKeyPress(VK_SPACE) || IsKeyPressController(BUTTON_B)) && !m_bHumInvFlg
+				if ((IsKeyPress(VK_SPACE) || IsKeyPressController(BUTTON_B) || IsKeyPressController(BUTTON_Y)) && !m_bHumInvFlg
 					&& !m_ChargeState == PLAYER_CHARGING)
 				{
 					SAFE_DELETE(m_pWaitFrameCnt);	// カウンタ削除
@@ -313,7 +313,7 @@ void CPlayer::Update()
 					}
 				}
 				// スペースキーもしくはコントローラのBボタンを離した時 && ハンマー間隔時間経過済み
-				else if ((IsKeyRelease(VK_SPACE) || IsKeyReleaseController(BUTTON_B)) &&
+				else if ((IsKeyRelease(VK_SPACE) || IsKeyReleaseController(BUTTON_B) || IsKeyReleaseController(BUTTON_Y)) &&
 					!m_bHumInvFlg && !m_pModel->IsPlay(MOTION_PLAYER_SWING))
 				{
 					SAFE_DELETE(m_pWaitFrameCnt);	// カウンタ削除
@@ -348,7 +348,7 @@ void CPlayer::Update()
 			}
 			else
 			{// コントローラが接続されている場合
-				if (!IsKeyPressController(BUTTON_B))
+				if (!IsKeyPressController(BUTTON_B) && !IsKeyPressController(BUTTON_Y))
 				{
 					// チャージエフェクトを停止
 					LibEffekseer::GetManager()->StopEffect(m_chgEfcHandle);

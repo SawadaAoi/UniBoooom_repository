@@ -236,7 +236,7 @@ CResult::~CResult()
 void CResult::Update()
 {
 	// スペースキーを押した時、またはコントローラのBボタンを押した時 
-	if (IsKeyTrigger(VK_SPACE) || IsKeyTrigger(VK_RETURN) || IsKeyTriggerController(BUTTON_B))
+	if (IsKeyTrigger(VK_SPACE) || IsKeyTrigger(VK_RETURN) || IsKeyTriggerController(BUTTON_B) || IsKeyTriggerController(BUTTON_Y))
 	{
 		m_bFinish = true;	// タイトルシーン終了フラグON
 		//===== SEの再生 =======
