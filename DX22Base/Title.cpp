@@ -164,7 +164,7 @@ void CTitle::Update()
 			}
 
 			// =============== 決定 ===================
-			if (IsKeyTriggerController(BUTTON_B) && !(m_ucFlag & E_FLAG_DECIDE_COMMAND))	//Bボタン入力かつ非決定時
+			if (IsKeyTriggerController(BUTTON_B) || IsKeyTriggerController(BUTTON_Y) && !(m_ucFlag & E_FLAG_DECIDE_COMMAND))	//Bボタン入力かつ非決定時
 			{
 				// =============== 選択状態判定 ===================
 				if (m_ucFlag & E_FLAG_COMMAND_START && m_pCommandStart)	//開始コマンド・ヌルチェック

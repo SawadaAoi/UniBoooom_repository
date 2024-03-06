@@ -155,7 +155,7 @@ void CPause::Update()
 		if (GetUseVController())	// コントローラが接続されている場合
 		{
 			// =============== 起動・終了 ===================
-			if (IsKeyTriggerController(BUTTON_START))
+			if (IsKeyTriggerController(BUTTON_START) || IsKeyTriggerController(BUTTON_SELECT)|| IsKeyTriggerController(BUTTON_RT))
 			{
 				if (IsPause())	//すでにポーズ中
 				{
@@ -223,7 +223,7 @@ void CPause::Update()
 			}
 
 			// =============== 決定 ===================
-			if (IsKeyTriggerController(BUTTON_B))	//Aボタン入力時
+			if (IsKeyTriggerController(BUTTON_B) || IsKeyTriggerController(BUTTON_Y))	//Aボタン入力時
 			{
 				// =============== フラグ操作 ===================
 				UpFlag(E_FLAG_DECIDE_COMMAND);	//決定
