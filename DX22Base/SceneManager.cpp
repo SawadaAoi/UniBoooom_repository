@@ -40,6 +40,7 @@
 #include "HitStop.h"		//ヒットストップ
 #include "ModelManager.h"	// モデルの一括管理クラスの最初のインスタンス用
 #include "BattleData.h"		//データ
+#include "LoadIndicator.h"	//ロードインディケータ
 
 #if _DEBUG
 #include <Windows.h>		//メッセージボックス用
@@ -244,6 +245,8 @@ void CSceneManager::ChangeScene()
 		m_pScene = nullptr;													//空アドレス
 	}
 
+	CLoadIndicator::GetThis().BeginDraw();
+
 	// =============== シーン切換 =====================
 	MakeNewScene();	//新シーン作成
 
@@ -256,6 +259,7 @@ void CSceneManager::ChangeScene()
 	if (m_pScene)	//新規シーンが作られている
 	{
 		m_pFade = new CFade();	//動的確保
+		CLoadIndicator::GetThis().EndDraw();
 	}
 }
 

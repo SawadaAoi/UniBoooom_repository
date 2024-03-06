@@ -95,6 +95,7 @@ void Uninit()
 		delete g_pSceneMng;
 		g_pSceneMng = nullptr;
 	}
+	CLoadIndicator::GetThis().EndDraw();
 	ShaderList::Uninit();
 	CGeometry::Uninit();
 	UninitInput();

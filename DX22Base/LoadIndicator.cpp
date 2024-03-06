@@ -17,8 +17,8 @@
 
 // =============== 定数定義 ===================
 const std::string TEX = "Assets/Texture/Title/PlayerToRight.png";	//テクスチャファイル
-const TPos3d<float> POS{ static_cast<float>(SCREEN_WIDTH) - 100.0f, 100.0f, 0.0f };	//位置
-const TPos3d<float> SCALE(160.0f, 90.0f, 0.0f);				//小さいときの大きさ
+const TPos3d<float> POS{ static_cast<float>(SCREEN_WIDTH) - 200.0f, 100.0f, 0.0f };	//位置
+const TPos3d<float> SCALE(320.0f, 180.0f, 0.0f);				//小さいときの大きさ
 const int MAX_ANIM(55);																								//アニメーション数
 const TDiType<int> MAX_SEAT(5, 11);																					//5x11
 const /*TODO:unsigned*/ int ANIMATION_INTERVAL = 2;																	//アニメーションフレーム間隔
@@ -56,16 +56,21 @@ void CLoadIndicator::BeginDraw()
 			Tex.SetTexture("Assets/Texture/Start/Wait.png");
 			Tex.SetPos({ static_cast<float>(SCREEN_WIDTH / 2.0f), static_cast<float>(SCREEN_HEIGHT / 2.0f), 0.0f });
 			Tex.SetSize({ static_cast<float>(SCREEN_WIDTH), static_cast<float>(SCREEN_HEIGHT), 0.0f });
-			BeginDrawDirectX();	//書き出し開始
-			Tex.Draw();			//描画
-			m_p2d->Update();
-			m_p2d->Draw();	//描画
-			EndDrawDirectX();	//書き出し完了
+			if (GetContext())
+			{
+				BeginDrawDirectX();	//書き出し開始
+				Tex.Draw();			//描画
+				m_p2d->Update();
+				m_p2d->Draw();	//描画
+				EndDrawDirectX();	//書き出し完了
+			}
 		}
 	}
 			} };			//一時的なスレッド宣言
 		//m_DrawThread = std::move(Thread);	//swapではなく一時変数をムーブして書き換える
 		m_DrawThread.swap(Thread);
+		std::stop_token token;
+		m_DrawThread.get_stop_token().swap(token);
 	}
 }
 
@@ -94,7 +99,7 @@ CLoadIndicator::CLoadIndicator()
 	m_p2d->SetTexture(TEX.c_str());	//テクスチャ登録
 	m_p2d->SetPos(POS);				//位置登録
 	m_p2d->SetSize(SCALE);			//大きさ登録
-	m_p2d->SetLoopFlg(true);			//ループ設定
+	m_p2d->SetLoopFlg(true);		//ループ設定
 }
 
 /* ========================================
