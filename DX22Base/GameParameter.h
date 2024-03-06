@@ -68,9 +68,9 @@ const float ROTATE_RADIUS					= 3.0f;							// ƒnƒ“ƒ}[‚ª‰ñ“]‚·‚éƒvƒŒƒCƒ„[‚©‚ç‚
 const float HAMMER_COL_SIZE					= 2.0f;							// ƒnƒ“ƒ}[‚Ì“–‚½‚è”»’è‚Ì‘å‚«‚³
 const float HAMMER_SIZE						= HAMMER_COL_SIZE * 0.26666f;	// ƒnƒ“ƒ}[‚Ì‘å‚«‚³
 const float	SWING_TIME_ADD_MULT				= 1.4f;							// ƒnƒ“ƒ}[‚ðˆê‰ñU‚é“x‚É’·‚­‚È‚éƒnƒ“ƒ}[‚ÌˆêU‚è‚ÌŽžŠÔ(‚±‚Ì’l‚ðæŽZ‚·‚é)
-const float	SWING_TIME_ADD_MULT_CHARGE		= 5.4f;							// ƒnƒ“ƒ}[‚ðˆê‰ñU‚é“x‚É’·‚­‚È‚éƒnƒ“ƒ}[‚ÌˆêU‚è‚ÌŽžŠÔ(‚±‚Ì’l‚ðæŽZ‚·‚é)
+const float	SWING_TIME_ADD_MULT_CHARGE		= 5.0f;							// ƒnƒ“ƒ}[‚ðˆê‰ñU‚é“x‚É’·‚­‚È‚éƒnƒ“ƒ}[‚ÌˆêU‚è‚ÌŽžŠÔ(‚±‚Ì’l‚ðæŽZ‚·‚é)
 const float	SWING_TIME_MINUS_MULT			= 0.99f;						// ƒnƒ“ƒ}[‚ðˆê‰ñU‚é“x‚É’Z‚­‚È‚éƒnƒ“ƒ}[‚ÌˆêU‚è‚ÌŽžŠÔ(‚±‚Ì’l‚ðæŽZ‚·‚é)
-const int	SWING_TIME_MAX					= int(0.84f * 60);				// ƒnƒ“ƒ}[‚ÌˆêU‚è‚ÉŠ|‚©‚éŽžŠÔ‚ÌÅ‘å’l
+const int	SWING_TIME_MAX					= int(0.5f * 60);				// ƒnƒ“ƒ}[‚ÌˆêU‚è‚ÉŠ|‚©‚éŽžŠÔ‚ÌÅ‘å’l
 const float SWING_ANIM_ADJUST				= 4.2f;							// ƒnƒ“ƒ}[‚Ì“–‚½‚è”»’è‚ÆƒAƒjƒ‚ÌƒYƒŒ’²®
 
 
