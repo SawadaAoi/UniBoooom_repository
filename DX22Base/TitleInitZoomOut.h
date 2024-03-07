@@ -17,7 +17,7 @@
 
 // =============== インクルード =====================
 #include "TitleObj.h"	//親のヘッダ
-#include <memory.h>		//ptr管理
+#include <memory>		//ptr管理
 #include "DiType.h"		//引数型定義
 #include <array>		//配列コンテナ
 

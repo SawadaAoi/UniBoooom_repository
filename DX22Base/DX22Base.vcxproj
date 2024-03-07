@@ -42,13 +42,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
@@ -130,6 +130,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>NotSet</SubSystem>
@@ -156,6 +157,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>NotSet</SubSystem>
@@ -173,6 +175,7 @@
     <ClCompile Include="AnimeModel.cpp" />
     <ClCompile Include="BattleData.cpp" />
     <ClCompile Include="BgPause.cpp" />
+    <ClCompile Include="LoadIndicator.cpp" />
     <ClCompile Include="ModelManager.cpp" />
     <ClCompile Include="ShowWarning.cpp" />
     <ClCompile Include="TitleBgAnimeScaling.cpp" />
@@ -299,6 +302,7 @@
     <ClInclude Include="AnimeModel.h" />
     <ClInclude Include="BattleData.h" />
     <ClInclude Include="BgPause.h" />
+    <ClInclude Include="LoadIndicator.h" />
     <ClInclude Include="ModelManager.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="ShowWarning.h" />

@@ -221,7 +221,7 @@ void UninitDirectX()
 
 void BeginDrawDirectX()
 {
-	float color[4] = { 0.8f, 0.9f, 1.0f, 1.0f };
+	float color[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
 	g_pRTV->Clear(color);
 	g_pDSV->Clear();
 }

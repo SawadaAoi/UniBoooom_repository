@@ -27,7 +27,7 @@
 #include "GameParameter.h"
 #include "HitStop.h"	//ヒットストップ
 #include "Slime_4.h"	//赤スライム種分けよう
-#include <typeinfo.h>	//typeid使用
+#include <typeinfo>	//typeid使用
 #include "UsingCamera.h"	//カメラ使用
 
 // =============== 定数定義 =======================

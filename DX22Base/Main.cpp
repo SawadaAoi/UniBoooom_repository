@@ -32,6 +32,7 @@
 #include "ShaderList.h"	//モデルアニメーション用
 #include "LibEffekseer.h"
 #include "2dPolygon.h"
+#include "LoadIndicator.h"	//ロードインディケータ
 
 // =============== グローバル変数定義 =============
 CSceneManager* g_pSceneMng;
@@ -69,17 +70,12 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
 	ShaderList::Init();
 
 	//読み込み待ち画面
-	C2dPolygon Tex;
-	Tex.SetTexture("Assets/Texture/Start/Wait.png");
-	Tex.SetPos({ static_cast<float>(SCREEN_WIDTH / 2.0f), static_cast<float>(SCREEN_HEIGHT / 2.0f), 0.0f });
-	Tex.SetSize({ static_cast<float>(SCREEN_WIDTH), static_cast<float>(SCREEN_HEIGHT), 0.0f });
-	BeginDrawDirectX();	//書き出し開始
-	Tex.Draw();			//描画
-	EndDrawDirectX();	//書き出し完了
+	CLoadIndicator::GetThis().BeginDraw();
 
 	// シーン作成
 	g_pSceneMng = new CSceneManager();
 
+	CLoadIndicator::GetThis().EndDraw();
 	return hr;
 }
 
@@ -99,6 +95,7 @@ void Uninit()
 		delete g_pSceneMng;
 		g_pSceneMng = nullptr;
 	}
+	CLoadIndicator::GetThis().EndDraw();
 	ShaderList::Uninit();
 	CGeometry::Uninit();
 	UninitInput();

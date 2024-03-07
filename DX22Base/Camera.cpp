@@ -218,9 +218,10 @@ DirectX::XMFLOAT4X4 CCamera::GetViewMatrix() const
 {
 	// =============== 変数宣言 ===================
 	DirectX::XMFLOAT4X4 Mat;
-
+	auto view = GetViewWithoutTranspose();
+	
 	// =============== ビュー行列の計算 ===================
-	DirectX::XMStoreFloat4x4(&Mat, DirectX::XMMatrixTranspose(DirectX::XMLoadFloat4x4(&GetViewWithoutTranspose())));	//ビュー転置
+	DirectX::XMStoreFloat4x4(&Mat, DirectX::XMMatrixTranspose(DirectX::XMLoadFloat4x4(&view)));	//ビュー転置
 
 	// =============== 提供 ===================
 	return Mat;	//行列提供

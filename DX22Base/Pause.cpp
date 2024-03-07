@@ -29,6 +29,7 @@
 #include "Pause.h"			//自身のヘッダ
 #include <map>				//関係性コンテナ
 #include <array>			//配列
+#include <typeinfo>			//型名
 #include "Input.h"			//キー入力
 #include "CharPause.h"		//インスタンス候補
 #include "BgPause.h"		//インスタンス候補

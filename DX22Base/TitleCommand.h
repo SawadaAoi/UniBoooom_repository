@@ -19,7 +19,7 @@
 
 // =============== インクルード =====================
 #include "TitleObj.h"	//親のヘッダ
-#include <memory.h>		//ptr管理
+#include <memory>		//ptr管理
 #include "FrameCnt.h"	//カウンタ
 #include <map>			//連想コンテナ
 
