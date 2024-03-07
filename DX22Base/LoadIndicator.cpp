@@ -21,8 +21,8 @@ const TPos3d<float> POS{ static_cast<float>(SCREEN_WIDTH) - 200.0f, 100.0f, 0.0f
 const TPos3d<float> SCALE(320.0f, 180.0f, 0.0f);				//小さいときの大きさ
 const int MAX_ANIM(55);																								//アニメーション数
 const TDiType<int> MAX_SEAT(5, 11);																					//5x11
-const /*TODO:unsigned*/ int ANIMATION_INTERVAL = 2;																	//アニメーションフレーム間隔
-const unsigned int REST_FRAME = 180;
+const /*TODO:unsigned*/ int ANIMATION_INTERVAL = 100;																	//アニメーションフレーム間隔
+const unsigned int REST_FRAME = 1800;
 
 /* ========================================
 	自身提供関数
@@ -44,6 +44,10 @@ CLoadIndicator& CLoadIndicator::GetThis()
 
 void CLoadIndicator::BeginDraw()
 {
+	if (m_p2d)
+	{
+		m_p2d->AnimReset();
+	}
 	if (!m_DrawThread.joinable())	//スレッドの中身がない時
 	{
 		std::jthread Thread{ [this](std::stop_token ThreadStop) {
@@ -52,14 +56,14 @@ void CLoadIndicator::BeginDraw()
 	{
 		if (m_p2d)	//ヌルチェック
 		{
-			C2dPolygon Tex;
-			Tex.SetTexture("Assets/Texture/Start/Wait.png");
-			Tex.SetPos({ static_cast<float>(SCREEN_WIDTH / 2.0f), static_cast<float>(SCREEN_HEIGHT / 2.0f), 0.0f });
-			Tex.SetSize({ static_cast<float>(SCREEN_WIDTH), static_cast<float>(SCREEN_HEIGHT), 0.0f });
+			//C2dPolygon Tex;
+			//Tex.SetTexture("Assets/Texture/Start/Wait.png");
+			//Tex.SetPos({ static_cast<float>(SCREEN_WIDTH / 2.0f), static_cast<float>(SCREEN_HEIGHT / 2.0f), 0.0f });
+			//Tex.SetSize({ static_cast<float>(SCREEN_WIDTH), static_cast<float>(SCREEN_HEIGHT), 0.0f });
 			if (GetContext())
 			{
 				BeginDrawDirectX();	//書き出し開始
-				Tex.Draw();			//描画
+			//	Tex.Draw();			//描画
 				m_p2d->Update();
 				m_p2d->Draw();	//描画
 				EndDrawDirectX();	//書き出し完了
